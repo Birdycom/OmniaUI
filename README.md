@@ -1,81 +1,95 @@
-<!-- File: README.md | Map: intro -> versie -> packages -> install -> dev workflow -> vendored OmniaCSS -> PHP -> recente wijzigingen -->
+<!-- File: README.md | Map: intro -> version -> packages -> install -> Pro -> dev workflow -> vendored OmniaCSS -> PHP -> recent changes -->
 # OmniaUI
 
-CSS-first componenten en blocks, gebouwd op de utilities van [OmniaCSS](https://omniacss.eu).
-Zo weinig mogelijk JavaScript: popover, dialog, details, `:has()` en anchor positioning doen het werk.
-Wrappers voor React, Vue en Laravel (Blade + Livewire) gebruiken exact dezelfde markup en `oc-`-klassen.
+CSS-first components and blocks, built on the utilities of [OmniaCSS](https://omniacss.eu).
+As little JavaScript as possible: popover, dialog, details, `:has()` and anchor positioning do the work.
+Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same markup and `oc-` classes.
 
-**Versie:** `0.11.0` — zelfde waarde in `package.json` en alle `@birdycom/omniaui*` packages, en gelijk aan OmniaCSS (`MAJOR.MINOR.PATCH`).
+[![npm](https://img.shields.io/npm/v/@birdycom/omniaui?label=%40birdycom%2Fomniaui)](https://www.npmjs.com/package/@birdycom/omniaui)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-Site: https://omniaui.eu · CSS-docs: https://omniacss.eu/docs/index.html (lokaal met Herd: https://omniaui.test)
+**Version:** `0.11.0` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+
+**Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
 ## Packages
 
-| Package | Map | Inhoud |
+| Package | Folder | Contents |
 |---|---|---|
-| `@birdycom/omniaui` | `packages/ui` | Component-CSS (`dist/components.css`), HTML-snippets, `manifest.json`, CLI `omniaui` (add/list) |
-| `@birdycom/omniaui-blocks` | `packages/blocks` | Block-CSS (`dist/blocks.css`) en block-snippets (app-shell, hero, auth, ...) |
-| `@birdycom/omniaui-react` | `packages/react` | React-componenten (`<Button>`, `<BlockHero>`) |
-| `@birdycom/omniaui-vue` | `packages/vue` | Vue 3-componenten (`<OcButton>`, `<OcBlockHero>`) |
-| `@birdycom/omniaui-site` (private) | `apps/site` | Astro-site met de componenten-, blocks- en webicons-pagina's |
-| `birdycom/omniaui-laravel` (Composer) | `php-packages/omniaui-laravel` | Anonieme Blade-componenten `<x-oc::button>`, `<x-oc::block.hero>`, `@omniacss` directive |
-| `birdycom/omniaui-livewire` (Composer) | `php-packages/omniaui-livewire` | Livewire 3-componenten met `wire:model`, modals, toasts, DataTable |
+| `@birdycom/omniaui` | `packages/ui` | Component CSS (`dist/components.css`), HTML snippets, `manifest.json`, CLI `omniaui` (add/list) |
+| `@birdycom/omniaui-blocks` | `packages/blocks` | Block CSS (`dist/blocks.css`) and block snippets (app shell, hero, auth, …) |
+| `@birdycom/omniaui-react` | `packages/react` | React components (`<Button>`, `<BlockHero>`) |
+| `@birdycom/omniaui-vue` | `packages/vue` | Vue 3 components (`<OcButton>`, `<OcBlockHero>`) |
+| `@birdycom/omniaui-site` (private) | `apps/site` | Astro site with the components, blocks and webicons pages |
+| `birdycom/omniaui-laravel` (Composer) | `php-packages/omniaui-laravel` | Anonymous Blade components `<x-oc::button>`, `<x-oc::block.hero>`, `@omniacss` directive |
+| `birdycom/omniaui-livewire` (Composer) | `php-packages/omniaui-livewire` | Livewire 3 components with `wire:model`, modals, toasts, DataTable |
 
-`@birdycom/omniaui` heeft `@birdycom/omniacss ^0.6.0` als peerDependency (de utilities en tokens).
+`@birdycom/omniaui` depends on `@birdycom/omniacss` (the utilities and tokens).
 
-**OmniaUI Pro** (34 app-blocks: CMS-dashboard, form builder, media manager, chat inbox, dashboards, kalenders, sidebars 06–16, …) staat in de **private** repo `../omniaUI-pro` met een commerciële licentie. Deze repo bevat alleen wat de site nodig heeft om ze te tonen: `vendor/omniaui-pro/pro.css` en de namenlijst (`npm run sync:site` in de pro-repo), en de demo-markup op de docs-pagina's (`<oc-demo pro>`: preview zonder code). `packages/blocks/pro.json` (alleen namen) laat de CLI melden dat een block Pro is.
-
-## Installeren
+## Install
 
 ```bash
 npm i @birdycom/omniacss @birdycom/omniaui
-# optioneel
-npm i @birdycom/omniaui-blocks @birdycom/omniaui-react   # of @birdycom/omniaui-vue
+# optional
+npm i @birdycom/omniaui-blocks @birdycom/omniaui-react   # or @birdycom/omniaui-vue
 ```
 
-Een component in je project kopiëren (HTML, React of Vue, afhankelijk van je framework):
+Copy a component into your project (HTML, React or Vue, depending on your framework):
 
 ```bash
 npx omniaui list
 npx omniaui add button card
 ```
 
-De OmniaCSS-CLI (`npx omniacss build`) neemt de OmniaUI-CSS automatisch mee als het package geïnstalleerd is.
+The OmniaCSS CLI (`npx omniacss build`) includes the OmniaUI CSS automatically when the package is installed.
+
+## OmniaUI Pro
+
+OmniaUI and every component stay free and open source (MIT). [OmniaUI Pro](https://omniaui.eu/ui/pro.html) adds
+34 larger app blocks — CMS dashboard, form builder, media manager, chat inbox, dashboards, calendars, sidebars 06–16
+and more — under a commercial license, from a separate private repository.
+
+This repository only holds what the site needs to show them: `vendor/omniaui-pro/pro.css` with the list of names,
+and the demo markup on the docs pages (`<oc-demo pro>`: a live preview without code). `packages/blocks/pro.json`
+(names only) lets the CLI tell you that a block is part of Pro.
 
 ## Dev workflow
 
-Node 22+, Windows/Git Bash of macOS/Linux.
+Node 22+, Windows/Git Bash or macOS/Linux.
 
-| Wat | Commando |
+| What | Command |
 |---|---|
-| Installeren | `npm install` |
-| Alles bouwen (packages, wrappers, site) | `npm run build` |
-| Alleen CSS + manifests | `npm run build:packages` |
-| React/Vue bouwen (genereert ook `index.ts`) | `npm run build:wrappers` |
-| Site lokaal (Astro dev) | `npm run site:dev` |
-| Site bouwen naar `public/` (Herd) | `npm run site:build` |
+| Install | `npm install` |
+| Build everything (packages, wrappers, site) | `npm run build` |
+| Only CSS + manifests | `npm run build:packages` |
+| Build React/Vue (also generates `index.ts`) | `npm run build:wrappers` |
+| Site locally (Astro dev) | `npm run site:dev` |
+| Build the site into `public/` | `npm run site:build` |
 | Tests (build + CLI + React + Vue) | `npm test` |
-| Blade-blocks opnieuw genereren | `npm run blade:blocks` |
-| Code-syntax-thema bijwerken | `npm run code-syntax-theme` |
-| Versie verhogen | `npm run release -- minor "Omschrijving"` |
+| Regenerate the Blade blocks | `npm run blade:blocks` |
+| Update the code syntax theme | `npm run code-syntax-theme` |
+| Bump the version | `npm run release -- minor "Description"` |
 
-Nieuwe componenten of blocks toevoegen: zie [CONTRIBUTING.md](CONTRIBUTING.md). Je maakt alleen nieuwe bestanden aan;
-nav, routes, manifests, CSS-bundels en wrapper-indexes worden gegenereerd.
+Adding components or blocks: see [CONTRIBUTING.md](CONTRIBUTING.md). You only create new files;
+navigation, routes, manifests, CSS bundles and wrapper indexes are generated.
 
-Herd serveert `public/`. `public/index.php` serveert de home en stuurt `/docs/` en `/pages/` door naar OmniaCSS.
-De URL van de andere site staat op één plek: `OMNIACSS_URL` in `apps/site/src/lib/site.mjs`.
+Locally, Laravel Herd serves `public/` (https://omniaui.test). `public/index.php` serves the home page and redirects
+`/docs/` and `/pages/` to OmniaCSS. The URL of the other site lives in one place: `OMNIACSS_URL` in `apps/site/src/lib/site.mjs`.
 
-## Gevendorde OmniaCSS
+Publishing: push a tag (`git tag v0.11.1 && git push origin v0.11.1`). The release workflow builds, tests and
+publishes to npm with Trusted Publishing. Publish OmniaCSS with the same version first.
 
-De repo is privé en nog niet op npm. Daarom staat een kopie van de OmniaCSS-build in `vendor/omniacss`
-(gecommit): `dist/omnia.css`, `dist/oc-colors.css`, `src/engine.mjs`, `src/variants.mjs`.
-De site bouwt daarmee `public/css/omnia-site.css` (alleen de gebruikte utilities).
+## Vendored OmniaCSS
+
+The site build uses a copy of the OmniaCSS build in `vendor/omniacss` (committed): `dist/omnia.css`,
+`dist/oc-colors.css`, `src/engine.mjs`, `src/variants.mjs`. With it, the site builds `public/css/omnia-site.css`
+(only the utilities it uses), without needing the OmniaCSS repository next to this one.
 
 ```bash
-npm run sync:omniacss   # leest ../omniacss/packages/core (bouw daar eerst: npm run build:packages)
+npm run sync:omniacss   # reads ../omniacss/packages/core (build there first: npm run build:packages)
 ```
 
-Omgekeerd vendort OmniaCSS onze `oc-components.css`, `oc-blocks.css` en `oc-code-syntax.css` (`npm run sync:omniaui` in die repo).
+The other way round, OmniaCSS vendors our `oc-components.css`, `oc-blocks.css` and `oc-code-syntax.css` (`npm run sync:omniaui` in that repository).
 
 ## PHP
 
@@ -84,19 +98,23 @@ cd php-packages/omniaui-laravel && composer install && vendor/bin/phpunit
 cd php-packages/omniaui-livewire && composer install && vendor/bin/phpunit
 ```
 
-Zie [php-packages/README.md](php-packages/README.md).
+See [php-packages/README.md](php-packages/README.md).
 
-## Recente wijzigingen
+## Recent changes
 
-| Versie | Datum | Wat |
+| Version | Date | Changes |
 |--------|-------|-----|
-| `0.11.0` | 2026-10-24 | Chat, CMS-dashboard en zoeken in de docs |
-| `0.10.0` | 2026-10-23 | Form builder, media manager en cookie consent |
-| `0.9.0` | 2026-10-23 | Zelfde versie als OmniaCSS: CSS-functies en docs |
-| `0.8.4` | 2026-10-23 | Zelfde versie als OmniaCSS: kleurdocs |
-| `0.8.3` | 2026-10-23 | Zelfde versie als OmniaCSS: IntelliSense-beelden |
-| `0.8.2` | 2026-10-23 | Zelfde versie als OmniaCSS: kleur-CSS in IntelliSense |
-| `0.8.1` | 2026-10-23 | Linux-binaries van Rollup en esbuild blijven in de lockfile |
-| `0.8.0` | 2026-10-18 | Zelfde versie als OmniaCSS: IntelliSense |
-| `0.7.0` | 2026-10-16 | Lijsttabel van Korrekt en OmniaDesk, prijs- en barcodevelden links |
-| `0.6.0` | 2026-10-15 | OmniaUI afgesplitst van OmniaCSS: componenten, blocks, React/Vue, Laravel/Livewire en webicons; npm-scope @birdycom. Nieuwe componenten voor forms, data/app UX, media en marketing, plus blocks status-page, faq, about-timeline, contact-grid, hero-orbit, profile-header, watch-layout en portfolio-grid. |
+| `0.11.0` | 2026-10-24 | Chat, CMS dashboard and search in the docs |
+| `0.10.0` | 2026-10-23 | Form builder, media manager and cookie consent |
+| `0.9.0` | 2026-10-23 | Same version as OmniaCSS: CSS functions and docs |
+| `0.8.4` | 2026-10-23 | Same version as OmniaCSS: color docs |
+| `0.8.3` | 2026-10-23 | Same version as OmniaCSS: IntelliSense images |
+| `0.8.2` | 2026-10-23 | Same version as OmniaCSS: color CSS in IntelliSense |
+| `0.8.1` | 2026-10-23 | Linux binaries of Rollup and esbuild stay in the lockfile |
+| `0.8.0` | 2026-10-18 | Same version as OmniaCSS: IntelliSense |
+| `0.7.0` | 2026-10-16 | List table from Korrekt and OmniaDesk, price and barcode fields on the left |
+| `0.6.0` | 2026-10-15 | OmniaUI split off from OmniaCSS: components, blocks, React/Vue, Laravel/Livewire and webicons; npm scope @birdycom. New components for forms, data/app UX, media and marketing, plus the blocks status-page, faq, about-timeline, contact-grid, hero-orbit, profile-header, watch-layout and portfolio-grid. |
+
+## License
+
+MIT — Serge Cools (Birdycom). OmniaUI Pro has its own commercial license.
