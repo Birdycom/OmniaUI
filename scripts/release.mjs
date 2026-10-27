@@ -74,6 +74,23 @@ const history = await readJson(historyPath).catch(() => ({ releases: [] }));
 history.releases = [{ version, date, summary }, ...history.releases.filter((r) => r.version !== version)];
 await write(historyPath, JSON.stringify(history, null, 2) + "\n");
 
+// 3b. Laravel packages: the CDN default version, the VERSION constant and the internal Composer ranges.
+//     ^0.x only allows patch updates in Composer, so the ranges follow every release.
+const PHP_VERSION_FILES = {
+  "php-packages/omniaui-laravel/src/Assets.php": [[/(config\('omniacss\.version', ')[^']+(')/, `$1${version}$2`], [/(@birdycom\/omniaui@)\d+\.\d+\.\d+/, `$1${version}`]],
+  "php-packages/omniaui-laravel/src/OmniacssServiceProvider.php": [[/(const VERSION = ')[^']+(')/, `$1${version}$2`]],
+  "php-packages/omniaui-laravel/config/omniacss.php": [[/(env\('OMNIACSS_VERSION', ')[^']+(')/, `$1${version}$2`]],
+  "php-packages/omniaui-livewire/composer.json": [[/("birdycom\/omniaui-laravel": ")\^[^"]+(")/, `$1^${version}$2`], [/("birdycom\/omniaui-laravel": ")\d+\.\d+\.\d+(")/, `$1${version}$2`]],
+};
+for (const [file, rules] of Object.entries(PHP_VERSION_FILES)) {
+  let text = await fs.readFile(path.join(root, file), "utf8");
+  for (const [re, to] of rules) {
+    if (!re.test(text)) throw new Error(`${file}: version pattern ${re} not found`);
+    text = text.replace(re, to);
+  }
+  await write(file, text);
+}
+
 // 4. Verify: refresh lockfile, build the packages and dry-run the npm tarballs (nothing is published).
 if (!skipVerify) {
   const run = (cmd) => { console.log(`> ${cmd}`); execSync(cmd, { cwd: root, stdio: "inherit" }); };
