@@ -1,13 +1,13 @@
 <!-- File: README.md | Map: intro -> versie -> packages -> install -> dev workflow -> vendored OmniaCSS -> PHP -> recente wijzigingen -->
 # OmniaUI
 
-CSS-first componenten en blocks, gebouwd op de utilities van [OmniaCSS](https://omniacss.test).
+CSS-first componenten en blocks, gebouwd op de utilities van [OmniaCSS](https://omniacss.eu).
 Zo weinig mogelijk JavaScript: popover, dialog, details, `:has()` en anchor positioning doen het werk.
 Wrappers voor React, Vue en Laravel (Blade + Livewire) gebruiken exact dezelfde markup en `oc-`-klassen.
 
 **Versie:** `0.11.0` — zelfde waarde in `package.json` en alle `@birdycom/omniaui*` packages, en gelijk aan OmniaCSS (`MAJOR.MINOR.PATCH`).
 
-Site (lokaal, Herd): https://omniaui.test · CSS-docs: https://omniacss.test/docs/index.html
+Site: https://omniaui.eu · CSS-docs: https://omniacss.eu/docs/index.html (lokaal met Herd: https://omniaui.test)
 
 ## Packages
 
