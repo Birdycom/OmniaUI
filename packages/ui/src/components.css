@@ -1,0 +1,3381 @@
+/* File: packages/ui/src/components.css */
+/* Map: design tokens (light-dark) -> theme switching -> component primitives -> native components -> block helpers */
+/* Version: 0.4.0 — light-dark() tokens, CSS-first components */
+/* Depends on: nothing (standalone); pairs with @birdycom/omniacss utilities */
+
+/* ===================================================================
+   DESIGN TOKENS
+   Background/foreground token pairs (e.g. --oc-primary / --oc-primary-foreground).
+   Every color is light-dark(light, dark): the active color-scheme picks the value,
+   so dark mode needs no extra classes and no JavaScript.
+   =================================================================== */
+
+:root {
+  /* The semantic theme tokens (color-scheme, --oc-background … --oc-ring, --oc-row-alt/hover/pressed/selected,
+     --oc-radius, --oc-focus-width, transitions, fonts, shadows) come from @birdycom/omniacss: dist/oc-theme.css,
+     generated from its tokens/semantic.json. scripts/build-packages.mjs puts that file in front of this one,
+     so dist/components.css stays standalone. Re-theme there (or override the tokens after this file). */
+
+  /* Swatch colors */
+  --oc-bg-swatch: var(--oc-muted);
+  --oc-border-swatch: var(--oc-border);  
+  --oc-text-swatch: var(--oc-foreground);
+  --oc-text-swatch-soft: var(--oc-muted-foreground);
+
+  /* Card */
+  --oc-card-background: var(--oc-card);
+  --oc-card-border: var(--oc-border);  
+  --oc-card-foreground: var(--oc-foreground);
+  --oc-card-muted-foreground: var(--oc-muted-foreground);
+
+  /* Badge source */
+  --oc-badge-source-background: oklch(from var(--oc-badge-source-color) l c h / 0.14);
+  --oc-badge-source-border: oklch(from var(--oc-badge-source-color) l c h / 0.25);
+  --oc-badge-source-color: light-dark(var(--color-teal-90), var(--color-skycyan-50));
+  --oc-badge-source-font-size: 0.72rem;
+  --oc-badge-source-font-weight: 500;
+  --oc-badge-source-vertical-align: middle;
+  --oc-badge-source-padding: 2px 8px;
+  --oc-badge-source-border-radius: 5px;
+  --oc-badge-source-border-width: 1px;
+  --oc-badge-source-border-style: solid;
+  --oc-badge-source-border-color: oklch(from var(--oc-badge-source-color) l c h / 0.25);
+  --oc-badge-source-border-color-hover: oklch(from var(--oc-badge-source-color) l c h / 0.35);
+  --oc-badge-source-border-color-active: oklch(from var(--oc-badge-source-color) l c h / 0.45);
+
+  /* Version badge */
+  --oc-badge-version-background: oklch(from var(--oc-badge-version-color) l c h / 0.18);
+  --oc-badge-version-border: oklch(from var(--oc-badge-version-color) l c h / 0.4);
+  --oc-badge-version-color: light-dark(var(--color-green-80), var(--color-green-2));
+  --oc-badge-version-font-size: 0.72rem;
+  --oc-badge-version-font-weight: 600;
+  --oc-badge-version-vertical-align: middle;
+  --oc-badge-version-padding: 2px 8px;
+  --oc-badge-version-border-radius: 5px;
+  --oc-badge-version-border-width: 1px;
+  --oc-badge-version-border-style: solid;
+  --oc-badge-version-border-color: oklch(from var(--oc-badge-version-color) l c h / 0.4);
+  --oc-badge-version-border-color-hover: oklch(from var(--oc-badge-version-color) l c h / 0.6);
+  --oc-badge-version-border-color-active: oklch(from var(--oc-badge-version-color) l c h / 0.8);
+
+  /* MDI set version badge */
+  --oc-badge-version-mdi-background: oklch(from var(--oc-badge-version-mdi-color) l c h / 0.2);
+  --oc-badge-version-mdi-border: oklch(from var(--oc-badge-version-mdi-color) l c h / 0.5);
+  --oc-badge-version-mdi-color: light-dark(var(--color-blue-50), var(--color-vividblue-50));
+  --oc-badge-version-mdi-font-size: 0.72rem;
+  --oc-badge-version-mdi-font-weight: 600;
+  --oc-badge-version-mdi-vertical-align: middle;
+  --oc-badge-version-mdi-padding: 2px 8px;
+  --oc-badge-version-mdi-border-radius: 5px;
+  --oc-badge-version-mdi-border-width: 1px;
+  --oc-badge-version-mdi-border-style: solid;
+  --oc-badge-version-mdi-border-color: oklch(from var(--oc-badge-version-mdi-color) l c h / 0.5);
+  --oc-badge-version-mdi-border-color-hover: oklch(from var(--oc-badge-version-mdi-color) l c h / 0.6);
+  --oc-badge-version-mdi-border-color-active: oklch(from var(--oc-badge-version-mdi-color) l c h / 0.8);
+
+  /* file source badge */
+  --oc-badge-source-file-background: oklch(from var(--oc-badge-source-file-color) l c h / 0.2);
+  --oc-badge-source-file-border: oklch(from var(--oc-badge-source-file-color) l c h / 0.5);
+  --oc-badge-source-file-color: light-dark(var(--color-purple-50), var(--color-magenta-50));
+  --oc-badge-source-file-font-size: 0.72rem;
+  --oc-badge-source-file-font-weight: 500;
+  --oc-badge-source-file-vertical-align: middle;
+  --oc-badge-source-file-padding: 2px 8px;
+  --oc-badge-source-file-border-radius: 5px;
+  --oc-badge-source-file-border-width: 1px;
+  --oc-badge-source-file-border-style: solid;
+  --oc-badge-source-file-border-color: oklch(from var(--oc-badge-source-file-color) l c h / 0.5);
+  --oc-badge-source-file-border-color-hover: oklch(from var(--oc-badge-source-file-color) l c h / 0.6);
+  --oc-badge-source-file-border-color-active: oklch(from var(--oc-badge-source-file-color) l c h / 0.8);
+
+  /* scss source badge */
+  --oc-badge-source-scss-background: oklch(from var(--oc-badge-source-scss-color) l c h / 0.2);
+  --oc-badge-source-scss-border: oklch(from var(--oc-badge-source-scss-color) l c h / 0.5);
+  --oc-badge-source-scss-color: light-dark(var(--color-red-95), var(--color-orange-60));
+  --oc-badge-source-scss-font-size: 0.72rem;
+  --oc-badge-source-scss-font-weight: 500;
+  --oc-badge-source-scss-vertical-align: middle;
+  --oc-badge-source-scss-padding: 2px 8px;
+  --oc-badge-source-scss-border-radius: 5px;
+  --oc-badge-source-scss-border-width: 1px;
+  --oc-badge-source-scss-border-style: solid;
+  --oc-badge-source-scss-border-color: oklch(from var(--oc-badge-source-scss-color) l c h / 0.5);
+  --oc-badge-source-scss-border-color-hover: oklch(from var(--oc-badge-source-scss-color) l c h / 0.6);
+  --oc-badge-source-scss-border-color-active: oklch(from var(--oc-badge-source-scss-color) l c h / 0.8);
+
+  /* Table */
+  --oc-table-border: var(--oc-border);
+  --oc-table-text: var(--oc-foreground);
+  --oc-table-text-soft: var(--oc-muted-foreground);
+  --oc-table-code: var(--oc-primary);
+  --oc-table-background: light-dark(oklch(from var(--color-frostblue-50) l c h / 0.5), oklch(from var(--color-vividblue-50) l c h / 0.06));
+  --oc-table-background-bottom: light-dark(var(--color-frostblue-30), oklch(from var(--color-twilightblue-40) l c h / 0.4));
+
+  /* Table expandable */
+  --oc-table-expandable-background: light-dark(var(--color-frostblue-50), var(--color-twilightblue-100));
+  --oc-table-expandable-text: var(--oc-foreground);
+  --oc-table-expandable-border: var(--oc-border);
+
+  /* Preview */
+  --oc-preview-border: var(--oc-border);
+  --oc-preview-background: light-dark(var(--color-frostblue-2), var(--color-shallowblue-100));
+  --oc-preview-text: var(--oc-foreground);
+  --oc-preview-text-soft: var(--oc-muted-foreground);
+  --oc-preview-title-font-size: clamp(0.85rem, 1.33vw, 1rem); /* 16px .font-clamp-1*/
+  --oc-preview-label-font-size: clamp(0.64rem, 1vw, 0.75rem);      /* 12px fluid .font-clamp-0.7*/
+  --oc-preview-max-stroke: 1rem;
+  --oc-preview-gap: var(--oc-preview-max-stroke, 1rem);
+
+  /* Section */
+  --oc-section-padding: 1rem 4rem;
+  --oc-section-margin-bottom: 1.5rem;
+  --oc-section-background: light-dark(var(--color-white-50), var(--color-duskblue-100));
+  --oc-section-border-radius: 0.875rem; /* 14px */
+  --oc-section-border: 1px solid var(--oc-border);
+
+  /* Section header */
+  --oc-section-header-title-font-size: clamp(1.28rem, 2vw, 1.5rem); /* 24px .font-clamp-1.5*/
+  --oc-section-header-desc-font-size: clamp(0.85rem, 1.33vw, 1rem); /* 16px .font-clamp-1*/
+  --oc-section-header-title-margin: 0 0 0.5rem 0;
+  --oc-section-header-desc-margin: 0 0 1rem 0.5rem;
+
+  /* Section content */
+  --oc-section-content-title-font-size: clamp(1.06rem, 1.67vw, 1.25rem); /* 20px .font-clamp-1.2*/
+  --oc-section-content-desc-font-size: clamp(0.85rem, 1.33vw, 1rem); /* 14px .font-clamp-1*/
+  --oc-section-content-title-margin: 0 0 0.5rem 0;
+  --oc-section-content-desc-margin: 0 0 1rem 0.5rem;
+  --oc-section-content-padding: 1rem 4rem;
+  --oc-section-content-background: light-dark(var(--color-white-50), var(--color-duskblue-100));
+  --oc-section-content-border-radius: calc(var(--oc-radius) + 2px);
+
+  /* Section footer */
+  --oc-section-footer-title-font-size: clamp(1.28rem, 2vw, 1.5rem); /* 24px .font-clamp-1.5*/
+  --oc-section-footer-desc-font-size: clamp(0.85rem, 1.33vw, 1rem); /* 16px .font-clamp-1*/
+  --oc-section-footer-title-margin: 0 0 0.5rem 0;
+  --oc-section-footer-desc-margin: 0 0 1rem 0.5rem;
+  --oc-section-footer-padding: 1rem;
+  --oc-section-footer-border-top: 1px solid var(--oc-border);
+}
+
+
+/* ===================================================================
+   THEME SWITCHING — no JavaScript needed
+   1. Default: follows the operating system (color-scheme: light dark on :root).
+   2. Fixed:   <html data-theme="light"> or <html data-theme="dark"> (or the legacy .dark / .oc-theme-docs).
+   3. Switch:  .oc-theme-switch radio group anywhere on the page, picked up with :has().
+   =================================================================== */
+[data-theme="light"] { color-scheme: light; }
+[data-theme="dark"],
+.dark,
+.oc-theme-docs { color-scheme: dark; }
+
+:root:has(.oc-theme-switch input[value="light"]:checked) { color-scheme: light; }
+:root:has(.oc-theme-switch input[value="dark"]:checked) { color-scheme: dark; }
+
+/* Base surface; :where() keeps specificity at zero so any project body style wins. */
+:where(body) {
+  background-color: var(--oc-background);
+  color: var(--oc-foreground);
+}
+
+/* ===================================================================
+   BLOCK GRID HELPER
+   =================================================================== */
+
+.oc-block-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+/* ===================================================================
+   OC PREVIEW — Reusable doc-demo row (label + content per item)
+   Structure only: layout and optional label. Content inside __item can
+   be anything (box, text, image); use OmniaCSS utility classes for all
+   styling (colors, round-*, border, font, etc.). Often combined with
+   .preview (oc-docs-shell) for container border/bg.
+   =================================================================== */
+
+.oc-preview {
+  display: flex;
+  flex-wrap: wrap;
+/*   align-items: flex-start; */
+  border: 1px solid var(--oc-preview-border);
+  background: var(--oc-preview-background);
+  border-radius: 0.375rem; /* 6px */
+  padding: 20px;
+  margin-bottom: 10px;
+  color: var(--oc-preview-text);
+  min-height: 10rem;
+}
+
+.oc-preview-margin {
+  border: 1px solid var(--oc-preview-border);
+  background: var(--oc-preview-background);
+  border-radius: 0.375rem; /* 6px */
+  margin-bottom: 10px;
+  color: var(--oc-preview-text);
+  overflow: auto;
+  min-height: 10rem;
+}
+
+.oc-preview__title {
+  font-size: var(--oc-preview-title-font-size);
+  color: var(--oc-preview-text);
+  margin: 1rem 0 0.25rem 0;
+}
+
+.oc-preview-row {
+flex-direction: row;
+}
+
+.oc-preview-col {
+flex-direction: column;
+}
+
+.oc-preview__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--oc-preview-gap);
+}
+
+.oc-preview__item_content-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: var(--oc-preview-gap);
+}
+
+/* Optional label above content; add Omnia classes for font/color (e.g. font-clamp-0.7 font-monospace text-mistblue mb-0.5) */
+.oc-preview__label {
+  display: block;
+  font-size: var(--oc-preview-label-font-size);
+  color: var(--oc-preview-text-soft);
+}
+
+/* ===================================================================
+   BUTTONS
+   Variants: default, primary, secondary, outline, ghost, link, destructive, success
+   Sizes: xs, sm, md (default), lg, icon
+   =================================================================== */
+
+.oc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--oc-radius);
+  border: 1px solid transparent;
+  background: var(--oc-primary);
+  color: var(--oc-primary-foreground);
+  cursor: pointer;
+  transition: all var(--oc-transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.oc-btn:hover {
+  opacity: 0.9;
+}
+
+.oc-btn:focus-visible {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 2px;
+}
+
+.oc-btn:active {
+  transform: scale(0.98);
+}
+
+.oc-btn:disabled,
+.oc-btn[disabled],
+.oc-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Default variant (same as primary — dark bg, light text) */
+.oc-btn--default {
+  background: var(--oc-primary);
+  color: var(--oc-primary-foreground);
+}
+
+/* Secondary — muted bg */
+.oc-btn--secondary {
+  background: var(--oc-secondary);
+  color: var(--oc-secondary-foreground);
+  border-color: transparent;
+}
+
+.oc-btn--secondary:hover {
+  opacity: 0.8;
+}
+
+/* Outline — transparent with border */
+.oc-btn--outline {
+  background: transparent;
+  border-color: var(--oc-border);
+  color: var(--oc-foreground);
+}
+
+.oc-btn--outline:hover {
+  background: var(--oc-accent);
+  color: var(--oc-accent-foreground);
+  opacity: 1;
+}
+
+/* Ghost — transparent, no border */
+.oc-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--oc-foreground);
+}
+
+.oc-btn--ghost:hover {
+  background: var(--oc-accent);
+  color: var(--oc-accent-foreground);
+  opacity: 1;
+}
+
+/* Link — looks like a text link */
+.oc-btn--link {
+  background: transparent;
+  border-color: transparent;
+  color: var(--oc-primary);
+  text-underline-offset: 4px;
+}
+
+.oc-btn--link:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+
+/* Destructive */
+.oc-btn--destructive {
+  background: var(--oc-destructive);
+  color: var(--oc-destructive-foreground);
+}
+
+.oc-btn--destructive:hover {
+  opacity: 0.9;
+}
+
+/* Success */
+.oc-btn--success {
+  background: var(--oc-success);
+  color: var(--oc-success-foreground);
+}
+
+/* Sizes */
+.oc-btn--xs {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: calc(var(--oc-radius) - 2px);
+}
+
+.oc-btn--sm {
+  font-size: 0.8rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: calc(var(--oc-radius) - 2px);
+}
+
+.oc-btn--lg {
+  font-size: 1rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: calc(var(--oc-radius) + 2px);
+}
+
+.oc-btn--icon {
+  padding: 0.5rem;
+  aspect-ratio: 1;
+}
+
+.oc-btn--icon.oc-btn--xs { padding: 0.25rem; }
+.oc-btn--icon.oc-btn--sm { padding: 0.375rem; }
+.oc-btn--icon.oc-btn--lg { padding: 0.625rem; }
+
+/* Button group */
+.oc-btn-group {
+  display: inline-flex;
+}
+
+.oc-btn-group .oc-btn { border-radius: 0; }
+.oc-btn-group .oc-btn:first-child { border-radius: var(--oc-radius) 0 0 var(--oc-radius); }
+.oc-btn-group .oc-btn:last-child { border-radius: 0 var(--oc-radius) var(--oc-radius) 0; }
+.oc-btn-group .oc-btn + .oc-btn { margin-left: -1px; }
+
+/* ===================================================================
+   LINKS
+   Use .oc-link for explicit link styling; uses --oc-link-color (default: primary).
+   Optional .oc-link--muted for secondary links.
+   =================================================================== */
+:root {
+  --oc-link-color: var(--oc-primary);
+  --oc-link-hover: var(--oc-primary);
+  --oc-link-underline: 1px;
+  --oc-link-underline-offset: 2px;
+}
+
+.oc-link {
+  color: var(--oc-link-color);
+  text-decoration: none;
+  border-bottom: var(--oc-link-underline) solid transparent;
+  border-radius: 2px;
+  transition: color var(--oc-transition-fast), border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+  -webkit-text-decoration-skip-ink: auto;
+  text-decoration-skip-ink: auto;
+}
+
+.oc-link:hover {
+  color: var(--oc-link-hover);
+  border-bottom-color: var(--oc-link-hover);
+}
+
+.oc-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--oc-background), 0 0 0 4px var(--oc-ring);
+}
+
+/* Muted variant — softer color for secondary links */
+.oc-link--muted {
+  --oc-link-color: var(--oc-muted-foreground);
+  --oc-link-hover: var(--oc-foreground);
+}
+
+/* ===================================================================
+   CARD
+   Sub-components: card, card-header, card-title, card-description,
+   card-action, card-content, card-footer
+   =================================================================== */
+
+.oc-card {
+  background: var(--oc-card-background);
+  color: var(--oc-card-foreground);
+  border: 1px solid var(--oc-card-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  overflow: hidden;
+  padding: 12px;
+}
+
+.oc-card--sm .oc-card-header,
+.oc-card--sm .oc-card-content,
+.oc-card--sm .oc-card-footer { padding: 12px 14px; }
+
+.oc-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 24px 0;
+  position: relative;
+}
+
+.oc-card-title {
+  margin: 5px 0 9px !important;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--oc-card-foreground);
+}
+
+.oc-card-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--oc-muted-foreground);
+  line-height: 1.5;
+}
+
+/* Card action — positioned top-right of header */
+.oc-card-action {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+}
+
+.oc-card-content {
+  padding: 16px 24px;
+}
+
+.oc-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px;
+}
+
+.oc-card-link {
+  color: var(--oc-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.oc-card-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Legacy compat — oc-card-text acts as description */
+.oc-card-text {
+  margin: 0 0 10px;
+  color: var(--oc-muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ===================================================================
+   FORM: FIELD, LABEL, INPUT, SELECT, HELPERS
+   Composition: oc-field > oc-field-label + oc-input + oc-field-description
+   =================================================================== */
+
+/* Field wrapper — vertical by default */
+.oc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+/* Horizontal field variant */
+.oc-field--horizontal {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.oc-field--horizontal .oc-field-label {
+  min-width: 120px;
+  margin-bottom: 0;
+}
+
+.oc-field-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--oc-foreground);
+  line-height: 1;
+}
+
+.oc-field-description {
+  font-size: 0.8rem;
+  color: var(--oc-muted-foreground);
+}
+
+.oc-field-error {
+  font-size: 0.8rem;
+  color: var(--oc-destructive);
+}
+
+/* Field group — wraps multiple fields with consistent spacing */
+.oc-field-group {
+  display: grid;
+  gap: 16px;
+}
+
+.oc-field-group--row {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Text input */
+.oc-input {
+  display: block;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  background: transparent;
+  color: var(--oc-foreground);
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+  outline: none;
+}
+
+.oc-input::placeholder {
+  color: var(--oc-muted-foreground);
+}
+
+.oc-input:focus {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+}
+
+.oc-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Invalid state — use aria-invalid or error class */
+.oc-input[aria-invalid="true"],
+.oc-input--error {
+  border-color: var(--oc-destructive);
+}
+
+.oc-input[aria-invalid="true"]:focus,
+.oc-input--error:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-destructive) 25%, transparent);
+}
+
+/* Textarea — same base as input */
+textarea.oc-input {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Input group (prefix/suffix addons) */
+.oc-input-group {
+  display: flex;
+  align-items: stretch;
+}
+
+.oc-input-group .oc-input {
+  border-radius: 0;
+  flex: 1;
+}
+
+.oc-input-group .oc-input:first-child { border-radius: var(--oc-radius) 0 0 var(--oc-radius); }
+.oc-input-group .oc-input:last-child { border-radius: 0 var(--oc-radius) var(--oc-radius) 0; }
+
+.oc-input-addon {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  border: 1px solid var(--oc-input);
+  background: var(--oc-muted);
+  color: var(--oc-muted-foreground);
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.oc-input-addon:first-child {
+  border-right: 0;
+  border-radius: var(--oc-radius) 0 0 var(--oc-radius);
+}
+
+.oc-input-addon:last-child {
+  border-left: 0;
+  border-radius: 0 var(--oc-radius) var(--oc-radius) 0;
+}
+
+/* Select */
+.oc-select {
+  display: block;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  border: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  background: transparent;
+  color: var(--oc-foreground);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2371717a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px 14px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+
+.oc-select:focus {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+}
+
+/* Select option dark theme — prevents white background in dropdowns */
+.oc-select option {
+  background: var(--oc-background, var(--color-shallowblue-60));
+  color: var(--oc-foreground, var(--color-frostblue-50));
+  padding: 0.4rem 0.5rem;
+}
+
+/* Checkbox & Radio */
+.oc-checkbox,
+.oc-radio {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--oc-primary);
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+/* Label (legacy compat — prefer oc-field-label) */
+.oc-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--oc-foreground);
+  margin-bottom: 6px;
+}
+
+/* Legacy form group (prefer oc-field) */
+.oc-form-group {
+  margin-bottom: 16px;
+}
+
+.oc-helper {
+  font-size: 0.8rem;
+  color: var(--oc-muted-foreground);
+  margin-top: 4px;
+}
+
+.oc-helper--error {
+  color: var(--oc-destructive);
+}
+
+/* Switch / toggle */
+.oc-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.oc-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.oc-switch-track {
+  position: absolute;
+  inset: 0;
+  background: var(--oc-input);
+  border-radius: 999px;
+  transition: background var(--oc-transition-fast);
+}
+
+.oc-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: var(--oc-background);
+  border-radius: 50%;
+  transition: transform var(--oc-transition-fast);
+  box-shadow: 0 1px 2px oklch(from var(--color-black-60) l c h / 0.1);
+}
+
+.oc-switch input:checked + .oc-switch-track {
+  background: var(--oc-primary);
+}
+
+.oc-switch input:checked + .oc-switch-track::after {
+  transform: translateX(20px);
+}
+
+.oc-switch input:focus-visible + .oc-switch-track {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 2px;
+}
+
+/* ===================================================================
+   BADGE
+   =================================================================== */
+
+.oc-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  corner-shape: round;
+  border: 1px solid transparent;
+  background: var(--oc-primary);
+  color: var(--oc-primary-foreground);
+}
+
+.oc-badge--secondary {
+  background: var(--oc-secondary);
+  color: var(--oc-secondary-foreground);
+}
+
+.oc-badge--outline {
+  background: transparent;
+  border-color: var(--oc-border);
+  color: var(--oc-foreground);
+}
+
+.oc-badge--success {
+  background: oklch(from var(--oc-success) l c h / 0.16);
+  color: var(--oc-success);
+  border-color: oklch(from var(--oc-success) l c h / 0.4);
+}
+.oc-badge--warning {
+  background: oklch(from var(--oc-warning) l c h / 0.16);
+  color: var(--oc-warning);
+  border-color: oklch(from var(--oc-warning) l c h / 0.4);
+}
+.oc-badge--destructive {
+  background: var(--oc-destructive);
+  color: var(--oc-destructive-foreground);
+}
+
+/* Badge pill (source file) */
+.oc-badge-source {
+  display: inline-block;
+  background: var(--oc-badge-source-background);
+  border: 1px solid var(--oc-badge-source-border);
+  border-radius: var(--oc-badge-source-border-radius);
+  corner-shape: round;
+  padding: var(--oc-badge-source-padding);
+  font-size: var(--oc-badge-source-font-size);
+  font-weight: var(--oc-badge-source-font-weight);
+  color: var(--oc-badge-source-color);
+  vertical-align: middle;
+}
+
+/* Version badge: when this section’s utilities were added to omnia_main.css */
+.oc-badge-version {
+  display: inline-block;
+  background: var(--oc-badge-version-background);
+  border: 1px solid var(--oc-badge-version-border);
+  border-radius: var(--oc-badge-version-border-radius);
+  corner-shape: round;
+  padding: var(--oc-badge-version-padding);
+  font-size: var(--oc-badge-version-font-size);
+  font-weight: var(--oc-badge-version-font-weight);
+  color: var(--oc-badge-version-color);
+  vertical-align: middle;
+}
+/* MDI set version badge (Pictogrammers); distinct from Iconify runtime badge */
+.oc-badge-version-mdi {
+  display: inline-block;
+  background: var(--oc-badge-version-mdi-background);
+  border: 1px solid var(--oc-badge-version-mdi-border);
+  border-radius: var(--oc-badge-version-mdi-border-radius);
+  corner-shape: round;
+  padding: var(--oc-badge-version-mdi-padding);
+  font-size: var(--oc-badge-version-mdi-font-size);
+  font-weight: var(--oc-badge-version-mdi-font-weight);
+  color: var(--oc-badge-version-mdi-color);
+  vertical-align: middle;
+}
+
+/* file source badge */
+.oc-badge-source-file {
+  display: inline-block;
+  background: var(--oc-badge-source-file-background);
+  border: 1px solid var(--oc-badge-source-file-border);
+  border-radius: var(--oc-badge-source-file-border-radius);
+  corner-shape: round;
+  padding: var(--oc-badge-source-file-padding);
+  font-size: var(--oc-badge-source-file-font-size);
+  font-weight: var(--oc-badge-source-file-font-weight);
+  color: var(--oc-badge-source-file-color);
+  vertical-align: middle;
+}
+
+/* scss source badge */
+.oc-badge-source-scss {
+  display: inline-block;
+  background: var(--oc-badge-source-scss-background);
+  border: 1px solid var(--oc-badge-source-scss-border);
+  border-radius: var(--oc-badge-source-scss-border-radius);
+  corner-shape: round;
+  padding: var(--oc-badge-source-scss-padding);
+  font-size: var(--oc-badge-source-scss-font-size);
+  font-weight: var(--oc-badge-source-scss-font-weight);
+  color: var(--oc-badge-source-scss-color);
+  vertical-align: middle;
+}
+
+/* ===================================================================
+   SECTION card
+   =================================================================== */
+
+   /* Section card (ocd = legacy; oc-docs = playbook data-oc-* / oc-* naming) */
+.oc-section,
+.oc-docs-section {
+  border: 1px solid var(--oc-border);
+  background: light-dark(var(--color-white-50), var(--color-duskblue-100));
+  border-radius: var(--oc-section-border-radius);
+/*   padding: 20px; */
+  margin-bottom: var(--oc-section-margin-bottom);
+}
+
+/* ===================================================================
+   SECTION HEADER
+   Composite: title + optional source/version badges on one row, desc below.
+   Used in docs and anywhere a section needs a titled header with metadata.
+   =================================================================== */
+
+.oc-section-header {
+  display: grid;
+  grid-template-columns: auto auto auto auto 1fr auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "title source scss file . version"
+    "desc desc desc desc desc desc";
+  align-items: center;
+  padding: 1rem;
+  gap: 0 8px;
+  border-bottom: 1px solid var(--oc-border); 
+}
+
+/* Section header */
+.oc-section-header__title {
+  grid-area: title;
+  margin: var(--oc-section-header-title-margin);
+  font-size: var(--oc-section-header-title-font-size);
+}
+
+.oc-section-header__badge-source {
+  grid-area: source;
+  margin-left: 0;
+}
+
+.oc-section-header__badge-scss {
+  grid-area: scss;
+  margin-left: 0;
+}
+
+.oc-section-header__badge-file {
+  grid-area: file;
+  margin-left: 0;
+}
+
+.oc-section-header__badge-version {
+  grid-area: version;
+}
+
+.oc-section-header__desc {
+  grid-area: desc;
+  margin: var(--oc-section-header-desc-margin);
+  font-size: var(--oc-section-header-desc-font-size);
+}
+
+/* Section content */
+.oc-section-content__title {
+  margin: var(--oc-section-content-title-margin);
+  font-size: var(--oc-section-content-title-font-size);
+}
+
+.oc-section-content__desc {
+  margin: var(--oc-section-content-desc-margin);
+  font-size: var(--oc-section-content-desc-font-size);
+}
+
+.oc-section-content {
+  padding: var(--oc-section-content-padding);
+  background: var(--oc-section-content-background);
+  border-radius: var(--oc-section-content-border-radius);
+}
+
+/* Section footer */
+.oc-section-footer {
+  padding: var(--oc-section-footer-padding);
+  border-top: var(--oc-section-footer-border-top); 
+}
+
+.oc-section-footer__title {
+  margin: var(--oc-section-footer-title-margin);
+  font-size: var(--oc-section-footer-title-font-size);
+}
+
+.oc-section-footer__desc {
+  margin: var(--oc-section-footer-desc-margin);
+  font-size: var(--oc-section-footer-desc-font-size);
+}
+
+/* ===================================================================
+   ALERT
+   =================================================================== */
+
+.oc-alert {
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  padding: 16px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--oc-foreground);
+  background: var(--oc-background);
+}
+
+.oc-alert-title {
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.oc-alert-description {
+  margin: 0;
+  color: var(--oc-muted-foreground);
+}
+
+.oc-alert--info {
+  border-color: color-mix(in srgb, var(--oc-primary) 40%, transparent);
+  background: color-mix(in srgb, var(--oc-primary) 5%, var(--oc-background));
+}
+
+.oc-alert--success {
+  border-color: color-mix(in srgb, var(--oc-success) 40%, transparent);
+  background: color-mix(in srgb, var(--oc-success) 5%, var(--oc-background));
+}
+
+.oc-alert--warning {
+  border-color: color-mix(in srgb, var(--oc-warning) 40%, transparent);
+  background: color-mix(in srgb, var(--oc-warning) 5%, var(--oc-background));
+}
+
+.oc-alert--danger {
+  border-color: color-mix(in srgb, var(--oc-destructive) 40%, transparent);
+  background: color-mix(in srgb, var(--oc-destructive) 5%, var(--oc-background));
+}
+
+/* ===================================================================
+   HERO (page intro block — used in docs index)
+   =================================================================== */
+
+/* Page hero — the one definition used by every page header (docs, components, blocks, playgrounds).
+   Markup: <section class="oc-hero"><h1 class="oc-hero-title">…</h1><p class="oc-hero-text">…</p></section>
+   Optional: .oc-hero-eyebrow (small label above the title), .oc-hero-actions (buttons below the text). */
+.oc-hero {
+  display: grid;
+  gap: 10px;
+  margin-block-end: 1rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 6px);
+  padding: clamp(18px, 3vw, 28px);
+  background: linear-gradient(140deg, color-mix(in oklch, var(--oc-primary) 14%, transparent), color-mix(in oklch, var(--oc-ring) 6%, transparent));
+  color: var(--oc-foreground);
+}
+
+.oc-hero-title,
+.oc-hero > h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1.2;
+  text-wrap: balance;
+  color: var(--oc-foreground);
+}
+
+.oc-hero-text,
+.oc-hero > p {
+  margin: 0;
+  max-inline-size: 75ch;
+  color: var(--oc-muted-foreground);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.oc-hero-eyebrow {
+  justify-self: start;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--oc-border);
+  font-size: 0.75rem;
+  color: var(--oc-muted-foreground);
+}
+
+.oc-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* ===================================================================
+   MODAL / DIALOG
+   Toggle via JS: add/remove .is-open or aria-expanded on .oc-modal
+   Sizes: sm, default, lg, full
+   =================================================================== */
+
+.oc-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.oc-modal.is-open,
+.oc-modal[aria-expanded="true"] {
+  display: flex;
+}
+
+.oc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: oklch(from var(--color-black-60) l c h / 0.5);
+  backdrop-filter: blur(4px);
+  animation: oc-fade-in var(--oc-transition-normal);
+}
+
+.oc-modal-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  background: var(--oc-background);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  box-shadow: 0 16px 48px oklch(from var(--color-black-60) l c h / 0.2);
+  animation: oc-scale-in var(--oc-transition-normal);
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+}
+
+/* Modal sizes */
+.oc-modal-content--sm { max-width: 360px; }
+.oc-modal-content--lg { max-width: 640px; }
+.oc-modal-content--xl { max-width: 800px; }
+.oc-modal-content--full { max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); }
+
+.oc-modal-header {
+  padding: 24px 24px 0;
+  flex-shrink: 0;
+}
+
+.oc-modal-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--oc-foreground);
+}
+
+.oc-modal-description {
+  margin: 6px 0 0;
+  font-size: 0.875rem;
+  color: var(--oc-muted-foreground);
+}
+
+.oc-modal-body {
+  padding: 16px 24px;
+  overflow-y: auto;
+  flex: 1;
+  color: var(--oc-muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.oc-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--oc-border);
+}
+
+.oc-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--oc-muted-foreground);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  border-radius: var(--oc-radius);
+  transition: color var(--oc-transition-fast), background var(--oc-transition-fast);
+}
+
+.oc-modal-close:hover {
+  color: var(--oc-foreground);
+  background: var(--oc-accent);
+}
+
+.oc-modal-close:focus-visible {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes oc-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes oc-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ===================================================================
+   DROPDOWN
+   Toggle via JS: .is-open or aria-expanded on .oc-dropdown
+   =================================================================== */
+
+.oc-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.oc-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  min-width: 200px;
+  margin-top: 4px;
+  padding: 4px;
+  background: var(--oc-popover);
+  color: var(--oc-popover-foreground);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.15);
+  animation: oc-fade-in var(--oc-transition-fast);
+}
+
+.oc-dropdown.is-open .oc-dropdown-menu,
+.oc-dropdown[aria-expanded="true"] .oc-dropdown-menu {
+  display: block;
+}
+
+.oc-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 0.875rem;
+  color: var(--oc-popover-foreground);
+  text-decoration: none;
+  border: none;
+  background: none;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background var(--oc-transition-fast), color var(--oc-transition-fast);
+}
+
+.oc-dropdown-item:hover {
+  background: var(--oc-accent);
+  color: var(--oc-accent-foreground);
+}
+
+.oc-dropdown-item:focus-visible {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: -2px;
+}
+
+.oc-dropdown-separator {
+  height: 1px;
+  background: var(--oc-border);
+  margin: 4px 0;
+}
+
+.oc-dropdown-label {
+  padding: 8px 10px 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--oc-muted-foreground);
+}
+
+/* ===================================================================
+   TOOLTIP
+   Pure CSS via data-tooltip attribute
+   =================================================================== */
+
+.oc-tooltip {
+  position: relative;
+  cursor: help;
+}
+
+.oc-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--oc-primary-foreground);
+  background: var(--oc-primary);
+  border-radius: calc(var(--oc-radius) - 2px);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--oc-transition-fast);
+  z-index: 50;
+}
+
+.oc-tooltip:hover::after {
+  opacity: 1;
+}
+
+/* ===================================================================
+   AVATAR
+   =================================================================== */
+
+.oc-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--oc-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--oc-muted-foreground);
+  flex-shrink: 0;
+}
+
+.oc-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.oc-avatar--sm { width: 28px; height: 28px; font-size: 0.72rem; }
+.oc-avatar--lg { width: 56px; height: 56px; font-size: 1.1rem; }
+.oc-avatar--xl { width: 80px; height: 80px; font-size: 1.5rem; }
+
+.oc-avatar-group { display: flex; }
+.oc-avatar-group .oc-avatar { margin-left: -8px; border: 2px solid var(--oc-background); }
+.oc-avatar-group .oc-avatar:first-child { margin-left: 0; }
+
+/* ===================================================================
+   SEPARATOR
+   =================================================================== */
+
+.oc-separator {
+  border: none;
+  height: 1px;
+  background: var(--oc-border);
+  margin: 16px 0;
+}
+
+.oc-separator--vertical {
+  display: inline-block;
+  width: 1px;
+  height: auto;
+  align-self: stretch;
+  margin: 0 12px;
+}
+
+/* ===================================================================
+   TABS
+   Variants: line (default), pill/contained
+   Orientation: horizontal (default), vertical
+   =================================================================== */
+
+.oc-tab-list {
+  display: inline-flex;
+  align-items: center;
+  border-bottom: 1px solid var(--oc-border);
+}
+
+/* Line variant (default) */
+.oc-tab-trigger {
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color var(--oc-transition-fast), border-color var(--oc-transition-fast);
+  outline: none;
+}
+
+.oc-tab-trigger:hover { color: var(--oc-foreground); }
+.oc-tab-trigger.is-active,
+.oc-tab-trigger[aria-selected="true"] {
+  color: var(--oc-foreground);
+  border-bottom-color: var(--oc-foreground);
+}
+
+.oc-tab-trigger:focus-visible {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: -2px;
+}
+
+.oc-tab-trigger:disabled,
+.oc-tab-trigger[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Pill/contained variant */
+.oc-tab-list--pill {
+  border-bottom: none;
+  background: var(--oc-muted);
+  border-radius: var(--oc-radius);
+  padding: 4px;
+  gap: 0;
+}
+
+.oc-tab-list--pill .oc-tab-trigger {
+  border-bottom: none;
+  border-radius: calc(var(--oc-radius) - 2px);
+  margin-bottom: 0;
+  padding: 6px 14px;
+}
+
+.oc-tab-list--pill .oc-tab-trigger.is-active,
+.oc-tab-list--pill .oc-tab-trigger[aria-selected="true"] {
+  background: var(--oc-background);
+  box-shadow: 0 1px 3px oklch(from var(--color-black-60) l c h / 0.08);
+  color: var(--oc-foreground);
+}
+
+/* Vertical tabs */
+.oc-tab-list--vertical {
+  flex-direction: column;
+  border-bottom: none;
+  border-right: 1px solid var(--oc-border);
+}
+
+.oc-tab-list--vertical .oc-tab-trigger {
+  border-bottom: none;
+  border-right: 2px solid transparent;
+  margin-bottom: 0;
+  margin-right: -1px;
+  text-align: left;
+}
+
+.oc-tab-list--vertical .oc-tab-trigger.is-active {
+  border-right-color: var(--oc-foreground);
+}
+
+.oc-tab-panel { display: none; padding: 16px 0; }
+.oc-tab-panel.is-active,
+.oc-tab-panel[aria-selected="true"] { display: block; }
+
+/* Palette / site tabs (e.g. Colors Playground: Omnia | HTML | RAL).
+   Use .oc-tabs as wrapper and .oc-tab on buttons. Toggle .is-active via JS. */
+.oc-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.oc-tab {
+  border: 1px solid var(--oc-border);
+  background: color-mix(in srgb, var(--oc-foreground) 3%, transparent);
+  color: var(--oc-muted-foreground);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color var(--oc-transition-fast, 0.15s ease), border-color var(--oc-transition-fast, 0.15s ease), background 0.15s ease;
+  outline: none;
+}
+.oc-tab:hover {
+  color: var(--oc-foreground);
+  border-color: color-mix(in srgb, var(--oc-primary) 60%, var(--oc-border));
+}
+.oc-tab.is-active,
+.oc-tab[aria-selected="true"] {
+  color: var(--oc-foreground);
+  border-color: var(--oc-primary);
+  background: color-mix(in srgb, var(--oc-primary) 20%, transparent);
+}
+.oc-tab:focus-visible {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 2px;
+}
+
+/* ===================================================================
+   ACCORDION
+   Toggle via JS: .is-open or aria-expanded on .oc-accordion-item
+   =================================================================== */
+
+.oc-accordion {
+  /* Fixed width (not shrink-to-fit), so opening an item never makes the accordion jump in width. */
+  inline-size: min(100%, var(--oc-accordion-width, 46rem));
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  overflow: hidden;
+}
+
+.oc-accordion-item + .oc-accordion-item {
+  border-top: 1px solid var(--oc-border);
+}
+
+.oc-accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--oc-foreground);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background var(--oc-transition-fast);
+  outline: none;
+}
+
+.oc-accordion-trigger:hover {
+  background: var(--oc-accent);
+}
+
+.oc-accordion-trigger:focus-visible {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: -2px;
+}
+
+/* Chevron icon rotates on open. Default: CSS ::after (data-URI SVG). */
+/* When .oc-accordion-chevron is present (e.g. Iconify), use that instead. */
+.oc-accordion-trigger::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2371717a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: contain;
+  transition: transform var(--oc-transition-fast);
+  flex-shrink: 0;
+}
+.oc-accordion-trigger:has(.oc-accordion-chevron)::after {
+  display: none;
+}
+
+/* Optional Iconify/MDI chevron: put <span class="iconify oc-accordion-chevron" data-icon="mdi:chevron-down" data-width="16" data-height="16" aria-hidden="true"></span> in the trigger */
+.oc-accordion-trigger .oc-accordion-chevron {
+  flex-shrink: 0;
+  transition: transform var(--oc-transition-fast);
+  display: inline-flex;
+  color: var(--oc-muted-foreground);
+}
+.oc-accordion-item.is-open .oc-accordion-trigger .oc-accordion-chevron,
+.oc-accordion-item[aria-expanded="true"] .oc-accordion-trigger .oc-accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.oc-accordion-item.is-open .oc-accordion-trigger::after,
+.oc-accordion-item[aria-expanded="true"] .oc-accordion-trigger::after {
+  transform: rotate(180deg);
+}
+
+.oc-accordion-content {
+  display: none;
+  padding: 0 16px 16px;
+  font-size: 0.875rem;
+  color: var(--oc-muted-foreground);
+  line-height: 1.6;
+}
+
+.oc-accordion-item.is-open .oc-accordion-content,
+.oc-accordion-item[aria-expanded="true"] .oc-accordion-content {
+  display: block;
+}
+
+/* Disabled trigger: muted, no hover, cursor, dimmed chevron */
+.oc-accordion-trigger:disabled {
+  color: var(--oc-muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.oc-accordion-trigger:disabled:hover {
+  background: transparent;
+}
+.oc-accordion-trigger:disabled::after {
+  opacity: 0.5;
+}
+.oc-accordion-trigger:disabled .oc-accordion-chevron {
+  opacity: 0.5;
+}
+
+/* Flush: no outer border/radius, edge-to-edge with parent */
+.oc-accordion--flush {
+  border: none;
+  border-radius: 0;
+}
+.oc-accordion--flush .oc-accordion-item + .oc-accordion-item {
+  border-top: 1px solid var(--oc-border);
+}
+
+/* ===================================================================
+   OC-TABLE (base table with OmniaCSS colors)
+   Use on <table> for bordered table; header uses --oc-muted, borders use --oc-border.
+   Column widths: set table-layout: fixed so you can use existing width utilities
+   (.w-10, .w-perc-1/3, .min-w-8, etc.) on the first row cells (th or td). Columns
+   without a width share the remaining space automatically.
+   =================================================================== */
+.oc-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.oc-table th,
+.oc-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border: 1px solid var(--oc-border);
+}
+.oc-table th {
+  background: var(--oc-muted);
+  color: var(--oc-muted-foreground);
+  font-weight: 600;
+}
+.oc-table tbody tr:hover {
+  background: oklch(from var(--oc-primary) l c h / 0.06);
+}
+.oc-table thead th {
+  border-block-end-width: 2px;
+}
+.oc-table caption {
+  caption-side: top;
+  padding-block-end: 0.5rem;
+  text-align: start;
+  font-weight: 600;
+  color: var(--oc-foreground);
+}
+.oc-table-wrap {
+  /* position: containing block for visually hidden labels in cells, else they escape the scroll clip and widen the page */
+  position: relative;
+  inline-size: 100%;
+  overflow-x: auto;
+  border-radius: calc(var(--oc-radius) + 2px);
+}
+.oc-table-wrap > .oc-table { min-inline-size: 32rem; }
+
+/* ===================================================================
+   Shared docs utility table styles (dark theme)
+   Ensures ref-tables are always dark-themed in docs pages.
+   =================================================================== */
+.oc-table-ref { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.oc-table-ref th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--oc-table-border);
+  /* Use bright text for dark theme — not soft/muted */
+  color: var(--oc-table-text);
+  font-weight: 600;
+  font-size: 0.8rem;
+  background: var(--oc-table-background);
+}
+.oc-table-ref td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--oc-table-background-bottom);
+  color: var(--oc-table-text-soft);
+}
+.oc-table-ref code { color: var(--oc-table-code); font-size: 0.8rem; }
+
+/* ===================================================================
+   OC-EXPANDABLE-TABLE
+   Table with "Show more": show first 9 rows, 10th row dimmed, rest hidden.
+   Add .oc-expandable-table on wrapper, .oc-expandable-table__row-dimmed on
+   the 10th row, .oc-expandable-table__row-more on rows 11+. Toggle via
+   .oc-expandable-table__trigger: a label with a hidden checkbox (CSS only) or .is-expanded set by a script.
+   =================================================================== */
+.oc-expandable-table {
+  margin-bottom: 2rem;
+ }
+.oc-expandable-table__row-dimmed {
+  opacity: 0.6;
+}
+.oc-expandable-table .oc-expandable-table__row-more {
+  display: none;
+}
+/* CSS-only toggle: <label class="oc-expandable-table__trigger"><input type="checkbox" class="oc-expandable-table__toggle"> … */
+.oc-expandable-table:has(.oc-expandable-table__toggle:checked) .oc-expandable-table__row-more {
+  display: table-row;
+}
+.oc-expandable-table:has(.oc-expandable-table__toggle:checked) .oc-expandable-table__row-dimmed {
+  opacity: 1;
+}
+.oc-expandable-table__toggle {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.oc-expandable-table__trigger:has(.oc-expandable-table__toggle:focus-visible) {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 2px;
+}
+.oc-expandable-table__less,
+.oc-expandable-table__trigger:has(.oc-expandable-table__toggle:checked) .oc-expandable-table__more {
+  display: none;
+}
+.oc-expandable-table__trigger:has(.oc-expandable-table__toggle:checked) .oc-expandable-table__less {
+  display: inline;
+}
+
+.oc-expandable-table.is-expanded .oc-expandable-table__row-more {
+  display: table-row;
+}
+.oc-expandable-table.is-expanded .oc-expandable-table__row-dimmed {
+  opacity: 1;
+}
+/* Hide trigger when there are no hidden rows */
+.oc-expandable-table:not(:has(.oc-expandable-table__row-more)) .oc-expandable-table__wrap {
+  display: none;
+}
+.oc-expandable-table__wrap {
+  margin-top: 0.5rem;
+  width: 100%;
+}
+/* Optional: full-width trigger (add --full to the wrap to match table width) */
+.oc-expandable-table__wrap--full .oc-expandable-table__trigger {
+  width: 100%;
+}
+.oc-expandable-table__wrap--full .oc-expandable-table__trigger {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  background: var(--oc-table-expandable-background);
+  color: var(--oc-table-expandable-text);
+  border: 1px solid var(--oc-table-expandable-border);
+}
+.oc-expandable-table__wrap--full .oc-expandable-table__trigger:hover {
+  background: var(--oc-table-expandable-background);
+  color: var(--oc-table-expandable-text);
+}
+
+
+/* ===================================================================
+   BREADCRUMB
+   =================================================================== */
+
+.oc-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.oc-breadcrumb-item { display: inline-flex; align-items: center; }
+
+.oc-breadcrumb-item + .oc-breadcrumb-item::before {
+  content: "/";
+  margin: 0 8px;
+  color: var(--oc-muted-foreground);
+}
+
+.oc-breadcrumb-item a {
+  color: var(--oc-muted-foreground);
+  text-decoration: none;
+}
+
+.oc-breadcrumb-item a:hover {
+  color: var(--oc-foreground);
+}
+
+.oc-breadcrumb-item:last-child {
+  color: var(--oc-foreground);
+  font-weight: 500;
+}
+
+/* ===================================================================
+   PROGRESS BAR
+   =================================================================== */
+
+.oc-progress {
+  width: 100%;
+  height: 8px;
+  background: var(--oc-muted);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.oc-progress-bar {
+  height: 100%;
+  background: var(--oc-primary);
+  border-radius: 999px;
+  transition: width 300ms ease;
+}
+
+.oc-progress-bar--success { background: var(--oc-success); }
+.oc-progress-bar--danger { background: var(--oc-destructive); }
+.oc-progress-bar--warning { background: var(--oc-warning); }
+
+/* ===================================================================
+   SKELETON LOADER
+   =================================================================== */
+
+.oc-skeleton {
+  background: var(--oc-muted);
+  border-radius: var(--oc-radius);
+  animation: oc-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.oc-skeleton--text { height: 1em; width: 60%; margin-bottom: 8px; }
+.oc-skeleton--title { height: 1.4em; width: 40%; margin-bottom: 12px; }
+.oc-skeleton--circle { width: 40px; height: 40px; border-radius: 50%; }
+.oc-skeleton--rect { height: 120px; width: 100%; }
+
+@keyframes oc-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===================================================================
+   PAGINATION
+   =================================================================== */
+
+.oc-pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.oc-pagination-item a,
+.oc-pagination-item button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--oc-foreground);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: none;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--oc-transition-fast);
+  outline: none;
+}
+
+.oc-pagination-item a:hover,
+.oc-pagination-item button:hover {
+  background: var(--oc-accent);
+}
+
+.oc-pagination-item a:focus-visible,
+.oc-pagination-item button:focus-visible {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 2px;
+}
+
+.oc-pagination-item.is-active a,
+.oc-pagination-item.is-active button {
+  background: var(--oc-primary);
+  color: var(--oc-primary-foreground);
+  border-color: var(--oc-primary);
+}
+
+/* ===================================================================
+   NAV LIST
+   =================================================================== */
+
+.oc-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.oc-nav-item-link {
+  display: block;
+  text-decoration: none;
+  color: var(--oc-muted-foreground);
+  padding: 8px 10px;
+  border-radius: calc(var(--oc-radius) - 2px);
+  font-size: 0.875rem;
+  transition: all var(--oc-transition-fast);
+}
+
+.oc-nav-item-link:hover {
+  color: var(--oc-foreground);
+  background: var(--oc-accent);
+}
+
+.oc-nav-item-link.is-active {
+  color: var(--oc-foreground);
+  background: var(--oc-accent);
+  font-weight: 500;
+}
+
+/* ===================================================================
+   REDUCED MOTION
+   Respect user preference for reduced motion
+   =================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-skeleton { animation: none; }
+  .oc-modal-overlay { animation: none; }
+  .oc-modal-content { animation: none; }
+  .oc-dropdown-menu { animation: none; }
+  .oc-btn { transition: none; }
+  .oc-input { transition: none; }
+  .oc-switch-track,
+  .oc-switch-track::after { transition: none; }
+  .oc-accordion-trigger::after { transition: none; }
+}
+
+/* ===================================================================
+   SCROLLBAR COMPONENT
+   Reusable custom scrollbar styles for any container.
+   Usage: add class .oc-scrollbar to any overflow:auto element.
+   =================================================================== */
+
+/* Webkit (Chrome, Edge, Safari) */
+.oc-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+.oc-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 4px; }
+.oc-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--oc-muted, oklch(from var(--color-gray-30) l c h / 0.3));
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.oc-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--oc-muted-foreground, oklch(from var(--color-gray-30) l c h / 0.5));
+  background-clip: content-box;
+}
+
+/* Thin variant */
+.oc-scrollbar--thin::-webkit-scrollbar { width: 5px; height: 5px; }
+
+/* Hidden — hides scrollbar but keeps scroll */
+.oc-scrollbar--hidden::-webkit-scrollbar { display: none; }
+.oc-scrollbar--hidden { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Firefox */
+.oc-scrollbar { scrollbar-width: thin; scrollbar-color: var(--oc-muted, oklch(from var(--color-gray-30) l c h / 0.3)) transparent; }
+.oc-scrollbar--thin { scrollbar-width: thin; }
+
+/* ===================================================================
+   Swatch — color preview card with color stripe + metadata
+   Used in color documentation and palette previews.
+   =================================================================== */
+.oc-swatch {
+  border: 1px solid var(--oc-border-swatch, var(--color-twilightblue-40));
+  background: var(--oc-bg-swatch, var(--color-twilightblue-60));
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Color stripe at top */
+.oc-swatch-color {
+  height: 54px;
+  border-bottom: 1px solid var(--oc-border-swatch, var(--color-twilightblue-40));
+}
+
+/* Text area below the color stripe */
+.oc-swatch-meta {
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  color: var(--oc-text-swatch-soft, var(--color-frostblue-80));   
+  line-height: 1.45;
+}
+
+.oc-swatch-meta strong {
+  color: var(--oc-text-swatch, var(--color-frostblue-50));
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* Group title for categorized swatches */
+.oc-swatch-group {
+  margin-top: 12px;
+}
+
+.oc-swatch-group-title {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: var(--oc-text-swatch, var(--color-frostblue-50));
+}
+
+/* ===================================================================
+   NATIVE COMPONENTS — CSS-first, no JavaScript required
+   The same oc-* classes work on native HTML elements:
+   - Modal     <dialog class="oc-modal">            open: <button command="show-modal" commandfor="id">
+   - Dropdown  <div popover class="oc-dropdown-menu">  open: <button popovertarget="id">
+   - Accordion <details class="oc-accordion-item" name="group"> + <summary class="oc-accordion-trigger">
+   - Tabs      .oc-tabset with radio inputs (CSS :has())
+   - Theme     .oc-theme-switch radio group (see THEME SWITCHING)
+   - Counter   .oc-counter animated number (@property)
+   The older .is-open / aria-expanded hooks keep working for script-driven setups.
+   =================================================================== */
+
+/* Modal — <dialog>: focus trap, Esc to close and ::backdrop come from the browser */
+dialog.oc-modal {
+  display: none;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--oc-foreground);
+}
+dialog.oc-modal[open] {
+  display: flex;
+}
+dialog.oc-modal::backdrop {
+  background: oklch(from var(--color-black-60) l c h / 0.5);
+  backdrop-filter: blur(4px);
+}
+dialog.oc-modal[open] .oc-modal-content {
+  transition: opacity var(--oc-transition-normal), scale var(--oc-transition-normal);
+  @starting-style {
+    opacity: 0;
+    scale: 0.95;
+  }
+}
+
+/* Dropdown — popover in the top layer, tethered to its trigger with anchor positioning */
+.oc-dropdown-menu[popover] {
+  position: fixed;
+  inset: auto;
+  margin: 4px 0 0;
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-block, flip-inline;
+  transition: opacity var(--oc-transition-fast), display var(--oc-transition-fast) allow-discrete, overlay var(--oc-transition-fast) allow-discrete;
+}
+.oc-dropdown-menu[popover]:popover-open {
+  display: block;
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+/* Accordion — <details>/<summary>; same name="…" on items makes it exclusive (one open at a time) */
+details.oc-accordion-item {
+  interpolate-size: allow-keywords;
+}
+details.oc-accordion-item > summary.oc-accordion-trigger {
+  list-style: none;
+}
+details.oc-accordion-item > summary.oc-accordion-trigger::-webkit-details-marker {
+  display: none;
+}
+details.oc-accordion-item[open] > .oc-accordion-trigger::after,
+details.oc-accordion-item[open] > .oc-accordion-trigger .oc-accordion-chevron {
+  transform: rotate(180deg);
+}
+details.oc-accordion-item > .oc-accordion-content {
+  display: block;
+}
+details.oc-accordion-item::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition: block-size var(--oc-transition-normal), content-visibility var(--oc-transition-normal) allow-discrete;
+}
+details.oc-accordion-item[open]::details-content {
+  block-size: auto;
+}
+
+/* Tabs — radio inputs inside the triggers; the checked one shows the panel with the same position
+   (panels follow the .oc-tab-list, so panel n is child n + 1). */
+.oc-tabset .oc-tab-trigger {
+  /* Keeps the hidden radio inside the trigger: focusing it never scrolls the page to the top. */
+  position: relative;
+}
+.oc-tabset .oc-tab-trigger input[type="radio"] {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.oc-tabset .oc-tab-trigger:has(input:checked) {
+  color: var(--oc-foreground);
+  border-bottom-color: var(--oc-foreground);
+}
+.oc-tabset .oc-tab-list--pill .oc-tab-trigger:has(input:checked) {
+  background: var(--oc-background);
+  box-shadow: 0 1px 3px oklch(from var(--color-black-60) l c h / 0.08);
+}
+.oc-tabset .oc-tab-trigger:has(input:focus-visible) {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: -2px;
+}
+.oc-tabset > .oc-tab-panel {
+  display: none;
+}
+.oc-tabset:has(.oc-tab-trigger:nth-child(1) input:checked) > .oc-tab-list ~ .oc-tab-panel:nth-child(2),
+.oc-tabset:has(.oc-tab-trigger:nth-child(2) input:checked) > .oc-tab-list ~ .oc-tab-panel:nth-child(3),
+.oc-tabset:has(.oc-tab-trigger:nth-child(3) input:checked) > .oc-tab-list ~ .oc-tab-panel:nth-child(4),
+.oc-tabset:has(.oc-tab-trigger:nth-child(4) input:checked) > .oc-tab-list ~ .oc-tab-panel:nth-child(5),
+.oc-tabset:has(.oc-tab-trigger:nth-child(5) input:checked) > .oc-tab-list ~ .oc-tab-panel:nth-child(6),
+.oc-tabset:has(.oc-tab-trigger:nth-child(6) input:checked) > .oc-tab-list ~ .oc-tab-panel:nth-child(7) {
+  display: block;
+}
+
+/* Theme switch — segmented radio group: system / light / dark (works with THEME SWITCHING rules above) */
+.oc-theme-switch {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--oc-border);
+  border-radius: 999px;
+  background: var(--oc-muted);
+}
+.oc-theme-switch label {
+  position: relative;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--oc-muted-foreground);
+  cursor: pointer;
+}
+.oc-theme-switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.oc-theme-switch label:has(input:checked) {
+  background: var(--oc-background);
+  color: var(--oc-foreground);
+  box-shadow: 0 1px 3px oklch(from var(--color-black-60) l c h / 0.12);
+}
+.oc-theme-switch label:has(input:focus-visible) {
+  outline: 2px solid var(--oc-ring);
+}
+
+/* Counter — animated number without JavaScript: <span class="oc-counter" style="--oc-counter-to: 1250"></span> */
+@property --oc-counter-value {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+.oc-counter {
+  --oc-counter-value: var(--oc-counter-to, 0);
+  counter-reset: oc-counter var(--oc-counter-value);
+  font-variant-numeric: tabular-nums;
+  animation: oc-counter-up var(--oc-counter-duration, 2s) ease-out both;
+}
+.oc-counter::after {
+  content: var(--oc-counter-prefix, "") counter(oc-counter) var(--oc-counter-suffix, "");
+}
+@keyframes oc-counter-up {
+  from { --oc-counter-value: var(--oc-counter-from, 0); }
+}
+/* Start counting when the counter scrolls into view (scroll-driven animations) */
+@supports (animation-timeline: view()) {
+  .oc-counter--on-view {
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog.oc-modal[open] .oc-modal-content,
+  .oc-dropdown-menu[popover],
+  details.oc-accordion-item::details-content,
+  .oc-counter {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ===================================================================
+   APP COMPONENTS (v0.5.0) — building blocks for application UIs
+   Pure CSS on semantic HTML. Every color is an --oc-* theme token (Omnia palette).
+   Overlays use <dialog> / [popover]; stateful parts use :has(), <details>, radio and checkbox inputs.
+   Index: heading · back-link · user · empty · badge-info · sidebar · navmenu · sheet · alert-dialog · popover · command ·
+          toast · segmented · stepper · definition list · collapsible · checklist · tag · otp · reveal · copy-field ·
+          color-field · dropzone · launcher · recovery-codes · table extras
+   =================================================================== */
+
+/* ---- Heading (page / section title with description) ---- */
+.oc-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-block-end: 1.5rem;
+}
+.oc-heading-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--oc-foreground);
+}
+.oc-heading-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--oc-muted-foreground);
+}
+.oc-heading--sm { margin-block-end: 0.75rem; }
+.oc-heading--sm .oc-heading-title { font-size: 1rem; font-weight: 500; }
+
+/* ---- Back link (outline button that names its destination) ---- */
+.oc-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--oc-foreground);
+  text-decoration: none;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-background);
+  transition: background var(--oc-transition-fast);
+}
+.oc-back-link::before { content: "\2190"; }
+.oc-back-link:hover { background: var(--oc-accent); }
+.oc-back-link:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* ---- User (avatar + name + e-mail) ---- */
+.oc-user {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-inline-size: 0;
+  text-align: start;
+  font-size: 0.875rem;
+  line-height: 1.25;
+}
+.oc-user-text { display: grid; flex: 1; min-inline-size: 0; }
+.oc-user-name,
+.oc-user-email { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-user-name { font-weight: 500; color: var(--oc-foreground); }
+.oc-user-email { font-size: 0.75rem; color: var(--oc-muted-foreground); }
+
+/* Inline SVG icons inside buttons / icon tiles size with the text */
+.oc-btn > svg { inline-size: 1.1em; block-size: 1.1em; flex-shrink: 0; }
+
+/* ---- Visually hidden (screen-reader only text) ---- */
+.oc-visually-hidden {
+  position: absolute !important;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Empty state ---- */
+.oc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--oc-muted-foreground);
+}
+.oc-empty-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: 50%;
+  background: var(--oc-muted);
+  color: var(--oc-muted-foreground);
+  font-size: 1.25rem;
+}
+.oc-empty-title { margin: 0; font-size: 1rem; font-weight: 600; color: var(--oc-foreground); }
+.oc-empty-text { margin: 0; max-inline-size: 28rem; font-size: 0.875rem; }
+.oc-empty-actions { display: flex; gap: 0.5rem; margin-block-start: 0.5rem; }
+
+/* ---- Badge: info ---- */
+.oc-badge--info {
+  background: oklch(from var(--oc-primary) l c h / 0.12);
+  color: var(--oc-primary);
+  border-color: oklch(from var(--oc-primary) l c h / 0.35);
+}
+
+/* ===================================================================
+   SIDEBAR — vertical navigation: header · groups · menu · footer
+   Active item: aria-current="page" (or .is-active). Icon-only: .oc-sidebar--collapsed.
+   =================================================================== */
+.oc-sidebar {
+  --oc-sidebar-width: 16rem;
+  --oc-sidebar-width-icon: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  inline-size: var(--oc-sidebar-width);
+  block-size: 100%;
+  min-block-size: 0;
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  border-inline-end: 1px solid var(--oc-border);
+  transition: inline-size var(--oc-transition-normal);
+}
+.oc-sidebar--right { border-inline-end: 0; border-inline-start: 1px solid var(--oc-border); }
+.oc-sidebar--floating {
+  margin: 0.5rem;
+  block-size: calc(100% - 1rem);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  box-shadow: 0 4px 16px oklch(from var(--color-black-60) l c h / 0.1);
+}
+.oc-sidebar-header,
+.oc-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  flex-shrink: 0;
+}
+.oc-sidebar-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-block-size: 0;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+.oc-sidebar-group { display: flex; flex-direction: column; gap: 2px; }
+.oc-sidebar-group-label {
+  padding: 0.5rem 0.625rem 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--oc-muted-foreground);
+}
+.oc-sidebar-separator { block-size: 1px; margin: 0.25rem 0.5rem; background: var(--oc-border); }
+.oc-sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.oc-sidebar-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  inline-size: 100%;
+  padding: 0.5rem 0.625rem;
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: start;
+  text-decoration: none;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+  transition: background var(--oc-transition-fast), color var(--oc-transition-fast);
+}
+.oc-sidebar-menu-button:hover {
+  background: var(--oc-accent);
+  color: var(--oc-accent-foreground);
+}
+.oc-sidebar-menu-button:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-sidebar-menu-button[aria-current="page"],
+.oc-sidebar-menu-button.is-active {
+  background: var(--oc-accent);
+  color: var(--oc-accent-foreground);
+  font-weight: 600;
+}
+.oc-sidebar-menu-button[aria-disabled="true"],
+.oc-sidebar-menu-button:disabled { opacity: 0.5; pointer-events: none; }
+.oc-sidebar-menu-button--lg { padding-block: 0.625rem; }
+.oc-sidebar-menu-icon { inline-size: 1rem; block-size: 1rem; flex-shrink: 0; }
+.oc-sidebar-menu-label { flex: 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-sidebar-menu-badge {
+  margin-inline-start: auto;
+  padding: 0.125rem 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 999px;
+  background: var(--oc-primary);
+  color: var(--oc-primary-foreground);
+}
+.oc-sidebar-menu-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 2px 1.1rem;
+  padding: 0 0 0 0.5rem;
+  list-style: none;
+  border-inline-start: 1px solid var(--oc-border);
+}
+.oc-sidebar-menu-sub .oc-sidebar-menu-button { padding-block: 0.375rem; font-size: 0.8125rem; }
+
+/* Collapsible sub menu: <details class="oc-sidebar-collapsible"><summary class="oc-sidebar-menu-button"> */
+details.oc-sidebar-collapsible > summary { list-style: none; }
+details.oc-sidebar-collapsible > summary::-webkit-details-marker { display: none; }
+details.oc-sidebar-collapsible > summary::after {
+  content: "";
+  margin-inline-start: auto;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--oc-transition-fast);
+}
+details.oc-sidebar-collapsible[open] > summary::after { transform: rotate(225deg); }
+
+/* Icon-only mode */
+.oc-sidebar--collapsed { inline-size: var(--oc-sidebar-width-icon); }
+.oc-sidebar--collapsed .oc-sidebar-menu-label,
+.oc-sidebar--collapsed .oc-sidebar-menu-badge,
+.oc-sidebar--collapsed .oc-sidebar-menu-sub,
+.oc-sidebar--collapsed .oc-sidebar-group-label,
+.oc-sidebar--collapsed .oc-user-text,
+.oc-sidebar--collapsed details.oc-sidebar-collapsible > summary::after { display: none; }
+.oc-sidebar--collapsed .oc-sidebar-menu-button { justify-content: center; padding-inline: 0; }
+.oc-sidebar--collapsed .oc-sidebar-header,
+.oc-sidebar--collapsed .oc-sidebar-footer { align-items: center; padding-inline: 0.5rem; }
+
+/* ===================================================================
+   NAVMENU — horizontal navigation (header). Dropdown children reuse the dropdown component.
+   =================================================================== */
+.oc-navmenu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.oc-navmenu-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--oc-muted-foreground);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  border-radius: var(--oc-radius);
+  cursor: pointer;
+  transition: background var(--oc-transition-fast), color var(--oc-transition-fast);
+}
+.oc-navmenu-link:hover { color: var(--oc-foreground); background: oklch(from var(--oc-accent) l c h / 0.5); }
+.oc-navmenu-link:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-navmenu-link[aria-current="page"],
+.oc-navmenu-link.is-active { color: var(--oc-accent-foreground); background: var(--oc-accent); }
+.oc-navmenu-link--caret::after {
+  content: "";
+  inline-size: 0.35rem;
+  block-size: 0.35rem;
+  margin-inline-start: 0.25rem;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+/* ===================================================================
+   SHEET — side panel on <dialog>. Open: <button command="show-modal" commandfor="id">.
+   Side: .oc-sheet--right (default) · --left · --top · --bottom
+   =================================================================== */
+dialog.oc-sheet {
+  display: none;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--oc-foreground);
+}
+dialog.oc-sheet[open] { display: flex; justify-content: flex-end; align-items: stretch; }
+dialog.oc-sheet::backdrop {
+  background: oklch(from var(--color-black-60) l c h / 0.5);
+  backdrop-filter: blur(4px);
+}
+.oc-sheet-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  inline-size: min(24rem, 100%);
+  block-size: 100%;
+  background: var(--oc-background);
+  border-inline-start: 1px solid var(--oc-border);
+  box-shadow: 0 16px 48px oklch(from var(--color-black-60) l c h / 0.2);
+}
+dialog.oc-sheet[open] .oc-sheet-content {
+  transition: translate var(--oc-transition-normal), opacity var(--oc-transition-normal);
+  @starting-style { translate: 100% 0; opacity: 0; }
+}
+dialog.oc-sheet--left[open] { justify-content: flex-start; }
+dialog.oc-sheet--left .oc-sheet-content { border-inline-start: 0; border-inline-end: 1px solid var(--oc-border); }
+dialog.oc-sheet--left[open] .oc-sheet-content { @starting-style { translate: -100% 0; opacity: 0; } }
+dialog.oc-sheet--top[open] { flex-direction: column; justify-content: flex-start; }
+dialog.oc-sheet--bottom[open] { flex-direction: column; justify-content: flex-end; }
+dialog.oc-sheet--top .oc-sheet-content,
+dialog.oc-sheet--bottom .oc-sheet-content { inline-size: 100%; block-size: auto; max-block-size: 85dvh; border-inline: 0; }
+dialog.oc-sheet--top .oc-sheet-content { border-block-end: 1px solid var(--oc-border); }
+dialog.oc-sheet--bottom .oc-sheet-content { border-block-start: 1px solid var(--oc-border); }
+dialog.oc-sheet--top[open] .oc-sheet-content { @starting-style { translate: 0 -100%; opacity: 0; } }
+dialog.oc-sheet--bottom[open] .oc-sheet-content { @starting-style { translate: 0 100%; opacity: 0; } }
+.oc-sheet-content--wide { inline-size: min(40rem, 100%); }
+.oc-sheet-header { display: flex; flex-direction: column; gap: 0.25rem; padding: 1.25rem 1.5rem 0; flex-shrink: 0; }
+.oc-sheet-title { margin: 0; padding-inline-end: 2rem; font-size: 1.05rem; font-weight: 600; color: var(--oc-foreground); }
+.oc-sheet-description { margin: 0; font-size: 0.875rem; color: var(--oc-muted-foreground); }
+.oc-sheet-body { flex: 1; min-block-size: 0; padding: 1rem 1.5rem; overflow-y: auto; font-size: 0.875rem; }
+.oc-sheet-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-block-start: 1px solid var(--oc-border);
+  flex-shrink: 0;
+}
+.oc-sheet-close {
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-end: 1rem;
+  padding: 0.25rem 0.4rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 0;
+  border-radius: var(--oc-radius);
+  cursor: pointer;
+}
+.oc-sheet-close:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-sheet-close:focus-visible { outline: 2px solid var(--oc-ring); }
+
+/* ===================================================================
+   ALERT DIALOG — modal with a status icon (success · error · warning · info · question)
+   Markup: <dialog class="oc-modal"> + .oc-modal-content.oc-modal-content--sm.oc-alert-dialog
+   =================================================================== */
+.oc-alert-dialog { align-items: center; padding: 1.5rem 1.5rem 0; text-align: center; }
+.oc-alert-dialog-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  margin-block-end: 0.75rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 50%;
+  border: 2px solid var(--oc-alert-dialog-color, var(--oc-warning));
+  color: var(--oc-alert-dialog-color, var(--oc-warning));
+  background: oklch(from var(--oc-alert-dialog-color, var(--oc-warning)) l c h / 0.12);
+}
+.oc-alert-dialog--success { --oc-alert-dialog-color: var(--oc-success); }
+.oc-alert-dialog--error { --oc-alert-dialog-color: var(--oc-destructive); }
+.oc-alert-dialog--warning { --oc-alert-dialog-color: var(--oc-warning); }
+.oc-alert-dialog--info,
+.oc-alert-dialog--question { --oc-alert-dialog-color: var(--oc-primary); }
+.oc-alert-dialog .oc-modal-title { font-size: 1.2rem; }
+.oc-alert-dialog .oc-modal-body { padding: 0.5rem 0 1rem; }
+.oc-alert-dialog .oc-modal-footer { align-self: stretch; justify-content: center; border-block-start: 0; padding-inline: 0; }
+
+/* ===================================================================
+   POPOVER — free-form floating panel (popover attribute + anchor positioning)
+   Open: <button popovertarget="id">. For menus use the dropdown component.
+   =================================================================== */
+.oc-popover[popover] {
+  position: fixed;
+  inset: auto;
+  margin: 4px 0 0;
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-block, flip-inline;
+  inline-size: 18rem;
+  max-inline-size: calc(100vw - 1rem);
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--oc-popover-foreground);
+  background: var(--oc-popover);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.15);
+  transition: opacity var(--oc-transition-fast), display var(--oc-transition-fast) allow-discrete, overlay var(--oc-transition-fast) allow-discrete;
+}
+.oc-popover[popover]:popover-open {
+  display: block;
+  @starting-style { opacity: 0; }
+}
+.oc-popover--sm[popover] { inline-size: 12rem; padding: 0.5rem; }
+.oc-popover--lg[popover] { inline-size: 26rem; }
+.oc-popover-title { margin: 0 0 0.25rem; font-size: 0.875rem; font-weight: 600; color: var(--oc-foreground); }
+.oc-popover-text { margin: 0; color: var(--oc-muted-foreground); }
+
+/* ===================================================================
+   COMMAND — command palette / searchable list. Put it inside dialog.oc-modal for a palette.
+   Filtering and aria-selected are handled by a script; the CSS styles the states.
+   =================================================================== */
+.oc-command {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--oc-popover-foreground);
+  background: var(--oc-popover);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+}
+.oc-command-input {
+  inline-size: 100%;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--oc-foreground);
+  background: transparent;
+  border: 0;
+  border-block-end: 1px solid var(--oc-border);
+  outline: none;
+}
+.oc-command-input::placeholder { color: var(--oc-muted-foreground); }
+.oc-command-list { max-block-size: 20rem; margin: 0; padding: 0.25rem; overflow-y: auto; list-style: none; }
+.oc-command-group-label { padding: 0.5rem 0.625rem 0.25rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--oc-muted-foreground); }
+.oc-command-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.875rem;
+  color: var(--oc-popover-foreground);
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+}
+.oc-command-item:hover,
+.oc-command-item[aria-selected="true"] { background: var(--oc-accent); color: var(--oc-accent-foreground); }
+.oc-command-item[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+.oc-command-shortcut { margin-inline-start: auto; font-size: 0.7rem; letter-spacing: 0.08em; color: var(--oc-muted-foreground); }
+.oc-command-separator { block-size: 1px; margin: 0.25rem -0.25rem; background: var(--oc-border); }
+.oc-command-empty { padding: 1.5rem 1rem; text-align: center; font-size: 0.875rem; color: var(--oc-muted-foreground); }
+.oc-command-item[hidden],
+.oc-command-empty[hidden] { display: none; }
+
+/* ===================================================================
+   TOAST — transient notifications. Container is fixed to a corner; optional auto-dismiss
+   with .oc-toast--auto (--oc-toast-duration, default 6s) — no JavaScript.
+   Variants: --success · --error · --warning · --info
+   =================================================================== */
+.oc-toast-container {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  inline-size: min(22rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+.oc-toast-container--top { inset-block-end: auto; inset-block-start: 1rem; }
+.oc-toast-container--static { position: static; inline-size: min(22rem, 100%); }
+.oc-toast {
+  --oc-toast-color: var(--oc-primary);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  pointer-events: auto;
+  color: var(--oc-foreground);
+  background: color-mix(in srgb, var(--oc-toast-color) 8%, var(--oc-popover));
+  border: 1px solid color-mix(in srgb, var(--oc-toast-color) 45%, transparent);
+  border-radius: calc(var(--oc-radius) + 2px);
+  box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.15);
+  animation: oc-fade-in var(--oc-transition-normal);
+}
+.oc-toast--success { --oc-toast-color: var(--oc-success); }
+.oc-toast--error { --oc-toast-color: var(--oc-destructive); }
+.oc-toast--warning { --oc-toast-color: var(--oc-warning); }
+.oc-toast--info { --oc-toast-color: var(--oc-primary); }
+.oc-toast-icon { flex-shrink: 0; margin-block-start: 0.1rem; font-weight: 700; line-height: 1; color: var(--oc-toast-color); }
+.oc-toast-body { flex: 1; min-inline-size: 0; }
+.oc-toast-title { margin: 0; font-size: 0.875rem; font-weight: 600; color: var(--oc-foreground); }
+.oc-toast-description { margin: 0.125rem 0 0; font-size: 0.8125rem; color: var(--oc-muted-foreground); }
+.oc-toast-close {
+  flex-shrink: 0;
+  padding: 0 0.25rem;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+}
+.oc-toast-close:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-toast-close:focus-visible { outline: 2px solid var(--oc-ring); }
+.oc-toast--auto { animation: oc-fade-in var(--oc-transition-normal), oc-toast-out 300ms ease forwards calc(var(--oc-toast-duration, 6s)); }
+@keyframes oc-toast-out {
+  to { opacity: 0; visibility: hidden; transform: translateX(1rem); }
+}
+
+/* ===================================================================
+   SEGMENTED CONTROL — radio group as a pill switcher (single choice). CSS only.
+   =================================================================== */
+.oc-segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--oc-muted);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+}
+.oc-segmented-item {
+  position: relative;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--oc-muted-foreground);
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+  transition: background var(--oc-transition-fast), color var(--oc-transition-fast);
+}
+.oc-segmented-item:hover { color: var(--oc-foreground); }
+.oc-segmented-item input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.oc-segmented-item:has(input:checked) {
+  background: var(--oc-background);
+  color: var(--oc-foreground);
+  box-shadow: 0 1px 3px oklch(from var(--color-black-60) l c h / 0.12);
+  cursor: default;
+}
+.oc-segmented-item:has(input:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+.oc-segmented-item:has(input:disabled) { opacity: 0.5; cursor: not-allowed; }
+.oc-segmented--block { display: flex; }
+.oc-segmented--block .oc-segmented-item { flex: 1; text-align: center; }
+.oc-segmented--sm .oc-segmented-item { padding: 0.125rem 0.5rem; font-size: 0.7rem; }
+
+/* ===================================================================
+   STEPPER — wizard step navigation. States per item: --done · --active · --todo (default)
+   Vertical by default; .oc-stepper--horizontal for a row.
+   =================================================================== */
+.oc-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: oc-step;
+}
+.oc-stepper--horizontal { flex-direction: row; overflow-x: auto; }
+.oc-stepper > li { display: flex; flex: 1 0 auto; }
+.oc-stepper-item {
+  inline-size: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex: 1 0 auto;
+  min-inline-size: 10rem;
+  padding: 0.625rem 0.75rem;
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: start;
+  color: var(--oc-muted-foreground);
+  background: var(--oc-surface);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  counter-increment: oc-step;
+  cursor: default;
+  opacity: 0.85;
+}
+.oc-stepper-item::before {
+  content: counter(oc-step);
+  display: grid;
+  place-items: center;
+  inline-size: 1.375rem;
+  block-size: 1.375rem;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 50%;
+  border: 1px solid var(--oc-border-strong);
+}
+.oc-stepper-label { display: block; font-weight: 500; line-height: 1.3; }
+.oc-stepper-meta { display: block; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+.oc-stepper-item--done {
+  color: var(--oc-foreground);
+  background: var(--oc-surface-strong);
+  cursor: pointer;
+  opacity: 1;
+}
+.oc-stepper-item--done::before {
+  content: "\2713";
+  color: var(--oc-success-foreground);
+  background: var(--oc-success);
+  border-color: var(--oc-success);
+}
+.oc-stepper-item--done:hover { background: var(--oc-accent); }
+.oc-stepper-item--active,
+.oc-stepper-item[aria-current="step"] {
+  color: var(--oc-foreground);
+  background: oklch(from var(--oc-primary) l c h / 0.08);
+  border-color: var(--oc-primary);
+  box-shadow: 0 0 0 1px oklch(from var(--oc-primary) l c h / 0.35);
+  opacity: 1;
+}
+.oc-stepper-item--active::before,
+.oc-stepper-item[aria-current="step"]::before {
+  color: var(--oc-primary-foreground);
+  background: var(--oc-primary);
+  border-color: var(--oc-primary);
+}
+.oc-stepper-item:disabled { cursor: not-allowed; }
+.oc-stepper-item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* ===================================================================
+   DEFINITION LIST — label / value rows in a panel
+   =================================================================== */
+.oc-dl-panel {
+  padding: 1rem;
+  font-size: 0.875rem;
+  background: var(--oc-surface-strong);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+}
+.oc-dl-title { margin: 0; font-size: 0.875rem; font-weight: 600; color: var(--oc-foreground); }
+.oc-dl-description { margin: 0.25rem 0 0; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+.oc-dl {
+  margin: 0.75rem 0 0;
+  border-block-start: 1px solid var(--oc-border);
+}
+.oc-dl-row {
+  display: grid;
+  gap: 0.25rem 1rem;
+  padding: 0.75rem 0;
+  border-block-end: 1px solid var(--oc-border);
+}
+.oc-dl-row:last-child { border-block-end: 0; padding-block-end: 0; }
+@media (min-width: 40rem) {
+  .oc-dl-row { grid-template-columns: minmax(10rem, 40%) minmax(0, 1fr); align-items: start; }
+}
+.oc-dl-term { margin: 0; color: var(--oc-muted-foreground); line-height: 1.35; }
+.oc-dl-detail { margin: 0; min-inline-size: 0; font-weight: 600; color: var(--oc-foreground); overflow-wrap: anywhere; }
+.oc-dl-footer { margin-block-start: 0.5rem; padding-block-start: 0.75rem; border-block-start: 1px solid var(--oc-border); }
+
+/* ===================================================================
+   COLLAPSIBLE — card-style <details> (form sections): icon · title · chevron
+   =================================================================== */
+details.oc-collapsible {
+  background: var(--oc-card);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  box-shadow: 0 1px 2px oklch(from var(--color-black-60) l c h / 0.05);
+  interpolate-size: allow-keywords;
+}
+details.oc-collapsible > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  list-style: none;
+  cursor: pointer;
+  border-radius: calc(var(--oc-radius) + 4px);
+  transition: background var(--oc-transition-fast);
+}
+details.oc-collapsible > summary::-webkit-details-marker { display: none; }
+details.oc-collapsible > summary:hover { background: var(--oc-surface-strong); }
+details.oc-collapsible > summary:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+details.oc-collapsible > summary::after {
+  content: "";
+  margin-inline-start: auto;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  flex-shrink: 0;
+  border-inline-end: 2px solid var(--oc-muted-foreground);
+  border-block-end: 2px solid var(--oc-muted-foreground);
+  transform: rotate(45deg);
+  transition: transform var(--oc-transition-normal);
+}
+details.oc-collapsible[open] > summary::after { transform: rotate(225deg); }
+details.oc-collapsible[open] > summary { border-end-start-radius: 0; border-end-end-radius: 0; }
+.oc-collapsible-icon { inline-size: 1.25rem; block-size: 1.25rem; flex-shrink: 0; color: var(--oc-primary); }
+.oc-collapsible-title { font-size: 1.05rem; font-weight: 500; letter-spacing: -0.01em; color: var(--oc-foreground); }
+.oc-collapsible-content { padding: 1.5rem; border-block-start: 1px solid var(--oc-border); }
+.oc-collapsible--dense > summary { padding: 0.75rem; }
+.oc-collapsible--dense .oc-collapsible-content { padding: 1rem; }
+details.oc-collapsible::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition: block-size var(--oc-transition-normal), content-visibility var(--oc-transition-normal) allow-discrete;
+}
+details.oc-collapsible[open]::details-content { block-size: auto; }
+
+/* ===================================================================
+   CHECKLIST — rules / onboarding steps. State per item: .is-done (or aria-checked="true")
+   =================================================================== */
+.oc-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+}
+.oc-checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: var(--oc-muted-foreground);
+}
+.oc-checklist-item::before {
+  content: "";
+  display: grid;
+  place-items: center;
+  inline-size: 1rem;
+  block-size: 1rem;
+  margin-block-start: 0.05rem;
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+  border: 1.5px solid var(--oc-border-strong);
+  border-radius: 50%;
+}
+.oc-checklist-item.is-done,
+.oc-checklist-item[aria-checked="true"] { color: var(--oc-success); }
+.oc-checklist-item.is-done::before,
+.oc-checklist-item[aria-checked="true"]::before {
+  content: "\2713";
+  color: var(--oc-success-foreground);
+  background: var(--oc-success);
+  border-color: var(--oc-success);
+}
+.oc-checklist--card {
+  gap: 0;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  background: var(--oc-surface);
+  font-size: 0.875rem;
+}
+.oc-checklist--card .oc-checklist-item { align-items: center; padding: 0.75rem 1rem; }
+.oc-checklist--card .oc-checklist-item + .oc-checklist-item { border-block-start: 1px solid var(--oc-border); }
+.oc-checklist--card .oc-checklist-item.is-done { color: var(--oc-foreground); }
+.oc-checklist-text { flex: 1; min-inline-size: 0; }
+.oc-checklist-title { display: block; font-weight: 500; color: var(--oc-foreground); }
+.oc-checklist-hint { display: block; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+
+/* ===================================================================
+   TAG — chips and tag input. Chip: .oc-tag (+ .oc-tag-remove button). Input: .oc-tag-input
+   =================================================================== */
+.oc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--oc-accent-foreground);
+  background: var(--oc-accent);
+  border-radius: calc(var(--oc-radius) - 2px);
+}
+.oc-tag-remove {
+  padding: 0 0.15rem;
+  font: inherit;
+  line-height: 1;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.oc-tag-remove:hover { color: var(--oc-destructive); }
+.oc-tag-remove:focus-visible { outline: 2px solid var(--oc-ring); }
+.oc-tag-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.5rem;
+  background: var(--oc-background);
+  border: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+.oc-tag-input:focus-within {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 2px oklch(from var(--oc-ring) l c h / 0.25);
+}
+.oc-tag-input > input {
+  flex: 1;
+  min-inline-size: 8rem;
+  padding: 0.25rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--oc-foreground);
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+.oc-tag-suggestions { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-block-start: 0.375rem; }
+.oc-tag-suggestions > button {
+  padding: 0.15rem 0.5rem;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+}
+.oc-tag-suggestions > button:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+
+/* ===================================================================
+   OTP — one-time code: ONE real <input> drawn as separate cells (paste, autofill and password managers work).
+   Cells: set --oc-otp-length (default 6) to the input's maxlength.
+   =================================================================== */
+.oc-otp {
+  --oc-otp-length: 6;
+  --oc-otp-cell: 2.75ch;
+  inline-size: calc(var(--oc-otp-length) * var(--oc-otp-cell));
+  max-inline-size: 100%;
+  padding: 0.6rem 0 0.6rem calc((var(--oc-otp-cell) - 1ch) / 2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.5rem;
+  letter-spacing: calc(var(--oc-otp-cell) - 1ch);
+  text-align: start;
+  color: var(--oc-foreground);
+  background-color: var(--oc-background);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--oc-input) 0 1px,
+    transparent 1px calc(var(--oc-otp-cell) - 1px),
+    var(--oc-input) calc(var(--oc-otp-cell) - 1px) var(--oc-otp-cell)
+  );
+  background-origin: border-box;
+  border: 0;
+  border-block: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  outline: none;
+}
+.oc-otp:focus { box-shadow: 0 0 0 2px oklch(from var(--oc-ring) l c h / 0.35); }
+.oc-otp[aria-invalid="true"] { border-block-color: var(--oc-destructive); }
+.oc-otp:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ===================================================================
+   REVEAL — password field with a show/hide button. A script flips input.type (see snippet).
+   =================================================================== */
+.oc-input-reveal { position: relative; display: block; }
+.oc-input-reveal > .oc-input { padding-inline-end: 2.5rem; }
+.oc-input-reveal-button {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0.25rem;
+  margin-block: auto;
+  block-size: 1.75rem;
+  padding: 0 0.5rem;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+}
+.oc-input-reveal-button:hover { color: var(--oc-foreground); }
+.oc-input-reveal-button:focus-visible { outline: 2px solid var(--oc-ring); }
+.oc-input-reveal-button[aria-pressed="true"] { color: var(--oc-primary); }
+
+/* ===================================================================
+   COPY FIELD — read-only (monospace) value with a copy button
+   =================================================================== */
+.oc-copy-field {
+  display: flex;
+  align-items: stretch;
+  inline-size: 100%;
+  background: var(--oc-surface-strong);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  overflow: hidden;
+}
+.oc-copy-field-value {
+  flex: 1;
+  min-inline-size: 0;
+  padding: 0.5rem 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  color: var(--oc-foreground);
+  background: transparent;
+  border: 0;
+  outline: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.oc-copy-field-button {
+  padding: 0 0.75rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--oc-foreground);
+  background: var(--oc-muted);
+  border: 0;
+  border-inline-start: 1px solid var(--oc-border);
+  cursor: pointer;
+}
+.oc-copy-field-button:hover { background: var(--oc-accent); }
+.oc-copy-field-button:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-copy-field-button.is-copied { color: var(--oc-success); }
+
+/* ===================================================================
+   COLOR FIELD — native <input type="color"> next to a text value
+   =================================================================== */
+.oc-color-field { display: flex; align-items: center; gap: 0.5rem; }
+.oc-color-field > input[type="color"] {
+  inline-size: 2.5rem;
+  block-size: 2.25rem;
+  padding: 2px;
+  background: var(--oc-background);
+  border: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  cursor: pointer;
+}
+.oc-color-field > input[type="color"]:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-color-field > .oc-input { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+/* ===================================================================
+   DROPZONE — file upload target. A <label> around a real <input type="file">; click and keyboard work natively.
+   .is-dragover can be toggled by a script for drag feedback.
+   =================================================================== */
+.oc-dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--oc-foreground);
+  background: transparent;
+  border: 1px dashed var(--oc-border-strong);
+  border-radius: calc(var(--oc-radius) + 2px);
+  cursor: pointer;
+  transition: background var(--oc-transition-fast), border-color var(--oc-transition-fast);
+}
+.oc-dropzone:hover { background: oklch(from var(--oc-accent) l c h / 0.4); }
+.oc-dropzone.is-dragover,
+.oc-dropzone:has(input:focus-visible) {
+  border-color: var(--oc-primary);
+  background: oklch(from var(--oc-primary) l c h / 0.06);
+}
+.oc-dropzone:has(input:disabled) { opacity: 0.5; cursor: not-allowed; }
+.oc-dropzone > input[type="file"] { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; opacity: 0; cursor: pointer; }
+.oc-dropzone-icon svg,
+.oc-launcher-icon svg,
+.oc-empty-icon svg { inline-size: 1.25em; block-size: 1.25em; }
+.oc-dropzone-icon { font-size: 1.5rem; line-height: 1; color: var(--oc-muted-foreground); }
+.oc-dropzone-hint { font-size: 0.75rem; color: var(--oc-muted-foreground); }
+
+/* ===================================================================
+   LAUNCHER — large clickable card (module hub / settings sections): icon · title · description
+   Use on <a> or <button>. State: aria-current="true" / .is-active · aria-disabled="true"
+   =================================================================== */
+.oc-launcher {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-block-size: 7.75rem;
+  padding: 1rem;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  color: var(--oc-card-foreground);
+  background: var(--oc-card);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  box-shadow: 0 1px 2px oklch(from var(--color-black-60) l c h / 0.05);
+  cursor: pointer;
+  transition: border-color var(--oc-transition-fast), transform var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+.oc-launcher:hover { border-color: var(--oc-primary); transform: translateY(-1px); box-shadow: 0 4px 12px oklch(from var(--color-black-60) l c h / 0.1); }
+.oc-launcher:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-launcher[aria-current="true"],
+.oc-launcher.is-active { border-color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.06); }
+.oc-launcher[aria-disabled="true"],
+.oc-launcher:disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+.oc-launcher-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  font-size: 1.25rem;
+  color: var(--oc-primary);
+  background: oklch(from var(--oc-primary) l c h / 0.1);
+  border-radius: calc(var(--oc-radius) + 2px);
+}
+.oc-launcher-title { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 1rem; font-weight: 600; color: var(--oc-foreground); }
+.oc-launcher-description { margin: 0; font-size: 0.8125rem; line-height: 1.45; color: var(--oc-muted-foreground); }
+.oc-launcher-footer { margin-block-start: auto; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+
+/* ===================================================================
+   RECOVERY CODES — warning panel with a code grid and actions (copy / download)
+   =================================================================== */
+.oc-recovery-codes {
+  padding: 1rem;
+  background: oklch(from var(--oc-warning) l c h / 0.08);
+  border: 2px solid var(--oc-warning);
+  border-radius: calc(var(--oc-radius) + 2px);
+}
+.oc-recovery-codes-title { margin: 0; font-size: 0.875rem; font-weight: 600; color: var(--oc-foreground); }
+.oc-recovery-codes-warning { margin: 0.25rem 0 0; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+.oc-recovery-codes-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.375rem 1.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  list-style: none;
+  user-select: all;
+  color: var(--oc-foreground);
+  background: var(--oc-background);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+}
+.oc-recovery-codes-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block-start: 0.75rem; }
+
+/* ===================================================================
+   TABLE EXTRAS — data-table building blocks on top of .oc-table
+   Sort header:   <th aria-sort="ascending"><a class="oc-table-sort" href="?sort=name">Name</a></th>
+   Row actions:   <td class="oc-table-actions"> buttons / links </td>
+   Selection:     <input type="checkbox" class="oc-checkbox"> in the first column; selected row has aria-selected="true"
+   Modifiers:     .oc-table--borderless · --compact · --striped · --sticky (inside a scroll wrapper) · [data-numeric] cells
+   =================================================================== */
+.oc-table--borderless th,
+.oc-table--borderless td { border-inline: 0; }
+.oc-table--borderless { border-collapse: collapse; }
+.oc-table--compact th,
+.oc-table--compact td { padding: 0.25rem 0.5rem; font-size: 0.8125rem; }
+.oc-table--striped tbody tr:nth-child(even) { background: var(--oc-surface); }
+.oc-table--sticky thead th { position: sticky; inset-block-start: 0; z-index: 1; }
+.oc-table th[data-numeric],
+.oc-table td[data-numeric] { text-align: end; font-variant-numeric: tabular-nums; }
+.oc-table tbody tr[aria-selected="true"] { background: oklch(from var(--oc-primary) l c h / 0.1); }
+.oc-table-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  background: none;
+  border: 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+.oc-table-sort::after {
+  content: "\2195";
+  font-size: 0.75em;
+  opacity: 0.35;
+}
+.oc-table th[aria-sort="ascending"] .oc-table-sort::after { content: "\2191"; opacity: 1; color: var(--oc-primary); }
+.oc-table th[aria-sort="descending"] .oc-table-sort::after { content: "\2193"; opacity: 1; color: var(--oc-primary); }
+.oc-table-sort:hover { color: var(--oc-foreground); }
+.oc-table-sort:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-table-actions { white-space: nowrap; text-align: end; }
+.oc-table-actions > * + * { margin-inline-start: 0.25rem; }
+.oc-table-row-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+  transition: color var(--oc-transition-fast), background var(--oc-transition-fast);
+}
+.oc-table-row-action:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-table-row-action--primary:hover { color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.1); }
+.oc-table-row-action--success:hover { color: var(--oc-success); background: oklch(from var(--oc-success) l c h / 0.1); }
+.oc-table-row-action--destructive { color: var(--oc-destructive); }
+.oc-table-row-action--destructive:hover { background: oklch(from var(--oc-destructive) l c h / 0.1); }
+.oc-table-row-action:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-table-row-action:disabled,
+.oc-table-row-action[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+.oc-table-empty td { padding: 0; border: 0; }
+
+/* Table toolbar + footer (used by the data-table block, usable on their own) */
+.oc-table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding-block-end: 0.75rem;
+}
+.oc-table-toolbar-spacer { flex: 1; }
+.oc-table-toolbar .oc-input { inline-size: min(20rem, 100%); }
+.oc-table-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-block-start: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--oc-muted-foreground);
+}
+.oc-table-footer .oc-select { inline-size: auto; padding-block: 0.25rem; }
+.oc-filter-pills { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; padding-inline-start: 0.5rem; border-inline-start: 1px solid var(--oc-border); }
+.oc-filter-pill {
+  padding: 0.25rem 0.625rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.oc-filter-pill:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-filter-pill[aria-current="true"],
+.oc-filter-pill.is-active { color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.1); border-color: oklch(from var(--oc-primary) l c h / 0.35); }
+.oc-filter-pill:focus-visible { outline: 2px solid var(--oc-ring); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-sidebar,
+  .oc-toast,
+  .oc-launcher,
+  dialog.oc-sheet[open] .oc-sheet-content,
+  .oc-popover[popover],
+  details.oc-collapsible::details-content,
+  details.oc-collapsible > summary::after { transition: none; animation: none; }
+  .oc-toast--auto { animation: none; }
+}

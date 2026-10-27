@@ -1,0 +1,68 @@
+/* File: packages/ui/src/parts/media-image-zoom.css | Map: root + zoom variable -> toolbar + level chips
+   -> viewport (scroll = pan) -> canvas (grows with the zoom) -> zoom levels (classes + radios via :has()) -> motion
+   Image zoom: the canvas gets wider than the viewport, so the native scrollbars / touch scrolling pan the image.
+   No JavaScript and no transform tricks: zooming is just inline-size: calc(100% * var(--oc-zoom)). */
+
+.oc-image-zoom {
+  --oc-zoom: 1;
+  --oc-image-zoom-ratio: 16 / 9;
+  display: grid;
+  gap: 0.5rem;
+  inline-size: 100%;
+}
+
+/* ---- Toolbar with zoom level chips (radio buttons) ---- */
+.oc-image-zoom__toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; font-size: 0.8125rem; color: var(--oc-muted-foreground); }
+.oc-image-zoom__label { margin-inline-end: 0.25rem; }
+.oc-image-zoom__level {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 2.5rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--oc-border);
+  border-radius: 999px;
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+/* The radio itself is invisible but stays focusable (keyboard: arrow keys switch levels). */
+.oc-image-zoom__level > input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.oc-image-zoom__level:has(input:checked) { border-color: var(--oc-primary); background: var(--oc-primary); color: var(--oc-primary-foreground); }
+.oc-image-zoom__level:has(input:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* ---- Viewport: fixed ratio window; scrolling it pans the image ---- */
+.oc-image-zoom__viewport {
+  aspect-ratio: var(--oc-image-zoom-ratio);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-muted);
+  scrollbar-width: thin;
+}
+.oc-image-zoom__viewport:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* ---- Canvas: same ratio as the viewport, scaled by --oc-zoom ---- */
+.oc-image-zoom__canvas { inline-size: calc(100% * var(--oc-zoom)); aspect-ratio: var(--oc-image-zoom-ratio); }
+.oc-image-zoom__canvas > * { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+/* ---- Zoom levels: fixed classes, or radio chips (value = level) ---- */
+.oc-image-zoom--150 { --oc-zoom: 1.5; }
+.oc-image-zoom--200 { --oc-zoom: 2; }
+.oc-image-zoom--300 { --oc-zoom: 3; }
+.oc-image-zoom:has(.oc-image-zoom__level input[value="1"]:checked) { --oc-zoom: 1; }
+.oc-image-zoom:has(.oc-image-zoom__level input[value="1.5"]:checked) { --oc-zoom: 1.5; }
+.oc-image-zoom:has(.oc-image-zoom__level input[value="2"]:checked) { --oc-zoom: 2; }
+.oc-image-zoom:has(.oc-image-zoom__level input[value="3"]:checked) { --oc-zoom: 3; }
+.oc-image-zoom:has(.oc-image-zoom__level input[value="4"]:checked) { --oc-zoom: 4; }
+
+/* Ratio presets. */
+.oc-image-zoom--square { --oc-image-zoom-ratio: 1 / 1; }
+.oc-image-zoom--photo { --oc-image-zoom-ratio: 4 / 3; }
+
+/* Smooth resize only when motion is welcome. */
+@media (prefers-reduced-motion: no-preference) {
+  .oc-image-zoom__canvas { transition: inline-size var(--oc-transition-normal); }
+}

@@ -1,0 +1,235 @@
+<!--oc-page {"title": "OmniaUI - Icons category", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell ocd-shell--no-right", "bodyClass": "", "head": ["<script src=\"https://cdn.jsdelivr.net/npm/@iconify/iconify@3/dist/iconify.min.js\" crossorigin=\"anonymous\"></script>", "<style>\n    .oci-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }\n    .oci-item { display: flex; flex-direction: column; align-items: center; padding: 12px; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); background: var(--oc-background); transition: background 0.15s; cursor: default; }\n    .oci-item:hover { background: var(--oc-accent); }\n    .oci-item .iconify { margin-bottom: 6px; color: var(--oc-foreground); }\n    .oci-name { font-size: 0.7rem; color: var(--oc-muted-foreground); text-align: center; word-break: break-word; }\n    #icons-search { max-width: 280px; margin-bottom: 1rem; }\n    .oci-family-section { margin-bottom: 2rem; }\n    .oci-family-title { margin: 0 0 0.75rem; font-size: 1rem; display: flex; align-items: center; gap: 8px; }\n    .oci-family-title .oci-badge { font-size: 0.75rem; color: var(--oc-muted-foreground); font-weight: 400; }\n    .oci-family-syntax { font-size: 0.8rem; color: var(--oc-muted-foreground); margin: -0.5rem 0 0.75rem; }\n    .oci-separator { border: none; border-top: 1px solid var(--oc-border); margin: 1.5rem 0; }\n  </style>"]}-->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title" id="oci-category-title">Icon catalog</h1>
+        <p class="oc-hero-text" id="oci-hero-text">Loading icons…</p>
+        <p class="desc"><a href="../catalog.html">← Back to catalog</a> · <a href="../../webicons.html">Icons overview</a> · <a href="../settings.html">Settings</a>.</p>
+      </section>
+
+      <section class="ocd-section" id="icons">
+        <input type="text" id="icons-search" class="oc-input" placeholder="Filter by name…" aria-label="Search icons by name">
+        <div id="oci-families"></div>
+        <p id="oci-status" class="desc" hidden></p>
+      </section>
+<script>
+    // Set dynamic category for sidebar highlighting before nav module runs
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var cat = params.get('c');
+      if (cat) document.body.setAttribute('data-ocd-category', cat);
+    })();
+  </script>
+<script>
+    (function () {
+      /* ── Helpers ────────────────────────────────────────── */
+      function slug(str) {
+        return str.toLowerCase().replace(/\s*\/\s*/g, "-").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      }
+
+      /* All icon families to fetch */
+      var FAMILIES = [
+        { id: "mdi",              file: "mdi-collection.json",              title: "Material Design Icons", hasLight: true },
+        { id: "material-symbols", file: "material-symbols-collection.json", title: "Material Symbols",       hasLight: false },
+        { id: "svg-spinners",     file: "svg-spinners-collection.json",     title: "SVG Spinners",           hasLight: false },
+        { id: "flag",             file: "flag-collection.json",             title: "Flag Icons",             hasLight: false },
+        { id: "vscode-icons",     file: "vscode-icons-collection.json",     title: "VSCode Icons",           hasLight: false }
+      ];
+
+      var params = new URLSearchParams(window.location.search);
+      var catSlug = (params.get("c") || "").trim();
+
+      /* If a ?p= param is set, restrict to that single family (backwards compat) */
+      var prefixFilter = (params.get("p") || "").trim();
+
+      var titleEl = document.getElementById("oci-category-title");
+      var heroText = document.getElementById("oci-hero-text");
+      var familiesContainer = document.getElementById("oci-families");
+      var statusEl = document.getElementById("oci-status");
+
+      if (!catSlug) {
+        titleEl.textContent = "No category specified.";
+        heroText.textContent = "Use a category link from the sidebar.";
+        return;
+      }
+      document.body.setAttribute("data-ocd-category", catSlug);
+
+      /* ── Determine which families to load ─────────────── */
+      var familiesToLoad = FAMILIES;
+      if (prefixFilter) {
+        familiesToLoad = FAMILIES.filter(function (f) { return f.id === prefixFilter; });
+        if (familiesToLoad.length === 0) familiesToLoad = FAMILIES; // fallback
+      }
+
+      /* ── Fetch all collections in parallel ─────────────── */
+      var fetchPromises = familiesToLoad.map(function (family) {
+        return fetch("../../../data/" + family.file)
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .catch(function () { return null; });
+      });
+
+      /* Also fetch MDI Light names if MDI is included */
+      var lightPromise = familiesToLoad.some(function (f) { return f.hasLight; })
+        ? fetch("../../../data/mdi-light-icons.json").then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; })
+        : Promise.resolve([]);
+
+      Promise.all([Promise.all(fetchPromises), lightPromise])
+        .then(function (results) {
+          var collections = results[0];
+          var lightNames = results[1];
+          var lightNamesSet = new Set(lightNames || []);
+
+          var totalIcons = 0;
+          var catNameFound = null;
+          var sectionsRendered = 0;
+
+          collections.forEach(function (data, idx) {
+            if (!data) return;
+
+            var family = familiesToLoad[idx];
+            var prefix = data.prefix || family.id;
+            var categories = data.categories || {};
+
+            /* Find icons for this category slug */
+            var foundCatName = null;
+            var iconNames = [];
+
+            if (catSlug === "all" || catSlug === "browse") {
+              foundCatName = "Browse All";
+              iconNames = [];
+              if (data.uncategorized) iconNames = iconNames.concat(data.uncategorized);
+              Object.values(categories).forEach(function (list) {
+                iconNames = iconNames.concat(list);
+              });
+              iconNames = Array.from(new Set(iconNames));
+            } else if (catSlug === "uncategorized") {
+              if (data.uncategorized && data.uncategorized.length > 0) {
+                foundCatName = "Uncategorized";
+                iconNames = data.uncategorized;
+              }
+            } else {
+              /* Try to match category slug */
+              Object.keys(categories).forEach(function (name) {
+                if (slug(name) === catSlug) {
+                  foundCatName = name;
+                  iconNames = categories[name] || [];
+                }
+              });
+            }
+
+            if (!foundCatName || iconNames.length === 0) return;
+            if (!catNameFound) catNameFound = foundCatName;
+
+            totalIcons += iconNames.length;
+            sectionsRendered++;
+
+            /* ── Render family section ────────────────── */
+            var sectionDiv = document.createElement("div");
+            sectionDiv.className = "oci-family-section";
+            sectionDiv.setAttribute("data-family", family.id);
+
+            /* Separator between sections */
+            if (sectionsRendered > 1) {
+              var hr = document.createElement("hr");
+              hr.className = "oci-separator";
+              familiesContainer.appendChild(hr);
+            }
+
+            /* Family title */
+            var titleH3 = document.createElement("h3");
+            titleH3.className = "oci-family-title";
+            var version = data.version || (data.info && data.info.version) || "";
+            titleH3.innerHTML = (data.title || family.title)
+              + ' <span class="oci-badge">(' + iconNames.length + " icons"
+              + (version ? " · v" + version : "") + ")</span>";
+            sectionDiv.appendChild(titleH3);
+
+            /* Syntax line */
+            var syntaxP = document.createElement("p");
+            syntaxP.className = "oci-family-syntax";
+            syntaxP.innerHTML = 'Syntax: <code>data-icon="' + prefix + ':name"</code>';
+            sectionDiv.appendChild(syntaxP);
+
+            /* Icon grid */
+            var gridDiv = document.createElement("div");
+            gridDiv.className = "oci-grid";
+            iconNames.forEach(function (name) {
+              var div = document.createElement("div");
+              div.className = "oci-item";
+              div.setAttribute("data-name", name);
+              div.setAttribute("data-family", family.id);
+              div.innerHTML = '<span class="iconify size-7" data-icon="' + prefix + ":" + name + '" aria-hidden="true"></span><span class="oci-name">' + name + "</span>";
+              gridDiv.appendChild(div);
+            });
+            sectionDiv.appendChild(gridDiv);
+
+            /* MDI Light sub-section */
+            if (family.hasLight && lightNamesSet.size > 0) {
+              var lightIcons = iconNames.filter(function (n) { return lightNamesSet.has(n); });
+              if (lightIcons.length > 0) {
+                var lightTitle = document.createElement("h4");
+                lightTitle.className = "oci-family-title";
+                lightTitle.style.marginTop = "1.25rem";
+                lightTitle.innerHTML = 'MDI Light <span class="oci-badge">(' + lightIcons.length + " icons)</span>";
+                sectionDiv.appendChild(lightTitle);
+
+                var lightSyntax = document.createElement("p");
+                lightSyntax.className = "oci-family-syntax";
+                lightSyntax.innerHTML = 'Syntax: <code>data-icon="mdi-light:name"</code>';
+                sectionDiv.appendChild(lightSyntax);
+
+                var lightGrid = document.createElement("div");
+                lightGrid.className = "oci-grid";
+                lightIcons.forEach(function (name) {
+                  var div = document.createElement("div");
+                  div.className = "oci-item oci-item--light";
+                  div.setAttribute("data-name", name);
+                  div.setAttribute("data-family", "mdi-light");
+                  div.innerHTML = '<span class="iconify size-7" data-icon="mdi-light:' + name + '" aria-hidden="true"></span><span class="oci-name">mdi-light:' + name + "</span>";
+                  lightGrid.appendChild(div);
+                });
+                sectionDiv.appendChild(lightGrid);
+                totalIcons += lightIcons.length;
+              }
+            }
+
+            familiesContainer.appendChild(sectionDiv);
+          });
+
+          /* ── Update page title ──────────────────────── */
+          if (sectionsRendered === 0) {
+            titleEl.textContent = "Category not found: " + catSlug;
+            heroText.textContent = "No icons found for this category in any icon family.";
+            statusEl.hidden = false;
+            statusEl.textContent = "Try a slug from the catalog sidebar.";
+            return;
+          }
+
+          titleEl.textContent = catNameFound + " (" + totalIcons + " icons)";
+          heroText.innerHTML = sectionsRendered + " icon " + (sectionsRendered === 1 ? "family" : "families")
+            + " with icons in this category.";
+
+          /* Trigger Iconify scan */
+          if (typeof window.iconify !== "undefined") {
+            window.iconify.scan(familiesContainer);
+          }
+        })
+        .catch(function (err) {
+          console.error(err);
+          titleEl.textContent = "Could not load icon data";
+          heroText.textContent = "An error occurred loading the icon collections.";
+          statusEl.hidden = false;
+          statusEl.textContent = err.message || "Unknown error";
+        });
+
+      /* ── Search filter ──────────────────────────────── */
+      var search = document.getElementById("icons-search");
+      if (search) {
+        search.addEventListener("input", function () {
+          var q = (this.value || "").trim().toLowerCase();
+          document.querySelectorAll(".oci-item").forEach(function (el) {
+            var name = (el.getAttribute("data-name") || "").toLowerCase();
+            el.style.display = q === "" || name.indexOf(q) !== -1 ? "" : "none";
+          });
+        });
+      }
+    })();
+  </script>

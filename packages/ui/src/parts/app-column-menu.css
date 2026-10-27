@@ -1,0 +1,85 @@
+/* File: packages/ui/src/parts/app-column-menu.css | Map: menu panel -> title + list -> item states -> footer -> CSS-only column hiding (scope) */
+/* Column menu: a popover with one checkbox per table column (column visibility).
+   CSS-only hiding: wrap the menu and the table in .oc-column-menu-scope and give each checkbox
+   data-col="<column number>". An unchecked box hides that column (th and td) through :has(). */
+
+/* Panel look. Without the popover attribute it is a normal block (e.g. inside a sheet or sidebar). */
+.oc-column-menu {
+  inline-size: 14rem;
+  max-inline-size: calc(100vw - 1rem);
+  padding: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--oc-popover-foreground);
+  background: var(--oc-popover);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.15);
+}
+/* As a popover: in the top layer, tethered to its trigger like the dropdown. */
+.oc-column-menu[popover] {
+  position: fixed;
+  inset: auto;
+  margin: 4px 0 0;
+  position-area: block-end span-inline-start;
+  position-try-fallbacks: flip-block, flip-inline;
+  transition: opacity var(--oc-transition-fast), display var(--oc-transition-fast) allow-discrete, overlay var(--oc-transition-fast) allow-discrete;
+}
+.oc-column-menu[popover]:popover-open {
+  display: block;
+  @starting-style { opacity: 0; }
+}
+
+/* Small heading above the list ("Columns"). */
+.oc-column-menu-title {
+  margin: 0;
+  padding: 0.375rem 0.5rem 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--oc-muted-foreground);
+}
+
+/* The list is a <form>, so a native <button type="reset"> restores the default columns. */
+.oc-column-menu-list { display: grid; gap: 1px; margin: 0; max-block-size: 18rem; overflow-y: auto; }
+
+/* One row: label around a checkbox and the column name. */
+.oc-column-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+  user-select: none;
+}
+.oc-column-menu-item:hover { background: var(--oc-accent); }
+.oc-column-menu-item:has(:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-column-menu-item input { margin: 0; accent-color: var(--oc-primary); }
+/* Locked column (always visible): <input disabled checked>. */
+.oc-column-menu-item:has(input:disabled) { color: var(--oc-muted-foreground); cursor: default; }
+.oc-column-menu-item:has(input:disabled):hover { background: none; }
+
+/* Footer row with "Reset" (type="reset") or other small buttons. */
+.oc-column-menu-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  margin-block-start: 0.375rem;
+  padding-block-start: 0.375rem;
+  border-block-start: 1px solid var(--oc-border);
+}
+
+/* ---- CSS-only column hiding (columns 1 to 10) ---- */
+.oc-column-menu-scope:has([data-col="1"]:not(:checked)) .oc-table :is(th, td):nth-child(1),
+.oc-column-menu-scope:has([data-col="2"]:not(:checked)) .oc-table :is(th, td):nth-child(2),
+.oc-column-menu-scope:has([data-col="3"]:not(:checked)) .oc-table :is(th, td):nth-child(3),
+.oc-column-menu-scope:has([data-col="4"]:not(:checked)) .oc-table :is(th, td):nth-child(4),
+.oc-column-menu-scope:has([data-col="5"]:not(:checked)) .oc-table :is(th, td):nth-child(5),
+.oc-column-menu-scope:has([data-col="6"]:not(:checked)) .oc-table :is(th, td):nth-child(6),
+.oc-column-menu-scope:has([data-col="7"]:not(:checked)) .oc-table :is(th, td):nth-child(7),
+.oc-column-menu-scope:has([data-col="8"]:not(:checked)) .oc-table :is(th, td):nth-child(8),
+.oc-column-menu-scope:has([data-col="9"]:not(:checked)) .oc-table :is(th, td):nth-child(9),
+.oc-column-menu-scope:has([data-col="10"]:not(:checked)) .oc-table :is(th, td):nth-child(10) { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-column-menu[popover] { transition: none; }
+}

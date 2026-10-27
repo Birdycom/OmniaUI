@@ -1,0 +1,71 @@
+/* File: packages/ui/src/parts/media-thumb.css | Map: thumb box (16:9) -> media fill + hover -> badge (top)
+   -> duration (bottom right) -> watch progress (native <progress>) -> ratio modifiers -> watched state -> motion
+   Media thumb: a video preview tile. Works as <a> or <div>; put an <img> (or .oc-media-art) inside. */
+
+.oc-media-thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--oc-radius);
+  background: var(--oc-muted);
+  color: var(--color-white-50);
+  isolation: isolate;
+}
+.oc-media-thumb:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* The picture fills the box. */
+.oc-media-thumb > :is(img, video, .oc-media-art) {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Small dark labels on top of the picture. */
+.oc-media-thumb__badge,
+.oc-media-thumb__duration {
+  position: absolute;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.3rem;
+  background: oklch(from var(--color-black-60) l c h / 0.78);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+.oc-media-thumb__badge { inset-block-start: 0.4rem; inset-inline-start: 0.4rem; }
+.oc-media-thumb__badge--live { background: var(--color-red-60); }
+.oc-media-thumb__duration { inset-block-end: 0.45rem; inset-inline-end: 0.45rem; }
+/* With a progress bar the duration moves up a little. */
+.oc-media-thumb:has(.oc-media-thumb__progress) .oc-media-thumb__duration { inset-block-end: 0.7rem; }
+
+/* Watch progress: a native <progress value max>, drawn as a thin bar on the bottom edge. */
+.oc-media-thumb__progress {
+  position: absolute;
+  inset: auto 0 0;
+  inline-size: 100%;
+  block-size: 0.25rem;
+  border: 0;
+  appearance: none;
+  background: oklch(from var(--color-white-50) l c h / 0.35);
+  color: var(--color-red-60);
+}
+.oc-media-thumb__progress::-webkit-progress-bar { background: transparent; }
+.oc-media-thumb__progress::-webkit-progress-value { background: var(--color-red-60); }
+.oc-media-thumb__progress::-moz-progress-bar { background: var(--color-red-60); }
+
+/* Ratios. */
+.oc-media-thumb--square { aspect-ratio: 1 / 1; }
+.oc-media-thumb--portrait { aspect-ratio: 9 / 16; }
+
+/* Already watched: the picture fades a bit. */
+.oc-media-thumb.is-watched > :is(img, video, .oc-media-art) { opacity: 0.6; }
+
+/* Gentle zoom on hover, only when motion is welcome. */
+@media (prefers-reduced-motion: no-preference) {
+  .oc-media-thumb > :is(img, video, .oc-media-art) { transition: transform var(--oc-transition-normal); }
+  .oc-media-thumb:hover > :is(img, video, .oc-media-art) { transform: scale(1.04); }
+}

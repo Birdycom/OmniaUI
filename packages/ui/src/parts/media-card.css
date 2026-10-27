@@ -1,0 +1,83 @@
+/* File: packages/ui/src/parts/media-card.css | Map: card grid -> body row (avatar | text | menu) -> title (stretched link)
+   -> meta -> menu button -> compact modifier -> hover
+   Media card: a .oc-media-thumb on top, then avatar + title + meta + an overflow menu button.
+   The title link stretches over the whole card (::after), the menu button sits above it. */
+
+.oc-media-card {
+  position: relative;
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  inline-size: 100%;
+  color: var(--oc-foreground);
+}
+
+/* Avatar | text | menu. */
+.oc-media-card__body { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.75rem; align-items: start; }
+.oc-media-card__body:not(:has(.oc-media-card__avatar)) { grid-template-columns: minmax(0, 1fr) auto; }
+
+.oc-media-card__avatar {
+  display: grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--oc-muted);
+  color: var(--oc-foreground);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.oc-media-card__avatar > * { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+.oc-media-card__text { display: grid; gap: 0.2rem; min-inline-size: 0; }
+
+/* Two lines max, then "…". */
+.oc-media-card__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.oc-media-card__title > a { color: inherit; text-decoration: none; }
+.oc-media-card__title > a::after { content: ""; position: absolute; inset: 0; border-radius: var(--oc-radius); }
+.oc-media-card__title > a:focus-visible { outline: none; }
+.oc-media-card__title > a:focus-visible::after { outline: 2px solid var(--oc-ring); outline-offset: 4px; }
+
+.oc-media-card__meta { margin: 0; font-size: 0.8125rem; color: var(--oc-muted-foreground); }
+.oc-media-card__meta > a { position: relative; z-index: 1; color: inherit; text-decoration: none; }
+.oc-media-card__meta > a:hover { color: var(--oc-foreground); }
+
+/* Overflow menu (⋮): above the stretched link, so it gets its own clicks. */
+.oc-media-card__menu {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.oc-media-card__menu:hover { background: var(--oc-surface-strong); color: var(--oc-foreground); }
+.oc-media-card__menu:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+/* Compact: smaller avatar and text, e.g. for a dense grid. */
+.oc-media-card--compact { gap: 0.5rem; }
+.oc-media-card--compact .oc-media-card__avatar { inline-size: 1.75rem; }
+.oc-media-card--compact .oc-media-card__title { font-size: 0.875rem; }
+
+/* Hovering the card zooms its thumb a little (the stretched link covers the thumb). */
+@media (prefers-reduced-motion: no-preference) {
+  .oc-media-card:hover .oc-media-thumb > :is(img, video, .oc-media-art) { transform: scale(1.04); }
+}

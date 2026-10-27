@@ -1,0 +1,25 @@
+<!-- OmniaUI component: context-menu - Context menu: dropdown menu at the pointer with a minimal documented script. Needs @birdycom/omniaui CSS.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-dropdown-menu.oc-context-menu[popover]: the menu (role="menu"); position from --oc-context-x / --oc-context-y
+       .oc-context-area: dashed right-click target (demo styling)
+       Script: contextmenu -> preventDefault, set the two variables, showPopover()
+-->
+<div class="oc-context-area" id="oc-ctx-area" tabindex="0">Right-click (or press the menu key) here</div>
+<div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover role="menu" aria-label="Actions">
+  <button class="oc-dropdown-item" type="button" role="menuitem">Back <span class="oc-dropdown-shortcut">Alt &larr;</span></button>
+  <button class="oc-dropdown-item" type="button" role="menuitem">Reload <span class="oc-dropdown-shortcut">Ctrl R</span></button>
+  <div class="oc-dropdown-separator" role="separator"></div>
+  <button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true">Show bookmarks</button>
+  <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem">Delete</button>
+</div>
+<script>
+(function () {
+  var area = document.getElementById('oc-ctx-area'), menu = document.getElementById('oc-ctx-menu');
+  area.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    menu.style.setProperty('--oc-context-x', Math.min(e.clientX, innerWidth - 220) + 'px');
+    menu.style.setProperty('--oc-context-y', Math.min(e.clientY, innerHeight - 220) + 'px');
+    menu.showPopover();
+  });
+})();
+</script>

@@ -1,0 +1,54 @@
+/* File: packages/ui/src/parts/site-timeline.css
+   Map: item + marker dot -> date / title / text -> current item -> size modifier
+   Timeline component. The base .oc-timeline (vertical line, <strong> + <span> rows) lives in showcase.css.
+   This part only ADDS elements and modifiers, so the simple showcase markup keeps working unchanged. */
+
+/* One entry. The dot sits on the vertical line of .oc-timeline (its padding-inline-start is 1.25rem). */
+.oc-timeline__item {
+  position: relative;
+  padding-block-end: 0.25rem;
+}
+.oc-timeline__item::before {
+  content: "";
+  position: absolute;
+  /* Center the 0.7rem dot on the 1px line: padding (1.25rem) + half the dot (0.35rem) + half the line. */
+  inset-inline-start: calc(-1.25rem - 0.35rem - 0.5px);
+  inset-block-start: 0.35rem;
+  inline-size: 0.7rem;
+  aspect-ratio: 1;
+  border: 2px solid var(--oc-accent-from);
+  border-radius: 50%;
+  background: var(--oc-background);
+}
+
+/* Date or year label (use a <time> element when it is a real date).
+   Scoped under .oc-timeline so it wins over the showcase rules ".oc-timeline span / strong". */
+.oc-timeline .oc-timeline__date {
+  color: var(--oc-accent-from);
+  font-family: var(--oc-font-mono);
+  font-size: 0.85rem;
+}
+.oc-timeline .oc-timeline__title {
+  margin: 0;
+  color: var(--oc-foreground);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.oc-timeline .oc-timeline__text {
+  margin: 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* Current / latest entry: filled dot with a soft ring in the accent color. */
+.oc-timeline__item--current::before {
+  background: var(--oc-accent-from);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--oc-accent-from) 25%, transparent);
+}
+
+/* Larger spacing between entries (about pages, long histories). */
+.oc-timeline--lg { gap: 1.75rem; }
+
+/* Line in the accent color instead of the neutral border. */
+.oc-timeline--accent { border-inline-start-color: color-mix(in oklch, var(--oc-accent-from) 55%, transparent); }

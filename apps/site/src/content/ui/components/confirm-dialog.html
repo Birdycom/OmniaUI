@@ -1,0 +1,103 @@
+<!--oc-page {"title": "OmniaUI - Confirm dialog", "category": "App UX", "description": "Alert dialog variant that asks to confirm a (destructive) action.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/confirm-dialog.html | Map: hero -> typed confirm demo -> discard (three buttons) demo -> reference -> browser support -> source & further reading -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Confirm dialog</h1>
+        <p class="oc-hero-text">A variant of the <a href="alert-dialog.html">alert dialog</a>. Add <code>.oc-alert-dialog--confirm</code> for a larger icon ring, a close button, an optional typed confirmation and a third "discard" action. It is a native <code>&lt;dialog&gt;</code> with a <code>&lt;form method="dialog"&gt;</code>, so no JavaScript is needed. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Typed confirmation</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">CSS variant</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">parts/app-confirm-dialog.css</span>
+          <p class="oc-section-header__desc">For actions that cannot be undone. The input has <code>pattern="DELETE" required</code>; the confirm button is a submit button, so the browser blocks it until the word matches. Until then it looks disabled. Snippet: <code>packages/ui/snippets/confirm-dialog.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Typed confirmation">
+<button class="oc-btn oc-btn--destructive" type="button" command="show-modal" commandfor="oc-confirm-dialog-docs">Delete project</button>
+
+<dialog class="oc-modal" id="oc-confirm-dialog-docs" closedby="any" aria-labelledby="oc-confirm-dialog-docs-title" aria-describedby="oc-confirm-dialog-docs-text">
+  <div class="oc-modal-content oc-alert-dialog oc-alert-dialog--error oc-alert-dialog--confirm">
+    <button class="oc-alert-dialog-close" type="button" command="close" commandfor="oc-confirm-dialog-docs" aria-label="Close">&times;</button>
+    <span class="oc-alert-dialog-icon" aria-hidden="true">&times;</span>
+    <h2 class="oc-modal-title" id="oc-confirm-dialog-docs-title">Delete "Kitchen renovation"?</h2>
+    <form class="oc-alert-dialog-form" method="dialog">
+      <div class="oc-modal-body" id="oc-confirm-dialog-docs-text">This removes the project, its quotes and all files. This cannot be undone.</div>
+      <label class="oc-alert-dialog-typed">
+        <span>Type <code>DELETE</code> to confirm</span>
+        <input class="oc-input" name="confirm" pattern="DELETE" required autocomplete="off">
+      </label>
+      <div class="oc-modal-footer">
+        <button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="oc-confirm-dialog-docs">Cancel</button>
+        <button class="oc-btn oc-btn--destructive oc-alert-dialog-confirm" type="submit" value="confirm">Delete project</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+          </oc-demo>
+
+          <h3 id="discard">Three buttons: discard, cancel, save</h3>
+          <p class="desc">For unsaved changes. <code>.oc-alert-dialog-discard</code> goes to the start of the footer. Each submit button has a <code>value</code>; read <code>dialog.returnValue</code> after the <code>close</code> event to know which one was pressed. On narrow screens the buttons stack, with the main action on top.</p>
+          <oc-demo title="Unsaved changes">
+<button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="oc-confirm-dialog-save">Leave page</button>
+
+<dialog class="oc-modal" id="oc-confirm-dialog-save" closedby="any" aria-labelledby="oc-confirm-dialog-save-title" aria-describedby="oc-confirm-dialog-save-text">
+  <div class="oc-modal-content oc-alert-dialog oc-alert-dialog--question oc-alert-dialog--confirm">
+    <button class="oc-alert-dialog-close" type="button" command="close" commandfor="oc-confirm-dialog-save" aria-label="Close">&times;</button>
+    <span class="oc-alert-dialog-icon" aria-hidden="true">?</span>
+    <h2 class="oc-modal-title" id="oc-confirm-dialog-save-title">Save your changes?</h2>
+    <form class="oc-alert-dialog-form" method="dialog">
+      <div class="oc-modal-body" id="oc-confirm-dialog-save-text">You changed the quote. Leaving now loses those changes.</div>
+      <div class="oc-modal-footer">
+        <button class="oc-btn oc-btn--ghost oc-alert-dialog-discard" type="submit" value="discard">Don't save</button>
+        <button class="oc-btn oc-btn--outline" type="submit" value="cancel">Cancel</button>
+        <button class="oc-btn" type="submit" value="save">Save</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Adds to the alert dialog classes. Types: <code>--success</code>, <code>--error</code>, <code>--warning</code>, <code>--info</code>, <code>--question</code>. Slots: icon, title, message, typed field, footer buttons.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-alert-dialog--confirm</code></td><td>On the content box: thin 80px icon ring, wider box, wrapping footer</td></tr>
+              <tr><td><code>.oc-alert-dialog-close</code></td><td>X button in the top corner (<code>command="close"</code>)</td></tr>
+              <tr><td><code>form.oc-alert-dialog-form[method=dialog]</code></td><td>Wraps body and footer; a submit closes the dialog with its <code>value</code></td></tr>
+              <tr><td><code>.oc-alert-dialog-typed</code></td><td>Label + input with <code>pattern</code> and <code>required</code></td></tr>
+              <tr><td><code>.oc-alert-dialog-confirm</code></td><td>Confirm (submit) button; dimmed while the typed value is invalid</td></tr>
+              <tr><td><code>.oc-alert-dialog-discard</code></td><td>Third action at the start of the footer</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+          <p class="oc-section-header__desc">The <code>command</code> / <code>commandfor</code> buttons open and close the dialog without script. In older browsers add a one-line click handler that calls <code>showModal()</code>.</p>
+        </div>
+        <div class="oc-section-content"><oc-compat features="html.elements.dialog html.elements.button.command html.elements.input.pattern css.selectors.has"></oc-compat></div>
+      </section>
+
+      <section class="oc-docs-section" id="source">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Source &amp; further reading</h2>
+          <p class="oc-section-header__desc">CSS: <code>packages/ui/src/parts/app-confirm-dialog.css</code> (on top of the alert dialog). Wrappers: React <code>ConfirmDialog</code>, Vue <code>OcConfirmDialog</code>, Blade <code>&lt;x-oc::confirm-dialog&gt;</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <ul class="oc-docs-list">
+            <li><a class="source-link" href="alert-dialog.html">Alert dialog</a></li>
+            <li><a class="source-link" href="modal.html">Modal / Dialog</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog" target="_blank" rel="noopener">MDN: dialog</a></li>
+          </ul>
+        </div>
+      </section>

@@ -1,0 +1,78 @@
+/* File: packages/ui/src/parts/media-flip-card.css | Map: card (perspective) -> hidden checkbox -> inner (3D) -> faces
+   -> flip label -> flipped states (checkbox, .is-flipped, --hover) -> vertical -> reduced motion (cross-fade)
+   Flip card: front and back in one grid cell; the inner layer turns 180deg. Triggers: a checkbox (CSS :has()),
+   hover / focus (--hover) or the .is-flipped class for frameworks. No JavaScript. */
+
+.oc-flip-card {
+  --oc-flip-card-turn: rotateY(180deg);
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  perspective: 60rem;
+}
+
+/* The checkbox stays in the page (focusable, Space toggles) but is invisible. */
+.oc-flip-card__toggle { position: absolute; inline-size: 1px; block-size: 1px; margin: 0; opacity: 0; pointer-events: none; }
+
+.oc-flip-card__inner {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+/* Both faces share one grid cell, so the card is as tall as the taller face. */
+.oc-flip-card__face {
+  position: relative;
+  grid-area: 1 / 1;
+  display: grid;
+  align-content: center;
+  gap: 0.5rem;
+  min-block-size: 10rem;
+  padding: 1.25rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  backface-visibility: hidden;
+}
+.oc-flip-card__face--back {
+  transform: var(--oc-flip-card-turn);
+  border-color: transparent;
+  background: var(--oc-primary);
+  color: var(--oc-primary-foreground);
+}
+.oc-flip-card__title { margin: 0; font-size: 1.25rem; font-weight: 700; }
+.oc-flip-card__text { margin: 0; font-size: 0.875rem; opacity: 0.85; }
+
+/* Flip label ("Show answer"): its ::after covers the face, so a click anywhere flips. */
+.oc-flip-card__flip { justify-self: start; font-size: 0.8125rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.oc-flip-card__flip::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+
+/* Keyboard focus on the checkbox (or inside a --hover card) rings the card. */
+.oc-flip-card:has(.oc-flip-card__toggle:focus-visible) .oc-flip-card__face,
+.oc-flip-card--hover:focus-visible .oc-flip-card__face { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-flip-card--hover:focus-visible { outline: none; }
+
+/* Flipped: checkbox checked, .is-flipped, or hover / focus on a --hover card. */
+.oc-flip-card:has(> .oc-flip-card__toggle:checked) .oc-flip-card__inner,
+.oc-flip-card.is-flipped .oc-flip-card__inner,
+.oc-flip-card--hover:is(:hover, :focus-within) .oc-flip-card__inner { transform: var(--oc-flip-card-turn); }
+
+/* Vertical flip (top over bottom). */
+.oc-flip-card--vertical { --oc-flip-card-turn: rotateX(180deg); }
+
+/* Reduced motion: no turning. The faces simply cross-fade. */
+@media (prefers-reduced-motion: reduce) {
+  .oc-flip-card .oc-flip-card__inner { transform: none; transition: none; }
+  .oc-flip-card .oc-flip-card__face { transform: none; transition: opacity 0.2s, visibility 0.2s; }
+  .oc-flip-card .oc-flip-card__face--back { opacity: 0; visibility: hidden; }
+  .oc-flip-card:has(> .oc-flip-card__toggle:checked) .oc-flip-card__inner,
+  .oc-flip-card.is-flipped .oc-flip-card__inner,
+  .oc-flip-card--hover:is(:hover, :focus-within) .oc-flip-card__inner { transform: none; }
+  .oc-flip-card:has(> .oc-flip-card__toggle:checked) .oc-flip-card__face--front,
+  .oc-flip-card.is-flipped .oc-flip-card__face--front,
+  .oc-flip-card--hover:is(:hover, :focus-within) .oc-flip-card__face--front { opacity: 0; visibility: hidden; }
+  .oc-flip-card:has(> .oc-flip-card__toggle:checked) .oc-flip-card__face--back,
+  .oc-flip-card.is-flipped .oc-flip-card__face--back,
+  .oc-flip-card--hover:is(:hover, :focus-within) .oc-flip-card__face--back { opacity: 1; visibility: visible; }
+}

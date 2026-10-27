@@ -1,0 +1,75 @@
+/* File: packages/ui/src/parts/site-price-card.css
+   Map: card -> head + discount badge -> period toggle -> monthly / yearly price (:has) -> features -> featured
+   Price card: one plan with a monthly / yearly switch (radio inputs + :has(), no JavaScript).
+   The toggle is the segmented component; give every card its own radio name. */
+
+.oc-price-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.75rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+}
+
+.oc-price-card__head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.oc-price-card__name { margin: 0; font-size: 1.2rem; font-weight: 700; }
+.oc-price-card__desc { margin: 0; color: var(--oc-muted-foreground); font-size: 0.92rem; }
+
+/* Discount badge ("Save 20%"). It is dimmed while the monthly price shows. */
+.oc-price-card__discount {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--oc-success) 16%, transparent);
+  color: var(--oc-success);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.oc-price-card:has(.oc-price-card__toggle input[value="monthly"]:checked) .oc-price-card__discount { opacity: 0.55; }
+
+.oc-price-card__toggle { align-self: flex-start; }
+
+/* Price rows: monthly shows by default, yearly when its radio is checked. */
+.oc-price-card__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin: 0;
+}
+.oc-price-card__price--yearly { display: none; }
+.oc-price-card:has(.oc-price-card__toggle input[value="yearly"]:checked) .oc-price-card__price--yearly { display: flex; }
+.oc-price-card:has(.oc-price-card__toggle input[value="yearly"]:checked) .oc-price-card__price--monthly { display: none; }
+
+.oc-price-card__amount { font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+.oc-price-card__period { color: var(--oc-muted-foreground); font-size: 0.9rem; }
+/* Old price, struck through. */
+.oc-price-card__was { color: var(--oc-muted-foreground); font-size: 0.95rem; }
+.oc-price-card__note { flex-basis: 100%; color: var(--oc-muted-foreground); font-size: 0.8rem; }
+
+/* Features: a check for included, a cross + muted text for excluded. */
+.oc-price-card__features {
+  display: grid;
+  gap: 0.55rem;
+  flex-grow: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.92rem;
+}
+.oc-price-card__feature { display: flex; align-items: baseline; gap: 0.55rem; }
+.oc-price-card__feature::before { content: "✓"; flex-shrink: 0; color: var(--oc-success); font-weight: 700; }
+.oc-price-card__feature--excluded { color: var(--oc-muted-foreground); }
+.oc-price-card__feature--excluded::before { content: "✕"; color: var(--oc-muted-foreground); font-weight: 400; }
+
+.oc-price-card__cta { inline-size: 100%; }
+
+/* Featured plan: accent border + soft glow. */
+.oc-price-card--featured {
+  border-color: color-mix(in oklch, var(--oc-accent-from) 60%, transparent);
+  box-shadow: 0 24px 60px -30px var(--oc-accent-from);
+}

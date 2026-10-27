@@ -1,0 +1,75 @@
+/* File: packages/ui/src/parts/forms-barcode-input.css
+   Map: wrapper (field + preview stacked) -> monospace field -> preview area -> placeholder bars -> code caption -> empty / invalid states
+   Barcode input: a field for an EAN/article code and a preview area below it.
+   The preview slot shows CSS placeholder bars; put a real <svg>/<canvas> barcode in it if you render one. */
+
+/* Wrapper: field on top, preview below. */
+.oc-barcode-input {
+  display: grid;
+  gap: 0.5rem;
+  max-inline-size: 22rem;
+}
+
+/* Field: add next to .oc-input, inside the affix group (icon column + value). */
+.oc-barcode-input-field {
+  min-inline-size: 0;
+}
+
+.oc-barcode-input-field:user-invalid { border-color: var(--oc-destructive); }
+
+/* Preview area: light card with the bars and the code text. */
+.oc-barcode-preview {
+  display: grid;
+  justify-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px dashed var(--oc-border-strong);
+  border-radius: var(--oc-radius);
+  background: var(--oc-surface);
+}
+
+/* Real barcode graphics placed in the slot scale to the preview width. */
+.oc-barcode-preview > svg,
+.oc-barcode-preview > canvas,
+.oc-barcode-preview > img {
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+/* Placeholder bars: a decorative stripe pattern (not a scannable code). */
+.oc-barcode-preview-bars {
+  inline-size: 100%;
+  block-size: 3.5rem;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--oc-foreground) 0 2px,
+    transparent 2px 4px,
+    var(--oc-foreground) 4px 5px,
+    transparent 5px 8px,
+    var(--oc-foreground) 8px 11px,
+    transparent 11px 12px
+  );
+}
+
+/* Code text under the bars. */
+.oc-barcode-preview-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--oc-foreground);
+}
+
+/* Empty state: faded bars and a hint instead of the code. */
+.oc-barcode-preview--empty .oc-barcode-preview-bars { opacity: 0.15; }
+.oc-barcode-preview--empty .oc-barcode-preview-code {
+  font-family: inherit;
+  letter-spacing: 0;
+  color: var(--oc-muted-foreground);
+}
+
+/* Field invalid: the preview border turns red as well. */
+.oc-barcode-input:has(.oc-barcode-input-field:user-invalid) .oc-barcode-preview,
+.oc-barcode-input:has([aria-invalid="true"]) .oc-barcode-preview {
+  border-color: var(--oc-destructive);
+}

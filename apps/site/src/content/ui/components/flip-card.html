@@ -1,0 +1,128 @@
+<!--oc-page {"title": "OmniaUI - Flip card", "category": "Media", "description": "Card with a front and back that turns over in 3D.", "nav": "Flip card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/flip-card.html | Map: hero -> demo (checkbox) -> hover / vertical -> how it works -> a11y -> reference -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Flip card</h1>
+        <p class="oc-hero-text">A card with a front and a back that turns over in 3D: flash cards, "reveal the answer", product details. It flips on a <strong>checkbox</strong> (click or <kbd>Space</kbd>), on <strong>hover and focus</strong>, or with the <code>.is-flipped</code> class. With reduced motion the faces simply cross-fade. No JavaScript. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">Component</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/flip-card.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.6.0</span>
+          <p class="oc-section-header__desc">Click the card (or <kbd>Tab</kbd> to it and press <kbd>Space</kbd>).</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Checkbox toggle">
+<div class="oc-flip-card" style="max-inline-size:18rem">
+  <input type="checkbox" class="oc-flip-card__toggle" id="oc-flip-demo">
+  <div class="oc-flip-card__inner">
+    <div class="oc-flip-card__face oc-flip-card__face--front">
+      <p class="oc-flip-card__text">Translate</p>
+      <h3 class="oc-flip-card__title">la mariposa</h3>
+      <label class="oc-flip-card__flip" for="oc-flip-demo">Show answer</label>
+    </div>
+    <div class="oc-flip-card__face oc-flip-card__face--back">
+      <p class="oc-flip-card__text">Spanish → English</p>
+      <h3 class="oc-flip-card__title">the butterfly</h3>
+      <label class="oc-flip-card__flip" for="oc-flip-demo">Back to question</label>
+    </div>
+  </div>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="hover">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Hover and focus, vertical</h2>
+          <p class="oc-section-header__desc"><code>--hover</code> flips while the pointer is on the card or while it has keyboard focus (<code>tabindex="0"</code>). <code>--vertical</code> turns it top over bottom.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Hover and vertical">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:1rem;inline-size:100%">
+  <div class="oc-flip-card oc-flip-card--hover" tabindex="0" aria-label="Glyph card: hover or focus for the meaning">
+    <div class="oc-flip-card__inner">
+      <div class="oc-flip-card__face oc-flip-card__face--front"><h3 class="oc-flip-card__title" style="font-size:2.5rem">&#9737;</h3><p class="oc-flip-card__text">Hover me</p></div>
+      <div class="oc-flip-card__face oc-flip-card__face--back"><h3 class="oc-flip-card__title">Sun</h3><p class="oc-flip-card__text">A circle with a dot: the sun, a day.</p></div>
+    </div>
+  </div>
+  <div class="oc-flip-card oc-flip-card--hover oc-flip-card--vertical" tabindex="0" aria-label="Plan card: hover or focus for the price">
+    <div class="oc-flip-card__inner">
+      <div class="oc-flip-card__face oc-flip-card__face--front"><h3 class="oc-flip-card__title">Pro plan</h3><p class="oc-flip-card__text">Everything a small team needs.</p></div>
+      <div class="oc-flip-card__face oc-flip-card__face--back"><h3 class="oc-flip-card__title">€12 / month</h3><p class="oc-flip-card__text">Billed yearly. Cancel any time.</p></div>
+    </div>
+  </div>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="how">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">How it works</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li><strong>One cell</strong>: both faces sit in <code>grid-area: 1 / 1</code>, so the card is as tall as the taller face. No fixed height needed.</li>
+<li><strong>3D</strong>: <code>perspective</code> on the card, <code>transform-style: preserve-3d</code> on the inner layer, <code>backface-visibility: hidden</code> on the faces. The back starts at <code>rotateY(180deg)</code>.</li>
+<li><strong>Toggle</strong>: <code>.oc-flip-card:has(&gt; .oc-flip-card__toggle:checked)</code> turns the inner layer. The flip labels point at the checkbox and their <code>::after</code> covers the face, so a click anywhere flips.</li>
+<li><strong>Reduced motion</strong>: under <code>prefers-reduced-motion: reduce</code> nothing rotates; the front fades out and the back fades in.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="a11y">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Accessibility and keyboard</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li>The toggle is a real checkbox named by its label ("Show answer"): <kbd>Tab</kbd> focuses it, <kbd>Space</kbd> flips. The focus ring is drawn on the card.</li>
+<li><code>backface-visibility</code> only hides the back visually: screen readers read both faces. That suits flash cards; hide the back with <code>aria-hidden</code> from a script if the answer must stay secret.</li>
+<li>Hover cards need <code>tabindex="0"</code> and a label, so keyboard users can flip them too.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/media-flip-card.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-flip-card</code></td><td>Card with perspective; <code>--hover</code>, <code>--vertical</code>, <code>.is-flipped</code></td></tr>
+              <tr><td><code>input.oc-flip-card__toggle</code></td><td>Hidden checkbox that flips the card</td></tr>
+              <tr><td><code>.oc-flip-card__inner</code></td><td>The layer that turns</td></tr>
+              <tr><td><code>.oc-flip-card__face--front / --back</code></td><td>The two sides (back uses the primary color)</td></tr>
+              <tr><td><code>.oc-flip-card__title / __text</code></td><td>Text styles inside a face</td></tr>
+              <tr><td><code>label.oc-flip-card__flip</code></td><td>"Show answer" label; covers the face</td></tr>
+              <tr><td><code>--oc-flip-card-turn</code></td><td>The flipped transform (default <code>rotateY(180deg)</code>)</td></tr>
+            </tbody>
+          </table>
+          <div class="oc-section-content oc-browser-support">
+            <h3 class="oc-section-content__title" id="browser-support">Browser support</h3>
+            <oc-compat features="css.properties.backface-visibility css.properties.transform-style css.properties.perspective css.selectors.has css.at-rules.media.prefers-reduced-motion"></oc-compat>
+          </div>
+          <div class="oc-section-footer">
+            <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+            <p class="oc-section-footer__desc">Based on the flash cards of the Thoth app. See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/backface-visibility" target="_blank" rel="noopener">MDN: backface-visibility</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" target="_blank" rel="noopener">MDN: prefers-reduced-motion</a>.</p>
+            <div class="oc-section-content">
+              <h3 class="oc-section-content__title">Files</h3>
+              <table class="oc-table-ref">
+                <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+                <tbody>
+                  <tr><td><code>packages/ui/src/parts/media-flip-card.css</code></td><td>Styles</td></tr>
+                  <tr><td><code>packages/ui/snippets/flip-card.html</code></td><td>Markup</td></tr>
+                  <tr><td><code>packages/react/src/components/FlipCard.tsx</code> · <code>packages/vue/src/components/OcFlipCard.vue</code></td><td>React and Vue wrappers</td></tr>
+                  <tr><td><code>php-packages/omniaui-laravel/resources/views/components/flip-card.blade.php</code></td><td><code>&lt;x-oc::flip-card&gt;</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>

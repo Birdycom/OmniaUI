@@ -1,0 +1,46 @@
+<!-- OmniaUI component: chart-line — Line and area chart in inline SVG with axes, legend and tooltips on hover and focus. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/chart-line.html | Map: figure -> head (title, sub) -> body (y axis, plot: svg series + hover columns, x axis) -> legend
+     Class API (modifiers are extra classes / attributes on the same element):
+       figure.oc-chart-line: Chart. Height from --oc-chart-line-height (12rem). Modifiers: --area (filled areas), --dots (dots always
+         visible), --spark (no axes or grid; 3rem high)
+       .oc-chart-line__head > .oc-chart-line__title, .oc-chart-line__sub, .oc-chart-line__value
+       .oc-chart-line__body > ul.oc-chart-line__y (labels top to bottom), .oc-chart-line__plot, ol.oc-chart-line__x
+       .oc-chart-line__plot (--oc-chart-line-rows: number of gridline rows, 4) > svg.oc-chart-line__svg (viewBox="0 0 100 100"
+         preserveAspectRatio="none") > g.oc-chart-line__series (color by position: --oc-chart-1..5) > path.oc-chart-line__area +
+         path.oc-chart-line__path (--dashed). Coordinates: x = index / (count - 1) * 100, y = 100 - value / max * 100
+       ul.oc-chart-line__cols (--n: number of points) > li.oc-chart-line__col (--x: index, tabindex="0", aria-label with the values)
+         > i.oc-chart-line__dot (--y: value / max in %, one per series) + span.oc-chart-line__tip > strong + span.oc-chart-line__row > b
+       .oc-chart-legend (chart component) below the plot: the swatch colors follow the same order
+     No JavaScript: tooltips open on :hover and :focus-visible. Generate the paths and percentages on the server or at build time.
+-->
+<figure class="oc-chart-line oc-chart-line--dots" style="max-inline-size:40rem">
+  <figcaption class="oc-chart-line__head">
+    <span class="oc-chart-line__title">Visitors</span>
+    <span class="oc-chart-line__sub">January – June 2026</span>
+  </figcaption>
+  <div class="oc-chart-line__body">
+    <ul class="oc-chart-line__y" aria-hidden="true"><li>320</li><li>240</li><li>160</li><li>80</li><li>0</li></ul>
+    <div class="oc-chart-line__plot">
+      <svg class="oc-chart-line__svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <g class="oc-chart-line__series">
+          <path class="oc-chart-line__area" d="M0 41.87 C3.33 35.68 13.33 7.34 20 4.69 C26.67 4.69 33.33 13.85 40 25.94 C46.67 38.02 53.33 75.73 60 77.19 C66.67 77.19 73.33 42.03 80 34.69 C86.67 33.13 96.67 33.39 100 33.13 L100 100 L0 100 Z"/>
+          <path class="oc-chart-line__path" d="M0 41.87 C3.33 35.68 13.33 7.34 20 4.69 C26.67 4.69 33.33 13.85 40 25.94 C46.67 38.02 53.33 75.73 60 77.19 C66.67 77.19 73.33 42.03 80 34.69 C86.67 33.13 96.67 33.39 100 33.13"/>
+        </g>
+        <g class="oc-chart-line__series">
+          <path class="oc-chart-line__area" d="M0 75 C3.33 68.75 13.33 39.58 20 37.5 C26.67 37.5 33.33 61.98 40 62.5 C46.67 62.5 53.33 41.15 60 40.63 C66.67 40.63 73.33 56.77 80 59.38 C86.67 59.38 96.67 56.77 100 56.25 L100 100 L0 100 Z"/>
+          <path class="oc-chart-line__path" d="M0 75 C3.33 68.75 13.33 39.58 20 37.5 C26.67 37.5 33.33 61.98 40 62.5 C46.67 62.5 53.33 41.15 60 40.63 C66.67 40.63 73.33 56.77 80 59.38 C86.67 59.38 96.67 56.77 100 56.25"/>
+        </g>
+      </svg>
+      <ul class="oc-chart-line__cols" style="--n:6" aria-label="Visitors per month">
+        <li class="oc-chart-line__col" style="--x:0" tabindex="0" aria-label="January: Desktop 186, Mobile 80"><i class="oc-chart-line__dot" style="--y:58.13%"></i><i class="oc-chart-line__dot" style="--y:25%"></i><span class="oc-chart-line__tip" aria-hidden="true"><strong>January</strong><span class="oc-chart-line__row">Desktop<b>186</b></span><span class="oc-chart-line__row">Mobile<b>80</b></span></span></li>
+        <li class="oc-chart-line__col" style="--x:1" tabindex="0" aria-label="February: Desktop 305, Mobile 200"><i class="oc-chart-line__dot" style="--y:95.31%"></i><i class="oc-chart-line__dot" style="--y:62.5%"></i><span class="oc-chart-line__tip" aria-hidden="true"><strong>February</strong><span class="oc-chart-line__row">Desktop<b>305</b></span><span class="oc-chart-line__row">Mobile<b>200</b></span></span></li>
+        <li class="oc-chart-line__col" style="--x:2" tabindex="0" aria-label="March: Desktop 237, Mobile 120"><i class="oc-chart-line__dot" style="--y:74.06%"></i><i class="oc-chart-line__dot" style="--y:37.5%"></i><span class="oc-chart-line__tip" aria-hidden="true"><strong>March</strong><span class="oc-chart-line__row">Desktop<b>237</b></span><span class="oc-chart-line__row">Mobile<b>120</b></span></span></li>
+        <li class="oc-chart-line__col" style="--x:3" tabindex="0" aria-label="April: Desktop 73, Mobile 190"><i class="oc-chart-line__dot" style="--y:22.81%"></i><i class="oc-chart-line__dot" style="--y:59.38%"></i><span class="oc-chart-line__tip" aria-hidden="true"><strong>April</strong><span class="oc-chart-line__row">Desktop<b>73</b></span><span class="oc-chart-line__row">Mobile<b>190</b></span></span></li>
+        <li class="oc-chart-line__col" style="--x:4" tabindex="0" aria-label="May: Desktop 209, Mobile 130"><i class="oc-chart-line__dot" style="--y:65.31%"></i><i class="oc-chart-line__dot" style="--y:40.63%"></i><span class="oc-chart-line__tip" aria-hidden="true"><strong>May</strong><span class="oc-chart-line__row">Desktop<b>209</b></span><span class="oc-chart-line__row">Mobile<b>130</b></span></span></li>
+        <li class="oc-chart-line__col" style="--x:5" tabindex="0" aria-label="June: Desktop 214, Mobile 140"><i class="oc-chart-line__dot" style="--y:66.88%"></i><i class="oc-chart-line__dot" style="--y:43.75%"></i><span class="oc-chart-line__tip" aria-hidden="true"><strong>June</strong><span class="oc-chart-line__row">Desktop<b>214</b></span><span class="oc-chart-line__row">Mobile<b>140</b></span></span></li>
+      </ul>
+    </div>
+    <ol class="oc-chart-line__x" aria-hidden="true"><li>Jan</li><li>Feb</li><li>Mar</li><li>Apr</li><li>May</li><li>Jun</li></ol>
+  </div>
+  <ul class="oc-chart-legend"><li><span class="oc-chart-swatch"></span>Desktop</li><li><span class="oc-chart-swatch"></span>Mobile</li></ul>
+</figure>

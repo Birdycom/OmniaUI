@@ -1,0 +1,102 @@
+<!--oc-page {"title": "OmniaUI - Sortable row", "category": "Data", "description": "Drag grip, dragging state and drop line for reorderable table rows.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/sortable-row.html | Map: hero -> states demo -> keyboard state demo -> behaviour notes -> reference -> browser support -> source & further reading -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Sortable row</h1>
+        <p class="oc-hero-text">A table row with a drag grip. This component is styling only: the grip, the row being dragged and the drop line. You add the behaviour with native HTML drag and drop (or a small library) and set the state classes. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Drag states</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">CSS component</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">parts/app-sortable-row.css</span>
+          <p class="oc-section-header__desc">Row 2 shows <code>.is-dragging</code> (being moved). Row 3 shows <code>.is-drop-after</code> (the line where it will land). The last row is locked: its grip is <code>disabled</code>. Snippet: <code>packages/ui/snippets/sortable-row.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Sortable rows">
+<div class="oc-table-wrap">
+  <table class="oc-table">
+    <thead><tr><th class="oc-sortable-row-grip-cell"><span class="oc-visually-hidden">Order</span></th><th>Step</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr class="oc-sortable-row" draggable="true">
+        <td class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Measure the room"></button></td>
+        <td>Measure the room</td><td>Ada</td>
+      </tr>
+      <tr class="oc-sortable-row is-dragging" draggable="true">
+        <td class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Order materials"></button></td>
+        <td>Order materials</td><td>Alan</td>
+      </tr>
+      <tr class="oc-sortable-row is-drop-after" draggable="true">
+        <td class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Install"></button></td>
+        <td>Install</td><td>Grace</td>
+      </tr>
+      <tr class="oc-sortable-row">
+        <td class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Final check (locked)" disabled></button></td>
+        <td>Final check</td><td>Ada</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+          </oc-demo>
+
+          <h3 id="keyboard">Keyboard pick-up</h3>
+          <p class="desc">Drag and drop is not usable with a keyboard. Give the grip a key handler: <kbd>Space</kbd> picks the row up (<code>aria-pressed="true"</code> on the grip highlights the row), arrow keys move it, <kbd>Space</kbd> drops it. Announce the new position in a live region.</p>
+          <oc-demo title="Picked up with the keyboard">
+<table class="oc-table">
+  <tbody>
+    <tr class="oc-sortable-row is-drop-before">
+      <td class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Measure the room"></button></td>
+      <td>Measure the room</td>
+    </tr>
+    <tr class="oc-sortable-row">
+      <td class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Install" aria-pressed="true"></button></td>
+      <td>Install (moving up)</td>
+    </tr>
+  </tbody>
+</table>
+          </oc-demo>
+
+          <h3 id="behaviour">Adding the behaviour</h3>
+          <p class="desc">With native drag and drop: on <code>dragstart</code> add <code>.is-dragging</code> to the row; on <code>dragover</code> call <code>preventDefault()</code> and set <code>.is-drop-before</code> or <code>.is-drop-after</code> (top or bottom half of the target); on <code>drop</code> move the row and remove the classes. The React and Vue wrappers take <code>dragging</code> and <code>drop</code> props and pass every drag event through.</p>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">The grip dots are a CSS gradient in <code>currentColor</code>. The drop line uses the primary token.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>tr.oc-sortable-row[draggable="true"]</code></td><td>A row that can move</td></tr>
+              <tr><td><code>.is-dragging</code></td><td>The row being moved (dimmed, dashed)</td></tr>
+              <tr><td><code>.is-drop-before / .is-drop-after</code></td><td>Drop line on the top or bottom edge of the target row</td></tr>
+              <tr><td><code>td.oc-sortable-row-grip-cell</code></td><td>Narrow first cell</td></tr>
+              <tr><td><code>button.oc-sortable-row-grip</code></td><td>Grip with six dots. <code>aria-pressed="true"</code> = picked up, <code>disabled</code> = locked</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+          <p class="oc-section-header__desc">Native drag and drop works on desktop browsers. On touch screens you need pointer events in your own code.</p>
+        </div>
+        <div class="oc-section-content"><oc-compat features="html.global_attributes.draggable css.selectors.has css.types.color.light-dark"></oc-compat></div>
+      </section>
+
+      <section class="oc-docs-section" id="source">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Source &amp; further reading</h2>
+          <p class="oc-section-header__desc">CSS: <code>packages/ui/src/parts/app-sortable-row.css</code>. Wrappers: React <code>SortableRow</code>, Vue <code>OcSortableRow</code>, Blade <code>&lt;x-oc::sortable-row&gt;</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <ul class="oc-docs-list">
+            <li><a class="source-link" href="table.html">Table</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API" target="_blank" rel="noopener">MDN: HTML Drag and Drop API</a></li>
+          </ul>
+        </div>
+      </section>

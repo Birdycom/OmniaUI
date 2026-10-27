@@ -1,0 +1,25 @@
+/* File: packages/ui/src/parts/app-busy-overlay.css | Map: dialog + backdrop -> box -> spinner / progress -> title + text -> motion
+   Busy overlay: a modal <dialog closedby="none"> shown while a long request runs (saving, uploading, processing photos).
+   The modal dialog makes the page inert, so nothing can be clicked twice. Based on the Verdavita admin save overlay. */
+
+.oc-busy-overlay {
+  inline-size: min(100vw - 2rem, 24rem);
+  padding: 1.75rem 2rem;
+  border: 1px solid var(--oc-border);
+  border-radius: 14px;
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  text-align: center;
+  box-shadow: 0 1.25rem 3rem oklch(from var(--color-black-50) l c h / 0.25);
+}
+.oc-busy-overlay[open] { display: grid; justify-items: center; gap: 0.75rem; }
+.oc-busy-overlay::backdrop { background: oklch(from var(--color-black-60) l c h / 0.5); backdrop-filter: blur(2px); }
+.oc-busy-overlay > .oc-spinner { --oc-spinner-size: 2.5rem; color: var(--oc-primary); }
+.oc-busy-overlay__title { margin: 0; font-size: 1rem; font-weight: 700; }
+.oc-busy-overlay__text { margin: 0; color: var(--oc-muted-foreground); font-size: 0.875rem; }
+.oc-busy-overlay > .oc-progress { inline-size: 100%; }
+
+/* Fade in, so short requests do not flash: the box appears after 300ms */
+.oc-busy-overlay[open], .oc-busy-overlay[open]::backdrop { animation: oc-busy-in 0.2s 0.3s both; }
+@keyframes oc-busy-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .oc-busy-overlay[open], .oc-busy-overlay[open]::backdrop { animation-duration: 0s; } }

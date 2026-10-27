@@ -1,0 +1,85 @@
+<!--oc-page {"title": "OmniaUI - Combobox", "category": "Forms", "description": "Input + listbox styling (filtering and selection are wrapper responsibility).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Combobox</h1>
+        <p class="oc-hero-text">An input with a listbox of suggestions. The CSS draws the field, the chevron and the list, and opens the list while the wrapper has focus. Filtering, keyboard selection and the ARIA bookkeeping belong to the wrapper component (Vue, React, Blade) or about 40 lines of your own script. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/combobox.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Combobox" size="tall">
+<div class="oc-combobox">
+  <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework&hellip;" aria-label="Framework">
+  <ul class="oc-combobox-list" id="oc-cb-list" role="listbox" aria-label="Frameworks">
+    <li class="oc-combobox-option" role="option" tabindex="-1">Astro</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" aria-selected="true">Laravel</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1">Nuxt</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1">React</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" aria-disabled="true">Svelte (soon)</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1">Vue</li>
+  </ul>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="anatomy">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Anatomy</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li><strong>Input</strong> the existing <code>.oc-input</code> with extra end padding for the chevron.</li>
+<li><strong>List</strong> absolutely positioned under the field; hidden with <code>visibility</code>/<code>opacity</code> so it can fade, shown on <code>:focus-within</code> or <code>[data-open]</code> (use <code>data-open="false"</code> to force it closed after a choice).</li>
+<li><strong>Options</strong> need <code>tabindex="-1"</code> so clicking one keeps focus inside the wrapper and the list does not close before the click lands.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="a11y">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Accessibility and keyboard</h2>
+        </div>
+        <div class="oc-section-content">
+<h3 class="oc-section-content__title">Accessibility</h3>
+<ul>
+<li>Follow the ARIA combobox pattern: <code>role="combobox"</code> on the input, <code>aria-expanded</code>, <code>aria-controls</code> and <code>aria-activedescendant</code> pointing at the active option.</li>
+<li>The wrapper must filter the list, move <code>[data-active]</code>/<code>aria-activedescendant</code> with the arrow keys, set <code>aria-selected</code> and write the chosen label into the input.</li>
+<li>If you only need to pick one value from a short list, a native <a href="native-select.html">select</a> is simpler and more accessible.</li>
+</ul>
+<h3 class="oc-section-content__title mt-2">Keyboard</h3>
+<ul>
+<li><kbd>&darr;</kbd>/<kbd>&uarr;</kbd> move the active option, <kbd>Enter</kbd> selects, <kbd>Esc</kbd> closes, <kbd>Home</kbd>/<kbd>End</kbd> jump (all implemented by the wrapper).</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/components-extra.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-combobox</code></td><td>Wrapper</td></tr>
+              <tr><td><code>.oc-combobox-input</code></td><td>Input end padding for the chevron</td></tr>
+              <tr><td><code>.oc-combobox-list</code></td><td>Listbox panel</td></tr>
+              <tr><td><code>.oc-combobox-option</code></td><td>Option; [aria-selected], [data-active]</td></tr>
+              <tr><td><code>.oc-combobox-group / -empty</code></td><td>Heading and empty state</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2">Platform features used</h3>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">CSS feature</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>visibility</code></td><td>Hides the list while keeping the fade transition</td></tr>
+              <tr><td><code>translate</code></td><td>Slide-in of the list</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>

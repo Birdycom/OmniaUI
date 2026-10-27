@@ -1,0 +1,85 @@
+/* File: packages/ui/src/parts/forms-phone-input.css
+   Map: wrapper (one border around both parts) -> dial-code select -> number input -> states (focus, invalid, disabled) -> sizes
+   Phone input: a country dial code (native <select>) and the national number (input type="tel") in one frame.
+   No JavaScript needed; the React/Vue wrappers only add digit grouping ("485 12 34 56"). */
+
+/* Wrapper: draws the single border, so both controls look like one field. */
+.oc-phone-input {
+  display: flex;
+  align-items: stretch;
+  inline-size: 100%;
+  border: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  background: transparent;
+  overflow: hidden;
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+
+/* Focus ring on the whole frame while either part has focus. */
+.oc-phone-input:focus-within {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+}
+
+/* Dial code: compact native select, separated by a divider line. */
+.oc-phone-input-dial {
+  flex: none;
+  padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  border: 0;
+  border-inline-end: 1px solid var(--oc-input);
+  background: var(--oc-surface);
+  color: var(--oc-foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Dark mode: keep the opened option list readable (same as .oc-select option). */
+.oc-phone-input-dial option {
+  background: var(--oc-background);
+  color: var(--oc-foreground);
+}
+
+/* National number: borderless, fills the rest of the frame. */
+.oc-phone-input-number {
+  flex: 1;
+  min-inline-size: 0;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--oc-foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  outline: none;
+}
+
+.oc-phone-input-number::placeholder { color: var(--oc-muted-foreground); }
+
+/* Invalid: modifier, aria-invalid on the input, or the browser's own check after user input. */
+.oc-phone-input--error,
+.oc-phone-input:has([aria-invalid="true"]),
+.oc-phone-input:has(.oc-phone-input-number:user-invalid) {
+  border-color: var(--oc-destructive);
+}
+
+.oc-phone-input--error:focus-within,
+.oc-phone-input:has([aria-invalid="true"]):focus-within {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-destructive) 25%, transparent);
+}
+
+/* Disabled: dim the whole frame when the number input is disabled. */
+.oc-phone-input:has(.oc-phone-input-number:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Small size for toolbars and dense forms. */
+.oc-phone-input--sm .oc-phone-input-dial,
+.oc-phone-input--sm .oc-phone-input-number {
+  padding-block: 0.25rem;
+  font-size: 0.8rem;
+}

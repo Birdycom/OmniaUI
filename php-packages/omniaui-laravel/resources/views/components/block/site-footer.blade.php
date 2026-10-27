@@ -1,0 +1,46 @@
+{{-- OmniaUI block: site-footer — Brand column, three link columns and a bottom bar. Needs @birdycom/omniaui.
+     Blade: <x-oc::block.site-footer> - attributes merge onto the root element.
+     Blade slots (each falls back to the snippet content when empty): default.
+--}}
+<footer {{ $attributes->merge(['class' => 'oc-site-footer']) }}>
+    @if (! $slot->isEmpty())
+        {{ $slot }}
+    @else
+  <div class="oc-container">
+    <div class="oc-site-footer__grid">
+      <div class="oc-site-footer__about">
+        <a class="oc-site-header__brand" href="/"><span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">&#9670;</span>brandco</a>
+        <p>Software development since 2001: web applications, desktop tools and plugins, built and maintained in-house.</p>
+      </div>
+      <div>
+        <h2 class="oc-site-footer__title">Software</h2>
+        <ul class="oc-site-footer__list">
+          <li><a href="#">ERP</a></li>
+          <li><a href="#">CSS framework</a></li>
+          <li><a href="#">Desktop tools</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="oc-site-footer__title">Company</h2>
+        <ul class="oc-site-footer__list">
+          <li><a href="#">Work</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="oc-site-footer__title">Contact</h2>
+        <address class="oc-site-footer__list">
+          <a href="mailto:hello@example.com">hello@example.com</a>
+          <span>Main street 1</span>
+          <span>2530 Boechout</span>
+        </address>
+      </div>
+    </div>
+    <div class="oc-site-footer__bottom">
+      <span>&copy; 2026 brandco. All rights reserved.</span>
+      <span>Built with OmniaCSS</span>
+    </div>
+  </div>
+    @endif
+</footer>

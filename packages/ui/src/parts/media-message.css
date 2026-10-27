@@ -1,0 +1,160 @@
+/* File: packages/ui/src/parts/media-message.css | Map: list -> row (in / out) -> avatar -> bubble (sender, quote, text, attachments, meta)
+   -> grouping (:has) -> hover actions -> date divider + system line -> reduced motion
+   Message: one chat bubble. Incoming on the left with the avatar, outgoing on the right in the primary tint.
+   Consecutive messages of one sender group by themselves: the avatar shows once (on the last one), the name once (on the
+   first one). Based on the question chat of the Korrekt app. */
+
+.oc-message-list {
+  --oc-message-in: var(--oc-card);
+  --oc-message-out: color-mix(in oklch, var(--oc-primary) 14%, var(--oc-card));
+  --oc-message-shadow: 0 1px 2px oklch(from var(--color-black-60) l c h / 0.08), 0 4px 12px oklch(from var(--color-black-60) l c h / 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.75rem;
+}
+
+/* ---- Row: avatar | bubble | actions (mirrored for outgoing) ---- */
+.oc-message {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  margin: 0;
+}
+.oc-message--out { flex-direction: row-reverse; }
+.oc-message__avatar { inline-size: 2rem; block-size: 2rem; font-size: 0.7rem; border: 1px solid var(--oc-border); }
+.oc-message--out .oc-message__avatar { background: color-mix(in oklch, var(--oc-primary) 18%, var(--oc-card)); color: var(--oc-primary); }
+
+/* ---- Bubble ---- */
+.oc-message__bubble {
+  display: grid;
+  gap: 0.25rem;
+  min-inline-size: 0;
+  max-inline-size: min(78%, 34rem);
+  padding: 0.5rem 0.8rem 0.4rem;
+  border: 1px solid var(--oc-border);
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  background: var(--oc-message-in, var(--oc-card));
+  box-shadow: var(--oc-message-shadow, none);
+  color: var(--oc-foreground);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.oc-message--out .oc-message__bubble {
+  border-color: color-mix(in oklch, var(--oc-primary) 22%, var(--oc-border));
+  border-radius: 1rem 1rem 0.25rem 1rem;
+  background: var(--oc-message-out, var(--oc-muted));
+}
+.oc-message__sender { margin: 0; color: var(--oc-primary); font-size: 0.72rem; font-weight: 650; }
+
+/* Message text: paragraphs, lists, bold/italic, links and inline code (the output of a small markdown renderer) */
+.oc-message__text { min-inline-size: 0; overflow-wrap: anywhere; }
+.oc-message__text > :is(p, ul, ol) { margin: 0; }
+.oc-message__text > * + * { margin-block-start: 0.35rem; }
+.oc-message__text :is(ul, ol) { padding-inline-start: 1.15rem; }
+.oc-message__text a { color: var(--oc-primary); text-decoration: underline; text-underline-offset: 2px; }
+.oc-message__text a:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; border-radius: 2px; }
+.oc-message__text code { padding: 0.05rem 0.3rem; border-radius: 4px; background: var(--oc-surface-strong); font-size: 0.85em; }
+
+/* Reply quote: the message this one answers (a link back to it) */
+.oc-message__quote {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.35rem 0.6rem;
+  border-inline-start: 3px solid var(--oc-primary);
+  border-radius: 0.4rem;
+  background: var(--oc-surface-strong);
+  color: var(--oc-muted-foreground);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.oc-message__quote > strong { color: var(--oc-foreground); font-size: 0.72rem; font-weight: 650; }
+.oc-message__quote > span { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+a.oc-message__quote:hover { background: color-mix(in oklch, var(--oc-primary) 10%, transparent); }
+a.oc-message__quote:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+.oc-message__attachments { display: grid; gap: 0.35rem; margin-block-start: 0.15rem; }
+
+/* Time + read receipt, small and right aligned */
+.oc-message__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+.oc-message__status { display: inline-flex; align-items: center; gap: 0.2rem; }
+.oc-message__status--read { color: var(--oc-success); font-weight: 600; }
+.oc-message__status--failed { color: var(--oc-destructive); font-weight: 600; }
+.oc-message__status svg { inline-size: 0.85rem; block-size: 0.85rem; }
+
+/* ---- Grouping: a --continued message follows one of the same sender ---- */
+.oc-message--continued { margin-block-start: -0.5rem; }
+.oc-message--continued .oc-message__sender { display: none; }
+.oc-message:has(+ .oc-message--continued) .oc-message__avatar { visibility: hidden; }
+.oc-message:has(+ .oc-message--continued) .oc-message__bubble { border-end-start-radius: 1rem; }
+.oc-message--out:has(+ .oc-message--continued) .oc-message__bubble { border-end-start-radius: 1rem; border-end-end-radius: 1rem; }
+.oc-message--continued .oc-message__bubble { border-start-start-radius: 0.25rem; }
+.oc-message--out.oc-message--continued .oc-message__bubble { border-start-start-radius: 1rem; border-start-end-radius: 0.25rem; }
+
+/* ---- Actions: appear on hover and keyboard focus (always visible on touch screens) ---- */
+.oc-message__actions {
+  display: flex;
+  align-self: center;
+  gap: 0.15rem;
+  opacity: 0;
+  transition: opacity var(--oc-transition-normal);
+}
+.oc-message:hover .oc-message__actions,
+.oc-message:focus-within .oc-message__actions { opacity: 1; }
+@media (hover: none) { .oc-message__actions { opacity: 1; } }
+.oc-message__action {
+  display: grid;
+  place-items: center;
+  inline-size: 1.85rem;
+  block-size: 1.85rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  cursor: pointer;
+}
+.oc-message__action svg { inline-size: 1rem; block-size: 1rem; }
+.oc-message__action:hover { background: var(--oc-surface-strong); color: var(--oc-foreground); }
+.oc-message__action--destructive:hover { background: oklch(from var(--oc-destructive) l c h / 0.12); color: var(--oc-destructive); }
+.oc-message__action:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+/* ---- Date divider and system line ---- */
+.oc-message-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.25rem 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.oc-message-divider::before,
+.oc-message-divider::after { content: ""; flex: 1; border-block-start: 1px solid var(--oc-border); }
+.oc-message-divider > * {
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--oc-border);
+  border-radius: 999px;
+  background: var(--oc-card);
+}
+.oc-message-divider--system { justify-content: center; font-weight: 500; }
+.oc-message-divider--system::before,
+.oc-message-divider--system::after { display: none; }
+.oc-message-divider--system > * { max-inline-size: 85%; border-style: dashed; background: var(--oc-background); text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-message__actions { transition: none; }
+}

@@ -1,0 +1,82 @@
+/* File: packages/ui/src/parts/media-stack-card.css | Map: card -> deck (two layers behind via ::before / ::after)
+   -> count badge -> panel modifier -> body (title link + meta) -> hover spread -> motion
+   Stack card: a playlist / course cover that looks like a small pile of cards, with a "12 videos" badge. */
+
+.oc-stack-card {
+  position: relative;
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  inline-size: 100%;
+  padding-block-start: 0.6rem; /* room for the layers peeking out above */
+  color: var(--oc-foreground);
+}
+
+/* The deck: the cover plus two layers drawn behind it. */
+.oc-stack-card__deck { position: relative; isolation: isolate; }
+.oc-stack-card__deck::before,
+.oc-stack-card__deck::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.75rem;
+  inset-block: -0.3rem auto;
+  block-size: 100%;
+  z-index: -1;
+  border-radius: var(--oc-radius);
+  background: color-mix(in oklch, var(--oc-muted-foreground) 35%, var(--oc-card));
+  transition: translate var(--oc-transition-normal), rotate var(--oc-transition-normal);
+}
+.oc-stack-card__deck::after {
+  inset-inline: 1.5rem;
+  inset-block-start: -0.6rem;
+  z-index: -2;
+  background: color-mix(in oklch, var(--oc-muted-foreground) 18%, var(--oc-card));
+}
+
+/* Count badge: bottom right on the cover ("12 videos"). */
+.oc-stack-card__count {
+  position: absolute;
+  inset-block-end: 0.45rem;
+  inset-inline-end: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.3rem;
+  background: oklch(from var(--color-black-60) l c h / 0.78);
+  color: var(--color-white-50);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Panel: the count becomes a dark side panel over the right third of the cover. */
+.oc-stack-card--panel .oc-stack-card__count {
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 38%;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 0 var(--oc-radius) var(--oc-radius) 0;
+  background: oklch(from var(--color-black-60) l c h / 0.72);
+  backdrop-filter: blur(6px);
+  font-size: 0.875rem;
+}
+
+/* Body: title (link covers the card) + meta. */
+.oc-stack-card__title { margin: 0; font-size: 0.95rem; font-weight: 600; line-height: 1.35; }
+.oc-stack-card__title > a { color: inherit; text-decoration: none; }
+.oc-stack-card__title > a::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--oc-radius); }
+.oc-stack-card__title > a:focus-visible { outline: none; }
+.oc-stack-card__title > a:focus-visible::after { outline: 2px solid var(--oc-ring); outline-offset: 4px; }
+.oc-stack-card__meta { margin: 0.2rem 0 0; font-size: 0.8125rem; color: var(--oc-muted-foreground); }
+
+/* Hover: the layers fan out a little. */
+@media (prefers-reduced-motion: no-preference) {
+  .oc-stack-card:hover .oc-stack-card__deck::before { translate: 0 -0.2rem; rotate: -1.5deg; }
+  .oc-stack-card:hover .oc-stack-card__deck::after { translate: 0 -0.35rem; rotate: 2deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-stack-card__deck::before,
+  .oc-stack-card__deck::after { transition: none; }
+}

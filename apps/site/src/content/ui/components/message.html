@@ -1,0 +1,139 @@
+<!--oc-page {"title": "OmniaUI - Message", "category": "Media", "description": "Incoming and outgoing, sender, avatar, time, read receipt, hover actions, grouping, reply quote and date divider.", "nav": "Message", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/message.html | Map: hero -> demo -> grouping -> a11y -> reference -> platform features -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Message</h1>
+        <p class="oc-hero-text">One chat bubble: incoming on the left with the avatar, outgoing on the right in the primary tint. It carries the sender name, the time, a "Read" receipt, a reply quote, attachments, and actions that appear on hover or keyboard focus. Consecutive messages of one sender group by themselves with <code>:has()</code>, and a date divider or system line separates the days. Comes from the question chat of the Korrekt app. Install with <code>npx omniaui add message</code>. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">Component</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/message.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.9.1</span>
+          <p class="oc-section-header__desc">Hover or tab to your own message to see the reply and delete actions. The second message of Lisa has no name and passes its avatar on, because it carries <code>--continued</code>. Put the list in a <a href="message-thread.html">message thread</a> for a scrolling conversation.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Message">
+<div class="oc-message-list" role="log" aria-label="Conversation with Lisa Verbeke" style="max-inline-size:36rem">
+  <div class="oc-message-divider"><span>Tuesday 14 October</span></div>
+
+  <article class="oc-message" aria-label="Lisa Verbeke, 09:12">
+    <span class="oc-avatar oc-message__avatar">LV</span>
+    <div class="oc-message__bubble">
+      <p class="oc-message__sender">Lisa Verbeke</p>
+      <div class="oc-message__text"><p>Morning Tom! The worktop supplier sent two samples for Villa Dewitte.</p></div>
+      <p class="oc-message__meta"><time datetime="2026-10-14T09:12">09:12</time></p>
+    </div>
+  </article>
+  <article class="oc-message oc-message--continued" id="oc-message-demo-question" aria-label="Lisa Verbeke, 09:13">
+    <span class="oc-avatar oc-message__avatar">LV</span>
+    <div class="oc-message__bubble">
+      <div class="oc-message__text">
+        <p>Which finish should we order?</p>
+        <ul><li><strong>Calacatta</strong> matt, 20 mm</li><li><strong>Nero Marquina</strong> polished, 12 mm</li></ul>
+        <p>Details are on the <a href="#supplier-sheet">supplier sheet</a>.</p>
+      </div>
+      <p class="oc-message__meta"><time datetime="2026-10-14T09:13">09:13</time></p>
+    </div>
+  </article>
+
+  <article class="oc-message oc-message--out" aria-label="You, 09:20">
+    <span class="oc-avatar oc-message__avatar">TP</span>
+    <div class="oc-message__bubble">
+      <a class="oc-message__quote" href="#oc-message-demo-question"><strong>Lisa Verbeke</strong><span>Which finish should we order? Calacatta matt, 20 mm or Nero Marquina polished, 12 mm</span></a>
+      <div class="oc-message__text"><p>Calacatta matt. The client wants the lighter look next to the oak fronts.</p></div>
+      <p class="oc-message__meta"><time datetime="2026-10-14T09:20">09:20</time><span class="oc-message__status oc-message__status--read"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5 7 17.5 18 6.5M13 16.5l1 1L22.5 9"/></svg>Read</span></p>
+    </div>
+    <div class="oc-message__actions">
+      <button type="button" class="oc-message__action" aria-label="Reply to this message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 6 6v4"/></svg></button>
+      <button type="button" class="oc-message__action oc-message__action--destructive" aria-label="Delete this message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg></button>
+    </div>
+  </article>
+
+  <div class="oc-message-divider oc-message-divider--system" role="note"><span>Lisa Verbeke marked this question as answered</span></div>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="grouping">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Grouping without JavaScript</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li><strong>Mark follow-ups</strong>: when a message has the same sender as the one before it (and is sent within a few minutes), render it with <code>oc-message--continued</code>. That is one comparison in your template loop.</li>
+<li><strong>Name once</strong>: <code>--continued</code> hides <code>.oc-message__sender</code>, so the name only shows on the first bubble of a group.</li>
+<li><strong>Avatar once</strong>: <code>.oc-message:has(+ .oc-message--continued)</code> hides the avatar of every message that is followed by one of the same sender, so it ends up next to the last bubble. The space stays reserved, so the bubbles line up.</li>
+<li><strong>Corners</strong>: the small "tail" corner moves along the group in the same way.</li>
+<li><strong>Read receipt</strong>: show <code>.oc-message__status--read</code> on your last message once the other person opened the conversation, and a plain status ("Sent") before that.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="a11y">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Accessibility and keyboard</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li>Give the list <code>role="log"</code> and an <code>aria-label</code> when new messages arrive while the page is open; screen readers then announce them politely.</li>
+<li>Each message is an <code>&lt;article&gt;</code>; an <code>aria-label</code> with the sender and time helps when the visible name is hidden by the grouping.</li>
+<li>The actions fade in on <code>:hover</code> and <code>:focus-within</code>, so <kbd>Tab</kbd> reveals them. Every icon button has an <code>aria-label</code>. On touch screens (<code>hover: none</code>) they are always visible.</li>
+<li>Times use <code>&lt;time datetime&gt;</code>. Colors meet contrast in light and dark mode, and the "Read" receipt is a word, not only a color.</li>
+<li>The fade is switched off under <code>prefers-reduced-motion: reduce</code>.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/media-message.css</code>. Colors are Omnia theme tokens only.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-message-list</code></td><td>Column of messages; <code>--oc-message-in</code> / <code>--oc-message-out</code> set the bubble colors</td></tr>
+              <tr><td><code>article.oc-message</code></td><td>One row: avatar, bubble, actions; <code>--out</code> mirrors it and tints the bubble</td></tr>
+              <tr><td><code>.oc-message--continued</code></td><td>Follows a message of the same sender: no name, avatar moves to the last message</td></tr>
+              <tr><td><code>.oc-avatar.oc-message__avatar</code></td><td>Avatar from the avatar component (initials or <code>img</code>)</td></tr>
+              <tr><td><code>.oc-message__bubble / __sender / __text</code></td><td>Bubble, sender name and the text (paragraphs, lists, links, inline code)</td></tr>
+              <tr><td><code>a.oc-message__quote</code></td><td>Reply quote: <code>strong</code> name + <code>span</code> text (two lines), links back to the quoted message</td></tr>
+              <tr><td><code>.oc-message__attachments</code></td><td>Holds <a href="attachment.html">attachment</a> chips or image previews</td></tr>
+              <tr><td><code>.oc-message__meta / __status (--read, --failed)</code></td><td>Time and read receipt</td></tr>
+              <tr><td><code>.oc-message__actions / __action (--destructive)</code></td><td>Icon buttons shown on hover and focus</td></tr>
+              <tr><td><code>.oc-message-divider (--system)</code></td><td>Date divider with lines, or a centred system notice</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2">Platform features used</h3>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Feature</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>:has(+ …)</code></td><td>Hide the avatar and round the corner of a message that is followed by one of the same sender</td></tr>
+              <tr><td><code>:focus-within</code> + <code>@media (hover: none)</code></td><td>Actions for keyboard and touch users</td></tr>
+              <tr><td><code>color-mix()</code></td><td>Outgoing bubble tint from the primary token</td></tr>
+            </tbody>
+          </table>
+          <div class="oc-section-content oc-browser-support">
+            <h3 class="oc-section-content__title" id="browser-support">Browser support</h3>
+            <oc-compat features="css.selectors.has css.selectors.focus-within css.types.color.color-mix css.at-rules.media.hover"></oc-compat>
+          </div>
+          <div class="oc-section-footer">
+            <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+            <p class="oc-section-footer__desc">Based on the bubbles of the question chat in the Korrekt app (incoming white, outgoing tinted, avatar beside the bubble, "Read" under your last message). See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:has" target="_blank" rel="noopener">MDN: :has()</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/log_role" target="_blank" rel="noopener">MDN: ARIA log role</a>.</p>
+            <div class="oc-section-content">
+              <h3 class="oc-section-content__title">Files</h3>
+              <table class="oc-table-ref">
+                <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+                <tbody>
+                  <tr><td><code>packages/ui/src/parts/media-message.css</code></td><td>Styles</td></tr>
+                  <tr><td><code>packages/ui/snippets/message.html</code></td><td>Markup</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>

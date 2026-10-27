@@ -1,0 +1,59 @@
+{
+  "name": "omniaui-workspace",
+  "version": "0.11.0",
+  "private": true,
+  "description": "OmniaUI monorepo: CSS-first components (@birdycom/omniaui), blocks (@birdycom/omniaui-blocks), React and Vue wrappers, Laravel Blade/Livewire packages and the UI site. Built on OmniaCSS utilities.",
+  "type": "module",
+  "workspaces": [
+    "packages/ui",
+    "packages/blocks",
+    "packages/react",
+    "packages/vue",
+    "apps/site"
+  ],
+  "scripts": {
+    "build": "npm run build:packages && npm run build:wrappers && npm run site:build",
+    "build:packages": "node scripts/build-manifests.mjs && node scripts/build-packages.mjs",
+    "build:wrappers": "npm run build -w @birdycom/omniaui-react -w @birdycom/omniaui-vue",
+    "gen:index": "node packages/react/scripts/build-manifest.mjs && node packages/vue/scripts/generate-index.mjs",
+    "gen:manifests": "node scripts/build-manifests.mjs",
+    "gen:nav": "node scripts/build-nav.mjs",
+    "gen:galleries": "node scripts/build-galleries.mjs",
+    "site:dev": "npm run dev -w @birdycom/omniaui-site",
+    "site:build": "node scripts/build-nav.mjs && node scripts/build-galleries.mjs && npm run build -w @birdycom/omniaui-site && node scripts/sync-site.mjs && npm run assets:bust",
+    "assets:bust": "node scripts/cache-bust-assets.mjs",
+    "test": "npm run build && npm test -w @birdycom/omniaui -w @birdycom/omniaui-react -w @birdycom/omniaui-vue",
+    "sync:omniacss": "node scripts/sync-omniacss.mjs",
+    "code-syntax-theme": "node scripts/build-code-syntax-theme.mjs",
+    "blade:blocks": "node php-packages/omniaui-laravel/tools/build-blocks.mjs",
+    "release": "node scripts/release.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Birdycom/OmniaUI.git"
+  },
+  "keywords": [
+    "css",
+    "components",
+    "blocks",
+    "design-system",
+    "react",
+    "vue",
+    "laravel",
+    "omniacss"
+  ],
+  "author": "Serge Cools",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Birdycom/OmniaUI/issues"
+  },
+  "homepage": "https://github.com/Birdycom/OmniaUI#readme",
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@mdn/browser-compat-data": "^8.1.5",
+    "lightningcss": "^1.33.0",
+    "postcss": "^8.5.3"
+  }
+}

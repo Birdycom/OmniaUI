@@ -1,0 +1,164 @@
+<!--oc-page {"title": "OmniaUI - Lightbox", "category": "Media", "description": "Full-screen image viewer on a native dialog.", "nav": "Lightbox", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/lightbox.html | Map: hero -> demo (gallery) -> single image -> how it works -> a11y -> reference -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Lightbox</h1>
+        <p class="oc-hero-text">A full-screen image viewer on a native <code>&lt;dialog&gt;</code>: dark blurred backdrop, previous / next, a "2 / 5" counter and a caption. Thumbnails open it with invoker commands, the photos sit in a scroll-snap track and the arrows are plain links, so it works <strong>without JavaScript</strong>. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">Component</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/lightbox.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.6.0</span>
+          <p class="oc-section-header__desc">Click a thumbnail. Use the arrows, swipe, or the arrow keys; <kbd>Esc</kbd> or a click on the backdrop closes the viewer. The tiny script only makes each thumbnail open at its own photo.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Gallery">
+<div class="oc-lightbox-thumbs">
+  <button type="button" class="oc-lightbox-thumb" command="show-modal" commandfor="oc-lightbox-demo" data-oc-lightbox-slide="oc-lightbox-demo-1" aria-label="Open photo 1: Harbour at dawn"><span class="oc-media-art"></span></button>
+  <button type="button" class="oc-lightbox-thumb" command="show-modal" commandfor="oc-lightbox-demo" data-oc-lightbox-slide="oc-lightbox-demo-2" aria-label="Open photo 2: Forest trail"><span class="oc-media-art oc-media-art--4"></span></button>
+  <button type="button" class="oc-lightbox-thumb" command="show-modal" commandfor="oc-lightbox-demo" data-oc-lightbox-slide="oc-lightbox-demo-3" aria-label="Open photo 3: Desert road"><span class="oc-media-art oc-media-art--6"></span></button>
+</div>
+<dialog class="oc-lightbox" id="oc-lightbox-demo" closedby="any" aria-label="Photo viewer">
+  <div class="oc-lightbox__bar">
+    <h2 class="oc-lightbox__title">Holiday photos</h2>
+    <button type="button" class="oc-lightbox__close" command="close" commandfor="oc-lightbox-demo" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="oc-lightbox__track" tabindex="0" autofocus aria-label="Photos, use the arrow keys">
+    <figure class="oc-lightbox__slide" id="oc-lightbox-demo-1">
+      <div class="oc-lightbox__media"><div class="oc-media-art" role="img" aria-label="Harbour at dawn"></div></div>
+      <a class="oc-lightbox__nav oc-lightbox__nav--prev" href="#oc-lightbox-demo-3" aria-label="Previous photo">&#8592;</a>
+      <a class="oc-lightbox__nav oc-lightbox__nav--next" href="#oc-lightbox-demo-2" aria-label="Next photo">&#8594;</a>
+      <figcaption class="oc-lightbox__caption"><span class="oc-lightbox__counter">1 / 3</span> Harbour at dawn</figcaption>
+    </figure>
+    <figure class="oc-lightbox__slide" id="oc-lightbox-demo-2">
+      <div class="oc-lightbox__media"><div class="oc-media-art oc-media-art--4" role="img" aria-label="Forest trail"></div></div>
+      <a class="oc-lightbox__nav oc-lightbox__nav--prev" href="#oc-lightbox-demo-1" aria-label="Previous photo">&#8592;</a>
+      <a class="oc-lightbox__nav oc-lightbox__nav--next" href="#oc-lightbox-demo-3" aria-label="Next photo">&#8594;</a>
+      <figcaption class="oc-lightbox__caption"><span class="oc-lightbox__counter">2 / 3</span> Forest trail</figcaption>
+    </figure>
+    <figure class="oc-lightbox__slide" id="oc-lightbox-demo-3">
+      <div class="oc-lightbox__media"><div class="oc-media-art oc-media-art--6" role="img" aria-label="Desert road"></div></div>
+      <a class="oc-lightbox__nav oc-lightbox__nav--prev" href="#oc-lightbox-demo-2" aria-label="Previous photo">&#8592;</a>
+      <a class="oc-lightbox__nav oc-lightbox__nav--next" href="#oc-lightbox-demo-1" aria-label="Next photo">&#8594;</a>
+      <figcaption class="oc-lightbox__caption"><span class="oc-lightbox__counter">3 / 3</span> Desert road</figcaption>
+    </figure>
+  </div>
+</dialog>
+<script>
+document.addEventListener("command", (e) => {
+  const id = e.source?.dataset.ocLightboxSlide;
+  if (id) requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "instant", block: "nearest", inline: "center" }));
+}, true);
+</script>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="single">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Single image</h2>
+          <p class="oc-section-header__desc"><code>.oc-lightbox--single</code> hides the arrows and the counter. Handy for "click to enlarge" on a product photo.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Single image">
+<button type="button" class="oc-lightbox-thumb" style="inline-size:14rem" command="show-modal" commandfor="oc-lightbox-one" aria-label="Enlarge: Studio lamp"><span class="oc-media-art oc-media-art--3"></span></button>
+<dialog class="oc-lightbox oc-lightbox--single" id="oc-lightbox-one" closedby="any" aria-label="Studio lamp">
+  <div class="oc-lightbox__bar">
+    <h2 class="oc-lightbox__title">Studio lamp</h2>
+    <button type="button" class="oc-lightbox__close" command="close" commandfor="oc-lightbox-one" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="oc-lightbox__track">
+    <figure class="oc-lightbox__slide">
+      <div class="oc-lightbox__media"><div class="oc-media-art oc-media-art--3" role="img" aria-label="Studio lamp"></div></div>
+      <figcaption class="oc-lightbox__caption">Brushed brass, 42 cm</figcaption>
+    </figure>
+  </div>
+</dialog>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="how">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">How it works without JavaScript</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li><strong>Open / close</strong>: thumbnails are <code>&lt;button command="show-modal" commandfor="…"&gt;</code>; the close button uses <code>command="close"</code>. <code>closedby="any"</code> closes on <kbd>Esc</kbd> and on a backdrop click.</li>
+<li><strong>One dialog, many slides</strong>: the slides sit side by side in <code>.oc-lightbox__track</code> with <code>scroll-snap-type: x mandatory</code>. Swipe, drag and arrow keys move one photo at a time.</li>
+<li><strong>Prev / next</strong> are links to the slide <code>id</code>s. Following a fragment link scrolls the track to that slide. Point the first "previous" at the last slide to loop.</li>
+<li><strong>Counter</strong> is plain text per slide ("2 / 5"), so nothing has to be computed.</li>
+<li><strong>Optional script</strong> (5 lines): listens to the <code>command</code> event and jumps to the slide in <code>data-oc-lightbox-slide</code>. Without it the viewer opens at the first photo.</li>
+<li><strong>Older browsers</strong> without invoker commands: add the small invokers polyfill, or call <code>dialog.showModal()</code> from a click handler.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="a11y">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Accessibility and keyboard</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li>A modal <code>&lt;dialog&gt;</code> traps focus and makes the page behind it inert. Give it an <code>aria-label</code> (or <code>aria-labelledby</code> the title).</li>
+<li><code>autofocus</code> on the track puts focus there when the viewer opens, so <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> work right away. <kbd>Tab</kbd> reaches close, previous and next.</li>
+<li>Thumbnail buttons need a label ("Open photo 2: …"); photos need <code>alt</code> text (or <code>role="img"</code> + <code>aria-label</code> for placeholder art).</li>
+<li>The open animation and smooth scrolling only run under <code>prefers-reduced-motion: no-preference</code>.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/media-lightbox.css</code>. The viewer is always dark; the thumbnails follow the light / dark theme tokens.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-lightbox-thumbs / .oc-lightbox-thumb</code></td><td>Thumbnail grid and the buttons that open the viewer</td></tr>
+              <tr><td><code>dialog.oc-lightbox</code></td><td>Full-screen viewer; <code>--single</code> hides nav and counter</td></tr>
+              <tr><td><code>.oc-lightbox__bar / __title / __close</code></td><td>Top bar with title and close button</td></tr>
+              <tr><td><code>.oc-lightbox__track</code></td><td>Snapping row of slides (give it <code>tabindex="0"</code>)</td></tr>
+              <tr><td><code>figure.oc-lightbox__slide</code></td><td>One photo; needs an <code>id</code> for the nav links</td></tr>
+              <tr><td><code>.oc-lightbox__media</code></td><td>Holds the <code>img</code> / <code>video</code>, scaled to fit</td></tr>
+              <tr><td><code>a.oc-lightbox__nav--prev / --next</code></td><td>Round arrow links to the previous / next slide</td></tr>
+              <tr><td><code>.oc-lightbox__caption / __counter</code></td><td>Caption with the "n / m" counter</td></tr>
+              <tr><td><code>data-oc-lightbox-slide</code></td><td>Optional: slide id a thumbnail opens (needs the script)</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2">Platform features used</h3>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Feature</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>&lt;dialog&gt;</code> + <code>::backdrop</code></td><td>Top layer, focus trap, dark blurred backdrop</td></tr>
+              <tr><td><code>command / commandfor</code></td><td>Open and close without a script</td></tr>
+              <tr><td><code>scroll-snap-type</code></td><td>One photo per screen</td></tr>
+              <tr><td><code>backdrop-filter</code></td><td>Blur behind the viewer</td></tr>
+            </tbody>
+          </table>
+          <div class="oc-section-content oc-browser-support">
+            <h3 class="oc-section-content__title" id="browser-support">Browser support</h3>
+            <oc-compat features="html.elements.dialog html.elements.button.command html.elements.dialog.closedby css.properties.scroll-snap-type css.properties.backdrop-filter css.selectors.backdrop"></oc-compat>
+          </div>
+          <div class="oc-section-footer">
+            <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+            <p class="oc-section-footer__desc">Based on the Birdycom photo viewer, rebuilt CSS-first. See <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog" target="_blank" rel="noopener">MDN: &lt;dialog&gt;</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#command" target="_blank" rel="noopener">MDN: button command</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-snap-type" target="_blank" rel="noopener">MDN: scroll-snap-type</a>.</p>
+            <div class="oc-section-content">
+              <h3 class="oc-section-content__title">Files</h3>
+              <table class="oc-table-ref">
+                <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+                <tbody>
+                  <tr><td><code>packages/ui/src/parts/media-lightbox.css</code></td><td>Styles</td></tr>
+                  <tr><td><code>packages/ui/snippets/lightbox.html</code></td><td>Markup + optional script</td></tr>
+                  <tr><td><code>packages/react/src/components/Lightbox.tsx</code> · <code>packages/vue/src/components/OcLightbox.vue</code></td><td>React and Vue wrappers</td></tr>
+                  <tr><td><code>php-packages/omniaui-laravel/resources/views/components/lightbox.blade.php</code></td><td><code>&lt;x-oc::lightbox&gt;</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>

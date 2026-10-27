@@ -1,0 +1,26 @@
+{{-- OmniaUI block: process — Numbered steps (CSS counter) + an endless marquee of technologies. Needs @birdycom/omniaui.
+     Blade: <x-oc::block.process> - attributes merge onto the root element.
+     Blade slots (each falls back to the snippet content when empty): default.
+--}}
+<section {{ $attributes->merge(['class' => 'oc-section-pad']) }}>
+    @if (! $slot->isEmpty())
+        {{ $slot }}
+    @else
+  <div class="oc-container">
+    <p class="oc-eyebrow">How we work</p>
+    <h2 class="oc-display oc-display--md">From idea to <span class="oc-text-gradient">support</span>, one point of contact.</h2>
+    <ol class="oc-steps">
+      <li><h3>Listen</h3><p>We start with your workflow, not with technology.</p></li>
+      <li><h3>Design</h3><p>Screens and data model, approved before we build.</p></li>
+      <li><h3>Build</h3><p>Short iterations you can test along the way.</p></li>
+      <li><h3>Support</h3><p>Updates, hosting and help - for years.</p></li>
+    </ol>
+    <div class="oc-marquee mt-4" aria-label="Technologies">
+      <div class="oc-marquee__track">
+        <span class="oc-marquee__item">PHP 8.4</span><span class="oc-marquee__item">MySQL</span><span class="oc-marquee__item">OmniaCSS</span><span class="oc-marquee__item">WordPress</span><span class="oc-marquee__item">.NET</span><span class="oc-marquee__item">npm</span>
+        <span class="oc-marquee__item" aria-hidden="true">PHP 8.4</span><span class="oc-marquee__item" aria-hidden="true">MySQL</span><span class="oc-marquee__item" aria-hidden="true">OmniaCSS</span><span class="oc-marquee__item" aria-hidden="true">WordPress</span><span class="oc-marquee__item" aria-hidden="true">.NET</span><span class="oc-marquee__item" aria-hidden="true">npm</span>
+      </div>
+    </div>
+  </div>
+    @endif
+</section>

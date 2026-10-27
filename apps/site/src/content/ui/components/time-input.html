@@ -1,0 +1,104 @@
+<!--oc-page {"title": "OmniaUI - Time input", "category": "Forms", "description": "24-hour time field with optional suggested time slots.", "nav": "Time input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/time-input.html | Map: hero -> demo (field + datalist, slot list) -> reference -> frameworks -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Time input</h1>
+        <p class="oc-hero-text">A 24-hour time field (<code>HH:mm</code>) that looks the same in every locale. It is a short text field with a <code>pattern</code> and a <code>&lt;datalist&gt;</code> of suggested slots. For booking forms, the slot list shows the times as radio chips. No JavaScript; the wrappers add the colon while typing (<code>0930</code> &rarr; <code>09:30</code>). <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/time-input.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.6.0</span>
+          <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/time-input.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Time field with suggestions">
+<div class="oc-field">
+  <label class="oc-field-label" for="oc-time-demo">Start time</label>
+  <input class="oc-input oc-time-input" id="oc-time-demo" name="start" type="text" inputmode="numeric" placeholder="hh:mm" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" list="oc-time-demo-slots" value="08:30">
+  <datalist id="oc-time-demo-slots">
+    <option value="08:00"></option>
+    <option value="08:30"></option>
+    <option value="09:00"></option>
+    <option value="09:30"></option>
+  </datalist>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Slot list</h3>
+          <p class="oc-section-content__desc">Radio chips in a grid. The checked slot is primary; a <code>disabled</code> slot is struck through (already booked). Arrow keys move between slots.</p>
+          <oc-demo title="Time slots">
+<div class="oc-time-slots" role="radiogroup" aria-label="Pick a time slot" style="max-inline-size:24rem">
+  <label class="oc-time-slot"><input type="radio" name="slot" value="09:00"> 09:00</label>
+  <label class="oc-time-slot"><input type="radio" name="slot" value="09:30" checked> 09:30</label>
+  <label class="oc-time-slot"><input type="radio" name="slot" value="10:00" disabled> 10:00</label>
+  <label class="oc-time-slot"><input type="radio" name="slot" value="10:30"> 10:30</label>
+  <label class="oc-time-slot"><input type="radio" name="slot" value="11:00"> 11:00</label>
+  <label class="oc-time-slot"><input type="radio" name="slot" value="11:30"> 11:30</label>
+  <label class="oc-time-slot"><input type="radio" name="slot" value="13:00" disabled> 13:00</label>
+  <label class="oc-time-slot"><input type="radio" name="slot" value="13:30"> 13:30</label>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/forms-time-input.css</code>. Prefer the native <code>type="time"</code> picker? See <a href="date-picker.html">Date picker</a>; it shows AM/PM in some locales.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-time-input</code></td><td>Add to <code>.oc-input</code>: narrow centered field; red on <code>:user-invalid</code></td></tr>
+              <tr><td><code>pattern</code> + <code>list</code></td><td><code>([01][0-9]|2[0-3]):[0-5][0-9]</code> and the id of a <code>&lt;datalist&gt;</code></td></tr>
+              <tr><td><code>.oc-time-slots</code></td><td>Slot grid (<code>role="radiogroup"</code>). Modifier: <code>--sm</code>.</td></tr>
+              <tr><td><code>.oc-time-slot</code></td><td>Label with one radio and the time text</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Framework wrappers</h2>
+          <p class="oc-section-header__desc"><code>slots</code> fills the datalist. The value is always <code>HH:mm</code> or an empty string.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;TimeInput value={time} onChange={setTime} slots={["08:00", "08:30", "09:00"]} aria-label="Start" /&gt;
+&lt;!-- Vue --&gt;
+&lt;OcTimeInput v-model="time" :slots="['08:00', '08:30']" aria-label="Start" /&gt;
+&lt;!-- Laravel Blade --&gt;
+&lt;x-oc::time-input name="start" value="08:30" :slots="['08:00', '08:30']" /&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-compat features="html.elements.datalist html.elements.input.pattern css.selectors.user-invalid css.selectors.has css.types.color.light-dark"></oc-compat>
+        </div>
+        <div class="oc-section-footer">
+          <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+          <p class="oc-section-footer__desc">See <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/datalist" target="_blank" rel="noopener">MDN: datalist</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/pattern" target="_blank" rel="noopener">MDN: pattern</a>.</p>
+          <div class="oc-section-content">
+            <h3 class="oc-section-content__title">Source files</h3>
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+              <tbody>
+                <tr><td><code>packages/ui/src/parts/forms-time-input.css</code></td><td>Styles</td></tr>
+                <tr><td><code>packages/ui/snippets/time-input.html</code></td><td>Copy-paste markup</td></tr>
+                <tr><td><code>packages/react/src/components/TimeInput.tsx</code> / <code>packages/vue/src/components/OcTimeInput.vue</code></td><td>Wrappers with auto colon</td></tr>
+                <tr><td><code>resources/views/components/time-input.blade.php</code></td><td>Laravel: <code>&lt;x-oc::time-input&gt;</code></td></tr>
+              </tbody>
+            </table>
+            <h3 class="oc-section-content__title">Related pages</h3>
+            <p class="oc-section-content__desc"><a class="source-link" href="date-picker.html">Date picker</a> · <a class="source-link" href="calendar.html">Calendar</a> · <a class="source-link" href="segmented.html">Segmented control</a></p>
+          </div>
+        </div>
+      </section>

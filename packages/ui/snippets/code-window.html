@@ -1,0 +1,20 @@
+<!-- OmniaUI component: code-window - Window frame around code, with a copy button. Needs @birdycom/omniaui CSS.
+     Class API: .oc-code-window · .oc-code-window__bar (+ <i> dots) · .oc-code-window__title · .oc-code-window__body (plain code) or .oc-code-block (highlighted) ·
+       .oc-code-copy (button; add .is-copied after copying). The one-line script below does the copy; everything else is CSS.
+-->
+<div class="oc-code-window">
+  <div class="oc-code-window__bar">
+    <i></i><i></i><i></i>
+    <span class="oc-code-window__title">index.html</span>
+    <button type="button" class="oc-code-copy" data-oc-copy="#oc-sample-code">Copy</button>
+  </div>
+  <pre class="oc-code-window__body"><code id="oc-sample-code">&lt;link rel="stylesheet" href="omnia.css"&gt;
+&lt;button class="oc-btn"&gt;Hello&lt;/button&gt;</code></pre>
+</div>
+<script>
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-oc-copy]"); if (!b) return;
+  await navigator.clipboard.writeText(document.querySelector(b.dataset.ocCopy).textContent);
+  b.classList.add("is-copied"); b.textContent = "Copied"; setTimeout(() => { b.classList.remove("is-copied"); b.textContent = "Copy"; }, 1500);
+});
+</script>

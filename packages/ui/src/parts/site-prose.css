@@ -1,0 +1,124 @@
+/* File: packages/ui/src/parts/site-prose.css | Map: container (measure, rhythm) -> headings -> paragraphs + lead -> links + inline
+   (strong, code, kbd, mark) -> lists (markers, nesting) -> blockquote -> code block -> table -> figure + image + caption -> hr
+   -> sizes (--sm, --lg) -> full width
+   Prose: typography for long-form text from a CMS, blog or help page, where the HTML has no classes of its own.
+   Every rule is scoped with :where(), so a utility class on an element inside still wins. Spacing is in em, so --sm and --lg
+   scale the whole text. Based on the help and maintenance pages of the Korrekt app. */
+
+.oc-prose {
+  max-inline-size: 68ch;
+  color: var(--oc-foreground);
+  font-size: 1rem;
+  line-height: 1.7;
+  overflow-wrap: break-word;
+}
+.oc-prose :where(*) { margin-block: 0; }
+.oc-prose :where(* + *) { margin-block-start: 1.1em; }
+.oc-prose > :where(:first-child) { margin-block-start: 0; }
+
+/* ---- Headings ---- */
+.oc-prose :where(h1, h2, h3, h4) { color: var(--oc-foreground); font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; text-wrap: balance; }
+.oc-prose :where(h1) { font-size: 2.1em; letter-spacing: -0.02em; }
+.oc-prose :where(h2) { margin-block-start: 1.8em; font-size: 1.45em; }
+.oc-prose :where(h3) { margin-block-start: 1.6em; font-size: 1.2em; }
+.oc-prose :where(h4) { margin-block-start: 1.4em; font-size: 1em; }
+.oc-prose :where(h1, h2, h3, h4) + :where(*) { margin-block-start: 0.6em; }
+.oc-prose :where(h2, h3, h4) { scroll-margin-block-start: 5rem; }
+
+/* ---- Paragraphs ---- */
+.oc-prose :where(p) { text-wrap: pretty; }
+.oc-prose :where(.oc-prose-lead) { color: var(--oc-muted-foreground); font-size: 1.2em; line-height: 1.6; }
+
+/* ---- Links and inline elements ---- */
+.oc-prose :where(a) {
+  color: var(--oc-primary);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklch, var(--oc-primary) 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color var(--oc-transition-normal);
+}
+.oc-prose :where(a:hover) { text-decoration-color: currentColor; }
+.oc-prose :where(a:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 2px; border-radius: 2px; }
+.oc-prose :where(strong, b) { font-weight: 650; }
+.oc-prose :where(:not(pre) > code) {
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--oc-border);
+  border-radius: 0.3em;
+  background: var(--oc-muted);
+  font-size: 0.875em;
+}
+.oc-prose :where(kbd) {
+  padding: 0.05em 0.4em;
+  border: 1px solid var(--oc-border);
+  border-block-end-width: 2px;
+  border-radius: 0.3em;
+  background: var(--oc-card);
+  font-family: inherit;
+  font-size: 0.85em;
+}
+.oc-prose :where(mark) { padding: 0 0.15em; border-radius: 0.2em; background: color-mix(in oklch, var(--oc-warning) 28%, transparent); color: inherit; }
+.oc-prose :where(small) { color: var(--oc-muted-foreground); }
+
+/* ---- Lists ---- */
+.oc-prose :where(ul, ol) { padding-inline-start: 1.5em; }
+.oc-prose :where(ul) { list-style: disc; }
+.oc-prose :where(ol) { list-style: decimal; }
+.oc-prose :where(ul ul) { list-style: circle; }
+.oc-prose :where(li) { padding-inline-start: 0.3em; }
+.oc-prose :where(li + li, li > ul, li > ol) { margin-block-start: 0.4em; }
+.oc-prose :where(ul > li)::marker { color: var(--oc-muted-foreground); }
+.oc-prose :where(ol > li)::marker { color: var(--oc-muted-foreground); font-weight: 600; font-variant-numeric: tabular-nums; }
+.oc-prose :where(dt) { font-weight: 650; }
+.oc-prose :where(dd) { margin-block-start: 0.25em; padding-inline-start: 1.5em; color: var(--oc-muted-foreground); }
+
+/* ---- Blockquote ---- */
+.oc-prose :where(blockquote) {
+  padding: 0.2em 0 0.2em 1.1em;
+  border-inline-start: 3px solid var(--oc-primary);
+  color: var(--oc-foreground);
+  font-size: 1.08em;
+  font-style: italic;
+}
+.oc-prose :where(blockquote p + p) { margin-block-start: 0.6em; }
+.oc-prose :where(blockquote footer, blockquote cite) { display: block; margin-block-start: 0.6em; color: var(--oc-muted-foreground); font-size: 0.85em; font-style: normal; }
+
+/* ---- Code block ---- */
+.oc-prose :where(pre) {
+  padding: 0.9em 1.1em;
+  overflow-x: auto;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  background: var(--oc-muted);
+  font-size: 0.85em;
+  line-height: 1.6;
+  tab-size: 2;
+}
+.oc-prose :where(pre code) { padding: 0; border: 0; background: none; font-size: inherit; }
+
+/* ---- Table ---- */
+.oc-prose :where(table) { inline-size: 100%; border-collapse: collapse; font-size: 0.9em; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.oc-prose :where(caption) { padding-block-end: 0.5em; color: var(--oc-muted-foreground); font-size: 0.9em; text-align: start; }
+.oc-prose :where(th, td) { padding: 0.55em 0.75em; border-block-end: 1px solid var(--oc-border); text-align: start; vertical-align: top; }
+.oc-prose :where(thead th) { border-block-end-width: 2px; color: var(--oc-foreground); font-weight: 650; }
+.oc-prose :where(tbody tr:hover) { background: var(--oc-surface); }
+
+/* ---- Figure, image, caption ---- */
+.oc-prose :where(img, video, .oc-media-art) { display: block; max-inline-size: 100%; block-size: auto; border-radius: calc(var(--oc-radius) + 2px); }
+.oc-prose :where(figure) { margin-inline: 0; }
+.oc-prose :where(figure > .oc-media-art) { aspect-ratio: 16 / 9; }
+.oc-prose :where(figcaption) { margin-block-start: 0.6em; color: var(--oc-muted-foreground); font-size: 0.85em; line-height: 1.5; text-align: center; }
+
+/* ---- Horizontal rule ---- */
+.oc-prose :where(hr) { margin-block: 2.2em; border: 0; border-block-start: 1px solid var(--oc-border); }
+.oc-prose :where(hr + *) { margin-block-start: 0; }
+
+/* ---- Sizes and width ---- */
+.oc-prose--sm { font-size: 0.875rem; line-height: 1.65; }
+.oc-prose--lg { font-size: 1.125rem; line-height: 1.75; }
+.oc-prose--full { max-inline-size: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-prose :where(a) { transition: none; }
+}

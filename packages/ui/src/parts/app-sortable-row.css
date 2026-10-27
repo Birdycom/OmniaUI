@@ -1,0 +1,52 @@
+/* File: packages/ui/src/parts/app-sortable-row.css | Map: grip cell -> grip button (dots) -> row states (dragging, drop before / after) -> reduced motion */
+/* Sortable row: a table row with a drag grip. This file is styling only.
+   Use native HTML drag and drop (draggable="true" on the row) and set the state classes from your own code:
+   .is-dragging on the row being moved, .is-drop-before / .is-drop-after on the row under the pointer. */
+
+/* Narrow first column that holds the grip. */
+.oc-sortable-row-grip-cell { inline-size: 2.25rem; padding-inline: 0.25rem; text-align: center; }
+
+/* The grip itself: a button so it can take keyboard focus (move with your own key handler). */
+.oc-sortable-row-grip {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.75rem;
+  padding: 0;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: grab;
+  touch-action: none;
+}
+/* Six dots (2 columns x 3 rows) drawn with a repeating radial gradient in currentColor. */
+.oc-sortable-row-grip::before {
+  content: "";
+  inline-size: 0.5rem;
+  block-size: 0.875rem;
+  background: radial-gradient(circle, currentColor 1.1px, transparent 1.4px) 0 0 / 0.25rem 0.29rem;
+}
+.oc-sortable-row-grip:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-sortable-row-grip:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+.oc-sortable-row-grip:active { cursor: grabbing; }
+
+/* Row being dragged: dimmed and dashed so the original place stays visible. */
+.oc-sortable-row { transition: opacity var(--oc-transition-fast), background var(--oc-transition-fast); }
+.oc-sortable-row.is-dragging { opacity: 0.45; background: var(--oc-surface); }
+.oc-sortable-row.is-dragging > td { border-style: dashed; }
+
+/* Drop indicator: a primary line on the top or bottom edge of the target row. */
+.oc-sortable-row.is-drop-before > td { box-shadow: inset 0 2px 0 var(--oc-primary); }
+.oc-sortable-row.is-drop-after > td { box-shadow: inset 0 -2px 0 var(--oc-primary); }
+
+/* Picked up with the keyboard (aria-pressed on the grip): highlight the whole row. */
+.oc-sortable-row:has(.oc-sortable-row-grip[aria-pressed="true"]) { background: oklch(from var(--oc-primary) l c h / 0.08); }
+.oc-sortable-row-grip[aria-pressed="true"] { color: var(--oc-primary); cursor: grabbing; }
+
+/* Locked row (cannot move): no grab cursor, faded grip. */
+.oc-sortable-row-grip:disabled { opacity: 0.35; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-sortable-row { transition: none; }
+}

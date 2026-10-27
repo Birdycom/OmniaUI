@@ -1,0 +1,22 @@
+{{-- OmniaUI block: stats-counter — Key figures that count up when they scroll into view (CSS only). Needs @birdycom/omniaui-blocks + @birdycom/omniaui CSS.
+     Blade: <x-oc::block.stats-counter> - attributes merge onto the root element.
+     Blade slots (each falls back to the snippet content when empty): default.
+--}}
+<div {{ $attributes->merge(['class' => 'oc-block-stats']) }}>
+    @if (! $slot->isEmpty())
+        {{ $slot }}
+    @else
+  <div class="oc-block-stat">
+    <strong class="oc-block-stat-value oc-counter oc-counter--on-view" style="--oc-counter-to: 640; --oc-counter-suffix: '+'"></strong>
+    <span class="oc-block-stat-label">Utility families</span>
+  </div>
+  <div class="oc-block-stat">
+    <strong class="oc-block-stat-value oc-counter oc-counter--on-view" style="--oc-counter-to: 98; --oc-counter-suffix: '%'"></strong>
+    <span class="oc-block-stat-label">Smaller CSS on demand</span>
+  </div>
+  <div class="oc-block-stat">
+    <strong class="oc-block-stat-value oc-counter oc-counter--on-view" style="--oc-counter-to: 0"></strong>
+    <span class="oc-block-stat-label">Lines of JavaScript needed</span>
+  </div>
+    @endif
+</div>

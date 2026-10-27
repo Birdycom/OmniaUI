@@ -1,0 +1,160 @@
+/* File: packages/ui/src/parts/media-attachment.css | Map: list -> file chip (icon by type, name, size, open/remove) -> type tones
+   -> uploading progress + error -> image preview (in a message) -> thumbnail chip (in a composer) -> reduced motion
+   Attachment: a file chip or an image preview inside a chat message or a composer. The icon tile shows the extension and is
+   tinted per type (--pdf, --doc, --sheet, --zip, --image). Based on the attachment picker of the Korrekt question chat. */
+
+.oc-attachment-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.oc-attachment-list--stack { flex-direction: column; flex-wrap: nowrap; }
+
+/* ---- File chip ---- */
+.oc-attachment {
+  --oc-attachment-tone: var(--oc-muted-foreground);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-inline-size: 0;
+  max-inline-size: 20rem;
+  padding: 0.4rem 0.5rem 0.4rem 0.4rem;
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: background var(--oc-transition-normal), border-color var(--oc-transition-normal);
+}
+.oc-attachment-list--stack > .oc-attachment,
+.oc-attachment-list--stack > li > .oc-attachment { max-inline-size: none; }
+a.oc-attachment:hover { border-color: var(--oc-border-strong, var(--oc-border)); background: var(--oc-surface-strong); }
+a.oc-attachment:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* Icon tile: a page with a folded corner, the extension in the type tone */
+.oc-attachment__icon {
+  flex: none;
+  display: grid;
+  place-items: end center;
+  inline-size: 2.1rem;
+  block-size: 2.5rem;
+  padding-block-end: 0.3rem;
+  overflow: hidden;
+  border-radius: 0.3rem;
+  background:
+    linear-gradient(225deg, color-mix(in oklch, var(--oc-attachment-tone) 35%, var(--oc-card)) 0.45rem, transparent 0.45rem),
+    color-mix(in oklch, var(--oc-attachment-tone) 14%, var(--oc-card));
+  color: var(--oc-attachment-tone);
+  font-size: 0.6rem;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  clip-path: polygon(0 0, calc(100% - 0.45rem) 0, 100% 0.45rem, 100% 100%, 0 100%);
+}
+.oc-attachment__icon:has(> :is(img, .oc-media-art)) { padding: 0; clip-path: none; }
+.oc-attachment__icon > :is(img, .oc-media-art) { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.oc-attachment__body { display: grid; flex: 1 1 auto; min-inline-size: 0; }
+.oc-attachment__name { overflow: hidden; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+.oc-attachment__size { color: var(--oc-muted-foreground); font-size: 0.72rem; font-variant-numeric: tabular-nums; }
+
+.oc-attachment__remove {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.oc-attachment__remove:hover { background: oklch(from var(--oc-destructive) l c h / 0.12); color: var(--oc-destructive); }
+.oc-attachment__remove:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+/* ---- Type tones (theme tokens, so both color schemes stay readable) ---- */
+.oc-attachment--pdf { --oc-attachment-tone: var(--oc-destructive); }
+.oc-attachment--doc { --oc-attachment-tone: var(--oc-chart-1, var(--oc-primary)); }
+.oc-attachment--sheet { --oc-attachment-tone: var(--oc-success); }
+.oc-attachment--zip { --oc-attachment-tone: var(--oc-warning); }
+.oc-attachment--image { --oc-attachment-tone: var(--oc-chart-4, var(--oc-primary)); }
+
+/* ---- Upload state: a thin progress line along the bottom (--oc-attachment-progress) and an error state ---- */
+.oc-attachment--uploading::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: 0;
+  inline-size: var(--oc-attachment-progress, 40%);
+  block-size: 3px;
+  background: var(--oc-primary);
+  transition: inline-size var(--oc-transition-normal);
+}
+.oc-attachment--uploading .oc-attachment__size { color: var(--oc-primary); }
+.oc-attachment--error { border-color: oklch(from var(--oc-destructive) l c h / 0.55); }
+.oc-attachment--error .oc-attachment__size { color: var(--oc-destructive); }
+
+/* ---- Image preview inside a message: the picture with an optional caption ---- */
+.oc-attachment-image {
+  position: relative;
+  display: block;
+  inline-size: min(100%, 18rem);
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  background: var(--oc-muted);
+  color: var(--color-white-50);
+  text-decoration: none;
+}
+.oc-attachment-image > :is(img, .oc-media-art) {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 14rem;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.oc-attachment-image__caption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 1.25rem 0.6rem 0.4rem;
+  overflow: hidden;
+  background: linear-gradient(transparent, oklch(from var(--color-black-60) l c h / 0.6));
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+a.oc-attachment-image:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+a.oc-attachment-image:hover > :is(img, .oc-media-art) { filter: brightness(1.05); }
+
+/* ---- Thumbnail chip (pasted screenshot in a composer): square image with a remove button on top ---- */
+.oc-attachment-thumb {
+  position: relative;
+  flex: none;
+  inline-size: 4rem;
+  block-size: 4rem;
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  background: var(--oc-muted);
+}
+.oc-attachment-thumb > :is(img, .oc-media-art) { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.oc-attachment-thumb > .oc-attachment__remove {
+  position: absolute;
+  inset-block-start: 0.2rem;
+  inset-inline-end: 0.2rem;
+  inline-size: 1.35rem;
+  block-size: 1.35rem;
+  background: oklch(from var(--color-black-60) l c h / 0.6);
+  color: var(--color-white-50);
+  font-size: 0.65rem;
+}
+.oc-attachment-thumb > .oc-attachment__remove:hover { background: var(--oc-destructive); color: var(--color-white-50); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-attachment, .oc-attachment--uploading::after { transition: none; }
+}

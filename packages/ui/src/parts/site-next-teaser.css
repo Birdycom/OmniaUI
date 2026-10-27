@@ -1,0 +1,75 @@
+/* File: packages/ui/src/parts/site-next-teaser.css
+   Map: card -> label -> name (+ mark) -> tagline with arrow -> previous variant -> hover -> reduced motion
+   Next teaser: a "Next product / Next project" card at the end of a detail page.
+   Accent: --oc-accent-from, or an .oc-accent--* preset on the card. */
+
+.oc-next-teaser {
+  display: grid;
+  gap: 0.45rem;
+  padding: 2rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg);
+  background:
+    radial-gradient(28rem circle at 100% 0%, color-mix(in oklch, var(--oc-accent-from) 12%, transparent), transparent 60%),
+    var(--oc-surface);
+  color: var(--oc-foreground);
+  text-decoration: none;
+  transition: transform 0.3s var(--oc-ease-out), border-color 0.3s;
+}
+
+/* Small uppercase label ("Next product"). */
+.oc-next-teaser__label {
+  color: var(--oc-muted-foreground);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Name with an optional product mark in front. */
+.oc-next-teaser__name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Tagline + arrow that moves on hover. */
+.oc-next-teaser__tagline {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  color: var(--oc-muted-foreground);
+}
+.oc-next-teaser__tagline::after {
+  content: "→";
+  color: var(--oc-accent-from);
+  transition: translate 0.25s var(--oc-ease-out);
+}
+
+/* Previous: the arrow points left and sits before the tagline. */
+.oc-next-teaser--prev .oc-next-teaser__tagline::after { content: none; }
+.oc-next-teaser--prev .oc-next-teaser__tagline::before {
+  content: "←";
+  color: var(--oc-accent-from);
+  transition: translate 0.25s var(--oc-ease-out);
+}
+
+/* Hover / focus */
+.oc-next-teaser:is(a):hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklch, var(--oc-accent-from) 55%, transparent);
+}
+.oc-next-teaser:hover .oc-next-teaser__tagline::after { translate: 4px 0; }
+.oc-next-teaser--prev:hover .oc-next-teaser__tagline::before { translate: -4px 0; }
+.oc-next-teaser:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-next-teaser,
+  .oc-next-teaser__tagline::after,
+  .oc-next-teaser__tagline::before { transition: none; }
+}

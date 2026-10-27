@@ -1,0 +1,102 @@
+<!--oc-page {"title": "OmniaUI - Busy overlay", "category": "App UX", "description": "Modal \"please wait\" box during a long submit or upload; the page is inert meanwhile.", "nav": "Busy overlay", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/busy-overlay.html | Map: hero -> demo -> usage -> reference -> platform features -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Busy overlay</h1>
+        <p class="oc-hero-text">A modal "please wait" box for long requests: saving a form with photos, an import, an upload. As a modal <code>&lt;dialog closedby="none"&gt;</code> it makes the page inert, so nothing gets clicked twice, and Esc does not close it. It fades in after 300 ms, so quick requests never flash. Comes from the save overlay of the Verdavita admin. Install with <code>npx omniaui add busy-overlay</code>. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">Component</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/busy-overlay.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.9.1</span>
+          <p class="oc-section-header__desc">The demo button opens the overlay and closes it after three seconds. In a real form, <code>data-oc-busy="dialog id"</code> on the <code>&lt;form&gt;</code> opens it when the form is submitted; the next page replaces it.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Busy overlay">
+<button class="oc-btn" type="button" command="show-modal" commandfor="oc-busy-overlay-demo" data-oc-busy-demo>Save (demo: closes after 3 seconds)</button>
+<dialog class="oc-busy-overlay" id="oc-busy-overlay-demo" closedby="none" aria-labelledby="oc-busy-overlay-demo-title" aria-describedby="oc-busy-overlay-demo-text">
+  <span class="oc-spinner" role="status" aria-label="Busy"></span>
+  <h2 class="oc-busy-overlay__title" id="oc-busy-overlay-demo-title">Saving…</h2>
+  <p class="oc-busy-overlay__text" id="oc-busy-overlay-demo-text">The photos are being processed. This can take a minute; please keep this page open.</p>
+</dialog>
+<script>
+// Demo only: the real overlay stays open until the next page loads.
+document.addEventListener("command", (e) => { if (e.source?.hasAttribute("data-oc-busy-demo")) setTimeout(() => document.getElementById("oc-busy-overlay-demo").close(), 3000); }, true);
+</script>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="usage-1">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">In a form</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;form class="oc-form-group" data-oc-busy="oc-busy-overlay-demo" action="/photos" method="post" enctype="multipart/form-data"&gt;
+  &lt;label class="oc-dropzone"&gt;
+    &lt;input type="file" name="photos[]" accept="image/*" multiple&gt;
+    &lt;span&gt;&lt;strong&gt;Choose photos&lt;/strong&gt; to upload&lt;/span&gt;
+    &lt;span class="oc-dropzone-hint"&gt;They are resized to 600px and 1080px after saving&lt;/span&gt;
+  &lt;/label&gt;
+  &lt;button class="oc-btn" type="submit"&gt;Save&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;dialog class="oc-busy-overlay" id="oc-busy-overlay-demo" closedby="none" aria-labelledby="oc-busy-overlay-demo-title" aria-describedby="oc-busy-overlay-demo-text"&gt;
+  &lt;span class="oc-spinner" role="status" aria-label="Busy"&gt;&lt;/span&gt;
+  &lt;h2 class="oc-busy-overlay__title" id="oc-busy-overlay-demo-title"&gt;Saving…&lt;/h2&gt;
+  &lt;p class="oc-busy-overlay__text" id="oc-busy-overlay-demo-text"&gt;The photos are being processed. This can take a minute; please keep this page open.&lt;/p&gt;
+&lt;/dialog&gt;
+&lt;script&gt;
+// Open the busy overlay of a form when it is submitted (the submit event only fires when the form is valid).
+document.addEventListener("submit", (e) =&gt; {
+  const id = e.target.dataset?.ocBusy;
+  if (id) document.getElementById(id)?.showModal();
+});
+&lt;/script&gt;</oc-code><p>The <code>submit</code> event only fires after the browser's own validation, so the overlay never appears for an invalid form. With <code>fetch()</code>, call <code>dialog.close()</code> when the request is done. For a known percentage, put an <code>.oc-progress</code> in place of the spinner.</p>
+        </div>
+      </section>
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/app-busy-overlay.css</code>. Colors are Omnia theme tokens only.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>dialog.oc-busy-overlay[closedby=none]</code></td><td>The overlay: modal, page inert, Esc does nothing</td></tr>
+              <tr><td><code>.oc-spinner / .oc-progress</code></td><td>Activity, or progress when you know the percentage</td></tr>
+              <tr><td><code>.oc-busy-overlay__title / __text</code></td><td>What happens and how long it may take</td></tr>
+              <tr><td><code>form[data-oc-busy]</code></td><td>Opens the dialog with that id on submit (script in the snippet)</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2">Platform features used</h3>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Feature</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>showModal()</code></td><td>Top layer and an inert page</td></tr>
+              <tr><td><code>closedby="none"</code></td><td>Esc and backdrop clicks do not close it</td></tr>
+            </tbody>
+          </table>
+          <div class="oc-section-content oc-browser-support">
+            <h3 class="oc-section-content__title" id="browser-support">Browser support</h3>
+            <oc-compat features="html.elements.dialog html.elements.dialog.closedby css.selectors.backdrop"></oc-compat>
+          </div>
+          <div class="oc-section-footer">
+            <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+            <p class="oc-section-footer__desc">Based on the submit overlay of the Verdavita admin (saving a service with photo processing).</p>
+            <div class="oc-section-content">
+              <h3 class="oc-section-content__title">Files</h3>
+              <table class="oc-table-ref">
+                <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+                <tbody>
+                  <tr><td><code>packages/ui/src/parts/app-busy-overlay.css</code></td><td>Styles</td></tr>
+                  <tr><td><code>packages/ui/snippets/busy-overlay.html</code></td><td>Markup + optional script</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>

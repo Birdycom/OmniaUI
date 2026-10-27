@@ -1,0 +1,66 @@
+/* File: packages/ui/src/parts/site-product-mark.css
+   Map: base tile -> squircle (corner-shape) -> image / svg -> sizes -> soft variant -> glow
+   Product mark: a filled app-icon tile in the accent gradient (logo, glyph or SVG).
+   Accent: --oc-accent-from / --oc-accent-to, or an .oc-accent--* preset on the element. */
+
+.oc-product-mark {
+  --oc-mark-size: 3rem;
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--oc-mark-size);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  /* Fallback shape: a rounded square close to an app icon. */
+  border-radius: 26%;
+  background: linear-gradient(135deg, var(--oc-accent-from), var(--oc-accent-to));
+  color: var(--color-white-50);
+  font-size: calc(var(--oc-mark-size) * 0.45);
+  line-height: 1;
+  /* Light edge on top + a soft drop shadow in the accent color. */
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, var(--color-white-50) 35%, transparent),
+    0 10px 24px -12px var(--oc-accent-to);
+  overflow: hidden;
+}
+
+/* Real squircle where the browser supports corner-shape (a larger radius looks right with it). */
+@supports (corner-shape: squircle) {
+  .oc-product-mark {
+    border-radius: 50%;
+    corner-shape: squircle;
+  }
+}
+
+/* Logo image or inline SVG inside the tile. */
+.oc-product-mark > :is(img, svg) {
+  inline-size: 58%;
+  block-size: 58%;
+  object-fit: contain;
+}
+/* Full-bleed image (the logo already is a tile). */
+.oc-product-mark--cover > img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* Sizes */
+.oc-product-mark--sm { --oc-mark-size: 2.25rem; }
+.oc-product-mark--lg { --oc-mark-size: 4rem; }
+.oc-product-mark--xl {
+  --oc-mark-size: clamp(6rem, 18vw, 10rem);
+  box-shadow:
+    inset 0 2px 0 color-mix(in oklch, var(--color-white-50) 35%, transparent),
+    0 0 80px -20px var(--oc-accent-from);
+}
+
+/* Soft variant: tinted background, accent glyph (quieter, for lists). */
+.oc-product-mark--soft {
+  border: 1px solid color-mix(in oklch, var(--oc-accent-from) 40%, transparent);
+  background: color-mix(in oklch, var(--oc-accent-from) 16%, var(--oc-card));
+  color: var(--oc-accent-from);
+  box-shadow: none;
+}
+
+/* Extra glow (hero visuals). */
+.oc-product-mark--glow { box-shadow: 0 0 48px -8px var(--oc-accent-from); }

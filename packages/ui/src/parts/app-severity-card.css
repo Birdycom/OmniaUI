@@ -1,0 +1,91 @@
+/* File: packages/ui/src/parts/app-severity-card.css | Map: card (details) -> head (summary) -> icon + title + tags -> level badge + chevron -> body + actions -> severity modifiers -> resolved state -> reduced motion */
+/* Severity card: risk-colored expandable card (security finding, incident, audit item).
+   Built on <details> / <summary>, so it opens without JavaScript; same name="..." makes a group exclusive.
+   Levels: --low, --medium, --high, --critical. Resolved: .is-resolved (muted, no color). */
+
+.oc-severity-card {
+  --oc-severity-color: var(--oc-muted-foreground);
+  overflow: hidden;
+  color: var(--oc-foreground);
+  background: color-mix(in oklch, var(--oc-severity-color) 6%, var(--oc-card));
+  border: 1px solid oklch(from var(--oc-severity-color) l c h / 0.3);
+  border-inline-start-width: 3px;
+  border-inline-start-color: var(--oc-severity-color);
+  border-radius: calc(var(--oc-radius) + 4px);
+  interpolate-size: allow-keywords;
+}
+.oc-severity-card + .oc-severity-card { margin-block-start: 0.5rem; }
+
+/* Head row (summary): icon, title + tags, level badge, chevron. */
+.oc-severity-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.oc-severity-card-head::-webkit-details-marker { display: none; }
+.oc-severity-card-head:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-severity-card-head:hover { background: oklch(from var(--oc-severity-color) l c h / 0.06); }
+
+.oc-severity-card-icon { display: inline-flex; flex-shrink: 0; color: var(--oc-severity-color); }
+.oc-severity-card-icon svg { inline-size: 1.25rem; block-size: 1.25rem; }
+.oc-severity-card-main { flex: 1; min-inline-size: 0; }
+.oc-severity-card-title { display: block; overflow: hidden; font-size: 0.875rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; color: var(--oc-severity-color); }
+/* Tags under the title (data types, categories). */
+.oc-severity-card-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-block-start: 0.375rem; }
+.oc-severity-card-tag { padding: 0.125rem 0.375rem; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.6875rem; color: var(--oc-muted-foreground); background: var(--oc-muted); border-radius: 4px; }
+
+/* Level badge ("High") in the severity color. */
+.oc-severity-card-level {
+  flex-shrink: 0;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--oc-severity-color);
+  background: oklch(from var(--oc-severity-color) l c h / 0.14);
+  border: 1px solid oklch(from var(--oc-severity-color) l c h / 0.35);
+  border-radius: 999px;
+}
+
+/* Chevron (CSS borders), rotates when open. */
+.oc-severity-card-head::after {
+  content: "";
+  flex-shrink: 0;
+  inline-size: 0.45rem;
+  block-size: 0.45rem;
+  margin-inline: 0.25rem;
+  border-inline-end: 1.5px solid var(--oc-muted-foreground);
+  border-block-end: 1.5px solid var(--oc-muted-foreground);
+  rotate: 45deg;
+  translate: 0 -0.15rem;
+  transition: rotate var(--oc-transition-fast);
+}
+.oc-severity-card[open] > .oc-severity-card-head::after { rotate: 225deg; translate: 0 0.1rem; }
+
+/* Body: details text and an action row. Height animates where ::details-content is supported. */
+.oc-severity-card::details-content { block-size: 0; overflow: clip; transition: block-size var(--oc-transition-normal), content-visibility var(--oc-transition-normal) allow-discrete; }
+.oc-severity-card[open]::details-content { block-size: auto; }
+.oc-severity-card-body { padding: 0 1rem 1rem 3rem; font-size: 0.875rem; line-height: 1.6; color: var(--oc-muted-foreground); }
+.oc-severity-card-body > :first-child { margin-block-start: 0; }
+.oc-severity-card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block-start: 0.75rem; }
+
+/* Levels (theme tokens; critical is a deeper red). */
+.oc-severity-card--low { --oc-severity-color: var(--oc-success); }
+.oc-severity-card--medium { --oc-severity-color: var(--oc-warning); }
+.oc-severity-card--high { --oc-severity-color: var(--oc-destructive); }
+.oc-severity-card--critical { --oc-severity-color: light-dark(var(--color-red-95), var(--color-red-30)); }
+.oc-severity-card--critical .oc-severity-card-level { color: var(--oc-destructive-foreground); background: var(--oc-severity-color); }
+
+/* Resolved: back to neutral colors, title struck through. */
+.oc-severity-card.is-resolved { --oc-severity-color: var(--oc-muted-foreground); background: var(--oc-surface); }
+.oc-severity-card.is-resolved .oc-severity-card-title { text-decoration: line-through; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-severity-card::details-content,
+  .oc-severity-card-head::after { transition: none; }
+}

@@ -1,0 +1,26 @@
+<!--oc-page {"title": "OmniaUI - Theme switch", "category": "Docs UI", "description": "System / light / dark switch — CSS only (color-scheme + :has()).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<section class="oc-hero" id="overview">
+  <h1 class="oc-hero-title">Theme switch</h1>
+  <p class="oc-hero-text">System / light / dark switch built with radio inputs, <code>color-scheme</code>, <code>light-dark()</code> tokens and <code>:has()</code> — the whole page follows without JavaScript.</p>
+</section>
+
+<section class="ocd-section" id="demo">
+  <h2 id="usage">Usage</h2>
+  <p class="oc-section-header__desc">Pick a theme: every component token is <code>light-dark(light, dark)</code>, so the page switches instantly. Use <code>&lt;html data-theme="light|dark"&gt;</code> for a fixed theme.</p>
+  <oc-demo title="Theme switch">
+    <fieldset class="oc-theme-switch" aria-label="Color theme">
+      <label><input type="radio" name="oc-theme" value="system" checked> System</label>
+      <label><input type="radio" name="oc-theme" value="light"> Light</label>
+      <label><input type="radio" name="oc-theme" value="dark"> Dark</label>
+    </fieldset>
+  </oc-demo>
+  <oc-code lang="css">/* shipped in components.css: pure CSS, no JavaScript */
+:root:has(.oc-theme-switch input[value="light"]:checked) { color-scheme: light; }
+:root:has(.oc-theme-switch input[value="dark"]:checked)  { color-scheme: dark; }</oc-code>
+  <h3 id="persistence">Remembering the choice</h3>
+  <p class="oc-section-header__desc">Switching is CSS-only. CSS alone cannot remember a choice between page loads, so persistence is an optional progressive enhancement: a few lines that store the selected value in <code>localStorage</code> and restore it as <code>data-theme</code> on load. Without them the page simply starts in "System" (the OS preference) again. The docs site uses exactly this enhancement.</p>
+  <oc-code lang="html">&lt;script&gt; /* optional: persistence only, the switch itself needs no JS */
+  try { const t = localStorage.getItem("oc-theme"); if (t &amp;&amp; t !== "system") document.documentElement.dataset.theme = t; } catch {}
+  addEventListener("change", (e) =&gt; { if (e.target.name === "oc-theme") try { localStorage.setItem("oc-theme", e.target.value); } catch {} });
+&lt;/script&gt;</oc-code>
+</section>

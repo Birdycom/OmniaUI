@@ -1,0 +1,54 @@
+/* File: packages/ui/src/parts/app-table-compact.css | Map: wrapper (scroll, inside a card) -> header cells -> body cells (compact + striped) -> footer total -> modifiers (bordered, plain) */
+/* Table compact: a small striped table for inside cards and side panels.
+   Wrap a normal <table class="oc-table"> in <div class="oc-table-compact">. The wrapper removes the
+   outer cell borders (the card gives the frame), shrinks padding and font, and stripes the rows.
+   Numbers: data-numeric on th / td (right aligned, tabular figures; from the table component). */
+
+.oc-table-compact { inline-size: 100%; overflow-x: auto; }
+.oc-table-compact > .oc-table { font-size: 0.8125rem; border-collapse: collapse; }
+
+/* Cells: compact padding, only horizontal lines between rows. */
+.oc-table-compact > .oc-table :is(th, td) {
+  padding: 0.3rem 0.625rem;
+  border: 0;
+  border-block-end: 1px solid var(--oc-border);
+  white-space: nowrap;
+}
+.oc-table-compact > .oc-table :is(th, td):first-child { padding-inline-start: 0.75rem; }
+.oc-table-compact > .oc-table :is(th, td):last-child { padding-inline-end: 0.75rem; }
+/* Long text columns may wrap: add data-wrap to the cell. */
+.oc-table-compact > .oc-table :is(th, td)[data-wrap] { white-space: normal; }
+
+/* Header: small muted labels on a quiet background. */
+.oc-table-compact > .oc-table thead th {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--oc-muted-foreground);
+  background: var(--oc-surface);
+  border-block-end-width: 1px;
+}
+
+/* Stripes on every second body row; hover stays the table default. */
+.oc-table-compact > .oc-table tbody tr:nth-child(even) { background: var(--oc-surface); }
+.oc-table-compact > .oc-table tbody tr:last-child > td { border-block-end: 0; }
+
+/* Footer row (total): bold, with a stronger line above it. */
+.oc-table-compact > .oc-table tfoot :is(th, td) {
+  font-weight: 600;
+  color: var(--oc-foreground);
+  background: none;
+  border-block-start: 2px solid var(--oc-border);
+  border-block-end: 0;
+}
+
+/* Muted secondary text inside a cell ("per unit", sub line). */
+.oc-table-compact-muted { color: var(--oc-muted-foreground); }
+
+/* Bordered: own rounded frame (when the table is not inside a card). */
+.oc-table-compact--bordered { border: 1px solid var(--oc-border); border-radius: var(--oc-radius); background: var(--oc-card); }
+
+/* Plain: no stripes, no header background (very dense lists). */
+.oc-table-compact--plain > .oc-table tbody tr:nth-child(even),
+.oc-table-compact--plain > .oc-table thead th { background: none; }

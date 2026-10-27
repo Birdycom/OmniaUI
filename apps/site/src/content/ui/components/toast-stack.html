@@ -1,0 +1,77 @@
+<!--oc-page {"title": "OmniaUI - Toast stack", "category": "Overlays", "description": "Overlapping toasts that expand on hover or focus.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Toast stack</h1>
+        <p class="oc-hero-text">A stacking variant of the <a href="toast.html">toast</a>: notifications overlap with the newest in front and older ones peeking out above; hovering or focusing the stack expands it into a list. Pure CSS, driven by <code>:nth-last-child()</code>. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/toast-stack.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Toast stack" size="tall">
+<div class="oc-toast-container oc-toast-container--static oc-toast-container--stack" tabindex="0" aria-label="Notifications">
+  <div class="oc-toast oc-toast--info" role="status"><span class="oc-toast-icon" aria-hidden="true">i</span><div class="oc-toast-body"><p class="oc-toast-title">Update available</p><p class="oc-toast-description">Version 0.9 is ready.</p></div></div>
+  <div class="oc-toast oc-toast--warning" role="status"><span class="oc-toast-icon" aria-hidden="true">!</span><div class="oc-toast-body"><p class="oc-toast-title">Storage almost full</p><p class="oc-toast-description">92% of 5 GB used.</p></div></div>
+  <div class="oc-toast oc-toast--success" role="status"><span class="oc-toast-icon" aria-hidden="true">&#10003;</span><div class="oc-toast-body"><p class="oc-toast-title">Invoice sent</p><p class="oc-toast-description">Hover to expand the stack.</p></div><button class="oc-toast-close" type="button" aria-label="Dismiss">&times;</button></div>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="anatomy">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Anatomy</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li><strong>Stack</strong> the container becomes a one-cell grid; every toast sits in the same cell and is offset with <code>translate</code>, <code>scale</code> and <code>opacity</code> from <code>--oc-stack-depth</code>.</li>
+<li><strong>Expand</strong> <code>:hover</code> and <code>:focus-within</code> switch the container to a column; buried toasts become readable and clickable.</li>
+<li><strong>Order</strong> append new toasts at the end of the container: <code>:nth-last-child(1)</code> is the front.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="a11y">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Accessibility and keyboard</h2>
+        </div>
+        <div class="oc-section-content">
+<h3 class="oc-section-content__title">Accessibility</h3>
+<ul>
+<li>Each toast keeps <code>role="status"</code> (or <code>alert</code> for errors) so new ones are announced when added.</li>
+<li>Buried toasts hide their content visually and from pointer events until the stack is hovered or focused; keep the container focusable (<code>tabindex="0"</code>) so keyboard users can expand it.</li>
+<li>Motion is disabled with <code>prefers-reduced-motion</code>. Do not auto-dismiss messages users must read.</li>
+</ul>
+<h3 class="oc-section-content__title mt-2">Keyboard</h3>
+<ul>
+<li><kbd>Tab</kbd> into the stack expands it; the dismiss button is a normal button.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/components-extra.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-toast-container--stack</code></td><td>Stacking mode</td></tr>
+              <tr><td><code>--oc-stack-depth</code></td><td>Set per child by :nth-last-child (0 front to 4)</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2">Platform features used</h3>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">CSS feature</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>translate</code></td><td>Vertical offset by depth</td></tr>
+              <tr><td><code>scale</code></td><td>Shrinks buried toasts</td></tr>
+              <tr><td><code>grid-area</code></td><td>All toasts share one grid cell</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
