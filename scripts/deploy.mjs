@@ -95,6 +95,13 @@ RewriteRule ^(docs|pages)/(.*)$ ${omniacssUrl}/$1/$2 [L,R=301]
 `;
 
 const files = await collect();
+
+// ui/pro.html carries placeholders until the Polar checkout links exist: never put those online.
+const pro = files.get("ui/pro.html");
+if (pro && /POLAR_(CHECKOUT|PORTAL)/.test(await fs.readFile(pro, "utf8"))) {
+  throw new Error("ui/pro.html still has POLAR_CHECKOUT_* / POLAR_PORTAL placeholders: fill in the Polar links first");
+}
+
 const uploads = [];
 const manifest = args.has("--full") ? {} : JSON.parse(await fs.readFile(manifestFile, "utf8").catch(() => "{}"));
 const next = {};
