@@ -1,0 +1,42 @@
+# File: .github/workflows/split-php.yml
+# Map: tag v* (or manual run) -> split php-packages/<pkg> into its own history -> push main + tag to Birdycom/<pkg>
+# Packagist reads a package from the root of a repository, so each Laravel package is mirrored to its own
+# public repo (Birdycom/omniaui-laravel, Birdycom/omniaui-livewire). Develop here; the mirrors are read-only.
+# Needs the secret SPLIT_TOKEN: a fine-grained token with "Contents: read and write" on both mirror repos.
+
+name: Split PHP packages
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [omniaui-laravel, omniaui-livewire]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Split and push
+        env:
+          TOKEN: ${{ secrets.SPLIT_TOKEN }}
+          PKG: ${{ matrix.package }}
+        run: |
+          # Tag to publish: the pushed tag, or (manual run) the version in package.json.
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then TAG="${GITHUB_REF_NAME}"; else TAG="v$(node -p "require('./package.json').version")"; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git subtree split --prefix="php-packages/${PKG}" -b split
+          REMOTE="https://x-access-token:${TOKEN}@github.com/Birdycom/${PKG}.git"
+          git push --force "${REMOTE}" split:main
+          git tag -f "${TAG}" split
+          git push --force "${REMOTE}" "refs/tags/${TAG}"
+          echo "Pushed ${PKG} ${TAG}"
