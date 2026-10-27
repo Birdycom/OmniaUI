@@ -1,0 +1,73 @@
+/* File: packages/ui/src/parts/media-browser-frame.css | Map: frame -> chrome bar (dots, address pill, actions)
+   -> view (screenshot slot, ratio) -> caption -> minimal / dark / tilt modifiers -> motion
+   Browser frame: fake browser chrome around a screenshot or any live content (portfolio, product shots). */
+
+.oc-browser-frame {
+  --oc-browser-frame-ratio: 16 / 10;
+  display: grid;
+  inline-size: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  box-shadow: 0 30px 60px -30px oklch(from var(--color-black-60) l c h / 0.45);
+}
+
+/* ---- Chrome bar ---- */
+.oc-browser-frame__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.8rem;
+  border-block-end: 1px solid var(--oc-border);
+  background: var(--oc-muted);
+}
+.oc-browser-frame__bar > i { flex: none; inline-size: 0.65rem; aspect-ratio: 1; border-radius: 50%; background: var(--color-red-50); }
+.oc-browser-frame__bar > i:nth-of-type(2) { background: var(--color-orange-60); }
+.oc-browser-frame__bar > i:nth-of-type(3) { background: var(--color-green-20); }
+
+/* Address pill with a lock; the text is cut off with "…" when the frame is narrow. */
+.oc-browser-frame__address {
+  flex: 1;
+  min-inline-size: 0;
+  max-inline-size: 28rem;
+  margin-inline: auto;
+  padding: 0.2rem 0.75rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--oc-card);
+  color: var(--oc-muted-foreground);
+  font-size: 0.75rem;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.oc-browser-frame__address::before { content: "\1F512\FE0E" / ""; margin-inline-end: 0.35rem; font-size: 0.65rem; opacity: 0.7; }
+/* Balance the dots on the left so the address stays centered. */
+.oc-browser-frame__actions { display: flex; gap: 0.35rem; min-inline-size: 2.4rem; justify-content: flex-end; color: var(--oc-muted-foreground); font-size: 0.8rem; }
+
+/* ---- View: the screenshot (or any content) ---- */
+.oc-browser-frame__view { position: relative; aspect-ratio: var(--oc-browser-frame-ratio); overflow: hidden; background: var(--oc-background); }
+.oc-browser-frame__view > :is(img, video, iframe, .oc-media-art) { display: block; inline-size: 100%; block-size: 100%; border: 0; object-fit: cover; object-position: top; }
+/* Free height: the content decides (live HTML inside the frame). */
+.oc-browser-frame--auto .oc-browser-frame__view { aspect-ratio: auto; }
+
+.oc-browser-frame__caption { padding: 0.6rem 0.9rem; border-block-start: 1px solid var(--oc-border); font-size: 0.8125rem; color: var(--oc-muted-foreground); }
+
+/* ---- Modifiers ---- */
+.oc-browser-frame--minimal .oc-browser-frame__address,
+.oc-browser-frame--minimal .oc-browser-frame__actions { display: none; }
+/* Dark chrome in both themes (light-dark() tokens resolve to their dark side). */
+.oc-browser-frame--dark { color-scheme: dark; }
+
+/* Tilt: a slight 3D angle that straightens on hover / focus. Static with reduced motion. */
+.oc-browser-frame--tilt { transform: perspective(80rem) rotateX(6deg) rotateY(-8deg); transform-origin: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .oc-browser-frame--tilt { transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .oc-browser-frame--tilt:is(:hover, :focus-within) { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-browser-frame--tilt { transform: none; }
+}

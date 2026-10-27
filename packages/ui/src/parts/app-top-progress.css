@@ -1,0 +1,68 @@
+/* File: packages/ui/src/parts/app-top-progress.css | Map: bar (fixed, native progress) -> determinate value -> indeterminate animation -> color + static modifiers -> done state -> reduced motion */
+/* Top progress: thin loading bar at the very top of the page, on a native <progress> element.
+   <progress class="oc-top-progress"> without value = indeterminate (sliding glow);
+   with value="40" max="100" = determinate. Hide it with the hidden attribute or .is-done (fades out). */
+
+.oc-top-progress {
+  --oc-top-progress-color: var(--oc-primary);
+  --oc-top-progress-height: 3px;
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 1000;
+  display: block;
+  inline-size: 100%;
+  block-size: var(--oc-top-progress-height);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  color: var(--oc-top-progress-color);
+  background: transparent;
+  pointer-events: none;
+  transition: opacity var(--oc-transition-normal);
+}
+
+/* Determinate value: the filled part, with a soft glow at its end. */
+.oc-top-progress::-webkit-progress-bar { background: transparent; }
+.oc-top-progress::-webkit-progress-value {
+  background: var(--oc-top-progress-color);
+  box-shadow: 0 0 8px var(--oc-top-progress-color);
+  transition: inline-size var(--oc-transition-normal);
+}
+.oc-top-progress::-moz-progress-bar { background: var(--oc-top-progress-color); box-shadow: 0 0 8px var(--oc-top-progress-color); }
+
+/* Indeterminate (no value): a segment slides from start to end, again and again. */
+.oc-top-progress:indeterminate {
+  background: linear-gradient(90deg, transparent, var(--oc-top-progress-color) 30% 70%, transparent) no-repeat;
+  background-size: 35% 100%;
+  animation: oc-top-progress-slide 1.2s ease-in-out infinite;
+}
+.oc-top-progress:indeterminate::-webkit-progress-bar { background: transparent; }
+.oc-top-progress:indeterminate::-moz-progress-bar { background: transparent; box-shadow: none; }
+@keyframes oc-top-progress-slide {
+  from { background-position: -40% 0; }
+  to { background-position: 140% 0; }
+}
+
+/* Color modifiers (theme tokens). */
+.oc-top-progress--success { --oc-top-progress-color: var(--oc-success); }
+.oc-top-progress--warning { --oc-top-progress-color: var(--oc-warning); }
+.oc-top-progress--danger { --oc-top-progress-color: var(--oc-destructive); }
+.oc-top-progress--brand { --oc-top-progress-color: var(--oc-brand-1); }
+
+/* Thicker bar. */
+.oc-top-progress--lg { --oc-top-progress-height: 4px; }
+
+/* Static: stays in the normal flow (inside a card, header or demo) instead of fixed to the window. */
+.oc-top-progress--static { position: relative; inset: auto; z-index: auto; background-color: var(--oc-surface-strong); }
+
+/* Done: fades out, then the app can remove it or set hidden. */
+.oc-top-progress.is-done { opacity: 0; }
+.oc-top-progress[hidden] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-top-progress:indeterminate { animation-duration: 3s; }
+  .oc-top-progress,
+  .oc-top-progress::-webkit-progress-value { transition: none; }
+}

@@ -1,0 +1,75 @@
+/* File: packages/ui/src/parts/forms-affix-input.css
+   Map: --affix group (frame on the wrapper) -> inner input -> inline affix (€, %, @) -> states -> --end alignment
+   Affix input: extends .oc-input-group with the modifier .oc-input-group--affix.
+   The symbol sits INSIDE the field (no grey addon box). Same markup as input-group, one extra class. */
+
+/* The wrapper owns the border; children lose theirs. */
+.oc-input-group--affix {
+  align-items: center;
+  border: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+
+.oc-input-group--affix:focus-within {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+}
+
+/* Input: borderless and without its own focus ring (the frame shows focus).
+   Selectors repeat .oc-input-group to beat the base :first-child / :last-child radius rules. */
+.oc-input-group.oc-input-group--affix .oc-input {
+  border: 0;
+  border-radius: var(--oc-radius);
+  box-shadow: none;
+  min-inline-size: 0;
+}
+
+/* Symbol column: same chrome as the Korrekt / OmniaDesk fields (€, %, @, barcode icon).
+   A divider separates the symbol from the value. */
+.oc-input-group.oc-input-group--affix .oc-input-addon {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 2.25rem;
+  padding-inline: 0.5rem;
+  border: 0;
+  border-inline-end: 1px solid var(--oc-input);
+  border-radius: 0;
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* A symbol after the value (rare) gets the divider on its left. */
+.oc-input-group.oc-input-group--affix .oc-input-addon:last-child:not(:first-child) {
+  border-inline-end: 0;
+  border-inline-start: 1px solid var(--oc-input);
+}
+
+.oc-input-group.oc-input-group--affix .oc-input-addon svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+/* Numbers (currency, percent) read better right-aligned. */
+.oc-input-group--end .oc-input {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Invalid: modifier, aria-invalid or the browser's own check (type="email", pattern...) after input. */
+.oc-input-group--affix.oc-input-group--error,
+.oc-input-group--affix:has([aria-invalid="true"]),
+.oc-input-group--affix:has(.oc-input:user-invalid) {
+  border-color: var(--oc-destructive);
+}
+
+/* Disabled: dim the whole frame. */
+.oc-input-group--affix:has(.oc-input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.oc-input-group--affix:has(.oc-input:disabled) .oc-input { opacity: 1; }

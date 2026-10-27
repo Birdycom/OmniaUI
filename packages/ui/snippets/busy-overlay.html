@@ -1,0 +1,31 @@
+<!-- OmniaUI component: busy-overlay — Modal "please wait" overlay while a long form submit or upload runs. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/busy-overlay.html | Map: form[data-oc-busy] -> dialog (spinner or progress, title, text) -> script
+     Class API (modifiers are extra classes / attributes on the same element):
+       dialog.oc-busy-overlay[closedby="none"]: The overlay; modal, so the page is inert and Esc does not close it
+       .oc-spinner (or .oc-progress > .oc-progress-bar for a known percentage): Activity
+       .oc-busy-overlay__title / __text: What is happening and how long it may take
+       form[data-oc-busy="<dialog id>"]: Opens the overlay when the form is submitted (after the browser's own validation)
+     The overlay appears after 300ms, so quick requests never flash. The page that loads next replaces it;
+     after a fetch() call close it yourself with dialog.close().
+-->
+<form class="oc-form-group" data-oc-busy="oc-busy-overlay-demo" action="/photos" method="post" enctype="multipart/form-data">
+  <label class="oc-dropzone">
+    <input type="file" name="photos[]" accept="image/*" multiple>
+    <span><strong>Choose photos</strong> to upload</span>
+    <span class="oc-dropzone-hint">They are resized to 600px and 1080px after saving</span>
+  </label>
+  <button class="oc-btn" type="submit">Save</button>
+</form>
+
+<dialog class="oc-busy-overlay" id="oc-busy-overlay-demo" closedby="none" aria-labelledby="oc-busy-overlay-demo-title" aria-describedby="oc-busy-overlay-demo-text">
+  <span class="oc-spinner" role="status" aria-label="Busy"></span>
+  <h2 class="oc-busy-overlay__title" id="oc-busy-overlay-demo-title">Saving…</h2>
+  <p class="oc-busy-overlay__text" id="oc-busy-overlay-demo-text">The photos are being processed. This can take a minute; please keep this page open.</p>
+</dialog>
+<script>
+// Open the busy overlay of a form when it is submitted (the submit event only fires when the form is valid).
+document.addEventListener("submit", (e) => {
+  const id = e.target.dataset?.ocBusy;
+  if (id) document.getElementById(id)?.showModal();
+});
+</script>

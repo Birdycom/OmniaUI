@@ -1,0 +1,151 @@
+<!-- OmniaUI component: data-table - List table from Korrekt and OmniaDesk: search, sort, pages, columns, resize, drag, trash filter and bulk actions. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/data-table.html | Map: shell -> toolbar (gear, search, pills, view) -> bulk bar -> table -> footer. Behaviour: src/data-table.js
+-->
+<div class="oc-data-table oc-column-menu-scope" id="oc-articles" data-page-size="3" data-oc-live="true" style="--oc-data-table-max: 18rem">
+  <div class="oc-data-table-toolbar">
+    <div class="oc-data-table-heading">
+      <span class="oc-data-table-title">Articles</span>
+      <button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" popovertarget="oc-articles-menu" aria-label="Table actions">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7.2 1.2h1.6l.3 1.5a4 4 0 0 1 1.1.6l1.4-.6 1.1 1.1-.6 1.4c.3.3.5.7.6 1.1l1.5.3v1.6l-1.5.3a4 4 0 0 1-.6 1.1l.6 1.4-1.1 1.1-1.4-.6a4 4 0 0 1-1.1.6l-.3 1.5H7.2l-.3-1.5a4 4 0 0 1-1.1-.6l-1.4.6-1.1-1.1.6-1.4a4 4 0 0 1-.6-1.1L1.8 8.8V7.2l1.5-.3c.1-.4.3-.8.6-1.1l-.6-1.4 1.1-1.1 1.4.6a4 4 0 0 1 1.1-.6l.3-1.5zM8 6.2a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6z"/></svg>
+      </button>
+      <div class="oc-dropdown-menu" id="oc-articles-menu" popover>
+        <button class="oc-dropdown-item" type="button" data-oc-export>Export CSV</button>
+        <button class="oc-dropdown-item" type="button" data-oc-import>Import CSV</button>
+        <input class="oc-data-table-file" type="file" accept=".csv,text/csv" data-oc-file>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item" type="button" data-oc-density="comfortable">Comfortable rows</button>
+        <button class="oc-dropdown-item" type="button" data-oc-density="compact">Compact rows</button>
+        <button class="oc-dropdown-item" type="button" data-oc-reset-widths>Reset column widths</button>
+      </div>
+    </div>
+    <input class="oc-input oc-data-table-search" type="search" placeholder="Search articles..." aria-label="Search articles">
+    <div class="oc-filter-pills" role="group" aria-label="Trash filter">
+      <button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true">Active only</button>
+      <button class="oc-filter-pill" type="button" data-oc-filter="all">Including trash</button>
+      <button class="oc-filter-pill" type="button" data-oc-filter="deleted">Trash only</button>
+      <button class="oc-filter-pill" type="button" data-oc-filter="archived">Archive only</button>
+    </div>
+    <div class="oc-data-table-view" role="group" aria-label="View">
+      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-view="table" aria-pressed="true">Table</button>
+      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-view="grid">Cards</button>
+    </div>
+    <div class="oc-data-table-actions"><button class="oc-btn oc-btn--sm" type="button">New article</button></div>
+    <p class="oc-data-table-sort-summary" data-oc-sort-summary role="status"></p>
+  </div>
+  <div class="oc-table-toolbar">
+    <span class="oc-table-toolbar-spacer"></span>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" popovertarget="oc-articles-columns">Columns</button>
+  </div>
+  <div class="oc-column-menu" id="oc-articles-columns" popover>
+    <p class="oc-column-menu-title">Visible columns</p>
+    <form class="oc-column-menu-list">
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="3" checked> Article ID</label>
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="4" checked> Name</label>
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="5" checked> Price</label>
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="6"> Supplier</label>
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="7" checked> Status</label>
+    </form>
+  </div>
+  <div class="oc-data-table-bulk" hidden>
+    <span data-oc-selected-count>0 selected</span>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">Export selection</button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">Duplicate</button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">Move to trash</button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">Restore</button>
+    <button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">Delete permanently</button>
+    <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">Clear</button>
+  </div>
+  <div class="oc-data-table-frame">
+    <div class="oc-data-table-scroll">
+      <table class="oc-table oc-data-table-table">
+        <thead>
+          <tr>
+            <th data-oc-col="select" class="oc-data-table-select"><input class="oc-checkbox" type="checkbox" data-oc-select-all aria-label="Select all"></th>
+            <th data-oc-col="order"><span class="oc-visually-hidden">Order</span></th>
+            <th data-oc-col="sku" data-oc-sort="text"><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Article ID</button><span class="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label="Resize Article ID"></span></span></th>
+            <th data-oc-col="name" data-oc-sort="text"><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Name</button><span class="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label="Resize Name"></span></span></th>
+            <th data-oc-col="price" data-oc-sort="numeric" data-numeric><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Price</button><span class="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label="Resize Price"></span></span></th>
+            <th data-oc-col="supplier" data-oc-sort="text"><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Supplier</button><span class="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label="Resize Supplier"></span></span></th>
+            <th data-oc-col="status" data-oc-sort="text"><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Status</button></span></th>
+            <th data-oc-col="actions"><span class="oc-visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-oc-row data-oc-key="schar" data-oc-status="active">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Scharnier"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Scharnier"></button></td>
+            <td data-oc-col="sku">SET-SCHAR-1105C-ONS</td>
+            <td data-oc-col="name">Scharnier 1105</td>
+            <td data-oc-col="price" data-numeric data-oc-value="5.15">5,15</td>
+            <td data-oc-col="supplier">Van Hoecke</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--success">Active</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="greep" data-oc-status="active">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Greep"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Greep"></button></td>
+            <td data-oc-col="sku">SET-GREEP-40</td>
+            <td data-oc-col="name">Greep 40</td>
+            <td data-oc-col="price" data-numeric data-oc-value="12.4">12,40</td>
+            <td data-oc-col="supplier">Van Hoecke</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--success">Active</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="plaat" data-oc-status="active">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Plaat"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Plaat"></button></td>
+            <td data-oc-col="sku">PLAAT-18-WIT</td>
+            <td data-oc-col="name">Plaat 18 wit</td>
+            <td data-oc-col="price" data-numeric data-oc-value="28">28,00</td>
+            <td data-oc-col="supplier">Egger</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--success">Active</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="led" data-oc-status="active">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select LED"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move LED"></button></td>
+            <td data-oc-col="sku">LED-STRIP-2M</td>
+            <td data-oc-col="name">LED strip</td>
+            <td data-oc-col="price" data-numeric data-oc-value="16.9">16,90</td>
+            <td data-oc-col="supplier">Egger</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--success">Active</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="schroef" data-oc-status="deleted">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Schroef"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Schroef"></button></td>
+            <td data-oc-col="sku">SCHROEF-4X40</td>
+            <td data-oc-col="name">Schroef 4x40</td>
+            <td data-oc-col="price" data-numeric data-oc-value="0.08">0,08</td>
+            <td data-oc-col="supplier">Van Hoecke</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--secondary">Deleted</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="kast" data-oc-status="archived">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Kast"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Kast"></button></td>
+            <td data-oc-col="sku">ARCH-KAST-60</td>
+            <td data-oc-col="name">Kast 60</td>
+            <td data-oc-col="price" data-numeric data-oc-value="240">240,00</td>
+            <td data-oc-col="supplier">Egger</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--secondary">Archived</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="oc-data-table-empty" hidden>No results</p>
+  </div>
+  <div class="oc-data-table-footer">
+    <p class="oc-data-table-summary" data-oc-summary>Showing 1–3 of 4</p>
+    <label class="oc-data-table-per-page">Rows per page
+      <select class="oc-select" data-oc-page-size aria-label="Rows per page">
+        <option value="3" selected>3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+      </select>
+    </label>
+    <nav class="oc-data-table-pager" data-oc-pager aria-label="Pagination"></nav>
+  </div>
+</div>

@@ -1,0 +1,167 @@
+/* File: packages/ui/src/parts/data-chart-line.css | Map: figure (head, legend) -> plot (y axis, gridlines, svg) -> series colors
+   -> line + area paths -> hover columns (cursor line, dots, tooltip) -> x axis -> modifiers (--area, --dots, --spark) -> reduced motion
+   Line and area chart: an inline SVG in a 0..100 viewBox, stretched to the plot (preserveAspectRatio="none", strokes keep their
+   width with vector-effect). Data points are HTML columns laid over the plot at --x / --n, each with one dot per series at --y
+   (percent of the plot height) and a tooltip that opens on :hover and :focus-visible. Colors are the --oc-chart-1..5 tokens. */
+
+.oc-chart-line {
+  --oc-chart-line-height: 12rem;
+  display: grid;
+  gap: 0.75rem;
+  inline-size: 100%;
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--oc-foreground);
+  font-size: 0.75rem;
+}
+.oc-chart-line__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; }
+.oc-chart-line__title { margin: 0; font-size: 0.95rem; font-weight: 650; }
+.oc-chart-line__sub { margin: 0; color: var(--oc-muted-foreground); font-size: 0.8rem; }
+.oc-chart-line__value { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+/* ---- Body: y axis | plot, x axis below the plot ---- */
+.oc-chart-line__body { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.5rem; row-gap: 0.4rem; }
+.oc-chart-line__y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  block-size: var(--oc-chart-line-height);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--oc-chart-axis, var(--oc-muted-foreground));
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: end;
+}
+/* Zero-height labels: space-between puts their centres exactly on the gridlines */
+.oc-chart-line__y > li { display: flex; align-items: center; justify-content: flex-end; block-size: 0; }
+
+.oc-chart-line__plot {
+  --oc-chart-line-rows: 4;
+  position: relative;
+  block-size: var(--oc-chart-line-height);
+  border-block-end: 1px solid var(--oc-chart-axis, var(--oc-border));
+  background: repeating-linear-gradient(to top, transparent 0 calc(100% / var(--oc-chart-line-rows) - 1px), var(--oc-chart-grid, var(--oc-border)) calc(100% / var(--oc-chart-line-rows) - 1px) calc(100% / var(--oc-chart-line-rows)));
+}
+.oc-chart-line__svg { position: absolute; inset: 0; display: block; inline-size: 100%; block-size: 100%; overflow: visible; }
+
+/* ---- Series: one g per series, colored by position ---- */
+.oc-chart-line__series { --oc-chart-color: var(--oc-chart-1); }
+.oc-chart-line__series:nth-of-type(2) { --oc-chart-color: var(--oc-chart-2); }
+.oc-chart-line__series:nth-of-type(3) { --oc-chart-color: var(--oc-chart-3); }
+.oc-chart-line__series:nth-of-type(4) { --oc-chart-color: var(--oc-chart-4); }
+.oc-chart-line__series:nth-of-type(5) { --oc-chart-color: var(--oc-chart-5); }
+.oc-chart-line__path {
+  fill: none;
+  stroke: var(--oc-chart-color);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.oc-chart-line__area { display: none; fill: var(--oc-chart-color); fill-opacity: 0.16; stroke: none; }
+.oc-chart-line--area .oc-chart-line__area { display: inline; }
+.oc-chart-line__path--dashed { stroke-dasharray: 5 4; }
+
+/* ---- Hover columns: one per x value; the column is the hit area, the dots and tip live inside ---- */
+.oc-chart-line__cols { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.oc-chart-line__col {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--x) / (var(--n) - 1) * 100%);
+  inline-size: calc(100% / (var(--n) - 1));
+  translate: -50% 0;
+  outline: 0;
+  cursor: crosshair;
+}
+.oc-chart-line__col::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  border-inline-start: 1px dashed var(--oc-chart-axis, var(--oc-muted-foreground));
+  opacity: 0;
+}
+.oc-chart-line__dot {
+  --oc-chart-color: var(--oc-chart-1);
+  position: absolute;
+  inset-block-end: var(--y);
+  inset-inline-start: 50%;
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  border: 2px solid var(--oc-card);
+  border-radius: 50%;
+  background: var(--oc-chart-color);
+  translate: -50% 50%;
+  scale: 0;
+  transition: scale var(--oc-transition-fast);
+}
+.oc-chart-line__dot:nth-of-type(2) { --oc-chart-color: var(--oc-chart-2); }
+.oc-chart-line__dot:nth-of-type(3) { --oc-chart-color: var(--oc-chart-3); }
+.oc-chart-line__dot:nth-of-type(4) { --oc-chart-color: var(--oc-chart-4); }
+.oc-chart-line__dot:nth-of-type(5) { --oc-chart-color: var(--oc-chart-5); }
+
+/* Tooltip: slides from left-aligned (first point) to right-aligned (last point), so it never leaves the plot */
+.oc-chart-line__tip {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 0.25rem;
+  inset-inline-start: 50%;
+  display: grid;
+  gap: 0.3rem;
+  min-inline-size: 8.5rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-popover, var(--oc-card));
+  box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.14);
+  color: var(--oc-popover-foreground, var(--oc-foreground));
+  white-space: nowrap;
+  pointer-events: none;
+  translate: calc(var(--x) / (var(--n) - 1) * -100%) 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--oc-transition-fast), visibility var(--oc-transition-fast);
+}
+.oc-chart-line__tip > strong { font-weight: 650; }
+.oc-chart-line__row { display: flex; align-items: center; gap: 0.45rem; color: var(--oc-muted-foreground); }
+.oc-chart-line__row::before { content: ""; inline-size: 0.6rem; block-size: 0.6rem; flex: none; border-radius: 2px; background: var(--oc-chart-color, var(--oc-chart-1)); }
+.oc-chart-line__row > b { margin-inline-start: auto; padding-inline-start: 1rem; color: var(--oc-foreground); font-weight: 600; font-variant-numeric: tabular-nums; }
+.oc-chart-line__row:nth-of-type(1) { --oc-chart-color: var(--oc-chart-1); }
+.oc-chart-line__row:nth-of-type(2) { --oc-chart-color: var(--oc-chart-2); }
+.oc-chart-line__row:nth-of-type(3) { --oc-chart-color: var(--oc-chart-3); }
+.oc-chart-line__row:nth-of-type(4) { --oc-chart-color: var(--oc-chart-4); }
+.oc-chart-line__row:nth-of-type(5) { --oc-chart-color: var(--oc-chart-5); }
+
+.oc-chart-line__col:is(:hover, :focus-visible)::before { opacity: 1; }
+.oc-chart-line__col:is(:hover, :focus-visible) > .oc-chart-line__dot { scale: 1; }
+.oc-chart-line__col:is(:hover, :focus-visible) > .oc-chart-line__tip { opacity: 1; visibility: visible; }
+.oc-chart-line__col:focus-visible::before { border-inline-start: 2px solid var(--oc-ring); }
+
+/* ---- X axis ---- */
+.oc-chart-line__x {
+  grid-column: 2;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--oc-chart-axis, var(--oc-muted-foreground));
+}
+.oc-chart-line__x > li { flex: 0 0 0; display: flex; justify-content: center; white-space: nowrap; }
+.oc-chart-line__x > li:first-child { justify-content: flex-start; }
+.oc-chart-line__x > li:last-child { justify-content: flex-end; }
+
+/* ---- Modifiers ---- */
+.oc-chart-line--dots .oc-chart-line__dot { scale: 0.8; }
+.oc-chart-line--dots .oc-chart-line__col:is(:hover, :focus-visible) > .oc-chart-line__dot { scale: 1.15; }
+/* Sparkline: no axes, no grid; for stat cards and table cells */
+.oc-chart-line--spark { --oc-chart-line-height: 3rem; gap: 0.25rem; }
+.oc-chart-line--spark .oc-chart-line__body { grid-template-columns: minmax(0, 1fr); }
+.oc-chart-line--spark .oc-chart-line__plot { border: 0; background: none; }
+.oc-chart-line--spark .oc-chart-line__tip { inset-block-start: auto; inset-block-end: calc(100% + 0.4rem); min-inline-size: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-chart-line__dot, .oc-chart-line__tip { transition: none; }
+}

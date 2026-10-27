@@ -1,0 +1,89 @@
+/* File: packages/ui/src/parts/forms-color-select.css
+   Map: group (swatch grid) -> option (label + hidden radio) -> swatch -> states -> --list variant (swatch + name) -> --sm
+   Color select: pick one color from a set of swatches. Radio inputs inside labels, so keyboard,
+   forms and "name" grouping work natively. Each option sets its color with --oc-swatch (an Omnia token). */
+
+/* Group: wrapping row of swatches (role="radiogroup"). */
+.oc-color-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Option: the label around one radio. --oc-swatch is set inline, e.g. style="--oc-swatch: var(--color-red-70)". */
+.oc-color-select-option {
+  --oc-swatch: var(--oc-muted);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  color: var(--oc-foreground);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+/* The radio is invisible but stays focusable. */
+.oc-color-select-option input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Swatch: round color dot with a thin inner border so light colors stay visible. */
+.oc-color-select-swatch {
+  flex: none;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border-radius: 999px;
+  background: var(--oc-swatch);
+  box-shadow: inset 0 0 0 1px oklch(from var(--oc-foreground) l c h / 0.15);
+  transition: box-shadow var(--oc-transition-fast), transform var(--oc-transition-fast);
+}
+
+.oc-color-select-option:hover .oc-color-select-swatch { transform: scale(1.08); }
+
+/* Selected: a ring in the background color, then a ring in the swatch color. */
+.oc-color-select-option:has(input:checked) .oc-color-select-swatch {
+  box-shadow: 0 0 0 2px var(--oc-background), 0 0 0 4px var(--oc-swatch);
+}
+
+.oc-color-select-option:has(input:focus-visible) .oc-color-select-swatch {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 4px;
+}
+
+.oc-color-select-option:has(input:disabled) {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Name next to the swatch (visible in --list; screen-reader text in the grid). */
+.oc-color-select-name { line-height: 1.2; }
+.oc-color-select:not(.oc-color-select--list) .oc-color-select-name {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* List variant: one row per color with its name, e.g. inside a popover. */
+.oc-color-select--list { flex-direction: column; gap: 0.125rem; }
+.oc-color-select--list .oc-color-select-option {
+  padding: 0.375rem 0.5rem;
+  border-radius: calc(var(--oc-radius) - 2px);
+}
+.oc-color-select--list .oc-color-select-option:hover { background: var(--oc-surface); }
+.oc-color-select--list .oc-color-select-option:has(input:checked) { background: var(--oc-surface-strong); font-weight: 500; }
+.oc-color-select--list .oc-color-select-swatch { inline-size: 1rem; block-size: 1rem; }
+.oc-color-select--list .oc-color-select-option:hover .oc-color-select-swatch { transform: none; }
+
+/* Small swatches. */
+.oc-color-select--sm .oc-color-select-swatch { inline-size: 1.25rem; block-size: 1.25rem; }

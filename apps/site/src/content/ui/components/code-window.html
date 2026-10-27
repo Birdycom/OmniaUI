@@ -1,0 +1,87 @@
+<!--oc-page {"title": "OmniaUI - Code window", "category": "Docs UI", "description": "Window frame around code with a copy button (<code>.oc-code-window</code>).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Code window</h1>
+        <p class="oc-hero-text"><strong>Code window</strong>: a code sample in a window frame with traffic-light dots, a file name and a <strong>copy button</strong>. The syntax colors come from the <a href="code.html">Code block</a>; the window and the button are the pieces the docs and the homepage use. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/code-window.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Code window">
+<div class="oc-code-window">
+  <div class="oc-code-window__bar">
+    <i></i><i></i><i></i>
+    <span class="oc-code-window__title">index.html</span>
+    <button type="button" class="oc-code-copy" data-oc-copy="#oc-sample-code">Copy</button>
+  </div>
+  <pre class="oc-code-window__body"><code id="oc-sample-code">&lt;link rel="stylesheet" href="omnia.css"&gt;
+&lt;button class="oc-btn"&gt;Hello&lt;/button&gt;</code></pre>
+</div>
+<script>
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-oc-copy]"); if (!b) return;
+  await navigator.clipboard.writeText(document.querySelector(b.dataset.ocCopy).textContent);
+  b.classList.add("is-copied"); b.textContent = "Copied"; setTimeout(() => { b.classList.remove("is-copied"); b.textContent = "Copy"; }, 1500);
+});
+</script>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="anatomy">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Anatomy</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li><code>.oc-code-window</code>: rounded frame with a border.</li>
+<li><code>.oc-code-window__bar</code>: title bar. Three <code>&lt;i&gt;</code> elements draw the dots (palette colors), <code>.oc-code-window__title</code> the file name.</li>
+<li><code>.oc-code-copy</code>: the copy button. Inside the bar it sits at the right; on its own it is positioned in the top right corner of a <code>.oc-code-window</code> or any relatively positioned code block.</li>
+<li><code>.oc-code-window__body</code> for plain code, or an <code>.oc-code-block</code> for line numbers and syntax colors.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="copy">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Copy button: the one piece that needs JavaScript</h2>
+        </div>
+        <div class="oc-section-content">
+<p>Writing to the clipboard is a script-only capability, so the button carries a <code>data-oc-copy</code> attribute with the selector of the code element and one small event handler (shown in the snippet) does the rest. The button is a real <code>&lt;button type="button"&gt;</code>: focusable, <kbd>Enter</kbd>/<kbd>Space</kbd> activate it. After copying it gets <code>.is-copied</code> (success color) for 1.5 seconds. Without JavaScript the button is simply inert; hide it with <code>.no-js .oc-code-copy { display: none }</code> if that matters to you.</p>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="a11y">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Accessibility and responsive behaviour</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li>The dots are decorative; the title is plain text. Long lines scroll horizontally inside the window (<code>overflow-x: auto</code>) so the frame never grows wider than its container.</li>
+<li>Announce the result for screen readers by putting <code>aria-live="polite"</code> on the button, since its label changes to "Copied".</li>
+<li>Text is selectable, so the code can also be copied by hand.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/docs-ui.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-code-window</code></td><td>Frame</td></tr>
+              <tr><td><code>.oc-code-window__bar</code></td><td>Title bar with the three dots</td></tr>
+              <tr><td><code>.oc-code-window__title</code></td><td>File name</td></tr>
+              <tr><td><code>.oc-code-window__body</code></td><td>Plain code area</td></tr>
+              <tr><td><code>.oc-code-copy</code></td><td>Copy button; state <code>.is-copied</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>

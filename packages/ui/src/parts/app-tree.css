@@ -1,0 +1,104 @@
+/* File: packages/ui/src/parts/app-tree.css | Map: wrapper (scroll box) -> head row -> lists + indent -> row -> chevron (details) -> label + icon -> sticky actions -> states -> sticky modifier */
+/* Tree: nested list of folders (<details>) and leaves. Names may scroll horizontally;
+   the action column (.oc-tree-actions) stays pinned to the end edge with position: sticky.
+   Open / close is native <details>; no JavaScript. Selected row: aria-current="true" or .is-selected. */
+
+/* Scroll box around the whole tree. Card look by default. */
+.oc-tree {
+  --oc-tree-row: 2rem;
+  --oc-tree-indent: 1rem;
+  --oc-tree-bg: var(--oc-card);
+  overflow: auto;
+  max-block-size: var(--oc-tree-height, none);
+  font-size: 0.875rem;
+  color: var(--oc-foreground);
+  background: var(--oc-tree-bg);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+}
+
+/* Optional head row (root of the tree, e.g. "All projects"). Sticks to the top while scrolling. */
+.oc-tree-head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+  font-weight: 600;
+  background: var(--oc-tree-bg);
+  border-block-end: 1px solid var(--oc-border);
+}
+
+/* Lists: no bullets; each nested list moves one indent step inward. */
+.oc-tree-list { margin: 0; padding: 0.25rem 0; list-style: none; min-inline-size: max-content; }
+.oc-tree-list .oc-tree-list { padding-block: 0; padding-inline-start: var(--oc-tree-indent); }
+
+/* One row: chevron + icon + label, then the actions. Works on <summary>, <div>, <a> or <button>. */
+.oc-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-block-size: var(--oc-tree-row);
+  padding-inline: 0.5rem 0;
+  color: inherit;
+  text-decoration: none;
+  list-style: none;
+}
+summary.oc-tree-row { cursor: pointer; }
+.oc-tree-row::-webkit-details-marker { display: none; }
+.oc-tree-row:hover { background: var(--oc-accent); }
+.oc-tree-row:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+
+/* Chevron: drawn with borders. Folders rotate it when open; leaves keep an empty spacer. */
+.oc-tree-row::before {
+  content: "";
+  flex-shrink: 0;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  margin-inline: 0.2rem 0.35rem;
+  border-inline-end: 1.5px solid currentColor;
+  border-block-end: 1.5px solid currentColor;
+  color: var(--oc-muted-foreground);
+  rotate: -45deg;
+  transition: rotate var(--oc-transition-fast);
+}
+.oc-tree-node[open] > .oc-tree-row::before { rotate: 45deg; }
+.oc-tree-row:not(summary)::before { visibility: hidden; }
+
+/* Icon and label. The label never wraps; long names make the box scroll sideways. */
+.oc-tree-icon { display: inline-flex; flex-shrink: 0; color: var(--oc-muted-foreground); }
+.oc-tree-icon svg { inline-size: 1rem; block-size: 1rem; }
+.oc-tree-label { flex: 1 0 auto; white-space: nowrap; padding-inline-end: 0.75rem; color: inherit; text-decoration: none; }
+/* A leaf row is a div; its label may be a link (no buttons inside links). */
+a.oc-tree-label:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; border-radius: 2px; }
+.oc-tree-count { margin-inline-end: 0.5rem; font-size: 0.75rem; color: var(--oc-muted-foreground); font-variant-numeric: tabular-nums; }
+
+/* Actions: pinned to the end edge, with the row background behind it so names slide underneath. */
+.oc-tree-actions {
+  position: sticky;
+  inset-inline-end: 0;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin-inline-start: auto;
+  padding-inline: 0.5rem 0.375rem;
+  background: var(--oc-tree-bg);
+  box-shadow: -0.75rem 0 0.75rem -0.75rem oklch(from var(--color-black-60) l c h / 0.25);
+}
+.oc-tree-row:hover > .oc-tree-actions { background: linear-gradient(var(--oc-accent), var(--oc-accent)), var(--oc-tree-bg); }
+/* Hide actions until hover or focus (optional): .oc-tree--quiet */
+.oc-tree--quiet .oc-tree-actions { opacity: 0; }
+.oc-tree--quiet .oc-tree-row:is(:hover, :focus-within) > .oc-tree-actions { opacity: 1; }
+
+/* Selected row: tinted with the primary token. */
+.oc-tree-row:is([aria-current="true"], .is-selected, :has(> .oc-tree-label[aria-current="true"])) { color: var(--oc-primary); font-weight: 500; background: oklch(from var(--oc-primary) l c h / 0.1); }
+.oc-tree-row:is([aria-current="true"], .is-selected, :has(> .oc-tree-label[aria-current="true"])) > .oc-tree-actions { background: linear-gradient(oklch(from var(--oc-primary) l c h / 0.1), oklch(from var(--oc-primary) l c h / 0.1)), var(--oc-tree-bg); }
+/* Muted row (archived, empty folder). */
+.oc-tree-row.is-muted { color: var(--oc-muted-foreground); }
+
+/* Flush: no frame, for use inside a card or sidebar. */
+.oc-tree--flush { border: 0; border-radius: 0; --oc-tree-bg: transparent; }
+.oc-tree--flush .oc-tree-actions { background: var(--oc-card); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-tree-row::before { transition: none; }
+}

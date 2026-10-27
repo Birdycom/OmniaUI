@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" class="scrollbar-omnia" data-section="home" data-sister-site="https://omniacss.test">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Components and blocks that are just HTML on OmniaCSS: dialogs, menus and tabs on native elements, with Vue, React and Blade wrappers.">
+  <meta name="generator" content="OmniaUI 0.11.0">
+  <title>OmniaUI — components and blocks that are just HTML</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=d844da348e"><link rel="stylesheet" href="/css/oc-components.css?v=2818dd2af7"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=9204573677"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=46e216e1a8"><link rel="stylesheet" href="/css/oc-layout-module.css?v=cd46dce3e2"><link rel="stylesheet" href="/css/omnia_site.css?v=623534ab32"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=9fae95896e"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=12256ae711">
+  <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
+  <script>
+    // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
+    try { const u = new URL(location.href), q = u.searchParams.get("oc-theme"); if (q) { localStorage.setItem("oc-theme", q); u.searchParams.delete("oc-theme"); history.replaceState(history.state, "", u); } const t = q || localStorage.getItem("oc-theme"); if (t && t !== "system") document.documentElement.dataset.theme = t; } catch {}
+    const carryTheme = (e) => { const a = e.target.closest && e.target.closest("a[href]"); const sister = document.documentElement.dataset.sisterSite; if (!a || !sister || a.origin !== new URL(sister).origin) return; try { const t = localStorage.getItem("oc-theme"); if (!t) return; const u = new URL(a.href); u.searchParams.set("oc-theme", t); a.href = u.href; } catch {} };
+    addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
+    addEventListener("change", (e) => { if (e.target.name !== "oc-theme") return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; });
+    addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.oc-theme-switch input[value="${t}"]`); if (r) r.checked = true; });
+  </script>
+  <script src="/js/oc-docs-v2.js?v=50b3bbdcc6" defer></script>
+  <style>
+  /* OmniaCSS home. Map: page -> hero (copy + playground) -> native strip -> palette band -> frameworks -> numbers
+     -> modern CSS grid -> start -> closing call. Colors: Omnia tokens only. */
+  .oc-home { margin: 0; padding-bottom: var(--ocm-footer-height); background: var(--oc-background); color: var(--oc-foreground); }
+  .hm { overflow-x: clip; --hm-pad: max(1.25rem, env(safe-area-inset-left, 0px)); --hm-max: 92rem; display: grid; gap: clamp(4.5rem, 9vw, 8rem); padding-block: calc(var(--ocm-header-height) + clamp(2.5rem, 6vw, 5rem)) 6rem; }
+  .hm-wrap { inline-size: min(100% - 2 * var(--hm-pad), var(--hm-max)); margin-inline: auto; }
+  .hm-wrap > *, .hm-wrap .oc-tabset, .hm-wrap .oc-tab-panel { min-inline-size: 0; }
+  .hm h1, .hm h2, .hm h3 { font-family: var(--ocd-display); letter-spacing: -0.025em; text-wrap: balance; margin: 0; }
+  .hm p { margin: 0; text-wrap: pretty; }
+  .hm-eyebrow { font: 600 0.72rem var(--ocd-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--oc-primary); }
+  .hm-lead { font-size: clamp(1.05rem, 1.4vw, 1.2rem); line-height: 1.65; color: var(--oc-muted-foreground); max-inline-size: 40rem; }
+  .hm-head { display: grid; gap: 0.9rem; max-inline-size: 48rem; margin-block-end: 2.5rem; }
+  .hm-head h2 { font-size: clamp(2rem, 4.2vw, 3.3rem); font-weight: 800; line-height: 1.04; }
+  .hm-grad { background: linear-gradient(100deg, var(--color-vividblue-80), var(--color-magenta-50) 55%, var(--color-orange-50)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* ---- Hero ---- */
+  .hm-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .hm-hero::before {
+    content: ""; position: absolute; inset: -12rem -20vw auto auto; inline-size: 52rem; aspect-ratio: 1; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, oklch(from var(--color-vividblue-80) l c h / 0.16), transparent), radial-gradient(closest-side at 30% 70%, oklch(from var(--color-magenta-50) l c h / 0.12), transparent);
+    filter: blur(10px);
+  }
+  .hm-hero-copy { display: grid; gap: 1.5rem; align-content: start; }
+  .hm-badges { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .hm-badges span { --b: var(--oc-muted-foreground); display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.32rem 0.6rem; border: 1px solid oklch(from var(--b) l c h / 0.32); border-radius: 7px; background: oklch(from var(--b) l c h / 0.07); color: var(--b); font: 500 0.74rem/1 var(--ocd-mono); }
+  .hm-badges span::before { content: ""; inline-size: 0.42rem; aspect-ratio: 1; border-radius: 2px; background: currentColor; }
+  .hm-badges .b1 { --b: light-dark(var(--color-orange-95), var(--color-orange-40)); }
+  .hm-badges .b2 { --b: light-dark(var(--color-green-80), var(--color-green-10)); }
+  .hm-badges .b3 { --b: light-dark(var(--color-purple-50), var(--color-magenta-50)); }
+  .hm-hero h1 { font-size: clamp(2.7rem, 6.2vw, 5.4rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.035em; }
+  .hm-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+  .hm-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.25rem; border-radius: 11px; font: 600 0.98rem var(--ocd-text); text-decoration: none; border: 1px solid var(--oc-border); color: var(--oc-foreground); background: var(--oc-background); transition: translate 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .hm-btn:hover { translate: 0 -2px; border-color: var(--oc-border-strong); }
+  .hm-btn:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+  .hm-btn--main { border-color: transparent; color: var(--color-white-50); background: linear-gradient(100deg, var(--color-vividblue-80), var(--color-indigo-60)); box-shadow: 0 12px 30px -12px oklch(from var(--color-vividblue-80) l c h / 0.7); }
+  .hm-install { justify-self: start; display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.35rem 0.35rem 0.35rem 0.9rem; border: 1px solid var(--oc-border); border-radius: 11px; background: oklch(from var(--oc-foreground) l c h / 0.04); font: 500 0.88rem var(--ocd-mono); }
+  .hm-install b { color: var(--oc-primary); font-weight: 600; }
+  .hm-install button { padding: 0.45rem 0.7rem; border: 1px solid var(--oc-border); border-radius: 8px; background: var(--oc-background); color: var(--oc-muted-foreground); font: 500 0.75rem var(--ocd-text); cursor: pointer; }
+  .hm-install button:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+  .hm-trust { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-size: 0.86rem; color: var(--oc-muted-foreground); }
+  .hm-trust b { color: var(--oc-foreground); font-weight: 600; }
+
+  /* Playground */
+  .hm-play { border: 1px solid var(--oc-border); border-radius: 18px; background: var(--oc-background); box-shadow: 0 40px 80px -45px oklch(from var(--color-black-50) l c h / 0.6), 0 0 0 6px oklch(from var(--oc-foreground) l c h / 0.025); overflow: hidden; }
+  .hm-play-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1rem; border-block-end: 1px solid var(--oc-border); background: oklch(from var(--oc-foreground) l c h / 0.03); font: 500 0.78rem var(--ocd-mono); color: var(--oc-muted-foreground); }
+  .hm-play-bar i { inline-size: 0.65rem; aspect-ratio: 1; border-radius: 50%; background: var(--oc-border-strong); }
+  .hm-play-bar span { margin-inline-start: 0.5rem; }
+  .hm-play-field { display: grid; gap: 0.5rem; padding: 1rem 1rem 0.75rem; }
+  .hm-play-field label { font: 600 0.68rem var(--ocd-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--oc-muted-foreground); }
+  .hm-play-field input { inline-size: 100%; box-sizing: border-box; padding: 0.7rem 0.8rem; border: 1px solid var(--oc-border-strong); border-radius: 10px; background: var(--oc-background); color: var(--oc-foreground); font: 500 0.9rem var(--ocd-mono); }
+  .hm-play-field input:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+  .hm-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; padding: 0 1rem 1rem; }
+  .hm-chips button { padding: 0.28rem 0.55rem; border: 1px dashed var(--oc-border-strong); border-radius: 999px; background: none; color: var(--oc-muted-foreground); font: 500 0.72rem var(--ocd-mono); cursor: pointer; }
+  .hm-chips button:hover { color: var(--oc-primary); border-color: var(--oc-primary); }
+  .hm-chips button[aria-pressed="true"] { border-style: solid; color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.1); }
+  .hm-chips button:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+  .hm-stage { display: grid; place-items: center; min-block-size: 13rem; padding: 2rem 1rem; border-block: 1px solid var(--oc-border); background: radial-gradient(circle at 1px 1px, oklch(from var(--oc-foreground) l c h / 0.1) 1px, transparent 0) 0 0 / 16px 16px; }
+  .hm-stage > div { font-family: var(--ocd-display); font-weight: 700; font-size: 1.15rem; transition: all 0.3s ease; }
+  .hm-css { margin: 0; min-block-size: 7.5rem; max-block-size: 11rem; overflow: auto; padding: 0.9rem 1rem; background: light-dark(var(--color-shallowblue-95), var(--color-black-40)); color: var(--color-white-60); font: 400 0.76rem/1.65 var(--ocd-mono); white-space: pre-wrap; }
+  .hm-css .p { color: var(--color-skycyan-50); } .hm-css .v { color: var(--color-magenta-40); } .hm-css .c { color: var(--color-mistblue-70); }
+
+  /* ---- Native strip ---- */
+  .hm-native { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; }
+  .hm-card { display: grid; gap: 0.8rem; align-content: start; padding: 1.4rem; border: 1px solid var(--oc-border); border-radius: 16px; background: var(--oc-background); transition: border-color 0.2s, translate 0.2s; }
+  .hm-card:hover { border-color: var(--oc-border-strong); translate: 0 -3px; }
+  .hm-card h3 { font-size: 1.2rem; font-weight: 700; }
+  .hm-card p { font-size: 0.92rem; line-height: 1.6; color: var(--oc-muted-foreground); }
+  .hm-card code { font-family: var(--ocd-mono); font-size: 0.82em; padding: 0.08em 0.35em; border-radius: 5px; background: oklch(from var(--oc-foreground) l c h / 0.06); }
+  .hm-card .hm-try { min-block-size: 6.5rem; display: grid; align-content: center; justify-items: start; padding: 1rem; border-radius: 12px; background: oklch(from var(--oc-foreground) l c h / 0.035); }
+  .hm-snap { display: flex; gap: 0.6rem; inline-size: 100%; padding-block-end: 0.25rem; }
+  .hm-snap > div { flex: none; display: grid; place-items: center; inline-size: 82%; block-size: 4.2rem; border-radius: 10px; color: var(--color-white-50); font-weight: 700; }
+  .hm-snap > div:nth-child(1) { background: linear-gradient(120deg, var(--color-vividblue-80), var(--color-indigo-60)); }
+  .hm-snap > div:nth-child(2) { background: linear-gradient(120deg, var(--color-magenta-50), var(--color-purple-60)); }
+  .hm-snap > div:nth-child(3) { background: linear-gradient(120deg, var(--color-orange-50), var(--color-red-60)); }
+
+  /* ---- Palette band ---- */
+  .hm-palette { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 3px; border-radius: 18px; overflow: hidden; }
+  .hm-palette i { display: block; block-size: clamp(1.4rem, 2.8vw, 2.4rem); background: var(--c); transition: scale 0.2s; }
+  .hm-palette i:hover { scale: 1.15; z-index: 1; border-radius: 4px; }
+  .hm-palette-note { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; margin-block-start: 1rem; font-size: 0.86rem; color: var(--oc-muted-foreground); }
+  .hm-palette-note code { font-family: var(--ocd-mono); color: var(--oc-foreground); }
+
+  /* ---- Frameworks ---- */
+  .hm-fw { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .hm-fw .oc-tabset { min-inline-size: 0; }
+  .hm-fw .oc-tab-panel { padding-top: 0.75rem; }
+  .hm-fw ul { display: grid; gap: 0.6rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+  .hm-fw li { display: flex; gap: 0.6rem; color: var(--oc-muted-foreground); }
+  .hm-fw li::before { content: "✓"; color: var(--oc-primary); font-weight: 700; }
+
+  /* ---- Numbers ---- */
+  .hm-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); border-block: 1px solid var(--oc-border); }
+  .hm-numbers div { display: grid; gap: 0.3rem; padding: 2rem 1.5rem; }
+  .hm-numbers div + div { border-inline-start: 1px solid var(--oc-border); }
+  .hm-numbers b { font: 800 clamp(2.2rem, 4vw, 3.2rem)/1 var(--ocd-display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .hm-numbers span { font-size: 0.9rem; color: var(--oc-muted-foreground); }
+
+  /* ---- Modern CSS grid ---- */
+  .hm-topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 1rem; }
+  .hm-topic { position: relative; display: grid; gap: 0.5rem; padding: 1.3rem 1.4rem 1.4rem; border: 1px solid var(--oc-border); border-radius: 16px; color: inherit; text-decoration: none; overflow: hidden; transition: border-color 0.2s, translate 0.2s; }
+  .hm-topic::after { content: "→"; position: absolute; inset: 1.2rem 1.3rem auto auto; color: var(--oc-muted-foreground); transition: translate 0.2s, color 0.2s; }
+  .hm-topic:hover { border-color: var(--oc-primary); translate: 0 -3px; }
+  .hm-topic:hover::after { translate: 4px 0; color: var(--oc-primary); }
+  .hm-topic:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+  .hm-topic code { justify-self: start; font: 600 0.78rem var(--ocd-mono); color: var(--oc-primary); }
+  .hm-topic b { font: 700 1.15rem var(--ocd-display); }
+  .hm-topic span { font-size: 0.9rem; line-height: 1.55; color: var(--oc-muted-foreground); }
+
+  /* ---- Start + closing ---- */
+  .hm-start { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+  .hm-start .oc-tab-panel { padding-top: 0.75rem; }
+  .hm-close { display: grid; justify-items: center; gap: 1.5rem; padding: clamp(3rem, 7vw, 5.5rem) 1.5rem; border-radius: 28px; text-align: center; color: var(--color-white-50);
+    background: radial-gradient(circle at 15% 20%, oklch(from var(--color-magenta-50) l c h / 0.55), transparent 45%), radial-gradient(circle at 85% 80%, oklch(from var(--color-orange-50) l c h / 0.4), transparent 45%), linear-gradient(130deg, var(--color-indigo-60), var(--color-vividblue-95)); }
+  .hm-close h2 { font-size: clamp(2rem, 4.5vw, 3.4rem); font-weight: 800; line-height: 1.05; max-inline-size: 22ch; }
+  .hm-close p { max-inline-size: 40rem; color: oklch(from var(--color-white-50) l c h / 0.85); font-size: 1.1rem; }
+  .hm-close .hm-btn { border-color: oklch(from var(--color-white-50) l c h / 0.4); color: var(--color-white-50); background: oklch(from var(--color-white-50) l c h / 0.1); }
+  .hm-close .hm-btn--main { color: var(--color-indigo-60); background: var(--color-white-50); border-color: transparent; box-shadow: none; }
+
+  @media (max-width: 62rem) { .hm-hero, .hm-fw, .hm-start { grid-template-columns: minmax(0, 1fr); } .hm-numbers div + div { border-inline-start: 0; } .hm-numbers div:nth-child(n + 2) { border-block-start: 1px solid var(--oc-border); } }
+  @media (prefers-reduced-motion: reduce) { .hm-btn, .hm-card, .hm-topic, .hm-stage > div, .hm-palette i { transition: none; } }
+
+  /* ---- OmniaUI home additions: component wall, block showcase, categories ---- */
+  .hm-wall { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.9rem; }
+  .hm-tile { display: grid; gap: 0.75rem; align-content: start; padding: 1.1rem; border: 1px solid var(--oc-border); border-radius: 16px; background: var(--oc-background); box-shadow: 0 24px 50px -38px oklch(from var(--color-black-50) l c h / 0.55); min-inline-size: 0; }
+  .hm-tile--w3 { grid-column: span 3; } .hm-tile--w2 { grid-column: span 2; } .hm-tile--w4 { grid-column: span 4; } .hm-tile--w6 { grid-column: span 6; }
+  .hm-tile-label { font: 600 0.66rem var(--ocd-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--oc-muted-foreground); }
+  .hm-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .hm-shots { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; }
+  .hm-shot { grid-column: span 3; display: grid; gap: 0.75rem; color: inherit; text-decoration: none; }
+  .hm-shot--wide, .hm-shot--narrow { grid-column: span 3; }
+  .hm-shot figure { margin: 0; overflow: hidden; border: 1px solid var(--oc-border); border-radius: 16px; background: var(--oc-muted); aspect-ratio: 16 / 10; transition: border-color 0.2s, translate 0.25s, box-shadow 0.25s; }
+  .hm-shot img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top left; }
+  .hm-shot picture { display: contents; }
+  .hm-shot:hover figure { border-color: var(--oc-primary); translate: 0 -4px; box-shadow: 0 30px 60px -40px oklch(from var(--color-vividblue-80) l c h / 0.7); }
+  .hm-shot:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 4px; border-radius: 16px; }
+  .hm-shot div { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .hm-shot b { font: 700 1.1rem var(--ocd-display); }
+  .hm-shot span { font-size: 0.86rem; color: var(--oc-muted-foreground); }
+  .hm-shot .hm-from { font: 500 0.72rem var(--ocd-mono); color: var(--oc-primary); }
+  .hm-cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr)); gap: 1rem; }
+  @media (max-width: 62rem) { .hm-wall, .hm-shots { grid-template-columns: minmax(0, 1fr); } .hm-tile, .hm-shot, .hm-shot--wide, .hm-shot--narrow { grid-column: auto; } }
+
+</style>
+</head>
+<body class="oc-home">
+  <header class="oc-topbar">
+    
+    
+    <a class="oc-topbar-brand" href="/index.html">OmniaUI<span class="oc-badge-version ml-1">v0.11.0</span></a>
+    <nav class="oc-topbar-nav" aria-label="Main">
+      <ul class="oc-navmenu oc-navmenu--site">
+        <li><a class="oc-navmenu-link" href="/index.html" aria-current="page">Home</a></li><li><a class="oc-navmenu-link" href="/ui/components.html">Components</a></li><li><a class="oc-navmenu-link" href="/ui/blocks.html">Blocks</a></li><li><a class="oc-navmenu-link" href="/ui/webicons.html">Webicons</a></li><li><a class="oc-navmenu-link" href="https://omniacss.test/docs/index.html">Docs</a></li>
+        <li><a class="oc-navmenu-link" href="https://github.com/Birdycom/omniaui" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="oc-navmenu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"></path></svg></a></li>
+      </ul>
+    </nav>
+    <div class="ocd-topbar-actions">
+      <button type="button" class="ocd-search-trigger" data-ocd-search aria-label="Search components and blocks (Ctrl K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span>Search components…</span><kbd>Ctrl K</kbd></button>
+      <fieldset class="oc-theme-switch ocm-theme" aria-label="Color theme">
+        <label><input type="radio" name="oc-theme" value="system" checked> System</label>
+        <label><input type="radio" name="oc-theme" value="light"> Light</label>
+        <label><input type="radio" name="oc-theme" value="dark"> Dark</label>
+      </fieldset>
+    </div>
+  </header>
+
+  <dialog class="ocd-search-dialog" id="ocd-search" aria-label="Search">
+    <div class="ocd-search-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input type="search" placeholder="Search components, blocks and classes" aria-label="Search" role="combobox" aria-controls="ocd-search-results" aria-expanded="true" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div>
+    <ul class="ocd-search-results" id="ocd-search-results" role="listbox" aria-label="Results"></ul>
+    <p class="ocd-search-empty" hidden>No results. Try a component such as <code>dialog</code>, a block such as <code>pricing</code> or a class such as <code>oc-btn</code>.</p>
+    <p class="ocd-search-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> to move</span><span><kbd>Enter</kbd> to open</span><span><kbd>Esc</kbd> to close</span></p>
+  </dialog>
+
+  <!-- File: apps/site/src/content/index.html | Map: hero (copy + live component wall) -> block showcase -> numbers -> categories -> stacks -> closing call -->
+<main class="hm" id="top">
+
+  <section class="hm-wrap hm-hero" aria-labelledby="hm-title">
+    <div class="hm-hero-copy">
+      <div class="hm-badges"><span class="b1">0 KB JavaScript</span><span class="b2">Keyboard and screen reader ready</span><span class="b3">Light and dark</span></div>
+      <h1 id="hm-title">Components that are <span class="hm-grad">just HTML</span>.</h1>
+      <p class="hm-lead">138 components and 80 blocks built on dialog, popover, details and <code>:has()</code>. Copy the HTML, or use the same markup through Vue, React, Blade and Livewire. Everything is styled with OmniaCSS and the Omnia palette.</p>
+      <div class="hm-cta">
+        <a class="hm-btn hm-btn--main" href="/ui/components.html">Browse components →</a>
+        <a class="hm-btn" href="/ui/blocks.html">See the blocks</a>
+      </div>
+      <div class="hm-install"><span><b>npx</b> omniaui add modal</span><button type="button" data-hm-copy="npx omniaui add modal">Copy</button></div>
+      <p class="hm-trust"><span><b>HTML</b> · <b>Vue</b> · <b>React</b> · <b>Blade</b> · <b>Livewire</b></span><span>Built from the apps we ship every day</span></p>
+    </div>
+
+    <div class="hm-wall" aria-label="Live components">
+      <div class="hm-tile hm-tile--w4">
+        <span class="hm-tile-label">Stat cards</span>
+        <div class="oc-stat-card-grid">
+          <div class="oc-stat-card"><div class="oc-stat-card-body"><span class="oc-stat-card-value">248</span><span class="oc-stat-card-label">Active customers</span></div></div>
+          <div class="oc-stat-card oc-stat-card--success"><div class="oc-stat-card-body"><span class="oc-stat-card-value">€18.4k<span class="oc-stat-card-trend oc-stat-card-trend--up">+12%</span></span><span class="oc-stat-card-label">Revenue</span></div></div>
+        </div>
+      </div>
+      <div class="hm-tile hm-tile--w2">
+        <span class="hm-tile-label">Dialog</span>
+        <button class="oc-btn" type="button" command="show-modal" commandfor="hm-dialog">Open</button>
+        <dialog class="oc-modal" id="hm-dialog" closedby="any" aria-labelledby="hm-dialog-title">
+          <div class="oc-modal-content">
+            <div class="oc-modal-header"><h2 class="oc-modal-title" id="hm-dialog-title">Publish this page?</h2><p class="oc-modal-description">Visitors will see it right away. You can unpublish it at any time.</p></div>
+            <div class="oc-modal-footer"><button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="hm-dialog">Cancel</button><button class="oc-btn" type="button" command="close" commandfor="hm-dialog">Publish</button></div>
+          </div>
+        </dialog>
+      </div>
+      <div class="hm-tile hm-tile--w3">
+        <span class="hm-tile-label">Segmented + switch</span>
+        <div class="oc-segmented" role="radiogroup" aria-label="Period">
+          <label class="oc-segmented-item"><input type="radio" name="hm-period" checked> Month</label>
+          <label class="oc-segmented-item"><input type="radio" name="hm-period"> Quarter</label>
+          <label class="oc-segmented-item"><input type="radio" name="hm-period"> Year</label>
+        </div>
+        <label class="oc-toggle-field">
+          <span class="oc-toggle-field-text"><span class="oc-toggle-field-label">Email alerts</span></span>
+          <span class="oc-switch"><input type="checkbox" role="switch" checked><span class="oc-switch-track"></span></span>
+        </label>
+      </div>
+      <div class="hm-tile hm-tile--w3">
+        <span class="hm-tile-label">Team + progress</span>
+        <div class="oc-user"><span class="oc-avatar">SC</span><span class="oc-user-text"><span class="oc-user-name">Serge Cools</span><span class="oc-user-email">Project lead</span></span></div>
+        <div class="oc-progress" role="progressbar" aria-label="Launch progress" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"><div class="oc-progress-bar" style="width: 72%"></div></div>
+        <div class="hm-row"><span class="oc-badge">Design</span><span class="oc-badge oc-badge--secondary">Build</span><span class="oc-badge oc-badge--outline">Test</span></div>
+      </div>
+      <div class="hm-tile hm-tile--w6">
+        <span class="hm-tile-label">Dropdown + tabs</span>
+        <div class="hm-row" style="justify-content: space-between">
+          <div class="oc-tabset">
+            <div class="oc-tab-list oc-tab-list--pill" role="tablist">
+              <label class="oc-tab-trigger"><input type="radio" name="hm-tabs" checked> Overview</label>
+              <label class="oc-tab-trigger"><input type="radio" name="hm-tabs"> Activity</label>
+              <label class="oc-tab-trigger"><input type="radio" name="hm-tabs"> Settings</label>
+            </div>
+          </div>
+          <button class="oc-btn oc-btn--outline" type="button" popovertarget="hm-menu">Actions ▾</button>
+          <div class="oc-dropdown-menu" id="hm-menu" popover="">
+            <a class="oc-dropdown-item" href="/ui/components/dropdown-menu.html">Duplicate</a>
+            <a class="oc-dropdown-item" href="/ui/components/dropdown-menu.html">Archive</a>
+            <a class="oc-dropdown-item" href="/ui/components/dropdown-menu.html">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hm-wrap" aria-labelledby="hm-blocks-title">
+    <div class="hm-head">
+      <span class="hm-eyebrow">Blocks</span>
+      <h2 id="hm-blocks-title">Whole screens, <span class="hm-grad">ready to paste</span>.</h2>
+      <p class="hm-lead">From a landing page to a complete admin. Every block below is a real page you can open, resize and copy, in light and dark mode.</p>
+    </div>
+    <div class="hm-shots">
+      <a class="hm-shot hm-shot--wide" href="/ui/blocks/cms-dashboard.html"><figure><picture><source srcset="/img/home/cms-dashboard-dark.jpg" media="(prefers-color-scheme: dark)"><img src="/img/home/cms-dashboard.jpg" alt="CMS dashboard block" loading="lazy" width="1636" height="1014"></picture></figure><div><b>CMS dashboard</b><span class="hm-from">from a client CMS</span></div><span>Dark sidebar, content tiles, flash message and recent changes.</span></a>
+      <a class="hm-shot hm-shot--narrow" href="/ui/blocks/form-builder.html"><figure><picture><source srcset="/img/home/form-builder-dark.jpg" media="(prefers-color-scheme: dark)"><img src="/img/home/form-builder.jpg" alt="Form builder block" loading="lazy" width="1636" height="1014"></picture></figure><div><b>Form builder</b><span class="hm-from">admin</span></div><span>Add, edit, delete and reorder form fields.</span></a>
+      <a class="hm-shot" href="/ui/blocks/dashboard-01.html"><figure><picture><source srcset="/img/home/dashboard-01-dark.jpg" media="(prefers-color-scheme: dark)"><img src="/img/home/dashboard-01.jpg" alt="Dashboard block" loading="lazy" width="1636" height="1014"></picture></figure><div><b>Dashboard</b><span class="hm-from">app</span></div><span>Sidebar, KPIs, area chart and data table.</span></a>
+      <a class="hm-shot" href="/ui/blocks/masonry-gallery.html"><figure><picture><source srcset="/img/home/masonry-gallery-dark.jpg" media="(prefers-color-scheme: dark)"><img src="/img/home/masonry-gallery.jpg" alt="Masonry gallery block" loading="lazy" width="1636" height="1014"></picture></figure><div><b>Masonry gallery</b><span class="hm-from">site</span></div><span>Project photos with a CSS-only filter and lightbox.</span></a>
+      <a class="hm-shot hm-shot--narrow" href="/ui/blocks/services-tabs.html"><figure><picture><source srcset="/img/home/services-tabs-dark.jpg" media="(prefers-color-scheme: dark)"><img src="/img/home/services-tabs.jpg" alt="Services tabs block" loading="lazy" width="1636" height="1014"></picture></figure><div><b>Services tabs</b><span class="hm-from">site</span></div><span>One tab per service with media, text and documents.</span></a>
+      <a class="hm-shot hm-shot--wide" href="/ui/blocks/login.html"><figure><picture><source srcset="/img/home/login-dark.jpg" media="(prefers-color-scheme: dark)"><img src="/img/home/login.jpg" alt="Login block" loading="lazy" width="1636" height="1014"></picture></figure><div><b>Login</b><span class="hm-from">auth</span></div><span>Sign-in screens with social buttons and a side panel.</span></a>
+    </div>
+  </section>
+
+  <section class="hm-wrap" aria-label="OmniaUI in numbers">
+    <div class="hm-numbers">
+      <div><b>138</b><span>components</span></div>
+      <div><b>80</b><span>blocks: sites, apps, admin</span></div>
+      <div><b>5</b><span>stacks: HTML, Vue, React, Blade, Livewire</span></div>
+      <div><b>0 KB</b><span>JavaScript in the components</span></div>
+    </div>
+  </section>
+
+  <section class="hm-wrap" aria-labelledby="hm-cats-title">
+    <div class="hm-head">
+      <span class="hm-eyebrow">What is inside</span>
+      <h2 id="hm-cats-title">Built from real apps, <span class="hm-grad">not from a mood board</span>.</h2>
+      <p class="hm-lead">Every component started in a production app: an ERP, a workshop planner, a client CMS. That is why the data table has bulk actions and the forms have Belgian VAT and phone fields.</p>
+    </div>
+    <div class="hm-cats">
+      <a class="hm-topic" href="/ui/components/forms.html"><b>Forms</b><span>Inputs, selects, OTP, phone, number and time fields, password rules, tag input.</span></a>
+      <a class="hm-topic" href="/ui/components/data-table.html"><b>Data</b><span>Data table with sorting, columns, bulk actions and CSV; charts, stat cards, trees.</span></a>
+      <a class="hm-topic" href="/ui/components/lightbox.html"><b>Media</b><span>Lightbox, document viewer, carousel, media cards, chat messages and attachments.</span></a>
+      <a class="hm-topic" href="/ui/components/modal.html"><b>App UX</b><span>Dialogs, sheets, toasts, cookie consent, busy overlay, command palette, sidebars.</span></a>
+      <a class="hm-topic" href="/ui/blocks.html"><b>Marketing</b><span>Hero, features, pricing, FAQ, timeline, portfolio and services sections.</span></a>
+      <a class="hm-topic" href="/ui/blocks/cms-dashboard.html"><b>Admin</b><span>Wizard pages, plus the CMS dashboard, form builder, media manager and settings page in OmniaUI Pro.</span></a>
+    </div>
+  </section>
+
+  <section class="hm-wrap hm-fw" aria-labelledby="hm-fw-title">
+    <div class="hm-head" style="margin: 0">
+      <span class="hm-eyebrow">Your stack</span>
+      <h2 id="hm-fw-title">Same markup. <span class="hm-grad">Every stack.</span></h2>
+      <p class="hm-lead">The wrappers render exactly the HTML of the snippet, so the docs, the CSS and the accessibility are the same everywhere.</p>
+      <ul><li>Vue 3 with <code>v-model:open</code></li><li>React with <code>open</code> and <code>onOpenChange</code></li><li>Blade components and Livewire state</li></ul>
+    </div>
+    <div class="oc-tabset">
+      <div class="oc-tab-list oc-tab-list--pill" role="tablist">
+        <label class="oc-tab-trigger"><input type="radio" name="hm-fw" checked> HTML</label>
+        <label class="oc-tab-trigger"><input type="radio" name="hm-fw"> Vue</label>
+        <label class="oc-tab-trigger"><input type="radio" name="hm-fw"> React</label>
+        <label class="oc-tab-trigger"><input type="radio" name="hm-fw"> Blade</label>
+      </div>
+      <div class="oc-tab-panel"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7</pre><pre class="code-preview"><code><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn"</span> <span class="hl-attr">command</span>=<span class="hl-string">"show-modal"</span> <span class="hl-attr">commandfor</span>=<span class="hl-string">"publish"</span><span class="hl-tag">&gt;</span>Publish<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;dialog</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-modal"</span> <span class="hl-attr">id</span>=<span class="hl-string">"publish"</span> <span class="hl-attr">closedby</span>=<span class="hl-string">"any"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-modal-content"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;h2</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-modal-title"</span><span class="hl-tag">&gt;</span>Publish this page?<span class="hl-tag">&lt;/h2</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn"</span> <span class="hl-attr">command</span>=<span class="hl-string">"close"</span> <span class="hl-attr">commandfor</span>=<span class="hl-string">"publish"</span><span class="hl-tag">&gt;</span>Publish<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/dialog</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div>
+      <div class="oc-tab-panel"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code>&lt;OcModal v-model:open="open" title="Publish this page?"&gt;
+  Visitors will see it right away.
+&lt;/OcModal&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div>
+      <div class="oc-tab-panel"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code>&lt;Modal open={open} onOpenChange={setOpen} title="Publish this page?"&gt;
+  Visitors will see it right away.
+&lt;/Modal&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div>
+      <div class="oc-tab-panel"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::modal</span> <span class="hl-attr">id</span>=<span class="hl-string">"publish"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Publish this page?"</span><span class="hl-tag">&gt;</span>
+    Visitors will see it right away.
+<span class="hl-tag">&lt;/x-oc::modal</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div>
+    </div>
+  </section>
+
+  <section class="hm-wrap" aria-labelledby="hm-close-title">
+    <div class="hm-close">
+      <h2 id="hm-close-title">Ship the screen, not the boilerplate.</h2>
+      <p>Start with one component or a whole admin. Install with one command and keep full control of the HTML.</p>
+      <div class="hm-cta" style="justify-content: center">
+        <a class="hm-btn hm-btn--main" href="/ui/components.html">Browse components</a>
+        <a class="hm-btn" href="https://omniacss.test/docs/index.html">OmniaCSS docs</a>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-hm-copy]");
+  if (!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.hmCopy); b.textContent = "Copied"; } catch { b.textContent = "Select it"; }
+  setTimeout(() => { b.textContent = "Copy"; }, 1500);
+});
+</script>
+
+
+  <footer class="oc-footerbar oc-footerbar--fixed">OmniaUI v0.11.0 — CSS-first components and blocks on OmniaCSS · <a href="https://omniacss.test/docs/index.html">OmniaCSS docs</a> · <a href="https://github.com/Birdycom/omniaui">GitHub</a></footer>
+</body>
+</html>

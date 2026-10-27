@@ -1,0 +1,68 @@
+/* File: packages/ui/src/parts/app-alpha-tabs.css | Map: bar (scrolling row) -> item -> "All" item -> states (current, empty) -> wrap + size modifiers -> reduced motion */
+/* Alpha tabs: "All" + A-Z filter bar for long lists (dictionary, contacts).
+   Each letter is a link (?letter=A) or a button. Current letter: aria-current="true" (or .is-active).
+   Letters without entries: aria-disabled="true". The row scrolls sideways on small screens. */
+
+.oc-alpha-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  inline-size: 100%;
+  padding: 0.25rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  background: var(--oc-muted);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+}
+
+/* One letter. Square-ish, fixed width, centered text. */
+.oc-alpha-tabs-item {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 1.875rem;
+  block-size: 1.875rem;
+  padding-inline: 0.375rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--oc-muted-foreground);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: color var(--oc-transition-fast), background var(--oc-transition-fast);
+}
+.oc-alpha-tabs-item:hover { color: var(--oc-foreground); background: var(--oc-surface-strong); }
+.oc-alpha-tabs-item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+
+/* "All" is wider and separated from the letters by a thin line. */
+.oc-alpha-tabs-item--all { padding-inline: 0.75rem; margin-inline-end: 0.25rem; box-shadow: 0.25rem 0 0 -0.2rem var(--oc-border); }
+
+/* Current letter: filled with the primary token. */
+.oc-alpha-tabs-item[aria-current="true"],
+.oc-alpha-tabs-item[aria-selected="true"],
+.oc-alpha-tabs-item.is-active { color: var(--oc-primary-foreground); background: var(--oc-primary); }
+
+/* Letter without entries: visible but not clickable. */
+.oc-alpha-tabs-item[aria-disabled="true"],
+.oc-alpha-tabs-item:disabled { opacity: 0.4; pointer-events: none; }
+
+/* Wrap: letters wrap onto more rows instead of scrolling. */
+.oc-alpha-tabs--wrap { flex-wrap: wrap; overflow: visible; }
+
+/* Small: tighter letters. */
+.oc-alpha-tabs--sm .oc-alpha-tabs-item { min-inline-size: 1.5rem; block-size: 1.5rem; font-size: 0.75rem; }
+
+/* Plain: no frame (for inside a toolbar or card). */
+.oc-alpha-tabs--plain { padding: 0; background: none; border: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-alpha-tabs-item { transition: none; }
+}

@@ -1,0 +1,76 @@
+/* File: packages/ui/src/parts/media-terminal-log.css | Map: frame (always dark) -> title bar (traffic lights, title, live dot)
+   -> body (scrolling log) -> line grid (time | level | message) -> level colors -> prompt + blinking cursor -> motion
+   Terminal log: a console window for build / scan output. color-scheme: dark makes every light-dark() token
+   inside resolve to its dark value, so the terminal stays dark in the light theme too. */
+
+.oc-terminal-log {
+  color-scheme: dark;
+  inline-size: 100%;
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--color-shallowblue-95);
+  color: var(--oc-foreground);
+  box-shadow: 0 24px 48px -24px oklch(from var(--color-black-60) l c h / 0.6);
+}
+
+/* ---- Title bar ---- */
+.oc-terminal-log__bar { display: flex; align-items: center; gap: 0.45rem; padding: 0.65rem 0.9rem; border-block-end: 1px solid var(--oc-border); background: var(--color-shallowblue-90); }
+.oc-terminal-log__bar > i { inline-size: 0.7rem; aspect-ratio: 1; border-radius: 50%; background: var(--color-red-50); }
+.oc-terminal-log__bar > i:nth-of-type(2) { background: var(--color-orange-60); }
+.oc-terminal-log__bar > i:nth-of-type(3) { background: var(--color-green-20); }
+.oc-terminal-log__title { margin-inline: 0.5rem auto; font-size: 0.8125rem; color: var(--oc-muted-foreground); }
+.oc-terminal-log__status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+.oc-terminal-log__status::before { content: ""; inline-size: 0.5rem; aspect-ratio: 1; border-radius: 50%; background: var(--color-green-20); }
+
+/* ---- Body: monospace, scrolls when it gets long ---- */
+.oc-terminal-log__body {
+  display: grid;
+  gap: 0.15rem;
+  max-block-size: var(--oc-terminal-log-height, 18rem);
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow: auto;
+  font-family: ui-monospace, "Cascadia Code", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  scrollbar-width: thin;
+}
+.oc-terminal-log__body:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+
+/* One line: time | level | message. Long messages wrap under the message column. */
+.oc-terminal-log__line { display: grid; grid-template-columns: auto 3.5rem minmax(0, 1fr); gap: 0.75rem; margin: 0; }
+.oc-terminal-log__line:not(:has(.oc-terminal-log__time)) { grid-template-columns: 3.5rem minmax(0, 1fr); }
+.oc-terminal-log__time { color: var(--color-stormblue-40); font-variant-numeric: tabular-nums; }
+.oc-terminal-log__level { font-weight: 700; text-transform: uppercase; }
+.oc-terminal-log__msg { overflow-wrap: anywhere; white-space: pre-wrap; }
+
+/* Level colors (palette tokens, readable on the dark background). */
+.oc-terminal-log__line--info .oc-terminal-log__level { color: var(--color-skycyan-50); }
+.oc-terminal-log__line--success .oc-terminal-log__level { color: var(--color-green-20); }
+.oc-terminal-log__line--warn .oc-terminal-log__level { color: var(--color-orange-50); }
+.oc-terminal-log__line--error .oc-terminal-log__level,
+.oc-terminal-log__line--error .oc-terminal-log__msg { color: var(--color-red-40); }
+.oc-terminal-log__line--debug { opacity: 0.6; }
+.oc-terminal-log__line--debug .oc-terminal-log__level { color: var(--color-purple-30); }
+
+/* Prompt line: "$ " + text + a block cursor. */
+.oc-terminal-log__prompt { margin: 0.25rem 0 0; color: var(--oc-foreground); }
+.oc-terminal-log__prompt::before { content: "$ "; color: var(--color-green-20); }
+.oc-terminal-log__prompt::after {
+  content: "";
+  display: inline-block;
+  inline-size: 0.55em;
+  block-size: 1.1em;
+  margin-inline-start: 0.15em;
+  vertical-align: text-bottom;
+  background: currentColor;
+}
+
+/* Blinking cursor and pulsing live dot only when motion is welcome; otherwise they stay still. */
+@media (prefers-reduced-motion: no-preference) {
+  .oc-terminal-log__prompt::after { animation: oc-terminal-log-blink 1.1s steps(1) infinite; }
+  .oc-terminal-log__status::before { animation: oc-terminal-log-pulse 1.6s ease-in-out infinite; }
+}
+@keyframes oc-terminal-log-blink { 50% { opacity: 0; } }
+@keyframes oc-terminal-log-pulse { 50% { opacity: 0.35; } }

@@ -1,0 +1,239 @@
+<!--oc-page {"title": "OmniaUI - Data table", "category": "Data", "description": "Search, sort, pages, columns, resize, drag, trash filter and bulk actions.", "nav": "Data table", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/data-table.html | Map: hero -> live demo -> reference -> frameworks -> browser support -> source -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Data table</h1>
+        <p class="oc-hero-text">The list table from Korrekt and OmniaDesk. One toolbar (title, gear menu, search, trash and archive pills, table or cards), the table in a rounded frame, and a footer with the count, rows per page and page numbers. Search, sort, pages, column width, row drag and bulk actions run in the browser. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Article list</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/data-table.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.7.0</span>
+          <p class="oc-section-header__desc">Try it: search for "plaat", sort Price, open Columns and show Supplier, drag a grip, check a row and move it to the trash, then open Trash only. The gear menu switches comfortable and compact rows and exports CSV. Excel, PDF and the real delete call stay in the app: listen for <code>oc-datatable-bulk</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Articles" size="tall">
+<div class="oc-data-table oc-column-menu-scope" id="oc-articles" data-page-size="3" data-oc-live="true" style="--oc-data-table-max: 18rem">
+  <div class="oc-data-table-toolbar">
+    <div class="oc-data-table-heading">
+      <span class="oc-data-table-title">Articles</span>
+      <button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" popovertarget="oc-articles-menu" aria-label="Table actions">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7.2 1.2h1.6l.3 1.5a4 4 0 0 1 1.1.6l1.4-.6 1.1 1.1-.6 1.4c.3.3.5.7.6 1.1l1.5.3v1.6l-1.5.3a4 4 0 0 1-.6 1.1l.6 1.4-1.1 1.1-1.4-.6a4 4 0 0 1-1.1.6l-.3 1.5H7.2l-.3-1.5a4 4 0 0 1-1.1-.6l-1.4.6-1.1-1.1.6-1.4a4 4 0 0 1-.6-1.1L1.8 8.8V7.2l1.5-.3c.1-.4.3-.8.6-1.1l-.6-1.4 1.1-1.1 1.4.6a4 4 0 0 1 1.1-.6l.3-1.5zM8 6.2a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6z"/></svg>
+      </button>
+      <div class="oc-dropdown-menu" id="oc-articles-menu" popover>
+        <button class="oc-dropdown-item" type="button" data-oc-export>Export CSV</button>
+        <button class="oc-dropdown-item" type="button" data-oc-import>Import CSV</button>
+        <input class="oc-data-table-file" type="file" accept=".csv,text/csv" data-oc-file>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item" type="button" data-oc-density="comfortable">Comfortable rows</button>
+        <button class="oc-dropdown-item" type="button" data-oc-density="compact">Compact rows</button>
+        <button class="oc-dropdown-item" type="button" data-oc-reset-widths>Reset column widths</button>
+      </div>
+    </div>
+    <input class="oc-input oc-data-table-search" type="search" placeholder="Search articles..." aria-label="Search articles">
+    <div class="oc-filter-pills" role="group" aria-label="Trash filter">
+      <button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true">Active only</button>
+      <button class="oc-filter-pill" type="button" data-oc-filter="all">Including trash</button>
+      <button class="oc-filter-pill" type="button" data-oc-filter="deleted">Trash only</button>
+      <button class="oc-filter-pill" type="button" data-oc-filter="archived">Archive only</button>
+    </div>
+    <div class="oc-data-table-view" role="group" aria-label="View">
+      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-view="table" aria-pressed="true">Table</button>
+      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-view="grid">Cards</button>
+    </div>
+    <div class="oc-data-table-actions"><button class="oc-btn oc-btn--sm" type="button">New article</button></div>
+    <p class="oc-data-table-sort-summary" data-oc-sort-summary role="status"></p>
+  </div>
+  <div class="oc-table-toolbar">
+    <span class="oc-table-toolbar-spacer"></span>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" popovertarget="oc-articles-columns">Columns</button>
+  </div>
+  <div class="oc-column-menu" id="oc-articles-columns" popover>
+    <p class="oc-column-menu-title">Visible columns</p>
+    <form class="oc-column-menu-list">
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="3" checked> Article ID</label>
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="4" checked> Name</label>
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="5" checked> Price</label>
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="6"> Supplier</label>
+      <label class="oc-column-menu-item"><input type="checkbox" data-col="7" checked> Status</label>
+    </form>
+  </div>
+  <div class="oc-data-table-bulk" hidden>
+    <span data-oc-selected-count>0 selected</span>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">Export selection</button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">Duplicate</button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">Move to trash</button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">Restore</button>
+    <button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">Delete permanently</button>
+    <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">Clear</button>
+  </div>
+  <div class="oc-data-table-frame">
+    <div class="oc-data-table-scroll">
+      <table class="oc-table oc-data-table-table">
+        <thead>
+          <tr>
+            <th data-oc-col="select" class="oc-data-table-select"><input class="oc-checkbox" type="checkbox" data-oc-select-all aria-label="Select all"></th>
+            <th data-oc-col="order"><span class="oc-visually-hidden">Order</span></th>
+            <th data-oc-col="sku" data-oc-sort="text"><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Article ID</button><span class="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label="Resize Article ID"></span></span></th>
+            <th data-oc-col="name" data-oc-sort="text"><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Name</button><span class="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label="Resize Name"></span></span></th>
+            <th data-oc-col="price" data-oc-sort="numeric" data-numeric><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Price</button><span class="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label="Resize Price"></span></span></th>
+            <th data-oc-col="supplier" data-oc-sort="text"><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Supplier</button><span class="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label="Resize Supplier"></span></span></th>
+            <th data-oc-col="status" data-oc-sort="text"><span class="oc-data-table-th"><button class="oc-table-sort" type="button">Status</button></span></th>
+            <th data-oc-col="actions"><span class="oc-visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-oc-row data-oc-key="schar" data-oc-status="active">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Scharnier"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Scharnier"></button></td>
+            <td data-oc-col="sku">SET-SCHAR-1105C-ONS</td>
+            <td data-oc-col="name">Scharnier 1105</td>
+            <td data-oc-col="price" data-numeric data-oc-value="5.15">5,15</td>
+            <td data-oc-col="supplier">Van Hoecke</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--success">Active</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="greep" data-oc-status="active">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Greep"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Greep"></button></td>
+            <td data-oc-col="sku">SET-GREEP-40</td>
+            <td data-oc-col="name">Greep 40</td>
+            <td data-oc-col="price" data-numeric data-oc-value="12.4">12,40</td>
+            <td data-oc-col="supplier">Van Hoecke</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--success">Active</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="plaat" data-oc-status="active">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Plaat"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Plaat"></button></td>
+            <td data-oc-col="sku">PLAAT-18-WIT</td>
+            <td data-oc-col="name">Plaat 18 wit</td>
+            <td data-oc-col="price" data-numeric data-oc-value="28">28,00</td>
+            <td data-oc-col="supplier">Egger</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--success">Active</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="led" data-oc-status="active">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select LED"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move LED"></button></td>
+            <td data-oc-col="sku">LED-STRIP-2M</td>
+            <td data-oc-col="name">LED strip</td>
+            <td data-oc-col="price" data-numeric data-oc-value="16.9">16,90</td>
+            <td data-oc-col="supplier">Egger</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--success">Active</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="schroef" data-oc-status="deleted">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Schroef"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Schroef"></button></td>
+            <td data-oc-col="sku">SCHROEF-4X40</td>
+            <td data-oc-col="name">Schroef 4x40</td>
+            <td data-oc-col="price" data-numeric data-oc-value="0.08">0,08</td>
+            <td data-oc-col="supplier">Van Hoecke</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--secondary">Deleted</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+          <tr data-oc-row data-oc-key="kast" data-oc-status="archived">
+            <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="Select Kast"></td>
+            <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="Move Kast"></button></td>
+            <td data-oc-col="sku">ARCH-KAST-60</td>
+            <td data-oc-col="name">Kast 60</td>
+            <td data-oc-col="price" data-numeric data-oc-value="240">240,00</td>
+            <td data-oc-col="supplier">Egger</td>
+            <td data-oc-col="status"><span class="oc-badge oc-badge--secondary">Archived</span></td>
+            <td data-oc-col="actions" class="oc-table-actions"><button class="oc-table-row-action" type="button">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="oc-data-table-empty" hidden>No results</p>
+  </div>
+  <div class="oc-data-table-footer">
+    <p class="oc-data-table-summary" data-oc-summary>Showing 1–3 of 4</p>
+    <label class="oc-data-table-per-page">Rows per page
+      <select class="oc-select" data-oc-page-size aria-label="Rows per page">
+        <option value="3" selected>3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+      </select>
+    </label>
+    <nav class="oc-data-table-pager" data-oc-pager aria-label="Pagination"></nav>
+  </div>
+</div>
+
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Put <code>.oc-data-table</code> around the toolbar, the table and the footer. Load <code>data-table.js</code> once. The script wires every table on the page.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Piece</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-data-table-search</code></td><td>Filters rows as you type. Enter fires <code>oc-datatable-search</code> (barcode scanners).</td></tr>
+              <tr><td><code>[data-oc-filter]</code></td><td>Active only, including trash, trash only, archive only. Reads <code>data-oc-status</code> on the row.</td></tr>
+              <tr><td><code>.oc-table-sort</code></td><td>Sorts the column. Numeric columns use <code>data-oc-sort="numeric"</code> and <code>data-oc-value</code>.</td></tr>
+              <tr><td><code>[data-oc-page-size]</code> / <code>[data-oc-pager]</code></td><td>Rows per page and the numbered pager. The count is <code>[data-oc-summary]</code>.</td></tr>
+              <tr><td><code>.oc-column-menu</code></td><td>Show or hide a column. The checkbox <code>data-col</code> is the column number.</td></tr>
+              <tr><td><code>.oc-data-table-resize</code></td><td>Drag to set the column width. Widths are remembered for this table id.</td></tr>
+              <tr><td><code>.oc-sortable-row-grip</code></td><td>Drag a row by the grip. Fires <code>oc-datatable-reorder</code>.</td></tr>
+              <tr><td><code>[data-oc-view]</code></td><td><code>table</code> or <code>grid</code>. Cards are built from the rows on the current page.</td></tr>
+              <tr><td><code>[data-oc-density]</code></td><td><code>comfortable</code> or <code>compact</code> (tighter rows).</td></tr>
+              <tr><td><code>[data-oc-bulk]</code></td><td><code>export</code>, <code>duplicate</code>, <code>archive</code>, <code>restore</code>, <code>delete</code>, <code>clear</code>. Fires <code>oc-datatable-bulk</code> with the selected keys.</td></tr>
+              <tr><td><code>[data-oc-export]</code> / <code>[data-oc-import]</code></td><td>Download the filtered rows as CSV, or pick a file (<code>oc-datatable-import</code>).</td></tr>
+              <tr><td><code>data-oc-href</code></td><td>Click the row to open that URL. Clicks on buttons and inputs stay on the control. Ctrl-click opens a new tab.</td></tr>
+              <tr><td><code>data-oc-live="true"</code></td><td>The demo updates rows in the page. Leave it off in an app and handle the event yourself.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">React, Vue and Laravel</h2>
+          <p class="oc-section-header__desc">The wrappers render this markup and start the same script. <code>onBulk</code> in React receives the action and the selected keys.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;DataTable title="Articles" columns={columns} rows={rows} onBulk={onBulk} /&gt;
+&lt;!-- Vue --&gt;
+&lt;OcDataTable title="Articles" :columns="columns" :rows="rows" /&gt;
+&lt;!-- Laravel Blade --&gt;
+&lt;x-oc::data-table title="Articles" :columns="$columns" :rows="$rows" /&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-compat features="html.elements.input.type_search api.HTMLElement.draggable css.properties.position html.global_attributes.popover css.selectors.has css.types.color.light-dark"></oc-compat>
+        </div>
+        <div class="oc-section-footer">
+          <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+          <p class="oc-section-footer__desc">See <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API" target="_blank" rel="noopener">MDN: Drag and Drop</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/position" target="_blank" rel="noopener">MDN: position</a> (sticky header).</p>
+          <div class="oc-section-content">
+            <h3 class="oc-section-content__title">Source files</h3>
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+              <tbody>
+                <tr><td><code>packages/ui/src/parts/app-data-table.css</code></td><td>Toolbar, frame, resize handle, bulk bar, cards, footer</td></tr>
+                <tr><td><code>packages/ui/src/data-table.js</code></td><td>Search, sort, pages, resize, drag, trash, bulk, CSV</td></tr>
+                <tr><td><code>packages/ui/snippets/data-table.html</code></td><td>Copy-paste markup</td></tr>
+                <tr><td><code>packages/react/src/components/DataTable.tsx</code> / <code>packages/vue/src/components/OcDataTable.vue</code></td><td>Wrappers</td></tr>
+                <tr><td><code>resources/views/components/data-table.blade.php</code></td><td>Laravel: <code>&lt;x-oc::data-table&gt;</code></td></tr>
+              </tbody>
+            </table>
+            <h3 class="oc-section-content__title">Related pages</h3>
+            <p class="oc-section-content__desc"><a class="source-link" href="table.html">Table</a> · <a class="source-link" href="column-menu.html">Column menu</a> · <a class="source-link" href="sortable-row.html">Sortable row</a> · <a class="source-link" href="table-compact.html">Table compact</a> · <a class="source-link" href="../blocks/data-table.html">Data table block</a></p>
+          </div>
+        </div>
+      </section>
+<script type="module" src="/js/oc-data-table.js"></script>

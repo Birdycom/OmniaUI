@@ -1,0 +1,34 @@
+/* File: packages/ui/src/parts/site-link-arrow.css
+   Map: focus ring -> back arrow -> external arrow -> color modifiers -> sizes -> reduced motion
+   Link arrow component. The base .oc-link-arrow (text + "→" that moves on hover) lives in showcase.css.
+   This part only ADDS modifiers. */
+
+.oc-link-arrow:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 3px;
+}
+.oc-link-arrow:focus-visible::after { translate: 4px 0; }
+
+/* Back link: the arrow points left, sits before the text and moves left on hover. */
+.oc-link-arrow--back::after { content: none; }
+.oc-link-arrow--back::before { content: "←"; transition: translate 0.2s var(--oc-ease-out); }
+.oc-link-arrow--back:is(:hover, :focus-visible)::before { translate: -4px 0; }
+
+/* External link: diagonal arrow that moves up-right. */
+.oc-link-arrow--external::after { content: "↗"; }
+.oc-link-arrow--external:is(:hover, :focus-visible)::after { translate: 3px -3px; }
+
+/* Colors: accent of the element, or muted text that turns to the foreground color on hover. */
+.oc-link-arrow--accent { color: var(--oc-accent-from); }
+.oc-link-arrow--muted { color: var(--oc-muted-foreground); font-weight: 500; transition: color 0.2s; }
+.oc-link-arrow--muted:hover { color: var(--oc-foreground); }
+
+/* Sizes */
+.oc-link-arrow--sm { font-size: 0.85rem; }
+.oc-link-arrow--lg { font-size: 1.15rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-link-arrow::after,
+  .oc-link-arrow::before { transition: none; }
+}

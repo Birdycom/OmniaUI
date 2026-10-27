@@ -1,0 +1,99 @@
+<!--oc-page {"title": "OmniaUI - Decimal input", "category": "Forms", "description": "Text field for locale-formatted numbers, with an optional unit.", "nav": "Decimal input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/decimal-input.html | Map: hero -> demo (plain, unit + invalid) -> reference -> frameworks -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Decimal input</h1>
+        <p class="oc-hero-text">A text field for numbers written the local way, like <code>1.234,56</code>. <code>type="number"</code> does not accept thousands separators, so this uses <code>type="text"</code> with <code>inputmode="decimal"</code> (numeric keyboard) and a <code>pattern</code>. The React and Vue wrappers format the value on blur with <code>Intl.NumberFormat</code> and give you a real number. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/decimal-input.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.6.0</span>
+          <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/decimal-input.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Decimal input">
+<div class="oc-field" style="max-inline-size:16rem">
+  <label class="oc-field-label" for="oc-decimal-demo">Amount</label>
+  <input class="oc-input oc-decimal-input" id="oc-decimal-demo" name="amount" type="text" inputmode="decimal" value="1.234,56" pattern="[0-9.]*(,[0-9]{1,2})?">
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">With a unit, and invalid</h3>
+          <p class="oc-section-content__desc"><code>.oc-decimal-field</code> puts a unit inside the frame. Type letters in the second field and leave it: the pattern check marks it red.</p>
+          <oc-demo title="Decimal input - unit and states">
+<div style="display:grid;gap:0.75rem;max-inline-size:16rem">
+  <div class="oc-decimal-field">
+    <input class="oc-input oc-decimal-input" type="text" inputmode="decimal" value="42,5" pattern="[0-9.]*(,[0-9]{1,2})?" aria-label="Surface">
+    <span class="oc-decimal-field-unit">m&sup2;</span>
+  </div>
+  <div class="oc-decimal-field">
+    <input class="oc-input oc-decimal-input" type="text" inputmode="decimal" value="12,x" aria-invalid="true" aria-label="Weight (invalid)">
+    <span class="oc-decimal-field-unit">kg</span>
+  </div>
+  <input class="oc-input oc-decimal-input oc-decimal-input--start" type="text" inputmode="decimal" value="0,75" aria-label="Rate (left aligned)">
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/forms-decimal-input.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-decimal-input</code></td><td>Add to <code>.oc-input</code>: right-aligned tabular digits. Modifier: <code>--start</code>.</td></tr>
+              <tr><td><code>.oc-decimal-field</code></td><td>Optional frame around the input and a unit</td></tr>
+              <tr><td><code>.oc-decimal-field-unit</code></td><td>Unit text after the value</td></tr>
+              <tr><td><code>pattern</code></td><td><code>[0-9.]*(,[0-9]{1,2})?</code> for comma decimals; swap <code>.</code> and <code>,</code> for dot decimals</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Framework wrappers</h2>
+          <p class="oc-section-header__desc">The value is a <code>number</code> (or <code>null</code> when empty). <code>locale</code> and <code>decimals</code> control the display.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;DecimalInput value={amount} onValueChange={setAmount} locale="nl-BE" decimals={2} unit="m²" /&gt;
+&lt;!-- Vue --&gt;
+&lt;OcDecimalInput v-model="amount" locale="nl-BE" :decimals="2" /&gt;
+&lt;!-- Laravel Blade --&gt;
+&lt;x-oc::decimal-input name="amount" value="1.234,56" unit="m²" /&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-compat features="html.global_attributes.inputmode html.elements.input.pattern css.selectors.user-invalid css.properties.font-variant-numeric javascript.builtins.Intl.NumberFormat css.types.color.light-dark"></oc-compat>
+        </div>
+        <div class="oc-section-footer">
+          <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+          <p class="oc-section-footer__desc">See <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat" target="_blank" rel="noopener">MDN: Intl.NumberFormat</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/pattern" target="_blank" rel="noopener">MDN: pattern</a>.</p>
+          <div class="oc-section-content">
+            <h3 class="oc-section-content__title">Source files</h3>
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+              <tbody>
+                <tr><td><code>packages/ui/src/parts/forms-decimal-input.css</code></td><td>Styles</td></tr>
+                <tr><td><code>packages/ui/snippets/decimal-input.html</code></td><td>Copy-paste markup</td></tr>
+                <tr><td><code>packages/react/src/components/DecimalInput.tsx</code> / <code>packages/vue/src/components/OcDecimalInput.vue</code></td><td>Wrappers with locale formatting</td></tr>
+                <tr><td><code>resources/views/components/decimal-input.blade.php</code></td><td>Laravel: <code>&lt;x-oc::decimal-input&gt;</code></td></tr>
+              </tbody>
+            </table>
+            <h3 class="oc-section-content__title">Related pages</h3>
+            <p class="oc-section-content__desc"><a class="source-link" href="number-input.html">Number input</a> · <a class="source-link" href="affix-input.html">Affix input</a> · <a class="source-link" href="forms.html">Forms</a></p>
+          </div>
+        </div>
+      </section>

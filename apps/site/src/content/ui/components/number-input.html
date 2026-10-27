@@ -1,0 +1,137 @@
+<!--oc-page {"title": "OmniaUI - Number input", "category": "Forms", "description": "Native number input with minus and plus stepper buttons.", "nav": "Number input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/number-input.html | Map: hero -> demo (default, block + small + disabled) -> reference -> script -> frameworks -> browser support -> source footer -> page script -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Number input</h1>
+        <p class="oc-hero-text">A native <code>input type="number"</code> between a minus and a plus button. <code>min</code>, <code>max</code> and <code>step</code> come from the input itself; the buttons call <code>stepDown()</code> / <code>stepUp()</code>, so the limits are always respected. Without JavaScript the field still works with the arrow keys. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/number-input.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.6.0</span>
+          <p class="oc-section-header__desc">Plain HTML and CSS plus the small script below. The markup is also available as the snippet <code>packages/ui/snippets/number-input.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Number input">
+<div class="oc-number-input">
+  <button class="oc-number-input-step" type="button" data-oc-step="-1" aria-label="Decrease">&minus;</button>
+  <input class="oc-number-input-field" type="number" name="quantity" value="2" min="0" max="99" step="1" aria-label="Quantity">
+  <button class="oc-number-input-step" type="button" data-oc-step="1" aria-label="Increase">+</button>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Full width, small and disabled</h3>
+          <p class="oc-section-content__desc"><code>--block</code> stretches the field, <code>--sm</code> is for tables and toolbars. A disabled field dims the whole control. Type a value above <code>max</code> to see <code>:user-invalid</code>.</p>
+          <oc-demo title="Number input - variants">
+<div style="display:grid;gap:0.75rem;max-inline-size:20rem">
+  <div class="oc-number-input oc-number-input--block">
+    <button class="oc-number-input-step" type="button" data-oc-step="-1" aria-label="Decrease">&minus;</button>
+    <input class="oc-number-input-field" type="number" value="1.5" min="0" max="10" step="0.5" aria-label="Hours">
+    <button class="oc-number-input-step" type="button" data-oc-step="1" aria-label="Increase">+</button>
+  </div>
+  <div class="oc-number-input oc-number-input--sm">
+    <button class="oc-number-input-step" type="button" data-oc-step="-1" aria-label="Decrease">&minus;</button>
+    <input class="oc-number-input-field" type="number" value="4" min="1" max="12" aria-label="Pieces">
+    <button class="oc-number-input-step" type="button" data-oc-step="1" aria-label="Increase">+</button>
+  </div>
+  <div class="oc-number-input">
+    <button class="oc-number-input-step" type="button" data-oc-step="-1" aria-label="Decrease" disabled>&minus;</button>
+    <input class="oc-number-input-field" type="number" value="3" aria-label="Locked amount" disabled>
+    <button class="oc-number-input-step" type="button" data-oc-step="1" aria-label="Increase" disabled>+</button>
+  </div>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/forms-number-input.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-number-input</code></td><td>Frame around buttons and field. Modifiers: <code>--block</code>, <code>--sm</code>, <code>--error</code>.</td></tr>
+              <tr><td><code>.oc-number-input-step</code></td><td>Minus / plus button with <code>data-oc-step="-1"</code> or <code>"1"</code></td></tr>
+              <tr><td><code>.oc-number-input-field</code></td><td>The <code>type="number"</code> input; native spinners are hidden</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="script">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Optional script</h2>
+          <p class="oc-section-header__desc">One listener for all number inputs on the page. It also fires <code>input</code> and <code>change</code>, so forms and frameworks notice the new value.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;script&gt;
+  document.addEventListener('click', (e) =&gt; {
+    const btn = e.target.closest('.oc-number-input-step');
+    if (!btn) return;
+    const input = btn.parentElement.querySelector('.oc-number-input-field');
+    if (!input || input.disabled) return;
+    btn.dataset.ocStep === '-1' ? input.stepDown() : input.stepUp();
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+&lt;/script&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Framework wrappers</h2>
+          <p class="oc-section-header__desc">The wrappers handle the buttons themselves and disable minus / plus at the limits.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;NumberInput value={qty} onChange={setQty} min={0} max={99} aria-label="Quantity" /&gt;
+&lt;!-- Vue --&gt;
+&lt;OcNumberInput v-model="qty" :min="0" :max="99" aria-label="Quantity" /&gt;
+&lt;!-- Laravel Blade --&gt;
+&lt;x-oc::number-input name="qty" :value="2" min="0" max="99" aria-label="Quantity" /&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-compat features="html.elements.input.type_number api.HTMLInputElement.stepUp css.properties.appearance css.selectors.has css.selectors.user-invalid css.types.color.light-dark"></oc-compat>
+        </div>
+        <div class="oc-section-footer">
+          <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+          <p class="oc-section-footer__desc">See <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/number" target="_blank" rel="noopener">MDN: input type="number"</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/stepUp" target="_blank" rel="noopener">MDN: stepUp()</a>.</p>
+          <div class="oc-section-content">
+            <h3 class="oc-section-content__title">Source files</h3>
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+              <tbody>
+                <tr><td><code>packages/ui/src/parts/forms-number-input.css</code></td><td>Styles</td></tr>
+                <tr><td><code>packages/ui/snippets/number-input.html</code></td><td>Markup + optional script</td></tr>
+                <tr><td><code>packages/react/src/components/NumberInput.tsx</code> / <code>packages/vue/src/components/OcNumberInput.vue</code></td><td>Wrappers</td></tr>
+                <tr><td><code>resources/views/components/number-input.blade.php</code></td><td>Laravel: <code>&lt;x-oc::number-input&gt;</code></td></tr>
+              </tbody>
+            </table>
+            <h3 class="oc-section-content__title">Related pages</h3>
+            <p class="oc-section-content__desc"><a class="source-link" href="decimal-input.html">Decimal input</a> · <a class="source-link" href="counter.html">Counter</a> · <a class="source-link" href="slider.html">Slider</a></p>
+          </div>
+        </div>
+      </section>
+<script>
+  /* Demo behaviour: the same delegated listener as the optional script above. */
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.oc-number-input-step');
+    if (!btn) return;
+    const input = btn.parentElement.querySelector('.oc-number-input-field');
+    if (!input || input.disabled) return;
+    btn.dataset.ocStep === '-1' ? input.stepDown() : input.stepUp();
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+</script>

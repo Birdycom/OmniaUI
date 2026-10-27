@@ -1,0 +1,119 @@
+<!--oc-page {"title": "OmniaUI - Chat composer", "category": "Media", "description": "Growing message box with tool buttons and a send button.", "nav": "Chat composer", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/chat-composer.html | Map: hero -> demo -> inline row -> how it works -> a11y -> reference -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Chat composer</h1>
+        <p class="oc-hero-text">The message box of a chat: a textarea that grows while you type, a row of tool buttons and a round send button, all in one rounded frame with a focus ring. The send button dims itself while the field is empty, with CSS only. Add an <a href="emoji-picker.html">Emoji picker</a> to the tools. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">Component</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/chat-composer.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.6.0</span>
+          <p class="oc-section-header__desc">Type a few lines: the field grows up to 10rem, then scrolls. The send button wakes up as soon as there is text.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Chat composer">
+<form class="oc-chat-composer" action="#demo" style="max-inline-size:32rem">
+  <label class="oc-visually-hidden" for="oc-chat-input">Message</label>
+  <textarea class="oc-chat-composer__input" id="oc-chat-input" name="message" rows="1" placeholder="Write a message…" required></textarea>
+  <div class="oc-chat-composer__bar">
+    <div class="oc-chat-composer__tools">
+      <button type="button" class="oc-chat-composer__tool" aria-label="Attach a file">&#128206;</button>
+      <button type="button" class="oc-chat-composer__tool" aria-label="Mention someone">@</button>
+      <button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji">&#128578;</button>
+    </div>
+    <span class="oc-chat-composer__hint">Enter for a new line</span>
+    <button type="submit" class="oc-chat-composer__send" aria-label="Send">&#10148;</button>
+  </div>
+</form>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="inline">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Inline row</h2>
+          <p class="oc-section-header__desc"><code>.oc-chat-composer--inline</code> puts tools, field and send on one line, for a narrow chat panel. Same markup, the bar becomes <code>display: contents</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Inline row">
+<form class="oc-chat-composer oc-chat-composer--inline" action="#inline" style="max-inline-size:24rem">
+  <label class="oc-visually-hidden" for="oc-chat-inline">Reply</label>
+  <textarea class="oc-chat-composer__input" id="oc-chat-inline" rows="1" placeholder="Reply…" required></textarea>
+  <div class="oc-chat-composer__bar">
+    <div class="oc-chat-composer__tools"><button type="button" class="oc-chat-composer__tool" aria-label="Add">&#43;</button></div>
+    <button type="submit" class="oc-chat-composer__send" aria-label="Send">&#10148;</button>
+  </div>
+</form>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="how">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">How it works</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li><strong>Growing field</strong>: <code>field-sizing: content</code> with a <code>max-block-size</code>. Browsers without it keep the <code>rows</code> height and scroll.</li>
+<li><strong>Empty state</strong>: <code>.oc-chat-composer:has(.oc-chat-composer__input:placeholder-shown)</code> dims the send button. This needs a <code>placeholder</code>. <code>required</code> on the textarea stops an empty submit by keyboard.</li>
+<li><strong>Focus</strong>: <code>:focus-within</code> draws the ring on the whole frame, not on the bare textarea.</li>
+<li><strong>Enter to send</strong> is app logic: listen for <kbd>Enter</kbd> without <kbd>Shift</kbd> and call <code>form.requestSubmit()</code>.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="a11y">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Accessibility and keyboard</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li>Give the textarea a label; <code>.oc-visually-hidden</code> keeps it for screen readers only.</li>
+<li>Icon buttons need an <code>aria-label</code> ("Attach a file", "Send").</li>
+<li>The send button is a real <code>type="submit"</code> button, so the form also works without script.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/media-chat-composer.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-chat-composer</code></td><td>Frame (usually a <code>&lt;form&gt;</code>); <code>--inline</code></td></tr>
+              <tr><td><code>.oc-chat-composer__input</code></td><td>Frameless growing textarea</td></tr>
+              <tr><td><code>.oc-chat-composer__bar</code></td><td>Toolbar row</td></tr>
+              <tr><td><code>.oc-chat-composer__tools / __tool</code></td><td>Round icon buttons</td></tr>
+              <tr><td><code>.oc-chat-composer__hint</code></td><td>Small hint or counter</td></tr>
+              <tr><td><code>.oc-chat-composer__send</code></td><td>Round primary send button; dimmed while empty</td></tr>
+            </tbody>
+          </table>
+          <div class="oc-section-content oc-browser-support">
+            <h3 class="oc-section-content__title" id="browser-support">Browser support</h3>
+            <oc-compat features="css.properties.field-sizing css.selectors.placeholder-shown css.selectors.has css.selectors.focus-within"></oc-compat>
+          </div>
+          <div class="oc-section-footer">
+            <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+            <p class="oc-section-footer__desc">Based on the chat composer of the Korrekt Interieur app. See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing" target="_blank" rel="noopener">MDN: field-sizing</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:placeholder-shown" target="_blank" rel="noopener">MDN: :placeholder-shown</a>.</p>
+            <div class="oc-section-content">
+              <h3 class="oc-section-content__title">Files</h3>
+              <table class="oc-table-ref">
+                <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+                <tbody>
+                  <tr><td><code>packages/ui/src/parts/media-chat-composer.css</code></td><td>Styles</td></tr>
+                  <tr><td><code>packages/ui/snippets/chat-composer.html</code></td><td>Markup</td></tr>
+                  <tr><td><code>packages/react/src/components/ChatComposer.tsx</code> · <code>packages/vue/src/components/OcChatComposer.vue</code></td><td>React and Vue wrappers</td></tr>
+                  <tr><td><code>php-packages/omniaui-laravel/resources/views/components/chat-composer.blade.php</code></td><td><code>&lt;x-oc::chat-composer&gt;</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>

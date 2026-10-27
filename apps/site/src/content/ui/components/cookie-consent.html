@@ -1,0 +1,140 @@
+<!--oc-page {"title": "OmniaUI - Cookie consent", "category": "App UX", "description": "Cookie banner with categories on a popover; remembers the choice and fires an event.", "nav": "Cookie consent", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/cookie-consent.html | Map: hero -> demo -> usage -> reference -> platform features -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Cookie consent</h1>
+        <p class="oc-hero-text">A cookie banner with categories (necessary, statistics, marketing) on <code>popover="manual"</code>: it sits in the top layer, never blocks the page and slides in from the corner. "Customize" is a native <code>&lt;details&gt;</code> with the switch component. A small script remembers the choice and tells your page with an <code>oc-consent</code> event. Comes from the cookie banner of the Verdavita site. Install with <code>npx omniaui add cookie-consent</code>. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">Component</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/cookie-consent.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.9.1</span>
+          <p class="oc-section-header__desc">On this page the banner has <code>data-oc-consent-manual</code>, so it only opens with the button. On a real site it opens by itself until the visitor has chosen. Your choice is stored in <code>localStorage</code> under <code>oc-consent</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Cookie consent">
+<button type="button" class="oc-btn oc-btn--outline oc-btn--sm" data-oc-consent-open>Open the cookie banner</button>
+
+<aside class="oc-cookie-consent" id="oc-cookie-consent" popover="manual" data-oc-consent-manual aria-labelledby="oc-cookie-consent-title">
+  <h2 class="oc-cookie-consent__title" id="oc-cookie-consent-title"><span aria-hidden="true">&#127850;</span> We use cookies</h2>
+  <p class="oc-cookie-consent__text">Necessary cookies keep the site working. With your permission we also measure visits to improve the site. Read the <a href="#cookie-policy">cookie policy</a>.</p>
+  <details class="oc-cookie-consent__prefs">
+    <summary>Customize</summary>
+    <div class="oc-cookie-consent__category">
+      <span class="oc-cookie-consent__category-name">Necessary</span>
+      <span class="oc-cookie-consent__category-text">Session, security and your cookie choice. Always on.</span>
+      <label class="oc-switch"><input type="checkbox" role="switch" name="necessary" checked disabled aria-label="Necessary cookies"><span class="oc-switch-track"></span></label>
+    </div>
+    <div class="oc-cookie-consent__category">
+      <span class="oc-cookie-consent__category-name">Statistics</span>
+      <span class="oc-cookie-consent__category-text">Anonymous visit counts.</span>
+      <label class="oc-switch"><input type="checkbox" role="switch" name="statistics" aria-label="Statistics cookies"><span class="oc-switch-track"></span></label>
+    </div>
+    <div class="oc-cookie-consent__category">
+      <span class="oc-cookie-consent__category-name">Marketing</span>
+      <span class="oc-cookie-consent__category-text">Embedded videos and ads that track you.</span>
+      <label class="oc-switch"><input type="checkbox" role="switch" name="marketing" aria-label="Marketing cookies"><span class="oc-switch-track"></span></label>
+    </div>
+  </details>
+  <div class="oc-cookie-consent__actions">
+    <button type="button" class="oc-btn oc-btn--outline" data-oc-consent="necessary">Only necessary</button>
+    <button type="button" class="oc-btn oc-btn--secondary" data-oc-consent="selected">Save choice</button>
+    <button type="button" class="oc-btn" data-oc-consent="all">Accept all</button>
+  </div>
+</aside>
+<script>
+// Cookie consent: show when no choice is stored, save the choice, tell the page (event "oc-consent").
+(() => {
+  const box = document.getElementById("oc-cookie-consent");
+  if (!box) return;
+  const KEY = "oc-consent";
+  const read = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
+  const inputs = () => [...box.querySelectorAll("input[name]")];
+  const apply = (choice) => { for (const i of inputs()) if (!i.disabled) i.checked = !!choice?.[i.name]; };
+  const stored = read();
+  if (stored) document.dispatchEvent(new CustomEvent("oc-consent", { detail: stored }));
+  else if (!box.hasAttribute("data-oc-consent-manual")) box.showPopover();
+  box.addEventListener("click", (e) => {
+    const mode = e.target.closest("[data-oc-consent]")?.dataset.ocConsent;
+    if (!mode) return;
+    const choice = { necessary: true, date: new Date().toISOString() };
+    for (const i of inputs()) if (!i.disabled) choice[i.name] = mode === "all" || (mode === "selected" && i.checked);
+    try { localStorage.setItem(KEY, JSON.stringify(choice)); } catch {}
+    box.hidePopover();
+    document.dispatchEvent(new CustomEvent("oc-consent", { detail: choice }));
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-oc-consent-open]")) return;
+    apply(read());
+    box.showPopover();
+  });
+})();
+</script>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="usage-1">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Load scripts after consent</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;script&gt;
+document.addEventListener("oc-consent", (e) =&gt; {
+  if (e.detail.statistics) loadAnalytics();      // your own loader
+  if (e.detail.marketing) enableVideoEmbeds();
+});
+&lt;/script&gt;
+&lt;a href="#" data-oc-consent-open&gt;Cookie settings&lt;/a&gt;   &lt;!-- in the footer --&gt;</oc-code><p>Add a category by adding a <code>.oc-cookie-consent__category</code> row; the input <code>name</code> becomes the key in the stored choice. Use <code>--bar</code> for a full-width bar at the bottom.</p>
+        </div>
+      </section>
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/app-cookie-consent.css</code>. Colors are Omnia theme tokens only.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>aside.oc-cookie-consent[popover=manual]</code></td><td>The banner, bottom-right; <code>--bar</code> full width at the bottom</td></tr>
+              <tr><td><code>.oc-cookie-consent__title / __text</code></td><td>Heading and text with the policy link</td></tr>
+              <tr><td><code>details.oc-cookie-consent__prefs</code></td><td>"Customize": the category rows</td></tr>
+              <tr><td><code>.oc-cookie-consent__category</code></td><td>One purpose: <code>__category-name</code>, <code>__category-text</code> and an <code>.oc-switch</code> (input <code>name</code> = key)</td></tr>
+              <tr><td><code>.oc-cookie-consent__actions > [data-oc-consent]</code></td><td><code>necessary</code>, <code>selected</code> or <code>all</code></td></tr>
+              <tr><td><code>[data-oc-consent-open]</code></td><td>Any button or link that opens the banner again</td></tr>
+              <tr><td><code>[data-oc-consent-manual]</code></td><td>On the banner: never opens by itself</td></tr>
+              <tr><td><code>event oc-consent</code></td><td>Fired on <code>document</code> with <code>{ necessary, statistics, marketing, date }</code>, on load and after a choice</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2">Platform features used</h3>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Feature</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>popover="manual"</code></td><td>Top layer without blocking the page; only the script closes it</td></tr>
+              <tr><td><code>@starting-style</code> + <code>allow-discrete</code></td><td>Slide-in when it opens</td></tr>
+              <tr><td><code>&lt;details&gt;</code></td><td>Preferences without a script</td></tr>
+            </tbody>
+          </table>
+          <div class="oc-section-content oc-browser-support">
+            <h3 class="oc-section-content__title" id="browser-support">Browser support</h3>
+            <oc-compat features="html.global_attributes.popover css.at-rules.starting-style css.properties.transition-behavior html.elements.details"></oc-compat>
+          </div>
+          <div class="oc-section-footer">
+            <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+            <p class="oc-section-footer__desc">Based on the cookie banner of the Verdavita site, rebuilt on the popover API with OmniaUI switches.</p>
+            <div class="oc-section-content">
+              <h3 class="oc-section-content__title">Files</h3>
+              <table class="oc-table-ref">
+                <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+                <tbody>
+                  <tr><td><code>packages/ui/src/parts/app-cookie-consent.css</code></td><td>Styles</td></tr>
+                  <tr><td><code>packages/ui/snippets/cookie-consent.html</code></td><td>Markup + optional script</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>

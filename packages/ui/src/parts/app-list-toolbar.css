@@ -1,0 +1,81 @@
+/* File: packages/ui/src/parts/app-list-toolbar.css | Map: toolbar row -> search -> count -> view toggle (radio icons) -> actions -> sticky modifier -> CSS-only view switch (scope) -> narrow screens */
+/* List toolbar: search field + result count + cards / table view toggle + actions, above a list.
+   The view toggle is a radio group. Inside .oc-list-toolbar-scope the checked radio shows the matching
+   panel (.oc-list-toolbar-panel[data-view="cards" | "table"]) with :has(); no JavaScript. */
+
+.oc-list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding-block: 0.5rem;
+}
+
+/* Search: a .oc-input (or .oc-search) that takes the free space, up to 24rem. */
+.oc-list-toolbar-search { flex: 1 1 14rem; max-inline-size: 24rem; }
+.oc-list-toolbar-search .oc-input { inline-size: 100%; }
+
+/* Result count ("128 items"). */
+.oc-list-toolbar-count { font-size: 0.8125rem; color: var(--oc-muted-foreground); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Pushes everything after it to the end edge. */
+.oc-list-toolbar-spacer { flex: 1; }
+
+/* View toggle: radio inputs inside labels, shown as small icon buttons in one frame. */
+.oc-list-toolbar-views {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--oc-muted);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+}
+.oc-list-toolbar-view {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 1.75rem;
+  color: var(--oc-muted-foreground);
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+  transition: color var(--oc-transition-fast), background var(--oc-transition-fast);
+}
+/* The radio stays in the accessibility tree but is invisible; the label is the click target. */
+.oc-list-toolbar-view input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: inherit; }
+.oc-list-toolbar-view svg { inline-size: 1rem; block-size: 1rem; }
+.oc-list-toolbar-view:hover { color: var(--oc-foreground); }
+.oc-list-toolbar-view:has(input:checked) {
+  color: var(--oc-foreground);
+  background: var(--oc-background);
+  box-shadow: 0 1px 3px oklch(from var(--color-black-60) l c h / 0.1);
+}
+.oc-list-toolbar-view:has(input:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+/* Buttons at the end (New, Export, filter dropdown ...). */
+.oc-list-toolbar-actions { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+
+/* Sticky: stays at the top of the scroll container while the list scrolls. */
+.oc-list-toolbar--sticky {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 5;
+  background: var(--oc-background);
+  border-block-end: 1px solid var(--oc-border);
+}
+
+/* Bordered: framed bar (for use above a card grid). */
+.oc-list-toolbar--bordered { padding: 0.5rem 0.75rem; background: var(--oc-card); border: 1px solid var(--oc-border); border-radius: var(--oc-radius); }
+
+/* ---- CSS-only view switch ---- */
+.oc-list-toolbar-scope:has(.oc-list-toolbar-view input[value="cards"]:checked) .oc-list-toolbar-panel:not([data-view="cards"]),
+.oc-list-toolbar-scope:has(.oc-list-toolbar-view input[value="table"]:checked) .oc-list-toolbar-panel:not([data-view="table"]),
+.oc-list-toolbar-scope:has(.oc-list-toolbar-view input[value="list"]:checked) .oc-list-toolbar-panel:not([data-view="list"]) { display: none; }
+
+/* Narrow screens: search takes the full first row. */
+@media (max-width: 36rem) {
+  .oc-list-toolbar-search { flex-basis: 100%; max-inline-size: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-list-toolbar-view { transition: none; }
+}

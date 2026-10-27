@@ -1,0 +1,51 @@
+<!-- OmniaUI component: emoji-picker — Compact popover grid of emoji buttons, anchored to its trigger. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/emoji-picker.html | Map: target field -> trigger -> popover (groups: label + grid of buttons) -> optional script
+     Class API: button.oc-emoji-picker__trigger (popovertarget) · div.oc-emoji-picker[popover] (data-oc-emoji-target = selector of a field) >
+       .oc-emoji-picker__label + .oc-emoji-picker__grid > button.oc-emoji-picker__item.
+     Modifiers: .oc-emoji-picker--inline (always visible, no popover). Open / close / Esc / light dismiss: native popover.
+     The optional script inserts the clicked emoji at the cursor of the target field and closes the panel.
+-->
+<div style="display:flex;gap:0.5rem;align-items:center">
+  <input class="oc-input" id="oc-emoji-field" placeholder="Say something nice" style="inline-size:16rem">
+  <button type="button" class="oc-emoji-picker__trigger" popovertarget="oc-emoji-demo" aria-label="Insert emoji">&#128578;</button>
+</div>
+<div class="oc-emoji-picker" id="oc-emoji-demo" popover data-oc-emoji-target="#oc-emoji-field" aria-label="Emoji">
+  <p class="oc-emoji-picker__label">Smileys</p>
+  <div class="oc-emoji-picker__grid">
+    <button type="button" class="oc-emoji-picker__item">&#128512;</button><button type="button" class="oc-emoji-picker__item">&#128515;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128516;</button><button type="button" class="oc-emoji-picker__item">&#128513;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128514;</button><button type="button" class="oc-emoji-picker__item">&#128578;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128521;</button><button type="button" class="oc-emoji-picker__item">&#128525;</button>
+    <button type="button" class="oc-emoji-picker__item">&#129300;</button><button type="button" class="oc-emoji-picker__item">&#128526;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128546;</button><button type="button" class="oc-emoji-picker__item">&#128564;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128559;</button><button type="button" class="oc-emoji-picker__item">&#129395;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128548;</button><button type="button" class="oc-emoji-picker__item">&#129303;</button>
+  </div>
+  <p class="oc-emoji-picker__label">Gestures</p>
+  <div class="oc-emoji-picker__grid">
+    <button type="button" class="oc-emoji-picker__item">&#128077;</button><button type="button" class="oc-emoji-picker__item">&#128078;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128079;</button><button type="button" class="oc-emoji-picker__item">&#128588;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128075;</button><button type="button" class="oc-emoji-picker__item">&#128591;</button>
+    <button type="button" class="oc-emoji-picker__item">&#9996;&#65039;</button><button type="button" class="oc-emoji-picker__item">&#128170;</button>
+  </div>
+  <p class="oc-emoji-picker__label">Objects</p>
+  <div class="oc-emoji-picker__grid">
+    <button type="button" class="oc-emoji-picker__item">&#10084;&#65039;</button><button type="button" class="oc-emoji-picker__item">&#11088;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128293;</button><button type="button" class="oc-emoji-picker__item">&#127881;</button>
+    <button type="button" class="oc-emoji-picker__item">&#9989;</button><button type="button" class="oc-emoji-picker__item">&#128640;</button>
+    <button type="button" class="oc-emoji-picker__item">&#128161;</button><button type="button" class="oc-emoji-picker__item">&#9749;</button>
+  </div>
+</div>
+<script>
+// Optional: put the clicked emoji at the cursor of the field in data-oc-emoji-target, then close the picker.
+document.addEventListener("click", (e) => {
+  const item = e.target.closest(".oc-emoji-picker__item");
+  const picker = item?.closest(".oc-emoji-picker");
+  const field = picker?.dataset.ocEmojiTarget && document.querySelector(picker.dataset.ocEmojiTarget);
+  if (!field) return;
+  field.setRangeText(item.textContent, field.selectionStart ?? field.value.length, field.selectionEnd ?? field.value.length, "end");
+  field.dispatchEvent(new Event("input", { bubbles: true }));
+  picker.hidePopover?.();
+  field.focus();
+});
+</script>

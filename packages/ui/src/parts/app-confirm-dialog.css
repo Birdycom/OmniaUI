@@ -1,0 +1,70 @@
+/* File: packages/ui/src/parts/app-confirm-dialog.css | Map: confirm modifier (icon ring) -> close button -> typed confirm field -> confirm lock -> three-button footer -> narrow screens */
+/* Confirm dialog: a variant of the alert dialog (dialog.oc-modal + .oc-alert-dialog).
+   Add .oc-alert-dialog--confirm next to the type modifier (--warning, --error, ...).
+   Extras: a larger thin icon ring, a close (X) button, an optional typed confirmation
+   ("type DELETE to confirm") and a third "discard" action. No JavaScript: the confirm button is a
+   submit button of a <form method="dialog">, so the browser blocks it until the typed value matches. */
+
+/* Larger content box, room for the close button. */
+.oc-alert-dialog--confirm { position: relative; max-inline-size: 27.5rem; padding: 1.75rem 1.5rem 0; border-radius: calc(var(--oc-radius) + 8px); }
+
+/* Thin ring (80px) with the glyph or an SVG in the type color; the inner disc uses the card color. */
+.oc-alert-dialog--confirm .oc-alert-dialog-icon {
+  inline-size: 5rem;
+  block-size: 5rem;
+  margin-block-end: 1.25rem;
+  font-size: 2.25rem;
+  font-weight: 400;
+  border-width: 2px;
+  background: var(--oc-card);
+  box-shadow: 0 0 0 6px oklch(from var(--oc-alert-dialog-color, var(--oc-warning)) l c h / 0.1);
+}
+.oc-alert-dialog--confirm .oc-alert-dialog-icon svg { inline-size: 2.25rem; block-size: 2.25rem; }
+
+/* Close (X) in the top corner. Use command="close" commandfor="<dialog id>". */
+.oc-alert-dialog-close {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-end: 0.75rem;
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 0;
+  border-radius: var(--oc-radius);
+  cursor: pointer;
+}
+.oc-alert-dialog-close:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-alert-dialog-close:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+/* The form wraps body + footer; it adds no layout of its own. */
+.oc-alert-dialog-form { display: contents; }
+
+/* Typed confirmation: label with the word in <code>, then the input. */
+.oc-alert-dialog-typed { display: grid; gap: 0.375rem; align-self: stretch; margin-block-end: 1rem; text-align: start; font-size: 0.875rem; }
+.oc-alert-dialog-typed code {
+  padding: 0.1rem 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--oc-alert-dialog-color, var(--oc-warning));
+  background: oklch(from var(--oc-alert-dialog-color, var(--oc-warning)) l c h / 0.1);
+  border-radius: 4px;
+}
+
+/* While the typed value does not match the pattern, the confirm button looks disabled. */
+.oc-alert-dialog--confirm:has(.oc-alert-dialog-typed input:invalid) .oc-alert-dialog-confirm { opacity: 0.5; cursor: not-allowed; }
+
+/* Three buttons: discard at the start, cancel + confirm at the end. */
+.oc-alert-dialog--confirm .oc-modal-footer { flex-wrap: wrap; gap: 0.5rem; padding-block: 0.5rem 1.5rem; }
+.oc-alert-dialog-discard { margin-inline-end: auto; }
+.oc-alert-dialog--confirm .oc-modal-footer:has(.oc-alert-dialog-discard) { justify-content: flex-end; }
+
+/* Narrow screens: full-width stacked buttons, confirm on top. */
+@media (max-width: 30rem) {
+  .oc-alert-dialog--confirm .oc-modal-footer { flex-direction: column-reverse; }
+  .oc-alert-dialog--confirm .oc-modal-footer > * { inline-size: 100%; margin: 0; }
+}

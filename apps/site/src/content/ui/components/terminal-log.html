@@ -1,0 +1,113 @@
+<!--oc-page {"title": "OmniaUI - Terminal log", "category": "Media", "description": "Dark console window with time-stamped, colored log lines.", "nav": "Terminal log", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/terminal-log.html | Map: hero -> demo (scan log) -> build output (no time column) -> a11y -> reference -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Terminal log</h1>
+        <p class="oc-hero-text">A console window for live output: traffic-light title bar, a "Live" status dot, time-stamped lines with colored levels and a prompt with a blinking cursor. It is always dark, in both themes, thanks to <code>color-scheme: dark</code>. The cursor stops blinking with reduced motion. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">Component</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/terminal-log.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.6.0</span>
+          <p class="oc-section-header__desc">Plain HTML and CSS. Your app appends <code>.oc-terminal-log__line</code> elements; <code>role="log"</code> lets screen readers announce them.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Scan log">
+<div class="oc-terminal-log" style="max-inline-size:40rem">
+  <div class="oc-terminal-log__bar">
+    <i></i><i></i><i></i>
+    <span class="oc-terminal-log__title">scan — example.com</span>
+    <span class="oc-terminal-log__status">Live</span>
+  </div>
+  <div class="oc-terminal-log__body" role="log" aria-live="polite" aria-label="Scan output" tabindex="0">
+    <p class="oc-terminal-log__line oc-terminal-log__line--info"><time class="oc-terminal-log__time">09:41:02</time><span class="oc-terminal-log__level">info</span><span class="oc-terminal-log__msg">Starting scan of https://example.com</span></p>
+    <p class="oc-terminal-log__line oc-terminal-log__line--debug"><time class="oc-terminal-log__time">09:41:02</time><span class="oc-terminal-log__level">debug</span><span class="oc-terminal-log__msg">Resolved 3 hosts, 14 paths queued</span></p>
+    <p class="oc-terminal-log__line oc-terminal-log__line--success"><time class="oc-terminal-log__time">09:41:04</time><span class="oc-terminal-log__level">ok</span><span class="oc-terminal-log__msg">TLS certificate valid for 82 days</span></p>
+    <p class="oc-terminal-log__line oc-terminal-log__line--warn"><time class="oc-terminal-log__time">09:41:06</time><span class="oc-terminal-log__level">warn</span><span class="oc-terminal-log__msg">Missing header: Content-Security-Policy</span></p>
+    <p class="oc-terminal-log__line oc-terminal-log__line--error"><time class="oc-terminal-log__time">09:41:07</time><span class="oc-terminal-log__level">error</span><span class="oc-terminal-log__msg">/admin answered 200 without login</span></p>
+    <p class="oc-terminal-log__prompt">waiting for next host</p>
+  </div>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="build">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Without time stamps, fixed height</h2>
+          <p class="oc-section-header__desc">Leave out the <code>&lt;time&gt;</code>: the line drops to two columns by itself (<code>:has()</code>). <code>--oc-terminal-log-height</code> limits the height; the body scrolls.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Build output">
+<div class="oc-terminal-log" style="max-inline-size:32rem;--oc-terminal-log-height:9rem">
+  <div class="oc-terminal-log__bar"><i></i><i></i><i></i><span class="oc-terminal-log__title">npm run build</span></div>
+  <div class="oc-terminal-log__body" role="log" aria-label="Build output" tabindex="0">
+    <p class="oc-terminal-log__line oc-terminal-log__line--info"><span class="oc-terminal-log__level">info</span><span class="oc-terminal-log__msg">Building 43 parts…</span></p>
+    <p class="oc-terminal-log__line oc-terminal-log__line--success"><span class="oc-terminal-log__level">ok</span><span class="oc-terminal-log__msg">dist/components.css (212 kB)</span></p>
+    <p class="oc-terminal-log__line oc-terminal-log__line--success"><span class="oc-terminal-log__level">ok</span><span class="oc-terminal-log__msg">dist/components.min.css (148 kB)</span></p>
+    <p class="oc-terminal-log__line oc-terminal-log__line--warn"><span class="oc-terminal-log__level">warn</span><span class="oc-terminal-log__msg">2 snippets without a header comment</span></p>
+    <p class="oc-terminal-log__line oc-terminal-log__line--success"><span class="oc-terminal-log__level">done</span><span class="oc-terminal-log__msg">Finished in 4.2 s</span></p>
+    <p class="oc-terminal-log__prompt"></p>
+  </div>
+</div>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="a11y">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Accessibility and keyboard</h2>
+        </div>
+        <div class="oc-section-content">
+<ul>
+<li><code>role="log"</code> (with <code>aria-live="polite"</code>) makes screen readers read new lines without stealing focus. Use it only for output that really streams.</li>
+<li>The level is real text ("warn", "error"), not only a color, so the meaning survives for color-blind users and screen readers.</li>
+<li><code>tabindex="0"</code> on the body lets keyboard users scroll a long log with the arrow keys.</li>
+<li>The traffic lights are decorative <code>&lt;i&gt;</code> elements without content.</li>
+</ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/media-terminal-log.css</code>. Background and level colors are palette tokens.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-terminal-log</code></td><td>Dark window frame</td></tr>
+              <tr><td><code>.oc-terminal-log__bar / __title / __status</code></td><td>Title bar: three <code>&lt;i&gt;</code> dots, title, pulsing "Live" dot</td></tr>
+              <tr><td><code>.oc-terminal-log__body</code></td><td>Scrolling monospace area (<code>role="log"</code>)</td></tr>
+              <tr><td><code>.oc-terminal-log__line</code></td><td>Time | level | message</td></tr>
+              <tr><td><code>--info / --success / --warn / --error / --debug</code></td><td>Level modifiers on a line</td></tr>
+              <tr><td><code>.oc-terminal-log__time / __level / __msg</code></td><td>Parts of a line</td></tr>
+              <tr><td><code>.oc-terminal-log__prompt</code></td><td>"$ " prompt with a blinking block cursor</td></tr>
+              <tr><td><code>--oc-terminal-log-height</code></td><td>Max height of the body (default 18rem)</td></tr>
+            </tbody>
+          </table>
+          <div class="oc-section-content oc-browser-support">
+            <h3 class="oc-section-content__title" id="browser-support">Browser support</h3>
+            <oc-compat features="css.properties.color-scheme css.types.color.light-dark css.selectors.has css.at-rules.keyframes css.at-rules.media.prefers-reduced-motion"></oc-compat>
+          </div>
+          <div class="oc-section-footer">
+            <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+            <p class="oc-section-footer__desc">Based on the live scan log of the DataShadow app. See <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/log_role" target="_blank" rel="noopener">MDN: ARIA log role</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme" target="_blank" rel="noopener">MDN: color-scheme</a>.</p>
+            <div class="oc-section-content">
+              <h3 class="oc-section-content__title">Files</h3>
+              <table class="oc-table-ref">
+                <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+                <tbody>
+                  <tr><td><code>packages/ui/src/parts/media-terminal-log.css</code></td><td>Styles</td></tr>
+                  <tr><td><code>packages/ui/snippets/terminal-log.html</code></td><td>Markup</td></tr>
+                  <tr><td><code>packages/react/src/components/TerminalLog.tsx</code> · <code>packages/vue/src/components/OcTerminalLog.vue</code></td><td>React and Vue wrappers</td></tr>
+                  <tr><td><code>php-packages/omniaui-laravel/resources/views/components/terminal-log.blade.php</code></td><td><code>&lt;x-oc::terminal-log&gt;</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>

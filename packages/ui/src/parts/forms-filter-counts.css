@@ -1,0 +1,94 @@
+/* File: packages/ui/src/parts/forms-filter-counts.css
+   Map: group (grid of tiles) -> tile (label + hidden radio) -> value / label / hint -> tones -> states -> --compact
+   Filter counts: pick a view (e.g. Active / Deleted / All) from tiles that show how many items each has.
+   Radio inputs inside labels; the checked tile gets the accent color. No JavaScript. */
+
+/* Group: responsive grid of equal tiles (role="radiogroup"). */
+.oc-filter-counts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  /* A <fieldset> shrinks to its content by default; fill the row so auto-fit can make columns. */
+  inline-size: 100%;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Tile: --oc-filter-accent drives the tone (primary by default). */
+.oc-filter-counts-item {
+  --oc-filter-accent: var(--oc-primary);
+  position: relative;
+  display: grid;
+  gap: 0.125rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  cursor: pointer;
+  transition: border-color var(--oc-transition-fast), background var(--oc-transition-fast);
+}
+
+/* Invisible but focusable radio. */
+.oc-filter-counts-item input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.oc-filter-counts-item:hover { background: var(--oc-surface); }
+
+/* Big number. */
+.oc-filter-counts-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--oc-filter-accent);
+}
+
+.oc-filter-counts-label { font-size: 0.875rem; font-weight: 600; }
+.oc-filter-counts-hint { font-size: 0.75rem; color: var(--oc-muted-foreground); }
+
+/* Tones per tile. */
+.oc-filter-counts-item--success { --oc-filter-accent: var(--oc-success); }
+.oc-filter-counts-item--destructive { --oc-filter-accent: var(--oc-destructive); }
+.oc-filter-counts-item--muted { --oc-filter-accent: var(--oc-muted-foreground); }
+
+/* Selected: accent border + soft accent background. */
+.oc-filter-counts-item:has(input:checked) {
+  border-color: var(--oc-filter-accent);
+  background: color-mix(in srgb, var(--oc-filter-accent) 10%, var(--oc-card));
+}
+
+.oc-filter-counts-item:has(input:focus-visible) {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: 2px;
+}
+
+.oc-filter-counts-item:has(input:disabled) { opacity: 0.5; cursor: not-allowed; }
+
+/* Compact: inline pills "Active 12", for toolbars above a table. */
+.oc-filter-counts--compact {
+  display: inline-flex;
+  inline-size: auto;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.oc-filter-counts--compact .oc-filter-counts-item {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: baseline;
+  gap: 0.375rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+}
+
+.oc-filter-counts--compact .oc-filter-counts-value { font-size: 0.8rem; }
+.oc-filter-counts--compact .oc-filter-counts-label { font-size: 0.8rem; font-weight: 500; }
+.oc-filter-counts--compact .oc-filter-counts-hint { display: none; }

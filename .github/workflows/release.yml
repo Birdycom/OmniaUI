@@ -1,0 +1,43 @@
+# File: .github/workflows/release.yml
+# Map: tag v* -> check tag = version -> build packages + wrappers -> tests -> publish (ui, blocks, react, vue)
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write   # npm Trusted Publishing (OIDC): no npm token needed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"   # npm 11.5+ for Trusted Publishing
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm ci
+
+      - name: Check tag matches package version
+        run: |
+          V=$(node -p "require('./packages/ui/package.json').version")
+          if [ "v$V" != "${GITHUB_REF_NAME}" ]; then echo "Tag ${GITHUB_REF_NAME} != package version v$V"; exit 1; fi
+
+      - run: npm run build:packages
+      - run: npm run build:wrappers
+      - run: npm test -w @birdycom/omniaui -w @birdycom/omniaui-react -w @birdycom/omniaui-vue
+
+      # Order matters: ui first (blocks, react and vue depend on it), then blocks, then the wrappers.
+      # Publish @birdycom/omniacss (OmniaCSS repo) with the same version before this runs.
+      # apps/site is private and not published.
+      - name: Publish
+        run: >
+          npm publish --access public
+          -w @birdycom/omniaui -w @birdycom/omniaui-blocks
+          -w @birdycom/omniaui-react -w @birdycom/omniaui-vue

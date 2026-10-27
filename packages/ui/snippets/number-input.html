@@ -1,0 +1,27 @@
+<!-- OmniaUI component: number-input - Number field with minus and plus step buttons. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/number-input.html | Map: wrapper -> minus button -> number field -> plus button -> optional script
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-number-input: Frame around buttons and field. Modifiers: --sm, --block (full width), --error.
+       .oc-number-input-step: Minus / plus button (data-oc-step="-1" or "1")
+       .oc-number-input-field: input type="number" (min, max, step work natively; spinners hidden)
+     States: :focus-within (ring), :user-invalid outside min/max (red), disabled field (dimmed)
+     The field works without JavaScript (arrow keys). The script below makes the buttons call stepDown()/stepUp().
+-->
+<div class="oc-number-input">
+  <button class="oc-number-input-step" type="button" data-oc-step="-1" aria-label="Decrease">&minus;</button>
+  <input class="oc-number-input-field" type="number" name="quantity" value="2" min="0" max="99" step="1" aria-label="Quantity">
+  <button class="oc-number-input-step" type="button" data-oc-step="1" aria-label="Increase">+</button>
+</div>
+<script>
+  // One listener for every number input on the page. stepUp/stepDown respect min, max and step.
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.oc-number-input-step');
+    if (!btn) return;
+    const input = btn.parentElement.querySelector('.oc-number-input-field');
+    if (!input || input.disabled) return;
+    btn.dataset.ocStep === '-1' ? input.stepDown() : input.stepUp();
+    // Let forms and frameworks know the value changed.
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+</script>

@@ -1,0 +1,58 @@
+<!-- OmniaUI component: doc-viewer — PDF, video or image in a card with a label and a full-screen view on a native <dialog>. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/doc-viewer.html | Map: grid -> card (bar: label + expand button, frame) -> full-screen dialog
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-doc-viewer-grid: Optional grid of viewers (auto-fill, min 15rem)
+       figure.oc-doc-viewer: One card. Modifiers: --video (16/9, dark), --image (natural height). Default frame is A4 (PDF).
+       .oc-doc-viewer__bar > .oc-doc-viewer__label, .oc-doc-viewer__meta, button.oc-doc-viewer__expand (command="show-modal" commandfor="<dialog id>")
+       .oc-doc-viewer__frame > iframe | video | img | object: The inline preview
+       button.oc-doc-viewer__open: Optional, inside the frame: the whole preview opens the dialog ("Click for full screen")
+       dialog.oc-doc-viewer-dialog (--video): Full-screen view > .oc-doc-viewer-dialog__bar (__title, __actions, __close) + .oc-doc-viewer-dialog__body
+     No JavaScript: the buttons open the dialog with invoker commands; Esc, the close button or a click on the backdrop close it.
+     PDF: <iframe src="file.pdf#toolbar=0&view=FitH" title="…" loading="lazy">. Video: <video src="…" controls preload="metadata">.
+-->
+<div class="oc-doc-viewer-grid">
+  <figure class="oc-doc-viewer">
+    <figcaption class="oc-doc-viewer__bar">
+      <span class="oc-doc-viewer__label">Brochure 2026</span>
+      <span class="oc-doc-viewer__meta">PDF · 2.4 MB</span>
+      <button type="button" class="oc-doc-viewer__expand" command="show-modal" commandfor="oc-doc-viewer-demo-pdf" aria-label="Open Brochure 2026 full screen">&#10530;</button>
+    </figcaption>
+    <div class="oc-doc-viewer__frame">
+      <div class="oc-media-art oc-media-art--2" role="img" aria-label="First page of Brochure 2026"></div>
+    </div>
+  </figure>
+
+  <figure class="oc-doc-viewer oc-doc-viewer--video">
+    <figcaption class="oc-doc-viewer__bar">
+      <span class="oc-doc-viewer__label">Site visit</span>
+      <span class="oc-doc-viewer__meta">1:42</span>
+    </figcaption>
+    <div class="oc-doc-viewer__frame">
+      <div class="oc-media-art oc-media-art--5" role="img" aria-label="Video still: site visit"></div>
+      <button type="button" class="oc-doc-viewer__open" command="show-modal" commandfor="oc-doc-viewer-demo-video">Click for full screen</button>
+    </div>
+  </figure>
+</div>
+
+<dialog class="oc-doc-viewer-dialog" id="oc-doc-viewer-demo-pdf" closedby="any" aria-labelledby="oc-doc-viewer-demo-pdf-title">
+  <div class="oc-doc-viewer-dialog__bar">
+    <h2 class="oc-doc-viewer-dialog__title" id="oc-doc-viewer-demo-pdf-title">Brochure 2026</h2>
+    <div class="oc-doc-viewer-dialog__actions">
+      <a class="oc-btn oc-btn--outline oc-btn--sm" href="#brochure.pdf" download>Download</a>
+      <button type="button" class="oc-doc-viewer-dialog__close" command="close" commandfor="oc-doc-viewer-demo-pdf" aria-label="Close">&#10005;</button>
+    </div>
+  </div>
+  <div class="oc-doc-viewer-dialog__body">
+    <div class="oc-media-art oc-media-art--2" role="img" aria-label="Brochure 2026"></div>
+  </div>
+</dialog>
+
+<dialog class="oc-doc-viewer-dialog oc-doc-viewer-dialog--video" id="oc-doc-viewer-demo-video" closedby="any" aria-labelledby="oc-doc-viewer-demo-video-title">
+  <div class="oc-doc-viewer-dialog__bar">
+    <h2 class="oc-doc-viewer-dialog__title" id="oc-doc-viewer-demo-video-title">Site visit</h2>
+    <button type="button" class="oc-doc-viewer-dialog__close" command="close" commandfor="oc-doc-viewer-demo-video" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="oc-doc-viewer-dialog__body">
+    <div class="oc-media-art oc-media-art--5" role="img" aria-label="Site visit video"></div>
+  </div>
+</dialog>

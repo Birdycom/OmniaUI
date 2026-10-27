@@ -1,0 +1,90 @@
+/* File: packages/ui/src/parts/media-chat-composer.css | Map: frame (focus ring) -> textarea (grows with content)
+   -> bar (tools | hint | send) -> tool buttons -> send button (disabled while empty) -> inline modifier
+   Chat composer: a message field with a toolbar and a send button, in one rounded frame.
+   The textarea grows with field-sizing; the send button looks disabled while the field is empty (:placeholder-shown). */
+
+.oc-chat-composer {
+  display: grid;
+  gap: 0.25rem;
+  inline-size: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--oc-input);
+  border-radius: calc(var(--oc-radius) + 6px);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+.oc-chat-composer:focus-within {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--oc-ring) 20%, transparent);
+}
+
+/* The field itself has no frame: the composer is the frame. */
+.oc-chat-composer__input {
+  inline-size: 100%;
+  min-block-size: 2.5rem;
+  max-block-size: 10rem;
+  padding: 0.375rem 0.5rem;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  field-sizing: content;
+}
+.oc-chat-composer__input::placeholder { color: var(--oc-muted-foreground); }
+
+/* Toolbar: tools left, hint in the middle, send right. */
+.oc-chat-composer__bar { display: flex; align-items: center; gap: 0.25rem; }
+.oc-chat-composer__tools { display: flex; align-items: center; gap: 0.125rem; }
+.oc-chat-composer__hint { margin-inline-start: auto; padding-inline: 0.5rem; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+
+.oc-chat-composer__tool {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.oc-chat-composer__tool:hover { background: var(--oc-surface-strong); color: var(--oc-foreground); }
+.oc-chat-composer__tool:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+.oc-chat-composer__send {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  aspect-ratio: 1;
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--oc-primary);
+  color: var(--oc-primary-foreground);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity var(--oc-transition-fast), transform var(--oc-transition-fast);
+}
+.oc-chat-composer__hint + .oc-chat-composer__send { margin-inline-start: 0; }
+.oc-chat-composer__send:hover { transform: scale(1.05); }
+.oc-chat-composer__send:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+/* Empty field (placeholder visible) or a real disabled button: dimmed and not clickable. */
+.oc-chat-composer:has(.oc-chat-composer__input:placeholder-shown) .oc-chat-composer__send,
+.oc-chat-composer__send:disabled { opacity: 0.4; pointer-events: none; }
+
+/* Inline: one row — tools, field, send (for compact chat panels). */
+.oc-chat-composer--inline { grid-template-columns: auto minmax(0, 1fr) auto; align-items: end; padding: 0.375rem; border-radius: 1.4rem; }
+.oc-chat-composer--inline .oc-chat-composer__bar { display: contents; }
+.oc-chat-composer--inline .oc-chat-composer__tools { grid-column: 1; grid-row: 1; }
+.oc-chat-composer--inline .oc-chat-composer__input { grid-column: 2; grid-row: 1; min-block-size: 2.25rem; padding-block: 0.4rem; }
+.oc-chat-composer--inline .oc-chat-composer__send { grid-column: 3; grid-row: 1; }
+.oc-chat-composer--inline .oc-chat-composer__hint { display: none; }

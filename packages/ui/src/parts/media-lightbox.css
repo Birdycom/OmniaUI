@@ -1,0 +1,131 @@
+/* File: packages/ui/src/parts/media-lightbox.css | Map: thumbnails -> dialog + backdrop -> bar -> track + slides
+   -> nav buttons -> caption + counter -> single image -> small screens -> motion
+   Lightbox: one native <dialog> with a scroll-snap track of slides. Thumbnails open it with
+   command="show-modal"; prev / next are anchor links to the slide ids, so it works without JavaScript. */
+
+/* ---- Thumbnails (buttons that open the dialog) ---- */
+.oc-lightbox-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: 0.5rem; inline-size: 100%; }
+.oc-lightbox-thumb {
+  display: block;
+  padding: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-muted);
+  cursor: zoom-in;
+}
+.oc-lightbox-thumb > * { inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform var(--oc-transition-normal); }
+.oc-lightbox-thumb:hover > * { transform: scale(1.04); }
+.oc-lightbox-thumb:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* ---- The viewer: full-screen modal dialog, dark and blurred behind ---- */
+.oc-lightbox {
+  inline-size: 100vw;
+  block-size: 100dvh;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: transparent;
+  color: var(--color-white-50);
+}
+.oc-lightbox[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.oc-lightbox::backdrop { background: oklch(from var(--color-black-60) l c h / 0.88); backdrop-filter: blur(10px); }
+
+/* ---- Top bar: title left, close button right ---- */
+.oc-lightbox__bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.75rem 1rem; }
+.oc-lightbox__title { margin: 0; font-size: 0.95rem; font-weight: 600; }
+
+/* ---- Track: one slide per screen, snapping. Arrow keys scroll it when it has focus. ---- */
+.oc-lightbox__track {
+  display: flex;
+  min-block-size: 0;
+  overflow-x: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.oc-lightbox__track:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-lightbox__slide {
+  flex: 0 0 100%;
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) 4.5rem;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem 0;
+  margin: 0;
+  padding-block-end: 1.5rem;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+.oc-lightbox__media { grid-column: 2; grid-row: 1; display: grid; place-items: center; min-block-size: 0; block-size: 100%; }
+.oc-lightbox__media > * {
+  max-inline-size: 100%;
+  max-block-size: calc(100dvh - 9rem);
+  object-fit: contain;
+  border: 1px solid oklch(from var(--color-white-50) l c h / 0.15);
+  border-radius: calc(var(--oc-radius) - 2px);
+  box-shadow: 0 40px 100px -30px oklch(from var(--color-black-60) l c h / 0.9);
+}
+/* Placeholder artwork has no natural size: give it one. */
+.oc-lightbox__media > .oc-media-art { inline-size: min(56rem, 100%); block-size: auto; aspect-ratio: 3 / 2; }
+
+/* ---- Round buttons: close (button) and prev / next (links) ---- */
+.oc-lightbox__close,
+.oc-lightbox__nav {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  aspect-ratio: 1;
+  border: 1px solid oklch(from var(--color-white-50) l c h / 0.25);
+  border-radius: 50%;
+  background: oklch(from var(--color-white-50) l c h / 0.08);
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--oc-transition-fast), transform var(--oc-transition-fast);
+}
+.oc-lightbox__close:hover,
+.oc-lightbox__nav:hover { background: oklch(from var(--color-white-50) l c h / 0.18); transform: scale(1.06); }
+.oc-lightbox__close:focus-visible,
+.oc-lightbox__nav:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-lightbox__nav { grid-row: 1; justify-self: center; }
+.oc-lightbox__nav--prev { grid-column: 1; }
+.oc-lightbox__nav--next { grid-column: 3; }
+
+/* ---- Caption with the "2 / 5" counter ---- */
+.oc-lightbox__caption {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 0.75rem;
+  padding-inline: 1rem;
+  font-size: 0.95rem;
+  text-align: center;
+  color: oklch(from var(--color-white-50) l c h / 0.8);
+}
+.oc-lightbox__counter { font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; color: oklch(from var(--color-white-50) l c h / 0.6); }
+
+/* One image only: no prev / next and no counter needed. */
+.oc-lightbox--single .oc-lightbox__nav,
+.oc-lightbox--single .oc-lightbox__counter { visibility: hidden; }
+
+/* Small screens: narrower side columns, smaller buttons. */
+@media (max-width: 40rem) {
+  .oc-lightbox__slide { grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem; }
+  .oc-lightbox__nav { inline-size: 2.25rem; }
+}
+
+/* Motion only when the user has not asked for less. */
+@media (prefers-reduced-motion: no-preference) {
+  .oc-lightbox__track { scroll-behavior: smooth; }
+  .oc-lightbox[open] { animation: oc-lightbox-in 0.25s ease-out; }
+}
+@keyframes oc-lightbox-in { from { opacity: 0; scale: 0.98; } }

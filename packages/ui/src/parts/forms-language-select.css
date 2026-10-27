@@ -1,0 +1,76 @@
+/* File: packages/ui/src/parts/forms-language-select.css
+   Map: wrapper (icon + native select) -> icon -> select control -> chevron -> states -> --ghost / --currency
+   Language select: compact locale (or currency) switcher for a site header.
+   A native <select> inside a small frame with a leading icon or symbol. The app reacts to "change". */
+
+/* Wrapper: inline frame; the select is stretched over it so the whole pill is clickable. */
+.oc-language-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding-inline: 0.625rem 0.5rem;
+  border: 1px solid var(--oc-input);
+  border-radius: 999px;
+  color: var(--oc-foreground);
+  font-size: 0.8rem;
+  transition: border-color var(--oc-transition-fast), background var(--oc-transition-fast);
+}
+
+.oc-language-select:hover { background: var(--oc-surface); }
+
+.oc-language-select:focus-within {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+}
+
+/* Leading icon (inline SVG globe) or symbol (€, $). Decorative: aria-hidden="true". */
+.oc-language-select-icon {
+  display: inline-flex;
+  flex: none;
+  inline-size: 1rem;
+  justify-content: center;
+  color: var(--oc-muted-foreground);
+  font-weight: 600;
+}
+
+.oc-language-select-icon svg { inline-size: 1rem; block-size: 1rem; }
+
+/* Native select without its own frame; room on the right for the chevron. */
+.oc-language-select-control {
+  appearance: none;
+  padding: 0.375rem 1.25rem 0.375rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.oc-language-select-control option {
+  background: var(--oc-background);
+  color: var(--oc-foreground);
+}
+
+/* Chevron drawn with two borders (no image, follows currentColor). */
+.oc-language-select::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 0.7rem;
+  inset-block-start: 50%;
+  inline-size: 0.35rem;
+  block-size: 0.35rem;
+  border-inline-end: 1.5px solid var(--oc-muted-foreground);
+  border-block-end: 1.5px solid var(--oc-muted-foreground);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.oc-language-select:has(.oc-language-select-control:disabled) { opacity: 0.5; cursor: not-allowed; }
+
+/* Ghost: no frame, for dense headers and footers. */
+.oc-language-select--ghost { border-color: transparent; }
+
+/* Currency: the symbol in the icon slot gets the primary color. */
+.oc-language-select--currency .oc-language-select-icon { color: var(--oc-primary); }

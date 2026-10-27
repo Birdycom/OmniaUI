@@ -1,0 +1,51 @@
+/* File: packages/ui/src/parts/forms-decimal-input.css
+   Map: field (right-aligned tabular digits) -> unit suffix wrapper -> states -> --start alignment
+   Decimal input: a text field for locale numbers like 1.234,56 (inputmode="decimal").
+   Plain HTML validates with pattern + :user-invalid; the React/Vue wrappers format the value on blur. */
+
+/* Field: add next to .oc-input. Digits line up in columns (tabular figures). */
+.oc-decimal-input {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Left-aligned variant, e.g. inside a sentence or a narrow table cell. */
+.oc-decimal-input--start { text-align: start; }
+
+/* Wrapper with a unit after the value (m², kg, h). The unit sits inside the frame. */
+.oc-decimal-field {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+
+.oc-decimal-field:focus-within {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+}
+
+/* Inside the wrapper the input has no frame of its own. */
+.oc-decimal-field > .oc-decimal-input {
+  flex: 1;
+  min-inline-size: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.oc-decimal-field-unit {
+  padding-inline: 0 0.75rem;
+  color: var(--oc-muted-foreground);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Invalid after user input (pattern mismatch), or via aria-invalid. */
+.oc-decimal-input:user-invalid { border-color: var(--oc-destructive); }
+.oc-decimal-field:has(.oc-decimal-input:user-invalid),
+.oc-decimal-field:has([aria-invalid="true"]) { border-color: var(--oc-destructive); }
+
+/* Disabled wrapper. */
+.oc-decimal-field:has(.oc-decimal-input:disabled) { opacity: 0.5; cursor: not-allowed; }

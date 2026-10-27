@@ -1,0 +1,70 @@
+<!-- OmniaUI component: cookie-consent — Cookie banner with categories on popover="manual"; a small script remembers the choice. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/cookie-consent.html | Map: reopen link -> popover (title, text, details with category switches, actions) -> script
+     Class API (modifiers are extra classes / attributes on the same element):
+       aside.oc-cookie-consent[popover="manual"]: The banner (bottom-right card). Modifier: --bar (full-width bar at the bottom)
+       .oc-cookie-consent__title / __text: Heading and text (put the policy link in the text)
+       details.oc-cookie-consent__prefs: "Customize" with one .oc-cookie-consent__category per purpose
+       .oc-cookie-consent__category > __category-name, __category-text, label.oc-switch (input name = category; necessary: checked disabled)
+       .oc-cookie-consent__actions > button[data-oc-consent="necessary" | "selected" | "all"]
+       [data-oc-consent-open]: Any button or link that opens the banner again (footer "Cookie settings")
+       [data-oc-consent-manual] on the banner: never open by itself (only through data-oc-consent-open)
+     Script: shows the banner when no choice is stored, saves { necessary, statistics, marketing, date } in localStorage
+       under "oc-consent" and fires a "oc-consent" event on document with that object as detail. Load your analytics there.
+-->
+<button type="button" class="oc-btn oc-btn--outline oc-btn--sm" data-oc-consent-open>Cookie settings</button>
+
+<aside class="oc-cookie-consent" id="oc-cookie-consent" popover="manual" aria-labelledby="oc-cookie-consent-title">
+  <h2 class="oc-cookie-consent__title" id="oc-cookie-consent-title"><span aria-hidden="true">&#127850;</span> We use cookies</h2>
+  <p class="oc-cookie-consent__text">Necessary cookies keep the site working. With your permission we also measure visits to improve the site. Read the <a href="#cookie-policy">cookie policy</a>.</p>
+  <details class="oc-cookie-consent__prefs">
+    <summary>Customize</summary>
+    <div class="oc-cookie-consent__category">
+      <span class="oc-cookie-consent__category-name">Necessary</span>
+      <span class="oc-cookie-consent__category-text">Session, security and your cookie choice. Always on.</span>
+      <label class="oc-switch"><input type="checkbox" role="switch" name="necessary" checked disabled aria-label="Necessary cookies"><span class="oc-switch-track"></span></label>
+    </div>
+    <div class="oc-cookie-consent__category">
+      <span class="oc-cookie-consent__category-name">Statistics</span>
+      <span class="oc-cookie-consent__category-text">Anonymous visit counts.</span>
+      <label class="oc-switch"><input type="checkbox" role="switch" name="statistics" aria-label="Statistics cookies"><span class="oc-switch-track"></span></label>
+    </div>
+    <div class="oc-cookie-consent__category">
+      <span class="oc-cookie-consent__category-name">Marketing</span>
+      <span class="oc-cookie-consent__category-text">Embedded videos and ads that track you.</span>
+      <label class="oc-switch"><input type="checkbox" role="switch" name="marketing" aria-label="Marketing cookies"><span class="oc-switch-track"></span></label>
+    </div>
+  </details>
+  <div class="oc-cookie-consent__actions">
+    <button type="button" class="oc-btn oc-btn--outline" data-oc-consent="necessary">Only necessary</button>
+    <button type="button" class="oc-btn oc-btn--secondary" data-oc-consent="selected">Save choice</button>
+    <button type="button" class="oc-btn" data-oc-consent="all">Accept all</button>
+  </div>
+</aside>
+<script>
+// Cookie consent: show when no choice is stored, save the choice, tell the page (event "oc-consent").
+(() => {
+  const box = document.getElementById("oc-cookie-consent");
+  if (!box) return;
+  const KEY = "oc-consent";
+  const read = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
+  const inputs = () => [...box.querySelectorAll("input[name]")];
+  const apply = (choice) => { for (const i of inputs()) if (!i.disabled) i.checked = !!choice?.[i.name]; };
+  const stored = read();
+  if (stored) document.dispatchEvent(new CustomEvent("oc-consent", { detail: stored }));
+  else if (!box.hasAttribute("data-oc-consent-manual")) box.showPopover();
+  box.addEventListener("click", (e) => {
+    const mode = e.target.closest("[data-oc-consent]")?.dataset.ocConsent;
+    if (!mode) return;
+    const choice = { necessary: true, date: new Date().toISOString() };
+    for (const i of inputs()) if (!i.disabled) choice[i.name] = mode === "all" || (mode === "selected" && i.checked);
+    try { localStorage.setItem(KEY, JSON.stringify(choice)); } catch {}
+    box.hidePopover();
+    document.dispatchEvent(new CustomEvent("oc-consent", { detail: choice }));
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-oc-consent-open]")) return;
+    apply(read());
+    box.showPopover();
+  });
+})();
+</script>

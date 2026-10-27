@@ -1,0 +1,71 @@
+/* File: packages/ui/src/parts/app-table-actions.css | Map: icon actions -> tone modifiers -> overflow trigger -> menu tweaks -> reduced motion */
+/* Table actions: row actions as small icon buttons or as one overflow ("more") menu.
+   Builds on the existing cell <td class="oc-table-actions"> from the table component.
+   The overflow menu is a native popover (.oc-dropdown-menu[popover]); no JavaScript needed. */
+
+/* Icon mode: tighter gap between the square icon buttons. */
+.oc-table-actions--icons > * + * { margin-inline-start: 0.125rem; }
+
+/* One square icon action (link or button). Needs aria-label (and title for a tooltip). */
+.oc-table-actions-icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  font: inherit;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+  text-decoration: none;
+  vertical-align: middle;
+  transition: color var(--oc-transition-fast), background var(--oc-transition-fast), border-color var(--oc-transition-fast);
+}
+.oc-table-actions-icon svg { inline-size: 1rem; block-size: 1rem; }
+.oc-table-actions-icon:hover { color: var(--oc-foreground); background: var(--oc-accent); border-color: var(--oc-border); }
+.oc-table-actions-icon:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+.oc-table-actions-icon:disabled,
+.oc-table-actions-icon[aria-disabled="true"] { opacity: 0.45; pointer-events: none; }
+
+/* Tone modifiers: the hover tint shows what the action does. */
+.oc-table-actions-icon--primary:hover { color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.1); }
+.oc-table-actions-icon--success:hover { color: var(--oc-success); background: oklch(from var(--oc-success) l c h / 0.1); }
+.oc-table-actions-icon--destructive { color: var(--oc-destructive); }
+.oc-table-actions-icon--destructive:hover { color: var(--oc-destructive); background: oklch(from var(--oc-destructive) l c h / 0.1); }
+
+/* Overflow trigger ("more" button, three dots drawn with CSS). Use popovertarget="<menu id>". */
+.oc-table-actions-more {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+}
+/* Three dots: one dot plus two box-shadow copies, all in currentColor. */
+.oc-table-actions-more::before {
+  content: "";
+  inline-size: 0.2rem;
+  block-size: 0.2rem;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: -0.35rem 0 0 currentColor, 0.35rem 0 0 currentColor;
+}
+.oc-table-actions-more:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-table-actions-more:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+/* While its menu is open the trigger stays highlighted (:has on the cell, popover is a sibling). */
+.oc-table-actions:has(.oc-dropdown-menu:popover-open) .oc-table-actions-more { color: var(--oc-foreground); background: var(--oc-accent); border-color: var(--oc-border); }
+
+/* The menu opens to the left side of the trigger, because the actions column sits at the row end. */
+.oc-table-actions .oc-dropdown-menu[popover] { position-area: block-end span-inline-start; min-inline-size: 11rem; text-align: start; }
+.oc-table-actions .oc-dropdown-item svg { inline-size: 1rem; block-size: 1rem; flex-shrink: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-table-actions-icon { transition: none; }
+}

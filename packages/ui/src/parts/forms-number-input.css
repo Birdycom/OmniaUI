@@ -1,0 +1,95 @@
+/* File: packages/ui/src/parts/forms-number-input.css
+   Map: wrapper -> step buttons (- / +) -> number field (native spinners hidden) -> states -> sizes / block
+   Number input: input type="number" between a minus and a plus button.
+   The field works on its own (arrow keys, min/max/step); the buttons call stepDown()/stepUp() (tiny script or wrapper). */
+
+/* Wrapper: one frame around the buttons and the field. */
+.oc-number-input {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--oc-input);
+  border-radius: var(--oc-radius);
+  overflow: hidden;
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+
+.oc-number-input:focus-within {
+  border-color: var(--oc-ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+}
+
+/* Step buttons: square, muted, with a divider towards the field. */
+.oc-number-input-step {
+  flex: none;
+  inline-size: 2.25rem;
+  padding: 0;
+  border: 0;
+  background: var(--oc-surface);
+  color: var(--oc-muted-foreground);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--oc-transition-fast), color var(--oc-transition-fast);
+}
+
+.oc-number-input-step:first-child { border-inline-end: 1px solid var(--oc-input); }
+.oc-number-input-step:last-child { border-inline-start: 1px solid var(--oc-input); }
+
+.oc-number-input-step:hover {
+  background: var(--oc-surface-strong);
+  color: var(--oc-foreground);
+}
+
+.oc-number-input-step:focus-visible {
+  outline: 2px solid var(--oc-ring);
+  outline-offset: -2px;
+}
+
+.oc-number-input-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Field: centered digits, no native spinner arrows (the buttons replace them). */
+.oc-number-input-field {
+  inline-size: 4.5rem;
+  min-inline-size: 0;
+  padding: 0.5rem 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--oc-foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  outline: none;
+  appearance: textfield;
+}
+
+.oc-number-input-field::-webkit-inner-spin-button,
+.oc-number-input-field::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* Invalid: outside min/max (after user input), aria-invalid or the modifier. */
+.oc-number-input--error,
+.oc-number-input:has([aria-invalid="true"]),
+.oc-number-input:has(.oc-number-input-field:user-invalid) {
+  border-color: var(--oc-destructive);
+}
+
+/* Disabled: dim the whole control. */
+.oc-number-input:has(.oc-number-input-field:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Full width: the field grows, buttons keep their size. */
+.oc-number-input--block { display: flex; }
+.oc-number-input--block .oc-number-input-field { flex: 1; inline-size: auto; }
+
+/* Small size. */
+.oc-number-input--sm .oc-number-input-step { inline-size: 1.75rem; font-size: 0.875rem; }
+.oc-number-input--sm .oc-number-input-field { padding-block: 0.25rem; font-size: 0.8rem; inline-size: 3.5rem; }

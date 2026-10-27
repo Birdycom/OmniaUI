@@ -1,0 +1,47 @@
+/* File: packages/ui/src/parts/app-greeting.css | Map: header row -> icon tile -> text (eyebrow, title, date) -> actions -> time-of-day modifiers -> size modifier */
+/* Greeting: dashboard header with a time-of-day greeting ("Good morning, Ada") and today's date.
+   CSS cannot read the clock, so the app (or a wrapper) picks the modifier:
+   --morning (5-12h), --afternoon (12-18h), --evening (18-5h). The modifier only tints the icon tile. */
+
+.oc-greeting {
+  --oc-greeting-color: var(--oc-primary);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding-block: 0.5rem;
+}
+
+/* Icon tile (sun, sun-low, moon): tinted with the time-of-day color. */
+.oc-greeting-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  color: var(--oc-greeting-color);
+  background: oklch(from var(--oc-greeting-color) l c h / 0.12);
+  border-radius: calc(var(--oc-radius) + 4px);
+}
+.oc-greeting-icon svg { inline-size: 1.375rem; block-size: 1.375rem; }
+
+/* Text column. */
+.oc-greeting-body { flex: 1 1 16rem; min-inline-size: 0; }
+.oc-greeting-eyebrow { margin: 0 0 0.125rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--oc-greeting-color); }
+.oc-greeting-title { margin: 0; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; color: var(--oc-foreground); text-wrap: balance; }
+.oc-greeting-name { color: var(--oc-greeting-color); }
+/* Date: use <time datetime="2026-10-15">. First letter capitalised for locales that write weekdays in lower case. */
+.oc-greeting-date { display: block; margin-block-start: 0.25rem; font-size: 0.875rem; color: var(--oc-muted-foreground); }
+.oc-greeting-date::first-letter { text-transform: uppercase; }
+
+/* Actions at the end (buttons, search). */
+.oc-greeting-actions { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+
+/* Time-of-day tints. */
+.oc-greeting--morning { --oc-greeting-color: var(--oc-warning); }
+.oc-greeting--afternoon { --oc-greeting-color: var(--oc-primary); }
+.oc-greeting--evening { --oc-greeting-color: light-dark(var(--color-purple-40), var(--color-purple-10)); }
+
+/* Large: for a hero-like start page. */
+.oc-greeting--lg .oc-greeting-title { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); }
+.oc-greeting--lg .oc-greeting-icon { inline-size: 3.5rem; block-size: 3.5rem; }

@@ -1,0 +1,60 @@
+/* File: packages/ui/src/parts/app-accordion-accent.css | Map: accent accordion (separate cards) -> item card + left accent -> trigger -> open state -> color modifiers (presets) -> flush combination */
+/* Accordion accent: every item becomes its own card with a colored accent on the start edge.
+   Add .oc-accordion--accent to an .oc-accordion. The color comes from --oc-accordion-accent:
+   primary by default, or an existing .oc-accent--* preset (blue, cyan, green, orange, red, violet, yellow)
+   on the accordion (all items) or on a single .oc-accordion-item. Works with <details> and the JS hooks. */
+
+.oc-accordion--accent {
+  --oc-accordion-accent: var(--oc-accent-from, var(--oc-primary));
+  display: grid;
+  gap: 0.5rem;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+}
+
+/* Each item is a card; the accent is a 3px start border in the item color. */
+.oc-accordion--accent .oc-accordion-item {
+  --oc-accordion-accent: var(--oc-accent-from, var(--oc-primary));
+  overflow: hidden;
+  background: var(--oc-card);
+  border: 1px solid var(--oc-border);
+  border-inline-start: 3px solid var(--oc-accordion-accent);
+  border-radius: var(--oc-radius);
+  transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+/* The base accordion draws a line between items; cards do not need it. */
+.oc-accordion--accent .oc-accordion-item + .oc-accordion-item { border-top: 1px solid var(--oc-border); }
+
+/* Trigger: a bit tighter, title in the foreground color. */
+.oc-accordion--accent .oc-accordion-trigger { padding: 0.75rem 1rem; font-weight: 600; }
+.oc-accordion--accent .oc-accordion-trigger:hover { background: oklch(from var(--oc-accordion-accent) l c h / 0.06); }
+
+/* Open item: tinted head, soft shadow and an accent-colored frame. */
+.oc-accordion--accent :is(details.oc-accordion-item[open], .oc-accordion-item.is-open, .oc-accordion-item[aria-expanded="true"]) {
+  border-color: oklch(from var(--oc-accordion-accent) l c h / 0.35);
+  border-inline-start-color: var(--oc-accordion-accent);
+  box-shadow: 0 4px 14px oklch(from var(--color-black-60) l c h / 0.06);
+}
+.oc-accordion--accent :is(details.oc-accordion-item[open], .oc-accordion-item.is-open, .oc-accordion-item[aria-expanded="true"]) > .oc-accordion-trigger {
+  background: oklch(from var(--oc-accordion-accent) l c h / 0.08);
+}
+.oc-accordion--accent .oc-accordion-content { padding: 0.75rem 1rem 1rem; color: var(--oc-foreground); }
+
+/* Optional short label at the end of the trigger ("3 items"), in the accent color. */
+.oc-accordion-accent-meta { margin-inline: auto 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--oc-accordion-accent); }
+
+/* Semantic colors (theme tokens), as an alternative to the .oc-accent--* presets. */
+.oc-accordion--accent .oc-accordion-item--success,
+.oc-accordion--accent.oc-accordion--success .oc-accordion-item { --oc-accordion-accent: var(--oc-success); }
+.oc-accordion--accent .oc-accordion-item--warning,
+.oc-accordion--accent.oc-accordion--warning .oc-accordion-item { --oc-accordion-accent: var(--oc-warning); }
+.oc-accordion--accent .oc-accordion-item--danger,
+.oc-accordion--accent.oc-accordion--danger .oc-accordion-item { --oc-accordion-accent: var(--oc-destructive); }
+
+/* Accent + flush: no frame around each card except the accent edge. */
+.oc-accordion--accent.oc-accordion--flush .oc-accordion-item { border-block: 0; border-inline-end: 0; border-radius: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-accordion--accent .oc-accordion-item { transition: none; }
+}

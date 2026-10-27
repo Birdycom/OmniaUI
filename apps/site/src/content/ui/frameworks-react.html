@@ -1,0 +1,268 @@
+<!--oc-page {"title": "OmniaUI - React", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">React</h1>
+        <p class="oc-hero-text"><code>@birdycom/omniaui-react</code> wraps every component and block in a typed React function component. The markup and classes are exactly the ones in the HTML snippets; the CSS packages own all styling. Props map to modifiers (<code>variant</code>, <code>size</code>, boolean flags), slots become <code>children</code> and named props (<code>title</code>, <code>description</code>, <code>actions</code>, <code>footer</code>). Works with React 18 and 19, including server components (interactive files carry <code>"use client"</code>).</p>
+      </section>
+
+      <section class="oc-docs-section" id="installation">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Installation</h2>
+          <p class="oc-section-header__desc">Install the React package next to the stylesheets it renders for. React and React DOM are peer dependencies (version 18 or newer).</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="shell">npm install @birdycom/omniaui-react @birdycom/omniaui @birdycom/omniaui-blocks react react-dom</oc-code>
+          <ul class="oc-docs-list">
+            <li><strong>Required CSS</strong>: <code>omnia_main.css</code>, <code>oc-layout-module.css</code>, <code>oc-components.css</code>, plus <code>oc-blocks.css</code> when you use blocks.</li>
+            <li><strong>Copy mode</strong>: the package ships its <code>src/</code> folder too. Copy <code>src/components/Button.tsx</code> (and <code>src/utils.ts</code>, <code>src/hooks.tsx</code>) into your project to own the code, or import from <code>@birdycom/omniaui-react/src/components/Button</code>.</li>
+            <li><strong>Manifest</strong>: <code>@birdycom/omniaui-react/manifest.json</code> lists every item as <code>{ name, kind, file, snippet }</code> and points to the matching HTML snippet.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="usage">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Usage</h2>
+          <p class="oc-section-header__desc">Import components and blocks from the package root. Refs are forwarded, extra props are spread on the root element and <code>className</code> is merged with the component classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <h3 class="oc-section-content__title mt-2">Buttons, cards and form fields</h3>
+          <oc-code lang="js">import { Button, Card, CardHeader, CardTitle, CardContent, CardFooter, FormField, Input } from "@birdycom/omniaui-react";
+
+export function CreateProject() {
+  return (
+    &lt;Card&gt;
+      &lt;CardHeader&gt;
+        &lt;CardTitle&gt;Create project&lt;/CardTitle&gt;
+      &lt;/CardHeader&gt;
+      &lt;CardContent&gt;
+        &lt;FormField label="Name" description="Shown in the sidebar."&gt;
+          &lt;Input placeholder="My project" /&gt;
+        &lt;/FormField&gt;
+      &lt;/CardContent&gt;
+      &lt;CardFooter&gt;
+        &lt;Button variant="outline"&gt;Cancel&lt;/Button&gt;
+        &lt;Button size="sm"&gt;Deploy&lt;/Button&gt;
+      &lt;/CardFooter&gt;
+    &lt;/Card&gt;
+  );
+}</oc-code>
+
+          <h3 class="oc-section-content__title mt-2">Dialogs: the open prop</h3>
+          <p class="desc"><code>Modal</code>, <code>AlertDialog</code>, <code>Sheet</code> and <code>BlockWizardDialog</code> render a native <code>&lt;dialog&gt;</code>. The <code>open</code> prop is synced to <code>showModal()</code> / <code>close()</code> in an effect; Escape and backdrop clicks come back through <code>onOpenChange(false)</code>. Use <code>defaultOpen</code> for uncontrolled usage and <code>ModalClose</code> for buttons that close the dialog.</p>
+          <oc-code lang="js">const [open, setOpen] = useState(false);
+
+&lt;Button onClick={() =&gt; setOpen(true)}&gt;Open modal&lt;/Button&gt;
+&lt;Modal
+  open={open}
+  onOpenChange={setOpen}
+  title="Are you sure?"
+  description="This action cannot be undone."
+  footer={&lt;&gt;
+    &lt;ModalClose variant="outline"&gt;Cancel&lt;/ModalClose&gt;
+    &lt;ModalClose variant="destructive"&gt;Delete&lt;/ModalClose&gt;
+  &lt;/&gt;}
+/&gt;</oc-code>
+
+          <h3 class="oc-section-content__title mt-2">Toasts: ToastProvider and useToast</h3>
+          <p class="desc">Wrap your app once in <code>ToastProvider</code>; it keeps the queue, renders the fixed container and auto-dismisses after <code>duration</code> milliseconds (default 5000, <code>0</code> keeps the toast until dismissed).</p>
+          <oc-code lang="js">function SaveButton() {
+  const { toast } = useToast();
+  return (
+    &lt;Button onClick={() =&gt; toast({ variant: "success", title: "Contact saved", description: "Your changes are stored." })}&gt;
+      Save
+    &lt;/Button&gt;
+  );
+}
+
+&lt;ToastProvider&gt;&lt;App /&gt;&lt;/ToastProvider&gt;</oc-code>
+
+          <h3 class="oc-section-content__title mt-2">Wrapper logic built in</h3>
+          <ul class="oc-docs-list">
+            <li><strong>Command</strong>: filters items from the search input (non-matching rows get <code>hidden</code>), keeps <code>aria-selected</code> on the active row, arrow keys and Enter.</li>
+            <li><strong>PasswordInput</strong>: show / hide button with <code>aria-pressed</code>.</li>
+            <li><strong>CopyField</strong>: clipboard copy with the 2 second <code>is-copied</code> feedback.</li>
+            <li><strong>Dropdown, Popover, NavmenuDropdown</strong>: native <code>popover</code> wired through <code>popovertarget</code> and a generated id.</li>
+            <li><strong>Controlled or uncontrolled</strong>: <code>OtpInput</code>, <code>Segmented</code>, <code>Tabs</code>, <code>TagInput</code>, <code>ThemeSwitch</code>, <code>ColorField</code>, <code>Collapsible</code> take <code>value</code> / <code>defaultValue</code> / <code>onChange</code> (or <code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code>).</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="components">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Components</h2>
+          <p class="oc-section-header__desc">Every component links to its CSS component page for the class reference. Sizes are <code>sm</code>, <code>md</code> (default, no class) and <code>lg</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <div class="oc-expandable-table">
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">Component</th><th>Main props</th></tr></thead>
+              <tbody>
+                <tr><td><a href="components/accordion.html">Accordion</a>, <code>AccordionItem</code></td><td><code>title</code>, <code>name</code> (same name = exclusive), <code>open</code></td></tr>
+                <tr><td><a href="components/accordion-accent.html">AccordionAccent</a>, <code>AccordionAccentMeta</code></td><td><code>accent</code> blue | cyan | green | orange | red | violet | yellow, <code>tone</code> success | warning | danger, <code>flush</code>; children = <code>AccordionItem</code></td></tr>
+                <tr><td><a href="components/affix-input.html">AffixInput</a></td><td><code>variant</code> currency | percent | email, <code>prefix</code>, <code>suffix</code>, <code>alignEnd</code>, <code>error</code>, input props</td></tr>
+                <tr><td><a href="components/alert.html">Alert</a></td><td><code>variant</code> info | success | warning | danger, <code>title</code>, children = description</td></tr>
+                <tr><td><a href="components/alert-dialog.html">AlertDialog</a></td><td><code>open</code>, <code>defaultOpen</code>, <code>onOpenChange</code>, <code>type</code> success | error | warning | info | question, <code>icon</code>, <code>title</code>, <code>message</code>, <code>footer</code></td></tr>
+                <tr><td><a href="components/alpha-tabs.html">AlphaTabs</a></td><td><code>letters</code>, <code>available</code>, <code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>href(letter)</code>, <code>allLabel</code>, <code>wrap</code>, <code>plain</code></td></tr>
+                <tr><td><a href="components/attachment.html">Attachment</a>, <code>AttachmentImage</code>, <code>AttachmentThumb</code>, <code>AttachmentList</code></td><td><code>name</code>, <code>size</code>, <code>type</code> pdf | doc | sheet | zip | image, <code>href</code>, <code>state</code> uploading | error, <code>progress</code>, <code>onRemove</code>; list: <code>items</code>, <code>stack</code></td></tr>
+                <tr><td><a href="components/avatar.html">Avatar</a>, <code>AvatarGroup</code></td><td><code>size</code> sm | md | lg | xl, <code>src</code>, <code>alt</code>, children = initials</td></tr>
+                <tr><td><a href="components/back-link.html">BackLink</a></td><td>anchor props</td></tr>
+                <tr><td><a href="components/badge.html">Badge</a></td><td><code>variant</code> default | secondary | outline | destructive | success | warning | info</td></tr>
+                <tr><td><a href="components/barcode-input.html">BarcodeInput</a></td><td><code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>label</code>, <code>emptyText</code>, <code>error</code></td></tr>
+                <tr><td><a href="components/breadcrumb.html">Breadcrumb</a></td><td><code>items</code> [{ label, href }] (last = current page)</td></tr>
+                <tr><td><a href="components/browser-frame.html">BrowserFrame</a></td><td><code>url</code>, <code>src</code>, <code>alt</code>, <code>caption</code>, <code>actions</code>, <code>minimal</code>, <code>dark</code>, <code>tilt</code>, <code>ratio</code></td></tr>
+                <tr><td><a href="components/busy-overlay.html">BusyOverlay</a></td><td><code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code>, <code>title</code>, <code>text</code>, <code>progress</code>, <code>label</code></td></tr>
+                <tr><td><a href="components/button.html">Button</a>, <code>ButtonLink</code></td><td><code>variant</code> default | secondary | outline | ghost | link | destructive | success | gradient | glass, <code>size</code> xs | sm | md | lg, <code>icon</code>, <code>pill</code>; <code>buttonClass()</code> returns the class string</td></tr>
+                <tr><td><a href="components/card.html">Card</a></td><td><code>Card</code>, <code>CardHeader</code>, <code>CardTitle</code>, <code>CardDescription</code>, <code>CardContent</code>, <code>CardFooter</code></td></tr>
+                <tr><td><a href="components/chart-line.html">ChartLine</a></td><td><code>series</code> [{ name, values, dashed }], <code>labels</code>, <code>xLabels</code>, <code>variant</code> line | area | spark, <code>title</code>, <code>value</code>, <code>max</code>, <code>dots</code>, <code>format</code></td></tr>
+                <tr><td><a href="components/chat-composer.html">ChatComposer</a></td><td><code>value</code> / <code>defaultValue</code> / <code>onValueChange</code>, <code>onSend(text)</code>, <code>placeholder</code>, <code>tools</code>, <code>hint</code>, <code>inline</code>, <code>sendOnEnter</code></td></tr>
+                <tr><td><a href="components/forms.html">Checkbox</a>, <code>Radio</code></td><td><code>label</code> (wraps the input in a label), input props</td></tr>
+                <tr><td><a href="components/checklist.html">Checklist</a>, <code>ChecklistItem</code></td><td><code>card</code>; item: <code>done</code>, <code>title</code>, <code>hint</code>, <code>action</code></td></tr>
+                <tr><td><a href="components/chip-filter.html">ChipFilter</a></td><td><code>options</code> [{ value, label, count, disabled }], <code>multiple</code>, <code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>size</code> sm | md, <code>scroll</code></td></tr>
+                <tr><td><a href="components/collapsible.html">Collapsible</a></td><td><code>title</code>, <code>icon</code>, <code>dense</code>, <code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code></td></tr>
+                <tr><td><a href="components/color-field.html">ColorField</a></td><td><code>value</code> / <code>defaultValue</code>, <code>onChange(hex)</code>, <code>id</code>, <code>name</code></td></tr>
+                <tr><td><a href="components/color-select.html">ColorSelect</a></td><td><code>options</code> [{ value, label, color }], <code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>name</code>, <code>list</code>, <code>size</code> sm | md</td></tr>
+                <tr><td><a href="components/column-menu.html">ColumnMenu</a></td><td><code>columns</code> [{ label, visible, locked }], <code>onColumnToggle</code>, <code>triggerLabel</code>, <code>title</code>, <code>resetLabel</code>, children = table</td></tr>
+                <tr><td><a href="components/command.html">Command</a></td><td><code>groups</code> [{ label, items: [{ id, label, shortcut, disabled, keywords }] }], <code>onSelect</code>, <code>query</code>, <code>placeholder</code>, <code>emptyText</code></td></tr>
+                <tr><td><a href="components/confirm-dialog.html">ConfirmDialog</a></td><td><code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code>, <code>type</code>, <code>title</code>, <code>message</code>, <code>confirmWord</code>, <code>onConfirm</code>, <code>onDiscard</code>, <code>confirmLabel</code>, <code>cancelLabel</code></td></tr>
+                <tr><td><a href="components/cookie-consent.html">CookieConsent</a></td><td><code>categories</code> [{ name, label, text, required }], <code>title</code>, <code>text</code>, <code>policyHref</code>, <code>bar</code>, <code>manual</code>, <code>storageKey</code>, <code>onConsent</code></td></tr>
+                <tr><td><a href="components/copy-field.html">CopyField</a></td><td><code>value</code>, <code>label</code>, <code>buttonLabel</code>, <code>onCopy</code></td></tr>
+                <tr><td><a href="components/counter.html">Counter</a></td><td><code>to</code>, <code>suffix</code>, <code>onView</code></td></tr>
+                <tr><td><a href="components/data-table.html">DataTable</a></td><td><code>columns</code> [{ key, header, numeric, sortable, hideable }], <code>rows</code> [{ key, cells, status, href }], <code>pageSize</code>, <code>selectable</code>, <code>draggable</code>, <code>filters</code>, <code>onBulk</code></td></tr>
+                <tr><td><a href="components/decimal-input.html">DecimalInput</a></td><td><code>value</code> / <code>defaultValue</code> / <code>onValueChange</code> (number | null), <code>locale</code>, <code>decimals</code>, <code>unit</code>, <code>error</code></td></tr>
+                <tr><td><a href="components/definition-list.html">DefinitionList</a></td><td><code>title</code>, <code>description</code>, <code>items</code> [{ term, detail }], <code>footer</code></td></tr>
+                <tr><td><a href="components/doc-viewer.html">DocViewer</a></td><td><code>items</code> [{ label, meta, src, type pdf | video | image, download }], <code>openText</code>, <code>downloadText</code></td></tr>
+                <tr><td><a href="components/dropdown.html">Dropdown</a></td><td><code>trigger</code>, <code>triggerProps</code>; parts <code>DropdownLabel</code>, <code>DropdownItem</code> (<code>href</code> = link), <code>DropdownSeparator</code></td></tr>
+                <tr><td><a href="components/dropzone.html">Dropzone</a></td><td><code>icon</code>, <code>hint</code>, <code>onFiles</code>, <code>accept</code>, <code>multiple</code>, <code>disabled</code></td></tr>
+                <tr><td><a href="components/emoji-picker.html">EmojiPicker</a></td><td><code>groups</code> [{ label, emojis }], <code>onSelect(emoji)</code>, <code>inline</code>, <code>trigger</code>, <code>triggerLabel</code></td></tr>
+                <tr><td><a href="components/empty-state.html">EmptyState</a></td><td><code>icon</code>, <code>title</code>, <code>description</code>, <code>actions</code></td></tr>
+                <tr><td><a href="components/entity-card.html">EntityCard</a></td><td><code>title</code>, <code>eyebrow</code>, <code>description</code>, <code>src</code> / <code>glyph</code> / <code>media</code>, <code>facts</code> [[label, value]], <code>footer</code>, <code>stacked</code>, <code>size</code> sm | md</td></tr>
+                <tr><td><a href="components/fact-list.html">FactList</a></td><td><code>items</code> [{ label, value }], <code>plain</code>, <code>compact</code>, <code>stacked</code>, <code>accent</code></td></tr>
+                <tr><td><a href="components/filter-counts.html">FilterCounts</a></td><td><code>options</code> [{ value, label, count, hint, tone }], <code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>name</code>, <code>compact</code></td></tr>
+                <tr><td><a href="components/flip-card.html">FlipCard</a></td><td><code>front</code>, <code>back</code>, <code>trigger</code> toggle | hover | manual, <code>flipped</code> / <code>defaultFlipped</code> / <code>onFlippedChange</code>, <code>vertical</code></td></tr>
+                <tr><td><a href="components/forms.html">FormField</a>, <code>FieldGroup</code></td><td><code>label</code>, <code>description</code>, <code>error</code>, <code>horizontal</code>, <code>htmlFor</code>; wires ids and <code>aria-describedby</code> to a single child control</td></tr>
+                <tr><td><a href="components/greeting.html">Greeting</a></td><td><code>name</code>, <code>date</code>, <code>timeOfDay</code> morning | afternoon | evening, <code>words</code>, <code>locale</code>, <code>hideDate</code>, <code>icon</code>, <code>actions</code></td></tr>
+                <tr><td><a href="components/heading.html">Heading</a></td><td><code>title</code>, <code>description</code>, <code>level</code> 1-4, <code>size</code> md | sm</td></tr>
+                <tr><td><a href="webicons.html">Icon</a></td><td><code>d</code> (24x24 path data) or children = shapes, SVG props</td></tr>
+                <tr><td><a href="components/image-zoom.html">ImageZoom</a></td><td><code>src</code>, <code>alt</code>, <code>levels</code>, <code>defaultZoom</code>, <code>ratio</code> square | photo, <code>media</code></td></tr>
+                <tr><td><a href="components/forms.html">Input</a>, <code>Textarea</code>, <code>Select</code>, <code>InputGroup</code></td><td><code>error</code> (error class + <code>aria-invalid</code>); Select: <code>options</code>; InputGroup: <code>prefix</code>, <code>suffix</code></td></tr>
+                <tr><td><a href="components/language-select.html">LanguageSelect</a></td><td><code>options</code> [{ value, label }], <code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>currency</code>, <code>ghost</code>, <code>icon</code></td></tr>
+                <tr><td><a href="components/launcher-card.html">LauncherCard</a></td><td><code>icon</code>, <code>title</code>, <code>badge</code>, <code>description</code>, <code>footer</code>, <code>href</code>, <code>active</code>, <code>disabled</code></td></tr>
+                <tr><td><a href="components/lightbox.html">Lightbox</a></td><td><code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code>, <code>images</code> [{ src, alt, caption, thumb }], <code>title</code>, <code>thumbnails</code></td></tr>
+                <tr><td><a href="components/link-arrow.html">LinkArrow</a></td><td><code>direction</code> forward | back | external, <code>tone</code> default | accent | muted, <code>size</code> sm | default | lg, anchor props</td></tr>
+                <tr><td><a href="components/list-toolbar.html">ListToolbar</a></td><td><code>search</code>, <code>count</code>, <code>views</code> [{ value, label, icon }], <code>view</code> / <code>defaultView</code> / <code>onViewChange</code>, <code>actions</code>, <code>sticky</code>, <code>bordered</code></td></tr>
+                <tr><td><a href="components/marquee.html">Marquee</a></td><td><code>items</code>, <code>reverse</code>, <code>speed</code> default | slow | fast, <code>plain</code>, <code>noFade</code></td></tr>
+                <tr><td><a href="components/media-card.html">MediaCard</a></td><td><code>title</code>, <code>href</code>, <code>meta</code>, <code>avatar</code>, <code>thumb</code> (MediaThumb props), <code>menu</code>, <code>compact</code></td></tr>
+                <tr><td><a href="components/media-row.html">MediaRow</a>, <code>MediaRowList</code></td><td><code>title</code>, <code>href</code>, <code>meta</code>, <code>thumb</code>, <code>current</code>, <code>menu</code>; list: <code>numbered</code></td></tr>
+                <tr><td><a href="components/media-thumb.html">MediaThumb</a></td><td><code>src</code>, <code>alt</code>, <code>href</code>, <code>duration</code>, <code>badge</code>, <code>live</code>, <code>progress</code>, <code>watched</code>, <code>ratio</code> video | square | portrait</td></tr>
+                <tr><td><a href="components/message.html">Message</a>, <code>MessageList</code>, <code>MessageDivider</code>, <code>MessageAttachments</code></td><td><code>direction</code> in | out, <code>sender</code>, <code>avatar</code>, <code>time</code>, <code>status</code> sent | read | failed, <code>text</code>, <code>quote</code>, <code>attachments</code>, <code>actions</code>, <code>onAction</code>; list: <code>items</code>, <code>log</code></td></tr>
+                <tr><td><a href="components/message-thread.html">MessageThread</a></td><td><code>title</code>, <code>participants</code>, <code>status</code>, <code>menu</code> / <code>onMenu</code>, <code>messages</code>, <code>busy</code>, <code>composer</code>, <code>tools</code>, <code>onSend</code>, <code>back</code>, <code>plain</code></td></tr>
+                <tr><td><a href="components/modal.html">Modal</a>, <code>ModalClose</code></td><td><code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code>, <code>title</code>, <code>description</code>, <code>footer</code>, <code>size</code> sm | md | lg | xl | full, <code>closeOnBackdrop</code></td></tr>
+                <tr><td><a href="components/navmenu.html">Navmenu</a></td><td><code>Navmenu</code> (<code>label</code>), <code>NavmenuItem</code>, <code>NavmenuLink</code> (<code>current</code>), <code>NavmenuDropdown</code> (<code>label</code>)</td></tr>
+                <tr><td><a href="components/next-teaser.html">NextTeaser</a></td><td><code>name</code>, <code>label</code>, <code>tagline</code>, <code>mark</code>, <code>prev</code>, anchor props</td></tr>
+                <tr><td><a href="components/number-input.html">NumberInput</a></td><td><code>value</code> / <code>defaultValue</code> / <code>onChange</code> (number | null), <code>min</code>, <code>max</code>, <code>step</code>, <code>size</code> sm | md, <code>block</code>, <code>error</code></td></tr>
+                <tr><td><a href="components/otp-input.html">OtpInput</a></td><td><code>length</code>, <code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>onComplete</code>, <code>invalid</code>, <code>alphanumeric</code></td></tr>
+                <tr><td><a href="components/page-header.html">PageHeader</a></td><td><code>title</code>, <code>subtitle</code>, <code>meta</code>, <code>back</code>, <code>actions</code>, <code>level</code> 1-3, <code>bordered</code>, <code>sticky</code>, <code>size</code> sm</td></tr>
+                <tr><td><a href="components/pagination.html">Pagination</a></td><td><code>page</code>, <code>pageCount</code>, <code>onPageChange</code>, <code>hrefFor</code></td></tr>
+                <tr><td><a href="components/password-input.html">PasswordInput</a></td><td>input props, <code>showLabel</code>, <code>hideLabel</code>, <code>error</code></td></tr>
+                <tr><td><a href="components/password-requirements.html">PasswordRequirements</a></td><td><code>password</code>, <code>rules</code> [{ label, test }] (default <code>defaultPasswordRules</code>), <code>inline</code>, <code>hideWhenEmpty</code></td></tr>
+                <tr><td><a href="components/phone-input.html">PhoneInput</a></td><td><code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>countries</code> [{ dial, label }], <code>defaultDial</code>, <code>size</code> sm | md, <code>error</code></td></tr>
+                <tr><td><a href="components/popover.html">Popover</a></td><td><code>trigger</code>, <code>triggerProps</code>, <code>size</code> sm | md | lg, <code>title</code>, <code>text</code></td></tr>
+                <tr><td><a href="components/price-card.html">PriceCard</a></td><td><code>name</code>, <code>description</code>, <code>monthly</code> / <code>yearly</code> { amount, period, was, note }, <code>defaultPeriod</code>, <code>features</code>, <code>cta</code>, <code>featured</code>, <code>discount</code></td></tr>
+                <tr><td><a href="components/product-mark.html">ProductMark</a></td><td><code>size</code> sm | default | lg | xl, <code>accent</code> blue | cyan | green | orange | red | violet | yellow, <code>soft</code>, <code>glow</code>, <code>cover</code></td></tr>
+                <tr><td><a href="components/progress.html">Progress</a></td><td><code>value</code>, <code>max</code>, <code>variant</code> default | success | warning | danger</td></tr>
+                <tr><td><a href="components/project-card.html">ProjectCard</a></td><td><code>name</code>, <code>type</code>, <code>meta</code>, <code>more</code>, <code>image</code>, <code>imageAlt</code>, <code>flat</code>, anchor props</td></tr>
+                <tr><td><a href="components/prose.html">Prose</a>, <code>ProseLead</code></td><td><code>size</code> sm | md | lg, <code>full</code>, <code>as</code> article | div | section, children = plain HTML</td></tr>
+                <tr><td><a href="components/recovery-codes.html">RecoveryCodes</a></td><td><code>codes</code>, <code>title</code>, <code>warning</code>, <code>fileName</code>, <code>onCopy</code>, <code>onDownload</code></td></tr>
+                <tr><td><a href="components/segmented.html">Segmented</a></td><td><code>options</code> [{ value, label }], <code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>block</code>, <code>size</code></td></tr>
+                <tr><td><a href="components/severity-card.html">SeverityCard</a></td><td><code>level</code> low | medium | high | critical, <code>title</code>, <code>tags</code>, <code>levelLabel</code>, <code>icon</code>, <code>resolved</code>, <code>actions</code>, <code>name</code></td></tr>
+                <tr><td><a href="components/sheet.html">Sheet</a></td><td><code>open</code> / <code>onOpenChange</code>, <code>side</code> right | left | top | bottom, <code>wide</code>, <code>title</code>, <code>description</code>, <code>footer</code></td></tr>
+                <tr><td><a href="components/sidebar.html">Sidebar</a></td><td><code>collapsed</code>, <code>right</code>, <code>floating</code>, <code>header</code>, <code>footer</code>; parts <code>SidebarGroup</code> (<code>label</code>), <code>SidebarMenu</code>, <code>SidebarMenuItem</code>, <code>SidebarMenuButton</code> (<code>icon</code>, <code>badge</code>, <code>current</code>, <code>size</code>), <code>SidebarCollapsible</code>, <code>SidebarSeparator</code></td></tr>
+                <tr><td><a href="components/skeleton.html">Skeleton</a></td><td><code>variant</code> circle | title | text | rect</td></tr>
+                <tr><td><a href="components/sortable-row.html">SortableRow</a></td><td><code>gripLabel</code>, <code>dragging</code>, <code>drop</code> before | after, <code>locked</code>, <code>grabbed</code>, <code>onGripKeyDown</code></td></tr>
+                <tr><td><a href="components/stack-card.html">StackCard</a></td><td><code>title</code>, <code>href</code>, <code>meta</code>, <code>count</code>, <code>panel</code>, <code>thumb</code> (MediaThumb props)</td></tr>
+                <tr><td><a href="components/stack-list.html">StackList</a></td><td><code>items</code> (node or { label, icon }), <code>neutral</code>, <code>size</code> default | sm</td></tr>
+                <tr><td><a href="components/stat-card.html">StatCard</a>, <code>StatCardGrid</code></td><td><code>value</code>, <code>label</code>, <code>icon</code>, <code>trend</code>, <code>trendDirection</code> up | down, <code>tone</code> default | accent | success | warning, <code>stripe</code>, <code>href</code> / <code>onClick</code></td></tr>
+                <tr><td><a href="components/stepper.html">Stepper</a></td><td><code>steps</code> [{ label, meta }], <code>current</code>, <code>horizontal</code>, <code>onStepChange</code></td></tr>
+                <tr><td><a href="components/forms.html">Switch</a></td><td>input props (<code>checked</code>, <code>defaultChecked</code>, <code>onChange</code>)</td></tr>
+                <tr><td><a href="components/table.html">Table</a></td><td><code>striped</code>, <code>compact</code>, <code>borderless</code>, <code>sticky</code>, <code>caption</code>; parts <code>TableSort</code>, <code>TableActions</code>, <code>TableRowAction</code> (<code>tone</code>), <code>TableEmpty</code></td></tr>
+                <tr><td><a href="components/table-actions.html">TableActionIcon</a>, <code>TableActionsMenu</code></td><td><code>label</code>, <code>tone</code> default | primary | success | destructive, <code>href</code> (link) or button props; menu: <code>label</code>, children = items</td></tr>
+                <tr><td><a href="components/table-compact.html">TableCompact</a></td><td><code>columns</code> [{ key, label, numeric, wrap }], <code>rows</code>, <code>footer</code>, <code>bordered</code>, <code>plain</code></td></tr>
+                <tr><td><a href="components/tabs.html">Tabs</a></td><td><code>tabs</code> [{ value, label, content }], <code>value</code> / <code>defaultValue</code> / <code>onChange</code></td></tr>
+                <tr><td><a href="components/tag-input.html">TagInput</a></td><td><code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>suggestions</code>, <code>placeholder</code></td></tr>
+                <tr><td><a href="components/terminal-log.html">TerminalLog</a></td><td><code>lines</code> [{ level info | success | warn | error | debug, message, time }], <code>title</code>, <code>status</code>, <code>prompt</code>, <code>height</code>, <code>autoScroll</code></td></tr>
+                <tr><td><a href="components/theme-switch.html">ThemeSwitch</a></td><td><code>value</code> / <code>defaultValue</code> / <code>onChange</code>, <code>modes</code>, <code>as</code> fieldset | div</td></tr>
+                <tr><td><a href="components/time-input.html">TimeInput</a></td><td><code>value</code> / <code>defaultValue</code> / <code>onChange</code> (HH:mm), <code>slots</code>, <code>error</code></td></tr>
+                <tr><td><a href="components/timeline.html">Timeline</a></td><td><code>items</code> [{ date, dateTime, title, text, current }], <code>size</code> default | lg, <code>accent</code></td></tr>
+                <tr><td><a href="components/toast.html">Toast</a>, <code>ToastProvider</code>, <code>ToastContainer</code>, <code>useToast</code></td><td>Toast: <code>variant</code> success | error | warning | info, <code>title</code>, <code>description</code>, <code>onDismiss</code>; provider: <code>top</code>, <code>duration</code>, <code>limit</code>; container: <code>top</code>, <code>static</code>; <code>toast({ variant, title, description, duration })</code></td></tr>
+                <tr><td><a href="components/toggle-field.html">ToggleField</a></td><td><code>label</code>, <code>description</code>, <code>card</code>, <code>reverse</code>, input props (<code>checked</code>, <code>defaultChecked</code>, <code>onChange</code>)</td></tr>
+                <tr><td><a href="components/tooltip.html">Tooltip</a></td><td><code>content</code></td></tr>
+                <tr><td><a href="components/top-progress.html">TopProgress</a></td><td><code>active</code>, <code>value</code>, <code>tone</code> default | success | warning | danger | brand, <code>large</code>, <code>static</code>, <code>fadeMs</code></td></tr>
+                <tr><td><a href="components/tree.html">Tree</a></td><td><code>items</code> [{ label, href, icon, count, actions, children, open, current }], <code>head</code>, <code>headActions</code>, <code>quiet</code>, <code>flush</code></td></tr>
+                <tr><td><a href="components/upgrade-banner.html">UpgradeBanner</a></td><td><code>title</code>, <code>plan</code>, <code>text</code>, <code>usage</code> { label, value, max }, <code>icon</code>, <code>actions</code>, <code>premium</code>, <code>compact</code>, <code>onDismiss</code></td></tr>
+                <tr><td><a href="components/user.html">User</a></td><td><code>name</code>, <code>email</code>, <code>initials</code>, <code>avatarSrc</code>, <code>avatarSize</code></td></tr>
+                <tr><td><a href="components/version-banner.html">VersionBanner</a></td><td><code>version</code>, <code>text</code>, <code>short</code>, <code>actionLabel</code>, <code>onReload</code>, <code>tone</code> warning | info | success, <code>floating</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="blocks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Blocks</h2>
+          <p class="oc-section-header__desc">Page sections are exported as <code>Block*</code> components. Repeating parts are data props, free-form parts are <code>ReactNode</code> slots. Blocks marked Pro come from <code>@birdycom/omniaui-pro-react</code> (<a href="pro.html">OmniaUI Pro</a>): <code>import { BlockCmsDashboard } from "@birdycom/omniaui-pro-react"</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <div class="oc-expandable-table">
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">Block</th><th>Main props</th></tr></thead>
+              <tbody>
+                <tr><td><a href="blocks/about-timeline.html">BlockAboutTimeline</a></td><td><code>eyebrow</code>, <code>title</code>, children = text, <code>timeline</code> [{ date, title, text, current }], <code>image</code>, <code>badge</code>, <code>reverse</code></td></tr>
+                <tr><td><a href="blocks/app-header.html">BlockAppHeader</a></td><td><code>toggleFor</code>, <code>nav</code> [{ label, href, current }], <code>actions</code>, <code>title</code></td></tr>
+                <tr><td><a href="blocks/app-shell.html">BlockAppShell</a></td><td><code>sidebar</code>, <code>header</code>, <code>breadcrumbs</code>, <code>toggleId</code>, <code>height</code>, children = content</td></tr>
+                <tr><td><a href="blocks/auth-split.html">BlockAuthSplit</a></td><td><code>logo</code>, <code>quote</code>, <code>quoteAuthor</code>, <code>title</code>, <code>subtitle</code>, <code>onSubmit({ email, password, remember })</code></td></tr>
+                <tr><td><a href="blocks/auth.html">BlockAuth</a></td><td><code>title</code>, <code>subtitle</code>, <code>socialLabel</code>, <code>footer</code>, <code>onSubmit</code></td></tr>
+                <tr><td><a href="blocks/chat-inbox.html">BlockChatInbox</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>conversations</code> [{ id, name, initials, subject, preview, unread, messages }], <code>selected</code>, <code>onSelect(id)</code>, <code>onSend(id, text)</code>, <code>title</code></td></tr>
+                <tr><td><a href="blocks/cms-dashboard.html">BlockCmsDashboard</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>brand</code>, <code>nav</code> [{ label, items }], <code>user</code>, <code>title</code>, <code>flash</code>, <code>tiles</code> [{ label, count, icon, accent, links }], <code>recent</code>, <code>height</code></td></tr>
+                <tr><td><a href="blocks/contact-grid.html">BlockContactGrid</a></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>cards</code> [{ title, lines: [{ text, href }], icon, accent, address }], <code>plain</code></td></tr>
+                <tr><td><a href="blocks/cta.html">BlockCta</a></td><td><code>title</code>, <code>description</code>, <code>actions</code></td></tr>
+                <tr><td><a href="blocks/dashboard-stats.html">BlockDashboardStats</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>items</code> [{ label, icon, value, delta, trend up | down, note }]</td></tr>
+                <tr><td><a href="blocks/data-table.html">BlockDataTable</a></td><td><code>title</code>, <code>description</code>, <code>actions</code>, <code>toolbar</code>, <code>bulk</code>, <code>footer</code>, children = Table; helpers <code>FilterPills</code>, <code>FilterPill</code>, <code>BlockDataTableSpacer</code></td></tr>
+                <tr><td><a href="blocks/faq.html">BlockFaq</a></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>items</code> [{ question, answer }], <code>openIndex</code>, <code>more</code>, <code>split</code>, <code>name</code></td></tr>
+                <tr><td><a href="blocks/features.html">BlockFeatures</a></td><td><code>title</code>, <code>description</code>, <code>features</code> [{ icon, title, description }]</td></tr>
+                <tr><td><a href="blocks/footer.html">BlockFooter</a></td><td><code>columns</code> [{ title, links }], <code>copyright</code>, <code>credit</code></td></tr>
+                <tr><td><a href="blocks/form-builder.html">BlockFormBuilder</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>title</code>, <code>subtitle</code>, <code>fields</code> [{ id, label, name, type, required, options }], <code>types</code>, <code>onSave(fields)</code>, <code>onBuilderChange</code>, <code>previewHref</code></td></tr>
+                <tr><td><a href="blocks/form-page.html">BlockFormPage</a></td><td><code>actions</code>, children = Collapsible sections; <code>BlockFormPageGrid</code></td></tr>
+                <tr><td><a href="blocks/hero-code.html">BlockHeroCode</a></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>actions</code>, <code>codeTitle</code>, <code>code</code>, <code>tiles</code></td></tr>
+                <tr><td><a href="blocks/hero-orbit.html">BlockHeroOrbit</a></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>actions</code>, <code>marks</code> [{ glyph, accent }], <code>codeTitle</code>, <code>code</code>, <code>center</code>, <code>duration</code></td></tr>
+                <tr><td><a href="blocks/hero.html">BlockHeroSplit</a></td><td><code>title</code>, <code>description</code>, <code>actions</code>, <code>visual</code></td></tr>
+                <tr><td><a href="blocks/hero.html">BlockHero</a></td><td><code>badge</code>, <code>title</code>, <code>description</code>, <code>actions</code></td></tr>
+                <tr><td><a href="blocks/hub-launcher.html">BlockHubLauncher</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>items</code> = LauncherCard props</td></tr>
+                <tr><td><a href="blocks/masonry-gallery.html">BlockMasonryGallery</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>title</code>, <code>lead</code>, <code>categories</code>, <code>items</code> [{ title, meta, category, image, size tall | square | wide }], <code>allLabel</code>, <code>lightboxTitle</code></td></tr>
+                <tr><td><a href="blocks/media-manager.html">BlockMediaManager</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>title</code>, <code>hint</code>, <code>documents</code>, <code>videos</code>, <code>photos</code>, <code>dropzones</code>, <code>onUpload(kind, files)</code>, <code>onDelete</code></td></tr>
+                <tr><td><a href="blocks/module-header.html">BlockModuleHeader</a></td><td><code>icon</code>, <code>title</code>, <code>intro</code>, <code>meta</code>, <code>actions</code></td></tr>
+                <tr><td><a href="blocks/onboarding-checklist.html">BlockOnboardingChecklist</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>icon</code>, <code>title</code>, <code>description</code>, <code>steps</code> [{ title, hint, done, href, actionLabel }]</td></tr>
+                <tr><td>BlockPageHero</td><td><code>eyebrow</code>, <code>title</code>, <code>description</code>, <code>actions</code></td></tr>
+                <tr><td><a href="blocks/portfolio-grid.html">BlockPortfolioGrid</a></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>link</code>, <code>projects</code> (ProjectCard props + <code>accent</code>), <code>two</code></td></tr>
+                <tr><td><a href="blocks/pricing.html">BlockPricing</a></td><td><code>title</code>, <code>description</code>, <code>plans</code> [{ name, description, price, period, features, featured, action, href, onAction }]</td></tr>
+                <tr><td><a href="blocks/process.html">BlockProcess</a></td><td><code>eyebrow</code>, <code>title</code>, <code>steps</code> [{ title, text }], <code>marquee</code> string[]</td></tr>
+                <tr><td><a href="blocks/product-grid.html">BlockProductGrid</a></td><td><code>eyebrow</code>, <code>title</code>, <code>products</code> [{ href, accent, icon, pill, name, tagline, summary, more }]</td></tr>
+                <tr><td><a href="blocks/profile-header.html">BlockProfileHeader</a></td><td><code>name</code>, <code>avatar</code>, <code>meta</code>, <code>bio</code>, <code>banner</code>, <code>actions</code>, <code>tabs</code> [{ label, href, current }], <code>compact</code>, <code>headingLevel</code> 1 | 2</td></tr>
+                <tr><td><a href="blocks/services-tabs.html">BlockServicesTabs</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>services</code> [{ name, icon, media, text, points, actions, documents }], <code>docsTitle</code></td></tr>
+                <tr><td><a href="blocks/settings-page.html">BlockSettingsPage</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>nav</code> [{ label, href, active }]; parts <code>BlockSettingsSection</code>, <code>BlockSettingsRow</code> (<code>danger</code>), <code>BlockSettingsActions</code></td></tr>
+                <tr><td><a href="blocks/showcase.html">BlockShowcase</a></td><td><code>eyebrow</code>, <code>title</code>, <code>projects</code> [{ href, accent, background, image, pill, name, summary, more }]</td></tr>
+                <tr><td><a href="blocks/site-footer.html">BlockSiteFooter</a></td><td><code>brand</code>, <code>about</code>, <code>columns</code> [{ title, links | address }], <code>copyright</code>, <code>credit</code></td></tr>
+                <tr><td><a href="blocks/site-header.html">BlockSiteHeader</a></td><td><code>brand</code>, <code>links</code> [{ label, href, current }], <code>cta</code></td></tr>
+                <tr><td><a href="blocks/spotlight.html">BlockSpotlight</a></td><td><code>accent</code>, <code>badge</code>, <code>icon</code>, <code>title</code>, <code>tagline</code>, <code>lead</code>, <code>action</code>, <code>modules</code></td></tr>
+                <tr><td><a href="blocks/stats.html">BlockStatsCounter</a></td><td><code>stats</code> [{ to, suffix, label }]</td></tr>
+                <tr><td><a href="blocks/stats.html">BlockStats</a></td><td><code>stats</code> [{ value, label }]</td></tr>
+                <tr><td><a href="blocks/status-page.html">BlockStatusPage</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>code</code>, <code>title</code>, <code>text</code>, <code>detail</code>, <code>actions</code>, <code>help</code>, <code>logo</code>, <code>quote</code>, <code>maintenance</code>, <code>full</code></td></tr>
+                <tr><td><a href="blocks/team-list.html">BlockTeamList</a></td><td><code>members</code> [{ name, email, initials, role, roleVariant, menu }]</td></tr>
+                <tr><td><a href="blocks/two-factor.html">BlockTwoFactor</a></td><td><code>qr</code>, <code>setupKey</code>, <code>recoveryCodes</code>, <code>codeLength</code>, <code>onSubmit(code)</code></td></tr>
+                <tr><td><a href="blocks/watch-layout.html">BlockWatchLayout</a> <span class="oc-demo__pro-badge">Pro</span></td><td><code>title</code>, <code>player</code>, <code>channel</code>, <code>actions</code>, <code>stats</code>, <code>description</code>, <code>sideTitle</code>, <code>related</code> [{ title, href, meta, duration, thumb }], <code>stacked</code></td></tr>
+                <tr><td><a href="blocks/wizard-dialog.html">BlockWizardDialog</a></td><td><code>open</code> / <code>onOpenChange</code>, <code>steps</code> [{ label, content }], <code>step</code> / <code>defaultStep</code> / <code>onStepChange</code>, <code>onFinish</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>

@@ -1,0 +1,51 @@
+<!-- OmniaUI component: message — Chat bubble: incoming and outgoing, sender, avatar, time, read receipt, hover actions, grouping, reply quote and date divider. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/message.html | Map: list -> date divider -> incoming group (2) -> outgoing with quote + receipt -> system line
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-message-list: Column of messages and dividers (role="log" when it updates live). Custom properties: --oc-message-in, --oc-message-out
+       article.oc-message: One row. Modifiers: --out (right, primary tint), --continued (follows a message of the same sender:
+         no name, the avatar moves to the last message of the group via :has())
+       .oc-avatar.oc-message__avatar: Avatar (avatar component); keep it on every message so the grouping can hide it
+       .oc-message__bubble > .oc-message__sender, a.oc-message__quote (strong + span), .oc-message__text (p, ul, ol, a, strong, code),
+         .oc-message__attachments (attachment component), .oc-message__meta > time + .oc-message__status (--read, --failed)
+       .oc-message__actions > button.oc-message__action (--destructive): Shown on hover and keyboard focus, always on touch screens
+       .oc-message-divider > span: Date divider. Modifier: --system (a centred notice without lines)
+     No JavaScript. Escape user text on the server; the markup only expects paragraphs, lists and links.
+-->
+<div class="oc-message-list" role="log" aria-label="Conversation with Lisa Verbeke" style="max-inline-size:36rem">
+  <div class="oc-message-divider"><span>Tuesday 14 October</span></div>
+
+  <article class="oc-message" aria-label="Lisa Verbeke, 09:12">
+    <span class="oc-avatar oc-message__avatar">LV</span>
+    <div class="oc-message__bubble">
+      <p class="oc-message__sender">Lisa Verbeke</p>
+      <div class="oc-message__text"><p>Morning Tom! The worktop supplier sent two samples for Villa Dewitte.</p></div>
+      <p class="oc-message__meta"><time datetime="2026-10-14T09:12">09:12</time></p>
+    </div>
+  </article>
+  <article class="oc-message oc-message--continued" id="oc-message-demo-question" aria-label="Lisa Verbeke, 09:13">
+    <span class="oc-avatar oc-message__avatar">LV</span>
+    <div class="oc-message__bubble">
+      <div class="oc-message__text">
+        <p>Which finish should we order?</p>
+        <ul><li><strong>Calacatta</strong> matt, 20 mm</li><li><strong>Nero Marquina</strong> polished, 12 mm</li></ul>
+        <p>Details are on the <a href="#supplier-sheet">supplier sheet</a>.</p>
+      </div>
+      <p class="oc-message__meta"><time datetime="2026-10-14T09:13">09:13</time></p>
+    </div>
+  </article>
+
+  <article class="oc-message oc-message--out" aria-label="You, 09:20">
+    <span class="oc-avatar oc-message__avatar">TP</span>
+    <div class="oc-message__bubble">
+      <a class="oc-message__quote" href="#oc-message-demo-question"><strong>Lisa Verbeke</strong><span>Which finish should we order? Calacatta matt, 20 mm or Nero Marquina polished, 12 mm</span></a>
+      <div class="oc-message__text"><p>Calacatta matt. The client wants the lighter look next to the oak fronts.</p></div>
+      <p class="oc-message__meta"><time datetime="2026-10-14T09:20">09:20</time><span class="oc-message__status oc-message__status--read"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5 7 17.5 18 6.5M13 16.5l1 1L22.5 9"/></svg>Read</span></p>
+    </div>
+    <div class="oc-message__actions">
+      <button type="button" class="oc-message__action" aria-label="Reply to this message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 6 6v4"/></svg></button>
+      <button type="button" class="oc-message__action oc-message__action--destructive" aria-label="Delete this message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg></button>
+    </div>
+  </article>
+
+  <div class="oc-message-divider oc-message-divider--system" role="note"><span>Lisa Verbeke marked this question as answered</span></div>
+</div>

@@ -1,0 +1,317 @@
+<!--oc-page {"title": "OmniaUI - Laravel", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Laravel</h1>
+        <p class="oc-hero-text"><code>birdycom/omniaui-laravel</code> turns every component and block into an anonymous Blade component under the prefix <code>oc</code>: <code>&lt;x-oc::button variant="primary"&gt;</code>, <code>&lt;x-oc::block.app-shell&gt;</code>. The markup and classes are exactly the ones in the HTML snippets; the CSS packages own all styling and dark mode (<code>light-dark()</code>), so there are no colors in PHP. Props map to modifiers, slots become <code>$slot</code> and named slots, and <code>$attributes</code> is merged onto the root element. <a href="frameworks-react.html">React</a> and <a href="frameworks-vue.html">Vue</a> have their own wrappers.</p>
+      </section>
+
+      <section class="oc-docs-section" id="installation">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Installation</h2>
+          <p class="oc-section-header__desc">PHP 8.2+ and Laravel 11, 12 or 13. The service provider is auto-discovered.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="shell">composer require birdycom/omniaui-laravel
+php artisan omniacss:install
+npm install &amp;&amp; npm run dev</oc-code>
+          <ul class="oc-docs-list">
+            <li><strong><code>omniacss:install</code></strong>: detects Vite, adds <code>@birdycom/omniacss</code> and <code>@birdycom/omniaui</code> (<code>--blocks</code> adds <code>@birdycom/omniaui-blocks</code>) to <code>package.json</code>, puts the <code>@import</code> lines at the top of <code>resources/css/app.css</code>, publishes <code>config/omniacss.php</code> and prints the next steps. Use <code>--dry-run</code> to see the changes without writing anything.</li>
+            <li><strong>Layout</strong>: add the <code>@omniacss</code> directive to the <code>&lt;head&gt;</code> of your layout.</li>
+          </ul>
+          <oc-code lang="html">&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    @omniacss
+&lt;/head&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="assets">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Asset sources</h2>
+          <p class="oc-section-header__desc">Set <code>source</code> in <code>config/omniacss.php</code> (or <code>OMNIACSS_SOURCE</code> in <code>.env</code>). <code>@omniacss('cdn')</code> overrides it for one page.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Source</th><th>Output of <code>@omniacss</code></th></tr></thead>
+            <tbody>
+              <tr><td><code>vite</code> (default)</td><td><code>@vite</code> for <code>vite.entries</code>; <code>app.css</code> imports <code>@birdycom/omniacss</code>, <code>@birdycom/omniaui</code> and optionally <code>@birdycom/omniaui-blocks</code></td></tr>
+              <tr><td><code>cdn</code></td><td><code>&lt;link&gt;</code> tags to <code>https://cdn.jsdelivr.net/npm/@omniacss/&lt;pkg&gt;@&lt;version&gt;/dist/&lt;file&gt;.min.css</code> (<code>omnia.starter.min.css</code>, <code>components.min.css</code>, <code>blocks.min.css</code>)</td></tr>
+              <tr><td><code>public</code></td><td><code>&lt;link&gt;</code> tags to <code>asset('vendor/omniacss/&lt;file&gt;.min.css')</code>; copy the files there yourself</td></tr>
+            </tbody>
+          </table>
+          <oc-code lang="css">/* resources/css/app.css (written by omniacss:install) */
+@import "@birdycom/omniacss";
+@import "@birdycom/omniaui";
+@import "@birdycom/omniaui-blocks";</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="usage">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Usage</h2>
+          <p class="oc-section-header__desc">Props become modifiers (<code>variant</code>, <code>size</code>, boolean flags), the default slot is the content and named slots fill regions. Extra attributes (<code>class</code>, <code>wire:*</code>, <code>x-*</code>, <code>data-*</code>) are merged onto the root element. Form controls pass their attributes to the real input, so <code>name</code>, <code>value</code> and validation work as expected.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;x-oc::card title="Create project" description="Deploy your new project in one click."&gt;
+    &lt;x-oc::form-field label="Name" for="name" :error="$errors-&gt;first('name')"&gt;
+        &lt;x-oc::input id="name" name="name" placeholder="My project" /&gt;
+    &lt;/x-oc::form-field&gt;
+
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button type="submit"&gt;Deploy&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::card&gt;</oc-code>
+
+          <h3 class="oc-section-content__title mt-2">Dialogs without JavaScript</h3>
+          <p class="desc"><code>modal</code>, <code>sheet</code> and <code>alert-dialog</code> render a native <code>&lt;dialog&gt;</code>; buttons open and close it with <code>command</code> and <code>commandfor</code>.</p>
+          <oc-code lang="html">&lt;x-oc::modal id="delete" title="Are you sure?" size="sm"&gt;
+    &lt;x-slot:trigger&gt;
+        &lt;x-oc::button command="show-modal" commandfor="delete"&gt;Delete&lt;/x-oc::button&gt;
+    &lt;/x-slot:trigger&gt;
+    This action cannot be undone.
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button variant="outline" command="close" commandfor="delete"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="destructive"&gt;Delete&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;</oc-code>
+
+          <h3 class="oc-section-content__title mt-2">Pagination</h3>
+          <oc-code lang="html">&lt;x-oc::pagination :paginator="$users" /&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="components">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Components</h2>
+          <p class="oc-section-header__desc">All names live under <code>&lt;x-oc::...&gt;</code>; sub-parts use a dot (<code>accordion.item</code>).</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Component</th><th>Props and slots</th></tr></thead>
+            <tbody>
+              <tr><td><code>accordion</code>, <code>accordion.item</code></td><td><code>flush</code>; item: <code>title</code>, <code>name</code>, <code>open</code></td></tr>
+              <tr><td><code>accordion-accent</code></td><td><code>accent</code> (blue, cyan, green, orange, red, violet, yellow), <code>tone</code> (success, warning, danger), <code>flush</code>; slot: <code>accordion.item</code> entries</td></tr>
+              <tr><td><code>affix-input</code></td><td><code>variant</code> (currency, percent, email), <code>prefix</code>, <code>suffix</code>, <code>end</code>, <code>error</code>; attributes go to the input</td></tr>
+              <tr><td><code>alert</code></td><td><code>variant</code> (info, success, warning, danger), <code>title</code></td></tr>
+              <tr><td><code>alert-dialog</code></td><td><code>id</code>, <code>type</code>, <code>title</code>, <code>icon</code>, <code>cancel</code>, <code>confirm</code>, <code>confirmVariant</code>; slot <code>footer</code></td></tr>
+              <tr><td><code>alpha-tabs</code></td><td><code>current</code>, <code>available</code>, <code>href</code> (pattern with <code>{letter}</code>), <code>letters</code>, <code>all</code>, <code>wrap</code>, <code>size</code> (sm), <code>plain</code></td></tr>
+              <tr><td><code>aspect-ratio</code></td><td><code>ratio</code>, <code>center</code>; slot = content</td></tr>
+              <tr><td><code>attachment</code>, <code>attachment.image</code>, <code>attachment.thumb</code>, <code>attachment.list</code></td><td><code>name</code>, <code>size</code>, <code>type</code> (pdf, doc, sheet, zip, image), <code>href</code>, <code>state</code>, <code>progress</code>, <code>removable</code>; list: <code>items</code>, <code>stack</code></td></tr>
+              <tr><td><code>avatar</code>, <code>avatar.group</code></td><td><code>size</code> (sm, lg, xl), <code>src</code>, <code>alt</code></td></tr>
+              <tr><td><code>back-link</code>, <code>badge</code></td><td><code>href</code>; badge <code>variant</code> (secondary, outline, destructive, success, warning, info)</td></tr>
+              <tr><td><code>barcode-input</code></td><td><code>label</code>, <code>id</code>, <code>name</code>, <code>value</code>, <code>empty</code>, <code>error</code>; slot <code>preview</code></td></tr>
+              <tr><td><code>breadcrumb</code></td><td><code>items</code> (<code>label</code>, <code>href</code>)</td></tr>
+              <tr><td><code>browser-frame</code></td><td><code>url</code>, <code>src</code>, <code>alt</code>, <code>caption</code>, <code>minimal</code>, <code>dark</code>, <code>tilt</code>, <code>ratio</code>; slots default, <code>actions</code></td></tr>
+              <tr><td><code>busy-overlay</code></td><td><code>id</code>, <code>title</code>, <code>text</code>, <code>progress</code>, <code>label</code>; opens on submit of a form with <code>data-oc-busy</code></td></tr>
+              <tr><td><code>button</code></td><td><code>variant</code> (primary, secondary, outline, ghost, destructive, success, link), <code>size</code> (xs, sm, lg), <code>icon</code>, <code>href</code>, <code>type</code></td></tr>
+              <tr><td><code>button-group</code></td><td><code>vertical</code>, <code>label</code>; slot: <code>button</code> entries</td></tr>
+              <tr><td><code>card</code></td><td><code>title</code>, <code>description</code>, <code>size</code>; slots <code>header</code>, <code>footer</code></td></tr>
+              <tr><td><code>chart-line</code></td><td><code>series</code> (<code>name</code>, <code>values</code>), <code>labels</code>, <code>xLabels</code>, <code>variant</code> (line, area, spark), <code>title</code>, <code>sub</code>, <code>value</code>, <code>max</code>, <code>dots</code></td></tr>
+              <tr><td><code>chat-composer</code></td><td><code>action</code>, <code>method</code>, <code>name</code>, <code>placeholder</code>, <code>hint</code>, <code>inline</code>, <code>disabled</code>; slot <code>tools</code></td></tr>
+              <tr><td><code>checkbox</code>, <code>switch</code></td><td><code>checkbox</code>: <code>radio</code>, <code>label</code>; <code>switch</code>: attributes go to the input</td></tr>
+              <tr><td><code>checklist</code>, <code>checklist.item</code></td><td><code>items</code>, <code>card</code>; item: <code>done</code>, <code>title</code>, <code>hint</code></td></tr>
+              <tr><td><code>chip-filter</code></td><td><code>name</code>, <code>options</code> (value =&gt; label or [label, count]), <code>value</code>, <code>multiple</code>, <code>size</code> (sm), <code>scroll</code></td></tr>
+              <tr><td><code>collapsible</code></td><td><code>title</code>, <code>open</code>, <code>dense</code>; slot <code>icon</code></td></tr>
+              <tr><td><code>color-field</code>, <code>copy-field</code>, <code>counter</code></td><td><code>label</code>, <code>name</code>, <code>value</code>; <code>to</code>, <code>suffix</code>, <code>onView</code></td></tr>
+              <tr><td><code>color-select</code></td><td><code>name</code>, <code>options</code> (value =&gt; [label, color]), <code>value</code>, <code>list</code>, <code>size</code> (sm)</td></tr>
+              <tr><td><code>column-menu</code></td><td><code>id</code>, <code>columns</code> (<code>label</code>, <code>visible</code>, <code>locked</code>), <code>trigger</code>, <code>title</code>, <code>reset</code>; slot = the table</td></tr>
+              <tr><td><code>command</code>, <code>dropdown</code>, <code>navmenu</code>, <code>popover</code></td><td><code>items</code>, <code>label</code>, <code>id</code>, <code>trigger</code>, <code>title</code>, <code>text</code></td></tr>
+              <tr><td><code>confirm-dialog</code></td><td><code>id</code>, <code>type</code>, <code>title</code>, <code>icon</code>, <code>cancel</code>, <code>confirm</code>, <code>discard</code>, <code>word</code>, <code>action</code>, <code>method</code> (dialog, post, get)</td></tr>
+              <tr><td><code>cookie-consent</code></td><td><code>categories</code> (<code>name</code>, <code>label</code>, <code>text</code>, <code>required</code>), <code>title</code>, <code>policyHref</code>, <code>bar</code>, <code>manual</code>; slot = text</td></tr>
+              <tr><td><code>data-table</code></td><td><code>title</code>, <code>tableId</code>, <code>columns</code> (<code>key</code>, <code>header</code>, <code>numeric</code>, <code>sortable</code>, <code>hideable</code>), <code>rows</code>, <code>pageSize</code>, <code>live</code></td></tr>
+              <tr><td><code>decimal-input</code></td><td><code>unit</code>, <code>start</code>, <code>error</code>, <code>pattern</code>; attributes go to the input</td></tr>
+              <tr><td><code>definition-list</code></td><td><code>title</code>, <code>description</code>, <code>items</code> (term =&gt; detail); slot <code>footer</code></td></tr>
+              <tr><td><code>doc-viewer</code>, <code>doc-viewer.media</code></td><td><code>id</code>, <code>items</code> (<code>label</code>, <code>meta</code>, <code>src</code>, <code>type</code>, <code>download</code>), <code>openText</code>, <code>downloadText</code></td></tr>
+              <tr><td><code>dropzone</code>, <code>empty-state</code>, <code>launcher-card</code></td><td><code>title</code>, <code>hint</code>, <code>accept</code>; <code>text</code>, <code>icon</code>; <code>href</code>, <code>active</code>, <code>disabled</code></td></tr>
+              <tr><td><code>emoji-picker</code></td><td><code>id</code>, <code>target</code>, <code>groups</code> (label =&gt; emojis), <code>inline</code>, <code>triggerLabel</code>, <code>label</code></td></tr>
+              <tr><td><code>entity-card</code></td><td><code>title</code>, <code>eyebrow</code>, <code>description</code>, <code>src</code>, <code>glyph</code>, <code>facts</code>, <code>stacked</code>, <code>size</code>; slots <code>media</code>, <code>footer</code></td></tr>
+              <tr><td><code>fact-list</code></td><td><code>items</code>, <code>plain</code>, <code>compact</code>, <code>stacked</code>, <code>accent</code></td></tr>
+              <tr><td><code>filter-counts</code></td><td><code>name</code>, <code>options</code> (<code>value</code>, <code>label</code>, <code>count</code>, <code>hint</code>, <code>tone</code>), <code>value</code>, <code>compact</code></td></tr>
+              <tr><td><code>flip-card</code></td><td><code>id</code>, <code>trigger</code> (toggle, hover, manual), <code>flipped</code>, <code>vertical</code>; slots <code>front</code>, <code>back</code></td></tr>
+              <tr><td><code>form-field</code>, <code>heading</code></td><td><code>label</code>, <code>for</code>, <code>description</code>, <code>error</code>; <code>title</code>, <code>size</code>, <code>level</code></td></tr>
+              <tr><td><code>greeting</code></td><td><code>name</code>, <code>time</code>, <code>words</code>, <code>date</code>, <code>format</code>, <code>eyebrow</code>, <code>lg</code>, <code>hideDate</code>; slots <code>icon</code>, <code>actions</code></td></tr>
+              <tr><td><code>hover-card</code></td><td><code>label</code>, <code>href</code>, <code>top</code>, <code>sm</code>; slots default = card content, <code>trigger</code></td></tr>
+              <tr><td><code>image-zoom</code></td><td><code>src</code>, <code>alt</code>, <code>levels</code>, <code>zoom</code>, <code>ratio</code>, <code>name</code>; slot replaces the image</td></tr>
+              <tr><td><code>input</code>, <code>textarea</code>, <code>select</code>, <code>input-group</code></td><td><code>error</code> (set automatically from the validator for <code>name</code>), <code>options</code>, <code>value</code>, <code>prefix</code>, <code>suffix</code></td></tr>
+              <tr><td><code>item</code>, <code>item.group</code></td><td><code>variant</code>, <code>size</code>, <code>href</code>, <code>title</code>, <code>description</code>; slots <code>media</code>, <code>actions</code>, <code>header</code>, <code>footer</code>; group: <code>outline</code></td></tr>
+              <tr><td><code>kbd</code></td><td><code>keys</code> (array or "Ctrl+K"), <code>sep</code>; without keys the slot is one key</td></tr>
+              <tr><td><code>label</code></td><td><code>required</code>, <code>inline</code>, <code>muted</code>; attributes go to the label</td></tr>
+              <tr><td><code>language-select</code></td><td><code>options</code> (value =&gt; label), <code>value</code>, <code>currency</code>, <code>ghost</code>, <code>icon</code>; attributes go to the select</td></tr>
+              <tr><td><code>lightbox</code></td><td><code>id</code>, <code>images</code> (<code>src</code>, <code>alt</code>, <code>caption</code>, <code>thumb</code>), <code>title</code>, <code>label</code>, <code>thumbnails</code></td></tr>
+              <tr><td><code>link-arrow</code></td><td><code>href</code>, <code>direction</code> (forward, back, external), <code>tone</code>, <code>size</code>; slot = text</td></tr>
+              <tr><td><code>list-toolbar</code></td><td><code>count</code>, <code>views</code>, <code>view</code>, <code>name</code>, <code>sticky</code>, <code>bordered</code>; slots <code>search</code>, <code>actions</code></td></tr>
+              <tr><td><code>marquee</code></td><td><code>items</code>, <code>reverse</code>, <code>speed</code> (slow, fast), <code>plain</code>, <code>noFade</code>, <code>label</code></td></tr>
+              <tr><td><code>media-card</code></td><td><code>title</code>, <code>href</code>, <code>meta</code>, <code>avatar</code>, <code>thumb</code> (media-thumb props), <code>compact</code>; slots <code>avatar</code>, <code>menu</code></td></tr>
+              <tr><td><code>media-row</code></td><td><code>title</code>, <code>href</code>, <code>meta</code>, <code>thumb</code>, <code>current</code>; slot <code>menu</code></td></tr>
+              <tr><td><code>media-thumb</code></td><td><code>src</code>, <code>alt</code>, <code>href</code>, <code>duration</code>, <code>badge</code>, <code>live</code>, <code>progress</code>, <code>watched</code>, <code>ratio</code> (video, square, portrait)</td></tr>
+              <tr><td><code>message</code>, <code>message.list</code>, <code>message.divider</code></td><td><code>direction</code> (in, out), <code>sender</code>, <code>time</code>, <code>status</code>, <code>quote</code>, <code>text</code>, <code>attachments</code>, <code>actions</code>; list: <code>items</code>, <code>log</code>; divider: <code>system</code></td></tr>
+              <tr><td><code>message-thread</code></td><td><code>id</code>, <code>title</code>, <code>participants</code>, <code>status</code>, <code>menu</code>, <code>messages</code>, <code>busy</code>, <code>action</code>, <code>method</code>, <code>tools</code>; slots default, <code>back</code>, <code>composer</code></td></tr>
+              <tr><td><code>modal</code>, <code>sheet</code></td><td><code>id</code>, <code>title</code>, <code>description</code>, <code>size</code> / <code>side</code>, <code>wide</code>; slots <code>trigger</code>, <code>footer</code></td></tr>
+              <tr><td><code>next-teaser</code></td><td><code>href</code>, <code>label</code>, <code>name</code>, <code>tagline</code>, <code>prev</code>; slots <code>mark</code>, default = name</td></tr>
+              <tr><td><code>number-input</code></td><td><code>name</code>, <code>value</code>, <code>size</code> (sm), <code>block</code>, <code>error</code>, <code>decrement</code>, <code>increment</code>; <code>min</code>, <code>max</code>, <code>step</code> as attributes</td></tr>
+              <tr><td><code>otp-input</code>, <code>password-input</code></td><td><code>length</code>, <code>label</code>, <code>name</code>, <code>error</code></td></tr>
+              <tr><td><code>page-header</code></td><td><code>title</code>, <code>subtitle</code>, <code>level</code>, <code>bordered</code>, <code>sticky</code>, <code>sm</code>; slots <code>back</code>, <code>meta</code>, <code>actions</code></td></tr>
+              <tr><td><code>pagination</code></td><td><code>paginator</code> or <code>current</code> + <code>total</code></td></tr>
+              <tr><td><code>password-requirements</code></td><td><code>for</code> (id of the password input), <code>rules</code> (<code>label</code> + <code>min</code> or <code>pattern</code>), <code>inline</code></td></tr>
+              <tr><td><code>phone-input</code></td><td><code>name</code>, <code>dialName</code>, <code>dial</code>, <code>countries</code> (dial =&gt; label), <code>value</code>, <code>size</code> (sm), <code>error</code></td></tr>
+              <tr><td><code>price-card</code></td><td><code>name</code>, <code>description</code>, <code>discount</code>, <code>monthly</code> / <code>yearly</code> (<code>amount</code>, <code>period</code>, <code>was</code>, <code>note</code>), <code>defaultPeriod</code>, <code>features</code>, <code>featured</code>; slot = call to action</td></tr>
+              <tr><td><code>product-mark</code></td><td><code>size</code> (sm, lg, xl), <code>accent</code> (blue, cyan, green, orange, red, violet, yellow), <code>soft</code>, <code>glow</code>, <code>cover</code></td></tr>
+              <tr><td><code>progress</code>, <code>skeleton</code>, <code>tooltip</code></td><td><code>value</code>, <code>max</code>, <code>variant</code>; <code>shape</code>; <code>text</code></td></tr>
+              <tr><td><code>project-card</code></td><td><code>href</code>, <code>name</code>, <code>type</code>, <code>meta</code>, <code>more</code>, <code>image</code>, <code>imageAlt</code>, <code>flat</code></td></tr>
+              <tr><td><code>prose</code></td><td><code>size</code> (sm, lg), <code>full</code>, <code>as</code> (article, div, section); slot = the text</td></tr>
+              <tr><td><code>radio</code></td><td><code>name</code>, <code>options</code> (value =&gt; label or [label, description, disabled]), <code>value</code>, <code>legend</code>, <code>row</code>, <code>card</code>, <code>error</code></td></tr>
+              <tr><td><code>recovery-codes</code>, <code>stepper</code></td><td><code>codes</code>; <code>steps</code>, <code>current</code>, <code>horizontal</code></td></tr>
+              <tr><td><code>scroll-area</code></td><td><code>x</code> (horizontal), <code>shadows</code>, <code>label</code>; slot = content</td></tr>
+              <tr><td><code>segmented</code>, <code>tabs</code>, <code>tabs.panel</code>, <code>theme-switch</code></td><td><code>name</code>, <code>options</code>, <code>value</code>, <code>size</code>, <code>block</code>; tabs: <code>tabs</code>, <code>active</code></td></tr>
+              <tr><td><code>separator</code></td><td><code>vertical</code>, <code>strong</code>, <code>label</code></td></tr>
+              <tr><td><code>severity-card</code></td><td><code>level</code> (low, medium, high, critical), <code>title</code>, <code>tags</code>, <code>levelLabel</code>, <code>resolved</code>, <code>name</code>, <code>open</code>; slots <code>icon</code>, <code>actions</code></td></tr>
+              <tr><td><code>sidebar</code>, <code>sidebar.group</code>, <code>sidebar.item</code></td><td><code>collapsed</code>, <code>right</code>, <code>floating</code>; item: <code>href</code>, <code>current</code>, <code>badge</code>; slots <code>header</code>, <code>footer</code>, <code>icon</code>, <code>sub</code></td></tr>
+              <tr><td><code>slider</code></td><td><code>value</code>, <code>min</code>, <code>max</code>, <code>step</code>, <code>vertical</code>, <code>label</code>, <code>id</code></td></tr>
+              <tr><td><code>sortable-row</code></td><td><code>grip</code>, <code>dragging</code>, <code>drop</code> (before, after), <code>locked</code>; slot = the row cells</td></tr>
+              <tr><td><code>spinner</code></td><td><code>size</code> (sm, lg, xl), <code>color</code> (primary, muted), <code>label</code></td></tr>
+              <tr><td><code>stack-card</code></td><td><code>title</code>, <code>href</code>, <code>meta</code>, <code>count</code>, <code>panel</code>, <code>thumb</code> (media-thumb props)</td></tr>
+              <tr><td><code>stack-list</code></td><td><code>items</code>, <code>neutral</code>, <code>size</code> (sm)</td></tr>
+              <tr><td><code>stat-card</code></td><td><code>value</code>, <code>label</code>, <code>trend</code>, <code>down</code>, <code>tone</code> (accent, success, warning), <code>stripe</code>, <code>href</code>; slot <code>icon</code></td></tr>
+              <tr><td><code>table</code>, <code>table.sort</code>, <code>table.empty</code></td><td><code>caption</code>, <code>striped</code>, <code>compact</code>, <code>borderless</code>, <code>sticky</code></td></tr>
+              <tr><td><code>table-actions</code></td><td><code>menu</code> (label of the overflow trigger; turns on menu mode), <code>id</code>; slot = icon actions or menu items</td></tr>
+              <tr><td><code>table-compact</code></td><td><code>columns</code> (<code>key</code>, <code>label</code>, <code>numeric</code>, <code>wrap</code>), <code>rows</code>, <code>footer</code>, <code>bordered</code>, <code>plain</code></td></tr>
+              <tr><td><code>tag-input</code>, <code>toast</code>, <code>toast.container</code>, <code>user</code></td><td><code>tags</code>, <code>name</code>, <code>suggestions</code>; <code>variant</code>, <code>title</code>; <code>top</code>; <code>name</code>, <code>email</code></td></tr>
+              <tr><td><code>terminal-log</code></td><td><code>lines</code> (<code>level</code>, <code>message</code>, <code>time</code>), <code>title</code>, <code>status</code>, <code>prompt</code>, <code>height</code>, <code>label</code></td></tr>
+              <tr><td><code>time-input</code></td><td><code>id</code>, <code>slots</code> (HH:mm suggestions), <code>error</code>; attributes go to the input</td></tr>
+              <tr><td><code>timeline</code></td><td><code>items</code> (<code>date</code>, <code>title</code>, <code>text</code>, <code>current</code>), <code>size</code> (lg), <code>accent</code></td></tr>
+              <tr><td><code>toggle</code>, <code>toggle.group</code></td><td><code>variant</code> (outline), <code>size</code> (sm, lg), <code>icon</code>, <code>radio</code>, <code>button</code>, <code>pressed</code>; group: <code>label</code>, <code>single</code>, <code>spaced</code></td></tr>
+              <tr><td><code>toggle-field</code></td><td><code>label</code>, <code>description</code>, <code>card</code>, <code>reverse</code>, <code>id</code>; attributes go to the checkbox</td></tr>
+              <tr><td><code>top-progress</code></td><td><code>value</code>, <code>max</code>, <code>tone</code> (success, warning, danger, brand), <code>lg</code>, <code>static</code>, <code>hidden</code>, <code>label</code></td></tr>
+              <tr><td><code>tree</code></td><td><code>items</code> (<code>label</code>, <code>href</code>, <code>count</code>, <code>children</code>, <code>open</code>, <code>current</code>), <code>head</code>, <code>quiet</code>, <code>flush</code>; slot = head actions</td></tr>
+              <tr><td><code>upgrade-banner</code></td><td><code>title</code>, <code>plan</code>, <code>used</code>, <code>max</code>, <code>usage</code>, <code>premium</code>, <code>compact</code>, <code>dismissible</code>; slots <code>icon</code>, <code>actions</code></td></tr>
+              <tr><td><code>version-banner</code></td><td><code>version</code>, <code>short</code>, <code>action</code>, <code>tone</code> (warning, info, success), <code>floating</code>, <code>hidden</code>; slot = long text</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="blocks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Blocks</h2>
+          <p class="oc-section-header__desc">Every block is available as <code>&lt;x-oc::block.NAME&gt;</code> and needs <code>@birdycom/omniaui-blocks</code>. Without slots a block renders the snippet markup unchanged; a named slot replaces only its own region. Blocks marked Pro come from <code>birdycom/omniaui-pro-laravel</code> (<a href="pro.html">OmniaUI Pro</a>) and use the same <code>x-oc::block.</code> prefix.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;x-oc::block.app-shell height="40rem"&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation"&gt;
+            &lt;x-oc::sidebar.group label="Platform"&gt;
+                &lt;x-oc::sidebar.item href="/" current&gt;Dashboard&lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="/contacts" badge="12"&gt;Contacts&lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+
+    &lt;h1 class="oc-heading-title"&gt;Contacts&lt;/h1&gt;
+&lt;/x-oc::block.app-shell&gt;
+
+&lt;x-oc::block.hero&gt;
+    &lt;x-slot:title&gt;Build faster&lt;/x-slot:title&gt;
+&lt;/x-oc::block.hero&gt;</oc-code>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Block</th><th>Named slots</th></tr></thead>
+            <tbody>
+              <tr><td><code>about-timeline</code></td><td><code>badge</code>, <code>eyebrow</code>, <code>title</code>, <code>text</code>, default = timeline</td></tr>
+              <tr><td><code>app-header</code></td><td><code>toggle</code>, <code>nav</code>, <code>actions</code></td></tr>
+              <tr><td><code>app-shell</code></td><td><code>sidebar</code>, <code>header</code>, <code>breadcrumbs</code>, default = content; prop <code>height</code></td></tr>
+              <tr><td><code>auth</code>, <code>auth-split</code></td><td><code>footer</code>; <code>logo</code>, <code>quote</code>, <code>title</code>, <code>subtitle</code>, <code>fields</code> (props <code>action</code>, <code>method</code>, CSRF field included)</td></tr>
+              <tr><td><code>chat-inbox</code></td><td><code>title</code>, <code>items</code> (conversation rows), default = message threads</td></tr>
+              <tr><td><code>cms-dashboard</code></td><td><code>sidebar</code>, <code>title</code>, <code>user</code>, default = body</td></tr>
+              <tr><td><code>contact-grid</code></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, default = cards</td></tr>
+              <tr><td><code>cta</code>, <code>hero</code>, <code>hero-split</code>, <code>page-hero</code></td><td><code>title</code>, <code>text</code>, <code>actions</code> (plus <code>badge</code>, <code>visual</code>, <code>eyebrow</code>)</td></tr>
+              <tr><td><code>data-table</code></td><td><code>title</code>, <code>description</code>, <code>actions</code>, <code>toolbar</code>, <code>table</code>, <code>footer</code></td></tr>
+              <tr><td><code>faq</code></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>more</code>, default = questions</td></tr>
+              <tr><td><code>features</code>, <code>pricing</code></td><td><code>title</code>, <code>text</code>, default = grid</td></tr>
+              <tr><td><code>form-builder</code></td><td><code>title</code>, <code>subtitle</code>, <code>actions</code>, <code>types</code> (palette), default = field cards</td></tr>
+              <tr><td><code>form-page</code></td><td>default; props <code>action</code>, <code>method</code></td></tr>
+              <tr><td><code>hero-orbit</code></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>actions</code>, <code>center</code>, default = orbit marks</td></tr>
+              <tr><td><code>masonry-gallery</code></td><td><code>title</code>, <code>lead</code>, <code>filter</code>, <code>lightbox</code>, default = grid items</td></tr>
+              <tr><td><code>media-manager</code></td><td><code>title</code>, <code>hint</code>, default = tabs and panels</td></tr>
+              <tr><td><code>module-header</code></td><td><code>icon</code>, <code>title</code>, <code>intro</code>, <code>meta</code>, <code>actions</code></td></tr>
+              <tr><td><code>portfolio-grid</code></td><td><code>eyebrow</code>, <code>title</code>, <code>lead</code>, <code>link</code>, default = project cards</td></tr>
+              <tr><td><code>profile-header</code></td><td><code>avatar</code>, <code>name</code>, <code>meta</code>, <code>bio</code>, <code>actions</code>, default = tabs</td></tr>
+              <tr><td><code>services-tabs</code></td><td><code>title</code>, <code>lead</code>, default = tabset</td></tr>
+              <tr><td><code>settings-page</code>, <code>site-header</code></td><td><code>nav</code>; <code>brand</code>, <code>nav</code></td></tr>
+              <tr><td><code>status-page</code></td><td><code>visual</code>, <code>logo</code>, <code>code</code>, <code>title</code>, <code>text</code>, <code>detail</code>, <code>actions</code>, <code>help</code></td></tr>
+              <tr><td><code>two-factor</code></td><td><code>qr</code>, <code>key</code>, <code>code</code>, <code>recovery</code></td></tr>
+              <tr><td><code>watch-layout</code></td><td><code>player</code>, <code>title</code>, <code>channel</code>, <code>actions</code>, <code>description</code>, default = up next list</td></tr>
+              <tr><td><code>wizard-dialog</code></td><td>props <code>id</code>, <code>steps</code>, <code>current</code>, <code>trigger</code>; slots <code>rail</code>, default, <code>footer</code></td></tr>
+              <tr><td>page examples</td><td><code>calendar-01</code> to <code>calendar-05</code>, <code>charts</code>, <code>dashboard-01</code>, <code>login-01</code> to <code>login-05</code>, <code>signup-01</code> to <code>signup-03</code>, <code>otp-01</code> to <code>otp-03</code>, <code>forgot-password</code>, <code>reset-password</code>, <code>sidebar-01</code> to <code>sidebar-16</code>: default slot</td></tr>
+              <tr><td>other blocks</td><td><code>dashboard-stats</code>, <code>footer</code>, <code>hero-code</code>, <code>hub-launcher</code>, <code>onboarding-checklist</code>, <code>process</code>, <code>product-grid</code>, <code>showcase</code>, <code>site-footer</code>, <code>spotlight</code>, <code>stats</code>, <code>stats-counter</code>, <code>team-list</code>: default slot</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="own-the-code">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Own the code</h2>
+          <p class="oc-section-header__desc"><code>omniacss:publish-components</code> copies Blade files into <code>resources/views/components/oc</code>. Published files are used as <code>&lt;x-oc.button&gt;</code>; the package keeps serving <code>&lt;x-oc::button&gt;</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="shell">php artisan omniacss:publish-components button card modal
+php artisan omniacss:publish-components block.app-shell
+php artisan omniacss:publish-components --all
+php artisan omniacss:publish-components --list</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="livewire">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Livewire</h2>
+          <p class="oc-section-header__desc"><code>birdycom/omniaui-livewire</code> adds Livewire 3 variants where state matters. It uses the same <code>oc</code> prefix.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="shell">composer require birdycom/omniaui-livewire</oc-code>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Component</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>wire.input</code>, <code>wire.textarea</code>, <code>wire.select</code>, <code>wire.switch</code>, <code>wire.checkbox</code></td><td><code>model</code>, <code>live</code>, <code>blur</code>, <code>debounce</code> shorthand for <code>wire:model</code>; validation errors set the error state</td></tr>
+              <tr><td><code>wire.segmented</code>, <code>wire.otp</code>, <code>wire.tag-input</code></td><td>Bound to a property: every radio, a one-time code with <code>complete="verify"</code>, an array of tags via <code>$wire.entangle</code></td></tr>
+              <tr><td><code>wire.modal</code>, <code>wire.sheet</code>, <code>wire.alert-dialog</code></td><td>Open state entangled with <code>ocModals.{name}</code> (trait <code>WithOcModal</code>) or any boolean <code>model</code></td></tr>
+              <tr><td><code>toast-stack</code></td><td>Listens for the <code>oc-toast</code> browser event; <code>$this-&gt;ocToast('success', 'Saved')</code> from trait <code>WithOcToast</code></td></tr>
+              <tr><td><code>Omniacss\Livewire\DataTable</code></td><td>Abstract component on the data-table block: search, sortable columns, pagination, row actions</td></tr>
+            </tbody>
+          </table>
+          <oc-code lang="html">&lt;x-oc::wire.input model="email" live :debounce="300" type="email" /&gt;
+&lt;x-oc::wire.segmented model="period" :options="['month' =&gt; 'Month', 'year' =&gt; 'Year']" /&gt;
+
+&lt;button class="oc-btn" wire:click="openOcModal('delete')"&gt;Delete&lt;/button&gt;
+&lt;x-oc::wire.alert-dialog name="delete" title="Delete contact?" confirm="Delete" action="delete(5)"&gt;
+    This cannot be undone.
+&lt;/x-oc::wire.alert-dialog&gt;
+
+&lt;x-oc::toast-stack /&gt;</oc-code>
+          <oc-code lang="js">use Omniacss\Livewire\DataTable;
+
+class UsersTable extends DataTable
+{
+    protected function columns(): array
+    {
+        return ['name' =&gt; 'Name', 'email' =&gt; ['label' =&gt; 'E-mail', 'sortable' =&gt; false]];
+    }
+
+    protected function query(): \Illuminate\Database\Eloquent\Builder
+    {
+        return User::query();
+    }
+}</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="source">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Source &amp; further reading</h2>
+        </div>
+        <div class="oc-section-content">
+          <ul class="oc-docs-list">
+            <li><strong>Packages</strong>: <code>php-packages/omniaui-laravel</code> and <code>php-packages/omniaui-livewire</code>, each with README and tests (Orchestra Testbench + PHPUnit).</li>
+            <li><strong>Regenerate blocks</strong>: <code>node php-packages/omniaui-laravel/tools/build-blocks.mjs</code> rebuilds the block views from <code>packages/blocks/blocks</code>.</li>
+            <li><strong>Reference</strong>: <a href="components.html">Components</a> and <a href="blocks.html">Blocks</a> document every class and modifier.</li>
+          </ul>
+        </div>
+      </section>

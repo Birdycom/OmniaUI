@@ -1,0 +1,63 @@
+/* File: packages/ui/src/parts/app-cookie-consent.css | Map: popover box (corner / bar) -> text -> preferences (details)
+   -> category rows -> actions -> entry animation -> small screens
+   Cookie consent: a non-modal popover="manual" in the top layer, so it never blocks the page. Categories are rows with
+   the switch component; "necessary" is locked on. Based on the cookie banner of the Verdavita site. */
+
+.oc-cookie-consent {
+  position: fixed;
+  inset: auto 1rem 1rem auto;
+  inline-size: min(100vw - 2rem, 28rem);
+  max-block-size: calc(100dvh - 2rem);
+  margin: 0;
+  padding: 1.25rem;
+  overflow: auto;
+  border: 1px solid var(--oc-border);
+  border-radius: 12px;
+  background: var(--oc-popover, var(--oc-card));
+  color: var(--oc-foreground);
+  box-shadow: 0 1rem 2.5rem oklch(from var(--color-black-50) l c h / 0.2);
+}
+.oc-cookie-consent:popover-open { display: grid; gap: 0.9rem; }
+/* Full-width bar at the bottom */
+.oc-cookie-consent--bar { inset: auto 0 0 0; inline-size: 100%; max-inline-size: none; border-radius: 0; border-inline: 0; border-block-end: 0; }
+.oc-cookie-consent--bar:popover-open { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.oc-cookie-consent--bar .oc-cookie-consent__prefs { grid-column: 1 / -1; }
+
+.oc-cookie-consent__title { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 1rem; font-weight: 700; }
+.oc-cookie-consent__text { margin: 0; color: var(--oc-muted-foreground); font-size: 0.875rem; line-height: 1.55; }
+.oc-cookie-consent__text a { color: var(--oc-link-color, var(--oc-primary)); }
+
+/* Preferences: a native <details>, so "Customize" needs no script */
+.oc-cookie-consent__prefs { border-block: 1px solid var(--oc-border); }
+.oc-cookie-consent__prefs > summary {
+  padding-block: 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.oc-cookie-consent__prefs > summary:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; border-radius: 4px; }
+.oc-cookie-consent__category {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.15rem 1rem;
+  padding-block: 0.6rem;
+  border-block-start: 1px solid var(--oc-border);
+}
+.oc-cookie-consent__category-name { font-size: 0.875rem; font-weight: 600; }
+.oc-cookie-consent__category-text { grid-column: 1; color: var(--oc-muted-foreground); font-size: 0.8rem; }
+.oc-cookie-consent__category > .oc-switch { grid-row: 1 / span 2; grid-column: 2; }
+
+.oc-cookie-consent__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
+.oc-cookie-consent__actions > .oc-btn { flex: 1 1 auto; }
+
+/* Entry: slide up from the corner */
+.oc-cookie-consent { transition: opacity 0.3s, translate 0.3s, overlay 0.3s allow-discrete, display 0.3s allow-discrete; }
+@starting-style { .oc-cookie-consent:popover-open { opacity: 0; translate: 0 1rem; } }
+.oc-cookie-consent:not(:popover-open) { opacity: 0; translate: 0 1rem; }
+
+@media (width < 36rem) {
+  .oc-cookie-consent { inset: auto 0.5rem 0.5rem; inline-size: auto; }
+  .oc-cookie-consent--bar:popover-open { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .oc-cookie-consent { transition: none; } }

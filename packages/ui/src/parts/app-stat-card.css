@@ -1,0 +1,68 @@
+/* File: packages/ui/src/parts/app-stat-card.css | Map: grid -> card -> icon tile -> value + label -> trend -> tone modifiers -> clickable card -> reduced motion */
+/* Stat card: compact KPI tile with an icon tile, a big number and a small label.
+   Tone modifiers recolor the icon tile: --accent (needs attention, red), --success, --warning.
+   Use an <a> or <button> as the card to make it clickable (hover lift). */
+
+/* Responsive grid for a row of stat cards. */
+.oc-stat-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 0.75rem; }
+
+.oc-stat-card {
+  --oc-stat-card-color: var(--oc-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-inline-size: 0;
+  padding: 1rem;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  color: var(--oc-card-foreground);
+  background: var(--oc-card-background);
+  border: 1px solid var(--oc-card-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  transition: translate var(--oc-transition-fast), box-shadow var(--oc-transition-fast), border-color var(--oc-transition-fast);
+}
+
+/* Icon tile, tinted with the tone color. */
+.oc-stat-card-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  color: var(--oc-stat-card-color);
+  background: oklch(from var(--oc-stat-card-color) l c h / 0.12);
+  border-radius: var(--oc-radius);
+}
+.oc-stat-card-icon svg { inline-size: 1.25rem; block-size: 1.25rem; }
+
+/* Text column: number on top, label below (ellipsis when too long). */
+.oc-stat-card-body { min-inline-size: 0; }
+.oc-stat-card-value { display: block; font-size: 1.5rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; color: var(--oc-foreground); }
+.oc-stat-card-label { display: block; margin-block-start: 0.25rem; overflow: hidden; font-size: 0.75rem; color: var(--oc-muted-foreground); text-overflow: ellipsis; white-space: nowrap; }
+
+/* Optional trend chip next to the value ("+12%"). */
+.oc-stat-card-trend { display: inline-block; margin-inline-start: 0.375rem; padding: 0.125rem 0.375rem; font-size: 0.6875rem; font-weight: 600; vertical-align: middle; border-radius: 999px; color: var(--oc-muted-foreground); background: var(--oc-muted); }
+.oc-stat-card-trend--up { color: var(--oc-success); background: oklch(from var(--oc-success) l c h / 0.12); }
+.oc-stat-card-trend--down { color: var(--oc-destructive); background: oklch(from var(--oc-destructive) l c h / 0.12); }
+
+/* Tones. --accent = "needs attention" (e.g. open orders). */
+.oc-stat-card--accent { --oc-stat-card-color: var(--oc-destructive); }
+.oc-stat-card--success { --oc-stat-card-color: var(--oc-success); }
+.oc-stat-card--warning { --oc-stat-card-color: var(--oc-warning); }
+/* Accent stripe on the start edge (optional, combine with a tone). */
+.oc-stat-card--stripe { border-inline-start: 3px solid var(--oc-stat-card-color); }
+
+/* Clickable card (a / button): lift on hover, ring on keyboard focus. */
+a.oc-stat-card,
+button.oc-stat-card { cursor: pointer; }
+a.oc-stat-card:hover,
+button.oc-stat-card:hover { translate: 0 -2px; border-color: oklch(from var(--oc-stat-card-color) l c h / 0.4); box-shadow: 0 6px 18px oklch(from var(--color-black-60) l c h / 0.1); }
+a.oc-stat-card:focus-visible,
+button.oc-stat-card:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-stat-card { transition: none; }
+  a.oc-stat-card:hover,
+  button.oc-stat-card:hover { translate: none; }
+}

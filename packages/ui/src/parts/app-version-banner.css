@@ -1,0 +1,80 @@
+/* File: packages/ui/src/parts/app-version-banner.css | Map: chip -> icon + text (long / short) -> action -> tone modifiers -> floating modifier -> entry animation -> reduced motion */
+/* Version banner: small "New version available - reload" chip, e.g. at the end of the app header.
+   Reload without JavaScript: the action is a link with href="" (the current page).
+   Show it only when your app detects a newer build (remove the hidden attribute). */
+
+.oc-version-banner {
+  --oc-version-banner-color: var(--oc-warning);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: 0.25rem 0.25rem 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--oc-foreground);
+  background: oklch(from var(--oc-version-banner-color) l c h / 0.12);
+  border: 1px solid oklch(from var(--oc-version-banner-color) l c h / 0.4);
+  border-radius: 999px;
+  transition: opacity var(--oc-transition-normal), translate var(--oc-transition-normal);
+  @starting-style { opacity: 0; translate: 0 -0.25rem; }
+}
+.oc-version-banner[hidden] { display: none; }
+
+/* Small dot in the tone color (pulses gently). */
+.oc-version-banner-dot {
+  flex-shrink: 0;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 50%;
+  background: var(--oc-version-banner-color);
+  animation: oc-version-banner-pulse 2s ease-in-out infinite;
+}
+@keyframes oc-version-banner-pulse { 50% { box-shadow: 0 0 0 4px oklch(from var(--oc-version-banner-color) l c h / 0.2); } }
+
+/* Text: the long text hides on small screens, the short one shows instead. */
+.oc-version-banner-text { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-version-banner-short { display: none; white-space: nowrap; }
+@media (max-width: 40rem) {
+  .oc-version-banner-text:has(+ .oc-version-banner-short) { display: none; }
+  .oc-version-banner-short { display: inline; }
+}
+
+/* Action (link or button): compact pill button. */
+.oc-version-banner-action {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--oc-foreground);
+  text-decoration: none;
+  background: var(--oc-background);
+  border: 1px solid oklch(from var(--oc-version-banner-color) l c h / 0.4);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.oc-version-banner-action:hover { background: oklch(from var(--oc-version-banner-color) l c h / 0.15); }
+.oc-version-banner-action:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+/* Tone modifiers. */
+.oc-version-banner--info { --oc-version-banner-color: var(--oc-primary); }
+.oc-version-banner--success { --oc-version-banner-color: var(--oc-success); }
+
+/* Floating: fixed at the bottom end of the window (for apps without a header slot). */
+.oc-version-banner--floating {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 900;
+  background: var(--oc-popover);
+  box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-version-banner { transition: none; }
+  .oc-version-banner-dot { animation: none; }
+}

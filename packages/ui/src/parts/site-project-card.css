@@ -1,0 +1,111 @@
+/* File: packages/ui/src/parts/site-project-card.css
+   Map: card -> preview frame (bar + dots + shot) -> body (type / name / meta / more) -> hover -> reduced motion
+   Project card: portfolio item with a browser-like preview. Self-contained: it does not use other frame classes.
+   Accent: --oc-accent-from / --oc-accent-to, or an .oc-accent--* preset on the card. */
+
+.oc-project-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg);
+  background: var(--oc-surface);
+  color: var(--oc-foreground);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.35s var(--oc-ease-out), border-color 0.35s;
+}
+
+/* Preview: a small window with a title bar and a screenshot (or a gradient placeholder). */
+.oc-project-card__frame {
+  display: block;
+  margin: 1rem 1rem 0;
+  border: 1px solid var(--oc-border-strong);
+  border-radius: var(--oc-radius-md);
+  background: var(--oc-card);
+  overflow: hidden;
+  box-shadow: 0 24px 48px -28px color-mix(in oklch, var(--oc-accent-to) 60%, transparent);
+}
+.oc-project-card__bar {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.5rem 0.7rem;
+  border-block-end: 1px solid var(--oc-border);
+  background: var(--oc-surface-strong);
+}
+.oc-project-card__bar > i {
+  inline-size: 0.55rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--oc-border-strong);
+}
+.oc-project-card__bar > i:first-child { background: var(--oc-accent-from); }
+
+/* Screenshot area. Without an <img> it shows an accent gradient placeholder. */
+.oc-project-card__shot {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+  background:
+    radial-gradient(circle at 80% 20%, color-mix(in oklch, var(--color-white-50) 30%, transparent), transparent 45%),
+    linear-gradient(135deg, var(--oc-accent-from), var(--oc-accent-to));
+  transition: scale 0.5s var(--oc-ease-out);
+}
+
+/* Text below the preview. */
+.oc-project-card__body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 0.35rem;
+  padding: 1.1rem 1.25rem 1.3rem;
+}
+.oc-project-card__type {
+  align-self: flex-start;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--oc-accent-from) 14%, transparent);
+  color: var(--oc-accent-from);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.oc-project-card__name {
+  margin: 0.25rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.oc-project-card__meta {
+  margin: 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.9rem;
+}
+.oc-project-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-block-start: auto;
+  padding-block-start: 0.6rem;
+  color: var(--oc-accent-from);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.oc-project-card__more::after { content: "→"; transition: translate 0.25s var(--oc-ease-out); }
+
+/* Hover / focus: lift, accent border, zoom the shot a little, move the arrow. */
+.oc-project-card:is(a, [tabindex]):hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklch, var(--oc-accent-from) 55%, transparent);
+}
+.oc-project-card:hover .oc-project-card__shot { scale: 1.03; }
+.oc-project-card:hover .oc-project-card__more::after { translate: 4px 0; }
+.oc-project-card:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 3px; }
+
+/* Flat: no frame margin, the preview runs edge to edge. */
+.oc-project-card--flat .oc-project-card__frame { margin: 0; border: 0; border-radius: 0; box-shadow: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-project-card,
+  .oc-project-card__shot { transition: none; }
+}
