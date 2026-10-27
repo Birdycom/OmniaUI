@@ -68,8 +68,23 @@
 
 .oc-price-card__cta { inline-size: 100%; }
 
-/* Featured plan: accent border + soft glow. */
-.oc-price-card--featured {
+/* Featured plan: accent border + soft glow. The glow follows the pointer: the card you hover or tab into gets it,
+   and the featured card gives it up while another card in the same row is hovered. */
+.oc-price-card {
+  transition: border-color 0.25s var(--oc-ease-out), box-shadow 0.25s var(--oc-ease-out), translate 0.25s var(--oc-ease-out);
+}
+.oc-price-card--featured,
+.oc-price-card:hover,
+.oc-price-card:focus-within {
   border-color: color-mix(in oklch, var(--oc-accent-from) 60%, transparent);
   box-shadow: 0 24px 60px -30px var(--oc-accent-from);
+}
+.oc-price-card:hover { translate: 0 -2px; }
+:has(> .oc-price-card:hover) > .oc-price-card--featured:not(:hover, :focus-within) {
+  border-color: var(--oc-border);
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-price-card { transition: none; }
+  .oc-price-card:hover { translate: none; }
 }
