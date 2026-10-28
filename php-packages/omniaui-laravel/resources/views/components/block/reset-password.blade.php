@@ -10,7 +10,7 @@
        .oc-block-authcard-center: Centered column (OTP input)
        .oc-block-authsocial: Auto-fit grid of social buttons
        .oc-block-authduo: Split layout root (container query: two columns from 42rem of its own width). Modifier: --reverse
-       .oc-block-authduo-grid / -panel / -form: Grid, brand panel (modifiers --image, --muted) and form column
+       .oc-block-authduo-grid / -panel / -form: Grid, brand panel (modifiers --image, --muted, --photo with style="--oc-authduo-photo: url(…)") and form column
        .oc-block-authduo-logo / -quote: Panel logo and quote
        .oc-block-authmin: Minimal centered column without a card
        .oc-separator-text: Divider with centered text (separator component)

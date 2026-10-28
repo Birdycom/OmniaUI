@@ -38,6 +38,35 @@
   </div>
 </div>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Show on the page</h3>
+          <p class="oc-section-content__desc">Press a button: the toast appears in the fixed container at the bottom right of this page and fades out after <code>--oc-toast-duration</code> (<code>.oc-toast--auto</code>, CSS only). Adding the toast is your app's job; here a few lines of script do it.</p>
+          <oc-demo title="Toast - on the page">
+<div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+  <button type="button" class="oc-btn" onclick="ocDemoToast('success', 'Contact saved')">Success</button>
+  <button type="button" class="oc-btn oc-btn--destructive" onclick="ocDemoToast('error', 'Could not send invoice')">Error</button>
+  <button type="button" class="oc-btn oc-btn--outline" onclick="ocDemoToast('warning', 'License expires in 3 days')">Warning</button>
+  <button type="button" class="oc-btn oc-btn--outline" onclick="ocDemoToast('info', 'A new version is available')">Info</button>
+</div>
+<script>
+  // Adds an auto-dismissing toast to one fixed container on the page; CSS fades it out, the script removes it afterwards.
+  function ocDemoToast(variant, title) {
+    let stack = document.getElementById("oc-demo-toasts");
+    if (!stack) {
+      stack = Object.assign(document.createElement("div"), { id: "oc-demo-toasts", className: "oc-toast-container" });
+      document.body.append(stack);
+    }
+    const toast = document.createElement("div");
+    toast.className = `oc-toast oc-toast--${variant} oc-toast--auto`;
+    toast.setAttribute("role", variant === "error" ? "alert" : "status");
+    toast.innerHTML = `<span class="oc-toast-icon" aria-hidden="true">${{ success: "✓", info: "i" }[variant] ?? "!"}</span><div class="oc-toast-body"><p class="oc-toast-title"></p></div><button class="oc-toast-close" type="button" aria-label="Dismiss">×</button>`;
+    toast.querySelector(".oc-toast-title").textContent = title;
+    toast.querySelector(".oc-toast-close").addEventListener("click", () => toast.remove());
+    toast.addEventListener("animationend", (e) => { if (e.animationName === "oc-toast-out") toast.remove(); });
+    stack.append(toast);
+  }
+</script>
+          </oc-demo>
         </div>
       </section>
 

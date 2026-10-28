@@ -8,15 +8,19 @@
   <meta name="generator" content="OmniaUI 0.11.0">
   <title>OmniaUI - Icons</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/css/omnia-site.css?v=06952834a1"><link rel="stylesheet" href="/css/oc-components.css?v=244d590e24"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=9204573677"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=46e216e1a8"><link rel="stylesheet" href="/css/oc-layout-module.css?v=cd46dce3e2"><link rel="stylesheet" href="/css/omnia_site.css?v=623534ab32"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=9fae95896e"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=2ceeecc40b">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=d70003a602"><link rel="stylesheet" href="/css/oc-components.css?v=1f44866c61"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=21effc144d"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=46e216e1a8"><link rel="stylesheet" href="/css/oc-layout-module.css?v=cd46dce3e2"><link rel="stylesheet" href="/css/omnia_site.css?v=623534ab32"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=2955aa9949"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=bf6bcaa522">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
     try { const u = new URL(location.href), q = u.searchParams.get("oc-theme"); if (q) { localStorage.setItem("oc-theme", q); u.searchParams.delete("oc-theme"); history.replaceState(history.state, "", u); } const t = q || localStorage.getItem("oc-theme"); if (t && t !== "system") document.documentElement.dataset.theme = t; } catch {}
     const carryTheme = (e) => { const a = e.target.closest && e.target.closest("a[href]"); const sister = document.documentElement.dataset.sisterSite; if (!a || !sister || a.origin !== new URL(sister).origin) return; try { const t = localStorage.getItem("oc-theme"); if (!t) return; const u = new URL(a.href); u.searchParams.set("oc-theme", t); a.href = u.href; } catch {} };
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
-    addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; });
-    addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; });
+    addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
+    // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
+    // a click in a demo still themes only that demo (.oc-theme-scope).
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
+    addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
   <script src="/js/oc-docs-v2.js?v=50b3bbdcc6" defer></script>
   <script src="/js/vendor/iconify.min.js"></script>
@@ -110,9 +114,7 @@
           </div>
         </div>
         </div>
-      </section>
-
-      <section class="oc-docs-section" id="source">
+      </section><section class="oc-docs-section" id="source">
         <div class="oc-section-header">
           <h2 id="source-and-further-reading" class="oc-section-header__title">Source &amp; further reading</h2>
           
@@ -126,6 +128,8 @@
         </ul>
         </div>
       </section>
+
+      
 </main>
       <aside class="ocd-sidebar-right"><nav class="oc-toc" aria-label="On this page"><p class="oc-toc-title">On This Page</p><ul class="oc-toc-list"><li><a class="oc-toc-link" href="#installation-2">Installation</a></li><li><a class="oc-toc-link" href="#usage-2">Usage</a></li><li class="oc-toc-item--sub"><a class="oc-toc-link" href="#example">Example</a></li><li><a class="oc-toc-link" href="#icon-pages-2">Icon pages</a></li><li><a class="oc-toc-link" href="#source-and-further-reading">Source &amp; further reading</a></li></ul></nav></aside>
       <script>(() => { if (CSS.supports("selector(:target-current)")) return; const links = [...document.querySelectorAll(".oc-toc a[href^='#']")]; const root = document.querySelector(".oc-docs-content, .ocd-content"); if (!links.length || !root) return; const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))); let raf = 0; const update = () => { raf = 0; const top = root.getBoundingClientRect().top + 80; let cur = 0; heads.forEach((h, i) => { if (h && h.getBoundingClientRect().top <= top) cur = i; }); if (root.scrollTop + root.clientHeight >= root.scrollHeight - 4) cur = links.length - 1; links.forEach((a, i) => a.classList.toggle("is-active", i === cur)); }; root.addEventListener("scroll", () => { raf ||= requestAnimationFrame(update); }, { passive: true }); update(); })();</script>

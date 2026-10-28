@@ -1,17 +1,104 @@
-<!--oc-page {"title": "OmniaUI - Pagination", "category": "Navigation", "description": "Page navigation list.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Pagination", "category": "Navigation", "description": "Page numbers for long lists: links with the current page marked by aria-current, and a gap for skipped pages.", "nav": "Pagination", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/pagination.html | Map: hero -> demo (pages, many pages with gaps + previous/next) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Pagination</h1>
-        <p class="oc-hero-text">Page navigation with <code>.oc-pagination</code> and <code>.oc-pagination-item</code>. Use <code>.is-active</code> for current page.</p>
+        <p class="oc-hero-text">Page numbers for a long list or table. Plain links (<code>?page=2</code>), so every page has its own URL and works without JavaScript; the current page is marked with <code>aria-current="page"</code>. <a href="../components.html">All components</a>.</p>
       </section>
 
-      <section class="ocd-section" id="pagination">
-        <oc-demo><div class="preview">
-          <ul class="oc-pagination">
-            <li class="oc-pagination-item"><button>«</button></li>
-            <li class="oc-pagination-item"><button>1</button></li>
-            <li class="oc-pagination-item is-active"><button>2</button></li>
-            <li class="oc-pagination-item"><button>3</button></li>
-            <li class="oc-pagination-item"><button>»</button></li>
-          </ul>
-        </div></oc-demo>
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/pagination.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.6.0</span>
+          <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/pagination.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Pagination">
+<nav class="oc-pagination" aria-label="Pagination">
+  <a class="oc-pagination-item" href="#page-1">1</a>
+  <a class="oc-pagination-item" href="#page-2" aria-current="page">2</a>
+  <a class="oc-pagination-item" href="#page-3">3</a>
+</nav>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Many pages, previous and next</h3>
+          <p class="oc-section-content__desc">With many pages, show the first, the last and a window around the current page; a <code>&lt;span class="oc-pagination-item"&gt;</code> with "&hellip;" marks the gap (the Laravel component does this for you). Previous and next are ordinary items with an <code>aria-label</code>.</p>
+          <oc-demo title="Pagination - many pages">
+<nav class="oc-pagination" aria-label="Pagination">
+  <a class="oc-pagination-item" href="#page-6" aria-label="Previous page">&lsaquo;</a>
+  <a class="oc-pagination-item" href="#page-1">1</a>
+  <span class="oc-pagination-item" aria-hidden="true">&hellip;</span>
+  <a class="oc-pagination-item" href="#page-5">5</a>
+  <a class="oc-pagination-item" href="#page-6">6</a>
+  <a class="oc-pagination-item" href="#page-7" aria-current="page">7</a>
+  <a class="oc-pagination-item" href="#page-8">8</a>
+  <a class="oc-pagination-item" href="#page-9">9</a>
+  <span class="oc-pagination-item" aria-hidden="true">&hellip;</span>
+  <a class="oc-pagination-item" href="#page-24">24</a>
+  <a class="oc-pagination-item" href="#page-8" aria-label="Next page">&rsaquo;</a>
+</nav>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/components.css</code>. Colors are theme tokens, so the numbers follow light and dark mode. In a real app the links point to <code>?page=2</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>nav.oc-pagination</code></td><td>The row of pages. Give it <code>aria-label="Pagination"</code>.</td></tr>
+              <tr><td><code>a.oc-pagination-item</code></td><td>One page (a square box with a border; accent background on hover, focus ring on keyboard focus). A <code>&lt;button&gt;</code> works too when the page changes without navigation.</td></tr>
+              <tr><td><code>[aria-current="page"]</code></td><td>The current page: primary background.</td></tr>
+              <tr><td><code>span.oc-pagination-item</code></td><td>The "&hellip;" gap for skipped pages: no border, muted. Add <code>aria-hidden="true"</code>.</td></tr>
+              <tr><td><code>li.oc-pagination-item.is-active &gt; a</code></td><td>Older list markup (<code>&lt;ul class="oc-pagination"&gt;</code> with buttons or links) keeps working.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Framework wrappers</h2>
+          <p class="oc-section-header__desc">React and Vue render every page; with a click handler (or without <code>hrefFor</code> in Vue) they change the page without navigating. The Blade component takes a Laravel paginator and adds the "&hellip;" gaps.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;Pagination page={page} pageCount={12} onPageChange={setPage} /&gt;
+&lt;!-- Vue --&gt;
+&lt;OcPagination v-model="page" :pages="12" /&gt;
+&lt;!-- Laravel Blade (a paginator, or current + total + url) --&gt;
+&lt;x-oc::pagination :paginator="$invoices" /&gt;
+&lt;x-oc::pagination :current="7" :total="24" url="/invoices?page=%d" /&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-compat features="html.elements.nav css.selectors.attribute css.selectors.focus-visible css.properties.gap.flex_context css.types.color.light-dark"></oc-compat>
+        </div>
+        <div class="oc-section-footer">
+          <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+          <p class="oc-section-footer__desc">See <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current" target="_blank" rel="noopener">MDN: aria-current</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/nav" target="_blank" rel="noopener">MDN: nav</a>.</p>
+          <div class="oc-section-content">
+            <h3 class="oc-section-content__title">Source files</h3>
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+              <tbody>
+                <tr><td><code>packages/ui/src/components.css</code></td><td>Styles</td></tr>
+                <tr><td><code>packages/ui/snippets/pagination.html</code></td><td>Copy-paste markup</td></tr>
+                <tr><td><code>packages/react/src/components/Pagination.tsx</code> / <code>packages/vue/src/components/OcPagination.vue</code></td><td>Wrappers</td></tr>
+                <tr><td><code>resources/views/components/pagination.blade.php</code></td><td>Laravel: <code>&lt;x-oc::pagination&gt;</code></td></tr>
+              </tbody>
+            </table>
+            <h3 class="oc-section-content__title">Related pages</h3>
+            <p class="oc-section-content__desc"><a class="source-link" href="breadcrumb.html">Breadcrumb</a> · <a class="source-link" href="table.html">Table</a> · <a class="source-link" href="data-table.html">Data table</a></p>
+          </div>
+        </div>
       </section>
