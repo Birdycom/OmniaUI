@@ -44,7 +44,7 @@ export const MediaRow = forwardRef<HTMLLIElement, MediaRowProps>(function MediaR
       </div>
       {menu != null && (
         <>
-          <button type="button" className="oc-media-row__menu" aria-label="More actions" {...attrs({ popovertarget: menuId })}>&#8942;</button>
+          <button type="button" className="oc-media-row__menu" aria-label="More actions" popoverTarget={menuId}>&#8942;</button>
           <div className="oc-dropdown-menu" id={menuId} {...attrs({ popover: "" })}>{menu}</div>
         </>
       )}

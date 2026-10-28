@@ -75,4 +75,12 @@ class MediaComponentsTest extends TestCase
         $this->assertStringContainsString('class="oc-browser-frame oc-browser-frame--dark"', $frame);
         $this->assertStringContainsString('<span class="oc-browser-frame__address">example.com</span>', $frame);
     }
+
+    public function test_lightbox_prints_its_script_once(): void
+    {
+        $html = $this->render('<x-oc::lightbox id="a" :images="[[\'alt\' => \'A\']]" /><x-oc::lightbox id="b" :images="[[\'alt\' => \'B\']]" />');
+
+        $this->assertSame(1, substr_count($html, 'dialog.oc-lightbox a.oc-lightbox__nav'));
+        $this->assertStringContainsString('history.replaceState', $html);
+    }
 }

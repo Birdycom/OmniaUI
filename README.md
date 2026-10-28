@@ -1,16 +1,34 @@
-<!-- File: README.md | Map: intro -> version -> packages -> install -> Pro -> dev workflow -> vendored OmniaCSS -> PHP -> recent changes -->
+<!-- File: README.md | Map: intro -> badges -> version -> showcase -> packages -> install -> Pro -> dev workflow -> vendored OmniaCSS -> PHP -> recent changes -->
 # OmniaUI
 
 CSS-first components and blocks, built on the utilities of [OmniaCSS](https://omniacss.eu).
 As little JavaScript as possible: popover, dialog, details, `:has()` and anchor positioning do the work.
 Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same markup and `oc-` classes.
 
-[![npm](https://img.shields.io/npm/v/@birdycom/omniaui?label=%40birdycom%2Fomniaui)](https://www.npmjs.com/package/@birdycom/omniaui)
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![npm](https://img.shields.io/npm/v/@birdycom/omniaui.svg?label=npm&color=blue)](https://www.npmjs.com/package/@birdycom/omniaui)
+[![(UI) Build and Test](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/ci.yml?branch=main&label=%28UI%29%20Build%20and%20Test&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/ci.yml)
+[![(npm) Release](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/release.yml?label=%28npm%29%20Release&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/release.yml)
+[![(Packagist) Laravel](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/split-php.yml?label=%28Packagist%29%20Laravel&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/split-php.yml)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Version:** `0.11.2` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.12.0` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
+
+## Showcase
+
+A short tour: the homepage, the components gallery, a component page (tooltip placement with anchor positioning),
+the data table, the blocks gallery in dark mode, a Pro block (CMS dashboard) and OmniaUI Pro.
+
+![Tour of omniaui.eu: components, blocks and Pro](docs/readme/omniaui-tour.gif)
+
+| | |
+|---|---|
+| ![OmniaUI homepage](docs/readme/omniaui-home.png) | ![Components gallery](docs/readme/omniaui-components.png) |
+| Homepage | Components gallery: every component with its `npx omniaui add` command |
+| ![Blocks gallery in dark mode](docs/readme/omniaui-blocks-dark.png) | ![OmniaUI Pro](docs/readme/omniaui-pro.png) |
+| Blocks gallery in dark mode, Pro blocks marked | OmniaUI Pro: app blocks with a commercial license |
 
 ## Packages
 
@@ -104,6 +122,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.12.0` | 2026-10-28 | Tooltip met anchor positioning, titel en plaatsing; Pro-blocks infinite carousel en pricing plans; carousel-lus; schone URL's; favicons en SEO; lightbox- en kleurfixes |
 | `0.11.2` | 2026-10-28 | mobiel site-header-menu, leesbare accenttekst in dark mode, minify behoudt scroll-animaties |
 | `0.11.1` | 2026-10-28 | docs layout, browser support and demo fixes |
 | `0.11.0` | 2026-10-24 | Chat, CMS dashboard and search in the docs |

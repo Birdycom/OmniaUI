@@ -44,7 +44,12 @@ const github = "M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9
   {meta.description && <meta name="description" content={meta.description.replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&amp;/g, "&")} />}
   <meta name="generator" content={`OmniaUI ${VERSION}`}>
   <title>{meta.title || "OmniaUI"}</title>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <!-- Favicon: SVG for modern browsers, ICO/PNG as fallback (Safari, Google, /favicon.ico). "icon": "pro" in the
+       page meta shows the OmniaUI Pro star instead of the OmniaUI puzzle piece. -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href={meta.icon === "pro" ? "/favicon-pro.svg" : "/favicon.svg"} type="image/svg+xml">
+  <link rel="apple-touch-icon" href={meta.icon === "pro" ? "/apple-touch-icon-pro.png" : "/apple-touch-icon.png"}>
+  <link rel="manifest" href="/site.webmanifest">
   {stylesheets.map((href) => <link rel="stylesheet" href={href}>)}
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script is:inline>
@@ -66,7 +71,7 @@ const github = "M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9
   <header class:list={["oc-topbar", { "oc-topbar--fixed": isSidebar }]}>
     {isSidebar && <input type="checkbox" id="ocd-nav-toggle" class="ocd-nav-toggle" aria-label="Show the menu" />}
     {isSidebar && <label class="ocd-nav-button" for="ocd-nav-toggle" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></label>}
-    <a class="oc-topbar-brand" href="/index.html">OmniaUI<span class="oc-badge-version ml-1">v{VERSION}</span></a>
+    <a class:list={["oc-topbar-brand", { "oc-topbar-brand--pro": meta.icon === "pro" }]} href="/index.html">OmniaUI<span class="oc-badge-version ml-1">v{VERSION}</span></a>
     <nav class="oc-topbar-nav" aria-label="Main">
       <ul class="oc-navmenu oc-navmenu--site">
         {HEADER_LINKS.map((link) => (

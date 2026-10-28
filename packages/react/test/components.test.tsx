@@ -19,8 +19,38 @@ import {
   Stepper,
   Toast,
   ToastProvider,
+  Tooltip,
   useToast,
 } from "../src";
+
+describe("Tooltip", () => {
+  it("puts the text in data-tooltip and adds the multiline modifier only when asked", () => {
+    const { container, rerender } = render(<Tooltip content="Saved">x</Tooltip>);
+    const tip = container.firstElementChild!;
+    expect(tip.className).toBe("oc-tooltip");
+    expect(tip).toHaveAttribute("data-tooltip", "Saved");
+    rerender(<Tooltip content={"Red\nHEX: #FF0000"} multiline>x</Tooltip>);
+    expect(tip).toHaveClass("oc-tooltip", "oc-tooltip--multiline");
+    expect(tip.getAttribute("data-tooltip")).toBe("Red\nHEX: #FF0000");
+  });
+
+  it("renders a title above the lines with heading, without data-tooltip", () => {
+    const { container } = render(<Tooltip content={"HEX: #FF0000"} heading="red">x</Tooltip>);
+    const tip = container.firstElementChild!;
+    expect(tip).not.toHaveAttribute("data-tooltip");
+    const content = tip.querySelector(".oc-tooltip__content")!;
+    expect(content).toHaveAttribute("role", "tooltip");
+    expect(content.querySelector(".oc-tooltip__title")).toHaveTextContent("red");
+    expect(content).toHaveTextContent("redHEX: #FF0000");
+  });
+
+  it("adds the side modifier, except for the default top", () => {
+    const { container, rerender } = render(<Tooltip content="Hi" side="right">x</Tooltip>);
+    expect(container.firstElementChild).toHaveClass("oc-tooltip--right");
+    rerender(<Tooltip content="Hi" side="top">x</Tooltip>);
+    expect(container.firstElementChild!.className).toBe("oc-tooltip");
+  });
+});
 
 describe("Button", () => {
   it("renders the default variant with the base class only", () => {

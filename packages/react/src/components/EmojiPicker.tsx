@@ -65,7 +65,7 @@ export const EmojiPicker = forwardRef<HTMLDivElement, EmojiPickerProps>(function
   if (inline) return panel;
   return (
     <>
-      <button type="button" className="oc-emoji-picker__trigger" aria-label={triggerLabel} {...attrs({ popovertarget: panelId })}>{trigger}</button>
+      <button type="button" className="oc-emoji-picker__trigger" aria-label={triggerLabel} popoverTarget={panelId}>{trigger}</button>
       {panel}
     </>
   );

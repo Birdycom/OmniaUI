@@ -773,6 +773,46 @@
 /* Full window height (stand-alone error page). */
 .oc-block-statuspage--full { min-block-size: 100dvh; }
 
+/* parts/site-infinite-carousel.css */
+/* File: packages/pro/src/parts/site-infinite-carousel.css
+   Map: block (head + carousel) -> slides (card: art, text) -> copies (no dots) -> buttons -> per view
+   Infinite carousel: the free .oc-carousel with a continuous loop (infinite-carousel.js copies the slides to both
+   sides and jumps back unseen), so after the last slide the first one slides in from the right. Omnia tokens only. */
+
+/* minmax(0, 1fr): the column must not grow to the width of all slides (the viewport scrolls them). */
+.oc-block-carousel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+.oc-block-carousel-head { display: grid; gap: 0.35rem; }
+.oc-block-carousel-title { margin: 0; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); font-weight: 700; letter-spacing: -0.02em; }
+.oc-block-carousel-lead { margin: 0; color: var(--oc-muted-foreground); }
+
+/* Slides snap to their start, so one step is exactly one slide (with --halves / --thirds too). */
+.oc-block-carousel .oc-carousel-item { scroll-snap-align: start; }
+
+/* A slide: art (or a photo) with a caption under it. */
+.oc-block-carousel-card {
+  display: grid;
+  overflow: hidden;
+  block-size: 100%;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg, var(--oc-radius));
+  background: var(--oc-card);
+  color: var(--oc-card-foreground, var(--oc-foreground));
+}
+.oc-block-carousel-card > :is(img, .oc-media-art) { display: block; inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.oc-block-carousel-card-body { display: grid; gap: 0.25rem; padding: 0.9rem 1.1rem 1.1rem; }
+.oc-block-carousel-card-title { margin: 0; font-size: 1.05rem; font-weight: 700; }
+.oc-block-carousel-card-text { margin: 0; color: var(--oc-muted-foreground); font-size: 0.9rem; }
+
+/* The copies made by the script get no dot of their own. */
+.oc-carousel-clone::scroll-marker { content: none; }
+
+/* The loop needs the script: until it has run (data-oc-infinite) the CSS arrows of the free carousel stay. */
+.oc-block-carousel:not([data-oc-infinite]) :is(.oc-carousel-prev, .oc-carousel-next) { display: none; }
+@supports selector(::scroll-button(inline-start)) {
+  .oc-block-carousel[data-oc-infinite] .oc-carousel-viewport::scroll-button(inline-start),
+  .oc-block-carousel[data-oc-infinite] .oc-carousel-viewport::scroll-button(inline-end) { content: none; }
+}
+
 /* parts/site-masonry-gallery.css */
 /* File: packages/pro/src/parts/site-masonry-gallery.css
    Map: section -> head + filter -> grid (columns, grid-lanes when supported) -> item (image, caption on hover/focus)
@@ -856,6 +896,106 @@
 
 @media (prefers-reduced-motion: reduce) {
   .oc-block-masonry-item > :is(img, .oc-media-art), .oc-block-masonry-caption { transition: none; }
+}
+
+/* parts/site-pricing-plans.css */
+/* File: packages/pro/src/parts/site-pricing-plans.css
+   Map: block -> head (eyebrow, title, lead) -> offer -> grid of price cards -> ribbon on the featured card -> note -> help
+   Pricing plans: the license pricing of omniaui.eu as a block, built from the free .oc-price-card (yearly / lifetime
+   switch per card with radios + :has(), no JavaScript). Omnia tokens only. */
+
+.oc-block-plans { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+
+.oc-block-plans-head { display: grid; gap: 0.5rem; max-inline-size: 42rem; }
+.oc-block-plans-eyebrow {
+  margin: 0;
+  color: light-dark(var(--oc-primary), oklch(from var(--oc-primary) max(l, 0.72) c h));
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.oc-block-plans-title { margin: 0; font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.3rem); font-weight: 800; letter-spacing: -0.025em; text-wrap: balance; }
+.oc-block-plans-lead { margin: 0; color: var(--oc-muted-foreground); font-size: 1.05rem; text-wrap: pretty; }
+
+.oc-block-plans-offer,
+.oc-block-plans-help { margin: 0; }
+
+/* Stacked on narrow screens; from 40rem all plans side by side in one row (never a lone card on a second row). */
+.oc-block-plans-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: stretch;
+}
+@container (min-width: 40rem) {
+  .oc-block-plans-grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+}
+.oc-block-plans-grid > .oc-price-card { position: relative; }
+/* The call to action sits at the bottom, so the buttons of all cards line up. */
+.oc-block-plans-grid .oc-price-card__cta { margin-block-start: auto; }
+
+/* "Most popular" tab on the top edge of the featured card. */
+.oc-block-plans-ribbon {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--oc-accent-from), var(--oc-accent-to));
+  color: var(--color-white-50);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px -8px var(--oc-accent-from);
+}
+
+.oc-block-plans-note { margin: 0; color: var(--oc-muted-foreground); font-size: 0.85rem; text-align: center; }
+
+/* Free or Pro: comparison table under the cards. Rows in groups (th[colspan] in a .oc-block-plans-compare-group row);
+   a cell holds text, or a mark: .oc-block-plans-yes / -no with the words "Included" / "Not included" inside for
+   screen readers (hidden visually). The wrapper scrolls sideways on narrow screens. */
+/* min-inline-size: 0 + max-inline-size: 100%: as a grid or flex item it must not grow to the width of the table.
+   position: relative keeps the hidden screen-reader words (position: absolute) inside it, not on the page. */
+.oc-block-plans-compare-wrap { position: relative; min-inline-size: 0; max-inline-size: 100%; overflow-x: auto; border: 1px solid var(--oc-border); border-radius: var(--oc-radius-lg, var(--oc-radius)); }
+.oc-block-plans-compare { inline-size: 100%; min-inline-size: 34rem; border-collapse: collapse; font-size: 0.92rem; }
+.oc-block-plans-compare :is(th, td) { padding: 0.65rem 1rem; border-block-end: 1px solid var(--oc-border); text-align: start; vertical-align: top; }
+.oc-block-plans-compare tbody tr:last-child > :is(th, td) { border-block-end: 0; }
+.oc-block-plans-compare :is(th, td):not(:first-child) { inline-size: 22%; text-align: center; }
+.oc-block-plans-compare thead th { background: var(--oc-muted); font-weight: 700; }
+.oc-block-plans-compare tbody th { font-weight: 500; }
+.oc-block-plans-compare-group > th {
+  padding-block: 0.9rem 0.4rem;
+  background: color-mix(in oklch, var(--oc-muted) 55%, transparent);
+  color: var(--oc-muted-foreground);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: start;
+  text-transform: uppercase;
+}
+.oc-block-plans-yes,
+.oc-block-plans-no { display: inline-grid; place-items: center; inline-size: 1.4rem; block-size: 1.4rem; border-radius: 50%; font-weight: 700; }
+.oc-block-plans-yes { background: color-mix(in oklch, var(--oc-success) 16%, transparent); color: var(--oc-success); }
+.oc-block-plans-yes::before { content: "✓"; }
+.oc-block-plans-no { color: var(--oc-muted-foreground); }
+.oc-block-plans-no::before { content: "–"; }
+.oc-block-plans-yes > span,
+.oc-block-plans-no > span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* The caption names the table for screen readers; the section heading already says it on screen. */
+.oc-block-plans-compare-caption { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Same rows in every card (subgrid): name, description, switch, price, features, button line up across the cards,
+   also when a card has no switch (Free) or a shorter description. A missing part leaves its row empty. */
+@supports (grid-template-rows: subgrid) {
+  .oc-block-plans-grid > .oc-price-card { display: grid; grid-row: span 6; grid-template-rows: subgrid; row-gap: 1rem; }
+  .oc-block-plans-grid > .oc-price-card > .oc-price-card__head { grid-row: 1; }
+  .oc-block-plans-grid > .oc-price-card > .oc-price-card__desc { grid-row: 2; }
+  .oc-block-plans-grid > .oc-price-card > .oc-price-card__toggle { grid-row: 3; justify-self: start; align-self: start; }
+  .oc-block-plans-grid > .oc-price-card > .oc-price-card__price { grid-row: 4; }
+  .oc-block-plans-grid > .oc-price-card > .oc-price-card__features { grid-row: 5; }
+  .oc-block-plans-grid > .oc-price-card > .oc-price-card__cta { grid-row: 6; align-self: end; }
 }
 
 /* parts/site-services-tabs.css */

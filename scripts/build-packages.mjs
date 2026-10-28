@@ -82,6 +82,8 @@ async function main() {
   // List-table behaviour. The docs page loads /js/oc-data-table.js (the name turns auto-start on).
   await fs.mkdir(r("public/js"), { recursive: true });
   await fs.copyFile(r("packages/ui/src/data-table.js"), r("public/js/oc-data-table.js"));
+  // Looping carousel (.oc-carousel--loop): the docs page loads /js/oc-carousel.js (the name turns auto-start on).
+  await fs.copyFile(r("packages/ui/src/carousel.js"), r("public/js/oc-carousel.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
 

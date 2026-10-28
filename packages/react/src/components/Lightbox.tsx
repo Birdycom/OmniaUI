@@ -43,6 +43,20 @@ export const Lightbox = forwardRef<HTMLDialogElement, LightboxProps>(function Li
   const single = images.length === 1;
   const slideId = (i: number) => `${base}-${((i % images.length) + images.length) % images.length + 1}`;
 
+  // Prev / next stay links (they work without JavaScript), but scroll without putting #slide in the address and the
+  // history; on close a slide hash of this viewer is removed (it was there when the links were followed natively).
+  const go = (i: number) => (e: { preventDefault(): void }) => {
+    const slide = document.getElementById(slideId(i));
+    if (!slide) return;
+    e.preventDefault();
+    slide.scrollIntoView?.({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" as ScrollBehavior : "smooth", block: "nearest", inline: "center" });
+  };
+  const onClose: typeof dlg.onClose = (...args) => {
+    const slide = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (slide && inner.current?.contains(slide)) history.replaceState(history.state, "", location.pathname + location.search);
+    return dlg.onClose(...args);
+  };
+
   // After opening: jump (without animation) to the photo that was clicked.
   useEffect(() => {
     if (dlg.open) document.getElementById(slideId(start))?.scrollIntoView?.({ behavior: "instant" as ScrollBehavior, block: "nearest", inline: "center" });
@@ -60,7 +74,7 @@ export const Lightbox = forwardRef<HTMLDialogElement, LightboxProps>(function Li
           ))}
         </div>
       )}
-      <dialog ref={ref} className={cx("oc-lightbox", single && "oc-lightbox--single", className)} aria-label={label} {...attrs({ closedby: "any" })} {...rest} onClose={dlg.onClose}>
+      <dialog ref={ref} className={cx("oc-lightbox", single && "oc-lightbox--single", className)} aria-label={label} {...attrs({ closedby: "any" })} {...rest} onClose={onClose}>
         <div className="oc-lightbox__bar">
           {title != null ? <h2 className="oc-lightbox__title">{title}</h2> : <span />}
           <button type="button" className="oc-lightbox__close" aria-label="Close" onClick={dlg.close}>&#10005;</button>
@@ -69,8 +83,8 @@ export const Lightbox = forwardRef<HTMLDialogElement, LightboxProps>(function Li
           {images.map((img, i) => (
             <figure key={i} className="oc-lightbox__slide" id={slideId(i)}>
               <div className="oc-lightbox__media">{media(img, img.src)}</div>
-              {!single && <a className="oc-lightbox__nav oc-lightbox__nav--prev" href={`#${slideId(i - 1)}`} aria-label="Previous photo">&#8592;</a>}
-              {!single && <a className="oc-lightbox__nav oc-lightbox__nav--next" href={`#${slideId(i + 1)}`} aria-label="Next photo">&#8594;</a>}
+              {!single && <a className="oc-lightbox__nav oc-lightbox__nav--prev" href={`#${slideId(i - 1)}`} onClick={go(i - 1)} aria-label="Previous photo">&#8592;</a>}
+              {!single && <a className="oc-lightbox__nav oc-lightbox__nav--next" href={`#${slideId(i + 1)}`} onClick={go(i + 1)} aria-label="Next photo">&#8594;</a>}
               <figcaption className="oc-lightbox__caption">
                 {!single && <span className="oc-lightbox__counter">{i + 1} / {images.length}</span>} {img.caption ?? img.alt}
               </figcaption>

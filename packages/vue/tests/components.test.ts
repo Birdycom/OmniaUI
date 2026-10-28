@@ -16,6 +16,7 @@ import {
   OcTable,
   OcTagInput,
   OcToastContainer,
+  OcTooltip,
   useToast,
 } from '../src'
 
@@ -245,5 +246,27 @@ describe('navigation', () => {
     const trigger = w.find('button.oc-navmenu-link--caret')
     expect(w.find('.oc-dropdown-menu').attributes('id')).toBe(trigger.attributes('popovertarget'))
     expect(w.find('.oc-dropdown-item').text()).toBe('Quotes')
+  })
+})
+
+describe('OcTooltip', () => {
+  it('puts the text in data-tooltip and adds the multiline modifier only when asked', () => {
+    const plain = mount(OcTooltip, { props: { text: 'Saved' }, slots: { default: 'x' } })
+    expect(plain.attributes('class')).toBe('oc-tooltip')
+    expect(plain.attributes('data-tooltip')).toBe('Saved')
+    const multi = mount(OcTooltip, { props: { text: 'Red\nHEX: #FF0000', multiline: true }, slots: { default: 'x' } })
+    expect(multi.classes()).toEqual(['oc-tooltip', 'oc-tooltip--multiline'])
+  })
+
+  it('renders a title above the lines with heading, without data-tooltip', () => {
+    const tip = mount(OcTooltip, { props: { text: 'HEX: #FF0000', heading: 'red' }, slots: { default: 'x' } })
+    expect(tip.attributes('data-tooltip')).toBeUndefined()
+    expect(tip.find('.oc-tooltip__content').attributes('role')).toBe('tooltip')
+    expect(tip.find('.oc-tooltip__title').text()).toBe('red')
+  })
+
+  it('adds the side modifier, except for the default top', () => {
+    expect(mount(OcTooltip, { props: { text: 'Hi', side: 'left' } }).classes()).toContain('oc-tooltip--left')
+    expect(mount(OcTooltip, { props: { text: 'Hi', side: 'top' } }).classes()).toEqual(['oc-tooltip'])
   })
 })

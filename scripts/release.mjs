@@ -81,6 +81,8 @@ const PHP_VERSION_FILES = {
   "php-packages/omniaui-laravel/src/OmniacssServiceProvider.php": [[/(const VERSION = ')[^']+(')/, `$1${version}$2`]],
   "php-packages/omniaui-laravel/config/omniacss.php": [[/(env\('OMNIACSS_VERSION', ')[^']+(')/, `$1${version}$2`]],
   "php-packages/omniaui-livewire/composer.json": [[/("birdycom\/omniaui-laravel": ")\^[^"]+(")/, `$1^${version}$2`], [/("birdycom\/omniaui-laravel": ")\d+\.\d+\.\d+(")/, `$1${version}$2`]],
+  "php-packages/omniaui-laravel/README.md": [[/(- Version: `)[^`]+(`)/, `$1${version}$2`]],
+  "php-packages/omniaui-livewire/README.md": [[/(- Version: `)[^`]+(`)/, `$1${version}$2`]],
 };
 for (const [file, rules] of Object.entries(PHP_VERSION_FILES)) {
   let text = await fs.readFile(path.join(root, file), "utf8");

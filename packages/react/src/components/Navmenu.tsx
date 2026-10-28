@@ -53,7 +53,7 @@ export const NavmenuDropdown = forwardRef<HTMLDivElement, NavmenuDropdownProps>(
   const menuId = id ?? `oc-navmenu-${auto.replace(/:/g, "")}`;
   return (
     <li>
-      <button className="oc-navmenu-link oc-navmenu-link--caret" type="button" {...attrs({ popovertarget: menuId })}>{label}</button>
+      <button className="oc-navmenu-link oc-navmenu-link--caret" type="button" popoverTarget={menuId}>{label}</button>
       <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...attrs({ popover: "" })} {...rest}>
         {children}
       </div>

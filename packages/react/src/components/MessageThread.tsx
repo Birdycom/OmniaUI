@@ -131,7 +131,7 @@ export const MessageThread = forwardRef<HTMLElement, MessageThreadProps>(functio
             {status && <span className={cx("oc-badge", status.variant && `oc-badge--${status.variant}`)}>{status.label}</span>}
             {menu && (
               <>
-                <button type="button" className="oc-message-thread__icon-btn" {...attrs({ popovertarget: `${base}-menu` })} aria-label="Conversation actions">
+                <button type="button" className="oc-message-thread__icon-btn" popoverTarget={`${base}-menu`} aria-label="Conversation actions">
                   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="12" cy="19" r="1.8" /></svg>
                 </button>
                 <div className="oc-dropdown-menu" id={`${base}-menu`} {...attrs({ popover: "" })} role="menu">
