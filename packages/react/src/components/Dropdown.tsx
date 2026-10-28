@@ -12,7 +12,7 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /**
- * Trigger button + `<div class="oc-dropdown-menu" popover>`, wired with `popovertarget`
+ * Trigger button + `<div class="oc-dropdown-menu" popover>`, wired with `popoverTarget`
  * (native popover and anchor positioning, no state needed).
  */
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropdown(
@@ -23,7 +23,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
   const menuId = id ?? `oc-menu-${auto.replace(/:/g, "")}`;
   return (
     <>
-      <Button variant="outline" {...triggerProps} {...attrs({ popovertarget: menuId })}>{trigger}</Button>
+      <Button variant="outline" {...triggerProps} popoverTarget={menuId}>{trigger}</Button>
       <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...attrs({ popover: "" })} {...rest}>
         {children}
       </div>

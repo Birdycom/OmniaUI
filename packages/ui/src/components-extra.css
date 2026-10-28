@@ -503,6 +503,45 @@ a.oc-item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px
   .oc-carousel-viewport::scroll-button(inline-end):disabled { opacity: 0.35; cursor: default; }
 }
 
+/* Loop (.oc-carousel--loop): after the last slide comes the first again. CSS scroll buttons stop at the ends, so this
+   variant has two real buttons (.oc-carousel-prev / .oc-carousel-next) driven by carousel.js; swipe, snap, dots and
+   keyboard stay CSS. Until the script has run (data-oc-loop), the buttons stay hidden and the CSS arrows remain. */
+.oc-carousel-prev,
+.oc-carousel-next {
+  position: absolute;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  z-index: 1;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-size: 1rem;
+  color: var(--oc-foreground);
+  background: var(--oc-background);
+  border: 1px solid var(--oc-border);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px oklch(from var(--color-black-60) l c h / 0.18);
+  cursor: pointer;
+}
+.oc-carousel-prev { inset-inline-start: 0.5rem; }
+.oc-carousel-next { inset-inline-end: 0.5rem; }
+.oc-carousel-prev:hover,
+.oc-carousel-next:hover { background: var(--oc-accent); }
+.oc-carousel-prev:focus-visible,
+.oc-carousel-next:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-carousel--loop:not([data-oc-loop]) :is(.oc-carousel-prev, .oc-carousel-next) { display: none; }
+/* Centered on the viewport, not on the carousel with its dots underneath. */
+@supports (anchor-name: --a) {
+  .oc-carousel-prev,
+  .oc-carousel-next { position-anchor: --oc-carousel; inset-block-start: anchor(center); }
+}
+@supports selector(::scroll-button(inline-start)) {
+  .oc-carousel--loop[data-oc-loop] .oc-carousel-viewport::scroll-button(inline-start),
+  .oc-carousel--loop[data-oc-loop] .oc-carousel-viewport::scroll-button(inline-end) { content: none; }
+}
+
 /* ===================================================================
    RESIZABLE — split panes using the native CSS `resize` property (drag the grip in the corner of the resizable panel).
    A full-length drag handle between panes with keyboard support needs script: wrapper responsibility.

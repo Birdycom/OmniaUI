@@ -36,7 +36,7 @@ export const ColumnMenu = forwardRef<HTMLDivElement, ColumnMenuProps>(function C
     <div ref={ref} className={cx("oc-column-menu-scope", className)} {...rest}>
       <div className="oc-table-toolbar">
         <span className="oc-table-toolbar-spacer" />
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" {...attrs({ popovertarget: menuId })}>
+        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" popoverTarget={menuId}>
           {triggerLabel}
         </button>
       </div>

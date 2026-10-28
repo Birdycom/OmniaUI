@@ -45,7 +45,7 @@ export const TableActionsMenu = forwardRef<HTMLDivElement, TableActionsMenuProps
   const menuId = id ?? `oc-table-actions-menu-${auto.replace(/:/g, "")}`;
   return (
     <>
-      <button className="oc-table-actions-more" type="button" aria-label={label} {...attrs({ popovertarget: menuId })} />
+      <button className="oc-table-actions-more" type="button" aria-label={label} popoverTarget={menuId} />
       <div ref={ref} id={menuId} className={cx("oc-dropdown-menu", className)} {...attrs({ popover: "" })} {...rest}>
         {children}
       </div>

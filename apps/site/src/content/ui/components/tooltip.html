@@ -1,8 +1,8 @@
-<!--oc-page {"title": "OmniaUI - Tooltip", "category": "Overlays", "description": "A short hint above an element on hover and keyboard focus, from a data-tooltip attribute. No JavaScript.", "nav": "Tooltip", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
-<!-- File: apps/site/src/content/ui/components/tooltip.html | Map: hero -> demo (basic, icon buttons) -> reference -> frameworks -> browser support -> source footer -->
+<!--oc-page {"title": "OmniaUI - Tooltip", "category": "Overlays", "description": "A short hint next to an element on hover and keyboard focus, from a data-tooltip attribute, placed by CSS anchor positioning. No JavaScript.", "nav": "Tooltip", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/tooltip.html | Map: hero -> demo (basic, icon buttons, multiline, with a title, placement, automatic placement) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Tooltip</h1>
-        <p class="oc-hero-text">A short hint that appears above an element on hover and on keyboard focus. The text comes from the <code>data-tooltip</code> attribute and CSS draws it; no JavaScript. Keep it short and never put essential information only in a tooltip (touch screens have no hover). For richer content, use a <a href="hover-card.html">hover card</a> or a <a href="popover.html">popover</a>. <a href="../components.html">All components</a>.</p>
+        <p class="oc-hero-text">A short hint that appears next to an element (above by default) on hover and on keyboard focus. The text comes from the <code>data-tooltip</code> attribute and CSS draws it; no JavaScript. Keep it short and never put essential information only in a tooltip (touch screens have no hover). For richer content, use a <a href="hover-card.html">hover card</a> or a <a href="popover.html">popover</a>. <a href="../components.html">All components</a>.</p>
       </section>
 
       <section class="oc-docs-section" id="demo">
@@ -26,6 +26,58 @@
 <span class="oc-tooltip" data-tooltip="Duplicate"><button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" aria-label="Duplicate"><span class="font-1.2" aria-hidden="true">&#10697;</span></button></span>
 <span class="oc-tooltip" data-tooltip="Delete"><button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" aria-label="Delete"><span class="font-1.2" aria-hidden="true">&#128465;</span></button></span>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Multiline</h3>
+          <p class="oc-section-content__desc">Add <code>.oc-tooltip--multiline</code> and every line break in <code>data-tooltip</code> (<code>&amp;#10;</code> in HTML, <code>\n</code> in JavaScript) starts a new line.</p>
+          <oc-demo title="Tooltip - multiline">
+<div class="pt-8">
+  <span class="oc-tooltip oc-tooltip--multiline" data-tooltip="Autosave is on&#10;Last saved 2 minutes ago&#10;Ctrl S saves now">
+    <button class="oc-btn oc-btn--outline" type="button">Save status</button>
+  </span>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">With a title</h3>
+          <p class="oc-section-content__desc">For a title above the lines, put a <code>.oc-tooltip__content</code> inside the tooltip instead of <code>data-tooltip</code>, with a <code>.oc-tooltip__title</code>: a little larger, bold and always starting with a capital (<code>::first-letter</code>). A pseudo-element cannot style its own first line, so this needs a real element. The OmniaCSS <a href="https://omniacss.test/docs/colors/palettes.html">color palettes</a> use it for the color models of every swatch.</p>
+          <oc-demo title="Tooltip - with a title">
+<div class="pt-8">
+  <span class="oc-tooltip">
+    <button class="oc-btn oc-btn--outline" type="button">Red: color values</button>
+    <span class="oc-tooltip__content" role="tooltip"><span class="oc-tooltip__title">red</span>HEX: #FF0000
+RGB: 255 0 0
+HSL: 0deg 100% 50%
+OKLCH: 62.80% 0.2577 29.23deg
+OKLAB: 62.80% 0.2249 0.1258</span>
+  </span>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Placement</h3>
+          <p class="oc-section-content__desc">The default side is top. <code>.oc-tooltip--bottom</code>, <code>--left</code> and <code>--right</code> pick another preferred side.</p>
+          <oc-demo title="Tooltip - placement">
+<div class="contain-layout w-full flex gap-1 p-4 place-items-center">
+  <span class="oc-tooltip" data-tooltip="Top (default)"><button class="oc-btn oc-btn--outline" type="button">Top</button></span>
+  <span class="oc-tooltip oc-tooltip--bottom" data-tooltip="Bottom"><button class="oc-btn oc-btn--outline" type="button">Bottom</button></span>
+  <span class="oc-tooltip oc-tooltip--left" data-tooltip="Left"><button class="oc-btn oc-btn--outline" type="button">Left</button></span>
+  <span class="oc-tooltip oc-tooltip--right" data-tooltip="Right"><button class="oc-btn oc-btn--outline" type="button">Right</button></span>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Automatic placement</h3>
+          <p class="oc-section-content__desc">With CSS anchor positioning the tooltip is anchored to its element (<code>position-area</code>) and moves to the side that has room (<code>position-try-fallbacks: flip-block, flip-inline</code>): at the top of the window it shows below, at the right edge on the left. It is <code>position: fixed</code>, so a scrolling table or sidebar does not cut it off. The frame below has <code>.contain-layout</code>, which makes it the area the tooltip has to fit in: hover the buttons in its corners. Browsers without anchor positioning show it on the preferred side.</p>
+          <p class="oc-section-content__desc">Inside a scroll container other than the page itself (an app shell whose main area scrolls, like these docs), Chrome 156 picks the side as if that area were not scrolled. Put <code>.contain-layout</code> on the area that scrolls (or on a frame inside it): the tooltip then keeps its preferred side there and flips at that frame's edges.</p>
+          <oc-demo title="Tooltip - automatic placement">
+<div class="contain-layout w-full h-12 flex flex-col justify-between p-2 border border-solid border-gray-50 rounded-lg">
+  <div class="flex justify-between">
+    <span class="oc-tooltip" data-tooltip="No room above: shown below"><button class="oc-btn oc-btn--outline" type="button">Top left</button></span>
+    <span class="oc-tooltip oc-tooltip--right" data-tooltip="No room on the right: shown on the left"><button class="oc-btn oc-btn--outline" type="button">Top right</button></span>
+  </div>
+  <div class="flex justify-between">
+    <span class="oc-tooltip oc-tooltip--bottom" data-tooltip="No room below: shown above"><button class="oc-btn oc-btn--outline" type="button">Bottom left</button></span>
+    <span class="oc-tooltip oc-tooltip--left oc-tooltip--multiline" data-tooltip="Left is preferred&#10;and there is room"><button class="oc-btn oc-btn--outline" type="button">Bottom right</button></span>
+  </div>
+</div>
+          </oc-demo>
         </div>
       </section>
 
@@ -39,7 +91,12 @@
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>.oc-tooltip</code></td><td>Wrapper around the element that gets the hint.</td></tr>
-              <tr><td><code>data-tooltip="…"</code></td><td>The hint text, drawn above the element on <code>:hover</code> and <code>:focus-within</code>.</td></tr>
+              <tr><td><code>data-tooltip="…"</code></td><td>The hint text, drawn next to the element on <code>:hover</code> and <code>:focus-within</code>.</td></tr>
+              <tr><td><code>.oc-tooltip--bottom</code> / <code>--left</code> / <code>--right</code></td><td>Preferred side instead of top. With anchor positioning the tooltip flips to the opposite side (then the other axis) when there is no room.</td></tr>
+              <tr><td><code>.oc-tooltip--multiline</code></td><td>Keeps the line breaks of <code>data-tooltip</code>: one line each, up to 20rem wide, left-aligned.</td></tr>
+              <tr><td><code>.oc-tooltip__content</code></td><td>Child element instead of <code>data-tooltip</code> (give it <code>role="tooltip"</code>): same bubble and placement, line breaks kept.</td></tr>
+              <tr><td><code>.oc-tooltip__title</code></td><td>Title line inside <code>.oc-tooltip__content</code>: 0.875rem, bold, first letter always a capital.</td></tr>
+              <tr><td><code>--oc-tooltip-gap</code></td><td>Space between the element and the tooltip (default <code>8px</code>).</td></tr>
             </tbody>
           </table>
         </div>
@@ -56,7 +113,13 @@
 &lt;!-- Vue --&gt;
 &lt;OcTooltip text="Saved to your library"&gt;&lt;OcButton variant="outline"&gt;Hover me&lt;/OcButton&gt;&lt;/OcTooltip&gt;
 &lt;!-- Laravel Blade --&gt;
-&lt;x-oc::tooltip text="Saved to your library"&gt;&lt;x-oc::button variant="outline"&gt;Hover me&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;</oc-code>
+&lt;x-oc::tooltip text="Saved to your library"&gt;&lt;x-oc::button variant="outline"&gt;Hover me&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+&lt;!-- Multiline: the multiline prop (React, Vue) or :multiline="true" (Blade) --&gt;
+&lt;Tooltip content={"Autosave is on\nCtrl S saves now"} multiline&gt;&lt;Button variant="outline"&gt;Save status&lt;/Button&gt;&lt;/Tooltip&gt;
+&lt;!-- With a title: heading (React, Vue, Blade) renders .oc-tooltip__content and .oc-tooltip__title --&gt;
+&lt;Tooltip heading="red" content={"HEX: #FF0000\nRGB: 255 0 0"}&gt;&lt;Button variant="outline"&gt;Red&lt;/Button&gt;&lt;/Tooltip&gt;
+&lt;!-- Preferred side: side="bottom" | "left" | "right" (React, Vue, Blade) --&gt;
+&lt;OcTooltip text="Settings" side="right"&gt;&lt;OcButton variant="ghost"&gt;⚙&lt;/OcButton&gt;&lt;/OcTooltip&gt;</oc-code>
         </div>
       </section>
 
@@ -65,7 +128,7 @@
           <h2 class="oc-section-header__title">Browser support</h2>
         </div>
         <div class="oc-section-content">
-          <oc-compat features="css.types.attr css.selectors.after css.selectors.focus-within css.selectors.hover"></oc-compat>
+          <oc-compat features="css.types.attr css.selectors.after css.selectors.focus-within css.selectors.hover css.properties.position-area css.properties.position-try-fallbacks"></oc-compat>
         </div>
         <div class="oc-section-footer">
           <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>

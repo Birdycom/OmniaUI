@@ -29,7 +29,7 @@ export const BlockSiteHeader = forwardRef<HTMLElement, BlockSiteHeaderProps>(fun
     <header ref={ref} className={cx("oc-site-header", className)} {...rest}>
       <div className="oc-container oc-site-header__inner">
         <a className="oc-site-header__brand" href={brandHref}>{brand}</a>
-        <button className="oc-site-header__toggle" type="button" aria-label={menuLabel} {...attrs({ popovertarget: navId })}>&#9776;</button>
+        <button className="oc-site-header__toggle" type="button" aria-label={menuLabel} popoverTarget={navId}>&#9776;</button>
         <nav className="oc-site-header__nav" id={navId} aria-label="Main" {...attrs({ popover: "" })}>
           {links.map((l, i) => (
             <a key={i} href={l.href} aria-current={l.current ? "page" : undefined}>{l.label}</a>

@@ -52,6 +52,8 @@ function readPages(kind) {
       category: meta.category || (kind === "blocks" ? "Blocks" : "Components"),
       desc: desc && sentence(desc),
       demos: (src.match(/<oc-demo\b/g) || []).length,
+      // "0.12" from the first version badge (oc-badge-version "v0.12.0"): the release that brought the page.
+      minor: (src.match(/oc-badge-version">v(\d+\.\d+)\.\d+</) || [])[1] || "",
       // "all": an OmniaUI Pro block, "some": a family with Pro variants (meta "pro" of the page)
       pro: meta.pro || "",
     };
@@ -61,8 +63,11 @@ function readPages(kind) {
 function thumbnail(name) {
   const img = (n) => fs.existsSync(path.join(root, "public/img/blocks", n));
   if (!img(`${name}.jpg`)) return "";
-  const dark = img(`${name}-dark.jpg`) ? `<source srcset="/img/blocks/${name}-dark.jpg" media="(prefers-color-scheme: dark)">` : "";
-  return `<span class="gx-shot"><picture>${dark}<img src="/img/blocks/${name}.jpg" alt="" loading="lazy" decoding="async" width="640" height="400"></picture></span>`;
+  // Both images, CSS shows the one of the current site theme (the switch or data-theme, else the OS): a <picture>
+  // with prefers-color-scheme would follow the OS only. Lazy images that are not shown are not downloaded.
+  const tag = (file, cls) => `<img class="${cls}" src="/img/blocks/${file}" alt="" loading="lazy" decoding="async" width="640" height="400">`;
+  const dark = img(`${name}-dark.jpg`) ? tag(`${name}-dark.jpg`, "gx-dark") : "";
+  return `<span class="gx-shot${dark ? " gx-shot--themed" : ""}">${tag(`${name}.jpg`, "gx-light")}${dark}</span>`;
 }
 
 const tone = (t) => `--c: var(--color-${t}-60); --ci: light-dark(var(--color-${t}-60), var(--color-${t}-20))`;
@@ -89,6 +94,14 @@ const CSS = `
     .gx-card small { display: flex; justify-content: space-between; gap: 0.5rem; margin-block-start: 0.35rem; font: 500 0.7rem var(--ocd-mono); color: var(--oc-muted-foreground); }
     .gx-card small i { font-style: normal; color: var(--ci, var(--c)); }
     .gx-shot { margin: -1rem -1.1rem 0.4rem; aspect-ratio: 16 / 10; overflow: hidden; border-block-end: 1px solid var(--oc-border); background: var(--oc-muted); }
+    .gx-shot--themed .gx-dark { display: none; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]):not(:has(.oc-theme-switch input[value="light"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-light { display: none; }
+      :root:not([data-theme="light"]):not(:has(.oc-theme-switch input[value="light"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-dark { display: block; }
+    }
+    :root:is([data-theme="dark"], :has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-light { display: none; }
+    :root:is([data-theme="dark"], :has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-dark { display: block; }
+    .gx-new { position: absolute; inset: 0.6rem auto auto 0.6rem; z-index: 1; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-white-50); background: linear-gradient(135deg, var(--color-green-70), var(--color-teal-70)); }
     .gx-shot img { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; object-position: center; transition: scale 0.4s; }
     .gx-card:hover .gx-shot img { scale: 1.03; }
     .gx-pro { position: absolute; inset: 0.6rem 0.6rem auto auto; z-index: 1; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-primary-foreground); background: var(--ocd-accent); }
@@ -139,8 +152,14 @@ const KINDS = {
   },
 };
 
+// "New" = brought by the newest release that any page names (components and blocks together), so the badge moves
+// on by itself: once v0.13 pages exist, the v0.12 ones lose it.
+const byVersion = (a, b) => { const [x, y] = [a, b].map((v) => v.split(".").map(Number)); return x[0] - y[0] || x[1] - y[1]; };
+const newest = Object.keys(KINDS).flatMap((kind) => readPages(kind).map((p) => p.minor)).filter(Boolean).sort(byVersion).at(-1) || "";
+
 for (const [kind, k] of Object.entries(KINDS)) {
   const pages = readPages(kind);
+  const freshCount = pages.filter((p) => p.minor === newest).length;
   const titles = [...new Set(pages.map((p) => p.category))].sort(byCategoryOrder(k.categories));
   const groups = titles.map((title, i) => ({
     title,
@@ -148,14 +167,15 @@ for (const [kind, k] of Object.entries(KINDS)) {
     items: pages.filter((p) => p.category === title).sort((a, b) => a.title.localeCompare(b.title)),
   }));
   const card = (p, t) => {
+    const fresh = p.minor && p.minor === newest ? `<em class="gx-new">New</em>` : "";
     const cli = p.pro === "all" ? "" : addName(kind, p.name);
     const badge = p.pro ? `<em class="gx-pro">${p.pro === "all" ? "Pro" : "Free + Pro"}</em>` : "";
-    return `<a class="gx-card" href="${kind}/${p.name}.html" style="${tone(t)}">${kind === "blocks" ? thumbnail(p.name) : ""}${badge}<b>${esc(p.title)}</b><span>${p.desc}</span><small><i>${cli ? `omniaui add ${cli}` : p.pro === "all" ? "OmniaUI Pro" : ""}</i>${p.demos > 1 ? `<em>${p.demos} demos</em>` : ""}</small></a>`;
+    return `<a class="gx-card" href="${kind}/${p.name}.html" style="${tone(t)}">${kind === "blocks" ? thumbnail(p.name) : ""}${fresh}${badge}<b>${esc(p.title)}</b><span>${p.desc}</span><small><i>${cli ? `omniaui add ${cli}` : p.pro === "all" ? "OmniaUI Pro" : ""}</i>${p.demos > 1 ? `<em>${p.demos} demos</em>` : ""}</small></a>`;
   };
   const single = kind === "blocks" ? "block" : "component";
   const body = `<section class="oc-hero gx-hero" id="overview" data-oc-no-compat>
         ${k.hero}
-        <ul class="gx-stats"><li><b>${pages.length}</b>${kind}</li><li><b>${groups.length}</b>categories</li><li><b>4</b>flavours: HTML, Vue, React, Blade</li></ul>
+        <ul class="gx-stats"><li><b>${pages.length}</b>${kind}</li>${freshCount ? `<li><b>${freshCount}</b>new in v${newest}</li>` : ""}<li><b>${groups.length}</b>categories</li><li><b>4</b>flavours: HTML, Vue, React, Blade</li></ul>
         <nav class="gx-jump" aria-label="Categories">${groups.map((g) => `<a class="gx-chip" href="#${slug(g.title)}" style="${tone(g.tone)}">${esc(g.title)} <small>${g.items.length}</small></a>`).join("")}</nav>
       </section>
 

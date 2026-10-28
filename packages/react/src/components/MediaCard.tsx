@@ -38,7 +38,7 @@ export const MediaCard = forwardRef<HTMLElement, MediaCardProps>(function MediaC
           {meta != null && <p className="oc-media-card__meta">{meta}</p>}
         </div>
         {menu != null && (
-          <button type="button" className="oc-media-card__menu" aria-label="More actions" {...attrs({ popovertarget: menuId })}>&#8942;</button>
+          <button type="button" className="oc-media-card__menu" aria-label="More actions" popoverTarget={menuId}>&#8942;</button>
         )}
       </div>
       {menu != null && <div className="oc-dropdown-menu" id={menuId} {...attrs({ popover: "" })}>{menu}</div>}

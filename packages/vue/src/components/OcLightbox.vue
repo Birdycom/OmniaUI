@@ -2,7 +2,8 @@
 <script setup lang="ts">
 /**
  * Lightbox on a native <dialog> (same markup as snippets/lightbox.html). v-model:open controls it.
- * images: { src?, alt, caption?, thumb? }[] (no src = placeholder art). Prev / next are anchor links.
+ * images: { src?, alt, caption?, thumb? }[] (no src = placeholder art). Prev / next are anchor links; with JavaScript
+ * they scroll without putting #slide in the address, and closing removes a slide hash of this viewer.
  * Slot: caption (scoped: { image, index }). Classes: .oc-lightbox(--single), __bar, __title, __close, __track,
  * __slide, __media, __nav(--prev/--next), __caption, __counter; .oc-lightbox-thumbs / -thumb.
  */
@@ -16,7 +17,19 @@ const props = withDefaults(
 )
 const open = defineModel<boolean>('open', { default: false })
 const el = ref<HTMLDialogElement | null>(null)
-const { onClose } = useDialog(open, el)
+const { onClose: dialogClose } = useDialog(open, el)
+const onClose = () => {
+  const slide = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)))
+  if (slide && el.value?.contains(slide)) history.replaceState(history.state, '', location.pathname + location.search)
+  dialogClose()
+}
+// Prev / next: scroll to the slide without changing the address (the href still works without JavaScript).
+function go(event: MouseEvent, i: number) {
+  const slide = document.getElementById(slideId(i))
+  if (!slide) return
+  event.preventDefault()
+  slide.scrollIntoView?.({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' as ScrollBehavior : 'smooth', block: 'nearest', inline: 'center' })
+}
 const base = useUid('oc-lightbox')
 const n = () => props.images.length
 const slideId = (i: number) => `${base}-${((i % n()) + n()) % n() + 1}`
@@ -50,8 +63,8 @@ defineExpose({ show, close: () => (open.value = false) })
           <span v-else class="oc-media-art" role="img" :aria-label="img.alt" />
         </div>
         <template v-if="images.length > 1">
-          <a class="oc-lightbox__nav oc-lightbox__nav--prev" :href="`#${slideId(i - 1)}`" aria-label="Previous photo">&#8592;</a>
-          <a class="oc-lightbox__nav oc-lightbox__nav--next" :href="`#${slideId(i + 1)}`" aria-label="Next photo">&#8594;</a>
+          <a class="oc-lightbox__nav oc-lightbox__nav--prev" :href="`#${slideId(i - 1)}`" aria-label="Previous photo" @click="go($event, i - 1)">&#8592;</a>
+          <a class="oc-lightbox__nav oc-lightbox__nav--next" :href="`#${slideId(i + 1)}`" aria-label="Next photo" @click="go($event, i + 1)">&#8594;</a>
         </template>
         <figcaption class="oc-lightbox__caption">
           <span v-if="images.length > 1" class="oc-lightbox__counter">{{ i + 1 }} / {{ images.length }}</span>

@@ -49,6 +49,19 @@ document.addEventListener("command", (e) => {
   const id = e.source?.dataset.ocLightboxSlide;
   if (id) requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "instant", block: "nearest", inline: "center" }));
 }, true);
+// Optional: prev / next scroll without putting #slide in the address and the history (without this script they
+// are plain links), and closing removes a slide hash of this viewer from the address.
+document.addEventListener("click", (e) => {
+  const nav = e.target.closest?.("dialog.oc-lightbox a.oc-lightbox__nav");
+  const slide = nav && document.getElementById(decodeURIComponent(nav.hash.slice(1)));
+  if (!slide) return;
+  e.preventDefault();
+  slide.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "nearest", inline: "center" });
+});
+document.addEventListener("close", (e) => {
+  const slide = e.target.matches?.("dialog.oc-lightbox") && location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (slide && e.target.contains(slide)) history.replaceState(history.state, "", location.pathname + location.search);
+}, true);
 </script>
           </oc-demo>
         <h3 id="single" class="oc-section-content__title mt-2">Single image</h3><p class="oc-section-content__desc"><code>.oc-lightbox--single</code> hides the arrows and the counter. Handy for "click to enlarge" on a product photo.</p>

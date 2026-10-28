@@ -48,7 +48,9 @@
 .oc-btn--pill { border-radius: 999px; }
 .oc-btn--gradient {
   border-radius: 999px;
-  background: linear-gradient(100deg, var(--oc-accent-from), var(--oc-accent-to));
+  /* border-box: the gradient also runs under the transparent 1px border of .oc-btn; from the padding box it would
+     repeat in that border and show a thin stripe of the other end's color on both sides. */
+  background: linear-gradient(100deg, var(--oc-accent-from), var(--oc-accent-to)) border-box;
   color: var(--color-white-50);
   box-shadow: 0 10px 30px -10px var(--oc-accent-to);
   transition: transform 0.2s var(--oc-ease-out), box-shadow 0.2s;
@@ -238,16 +240,21 @@
   background: oklch(from var(--oc-accent-from) l c h / 0.14);
   color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
 }
+/* Pulse: the ring starts at --oc-status-dot-pulse-alpha of the accent and grows to --oc-status-dot-pulse-size.
+   --strong starts at the full accent with a wider ring. */
 .oc-status-dot {
+  --oc-status-dot-pulse-alpha: 0.6;
+  --oc-status-dot-pulse-size: 8px;
   inline-size: 0.5rem;
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--oc-accent-from);
   animation: oc-pulse 2s infinite;
 }
+.oc-status-dot--strong { --oc-status-dot-pulse-alpha: 1; --oc-status-dot-pulse-size: 10px; }
 @keyframes oc-pulse {
-  0% { box-shadow: 0 0 0 0 oklch(from var(--oc-accent-from) l c h / 0.6); }
-  70%, 100% { box-shadow: 0 0 0 8px transparent; }
+  0% { box-shadow: 0 0 0 0 oklch(from var(--oc-accent-from) l c h / var(--oc-status-dot-pulse-alpha)); }
+  70%, 100% { box-shadow: 0 0 0 var(--oc-status-dot-pulse-size) transparent; }
 }
 
 /* Stat strip: big numbers in a bordered row (pairs with .oc-counter for counting up) */
