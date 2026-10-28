@@ -34,11 +34,16 @@ async function parts(srcDir) {
   return Promise.all(files.map(async (f) => `/* parts/${f} */\n${await read(path.join(dir, f))}`));
 }
 
+// Browsers for minifying. Without targets lightningcss folds animation-timeline into the animation shorthand,
+// which Chrome rejects, so scroll-driven animations stop. Same list as the omniacss CLI (--minify).
+const v = (major, minor = 0) => (major << 16) | (minor << 8);
+const MINIFY_TARGETS = { chrome: v(123), edge: v(123), firefox: v(120), safari: v(17, 5), ios_saf: v(17, 5) };
+
 /** Write a CSS file and a minified copy next to it (<name>.min.css) for CDN use (jsDelivr/unpkg). */
 async function writeWithMin(file, css) {
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, css);
-  const { code } = transform({ filename: file, code: Buffer.from(css), minify: true });
+  const { code } = transform({ filename: file, code: Buffer.from(css), minify: true, targets: MINIFY_TARGETS });
   await fs.writeFile(file.replace(/\.css$/, ".min.css"), code);
   console.log("[packages]", path.relative(root, file), `(${css.length} bytes, min ${code.length} bytes)`);
 }
