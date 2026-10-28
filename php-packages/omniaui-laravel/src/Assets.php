@@ -30,12 +30,12 @@ final class Assets
     public const SOURCES = ['vite', 'cdn', 'public'];
 
     /**
-     * CDN URL for one package, e.g. https://cdn.jsdelivr.net/npm/@birdycom/omniaui@0.11.1/dist/components.min.css
+     * CDN URL for one package, e.g. https://cdn.jsdelivr.net/npm/@birdycom/omniaui@0.11.2/dist/components.min.css
      */
     public static function cdnUrl(string $package, ?string $version = null, ?string $base = null): string
     {
         $file = self::FILES[$package] ?? throw new \InvalidArgumentException("Unknown OmniaCSS package [{$package}].");
-        $version ??= (string) config('omniacss.version', '0.11.1');
+        $version ??= (string) config('omniacss.version', '0.11.2');
         $base ??= (string) config('omniacss.cdn.base', 'https://cdn.jsdelivr.net/npm');
 
         return rtrim($base, '/')."/".self::NPM[$package]."@{$version}/dist/{$file}";

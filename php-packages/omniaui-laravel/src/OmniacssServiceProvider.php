@@ -13,7 +13,7 @@ use Omniacss\Laravel\Console\PublishComponentsCommand;
 
 class OmniacssServiceProvider extends ServiceProvider
 {
-    public const VERSION = '0.11.1';
+    public const VERSION = '0.11.2';
 
     public function register(): void
     {
