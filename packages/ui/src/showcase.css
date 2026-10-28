@@ -4,7 +4,8 @@
         fact/tag/check lists -> site header -> site footer -> reveal on scroll */
 /* Showcase components — modern site/marketing building blocks, pure CSS (no JavaScript).
    Colors: Omnia palette tokens only (OKLCH), via the theme tokens of components.css.
-   Accent per element: --oc-accent-from / --oc-accent-to (or an .oc-accent--* preset). */
+   Accent per element: --oc-accent-from / --oc-accent-to (or an .oc-accent--* preset).
+   Accent as text color: in dark mode lifted to at least OKLCH L 0.72, so a dark custom accent stays readable. */
 
 :root {
   --oc-accent-from: var(--oc-brand-1);
@@ -173,7 +174,7 @@
   background:
     linear-gradient(135deg, oklch(from var(--oc-accent-from) l c h / 0.3), oklch(from var(--oc-accent-to) l c h / 0.18)),
     var(--oc-card);
-  color: var(--oc-accent-from);
+  color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
   font-size: calc(var(--oc-tile-size) * 0.45);
   line-height: 1;
 }
@@ -213,7 +214,7 @@
 }
 .oc-product-card__top { display: flex; justify-content: space-between; align-items: flex-start; margin-block-end: 0.75rem; }
 .oc-product-card__name { margin: 0; font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; }
-.oc-product-card__tagline { margin: 0; color: var(--oc-accent-from); font-weight: 600; font-size: 0.95rem; }
+.oc-product-card__tagline { margin: 0; color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); font-weight: 600; font-size: 0.95rem; }
 .oc-product-card__summary { margin: 0; color: var(--oc-muted-foreground); font-size: 0.95rem; flex-grow: 1; }
 .oc-product-card__more { display: inline-flex; align-items: center; gap: 0.4rem; margin-block-start: 0.75rem; font-weight: 600; font-size: 0.92rem; }
 .oc-product-card__more::after { content: "→"; transition: translate 0.25s var(--oc-ease-out); }
@@ -235,7 +236,7 @@
 .oc-pill--accent {
   border-color: oklch(from var(--oc-accent-from) l c h / 0.45);
   background: oklch(from var(--oc-accent-from) l c h / 0.14);
-  color: var(--oc-accent-from);
+  color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
 }
 .oc-status-dot {
   inline-size: 0.5rem;
@@ -277,7 +278,7 @@
     var(--oc-card);
 }
 .oc-spotlight__title { display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0 0.5rem; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.1; }
-.oc-spotlight__tagline { color: var(--oc-accent-from); font-size: 1.2rem; font-weight: 600; }
+.oc-spotlight__tagline { color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); font-size: 1.2rem; font-weight: 600; }
 .oc-spotlight__modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
 .oc-spotlight__modules > li { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius-md); background: var(--oc-surface); font-size: 0.95rem; }
 
@@ -352,9 +353,14 @@
 }
 @media (max-width: 860px) {
   .oc-site-header__toggle { display: block; }
+  /* The author rule display:flex above beats the UA rule that hides a closed popover. */
+  .oc-site-header__nav[popover]:not(:popover-open) { display: none; }
   .oc-site-header__nav[popover]:popover-open {
     position: fixed;
     inset: 4.5rem 0 auto;
+    /* The UA popover style sizes to fit-content; let inset span the full width. */
+    inline-size: auto;
+    block-size: auto;
     display: flex;
     flex-direction: column;
     align-items: stretch;
