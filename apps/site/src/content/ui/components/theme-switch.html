@@ -1,26 +1,58 @@
 <!--oc-page {"title": "OmniaUI - Theme switch", "category": "Docs UI", "description": "System / light / dark switch — CSS only (color-scheme + :has()).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/theme-switch.html | Map: hero -> demo (switch + sample card, remembering the choice) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
-  <h1 class="oc-hero-title">Theme switch</h1>
-  <p class="oc-hero-text">System / light / dark switch built with radio inputs, <code>color-scheme</code>, <code>light-dark()</code> tokens and <code>:has()</code> — the whole page follows without JavaScript.</p>
-</section>
+        <h1 class="oc-hero-title">Theme switch</h1>
+        <p class="oc-hero-text">A system / light / dark switch built with radio inputs, <code>color-scheme</code>, <code>light-dark()</code> tokens and <code>:has()</code>: the whole page follows without JavaScript. Inside an element with <code>.oc-theme-scope</code> the switch themes only that element, as in the demo below.</p>
+      </section>
 
-<section class="ocd-section" id="demo">
-  <h2 id="usage">Usage</h2>
-  <p class="oc-section-header__desc">Pick a theme: every component token is <code>light-dark(light, dark)</code>, so the page switches instantly. Use <code>&lt;html data-theme="light|dark"&gt;</code> for a fixed theme.</p>
-  <oc-demo title="Theme switch">
-    <fieldset class="oc-theme-switch" aria-label="Color theme">
-      <label><input type="radio" name="oc-theme" value="system" checked> System</label>
-      <label><input type="radio" name="oc-theme" value="light"> Light</label>
-      <label><input type="radio" name="oc-theme" value="dark"> Dark</label>
-    </fieldset>
-  </oc-demo>
-  <oc-code lang="css">/* shipped in components.css: pure CSS, no JavaScript */
-:root:has(.oc-theme-switch input[value="light"]:checked) { color-scheme: light; }
-:root:has(.oc-theme-switch input[value="dark"]:checked)  { color-scheme: dark; }</oc-code>
-  <h3 id="persistence">Remembering the choice</h3>
-  <p class="oc-section-header__desc">Switching is CSS-only. CSS alone cannot remember a choice between page loads, so persistence is an optional progressive enhancement: a few lines that store the selected value in <code>localStorage</code> and restore it as <code>data-theme</code> on load. Without them the page simply starts in "System" (the OS preference) again. The docs site uses exactly this enhancement.</p>
-  <oc-code lang="html">&lt;script&gt; /* optional: persistence only, the switch itself needs no JS */
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/theme-switch.html</span>
+          <p class="oc-section-header__desc">Pick a theme: the card next to the switch follows at once, because every token is <code>light-dark(light, dark)</code>. The demo is a theme scope, so the rest of this page keeps its own theme. The markup is also available as the snippet <code>packages/ui/snippets/theme-switch.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="Theme switch">
+<div style="display:grid;gap:1rem;justify-items:start;inline-size:min(100%, 24rem)">
+  <fieldset class="oc-theme-switch" aria-label="Color theme">
+    <label><input type="radio" name="oc-theme" value="system" checked> System</label>
+    <label><input type="radio" name="oc-theme" value="light"> Light</label>
+    <label><input type="radio" name="oc-theme" value="dark"> Dark</label>
+  </fieldset>
+  <div class="oc-card" style="inline-size:100%">
+    <div class="oc-card-header">
+      <h3 class="oc-card-title">Monthly report</h3>
+      <p class="oc-card-description">Follows the theme you pick.</p>
+    </div>
+    <div class="oc-card-content"><p class="oc-card-text">Revenue is up 12% compared with last month.</p></div>
+    <div class="oc-card-footer"><button type="button" class="oc-btn oc-btn--outline">Details</button><button type="button" class="oc-btn">Download</button></div>
+  </div>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Remembering the choice</h3>
+          <p class="oc-section-content__desc">Switching is CSS only, but CSS cannot remember a choice between page loads. Persistence is an optional enhancement: a few lines store the value in <code>localStorage</code> and restore it as <code>data-theme</code> on load. Without them the page starts in "System" (the OS preference). These docs use exactly this script.</p>
+          <oc-code lang="html">&lt;script&gt; /* optional: persistence only, the switch itself needs no JS */
   try { const t = localStorage.getItem("oc-theme"); if (t &amp;&amp; t !== "system") document.documentElement.dataset.theme = t; } catch {}
   addEventListener("change", (e) =&gt; { if (e.target.name === "oc-theme") try { localStorage.setItem("oc-theme", e.target.value); } catch {} });
 &lt;/script&gt;</oc-code>
-</section>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/components.css</code>. Colors are theme tokens, so everything follows light and dark mode.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-theme-switch</code></td><td>The segmented group (a <code>&lt;fieldset&gt;</code> with three radio labels).</td></tr>
+              <tr><td><code>input[name="oc-theme"]</code></td><td>Values <code>system</code>, <code>light</code> and <code>dark</code>. A checked <code>light</code> or <code>dark</code> sets <code>color-scheme</code> on <code>:root</code>.</td></tr>
+              <tr><td><code>.oc-theme-scope</code></td><td>On any element: a switch inside it themes only that element (previews, embedded widgets).</td></tr>
+              <tr><td><code>&lt;html data-theme="light|dark"&gt;</code></td><td>A fixed theme without a switch, or the value restored by the optional script.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>

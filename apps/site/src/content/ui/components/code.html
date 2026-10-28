@@ -1,71 +1,62 @@
-<!--oc-page {"title": "OmniaUI - Code block", "category": "Docs UI", "description": "Syntax-highlighted code display (<code>pre.code</code>, <code>oc-code-syntax.css</code>).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Code block", "category": "Docs UI", "description": "Syntax-highlighted code with line numbers (<code>.oc-code-block</code>, <code>pre.code-preview</code>).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/code.html | Map: hero -> demo (with line numbers, without, usage) -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Code block</h1>
-        <p class="oc-hero-text">Reusable syntax-highlighted code display. Use <code>pre.code</code> with <code>code</code> inside; the Code-block is part of <code>@birdycom/omniaui</code> (Omnia Dark theme, line numbers). The docs build highlights code ahead of time (no script in the page); in your own project wrap tokens in the same <code>.hl-*</code> spans or render them on the server. Same styling in docs, blocks and components. <a href="../../docs/code-syntax.html">Full reference in Docs</a>.</p>
-      </section>
-
-      <section class="oc-docs-section" id="reference">
-        <div class="oc-section-header">
-          <h2 class="oc-section-header__title">Reference</h2>
-          
-        </div>
-        <div class="oc-section-content">
-          <div class="oc-expandable-table">
-          <table class="oc-table-ref">
-            <thead><tr><th class="w-perc-1/3">Class / Variable</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>pre.code</code></td><td>Wrapper for the code block (dark bg, mono font)</td></tr>
-              <tr><td><code>.hl-tag</code> / <code>.tag</code></td><td>HTML tag names</td></tr>
-              <tr><td><code>.hl-attr</code> / <code>.attr</code></td><td>HTML attribute names</td></tr>
-              <tr><td><code>.hl-string</code> / <code>.val</code></td><td>Attribute values, strings</td></tr>
-              <tr><td><code>.hl-comment</code> / <code>.cmt</code></td><td>Comments</td></tr>
-              <tr><td><code>.hl-prop</code> / <code>.prop</code></td><td>CSS property names</td></tr>
-              <tr><td><code>.hl-value</code></td><td>CSS property values</td></tr>
-              <tr><td><code>.cls</code></td><td>Class names in code (e.g. CSS selector)</td></tr>
-              <tr><td><code>--oc-syntax-*</code></td><td>CSS variables for colors (bg, fg, tag, attr, string, keyword, etc.)</td></tr>
-            </tbody>
-          </table>
-          <div class="oc-expandable-table__wrap oc-expandable-table__wrap--full">
-            <button type="button" class="oc-btn oc-btn--secondary oc-expandable-table__trigger" aria-expanded="false">Show more</button>
-          </div>
-        </div>
-        </div>
+        <p class="oc-hero-text">Syntax-highlighted code with line numbers in the Omnia Dark theme, the same on light and dark pages. Tokens are wrapped in <code>.hl-*</code> spans ahead of time (at build time or on the server), so the page needs no highlighting script. <a href="../../docs/code-syntax.html">Full syntax theme in the OmniaCSS docs</a>.</p>
       </section>
 
       <section class="oc-docs-section" id="demo">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Demo</h2>
-          
-        <p class="oc-section-header__desc">Example HTML snippet with syntax highlighting. Tags, attributes and strings are wrapped in <code>.hl-*</code> spans while building, so the theme colors apply without JavaScript.</p>
+          <p class="oc-section-header__desc">Plain HTML and CSS: a gutter with line numbers next to <code>pre.code-preview</code>; the colors come from the <code>.hl-*</code> spans.</p>
         </div>
         <div class="oc-section-content">
-          <oc-code>&lt;div class="oc-block-hero"&gt;
-  &lt;span class="oc-block-hero-badge"&gt;New in v0.1.6&lt;/span&gt;
-  &lt;h1&gt;Build faster with OmniaCSS&lt;/h1&gt;
-  &lt;p&gt;A utility-first CSS framework.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--lg"&gt;Get started&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+          <oc-demo title="Code block">
+<div class="oc-code-block" style="inline-size:100%">
+  <pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4</pre>
+  <pre class="code-preview"><code><span class="hl-comment">&lt;!-- Primary action --&gt;</span>
+<span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span><span class="hl-tag">&gt;</span>
+  Save changes
+<span class="hl-tag">&lt;/button&gt;</span></code></pre>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">Without line numbers</h3>
+          <p class="oc-section-content__desc"><code>pre.code-preview</code> on its own gives the frame and colors without a gutter, for short inline examples.</p>
+          <oc-demo title="Code block - without line numbers">
+<pre class="code-preview" style="inline-size:100%;margin:0"><code><span class="hl-prop">color</span>: <span class="hl-value">var(--oc-primary)</span>;
+<span class="hl-prop">padding</span>: <span class="hl-number">0.5</span><span class="hl-unit">rem</span>;</code></pre>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2">In your own project</h3>
+          <p class="oc-section-content__desc">Load the stylesheet and wrap tokens in the same spans; escape <code>&lt;</code> and <code>&gt;</code> inside the code.</p>
+          <oc-code lang="html">&lt;link rel="stylesheet" href="node_modules/@birdycom/omniaui/dist/code-block.css"&gt;
+
+&lt;pre class="code-preview"&gt;&lt;code&gt;&lt;span class="hl-tag"&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Headline&lt;span class="hl-tag"&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</oc-code>
         </div>
       </section>
 
-      <section class="oc-docs-section" id="how-to-build">
+      <section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
-          <h2 class="oc-section-header__title">How to build this block</h2>
-          
-        <p class="oc-section-header__desc">Markup: <code>&lt;pre class="code"&gt;&lt;code&gt;...escaped HTML...&lt;/code&gt;&lt;/pre&gt;</code>. Use the component markup <code>.oc-code-block</code> → <code>.oc-code-block__gutter</code> + <code>pre.code-preview</code>, with <code>.hl-tag</code>, <code>.hl-attr</code>, <code>.hl-string</code> spans around the tokens.</p>
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/code-block.css</code>. The block always uses the dark syntax theme (<code>color-scheme: dark</code>), also on light pages.</p>
         </div>
         <div class="oc-section-content">
-          <oc-code>&lt;!-- CSS (in head) --&gt;
-&lt;link rel="stylesheet" href="path/to/oc-code-syntax.css"&gt;
-
-&lt;!-- Code block: escape &lt; &gt; as &amp;lt; &amp;gt; --&gt;
-&lt;pre class="code"&gt;&lt;code&gt;&amp;lt;div class="oc-block-hero"&amp;gt;
-  &amp;lt;span class="oc-block-hero-badge"&amp;gt;New&amp;lt;/span&amp;gt;
-  &amp;lt;h1&amp;gt;Headline&amp;lt;/h1&amp;gt;
-&amp;lt;/div&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-
-&lt;!-- No script needed: the spans are part of the markup --&gt;</oc-code>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / variable</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-code-block</code></td><td>Wrapper: gutter and code side by side, border and radius.</td></tr>
+              <tr><td><code>.oc-code-block__gutter</code></td><td>A <code>&lt;pre&gt;</code> with the line numbers (<code>aria-hidden</code>).</td></tr>
+              <tr><td><code>pre.code-preview</code></td><td>The code itself: monospace, keeps spaces and line breaks, scrolls sideways.</td></tr>
+              <tr><td><code>.hl-tag</code>, <code>.hl-attr</code>, <code>.hl-string</code>, <code>.hl-comment</code></td><td>HTML tokens.</td></tr>
+              <tr><td><code>.hl-prop</code>, <code>.hl-value</code>, <code>.hl-number</code>, <code>.hl-unit</code></td><td>CSS tokens.</td></tr>
+              <tr><td><code>.hl-keyword</code>, <code>.hl-variable</code>, <code>.hl-function</code>, <code>.hl-operator</code></td><td>Script tokens (JS, PHP, Python).</td></tr>
+              <tr><td><code>--oc-syntax-*</code></td><td>The theme colors (<code>--oc-syntax-bg</code>, <code>-fg</code>, <code>-tag</code>, <code>-string</code>, …), from Omnia palette tokens.</td></tr>
+              <tr><td><code>--oc-code-block-tab-size</code></td><td>Tab width (default 2).</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>

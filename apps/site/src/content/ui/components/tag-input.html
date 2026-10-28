@@ -2,18 +2,16 @@
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Tag input</h1>
         <p class="oc-hero-text">Chips (<code>.oc-tag</code>) can be used alone as labels. <code>.oc-tag-input</code> wraps chips and a text field in one bordered control. Adding on Enter and removing are handled by the wrapper component. <a href="../components.html">All components</a>.</p>
-      </section>
-
-      <section class="oc-docs-section" id="demo">
+      </section><section class="oc-docs-section" id="demo">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Demo</h2>
-          <p class="oc-section-header__desc">Plain HTML and CSS. Below: the markup that builds it, also available as the snippet <code>packages/ui/snippets/tag-input.html</code>.</p>
+          <p class="oc-section-header__desc">Plain HTML and CSS. Below: the markup that builds it, also available as the snippet <code>packages/ui/snippets/tag-input.html</code>. Type a tag and press Enter or a comma, click × to remove one, or pick a suggestion.</p>
         </div>
         <div class="oc-section-content">
           <oc-demo title="Tag input">
-<div class="oc-tag-input">
-  <span class="oc-tag">design <button class="oc-tag-remove" type="button" aria-label="Remove design">&times;</button></span>
-  <span class="oc-tag">internal <button class="oc-tag-remove" type="button" aria-label="Remove internal">&times;</button></span>
+<div class="oc-tag-input" data-name="tags[]">
+  <span class="oc-tag">design <button class="oc-tag-remove" type="button" aria-label="Remove design">×</button></span>
+  <span class="oc-tag">internal <button class="oc-tag-remove" type="button" aria-label="Remove internal">×</button></span>
   <input type="text" placeholder="Add tag..." aria-label="Add tag" list="oc-tag-options">
 </div>
 <div class="oc-tag-suggestions">
@@ -23,9 +21,7 @@
 </div>
           </oc-demo>
         </div>
-      </section>
-
-      <section class="oc-docs-section" id="reference">
+      </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Reference</h2>
           <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/components.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
@@ -40,5 +36,95 @@
               <tr><td><code>.oc-tag-suggestions</code></td><td>Row of suggestion buttons below the control</td></tr>
             </tbody>
           </table>
+        <h3 id="script" class="oc-section-content__title mt-2">Optional script</h3><p class="oc-section-content__desc">Plain HTML pages need this small listener (React, Vue and Livewire wrappers have the behaviour built in). One script handles every tag input on the page.</p>
+          <oc-code lang="html">&lt;script&gt;
+  // Tag input: Enter or comma adds a tag, × removes one, Backspace in the empty field removes the last one,
+  // a suggestion button adds its text. With data-name="tags[]" on .oc-tag-input every tag carries a hidden field.
+  (() =&gt; {
+    const field = (box) =&gt; box.querySelector("input:not([type=hidden])");
+    const tags = (box) =&gt; [...box.querySelectorAll(".oc-tag")];
+    const label = (tag) =&gt; tag.firstChild.textContent.trim();
+    const addTag = (box, text) =&gt; {
+      const value = text.trim().replace(/,+$/, "");
+      if (!value || tags(box).some((t) =&gt; label(t) === value)) return;
+      const tag = document.createElement("span");
+      tag.className = "oc-tag";
+      tag.append(`${value} `);
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "oc-tag-remove";
+      remove.setAttribute("aria-label", `Remove ${value}`);
+      remove.textContent = "×";
+      tag.append(remove);
+      if (box.dataset.name) {
+        const hidden = document.createElement("input");
+        hidden.type = "hidden"; hidden.name = box.dataset.name; hidden.value = value;
+        tag.append(hidden);
+      }
+      box.insertBefore(tag, field(box));
+    };
+    document.addEventListener("keydown", (e) =&gt; {
+      const box = e.target.closest?.(".oc-tag-input");
+      if (!box || e.target !== field(box)) return;
+      if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addTag(box, e.target.value); e.target.value = ""; }
+      else if (e.key === "Backspace" &amp;&amp; !e.target.value) tags(box).pop()?.remove();
+    });
+    document.addEventListener("click", (e) =&gt; {
+      const remove = e.target.closest?.(".oc-tag-remove");
+      if (remove) { const box = remove.closest(".oc-tag-input"); remove.closest(".oc-tag").remove(); field(box)?.focus(); return; }
+      const suggestion = e.target.closest?.(".oc-tag-suggestions button");
+      const box = suggestion?.closest(".oc-tag-suggestions").previousElementSibling;
+      if (box?.matches(".oc-tag-input")) addTag(box, suggestion.textContent);
+    });
+  })();
+&lt;/script&gt;</oc-code>
         </div>
       </section>
+
+      
+
+      
+
+      
+<script>
+  /* Demo behaviour: the same script as the optional script above. */
+  // Tag input: Enter or comma adds a tag, × removes one, Backspace in the empty field removes the last one,
+  // a suggestion button adds its text. With data-name="tags[]" on .oc-tag-input every tag carries a hidden field.
+  (() => {
+    const field = (box) => box.querySelector("input:not([type=hidden])");
+    const tags = (box) => [...box.querySelectorAll(".oc-tag")];
+    const label = (tag) => tag.firstChild.textContent.trim();
+    const addTag = (box, text) => {
+      const value = text.trim().replace(/,+$/, "");
+      if (!value || tags(box).some((t) => label(t) === value)) return;
+      const tag = document.createElement("span");
+      tag.className = "oc-tag";
+      tag.append(`${value} `);
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "oc-tag-remove";
+      remove.setAttribute("aria-label", `Remove ${value}`);
+      remove.textContent = "×";
+      tag.append(remove);
+      if (box.dataset.name) {
+        const hidden = document.createElement("input");
+        hidden.type = "hidden"; hidden.name = box.dataset.name; hidden.value = value;
+        tag.append(hidden);
+      }
+      box.insertBefore(tag, field(box));
+    };
+    document.addEventListener("keydown", (e) => {
+      const box = e.target.closest?.(".oc-tag-input");
+      if (!box || e.target !== field(box)) return;
+      if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addTag(box, e.target.value); e.target.value = ""; }
+      else if (e.key === "Backspace" && !e.target.value) tags(box).pop()?.remove();
+    });
+    document.addEventListener("click", (e) => {
+      const remove = e.target.closest?.(".oc-tag-remove");
+      if (remove) { const box = remove.closest(".oc-tag-input"); remove.closest(".oc-tag").remove(); field(box)?.focus(); return; }
+      const suggestion = e.target.closest?.(".oc-tag-suggestions button");
+      const box = suggestion?.closest(".oc-tag-suggestions").previousElementSibling;
+      if (box?.matches(".oc-tag-input")) addTag(box, suggestion.textContent);
+    });
+  })();
+</script>
