@@ -8,7 +8,7 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 [![npm](https://img.shields.io/npm/v/@birdycom/omniaui?label=%40birdycom%2Fomniaui)](https://www.npmjs.com/package/@birdycom/omniaui)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**Version:** `0.11.1` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.11.2` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
@@ -104,6 +104,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.11.2` | 2026-10-28 | mobiel site-header-menu, leesbare accenttekst in dark mode, minify behoudt scroll-animaties |
 | `0.11.1` | 2026-10-28 | docs layout, browser support and demo fixes |
 | `0.11.0` | 2026-10-24 | Chat, CMS dashboard and search in the docs |
 | `0.10.0` | 2026-10-23 | Form builder, media manager and cookie consent |
