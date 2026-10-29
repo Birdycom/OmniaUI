@@ -24,14 +24,14 @@ export const RELEASES = JSON.parse(fs.readFileSync(path.join(REPO, "docs/release
 // This is the ONLY place with its base URL. Change it here for production.
 export const OMNIACSS_URL = "https://omniacss.test";
 
+// The same menu, in the same order, as on omniacss.eu (apps/docs/src/lib/site.mjs in the OmniaCSS repo): a visitor
+// who moves between the two sites keeps every item in its place. Keep both lists equal.
 export const HEADER_LINKS = [
   { id: "home", label: "Home", href: "/index.html" },
+  { id: "docs", label: "Docs", href: `${OMNIACSS_URL}/docs/index.html` },
   { id: "components", label: "Components", href: "/ui/components.html" },
   { id: "blocks", label: "Blocks", href: "/ui/blocks.html" },
   { id: "webicons", label: "Webicons", href: "/ui/webicons.html" },
-  { id: "docs", label: "Docs", href: `${OMNIACSS_URL}/docs/index.html` },
-  // Back to the sister site: "Home" is the OmniaUI home, so the CSS framework needs its own link.
-  { id: "omniacss", label: "OmniaCSS", href: `${OMNIACSS_URL}/index.html` },
 ];
 
 // Header button to the Pro pricing (every page, so buyers find it without going through Blocks).
