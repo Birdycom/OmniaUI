@@ -1,0 +1,100 @@
+<!--oc-page {"title": "OmniaUI - Spotlight cards Block", "category": "Marketing", "description": "Product cards whose glow and border light follow the mouse.", "nav": "Spotlight cards", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": [], "pro": "all"}-->
+<!-- File: apps/site/src/content/ui/blocks/spotlight-cards.html | Map: hero -> demo -> how it works -> reference -> platform features -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Spotlight cards</h1>
+        <p class="oc-hero-text">Product cards with a light that follows the mouse: the glow moves over the card and the border lights up where the pointer is. It builds on the free <a href="showcase.html">product card</a> (<code>.oc-product-card</code>), whose glow sits still at the top. On touch screens, without the script and for people who asked for less motion the card behaves exactly like the free one. <a href="../blocks.html">All blocks</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-source oc-badge-source">Block</span>
+          <span class="oc-section-header__badge-file oc-badge-source-file">blocks/spotlight-cards.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.12.1</span>
+          <p class="oc-section-header__desc">Live block with the HTML that builds it. Move the mouse over the cards.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo pro title="Spotlight cards">
+<section class="oc-block-spotlight" aria-labelledby="oc-spotlight-title">
+  <div class="oc-block-spotlight-head">
+    <h2 class="oc-block-spotlight-title" id="oc-spotlight-title">Software we build</h2>
+    <p class="oc-block-spotlight-lead">Move the mouse over a card: the light follows you.</p>
+  </div>
+  <div class="oc-card-grid" data-oc-spotlight>
+    <a class="oc-product-card oc-product-card--spotlight oc-accent--blue" href="#">
+      <span class="oc-product-card__top"><span class="oc-pill oc-pill--accent">Business software</span></span>
+      <span class="oc-product-card__name">OmniaDesk</span>
+      <span class="oc-product-card__tagline">Quotes, invoices and Peppol</span>
+      <span class="oc-product-card__summary">Contacts, orders, subscriptions and bookkeeping in one place, for small companies.</span>
+      <span class="oc-product-card__more">Read more</span>
+    </a>
+    <a class="oc-product-card oc-product-card--spotlight oc-accent--violet" href="#">
+      <span class="oc-product-card__top"><span class="oc-pill oc-pill--accent">CSS framework</span></span>
+      <span class="oc-product-card__name">OmniaCSS</span>
+      <span class="oc-product-card__tagline">Modern CSS as utility classes</span>
+      <span class="oc-product-card__summary">Container queries, anchor positioning and OKLCH colors, built on demand.</span>
+      <span class="oc-product-card__more">Read more</span>
+    </a>
+    <a class="oc-product-card oc-product-card--spotlight oc-accent--green" href="#">
+      <span class="oc-product-card__top"><span class="oc-pill oc-pill--accent">Components</span></span>
+      <span class="oc-product-card__name">OmniaUI</span>
+      <span class="oc-product-card__tagline">Components and blocks</span>
+      <span class="oc-product-card__summary">Buttons to dashboards in HTML, React, Vue and Blade, without JavaScript where HTML can do it.</span>
+      <span class="oc-product-card__more">Read more</span>
+    </a>
+  </div>
+</section>
+          </oc-demo>
+<script type="module" src="/js/oc-spotlight.js"></script>
+          <h3 class="oc-section-content__title mt-2">How it works</h3>
+          <ul>
+            <li>The script <code>@birdycom/omniaui-pro/spotlight.js</code> listens to the mouse once per <code>[data-oc-spotlight]</code> element (a grid of cards, or one card) and writes the pointer position into <code>--oc-spot-x</code> and <code>--oc-spot-y</code> on the card under it, at most once per frame.</li>
+            <li>The CSS draws the glow there: the same <code>radial-gradient</code> as the free card, at the pointer instead of the top. A second gradient, cut out with <code>mask-composite: exclude</code>, lights up the border at the same spot.</li>
+            <li>The glow still fades in on hover, through <code>--oc-glow</code> of the free card; when the mouse leaves, it fades out where it was.</li>
+            <li>Touch screens (a finger has no hover), pages without the script and <code>prefers-reduced-motion: reduce</code> keep the glow at the top, like the free card.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/pro/src/parts/site-spotlight-cards.css</code> (OmniaUI Pro), the pointer tracking in <code>packages/pro/src/spotlight.js</code>. The card itself is the free <code>.oc-product-card</code>. Colors are Omnia theme tokens only.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-block-spotlight</code></td><td>Section with a head and the grid</td></tr>
+              <tr><td><code>.oc-block-spotlight-head / -title / -lead</code></td><td>Heading</td></tr>
+              <tr><td><code>[data-oc-spotlight]</code></td><td>The element the script listens on: a grid (<code>.oc-card-grid</code>) or a single card</td></tr>
+              <tr><td><code>.oc-product-card--spotlight</code></td><td>On a free <code>.oc-product-card</code> (with an <code>.oc-accent--*</code> color): the glow follows the pointer</td></tr>
+              <tr><td><code>--oc-spot-size</code></td><td>Size of the glow (default <code>22rem</code>, as on the free card)</td></tr>
+              <tr><td><code>--oc-spot-ring</code></td><td>Width of the lit border (default <code>1px</code>)</td></tr>
+              <tr><td><code>--oc-spot-x / --oc-spot-y</code></td><td>Written by the script: the pointer position in the card</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2">Use it</h3>
+          <oc-code lang="js">// Bundler (Vite, webpack): bind every [data-oc-spotlight] on the page
+import { initSpotlights } from "@birdycom/omniaui-pro/spotlight.js";
+initSpotlights();
+
+// Plain HTML or Blade: copy node_modules/@birdycom/omniaui-pro/dist/spotlight.js to public/js/oc-spotlight.js
+// &lt;script type="module" src="/js/oc-spotlight.js"&gt;&lt;/script&gt;  (starts on its own)
+
+// React / Vue: &lt;BlockSpotlightCards cards={…} /&gt; and &lt;OcBlockSpotlightCards :cards="…" /&gt; bind it themselves</oc-code>
+          <p>On an existing grid of free product cards you only add two things: <code>data-oc-spotlight</code> on the grid and <code>oc-product-card--spotlight</code> on each card.</p>
+          <h3 class="oc-section-content__title mt-2">Platform features used</h3>
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Feature</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>radial-gradient()</code> with custom properties</td><td>The glow at the pointer</td></tr>
+              <tr><td><code>mask-composite: exclude</code></td><td>The lit border: a ring cut out of a gradient</td></tr>
+              <tr><td>Relative color syntax <code>oklch(from …)</code></td><td>The glow in the card's accent color, with its own opacity</td></tr>
+              <tr><td><code>@property</code> (<code>--oc-glow</code>)</td><td>The fade in and out on hover</td></tr>
+              <tr><td><code>pointermove</code> + <code>pointerType</code></td><td>Mouse and pen move the light, touch does not</td></tr>
+              <tr><td><code>prefers-reduced-motion</code></td><td>The light stays still when people ask for less motion</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
