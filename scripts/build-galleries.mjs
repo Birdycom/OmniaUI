@@ -187,6 +187,7 @@ for (const [kind, k] of Object.entries(KINDS)) {
 npx omniaui add ${k.example}                 # plain HTML
 npx omniaui add ${k.example} -f vue          # or -f react, -f blade
 npx omniaui list ${kind}</oc-code>
+          <p><strong>In your editor:</strong> <a href="/docs/editor.html">OmniaCSS IntelliSense</a> for VS Code and Cursor completes every <code>oc-*</code> class and shows its CSS on hover, from the OmniaUI version your project has installed (Pro included when you have it).</p>
         </div>
       </section>
 ${groups.map((g) => `

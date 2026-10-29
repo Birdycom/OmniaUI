@@ -61,6 +61,9 @@ npx omniaui add button card
 
 The OmniaCSS CLI (`npx omniacss build`) includes the OmniaUI CSS automatically when the package is installed.
 
+**In your editor:** [OmniaCSS IntelliSense](https://omniacss.eu/docs/editor) for VS Code and Cursor completes every `oc-*` class
+and shows its CSS on hover, from the OmniaUI version your project has installed (Pro classes included when Pro is installed).
+
 ## OmniaUI Pro
 
 OmniaUI and every component stay free and open source (MIT). [OmniaUI Pro](https://omniaui.eu/ui/pro.html) adds
