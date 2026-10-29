@@ -12,7 +12,7 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 [![(Packagist) Laravel](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/split-php.yml?label=%28Packagist%29%20Laravel&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/split-php.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Version:** `0.12.0` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.12.1` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
@@ -125,6 +125,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.12.1` | 2026-10-29 | Versie gelijk met OmniaCSS 0.12.1 (MCP met OmniaUI-componenten, migrate-fixes) |
 | `0.12.0` | 2026-10-28 | Tooltip met anchor positioning, titel en plaatsing; Pro-blocks infinite carousel en pricing plans; carousel-lus; schone URL's; favicons en SEO; lightbox- en kleurfixes |
 | `0.11.2` | 2026-10-28 | mobiel site-header-menu, leesbare accenttekst in dark mode, minify behoudt scroll-animaties |
 | `0.11.1` | 2026-10-28 | docs layout, browser support and demo fixes |
