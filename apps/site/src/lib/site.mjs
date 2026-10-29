@@ -25,9 +25,11 @@ export const RELEASES = JSON.parse(fs.readFileSync(path.join(REPO, "docs/release
 export const OMNIACSS_URL = "https://omniacss.test";
 
 // The same menu, in the same order, as on omniacss.eu (apps/docs/src/lib/site.mjs in the OmniaCSS repo): a visitor
-// who moves between the two sites keeps every item in its place. Keep both lists equal.
+// who moves between the two sites keeps every item in its place. Keep both lists equal. The first item is always the
+// other site (the brand on the left leads to this site's home); oc-docs-v2.css gives it a fixed width, so "OmniaCSS"
+// and "OmniaUI" take the same room.
 export const HEADER_LINKS = [
-  { id: "home", label: "Home", href: "/index.html" },
+  { id: "omniacss", label: "OmniaCSS", href: `${OMNIACSS_URL}/index.html` },
   { id: "docs", label: "Docs", href: `${OMNIACSS_URL}/docs/index.html` },
   { id: "components", label: "Components", href: "/ui/components.html" },
   { id: "blocks", label: "Blocks", href: "/ui/blocks.html" },
