@@ -1066,6 +1066,48 @@
   .oc-block-services-media { aspect-ratio: 16 / 9; }
 }
 
+/* parts/site-spotlight-cards.css */
+/* File: packages/pro/src/parts/site-spotlight-cards.css
+   Map: block (head + grid) -> spotlight card: glow at the pointer -> the border lights up under it -> no pointer / reduced motion
+   Spotlight cards: the free .oc-product-card (OmniaUI showcase) whose glow follows the mouse. spotlight.js writes
+   --oc-spot-x / --oc-spot-y on the card under the pointer; until then (no script, touch) the glow stays at the top,
+   exactly like the free card. --oc-glow is the free card's hover fade (0 -> 0.22). Omnia tokens only. */
+
+.oc-block-spotlight { display: grid; gap: 1.5rem; }
+.oc-block-spotlight-head { display: grid; gap: 0.35rem; max-inline-size: 44rem; }
+.oc-block-spotlight-title { margin: 0; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); font-weight: 700; letter-spacing: -0.02em; }
+.oc-block-spotlight-lead { margin: 0; color: var(--oc-muted-foreground); }
+
+/* The glow: the same gradient as the free card, at the pointer instead of 50% 0%. Two classes, so it wins over the
+   free .oc-product-card whatever order the stylesheets load in. */
+.oc-product-card.oc-product-card--spotlight {
+  isolation: isolate;
+  background:
+    radial-gradient(var(--oc-spot-size, 22rem) circle at var(--oc-spot-x, 50%) var(--oc-spot-y, 0%), oklch(from var(--oc-accent-from) l c h / var(--oc-glow, 0)), transparent 60%),
+    var(--oc-surface);
+}
+
+/* The border under the pointer lights up too: a ring as wide as the border, cut out with a mask. It sits inside the
+   border (inset 0), so cards with overflow: hidden (the showcase ones) show it as well. */
+.oc-product-card--spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: var(--oc-spot-ring, 1px);
+  border-radius: inherit;
+  background: radial-gradient(calc(var(--oc-spot-size, 22rem) * 0.55) circle at var(--oc-spot-x, 50%) var(--oc-spot-y, 0%), oklch(from var(--oc-accent-from) l c h / calc(var(--oc-glow, 0) * 4)), transparent 70%);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Fewer moving lights for people who asked for less motion: the glow stays at the top (!important beats the
+   values the script writes in the style attribute). */
+@media (prefers-reduced-motion: reduce) {
+  .oc-product-card--spotlight { --oc-spot-x: 50% !important; --oc-spot-y: 0% !important; }
+}
+
 /* parts/site-watch-layout.css */
 /* File: packages/pro/src/parts/site-watch-layout.css
    Map: section (container) -> grid (player column + side list) -> player placeholder -> title/meta/description
