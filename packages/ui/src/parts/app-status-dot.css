@@ -1,0 +1,50 @@
+/* File: packages/ui/src/parts/app-status-dot.css
+   Map: dot (tone color + soft ring) -> tones (working pulses, waiting, done, error, idle) -> sizes -> status row (dot + text
+   that cuts off with …) -> reduced motion
+   Status dot: a small live state light for a job, agent, sync, server or person ("Working", "Waiting for input", "Done").
+   Always put a text next to it or an aria-label on it: the color alone does not tell the state. */
+
+.oc-status-dot {
+  --oc-status-dot-color: var(--oc-muted-foreground);
+  display: inline-block;
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 50%;
+  background: var(--oc-status-dot-color);
+  box-shadow: 0 0 0 2px oklch(from var(--oc-status-dot-color) l c h / 0.2);
+  vertical-align: middle;
+}
+
+/* Tones. --working pulses a ring outwards. */
+.oc-status-dot--working {
+  --oc-status-dot-color: var(--oc-primary);
+  animation: oc-status-dot-pulse 1.8s ease-in-out infinite;
+}
+.oc-status-dot--waiting { --oc-status-dot-color: var(--oc-warning); }
+.oc-status-dot--done { --oc-status-dot-color: var(--oc-success); }
+.oc-status-dot--error { --oc-status-dot-color: var(--oc-destructive); }
+.oc-status-dot--idle { --oc-status-dot-color: var(--oc-muted-foreground); box-shadow: none; opacity: 0.7; }
+@keyframes oc-status-dot-pulse {
+  50% { box-shadow: 0 0 0 5px oklch(from var(--oc-status-dot-color) l c h / 0.08); }
+}
+
+/* Sizes */
+.oc-status-dot--sm { inline-size: 0.375rem; block-size: 0.375rem; }
+.oc-status-dot--lg { inline-size: 0.625rem; block-size: 0.625rem; }
+
+/* Status row: dot + one line of text that cuts off with … in a narrow card. */
+.oc-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  margin: 0;
+  font-size: 0.8125rem;
+}
+.oc-status__text { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-status__meta { flex: none; margin-inline-start: auto; color: var(--oc-muted-foreground); font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-status-dot--working { animation: none; }
+}

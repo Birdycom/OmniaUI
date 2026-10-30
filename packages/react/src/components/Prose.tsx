@@ -6,8 +6,8 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
 
 export interface ProseProps extends HTMLAttributes<HTMLElement> {
-  /** All spacing scales along. */
-  size?: "sm" | "md" | "lg";
+  /** All spacing scales along; "compact" for widgets and panels (13 px, tighter, full width). */
+  size?: "compact" | "sm" | "md" | "lg";
   /** No max width (default 68ch). */
   full?: boolean;
   as?: "article" | "div" | "section";

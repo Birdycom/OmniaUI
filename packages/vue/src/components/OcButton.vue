@@ -2,7 +2,7 @@
 /**
  * Button. Renders <a> when `href` is set, otherwise <button>.
  * Classes: .oc-btn + --secondary/--outline/--ghost/--link/--destructive/--success/--gradient/--glass,
- * --xs/--sm/--lg, --icon, --pill
+ * --xs/--sm/--lg, --icon, --pill, --inline (link button inside running text)
  */
 withDefaults(
   defineProps<{
@@ -10,6 +10,7 @@ withDefaults(
     size?: 'xs' | 'sm' | 'md' | 'lg'
     icon?: boolean
     pill?: boolean
+    inline?: boolean
     href?: string
     type?: 'button' | 'submit' | 'reset'
   }>(),
@@ -27,6 +28,7 @@ withDefaults(
       size !== 'md' && `oc-btn--${size}`,
       icon && 'oc-btn--icon',
       pill && 'oc-btn--pill',
+      inline && 'oc-btn--inline',
     ]"
   >
     <slot />
@@ -40,6 +42,7 @@ withDefaults(
       size !== 'md' && `oc-btn--${size}`,
       icon && 'oc-btn--icon',
       pill && 'oc-btn--pill',
+      inline && 'oc-btn--inline',
     ]"
   >
     <slot />

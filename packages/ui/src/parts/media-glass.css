@@ -1,0 +1,71 @@
+/* File: packages/ui/src/parts/media-glass.css
+   Map: tokens (light-dark) -> sheet (.oc-glass: see-through, blurred, light top edge, soft shadow) -> panel (.oc-glass-panel:
+   a lighter layer inside) -> cards inside a sheet -> --flat (desktop window, the OS draws the blur) -> --strong -> reduced
+   transparency
+   Glass: see-through surfaces in the "liquid glass" style, over a photo, a gradient or the desktop (an Electron or Tauri
+   window with Windows acrylic or macOS vibrancy behind a transparent page). Re-tint with the --oc-glass-* tokens. */
+
+:root {
+  --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.72), oklch(from var(--oc-background) l c h / 0.62));
+  --oc-glass-panel: light-dark(oklch(100% 0 0deg / 0.5), oklch(100% 0 0deg / 0.055));
+  --oc-glass-panel-strong: light-dark(oklch(100% 0 0deg / 0.72), oklch(100% 0 0deg / 0.09));
+  --oc-glass-edge: light-dark(oklch(100% 0 0deg / 0.85), oklch(100% 0 0deg / 0.11));
+  --oc-glass-edge-hi: light-dark(oklch(100% 0 0deg / 1), oklch(100% 0 0deg / 0.16));
+  --oc-glass-hairline: light-dark(oklch(from var(--oc-foreground) l c h / 0.1), oklch(100% 0 0deg / 0.08));
+  --oc-glass-shadow: 0 24px 60px -20px light-dark(oklch(25% 0.06 255deg / 0.35), oklch(0% 0 0deg / 0.7));
+  --oc-glass-panel-shadow: 0 8px 24px -16px light-dark(oklch(25% 0.06 255deg / 0.25), oklch(0% 0 0deg / 0.6));
+  --oc-glass-blur: 28px;
+  --oc-glass-radius: 18px;
+  --oc-glass-panel-radius: 14px;
+}
+
+/* Sheet: the outer glass surface (a widget, a floating panel, a dialog over a photo). */
+.oc-glass {
+  position: relative;
+  color: var(--oc-foreground);
+  background: var(--oc-glass-sheet);
+  border: 1px solid var(--oc-glass-edge);
+  border-radius: var(--oc-glass-radius);
+  box-shadow: var(--oc-glass-shadow), inset 0 1px 0 var(--oc-glass-edge-hi);
+  backdrop-filter: blur(var(--oc-glass-blur)) saturate(1.5);
+  /* OmniaUI cards inside become glass panels too. */
+  --oc-card-background: var(--oc-glass-panel);
+  --oc-card-border: var(--oc-glass-edge);
+}
+
+/* Panel: a lighter layer inside a sheet (a group of settings, a meter, a list). */
+.oc-glass-panel {
+  position: relative;
+  background: var(--oc-glass-panel);
+  border: 1px solid var(--oc-glass-edge);
+  border-radius: var(--oc-glass-panel-radius);
+  box-shadow: var(--oc-glass-panel-shadow), inset 0 1px 0 var(--oc-glass-edge-hi);
+}
+.oc-glass .oc-card {
+  border-radius: var(--oc-glass-panel-radius);
+  box-shadow: var(--oc-glass-panel-shadow), inset 0 1px 0 var(--oc-glass-edge-hi);
+}
+
+/* Strong: more opaque, for text-heavy panels or a hovered row. */
+.oc-glass--strong,
+.oc-glass-panel--strong { background: var(--oc-glass-panel-strong); }
+
+/* Flat: a frameless desktop window where the OS draws the blur (acrylic, vibrancy): no own blur, no drop shadow. */
+.oc-glass--flat {
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 var(--oc-glass-edge-hi);
+  backdrop-filter: none;
+}
+
+/* Hairline divider in glass (sections, header). */
+.oc-glass-divider { block-size: 1px; margin: 0; border: 0; background: var(--oc-glass-hairline); }
+
+/* People who ask for less transparency get solid surfaces. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --oc-glass-sheet: var(--oc-background);
+    --oc-glass-panel: var(--oc-card);
+    --oc-glass-panel-strong: var(--oc-muted);
+  }
+  .oc-glass { backdrop-filter: none; }
+}

@@ -102,3 +102,17 @@ test("unknown names and frameworks fail with a hint", async () => {
   assert.throws(() => run(dir, "add", "nope", "-f", "vue"), /Command failed/);
   assert.throws(() => run(dir, "add", "button", "-f", "svelte"), /Command failed/);
 });
+
+test("copy-js copies the installed scripts as oc-<name>.js into public/js", async () => {
+  const pkg = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  const dir = await project({ "public/.keep": "" });
+  // The project's own @birdycom/omniaui: a link to this package.
+  await fs.mkdir(path.join(dir, "node_modules/@birdycom"), { recursive: true });
+  await fs.symlink(pkg, path.join(dir, "node_modules/@birdycom/omniaui"), "junction");
+  const out = run(dir, "copy-js", "data-table");
+  assert.ok(await has(dir, "public/js/oc-data-table.js"));
+  assert.ok(!(await has(dir, "public/js/oc-carousel.js")), "only the named script");
+  assert.match(out, /<script type="module" src="\/js\/oc-data-table\.js"><\/script>/);
+  assert.match(run(dir, "copy-js", "data-table"), /exists, use --force/);
+  assert.throws(() => run(dir, "copy-js", "nope"), /unknown script: nope/);
+});

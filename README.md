@@ -34,7 +34,7 @@ the data table, the blocks gallery in dark mode, a Pro block (CMS dashboard) and
 
 | Package | Folder | Contents |
 |---|---|---|
-| `@birdycom/omniaui` | `packages/ui` | Component CSS (`dist/components.css`), HTML snippets, `manifest.json`, CLI `omniaui` (add/list) |
+| `@birdycom/omniaui` | `packages/ui` | Component CSS (`dist/components.css`), HTML snippets, `manifest.json`, CLI `omniaui` (add/list/copy-js) |
 | `@birdycom/omniaui-blocks` | `packages/blocks` | Block CSS (`dist/blocks.css`) and block snippets (app shell, hero, auth, …) |
 | `@birdycom/omniaui-react` | `packages/react` | React components (`<Button>`, `<BlockHero>`) |
 | `@birdycom/omniaui-vue` | `packages/vue` | Vue 3 components (`<OcButton>`, `<OcBlockHero>`) |
@@ -57,6 +57,7 @@ Copy a component into your project (HTML, React or Vue, depending on your framew
 ```bash
 npx omniaui list
 npx omniaui add button card
+npx omniaui copy-js            # the scripts (data table, carousel; Pro blocks) to public/js/oc-*.js
 ```
 
 The OmniaCSS CLI (`npx omniacss build`) includes the OmniaUI CSS automatically when the package is installed.

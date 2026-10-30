@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // File: packages/ui/bin/omniaui.mjs
 // OmniaUI CLI — copy components and blocks into your project (css | vue | react | blade), list the registry.
-// Map: args -> commands (add | list | help | version) -> lib/add.mjs (lib/catalog.mjs, lib/project.mjs)
+// Map: args -> commands (add | list | copy-js | help | version) -> lib/add.mjs (lib/catalog.mjs, lib/project.mjs), lib/copy-js.mjs
 // Author: Serge Cools | Framework: OmniaUI (on OmniaCSS)
 //
 // These commands used to be "omniacss add/list" (moved here in October 2026). The CSS build stays in
@@ -9,6 +9,7 @@
 
 import { parseArgs } from "node:util";
 import { cmdAdd, cmdList } from "./lib/add.mjs";
+import { cmdCopyJs } from "./lib/copy-js.mjs";
 import { readJson } from "./lib/project.mjs";
 
 const HELP = `
@@ -18,6 +19,8 @@ OmniaUI CLI
                                         copy components/blocks into your project (you own the code)
   omniaui add <name...> -f vue --import  print the import line for the npm package instead
   omniaui list [blocks|components] [-f vue]  show what can be added in a flavour
+  omniaui copy-js [name...] [--to public/js]  copy the scripts (data table, carousel; Pro: spotlight, ecosystem map,
+                                        infinite carousel) as oc-<name>.js, which start on their own from a script tag
 
 Options:
   -f, --framework <fw>   css | vue | react | blade (default: "framework" in omnia.config.json, else detected
@@ -26,7 +29,7 @@ Options:
       --dir <dir>        target folder (alias --to); defaults per flavour:
                          vue/react: resources/js/components/oc (Laravel) or src/components/oc,
                          css: resources/views/oc-snippets (Laravel) or oc-snippets,
-                         blade: resources/views/components/oc
+                         blade: resources/views/components/oc; copy-js: public/js (or js)
       --all              add every component (or block with --kind block)
       --force            overwrite existing files
       --dry-run          show what would be copied
@@ -60,6 +63,7 @@ async function main() {
   switch (command) {
     case "add": return cmdAdd(rest, values);
     case "list": return cmdList(rest[0], values);
+    case "copy-js": return cmdCopyJs(rest, values);
     default: console.log(HELP);
   }
 }

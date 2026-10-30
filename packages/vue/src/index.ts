@@ -55,6 +55,8 @@ import OcFactList from './components/OcFactList.vue'
 import OcFilterCounts from './components/OcFilterCounts.vue'
 import OcFlipCard from './components/OcFlipCard.vue'
 import OcFormField from './components/OcFormField.vue'
+import OcGlass from './components/OcGlass.vue'
+import OcGlassPanel from './components/OcGlassPanel.vue'
 import OcGreeting from './components/OcGreeting.vue'
 import OcHeading from './components/OcHeading.vue'
 import OcHoverCard from './components/OcHoverCard.vue'
@@ -120,6 +122,8 @@ import OcSpinner from './components/OcSpinner.vue'
 import OcStackCard from './components/OcStackCard.vue'
 import OcStackList from './components/OcStackList.vue'
 import OcStatCard from './components/OcStatCard.vue'
+import OcStatus from './components/OcStatus.vue'
+import OcStatusDot from './components/OcStatusDot.vue'
 import OcStepper from './components/OcStepper.vue'
 import OcSwitch from './components/OcSwitch.vue'
 import OcTable from './components/OcTable.vue'
@@ -132,6 +136,10 @@ import OcTextarea from './components/OcTextarea.vue'
 import OcThemeSwitch from './components/OcThemeSwitch.vue'
 import OcTimeInput from './components/OcTimeInput.vue'
 import OcTimeline from './components/OcTimeline.vue'
+import OcTitlebar from './components/OcTitlebar.vue'
+import OcTitlebarBody from './components/OcTitlebarBody.vue'
+import OcTitlebarButton from './components/OcTitlebarButton.vue'
+import OcTitlebarWindow from './components/OcTitlebarWindow.vue'
 import OcToast from './components/OcToast.vue'
 import OcToastContainer from './components/OcToastContainer.vue'
 import OcToggle from './components/OcToggle.vue'
@@ -232,6 +240,8 @@ export {
   OcFilterCounts,
   OcFlipCard,
   OcFormField,
+  OcGlass,
+  OcGlassPanel,
   OcGreeting,
   OcHeading,
   OcHoverCard,
@@ -297,6 +307,8 @@ export {
   OcStackCard,
   OcStackList,
   OcStatCard,
+  OcStatus,
+  OcStatusDot,
   OcStepper,
   OcSwitch,
   OcTable,
@@ -309,6 +321,10 @@ export {
   OcThemeSwitch,
   OcTimeInput,
   OcTimeline,
+  OcTitlebar,
+  OcTitlebarBody,
+  OcTitlebarButton,
+  OcTitlebarWindow,
   OcToast,
   OcToastContainer,
   OcToggle,
@@ -465,6 +481,8 @@ export const components: Record<string, Component> = {
   OcFilterCounts,
   OcFlipCard,
   OcFormField,
+  OcGlass,
+  OcGlassPanel,
   OcGreeting,
   OcHeading,
   OcHoverCard,
@@ -530,6 +548,8 @@ export const components: Record<string, Component> = {
   OcStackCard,
   OcStackList,
   OcStatCard,
+  OcStatus,
+  OcStatusDot,
   OcStepper,
   OcSwitch,
   OcTable,
@@ -542,6 +562,10 @@ export const components: Record<string, Component> = {
   OcThemeSwitch,
   OcTimeInput,
   OcTimeline,
+  OcTitlebar,
+  OcTitlebarBody,
+  OcTitlebarButton,
+  OcTitlebarWindow,
   OcToast,
   OcToastContainer,
   OcToggle,

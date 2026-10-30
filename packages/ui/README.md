@@ -15,7 +15,8 @@ Plus buttons, cards, badges, alerts, forms, avatar, progress, breadcrumb, pagina
 
 ```bash
 npm install @birdycom/omniaui      # import "@birdycom/omniaui"
-npx omniacss add component modal      # copy a snippet into your project
+npx omniaui add modal              # copy a component into your project (HTML, React, Vue or Blade)
+npx omniaui copy-js                # the scripts (data table, carousel) to public/js/oc-*.js
 ```
 
 MIT

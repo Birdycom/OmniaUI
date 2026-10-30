@@ -84,7 +84,9 @@ const CSS = `
     .gx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 0.75rem; }
     .gx-grid--blocks { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
     .gx-card { --c: var(--color-vividblue-60); position: relative; display: grid; grid-template-rows: auto auto 1fr auto; gap: 0.35rem; padding: 1rem 1.1rem 0.9rem; border: 1px solid var(--oc-border); border-radius: 14px; color: inherit; text-decoration: none; overflow: hidden; transition: border-color 0.2s, translate 0.2s, box-shadow 0.2s; }
-    .gx-card::before { content: ""; position: absolute; inset: 0 auto 0 0; inline-size: 3px; background: var(--c); opacity: 0; transition: opacity 0.2s; }
+    /* The accent edge stays on the straight part of the left side: running into the rounded corners, it cut the
+       border off there. */
+    .gx-card::before { content: ""; position: absolute; inset: 14px auto 14px 0; z-index: 1; inline-size: 3px; border-radius: 0 3px 3px 0; background: var(--c); pointer-events: none; opacity: 0; transition: opacity 0.2s; }
     .gx-card:hover { border-color: color-mix(in oklch, var(--c) 55%, var(--oc-border)); translate: 0 -2px; box-shadow: 0 10px 30px -18px var(--c); }
     .gx-card:hover::before { opacity: 1; }
     .gx-card:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
@@ -93,7 +95,7 @@ const CSS = `
     .gx-card span code { font-size: 0.8em; }
     .gx-card small { display: flex; justify-content: space-between; gap: 0.5rem; margin-block-start: 0.35rem; font: 500 0.7rem var(--ocd-mono); color: var(--oc-muted-foreground); }
     .gx-card small i { font-style: normal; color: var(--ci, var(--c)); }
-    .gx-shot { margin: -1rem -1.1rem 0.4rem; aspect-ratio: 16 / 10; overflow: hidden; border-block-end: 1px solid var(--oc-border); background: var(--oc-muted); }
+    .gx-shot { margin: -1rem -1.1rem 0.4rem; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 13px 13px 0 0; border-block-end: 1px solid var(--oc-border); background: var(--oc-muted); }
     .gx-shot--themed .gx-dark { display: none; }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]):not(:has(.oc-theme-switch input[value="light"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-light { display: none; }
