@@ -31,6 +31,11 @@ const snippetAlias = {
   'attachment-list': 'attachment',
   'attachment-image': 'attachment',
   'attachment-thumb': 'attachment',
+  status: 'status-dot',
+  'glass-panel': 'glass',
+  'titlebar-window': 'titlebar',
+  'titlebar-button': 'titlebar',
+  'titlebar-body': 'titlebar',
 }
 
 const entries = []

@@ -182,6 +182,10 @@
   color: var(--oc-foreground);
 }
 
+/* The hidden attribute hides, also on components with their own display (.oc-field is flex, .oc-card is grid …).
+   hidden="until-found" keeps the browser's own behaviour, so find-in-page can still open it. */
+[hidden]:not([hidden="until-found"]) { display: none !important; }
+
 /* ===================================================================
    BLOCK GRID HELPER
    =================================================================== */
@@ -362,6 +366,20 @@ flex-direction: column;
   text-decoration: underline;
   opacity: 1;
 }
+
+/* Inline — a link button inside running text: no button padding or height, the size of the text around it.
+   Two classes, so it also wins over the size modifiers (--sm, --lg) further down. */
+.oc-btn.oc-btn--inline {
+  display: inline;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  font-size: inherit;
+  line-height: inherit;
+  vertical-align: baseline;
+  white-space: normal;
+}
+.oc-btn.oc-btn--inline:active { transform: none; }
 
 /* Destructive */
 .oc-btn--destructive {
@@ -1043,6 +1061,18 @@ textarea.oc-input {
   border-color: color-mix(in srgb, var(--oc-destructive) 40%, transparent);
   background: color-mix(in srgb, var(--oc-destructive) 5%, var(--oc-background));
 }
+
+/* Inline: a short message right under a field or a form (an error, a hint), tinted, without the box spacing. */
+.oc-alert--inline {
+  padding: 8px 12px;
+  border-radius: var(--oc-radius);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+.oc-alert--inline.oc-alert--danger { color: light-dark(var(--oc-destructive), oklch(from var(--oc-destructive) max(l, 0.75) c h)); }
+.oc-alert--inline .oc-alert-title { margin: 0; font-size: inherit; }
+.oc-alert--inline .oc-alert-title + .oc-alert-description { margin-block-start: 2px; }
+.oc-alert--inline .oc-alert-description { color: inherit; }
 
 /* ===================================================================
    HERO (page intro block — used in docs index)
@@ -1897,15 +1927,44 @@ a.oc-breadcrumb-item:hover {
 }
 
 .oc-progress-bar {
+  --oc-progress-color: var(--oc-primary);
+  display: block;
+  max-width: 100%;
   height: 100%;
-  background: var(--oc-primary);
+  background: var(--oc-progress-color);
   border-radius: 999px;
   transition: width 300ms ease;
 }
 
-.oc-progress-bar--success { background: var(--oc-success); }
-.oc-progress-bar--danger { background: var(--oc-destructive); }
-.oc-progress-bar--warning { background: var(--oc-warning); }
+.oc-progress-bar--success { --oc-progress-color: var(--oc-success); }
+.oc-progress-bar--danger { --oc-progress-color: var(--oc-destructive); }
+.oc-progress-bar--warning { --oc-progress-color: var(--oc-warning); }
+
+/* Sizes */
+.oc-progress--sm { height: 6px; }
+.oc-progress--xs { height: 4px; }
+
+/* Glow: a light top edge and a soft glow in the bar color (meters, usage, quota). */
+.oc-progress--glow { overflow: visible; box-shadow: inset 0 1px 1px light-dark(oklch(0% 0 0deg / 0.06), oklch(0% 0 0deg / 0.35)); }
+.oc-progress--glow .oc-progress-bar {
+  background: linear-gradient(180deg, color-mix(in oklch, var(--oc-progress-color) 78%, white), var(--oc-progress-color));
+  box-shadow: 0 0 10px -2px color-mix(in oklch, var(--oc-progress-color) 60%, transparent);
+}
+
+/* Marker: a short upright line at a target or schedule point, placed with style="left: 20%". Give it an aria-label
+   on the progressbar or a text next to it; the line itself is decoration. */
+.oc-progress:has(> .oc-progress-marker) { position: relative; overflow: visible; }
+.oc-progress-marker {
+  position: absolute;
+  inset-block: -4px;
+  inline-size: 2px;
+  margin-inline-start: -1px;
+  border-radius: 2px;
+  background: var(--oc-foreground);
+  box-shadow: 0 0 0 1.5px var(--oc-background);
+  pointer-events: none;
+}
+.oc-progress-marker--muted { background: var(--oc-muted-foreground); }
 
 /* ===================================================================
    SKELETON LOADER

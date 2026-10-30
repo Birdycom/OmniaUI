@@ -8,15 +8,17 @@ export interface AlertProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"
   variant?: AlertVariant;
   /** Heading (`oc-alert-title`). */
   title?: ReactNode;
+  /** Compact message under a field or a form (an error, a hint). */
+  inline?: boolean;
 }
 
 /** `<div class="oc-alert oc-alert--{variant}" role="status">`; children render inside `oc-alert-description`. */
 export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  { variant = "info", title, children, className, role = "status", ...rest },
+  { variant = "info", title, inline, children, className, role = "status", ...rest },
   ref,
 ) {
   return (
-    <div ref={ref} role={role} className={cx("oc-alert", `oc-alert--${variant}`, className)} {...rest}>
+    <div ref={ref} role={role} className={cx("oc-alert", `oc-alert--${variant}`, inline && "oc-alert--inline", className)} {...rest}>
       {title != null && <h4 className="oc-alert-title">{title}</h4>}
       {children != null && <p className="oc-alert-description">{children}</p>}
     </div>

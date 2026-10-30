@@ -1,5 +1,5 @@
 {{-- File: resources/views/components/prose.blade.php | Map: props -> wrapper with size modifiers -> default slot (demo article when empty)
-     OmniaUI prose: typography for long-form CMS, blog and help text written without classes. Props: size (sm|md|lg), full (no max
+     OmniaUI prose: typography for long-form CMS, blog and help text written without classes. Props: size (compact|sm|md|lg), full (no max
      width), as (article|div|section). Slot: the text (put class="oc-prose-lead" on the intro); the snippet demo when empty. --}}
 @props(['size' => 'md', 'full' => false, 'as' => 'article'])
 <{{ $as }} {{ $attributes->class(['oc-prose', 'oc-prose--'.$size => $size !== 'md', 'oc-prose--full' => $full]) }}>

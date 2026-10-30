@@ -48,8 +48,17 @@ export function initSpotlights(scope = document) {
   scope.querySelectorAll("[data-oc-spotlight]").forEach((root) => bindSpotlight(root));
 }
 
-// Loaded as /js/oc-spotlight.js (the docs site, or a copy in your project): start on its own.
-if (typeof document !== "undefined" && String(import.meta.url).includes("oc-spotlight")) {
+// Starts on its own when loaded straight from a <script type="module"> tag: as /js/oc-spotlight.js (the docs site,
+// `npx omniaui copy-js`), with ?auto in the URL, or with data-oc-auto on the tag. An import from a bundler or a
+// wrapper does not scan the page: call the init function yourself there.
+function autoStart() {
+  if (typeof document === "undefined") return false;
+  const url = String(import.meta.url);
+  if (url.includes("oc-spotlight") || /[?&]auto(=|&|$)/.test(url)) return true;
+  const file = url.split(/[?#]/)[0];
+  return [...document.querySelectorAll("script[data-oc-auto][src]")].some((s) => s.src.split(/[?#]/)[0] === file);
+}
+if (autoStart()) {
   const boot = () => initSpotlights(document);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

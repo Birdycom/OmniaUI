@@ -1,0 +1,96 @@
+/* File: packages/ui/src/parts/app-titlebar.css
+   Map: window (column, shares the scroll timeline) -> title bar (drag area) -> title + subtitle -> actions (no drag) ->
+   icon buttons (close turns red) -> body (scrolls) -> hairline when the body scrolls (scroll-driven, no JavaScript) -> sizes
+   Title bar: the top bar of a frameless desktop window (Electron, Tauri) or a widget: you drag the window by it, the
+   buttons stay clickable. Inside .oc-titlebar-window the bar gets a hairline once .oc-titlebar-body scrolls. */
+
+.oc-titlebar-window {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  timeline-scope: --oc-titlebar-scroll;
+}
+
+.oc-titlebar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  min-block-size: 46px;
+  padding: 0 8px 0 14px;
+  border-block-end: 1px solid transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  /* The OS moves the window when you drag here (Electron and Tauri read this). */
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+.oc-titlebar :is(button, a, input, select, textarea, label, [role="button"], [tabindex], .oc-titlebar__actions) {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+.oc-titlebar--bordered { border-block-end-color: var(--oc-glass-hairline, var(--oc-border)); }
+
+/* Title area: grows, cuts the subtitle off with …. */
+.oc-titlebar__main { display: flex; flex: 1; align-items: center; gap: 8px; min-inline-size: 0; }
+.oc-titlebar__icon { flex: none; inline-size: 18px; block-size: 18px; }
+.oc-titlebar__title { flex: none; font-size: 0.8667rem; font-weight: 650; letter-spacing: -0.01em; }
+.oc-titlebar__subtitle {
+  min-inline-size: 0;
+  overflow: hidden;
+  color: var(--oc-muted-foreground);
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.oc-titlebar__subtitle::before { content: "·"; margin-inline-end: 8px; }
+.oc-titlebar__actions { display: flex; flex: none; align-items: center; gap: 2px; }
+
+/* Compact icon buttons: muted, a light surface on hover, the close button red. */
+.oc-titlebar__btn {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 30px;
+  block-size: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color var(--oc-transition-fast), color var(--oc-transition-fast);
+}
+.oc-titlebar__btn :where(svg, iconify-icon) { inline-size: 16px; block-size: 16px; }
+.oc-titlebar__btn:hover { background: var(--oc-glass-panel-strong, var(--oc-accent)); color: var(--oc-foreground); }
+.oc-titlebar__btn:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-titlebar__btn--close:hover { background: var(--oc-destructive); color: var(--oc-destructive-foreground); }
+
+/* Body: the part that scrolls under the bar. */
+.oc-titlebar-body {
+  flex: 1;
+  min-block-size: 0;
+  overflow: auto;
+  scroll-timeline: --oc-titlebar-scroll block;
+  scrollbar-width: thin;
+}
+
+/* Hairline + light surface on the bar once the body scrolls (browsers without scroll timelines keep the plain bar). */
+@supports (animation-timeline: scroll()) {
+  .oc-titlebar-window > .oc-titlebar:not(.oc-titlebar--bordered) {
+    animation: oc-titlebar-scrolled linear both;
+    animation-timeline: --oc-titlebar-scroll;
+    animation-range: 0 48px;
+  }
+}
+@keyframes oc-titlebar-scrolled {
+  to { border-block-end-color: var(--oc-glass-hairline, var(--oc-border)); background: var(--oc-glass-panel, var(--oc-muted)); }
+}
+
+/* Sizes */
+.oc-titlebar--sm { min-block-size: 36px; padding-inline-start: 10px; }
+.oc-titlebar--sm .oc-titlebar__btn { inline-size: 26px; block-size: 26px; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-titlebar-window > .oc-titlebar { animation: none; }
+}

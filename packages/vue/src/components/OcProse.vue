@@ -2,10 +2,10 @@
 <script setup lang="ts">
 /**
  * Typography for long-form text written without classes (same markup as snippets/prose.html). Slot default = the text
- * (put .oc-prose-lead on the intro paragraph); the snippet's demo article when empty. size: sm | md | lg, full = no max width.
- * Classes: .oc-prose(--sm/--lg/--full), .oc-prose-lead
+ * (put .oc-prose-lead on the intro paragraph); the snippet's demo article when empty. size: compact (widgets, 13 px) | sm | md | lg, full = no max width.
+ * Classes: .oc-prose(--compact/--sm/--lg/--full), .oc-prose-lead
  */
-withDefaults(defineProps<{ size?: 'sm' | 'md' | 'lg'; full?: boolean; as?: 'article' | 'div' | 'section' }>(), { size: 'md', as: 'article' })
+withDefaults(defineProps<{ size?: 'compact' | 'sm' | 'md' | 'lg'; full?: boolean; as?: 'article' | 'div' | 'section' }>(), { size: 'md', as: 'article' })
 </script>
 
 <template>
