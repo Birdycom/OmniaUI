@@ -52,7 +52,7 @@ export function crossLinks(html) {
 /** Which top-level section a page belongs to (used for the header active state and the sidebar). */
 export function sectionOf(route) {
   if (route.startsWith("ui/components") || route === "ui/components.html" || route.startsWith("ui/frameworks-")) return "components";
-  if (route.startsWith("ui/blocks") || route === "ui/blocks.html" || route === "ui/pro.html") return "blocks";
+  if (route.startsWith("ui/blocks") || route === "ui/blocks.html" || route === "ui/pro.html" || route === "ui/security.html") return "blocks";
   if (route.startsWith("ui/icons") || route === "ui/webicons.html") return "webicons";
   return "home";
 }
