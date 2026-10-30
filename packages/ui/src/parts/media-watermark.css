@@ -1,0 +1,96 @@
+/* File: packages/ui/src/parts/media-watermark.css
+   Map: overlay (click-through, sized to its box) -> text -> straight -> tiled -> corner stamp -> tones -> print
+   Watermark: a light layer with large slanted text ("CONCEPT", "DRAFT", "SAMPLE") over an image, a card or a live
+   frame. Put .oc-watermark as the last child of a positioned box (the utility .relative, or any position) with the
+   text in a <span>. Clicks go through to what is underneath (pointer-events: none). The text scales with the box
+   (container query units). Tokens: --oc-watermark-color, -opacity, -angle, -size. Omnia tokens only. */
+
+.oc-watermark {
+  --oc-watermark-color: var(--oc-foreground);
+  --oc-watermark-opacity: 0.12;
+  --oc-watermark-angle: -18deg;
+  --oc-watermark-size: clamp(1.75rem, 14cqi, 12rem);
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  container-type: size;
+  border-radius: inherit;
+  pointer-events: none;
+  user-select: none;
+}
+.oc-watermark > span {
+  rotate: var(--oc-watermark-angle);
+  color: oklch(from var(--oc-watermark-color) l c h / var(--oc-watermark-opacity));
+  font-size: var(--oc-watermark-size);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* A logo (<img>, or an inline <svg> logo) or an icon (inline <svg> with currentColor) instead of, or next to, text.
+   An <img> keeps its own colors at the watermark opacity; --mono turns it into a flat gray stamp. An inline <svg>
+   takes the watermark color, like the text. Size: --oc-watermark-mark (default 40% of the box width). */
+.oc-watermark > :is(img, svg) {
+  inline-size: var(--oc-watermark-mark, 40cqi);
+  max-block-size: 70cqb;
+  block-size: auto;
+  rotate: var(--oc-watermark-angle);
+}
+.oc-watermark > img { opacity: calc(var(--oc-watermark-opacity) * 1.5); }
+.oc-watermark > svg { color: oklch(from var(--oc-watermark-color) l c h / var(--oc-watermark-opacity)); }
+.oc-watermark--mono > img { filter: grayscale(1) contrast(0.6); }
+/* Logo or icon above a word: wrap both in one <span class="oc-watermark__stack">. */
+.oc-watermark__stack { display: grid; justify-items: center; gap: 0.3em; }
+.oc-watermark__stack > :is(img, svg) { inline-size: 0.9em; block-size: auto; }
+.oc-watermark__stack > img { opacity: calc(var(--oc-watermark-opacity) * 1.5); }
+
+/* Horizontal text instead of slanted. */
+.oc-watermark--straight { --oc-watermark-angle: 0deg; }
+
+/* Tiled: repeat the text in several spans; they fill the box in a slanted grid (for proofs and previews). */
+.oc-watermark--tile {
+  --oc-watermark-size: clamp(0.9rem, 4.5cqi, 2.25rem);
+  /* Columns in rem: container units here would measure the parent of the box, not the box. */
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  align-content: space-evenly;
+  inset: -25%;
+  rotate: var(--oc-watermark-angle);
+}
+.oc-watermark--tile > :is(span, img, svg) { rotate: none; justify-self: center; }
+.oc-watermark--tile > span { letter-spacing: 0.15em; }
+.oc-watermark--tile > :is(img, svg) { inline-size: 2.5rem; }
+/* Logos and icons are narrower than words: narrower columns, so the whole box fills up. */
+.oc-watermark--tile:has(> :is(img, svg)) { grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr)); }
+
+/* A small stamp in a corner instead of across the middle: --corner (bottom right) or --corner-top (top right).
+   Two classes, so a tone (--primary …) changes its color but not its readable opacity. */
+.oc-watermark:is(.oc-watermark--corner, .oc-watermark--corner-top) {
+  --oc-watermark-angle: 0deg;
+  --oc-watermark-size: 0.75rem;
+  --oc-watermark-opacity: 0.75;
+  place-items: end;
+  padding: 0.75rem;
+}
+.oc-watermark--corner-top { place-items: start end; }
+.oc-watermark:is(.oc-watermark--corner, .oc-watermark--corner-top) > span {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid oklch(from var(--oc-watermark-color) l c h / 0.35);
+  border-radius: var(--oc-radius, 0.375rem);
+  background: oklch(from var(--oc-background) l c h / 0.7);
+  letter-spacing: 0.12em;
+}
+
+/* Tones: light text for dark images, the brand color, or red for "not for use". */
+.oc-watermark--light { --oc-watermark-color: var(--color-white-100); --oc-watermark-opacity: 0.22; }
+.oc-watermark--primary { --oc-watermark-color: var(--oc-primary); --oc-watermark-opacity: 0.16; }
+.oc-watermark--destructive { --oc-watermark-color: var(--oc-destructive); --oc-watermark-opacity: 0.2; }
+
+/* Printed proofs keep the watermark, a little stronger so it survives the printer. */
+@media print {
+  .oc-watermark { --oc-watermark-opacity: 0.2; print-color-adjust: exact; }
+}

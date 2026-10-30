@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import {
   BlockAboutTimeline, BlockContactGrid, BlockFaq, BlockHeroOrbit, BlockPortfolioGrid, BlockProfileHeader,
-  FactList, LinkArrow, Marquee, NextTeaser, PriceCard, ProductMark, ProjectCard, StackList, Timeline,
+  FactList, LinkArrow, LinkRow, Marquee, NextTeaser, PriceCard, ProductMark, ProjectCard, StackList, Timeline,
 } from "../src";
 
 describe("marketing components", () => {
@@ -126,5 +126,14 @@ describe("marketing blocks", () => {
     const { container } = render(<BlockPortfolioGrid title="Work" two projects={[{ href: "#1", name: "One", accent: "violet" }]} />);
     expect(container.firstChild).toHaveClass("oc-block-portfolio", "oc-section-pad", "oc-block-portfolio--two");
     expect(container.querySelector(".oc-block-portfolio-grid .oc-project-card")).toHaveClass("oc-accent--violet");
+  });
+});
+
+describe("LinkRow", () => {
+  it("renders the links with rel=noopener on external ones, tone and size", () => {
+    render(<LinkRow tone="muted" size="sm" links={[{ href: "/docs", label: "Docs" }, { href: "https://github.com/acme/app", label: "Source" }]} />);
+    expect(screen.getByRole("list")).toHaveClass("oc-link-row", "oc-link-row--muted", "oc-link-row--sm");
+    expect(screen.getByRole("link", { name: "Docs" })).not.toHaveAttribute("rel");
+    expect(screen.getByRole("link", { name: "Source" })).toHaveAttribute("rel", "noopener");
   });
 });

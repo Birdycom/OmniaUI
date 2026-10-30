@@ -1,0 +1,38 @@
+/* File: packages/ui/src/parts/media-live-frame.css
+   Map: frame (virtual size -> ratio, container) -> content at the virtual size, scaled to the frame width -> static
+   Live frame: shows a page (an <iframe>, or a <video>/<img>) at a virtual size such as 1280x720 and scales it down to
+   the width of its box, so a live site looks like a screenshot that is still alive. Pure CSS: the scale is
+   tan(atan2(100cqi, <virtual width>)), which is the frame width divided by the virtual width. On .oc-browser-frame__view
+   or on its own. Set the size with --oc-live-w / --oc-live-h (unitless px, default 1280 x 720). */
+
+.oc-live-frame {
+  --oc-live-w: 1280;
+  --oc-live-h: 720;
+  position: relative;
+  display: block;
+  /* Always the full width of its column (also inside flex or grid centring), the height follows the ratio. */
+  inline-size: 100%;
+  overflow: hidden;
+  aspect-ratio: var(--oc-live-w) / var(--oc-live-h);
+  container-type: inline-size;
+  background: var(--oc-background);
+}
+/* .oc-live-frame__content: any element (a whole demo page) at the virtual size. The class inside :is() also makes this
+   rule as strong as the .oc-browser-frame__view rule, which comes earlier, so on the view slot this one wins. */
+.oc-live-frame > :is(iframe, video, img, object, .oc-live-frame__content) {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: block;
+  inline-size: calc(var(--oc-live-w) * 1px);
+  max-inline-size: none;
+  block-size: calc(var(--oc-live-h) * 1px);
+  border: 0;
+  transform-origin: 0 0;
+  scale: tan(atan2(100cqi, calc(var(--oc-live-w) * 1px)));
+}
+/* Right-to-left pages: scale from the other corner. */
+.oc-live-frame:dir(rtl) > :is(iframe, video, img, object, .oc-live-frame__content) { transform-origin: 100% 0; }
+
+/* A picture of a page, not a page to use: clicks and scrolling pass the frame by. */
+.oc-live-frame--static > :is(iframe, video, img, object, .oc-live-frame__content) { pointer-events: none; }

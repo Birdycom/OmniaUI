@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import {
   OcBlockAboutTimeline, OcBlockContactGrid, OcBlockFaq, OcBlockHeroOrbit, OcBlockPortfolioGrid, OcBlockProfileHeader,
-  OcFactList, OcLinkArrow, OcMarquee, OcNextTeaser, OcPriceCard, OcProductMark, OcProjectCard, OcStackList, OcTimeline,
+  OcFactList, OcLinkArrow, OcLinkRow, OcMarquee, OcNextTeaser, OcPriceCard, OcProductMark, OcProjectCard, OcStackList, OcTimeline,
 } from '../src'
 
 describe('marketing components', () => {
@@ -94,5 +94,16 @@ describe('marketing blocks', () => {
     expect(profile.find('.oc-block-profile-tab').attributes('aria-current')).toBe('page')
     const grid = mount(OcBlockPortfolioGrid, { props: { title: 'Work', projects: [{ href: '#1', name: 'One', accent: 'violet' }] } })
     expect(grid.find('.oc-project-card').classes()).toContain('oc-accent--violet')
+  })
+})
+
+describe('OcLinkRow', () => {
+  it('renders the links with rel=noopener on external ones, or the slot', () => {
+    const w = mount(OcLinkRow, { props: { tone: 'accent', links: [{ href: '/docs', label: 'Docs' }, { href: 'https://example.com', label: 'Site' }] } })
+    expect(w.classes()).toEqual(expect.arrayContaining(['oc-link-row', 'oc-link-row--accent']))
+    const a = w.findAll('a')
+    expect(a[0].attributes('rel')).toBeUndefined()
+    expect(a[1].attributes('rel')).toBe('noopener')
+    expect(mount(OcLinkRow, { slots: { default: '<li><a href="/x">X</a></li>' } }).findAll('li')).toHaveLength(1)
   })
 })

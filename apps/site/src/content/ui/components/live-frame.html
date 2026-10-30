@@ -1,0 +1,107 @@
+<!--oc-page {"title": "OmniaUI - Live frame", "category": "Media", "description": "A live page at a virtual size such as 1280x720, scaled down to the frame width without JavaScript.", "nav": "Live frame", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/live-frame.html | Map: hero -> demos (browser frame, other size + static, with a watermark, any content) -> how it scales -> reference -> frameworks -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Live frame</h1>
+        <p class="oc-hero-text">Show a real page in a small box: the page is laid out at a virtual size such as 1280x720 and scaled down to the width of the frame, so it looks like a screenshot that is still alive. Pure CSS, no script and no resize listener. On its own or in the <a href="browser-frame.html">browser frame</a>. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/live-frame.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.12.1</span>
+          <p class="oc-section-header__desc">The OmniaUI home page at 1280x720 in a browser frame. Resize the demo (the width buttons): the page keeps its desktop layout and only gets smaller.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-demo title="In a browser frame">
+<div class="oc-browser-frame">
+  <div class="oc-browser-frame__bar"><i></i><i></i><i></i><span class="oc-browser-frame__address">omniaui.eu</span></div>
+  <div class="oc-browser-frame__view oc-live-frame">
+    <iframe src="/" title="OmniaUI home page" loading="lazy" scrolling="no"></iframe>
+  </div>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="size">Another size, as a picture</h3>
+          <p class="oc-section-content__desc">Set the virtual size with <code>--oc-live-w</code> and <code>--oc-live-h</code>; the frame takes that ratio. <code>--static</code> lets clicks and scrolling pass by, for a preview that is not meant to be used.</p>
+          <oc-demo title="Live frame - 1680x1400, static">
+<div class="grid gap-1 w-full md:grid-cols-2">
+  <div class="oc-live-frame oc-live-frame--static rounded-lg" style="--oc-live-w: 1680; --oc-live-h: 1400">
+    <iframe src="/ui/blocks" title="OmniaUI blocks" loading="lazy" scrolling="no" tabindex="-1"></iframe>
+  </div>
+  <div class="oc-live-frame oc-live-frame--static rounded-lg" style="--oc-live-w: 390; --oc-live-h: 520">
+    <iframe src="/ui/pro" title="OmniaUI Pro, phone width" loading="lazy" scrolling="no" tabindex="-1"></iframe>
+  </div>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="watermark">With a watermark</h3>
+          <p class="oc-section-content__desc">A site that is not live yet: the <a href="watermark.html">watermark</a> goes on the frame, over the page.</p>
+          <oc-demo title="Live frame - with a watermark">
+<div class="oc-browser-frame">
+  <div class="oc-browser-frame__bar"><i></i><i></i><i></i><span class="oc-browser-frame__address">new.example.com</span></div>
+  <div class="oc-browser-frame__view oc-live-frame oc-live-frame--static">
+    <iframe src="/ui/blocks/hero" title="New site, preview" loading="lazy" scrolling="no" tabindex="-1"></iframe>
+    <span class="oc-watermark" aria-hidden="true"><span>Concept</span></span>
+  </div>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="content">Any content</h3>
+          <p class="oc-section-content__desc">No iframe needed: <code>.oc-live-frame__content</code> lays out your own markup at the virtual size, for a dashboard preview that keeps its desktop layout in a small card.</p>
+          <oc-demo title="Live frame - own content">
+<div class="oc-live-frame rounded-lg" style="--oc-live-w: 1200; --oc-live-h: 520">
+  <div class="oc-live-frame__content p-2 grid gap-1">
+    <h3 class="m-0">Revenue this month</h3>
+    <div class="grid grid-cols-3 gap-1">
+      <article class="oc-card"><div class="oc-card-header"><p class="oc-card-description">Invoices</p><h3 class="oc-card-title">€ 48,250</h3></div></article>
+      <article class="oc-card"><div class="oc-card-header"><p class="oc-card-description">Open</p><h3 class="oc-card-title">€ 6,120</h3></div></article>
+      <article class="oc-card"><div class="oc-card-header"><p class="oc-card-description">Customers</p><h3 class="oc-card-title">312</h3></div></article>
+    </div>
+  </div>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="how">How it scales</h3>
+          <ul>
+            <li>The frame is a size container (<code>container-type: inline-size</code>) with the ratio of the virtual size (<code>aspect-ratio: var(--oc-live-w) / var(--oc-live-h)</code>).</li>
+            <li>The iframe is exactly the virtual size and is scaled with <code>scale: tan(atan2(100cqi, 1280px))</code>: <code>atan2</code> of two lengths and then <code>tan</code> gives their ratio, so frame width / virtual width, without a script.</li>
+            <li>The page inside lays out at 1280px wide, so it shows its desktop layout, not its phone layout.</li>
+            <li><code>scrolling="no"</code> on the iframe hides its scrollbar; make the virtual height the height you want to show.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/media-live-frame.css</code>. Colors are theme tokens.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-live-frame</code></td><td>The box: ratio of the virtual size; its <code>iframe</code>, <code>video</code>, <code>img</code> or <code>.oc-live-frame__content</code> is scaled to its width</td></tr>
+              <tr><td><code>--oc-live-w / --oc-live-h</code></td><td>Virtual size in px, without unit (default 1280 x 720)</td></tr>
+              <tr><td><code>--static</code></td><td>Clicks and scrolling pass through: a picture of a page</td></tr>
+              <tr><td><code>.oc-live-frame__content</code></td><td>Any markup laid out at the virtual size</td></tr>
+              <tr><td><code>.oc-browser-frame__view.oc-live-frame</code></td><td>In the view slot of the browser frame</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Framework wrappers</h2>
+          <p class="oc-section-header__desc">The same markup and classes as React, Vue and Blade components.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;LiveFrame src="https://example.com" title="Example" width={1680} height={1400} static /&gt;
+&lt;!-- Vue --&gt;
+&lt;OcLiveFrame src="https://example.com" title="Example" in-browser-frame /&gt;
+&lt;!-- Blade --&gt;
+&lt;x-oc::live-frame src="https://example.com" title="Example" :width="1680" :height="1400" static /&gt;</oc-code>
+        </div>
+      </section>

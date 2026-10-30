@@ -1,0 +1,134 @@
+/* File: public/css/oc-icons.css
+   Icon pages of the OmniaUI site only (ui/icons/catalog, catalog/category, settings); loaded from their page head.
+   Map: tile grid -> labelled scale (settings demos) -> icon toolbar (head, option rows, code, copy)
+   Theme tokens only, so light and dark follow the site switch. The toolbar markup comes from public/js/oc-icons.js. */
+
+/* ---- Tile grid ---- */
+.oci-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+.oci-grid--sets { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); margin-block-end: 1rem; }
+.oci-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-background);
+  color: var(--oc-foreground);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.oci-item:hover, .oci-item[aria-expanded="true"] { border-color: var(--oc-ring); background: var(--oc-accent); }
+.oci-item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+/* MDI Light tiles: a violet tint so they stand apart from regular MDI (also in oc-docs-shell.css, which loads earlier). */
+.oci-item.oci-item--light {
+  background: light-dark(oklch(from var(--color-indigo-50) l c h / 0.048), oklch(from var(--color-indigo-2) l c h / 0.12));
+  border-color: light-dark(oklch(from var(--color-indigo-50) l c h / 0.14), oklch(from var(--color-indigo-2) l c h / 0.35));
+}
+.oci-item.oci-item--light:is(:hover, [aria-expanded="true"]) {
+  border-color: var(--oc-ring);
+  background: light-dark(oklch(from var(--color-indigo-50) l c h / 0.088), oklch(from var(--color-indigo-2) l c h / 0.22));
+}
+.oci-name { font-size: 0.7rem; color: var(--oc-muted-foreground); text-align: center; word-break: break-word; }
+.oci-set { font-size: 0.85rem; font-weight: 600; text-align: center; }
+/* Hover hint: a small cog in the corner says the tile opens options. */
+.oci-item::after {
+  content: "";
+  position: absolute;
+  inset: 6px 6px auto auto;
+  inline-size: 14px;
+  block-size: 14px;
+  background: var(--oc-muted-foreground);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64z'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.oci-item:is(:hover, :focus-visible, [aria-expanded="true"])::after { opacity: 1; }
+
+/* ---- Category page ---- */
+#icons-search { max-width: 280px; margin-bottom: 1rem; }
+.oci-section { margin-bottom: 2rem; }
+.oci-category-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin-top: 0.5rem; }
+.oci-category-links a { font-size: 0.9rem; }
+.oci-family-section { margin-bottom: 2rem; }
+.oci-family-title { margin: 0 0 0.75rem; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.oci-family-title .oci-badge { font-size: 0.75rem; color: var(--oc-muted-foreground); font-weight: 400; }
+.oci-family-syntax { font-size: 0.8rem; color: var(--oc-muted-foreground); margin: -0.5rem 0 0.75rem; }
+.oci-separator { border: none; border-top: 1px solid var(--oc-border); margin: 1.5rem 0; }
+
+/* ---- Labelled scale: an icon above its class name (settings demos) ---- */
+.oci-scale { display: flex; flex-wrap: wrap; align-items: end; justify-content: center; gap: 1.25rem 1rem; }
+.oci-scale > span { display: grid; justify-items: center; gap: 0.5rem; }
+.oci-scale code { font-size: 0.7rem; }
+
+/* ---- Icon toolbar ---- */
+.oci-tb {
+  position: fixed;
+  z-index: 60;
+  inline-size: min(22rem, calc(100vw - 2rem));
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--oc-popover, var(--oc-background));
+  color: var(--oc-popover-foreground, var(--oc-foreground));
+  box-shadow: 0 18px 40px -16px oklch(0 0 0 / 0.45);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.oci-tb[hidden] { display: none; }
+.oci-tb__head { display: flex; align-items: center; gap: 0.75rem; }
+.oci-tb__preview {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 4rem;
+  block-size: 4rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-muted);
+}
+.oci-tb__title { display: grid; min-inline-size: 0; flex: 1; }
+.oci-tb__name { font-size: 0.9rem; font-weight: 600; overflow-wrap: anywhere; }
+.oci-tb__set { font-size: 0.75rem; color: var(--oc-muted-foreground); }
+.oci-tb__close { align-self: start; }
+.oci-tb__row { display: grid; grid-template-columns: 4.5rem 1fr; align-items: center; gap: 0.5rem; }
+.oci-tb__label { font-size: 0.75rem; font-weight: 600; color: var(--oc-muted-foreground); }
+.oci-tb__seg { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.oci-tb__seg button {
+  min-inline-size: 2rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: var(--oc-background);
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.oci-tb__seg button:hover { background: var(--oc-accent); }
+.oci-tb__seg button[aria-pressed="true"] { border-color: var(--oc-primary); background: var(--oc-primary); color: var(--oc-primary-foreground); }
+.oci-tb__seg button:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+/* Color swatches: the dot takes the color utility of its button (currentColor). */
+.oci-tb__seg--colors button { display: grid; place-items: center; min-inline-size: 0; inline-size: 1.75rem; block-size: 1.75rem; padding: 0; }
+.oci-tb__seg--colors button[aria-pressed="true"] { border-color: var(--oc-foreground); background: var(--oc-background); box-shadow: 0 0 0 1px var(--oc-foreground); }
+.oci-tb__dot { inline-size: 0.875rem; block-size: 0.875rem; border-radius: 50%; background: currentColor; }
+.oci-tb__dot--inherit { background: linear-gradient(135deg, var(--oc-foreground) 50%, var(--oc-muted-foreground) 50%); }
+.oci-tb__code {
+  margin: 0;
+  max-block-size: 8rem;
+  overflow: auto;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--oc-radius);
+  background: var(--oc-muted);
+  font-family: var(--oc-font-mono, ui-monospace, monospace);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.oci-tb__foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.oci-tb__status { font-size: 0.75rem; color: var(--oc-muted-foreground); }

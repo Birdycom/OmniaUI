@@ -5,6 +5,8 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import OcLightbox from '../src/components/OcLightbox.vue'
+import OcWatermark from '../src/components/OcWatermark.vue'
+import OcLiveFrame from '../src/components/OcLiveFrame.vue'
 import OcImageZoom from '../src/components/OcImageZoom.vue'
 import OcMediaThumb from '../src/components/OcMediaThumb.vue'
 import OcMediaCard from '../src/components/OcMediaCard.vue'
@@ -125,5 +127,39 @@ describe('OcTerminalLog, OcBrowserFrame', () => {
     expect(w.classes()).toContain('oc-browser-frame--minimal')
     expect(w.find('.oc-browser-frame__address').text()).toBe('example.com')
     expect(w.find('.oc-browser-frame__view').text()).toBe('Live')
+  })
+})
+
+describe('OcWatermark', () => {
+  it('renders an aria-hidden layer with the text once, or tiled, and takes a slot', () => {
+    const one = mount(OcWatermark, { props: { text: 'Draft', variant: 'corner', tone: 'light' } })
+    expect(one.classes()).toEqual(expect.arrayContaining(['oc-watermark', 'oc-watermark--corner', 'oc-watermark--light']))
+    expect(one.attributes('aria-hidden')).toBe('true')
+    expect(one.findAll(':scope > span')).toHaveLength(1)
+    const tile = mount(OcWatermark, { props: { variant: 'tile', repeat: 4 }, slots: { default: 'Sample' } })
+    expect(tile.findAll(':scope > span')).toHaveLength(4)
+    expect(tile.text()).toContain('Sample')
+  })
+})
+
+describe('OcWatermark with an icon', () => {
+  it('puts the mark slot straight in the layer and adds mono', () => {
+    const w = mount(OcWatermark, { props: { mono: true }, slots: { mark: '<svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z"/></svg>' } })
+    expect(w.classes()).toContain('oc-watermark--mono')
+    expect(w.findAll(':scope > svg')).toHaveLength(1)
+    expect(w.find(':scope > span').exists()).toBe(false)
+  })
+})
+
+describe('OcLiveFrame', () => {
+  it('sets the virtual size and renders an iframe, or the slot', () => {
+    const w = mount(OcLiveFrame, { props: { src: '/demo', title: 'Demo', width: 390, height: 520, static: true } })
+    expect(w.classes()).toEqual(expect.arrayContaining(['oc-live-frame', 'oc-live-frame--static']))
+    expect((w.element as HTMLElement).style.getPropertyValue('--oc-live-w')).toBe('390')
+    expect(w.find('iframe').attributes('src')).toBe('/demo')
+    const slot = mount(OcLiveFrame, { props: { inBrowserFrame: true }, slots: { default: '<img src="/a.png" alt="A">' } })
+    expect(slot.classes()).toContain('oc-browser-frame__view')
+    expect(slot.find('iframe').exists()).toBe(false)
+    expect(slot.find('img').exists()).toBe(true)
   })
 })

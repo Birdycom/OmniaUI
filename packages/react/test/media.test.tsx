@@ -5,6 +5,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Lightbox } from "../src/components/Lightbox";
+import { Watermark } from "../src/components/Watermark";
+import { LiveFrame } from "../src/components/LiveFrame";
 import { ImageZoom } from "../src/components/ImageZoom";
 import { MediaThumb } from "../src/components/MediaThumb";
 import { MediaCard } from "../src/components/MediaCard";
@@ -143,5 +145,50 @@ describe("TerminalLog and BrowserFrame", () => {
     expect(container.querySelector("figure")).toHaveClass("oc-browser-frame oc-browser-frame--dark oc-browser-frame--tilt");
     expect(container.querySelector(".oc-browser-frame__address")).toHaveTextContent("example.com");
     expect(container.querySelector(".oc-browser-frame__view")).toHaveTextContent("Live");
+  });
+});
+
+describe("Watermark", () => {
+  it("renders a click-through, aria-hidden layer with the text once, or tiled", () => {
+    const { container, rerender } = render(<div className="relative"><Watermark text="Draft" variant="straight" tone="destructive" /></div>);
+    const layer = container.querySelector(".oc-watermark")!;
+    expect(layer).toHaveClass("oc-watermark--straight", "oc-watermark--destructive");
+    expect(layer).toHaveAttribute("aria-hidden", "true");
+    expect(layer.querySelectorAll(":scope > span")).toHaveLength(1);
+    expect(layer).toHaveTextContent("Draft");
+    rerender(<div className="relative"><Watermark variant="tile" repeat={6} /></div>);
+    const tiled = container.querySelector(".oc-watermark")!;
+    expect(tiled).toHaveClass("oc-watermark--tile");
+    expect(tiled.querySelectorAll(":scope > span")).toHaveLength(6);
+    expect(tiled.querySelector("span")).toHaveTextContent("Concept");
+  });
+});
+
+describe("Watermark with a logo", () => {
+  it("puts an <img> logo straight in the layer, gray with mono, and tiles it", () => {
+    const { container } = render(<div className="relative"><Watermark text={<img src="/logo.svg" alt="" />} variant="tile" repeat={3} mono /></div>);
+    const layer = container.querySelector(".oc-watermark")!;
+    expect(layer).toHaveClass("oc-watermark--mono", "oc-watermark--tile");
+    expect(layer.querySelectorAll(":scope > img")).toHaveLength(3);
+    expect(layer.querySelector(":scope > span")).toBeNull();
+  });
+});
+
+describe("LiveFrame", () => {
+  it("sets the virtual size, renders the iframe and the browser-frame and static classes", () => {
+    const { container, rerender } = render(<LiveFrame src="/demo" title="Demo" width={1680} height={1400} static inBrowserFrame />);
+    const frame = container.querySelector(".oc-live-frame") as HTMLElement;
+    expect(frame).toHaveClass("oc-browser-frame__view", "oc-live-frame--static");
+    expect(frame.style.getPropertyValue("--oc-live-w")).toBe("1680");
+    expect(frame.style.getPropertyValue("--oc-live-h")).toBe("1400");
+    const iframe = frame.querySelector("iframe")!;
+    expect(iframe).toHaveAttribute("src", "/demo");
+    expect(iframe).toHaveAttribute("title", "Demo");
+    expect(iframe).toHaveAttribute("tabindex", "-1");
+    rerender(<LiveFrame><img src="/shot.png" alt="Shot" /></LiveFrame>);
+    const plain = container.querySelector(".oc-live-frame") as HTMLElement;
+    expect(plain.style.getPropertyValue("--oc-live-w")).toBe("1280");
+    expect(plain.querySelector("iframe")).toBeNull();
+    expect(plain.querySelector("img")).toHaveAttribute("alt", "Shot");
   });
 });
