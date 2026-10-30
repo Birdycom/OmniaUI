@@ -1,4 +1,4 @@
-<!-- File: packages/vue/src/components/OcPriceCard.vue | Map: props -> head -> toggle (radios) -> monthly / yearly price -> features -> cta slot -->
+<!-- File: packages/vue/src/components/OcPriceCard.vue | Map: props -> head -> toggle (radios) -> monthly / yearly / lifetime price -> features -> cta slot -->
 <script setup lang="ts">
 /**
  * Plan card with a CSS-only monthly / yearly switch (radio + :has). Slots: cta, features (replaces the list items).
@@ -24,13 +24,16 @@ withDefaults(
     discount?: string
     monthly: PriceCardPrice
     yearly?: PriceCardPrice
-    defaultPeriod?: 'monthly' | 'yearly'
+    /** Optional third option, e.g. a one-time price. Needs `yearly`. */
+    lifetime?: PriceCardPrice
+    defaultPeriod?: 'monthly' | 'yearly' | 'lifetime'
     features?: PriceCardFeature[]
     featured?: boolean
     monthlyLabel?: string
     yearlyLabel?: string
+    lifetimeLabel?: string
   }>(),
-  { defaultPeriod: 'monthly', features: () => [], monthlyLabel: 'Monthly', yearlyLabel: 'Yearly' },
+  { defaultPeriod: 'monthly', features: () => [], monthlyLabel: 'Monthly', yearlyLabel: 'Yearly', lifetimeLabel: 'Lifetime' },
 )
 // Every card needs its own radio group name.
 const group = useUid('oc-price')
@@ -46,6 +49,7 @@ const group = useUid('oc-price')
     <div v-if="yearly" class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period">
       <label class="oc-segmented-item"><input type="radio" :name="group" value="monthly" :checked="defaultPeriod === 'monthly'" /> {{ monthlyLabel }}</label>
       <label class="oc-segmented-item"><input type="radio" :name="group" value="yearly" :checked="defaultPeriod === 'yearly'" /> {{ yearlyLabel }}</label>
+      <label v-if="lifetime" class="oc-segmented-item"><input type="radio" :name="group" value="lifetime" :checked="defaultPeriod === 'lifetime'" /> {{ lifetimeLabel }}</label>
     </div>
     <p class="oc-price-card__price oc-price-card__price--monthly">
       <span class="oc-price-card__amount">{{ monthly.amount }}</span>
@@ -58,6 +62,12 @@ const group = useUid('oc-price')
       <span v-if="yearly.period" class="oc-price-card__period">{{ yearly.period }}</span>
       <s v-if="yearly.was" class="oc-price-card__was">{{ yearly.was }}</s>
       <span v-if="yearly.note" class="oc-price-card__note">{{ yearly.note }}</span>
+    </p>
+    <p v-if="yearly && lifetime" class="oc-price-card__price oc-price-card__price--lifetime">
+      <span class="oc-price-card__amount">{{ lifetime.amount }}</span>
+      <span v-if="lifetime.period" class="oc-price-card__period">{{ lifetime.period }}</span>
+      <s v-if="lifetime.was" class="oc-price-card__was">{{ lifetime.was }}</s>
+      <span v-if="lifetime.note" class="oc-price-card__note">{{ lifetime.note }}</span>
     </p>
     <ul v-if="features.length || $slots.features" class="oc-price-card__features">
       <slot name="features">

@@ -70,6 +70,18 @@ class MarketingTest extends TestCase
         $this->assertStringContainsString('oc-price-card__cta', $html);
     }
 
+    public function test_price_card_lifetime_option(): void
+    {
+        $html = $this->render(
+            '<x-oc::price-card name="Pro" group="g2" :monthly="[\'amount\' => \'9.90\']" :yearly="[\'amount\' => \'99\']" :lifetime="[\'amount\' => \'249\', \'period\' => \'once\']" default-period="lifetime" />'
+        );
+
+        $this->assertSame(3, substr_count($html, 'name="g2"'));
+        $this->assertMatchesRegularExpression('/value="lifetime"\s+checked/', $html);
+        $this->assertDoesNotMatchRegularExpression('/value="monthly"\s+checked/', $html);
+        $this->assertElement($html, 'p', 'oc-price-card__price oc-price-card__price--lifetime');
+    }
+
     /** @return array<string, array{string, string}> */
     public static function blocks(): array
     {

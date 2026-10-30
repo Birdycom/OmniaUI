@@ -25,8 +25,10 @@ export interface PriceCardProps extends Omit<HTMLAttributes<HTMLElement>, "title
   monthly: PriceCardPrice;
   /** Without a yearly price the toggle is not rendered. */
   yearly?: PriceCardPrice;
+  /** Optional third option, e.g. a one-time price. Needs `yearly`. */
+  lifetime?: PriceCardPrice;
   /** Period that is selected first (uncontrolled radio). */
-  defaultPeriod?: "monthly" | "yearly";
+  defaultPeriod?: "monthly" | "yearly" | "lifetime";
   features?: PriceCardFeature[];
   /** Call to action, e.g. <a className="oc-btn oc-price-card__cta">. */
   cta?: ReactNode;
@@ -34,9 +36,10 @@ export interface PriceCardProps extends Omit<HTMLAttributes<HTMLElement>, "title
   /** Labels of the toggle. */
   monthlyLabel?: ReactNode;
   yearlyLabel?: ReactNode;
+  lifetimeLabel?: ReactNode;
 }
 
-function Price({ kind, price }: { kind: "monthly" | "yearly"; price: PriceCardPrice }) {
+function Price({ kind, price }: { kind: "monthly" | "yearly" | "lifetime"; price: PriceCardPrice }) {
   return (
     <p className={`oc-price-card__price oc-price-card__price--${kind}`}>
       <span className="oc-price-card__amount">{price.amount}</span>
@@ -47,10 +50,10 @@ function Price({ kind, price }: { kind: "monthly" | "yearly"; price: PriceCardPr
   );
 }
 
-/** `<article class="oc-price-card">`: plan card with a CSS-only monthly / yearly switch. */
+/** `<article class="oc-price-card">`: plan card with a CSS-only monthly / yearly (/ lifetime) switch. */
 export const PriceCard = forwardRef<HTMLElement, PriceCardProps>(function PriceCard(
-  { name, description, discount, monthly, yearly, defaultPeriod = "monthly", features = [], cta, featured = false,
-    monthlyLabel = "Monthly", yearlyLabel = "Yearly", className, ...rest },
+  { name, description, discount, monthly, yearly, lifetime, defaultPeriod = "monthly", features = [], cta, featured = false,
+    monthlyLabel = "Monthly", yearlyLabel = "Yearly", lifetimeLabel = "Lifetime", className, ...rest },
   ref,
 ) {
   // Every card needs its own radio group name.
@@ -66,10 +69,12 @@ export const PriceCard = forwardRef<HTMLElement, PriceCardProps>(function PriceC
         <div className="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period">
           <label className="oc-segmented-item"><input type="radio" name={group} value="monthly" defaultChecked={defaultPeriod === "monthly"} /> {monthlyLabel}</label>
           <label className="oc-segmented-item"><input type="radio" name={group} value="yearly" defaultChecked={defaultPeriod === "yearly"} /> {yearlyLabel}</label>
+          {lifetime && <label className="oc-segmented-item"><input type="radio" name={group} value="lifetime" defaultChecked={defaultPeriod === "lifetime"} /> {lifetimeLabel}</label>}
         </div>
       )}
       <Price kind="monthly" price={monthly} />
       {yearly && <Price kind="yearly" price={yearly} />}
+      {yearly && lifetime && <Price kind="lifetime" price={lifetime} />}
       {features.length > 0 && (
         <ul className="oc-price-card__features">
           {features.map((f, i) => (
