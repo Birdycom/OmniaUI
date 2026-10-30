@@ -773,6 +773,224 @@
 /* Full window height (stand-alone error page). */
 .oc-block-statuspage--full { min-block-size: 100dvh; }
 
+/* parts/site-device-mockups.css */
+/* File: packages/pro/src/parts/site-device-mockups.css
+   Map: block (head + stage) -> device base -> laptop (lid, display, base in perspective) -> screen / LED wall (bezel,
+        glow, stand) -> sizes -> reduced motion
+   Device mockups: a laptop and a TV / LED wall around a live screen. The display slot takes anything: the free
+   .oc-live-frame (a real page scaled down), an <img>, a <video> or placeholder art. Sharp: only the laptop base is
+   drawn in perspective, never the screen itself. Omnia palette and theme tokens only. */
+
+/* overflow: clip: the light behind the screen and the laptop base in perspective reach past the block on purpose;
+   they must never give the page (or a demo box) a scrollbar. */
+.oc-block-devices { display: grid; gap: 1.5rem; overflow: clip; }
+.oc-block-devices-head { display: grid; gap: 0.35rem; max-inline-size: 44rem; }
+.oc-block-devices-title { margin: 0; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); font-weight: 700; letter-spacing: -0.02em; }
+.oc-block-devices-lead { margin: 0; color: var(--oc-muted-foreground); }
+/* The stage: the wall large, the laptop in front of it, overlapping at the bottom right. */
+.oc-block-devices-stage { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: end; padding-block: 2rem 2.5rem; }
+.oc-block-devices-stage > .oc-device--display { grid-column: 1 / span 9; grid-row: 1; }
+.oc-block-devices-stage > .oc-device--laptop { grid-column: 7 / span 6; grid-row: 1; }
+@media (max-width: 640px) {
+  .oc-block-devices-stage > .oc-device--display { grid-column: 1 / -1; }
+  .oc-block-devices-stage > .oc-device--laptop { grid-column: 4 / -1; grid-row: 2; margin-block-start: -18%; }
+}
+
+/* ---- Device base ---- */
+.oc-device {
+  /* Neutral metal (silver and black have no hue; the gray tones are slightly warm). */
+  --oc-device-metal: light-dark(var(--color-silver-40), var(--color-black-40));
+  --oc-device-edge: light-dark(var(--color-silver-10), var(--color-black-20));
+  --oc-device-ink: var(--color-black-90);
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  container-type: inline-size;
+}
+/* The display slot: content fills it (an .oc-live-frame sets its own ratio, other content gets 16:10). */
+.oc-device__display { position: relative; display: block; overflow: hidden; background: var(--oc-device-ink); }
+.oc-device__display:not(.oc-live-frame) { aspect-ratio: 16 / 10; }
+.oc-device__display > :is(img, video, .oc-media-art) { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
+
+/* ---- Laptop ---- */
+.oc-device--laptop { padding-inline: 4%; }
+.oc-device__lid {
+  padding: 2.2cqi 2.2cqi 3cqi;
+  border: 1px solid var(--oc-device-edge);
+  border-radius: 1.6cqi 1.6cqi 0.4cqi 0.4cqi;
+  background: var(--oc-device-metal);
+  box-shadow: 0 24px 40px -18px oklch(from var(--color-black-90) l c h / 0.55);
+}
+.oc-device--laptop .oc-device__display { border-radius: 0.5cqi; }
+/* Base: keyboard half in perspective, with a faint key pattern and the trackpad notch. */
+.oc-device__base {
+  display: block;
+  block-size: clamp(0.8rem, 5cqi, 2.6rem);
+  margin-inline: -4.5%;
+  border-radius: 0 0 1.6cqi 1.6cqi;
+  background:
+    linear-gradient(90deg, transparent 42%, oklch(from var(--oc-device-ink) l c h / 0.25) 42% 58%, transparent 58%) 0 0 / 100% 22% no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 6.5%, oklch(from var(--oc-device-ink) l c h / 0.22) 6.5% 7.5%) 12% 30% / 76% 46% no-repeat,
+    linear-gradient(var(--oc-device-edge), var(--oc-device-metal) 50%, oklch(from var(--oc-device-metal) calc(l - 0.08) c h));
+  box-shadow: 0 14px 22px -10px oklch(from var(--color-black-90) l c h / 0.5);
+  transform: perspective(600px) rotateX(58deg);
+  transform-origin: 50% 0;
+}
+
+/* ---- TV / LED wall ---- */
+.oc-device--display .oc-device__display {
+  border: max(4px, 1.1cqi) solid var(--oc-device-ink);
+  border-radius: 0.6cqi;
+  box-shadow: 0 0 0 1px var(--oc-device-edge), 0 30px 60px -24px oklch(from var(--color-black-90) l c h / 0.7);
+}
+/* Soft light behind the screen in the accent color (an .oc-accent--* class on the device, or the primary color). */
+.oc-device--display::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -12% -8%;
+  background: radial-gradient(55% 60% at 50% 55%, oklch(from var(--oc-accent-from, var(--oc-primary)) l c h / 0.38), transparent 70%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+/* --glow: the light breathes slowly (off with reduced motion). */
+.oc-device--glow::before { animation: oc-device-glow 4.5s ease-in-out infinite alternate; }
+@keyframes oc-device-glow {
+  from { opacity: 0.5; scale: 0.96; }
+  to { opacity: 1; scale: 1.04; }
+}
+/* Stand under a TV: a neck and a foot. Leave it out for a wall. */
+.oc-device__stand {
+  display: block;
+  inline-size: 24%;
+  block-size: clamp(1.2rem, 7cqi, 3.5rem);
+  margin-inline: auto;
+  background:
+    linear-gradient(var(--oc-device-metal), var(--oc-device-metal)) 50% 0 / 14% 80% no-repeat,
+    linear-gradient(var(--oc-device-edge), var(--oc-device-metal)) 50% 100% / 100% 22% no-repeat;
+  border-radius: 0 0 0.6cqi 0.6cqi;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-device--glow::before { animation: none; }
+}
+
+/* parts/site-ecosystem-map.css */
+/* File: packages/pro/src/parts/site-ecosystem-map.css
+   Map: block (head + map) -> map card -> canvas + lines (SVG, drawn by ecosystem-map.js) -> root logo -> rows (first row
+        zigzag, deeper rows) -> nodes (icon tile + name) -> pointing at a node -> caption -> reduced motion
+   Ecosystem map: your logo on top, your apps below it per level, dotted curves from each app to what it builds on, with
+   dots flowing down the lines. Pointing at an app (or focusing it) lights up its way to the top and the apps built on
+   it, the rest fades, and the caption says "builds on …; basis for …". The free .oc-icon-tile is the app icon.
+   Without the script the apps still show, in rows, without lines. Omnia tokens only. */
+
+.oc-block-ecosystem { display: grid; gap: 1.5rem; }
+.oc-block-ecosystem-head { display: grid; gap: 0.35rem; max-inline-size: 44rem; }
+.oc-block-ecosystem-title { margin: 0; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); font-weight: 700; letter-spacing: -0.02em; }
+.oc-block-ecosystem-lead { margin: 0; color: var(--oc-muted-foreground); }
+
+.oc-block-ecosystem-map {
+  --oc-eco-line: oklch(from var(--oc-primary) l c h / 0.45);
+  --oc-eco-line-active: var(--oc-accent-from, var(--oc-primary));
+  margin: 0;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) * 2 + 4px);
+  background:
+    radial-gradient(30rem circle at 0% 0%, oklch(from var(--oc-primary) l c h / 0.1), transparent 60%),
+    radial-gradient(30rem circle at 100% 100%, oklch(from var(--oc-accent-from, var(--oc-primary)) l c h / 0.12), transparent 60%),
+    var(--oc-card);
+}
+
+/* The lines lie under the apps; the canvas is their frame of reference. */
+.oc-block-ecosystem-canvas { position: relative; display: grid; gap: 1.75rem; }
+.oc-block-ecosystem-lines {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.oc-block-ecosystem-lines path {
+  fill: none;
+  stroke: var(--oc-eco-line);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 6;
+  stroke-linecap: round;
+  transition: stroke 0.3s, opacity 0.3s, stroke-width 0.3s;
+  /* Dots flow from the app on top to the app below (the path runs that way). */
+  animation: oc-eco-flow 1.4s linear infinite;
+}
+@keyframes oc-eco-flow { to { stroke-dashoffset: -8; } }
+
+/* The root: your logo on top. */
+.oc-block-ecosystem-top { display: flex; justify-content: center; margin-block-end: 1rem; }
+.oc-block-ecosystem-root {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1.3rem;
+  border: 1px solid oklch(from var(--oc-primary) l c h / 0.35);
+  border-radius: calc(var(--oc-radius) + 6px);
+  background: linear-gradient(135deg, oklch(from var(--oc-primary) l c h / 0.1), oklch(from var(--oc-accent-from, var(--oc-primary)) l c h / 0.1)), var(--oc-card);
+  color: var(--oc-foreground);
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+.oc-block-ecosystem-root > :is(img, svg) { inline-size: 2.2rem; block-size: auto; }
+
+/* Rows per level. First row: every app straight under the root, every other one a little lower (zigzag), so the
+   names fit next to each other and the lines run between the apps. */
+.oc-block-ecosystem-row { display: flex; align-items: flex-start; justify-content: center; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.oc-block-ecosystem-row > li { display: grid; align-content: start; justify-items: center; inline-size: 6.75rem; min-inline-size: 0; }
+.oc-block-ecosystem-row--first { gap: 0; }
+.oc-block-ecosystem-row--first > li { inline-size: calc(100% / var(--n, 6)); }
+.oc-block-ecosystem-row--first > li:nth-child(even) { margin-block-start: 2.75rem; }
+
+.oc-block-ecosystem-node {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  border-radius: calc(var(--oc-radius) + 4px);
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+.oc-block-ecosystem-node:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 4px; }
+.oc-block-ecosystem-node .oc-icon-tile { transition: transform 0.3s var(--oc-ease-out, ease-out), box-shadow 0.3s; }
+.oc-block-ecosystem-node:is(:hover, :focus-visible) .oc-icon-tile { transform: scale(1.12); box-shadow: 0 0 24px -4px var(--oc-accent-from, var(--oc-primary)); }
+.oc-block-ecosystem-name { color: var(--oc-muted-foreground); font-size: 0.72rem; line-height: 1.25; text-align: center; }
+.oc-block-ecosystem-row--first .oc-block-ecosystem-name { white-space: nowrap; }
+.oc-block-ecosystem-node:is(:hover, :focus-visible) .oc-block-ecosystem-name { color: var(--oc-foreground); }
+
+/* Pointing at an app: its lines to the top and to the apps built on it light up, the rest gets quieter. */
+.oc-block-ecosystem-map.is-focused .oc-block-ecosystem-lines path { opacity: 0.15; }
+.oc-block-ecosystem-map.is-focused .oc-block-ecosystem-lines path.is-active { opacity: 1; stroke: var(--oc-eco-line-active); stroke-width: 2; }
+.oc-block-ecosystem-map.is-focused :is(.oc-block-ecosystem-node, .oc-block-ecosystem-root):not(.is-linked) { opacity: 0.3; }
+
+.oc-block-ecosystem-caption {
+  min-block-size: 2.6em;
+  margin-block-start: 1.25rem;
+  color: var(--oc-muted-foreground);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* Small screens: the first row may wrap; the zigzag would then only get in the way. */
+@media (max-width: 640px) {
+  .oc-block-ecosystem-row { flex-wrap: wrap; row-gap: 1rem; }
+  .oc-block-ecosystem-row--first > li { inline-size: 6rem; }
+  .oc-block-ecosystem-row--first > li:nth-child(even) { margin-block-start: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-block-ecosystem-lines path { animation: none; }
+  .oc-block-ecosystem-node .oc-icon-tile { transition: none; }
+}
+
 /* parts/site-infinite-carousel.css */
 /* File: packages/pro/src/parts/site-infinite-carousel.css
    Map: block (head + carousel) -> slides (card: art, text) -> copies (no dots) -> buttons -> per view

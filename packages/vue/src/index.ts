@@ -71,7 +71,9 @@ import OcLanguageSelect from './components/OcLanguageSelect.vue'
 import OcLauncherCard from './components/OcLauncherCard.vue'
 import OcLightbox from './components/OcLightbox.vue'
 import OcLinkArrow from './components/OcLinkArrow.vue'
+import OcLinkRow from './components/OcLinkRow.vue'
 import OcListToolbar from './components/OcListToolbar.vue'
+import OcLiveFrame from './components/OcLiveFrame.vue'
 import OcMarquee from './components/OcMarquee.vue'
 import OcMediaCard from './components/OcMediaCard.vue'
 import OcMediaRow from './components/OcMediaRow.vue'
@@ -141,6 +143,7 @@ import OcTree from './components/OcTree.vue'
 import OcUpgradeBanner from './components/OcUpgradeBanner.vue'
 import OcUser from './components/OcUser.vue'
 import OcVersionBanner from './components/OcVersionBanner.vue'
+import OcWatermark from './components/OcWatermark.vue'
 import OcBlockAboutTimeline from './blocks/OcBlockAboutTimeline.vue'
 import OcBlockAppHeader from './blocks/OcBlockAppHeader.vue'
 import OcBlockAppShell from './blocks/OcBlockAppShell.vue'
@@ -245,7 +248,9 @@ export {
   OcLauncherCard,
   OcLightbox,
   OcLinkArrow,
+  OcLinkRow,
   OcListToolbar,
+  OcLiveFrame,
   OcMarquee,
   OcMediaCard,
   OcMediaRow,
@@ -315,6 +320,7 @@ export {
   OcUpgradeBanner,
   OcUser,
   OcVersionBanner,
+  OcWatermark,
   OcBlockAboutTimeline,
   OcBlockAppHeader,
   OcBlockAppShell,
@@ -475,7 +481,9 @@ export const components: Record<string, Component> = {
   OcLauncherCard,
   OcLightbox,
   OcLinkArrow,
+  OcLinkRow,
   OcListToolbar,
+  OcLiveFrame,
   OcMarquee,
   OcMediaCard,
   OcMediaRow,
@@ -545,6 +553,7 @@ export const components: Record<string, Component> = {
   OcUpgradeBanner,
   OcUser,
   OcVersionBanner,
+  OcWatermark,
   OcBlockAboutTimeline,
   OcBlockAppHeader,
   OcBlockAppShell,

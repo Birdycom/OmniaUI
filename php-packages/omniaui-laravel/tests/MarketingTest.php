@@ -92,4 +92,14 @@ class MarketingTest extends TestCase
         $custom = $this->render("<x-oc::block.{$name}><p>Custom</p></x-oc::block.{$name}>");
         $this->assertStringContainsString('<p>Custom</p>', $custom);
     }
+
+    public function test_link_row_renders_links_with_noopener_on_external_ones(): void
+    {
+        $html = $this->render(<<<'BLADE'
+            <x-oc::link-row tone="accent" size="sm" :links="[['href' => '/docs', 'label' => 'Docs'], ['href' => 'https://github.com/acme/app', 'label' => 'Source']]" />
+            BLADE);
+        $this->assertStringContainsString('class="oc-link-row oc-link-row--accent oc-link-row--sm"', $html);
+        $this->assertMatchesRegularExpression('#<a href="/docs"\s*>Docs</a>#', $html);
+        $this->assertMatchesRegularExpression('#<a href="https://github.com/acme/app"\s+rel="noopener"\s*>Source</a>#', $html);
+    }
 }

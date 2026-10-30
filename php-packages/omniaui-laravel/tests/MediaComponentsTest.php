@@ -10,6 +10,37 @@ namespace Omniacss\Laravel\Tests;
 
 class MediaComponentsTest extends TestCase
 {
+    public function test_live_frame_sets_the_virtual_size_and_renders_an_iframe_or_the_slot(): void
+    {
+        $html = $this->render('<x-oc::live-frame src="/demo" title="Demo" :width="1680" :height="1400" static in-browser-frame />');
+        $this->assertStringContainsString('class="oc-browser-frame__view oc-live-frame oc-live-frame--static"', $html);
+        $this->assertStringContainsString('style="--oc-live-w: 1680; --oc-live-h: 1400"', $html);
+        $this->assertStringContainsString('<iframe src="/demo" title="Demo" loading="lazy" scrolling="no"', $html);
+        $this->assertStringContainsString('tabindex="-1"', $html);
+
+        $slot = $this->render('<x-oc::live-frame><img src="/a.png" alt="A"></x-oc::live-frame>');
+        $this->assertStringContainsString('--oc-live-w: 1280; --oc-live-h: 720', $slot);
+        $this->assertStringNotContainsString('<iframe', $slot);
+        $this->assertStringContainsString('<img src="/a.png" alt="A">', $slot);
+    }
+
+    public function test_watermark_renders_once_or_tiled_and_escapes_the_text(): void
+    {
+        $one = $this->render('<x-oc::watermark text="<b>Draft</b>" variant="straight" tone="destructive" />');
+        $this->assertStringContainsString('class="oc-watermark oc-watermark--straight oc-watermark--destructive"', $one);
+        $this->assertStringContainsString('aria-hidden="true"', $one);
+        $this->assertStringContainsString('&lt;b&gt;Draft&lt;/b&gt;', $one);
+        $this->assertSame(1, substr_count($one, '<span>'));
+
+        $tile = $this->render('<x-oc::watermark variant="tile" repeat="5">Sample</x-oc::watermark>');
+        $this->assertSame(5, substr_count($tile, '<span>Sample</span>'));
+
+        $logo = $this->render('<x-oc::watermark variant="tile" repeat="3" mono><x-slot:mark><img src="/logo.svg" alt=""></x-slot:mark></x-oc::watermark>');
+        $this->assertStringContainsString('oc-watermark--mono', $logo);
+        $this->assertSame(3, substr_count($logo, '<img src="/logo.svg" alt="">'));
+        $this->assertStringNotContainsString('<span>Concept</span>', $logo);
+    }
+
     public function test_lightbox_renders_dialog_slides_and_wrap_around_links(): void
     {
         $html = $this->render('<x-oc::lightbox id="lb" title="Trip" :images="[[\'alt\' => \'A\'], [\'alt\' => \'B\']]" />');

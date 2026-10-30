@@ -102,6 +102,19 @@ const CSS = `
     :root:is([data-theme="dark"], :has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-light { display: none; }
     :root:is([data-theme="dark"], :has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-dark { display: block; }
     .gx-new { position: absolute; inset: 0.6rem auto auto 0.6rem; z-index: 1; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-white-50); background: linear-gradient(135deg, var(--color-green-70), var(--color-teal-70)); }
+    /* Cards without a thumbnail (components): the badge sits top right, next to the title instead of over it
+       (left of the Pro badge when there is one), and the title keeps clear of it. */
+    .gx-card:not(:has(.gx-shot)) .gx-new { inset: 0.75rem 0.75rem auto auto; }
+    .gx-card:not(:has(.gx-shot)):has(.gx-pro) .gx-new { inset-inline-end: 4.6rem; }
+    .gx-card:not(:has(.gx-shot)):has(.gx-new) > b { padding-inline-end: 3.75rem; }
+    .gx-card:not(:has(.gx-shot)):has(.gx-new):has(.gx-pro) > b { padding-inline-end: 8.4rem; }
+    /* New in this release: a green edge and a soft green wash, so they stand out in the grid. */
+    .gx-card:has(.gx-new) {
+      border-color: color-mix(in oklch, var(--color-green-60) 55%, var(--oc-border));
+      background: linear-gradient(160deg, oklch(from var(--color-green-60) l c h / 0.1), transparent 55%);
+      box-shadow: 0 0 0 1px oklch(from var(--color-green-60) l c h / 0.18), 0 14px 30px -20px oklch(from var(--color-green-70) l c h / 0.7);
+    }
+    .gx-card:has(.gx-new)::before { background: linear-gradient(var(--color-green-60), var(--color-teal-60)); opacity: 1; }
     .gx-shot img { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; object-position: center; transition: scale 0.4s; }
     .gx-card:hover .gx-shot img { scale: 1.03; }
     .gx-pro { position: absolute; inset: 0.6rem 0.6rem auto auto; z-index: 1; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-primary-foreground); background: var(--ocd-accent); }
