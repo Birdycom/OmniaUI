@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" class="scrollbar-omnia" data-section="home" data-sister-site="https://omniacss.test">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Security notices for OmniaUI and OmniaUI Pro: affected versions, the fix, and how former customers get it.">
+  <meta name="generator" content="OmniaUI 0.12.3">
+  <title>OmniaUI - Security notices</title>
+  <!-- Favicon: SVG for modern browsers, ICO/PNG as fallback (Safari, Google, /favicon.ico). "icon": "pro" in the
+       page meta shows the OmniaUI Pro star instead of the OmniaUI puzzle piece. -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  
+  <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/omnia-site.css?v=56161714a9"><link rel="stylesheet" href="/css/oc-components.css?v=23c535f123"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=21effc144d"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=640002ab1c"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=1b178f942c"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=152176955a"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=6f864166ae">
+  <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
+  <script>
+    // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
+    try { const u = new URL(location.href), q = u.searchParams.get("oc-theme"); if (q) { localStorage.setItem("oc-theme", q); u.searchParams.delete("oc-theme"); history.replaceState(history.state, "", u); } const t = q || localStorage.getItem("oc-theme"); if (t && t !== "system") document.documentElement.dataset.theme = t; } catch {}
+    const carryTheme = (e) => { const a = e.target.closest && e.target.closest("a[href]"); const sister = document.documentElement.dataset.sisterSite; if (!a || !sister || a.origin !== new URL(sister).origin) return; try { const t = localStorage.getItem("oc-theme"); if (!t) return; const u = new URL(a.href); u.searchParams.set("oc-theme", t); a.href = u.href; } catch {} };
+    addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
+    addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
+    // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
+    // a click in a demo still themes only that demo (.oc-theme-scope).
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
+    addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
+  </script>
+  <script src="/js/oc-docs-v2.js?v=50b3bbdcc6" defer></script>
+  
+</head>
+<body>
+  <header class="oc-topbar oc-topbar--fixed">
+    <input type="checkbox" id="ocd-nav-toggle" class="ocd-nav-toggle" aria-label="Show the menu">
+    <label class="ocd-nav-button" for="ocd-nav-toggle" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></label>
+    <a class="oc-topbar-brand" href="/">OmniaUI<span class="oc-badge-version ml-1">v0.12.3</span></a>
+    <nav class="oc-topbar-nav" aria-label="Main">
+      <ul class="oc-navmenu oc-navmenu--site">
+        <li><a class="oc-navmenu-link" href="https://omniacss.test/">OmniaCSS</a></li><li><a class="oc-navmenu-link" href="https://omniacss.test/docs/">Docs</a></li><li><a class="oc-navmenu-link" href="/ui/components">Components</a></li><li><a class="oc-navmenu-link" href="/ui/blocks">Blocks</a></li><li><a class="oc-navmenu-link" href="/ui/webicons">Webicons</a></li>
+        <li><a class="oc-navmenu-link" href="https://github.com/Birdycom/OmniaUI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="oc-navmenu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"></path></svg></a></li>
+      </ul>
+    </nav>
+    <div class="ocd-topbar-actions">
+      <a class="oc-btn oc-btn--sm" href="/ui/pro#pricing">Pro</a>
+      <button type="button" class="ocd-search-trigger" data-ocd-search aria-label="Search components and blocks (Ctrl K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span>Search OmniaUI…</span><kbd>Ctrl K</kbd></button>
+      <fieldset class="oc-theme-switch ocm-theme" aria-label="Color theme">
+        <label><input type="radio" name="oc-theme" value="system" checked> System</label>
+        <label><input type="radio" name="oc-theme" value="light"> Light</label>
+        <label><input type="radio" name="oc-theme" value="dark"> Dark</label>
+      </fieldset>
+    </div>
+  </header>
+
+  <dialog class="ocd-search-dialog" id="ocd-search" aria-label="Search">
+    <div class="ocd-search-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input type="search" placeholder="Search components, blocks and classes" aria-label="Search" role="combobox" aria-controls="ocd-search-results" aria-expanded="true" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div>
+    <ul class="ocd-search-results" id="ocd-search-results" role="listbox" aria-label="Results"></ul>
+    <p class="ocd-search-empty" hidden>No results. Try a component such as <code>dialog</code>, a block such as <code>pricing</code> or a class such as <code>oc-btn</code>.</p>
+    <p class="ocd-search-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> to move</span><span><kbd>Enter</kbd> to open</span><span><kbd>Esc</kbd> to close</span></p>
+  </dialog>
+
+  <div class="ocd-shell">
+      <aside class="ocd-sidebar-left"></aside>
+      <script>(() => { const nav = document.currentScript.previousElementSibling; const key = "oc-nav-scroll"; try { const y = sessionStorage.getItem(key); if (y !== null) nav.scrollTop = +y; } catch {} const act = [...nav.querySelectorAll('[data-ocd-active="true"]')].pop(); if (act) { const a = act.getBoundingClientRect(), n = nav.getBoundingClientRect(); if (a.top < n.top || a.bottom > n.bottom) nav.scrollTop += a.top - n.top - n.height / 3; } addEventListener("pagehide", () => { try { sessionStorage.setItem(key, nav.scrollTop); } catch {} }); })();</script><main class="ocd-content"><!-- File: apps/site/src/content/ui/security.html | Map: hero -> notices (empty state) -> who gets the fix -> report a problem -> machine-readable list
+     A new notice: add it to the list below AND to public/data/security.json (same id), mail every customer (OmniaDesk). -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Security notices</h1>
+        <p class="oc-hero-text">When we find a serious security problem in OmniaUI or OmniaUI Pro, it is listed here with the affected versions and the fix. Every OmniaUI Pro customer, also those whose subscription has ended, gets an email as well.</p>
+      </section>
+
+      <section class="oc-docs-section" id="notices">
+        <div class="oc-section-header">
+          <h2 id="notices-2" class="oc-section-header__title">Notices</h2>
+        </div>
+        <div class="oc-section-content">
+          <div class="oc-empty">
+            <h3 id="no-security-notices" class="oc-empty-title">No security notices</h3>
+            <p class="oc-empty-text">No security problems have been reported so far. Last checked: 30 October 2026.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="fixes">
+        <div class="oc-section-header">
+          <h2 id="who-gets-the-fix" class="oc-section-header__title">Who gets the fix</h2>
+        </div>
+        <div class="oc-section-content">
+          <ul>
+            <li><strong>Free packages</strong> (OmniaCSS, OmniaUI, the React, Vue and Laravel packages): a patch release on npm and Packagist, for everyone.</li>
+            <li><strong>OmniaUI Pro, active license:</strong> a patch release in <code>Birdycom/OmniaUI-Pro-releases</code>.</li>
+            <li><strong>OmniaUI Pro, ended subscription:</strong> serious security fixes stay free for everyone who ever had a license, for the versions they received. The notice explains the fix; mail <a href="mailto:support@omniaui.eu?subject=OmniaUI%20Pro%20security%20fix">support@omniaui.eu</a> and we send a patched release of the last version you had. See the <a href="/legal/terms#security">terms</a>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="report">
+        <div class="oc-section-header">
+          <h2 id="report-a-problem" class="oc-section-header__title">Report a problem</h2>
+          <p class="oc-section-header__desc">Found a security problem? Mail <a href="mailto:support@omniaui.eu?subject=Security%20report">support@omniaui.eu</a> with the package, the version and the steps to reproduce it. Please do not open a public issue for it. We answer within a few working days.</p>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="feed">
+        <div class="oc-section-header">
+          <h2 id="machine-readable-list" class="oc-section-header__title">Machine-readable list</h2>
+          <p class="oc-section-header__desc">The same notices as JSON, for tools that check the installed versions: <a href="/data/security.json"><code>/data/security.json</code></a>.</p>
+        </div>
+        <div class="oc-section-content">
+          <div class="oc-code-block" data-lang="json"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14</pre><pre class="code-preview"><code>{
+  <span class="hl-string">"updated"</span>: <span class="hl-string">"2026-10-30"</span>,
+  <span class="hl-string">"advisories"</span>: [
+    {
+      <span class="hl-string">"id"</span>: <span class="hl-string">"OMNIAUI-2026-001"</span>,
+      <span class="hl-string">"package"</span>: <span class="hl-string">"@birdycom/omniaui-pro"</span>,
+      <span class="hl-string">"affected"</span>: <span class="hl-string">"&lt;0.12.4"</span>,
+      <span class="hl-string">"fixed"</span>: <span class="hl-string">"0.12.4"</span>,
+      <span class="hl-string">"severity"</span>: <span class="hl-string">"high"</span>,
+      <span class="hl-string">"title"</span>: <span class="hl-string">"Short description"</span>,
+      <span class="hl-string">"url"</span>: <span class="hl-string">"https://omniaui.eu/ui/security.html#OMNIAUI-2026-001"</span>
+    }
+  ]
+}</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div>
+          <p>The example shows the format; the list itself is empty for now.</p>
+        </div>
+      </section>
+</main>
+      <aside class="ocd-sidebar-right"><nav class="oc-toc" aria-label="On this page"><p class="oc-toc-title">On This Page</p><ul class="oc-toc-list"><li><a class="oc-toc-link" href="#notices-2">Notices</a></li><li class="oc-toc-item--sub"><a class="oc-toc-link" href="#no-security-notices">No security notices</a></li><li><a class="oc-toc-link" href="#who-gets-the-fix">Who gets the fix</a></li><li><a class="oc-toc-link" href="#report-a-problem">Report a problem</a></li><li><a class="oc-toc-link" href="#machine-readable-list">Machine-readable list</a></li></ul></nav></aside>
+      <script>(() => { if (CSS.supports("selector(:target-current)")) return; const links = [...document.querySelectorAll(".oc-toc a[href^='#']")]; const root = document.querySelector(".oc-docs-content, .ocd-content"); if (!links.length || !root) return; const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))); let raf = 0; const update = () => { raf = 0; const top = root.getBoundingClientRect().top + 80; let cur = 0; heads.forEach((h, i) => { if (h && h.getBoundingClientRect().top <= top) cur = i; }); if (root.scrollTop + root.clientHeight >= root.scrollHeight - 4) cur = links.length - 1; links.forEach((a, i) => a.classList.toggle("is-active", i === cur)); }; root.addEventListener("scroll", () => { raf ||= requestAnimationFrame(update); }, { passive: true }); update(); })();</script>
+    </div>
+
+  <footer class="oc-footerbar oc-footerbar--fixed">OmniaUI v0.12.3 — CSS-first components and blocks on OmniaCSS · <a href="https://omniacss.test/docs/">OmniaCSS docs</a> · <a href="https://github.com/Birdycom/OmniaUI">GitHub</a> · <a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a> · <a href="/legal/cookies">Cookies</a></footer>
+</body>
+</html>

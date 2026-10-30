@@ -78,6 +78,17 @@ describe("marketing components", () => {
     expect(container.querySelector(".oc-price-card__feature--excluded")).toHaveTextContent("B");
     expect(container.firstChild).toHaveClass("oc-price-card--featured");
   });
+
+  it("PriceCard adds a third lifetime option when given", () => {
+    const { container } = render(
+      <PriceCard name="Pro" monthly={{ amount: "€9.90" }} yearly={{ amount: "€99" }} lifetime={{ amount: "€249", period: "once" }} defaultPeriod="lifetime" />,
+    );
+    const radios = container.querySelectorAll<HTMLInputElement>('.oc-price-card__toggle input[type="radio"]');
+    expect(radios).toHaveLength(3);
+    expect(radios[2].value).toBe("lifetime");
+    expect(radios[2].checked).toBe(true);
+    expect(container.querySelector(".oc-price-card__price--lifetime")).toHaveTextContent("€249");
+  });
 });
 
 describe("marketing blocks", () => {

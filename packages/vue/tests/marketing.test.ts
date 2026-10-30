@@ -60,6 +60,16 @@ describe('marketing components', () => {
     expect(w.find('.oc-price-card__price--yearly s').text()).toBe('€144')
     expect(w.find('.oc-price-card__feature--excluded').exists()).toBe(true)
   })
+
+  it('OcPriceCard adds a third lifetime option when given', () => {
+    const w = mount(OcPriceCard, {
+      props: { name: 'Pro', monthly: { amount: '€9.90' }, yearly: { amount: '€99' }, lifetime: { amount: '€249', period: 'once' }, defaultPeriod: 'lifetime' },
+    })
+    const radios = w.findAll('input[type="radio"]')
+    expect(radios).toHaveLength(3)
+    expect((radios[2].element as HTMLInputElement).checked).toBe(true)
+    expect(w.find('.oc-price-card__price--lifetime').text()).toContain('€249')
+  })
 })
 
 describe('marketing blocks', () => {

@@ -38,7 +38,7 @@ const SECTIONS = [
     title: "OmniaUI Blocks",
     fallback: "Blocks",
     categories: BLOCK_CATEGORIES,
-    overview: [{ id: "blocks", label: "All blocks", href: "/ui/blocks.html" }, { id: "pro", label: "OmniaUI Pro", href: "/ui/pro.html" }],
+    overview: [{ id: "blocks", label: "All blocks", href: "/ui/blocks.html" }, { id: "pro", label: "OmniaUI Pro", href: "/ui/pro.html" }, { id: "security", label: "Security notices", href: "/ui/security.html" }],
   },
 ];
 
