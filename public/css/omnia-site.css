@@ -1690,7 +1690,6 @@ select {
 /* Rotate, scale and translate use the individual transform properties (rotate / scale / translate),
    so every class works on its own and they combine freely. Skew has no own property: it uses transform. */
 .transform {
-  transform: skewX(0) skewY(0);
   transform: skewX(var(--oc-skew-x, 0)) skewY(var(--oc-skew-y, 0));
 }
 
@@ -1890,21 +1889,20 @@ select {
 /* Scrollbar color */
 
 .scrollbar-color {
-  scrollbar-color: currentcolor transparent;
   scrollbar-color: var(--oc-scrollbar-thumb, currentcolor) var(--oc-scrollbar-track, transparent);
 }
 
 /* OmniaCSS scrollbar: thin, Omnia-blue thumb on a transparent track, follows light/dark.
-   scrollbar-color is inherited, so one class on <html> themes every scroll area of the page. */
-.scrollbar-omnia,
-.scrollbar-omnia * {
+   scrollbar-color is inherited, so one class on <html> themes every scroll area of the page.
+   scrollbar-width is not inherited, hence the *; :where() keeps it at zero specificity, so .scrollbar-none and
+   .scrollbar-auto still work inside. */
+:where(.scrollbar-omnia, .scrollbar-omnia *) {
   scrollbar-width: thin;
 }
 
 .scrollbar-omnia {
   --oc-scrollbar-thumb: light-dark(oklch(from var(--color-vividblue-95) l c h / 0.45), oklch(from var(--color-vividblue-60) l c h / 0.45));
   --oc-scrollbar-track: transparent;
-  scrollbar-color: var(--oc-scrollbar-thumb) transparent;
   scrollbar-color: var(--oc-scrollbar-thumb) var(--oc-scrollbar-track);
 }
 
@@ -2211,7 +2209,6 @@ select {
 
 /* Fan — rotate siblings around the middle one, like cards in a hand (set on each child) */
 .fan {
-  rotate: calc((sibling-index() - (sibling-count() + 1) / 2) * 6deg);
   rotate: calc((sibling-index() - (sibling-count() + 1) / 2) * var(--oc-fan, 6deg));
   transform-origin: 50% 140%;
 }

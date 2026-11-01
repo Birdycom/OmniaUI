@@ -30,11 +30,11 @@ const name = useUid('oc-list-view')
       <label v-for="v in views" :key="v.value" class="oc-list-toolbar-view" :title="v.label">
         <input v-model="view" type="radio" :name="name" :value="v.value" :aria-label="v.label" />
         <slot name="view-icon" :view="v">
-          <!-- Built-in icons for the three common views. -->
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <template v-if="v.value === 'cards'"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></template>
-            <path v-else-if="v.value === 'table'" d="M3 5h18M3 12h18M3 19h18" />
-            <path v-else d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+          <!-- Built-in webicons for the three common views (mdi:view-grid-outline, mdi:table, mdi:format-list-bulleted). -->
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path v-if="v.value === 'cards'" d="M3 11h8V3H3m2 2h4v4H5m8 12h8v-8h-8m2 2h4v4h-4M3 21h8v-8H3m2 2h4v4H5m8-16v8h8V3m-2 6h-4V5h4Z" />
+            <path v-else-if="v.value === 'table'" d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m0 4v4h6V8zm8 0v4h6V8zm-8 6v4h6v-4zm8 0v4h6v-4z" />
+            <path v-else d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6A1.5 1.5 0 0 1 4 7.5A1.5 1.5 0 0 1 2.5 6A1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12A1.5 1.5 0 0 1 4 13.5A1.5 1.5 0 0 1 2.5 12A1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18A1.5 1.5 0 0 1 4 19.5A1.5 1.5 0 0 1 2.5 18A1.5 1.5 0 0 1 4 16.5" />
           </svg>
         </slot>
       </label>

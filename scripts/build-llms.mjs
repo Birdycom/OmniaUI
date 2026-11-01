@@ -59,7 +59,15 @@ Vue:   npm install @birdycom/omniaui-vue     (import { OcButton, OcModal } from 
 Laravel:
   composer require birdycom/omniaui-laravel && php artisan omniacss:install
   <x-oc::button variant="primary">Save</x-oc::button>   <x-oc::block.app-shell>…</x-oc::block.app-shell>
-Livewire: composer require birdycom/omniaui-livewire`;
+Livewire: composer require birdycom/omniaui-livewire
+New Laravel app: start from a starter kit (${SITE}/ui/starter-kits): sign-in, two-factor, passkeys and settings on
+OmniaUI, no Tailwind. One of:
+  laravel new my-app --using=birdycom/omniaui-livewire-starter-kit
+  laravel new my-app --using=birdycom/omniaui-blade-starter-kit
+  laravel new my-app --using=birdycom/omniaui-react-starter-kit
+  laravel new my-app --using=birdycom/omniaui-vue-starter-kit
+Icons: the OmniaCSS webicons (${SITE}/ui/webicons) via <iconify-icon>: mdi:, mdi-light:, material-symbols:,
+svg-spinners:, flag:, vscode-icons:. Never Lucide or another icon set.`;
 
 const sections = [
   ["Guides", [...group("Ui"), ...group("Catalog")].map((p) => line(p))],

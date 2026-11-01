@@ -29,8 +29,8 @@ export interface MessageData {
   id?: string
 }
 export const MESSAGE_ICONS: Record<string, string> = {
-  reply: 'M9 14 4 9l5-5M4 9h10a6 6 0 0 1 6 6v4',
-  delete: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6',
+  reply: 'M8 9.8v.9l1.7.3c2.6.4 4.5 1.4 5.9 2.7c-1.7-.5-3.5-.8-5.6-.8H8v1.3L5.8 12zM10 5l-7 7l7 7v-4.1c5 0 8.5 1.6 11 5.1c-1-5-4-10-11-11',
+  delete: 'M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z',
 }
 </script>
 
@@ -79,12 +79,12 @@ const file = (a: MessageAttachment) => strip(a) as AttachmentFile
       </div>
       <p v-if="time || status" class="oc-message__meta">
         <time v-if="time" :datetime="datetime">{{ time }}</time>
-        <span v-if="status" :class="['oc-message__status', status !== 'sent' && `oc-message__status--${status}`]"><svg v-if="statusIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5 7 17.5 18 6.5M13 16.5l1 1L22.5 9" /></svg>{{ statusLabel ?? STATUS[status] }}</span>
+        <span v-if="status" :class="['oc-message__status', status !== 'sent' && `oc-message__status--${status}`]"><svg data-icon="mdi:check-all" v-if="statusIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.41 13.41L6 19l1.41-1.42L1.83 12m20.41-6.42L11.66 16.17L7.5 12l-1.43 1.41L11.66 19l12-12M18 7l-1.41-1.42l-6.35 6.35l1.42 1.41z"/></svg>{{ statusLabel ?? STATUS[status] }}</span>
       </p>
     </div>
     <div v-if="actions?.length" class="oc-message__actions">
       <button v-for="a in actions" :key="a.name" type="button" :class="['oc-message__action', a.destructive && 'oc-message__action--destructive']" :aria-label="a.label" @click="emit('action', a.name)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path :d="MESSAGE_ICONS[a.icon ?? a.name] ?? MESSAGE_ICONS.reply" /></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path :d="MESSAGE_ICONS[a.icon ?? a.name] ?? MESSAGE_ICONS.reply" /></svg>
       </button>
     </div>
   </article>

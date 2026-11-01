@@ -32,7 +32,7 @@ export const BlockAppHeader = forwardRef<HTMLElement, BlockAppHeaderProps>(funct
     <header ref={ref} className={cx("oc-block-appbar", className)} {...rest}>
       {toggleFor && (
         <label className="oc-btn oc-btn--ghost oc-btn--icon" htmlFor={toggleFor} title={toggleLabel}>
-          <Icon d="M4 6h16M4 12h16M4 18h16" />
+          <Icon d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z" />
           <span className="oc-visually-hidden">{toggleLabel}</span>
         </label>
       )}

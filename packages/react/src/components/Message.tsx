@@ -48,10 +48,11 @@ export interface MessageData {
   id?: string;
 }
 
-const svg = (d: string, width = "2") => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>
+/** A webicon (MDI path data, 24x24). */
+const svg = (d: string) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={d} /></svg>
 );
-const ICONS: Record<string, string> = { reply: "M9 14 4 9l5-5M4 9h10a6 6 0 0 1 6 6v4", delete: "M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6" };
+const ICONS: Record<string, string> = { reply: "M8 9.8v.9l1.7.3c2.6.4 4.5 1.4 5.9 2.7c-1.7-.5-3.5-.8-5.6-.8H8v1.3L5.8 12zM10 5l-7 7l7 7v-4.1c5 0 8.5 1.6 11 5.1c-1-5-4-10-11-11", delete: "M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" };
 const STATUS = { sent: "Sent", read: "Read", failed: "Failed" };
 
 /** `.oc-message__attachments`: thumbnails share one `.oc-attachment-list`, files and images stand alone. */
@@ -93,7 +94,7 @@ export const Message = forwardRef<HTMLElement, MessageProps>(function Message(
             {time != null && <time dateTime={datetime}>{time}</time>}
             {status && (
               <span className={cx("oc-message__status", status !== "sent" && `oc-message__status--${status}`)}>
-                {statusIcon && svg("M2 12.5 7 17.5 18 6.5M13 16.5l1 1L22.5 9", "2.2")}{statusLabel ?? STATUS[status]}
+                {statusIcon && svg("M.41 13.41L6 19l1.41-1.42L1.83 12m20.41-6.42L11.66 16.17L7.5 12l-1.43 1.41L11.66 19l12-12M18 7l-1.41-1.42l-6.35 6.35l1.42 1.41z")}{statusLabel ?? STATUS[status]}
               </span>
             )}
           </p>

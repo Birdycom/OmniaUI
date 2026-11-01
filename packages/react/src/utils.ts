@@ -19,6 +19,13 @@ export function attrs(record: Record<string, string | undefined>): object {
 
 export type Slot = ReactNode;
 
+/** "Ada Lovelace" -> "AL": the first letters of the first two words (as the Blade components do). */
+export function initialsOf(name: unknown): string {
+  return typeof name === "string"
+    ? name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("")
+    : "";
+}
+
 /** Call a handler, then call another one. */
 export function callAll<E>(...fns: Array<((e: E) => void) | undefined>) {
   return (e: E) => fns.forEach((fn) => fn?.(e));

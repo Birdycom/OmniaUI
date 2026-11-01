@@ -132,7 +132,7 @@ export const MessageThread = forwardRef<HTMLElement, MessageThreadProps>(functio
             {menu && (
               <>
                 <button type="button" className="oc-message-thread__icon-btn" popoverTarget={`${base}-menu`} aria-label="Conversation actions">
-                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="12" cy="19" r="1.8" /></svg>
+                  <svg data-icon="mdi:dots-vertical" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2"/></svg>
                 </button>
                 <div className="oc-dropdown-menu" id={`${base}-menu`} {...attrs({ popover: "" })} role="menu">
                   {menu.map((m, i) => "separator" in m

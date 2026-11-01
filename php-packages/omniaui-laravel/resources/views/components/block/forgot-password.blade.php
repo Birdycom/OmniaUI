@@ -22,7 +22,7 @@
         {{ $slot }}
     @else
   <form class="oc-block-authcard" action="#" method="post">
-    <span class="oc-block-authcard-logo"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+    <span class="oc-block-authcard-logo"><svg data-icon="mdi:email-outline" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0l-8 5l-8-5zm0 12H4V8l8 5l8-5z"/></svg></span>
     <div class="oc-block-authcard-head">
       <h1 class="oc-block-authcard-title">Forgot your password?</h1>
       <p class="oc-block-authcard-text">Enter your e-mail and we will send you a reset link</p>

@@ -33,6 +33,7 @@ export const HEADER_LINKS = [
   { id: "docs", label: "Docs", href: `${OMNIACSS_URL}/docs/index.html` },
   { id: "components", label: "Components", href: "/ui/components.html" },
   { id: "blocks", label: "Blocks", href: "/ui/blocks.html" },
+  { id: "starter-kits", label: "Starter kits", href: "/ui/starter-kits.html" },
   { id: "webicons", label: "Webicons", href: "/ui/webicons.html" },
 ];
 
@@ -54,5 +55,6 @@ export function sectionOf(route) {
   if (route.startsWith("ui/components") || route === "ui/components.html" || route.startsWith("ui/frameworks-")) return "components";
   if (route.startsWith("ui/blocks") || route === "ui/blocks.html" || route === "ui/pro.html" || route === "ui/security.html") return "blocks";
   if (route.startsWith("ui/icons") || route === "ui/webicons.html") return "webicons";
+  if (route === "ui/starter-kits.html") return "starter-kits";
   return "home";
 }
