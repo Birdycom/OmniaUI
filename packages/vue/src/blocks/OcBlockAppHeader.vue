@@ -23,7 +23,7 @@ withDefaults(
   <header class="oc-block-appbar">
     <slot name="toggle">
       <label v-if="toggleFor" class="oc-btn oc-btn--ghost oc-btn--icon" :for="toggleFor" :title="toggleLabel">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+        <svg data-icon="mdi:menu" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
         <span class="oc-visually-hidden">{{ toggleLabel }}</span>
       </label>
     </slot>

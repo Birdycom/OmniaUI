@@ -116,7 +116,7 @@ function ctrlEnter(e: KeyboardEvent) {
       <div v-if="status || menu" class="oc-message-thread__actions">
         <span v-if="status" :class="['oc-badge', status.variant && `oc-badge--${status.variant}`]">{{ status.label }}</span>
         <template v-if="menu">
-          <button type="button" class="oc-message-thread__icon-btn" :popovertarget="`${base}-menu`" aria-label="Conversation actions"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="12" cy="19" r="1.8" /></svg></button>
+          <button type="button" class="oc-message-thread__icon-btn" :popovertarget="`${base}-menu`" aria-label="Conversation actions"><svg data-icon="mdi:dots-vertical" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2"/></svg></button>
           <div :id="`${base}-menu`" class="oc-dropdown-menu" popover role="menu">
             <template v-for="(m, i) in menu" :key="i">
               <div v-if="'separator' in m" class="oc-dropdown-separator" role="separator"></div>

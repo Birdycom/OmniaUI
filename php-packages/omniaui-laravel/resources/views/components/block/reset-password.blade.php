@@ -22,7 +22,7 @@
         {{ $slot }}
     @else
   <form class="oc-block-authcard" action="#" method="post">
-    <span class="oc-block-authcard-logo"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+    <span class="oc-block-authcard-logo"><svg data-icon="mdi:lock-outline" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17a2 2 0 0 1-2-2c0-1.11.89-2 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2m6 3V10H6v10zm0-12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h1V6a5 5 0 0 1 5-5a5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"/></svg></span>
     <div class="oc-block-authcard-head">
       <h1 class="oc-block-authcard-title">Set a new password</h1>
       <p class="oc-block-authcard-text">Your new password must differ from earlier ones</p>

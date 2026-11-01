@@ -14,7 +14,7 @@
         {{ $slot }}
     @else
   <details class="oc-collapsible" open>
-    <summary><svg class="oc-collapsible-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span class="oc-collapsible-title">General information</span></summary>
+    <summary><svg data-icon="mdi:information-outline" class="oc-collapsible-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2z"/></svg><span class="oc-collapsible-title">General information</span></summary>
     <div class="oc-collapsible-content">
       <div class="oc-block-formpage-grid">
         <div class="oc-field"><label class="oc-field-label" for="oc-form-name">Name</label><input class="oc-input" id="oc-form-name" name="name"></div>
@@ -25,7 +25,7 @@
     </div>
   </details>
   <details class="oc-collapsible">
-    <summary><svg class="oc-collapsible-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="oc-collapsible-title">Notes</span></summary>
+    <summary><svg data-icon="mdi:format-list-bulleted" class="oc-collapsible-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6A1.5 1.5 0 0 1 4 7.5A1.5 1.5 0 0 1 2.5 6A1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12A1.5 1.5 0 0 1 4 13.5A1.5 1.5 0 0 1 2.5 12A1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18A1.5 1.5 0 0 1 4 19.5A1.5 1.5 0 0 1 2.5 18A1.5 1.5 0 0 1 4 16.5"/></svg><span class="oc-collapsible-title">Notes</span></summary>
     <div class="oc-collapsible-content"><textarea class="oc-input" name="notes" rows="3" aria-label="Notes"></textarea></div>
   </details>
   <div class="oc-block-formpage-actions">

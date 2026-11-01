@@ -7,11 +7,11 @@
 @props(['direction' => 'in', 'sender' => null, 'avatar' => null, 'time' => null, 'datetime' => null, 'status' => null, 'statusLabel' => null, 'statusIcon' => false,
     'continued' => false, 'quote' => null, 'text' => null, 'html' => null, 'attachments' => [], 'actions' => [], 'label' => null, 'id' => null])
 @php
-    $icons = ['reply' => 'M9 14 4 9l5-5M4 9h10a6 6 0 0 1 6 6v4', 'delete' => 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6'];
+    $icons = ['reply' => 'M8 9.8v.9l1.7.3c2.6.4 4.5 1.4 5.9 2.7c-1.7-.5-3.5-.8-5.6-.8H8v1.3L5.8 12zM10 5l-7 7l7 7v-4.1c5 0 8.5 1.6 11 5.1c-1-5-4-10-11-11', 'delete' => 'M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z'];
     // Meta line in one piece, so no whitespace ends up between the time and the status.
     $meta = ($time ? '<time'.($datetime ? ' datetime="'.e($datetime).'"' : '').'>'.e($time).'</time>' : '')
         .($status ? '<span class="oc-message__status'.($status !== 'sent' ? ' oc-message__status--'.e($status) : '').'">'
-            .($statusIcon ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12.5 7 17.5 18 6.5M13 16.5l1 1L22.5 9"/></svg>' : '')
+            .($statusIcon ? '<svg data-icon="mdi:check-all" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.41 13.41L6 19l1.41-1.42L1.83 12m20.41-6.42L11.66 16.17L7.5 12l-1.43 1.41L11.66 19l12-12M18 7l-1.41-1.42l-6.35 6.35l1.42 1.41z"/></svg>' : '')
             .e($statusLabel ?? ucfirst($status)).'</span>' : '');
     $thumbsOnly = $attachments && collect($attachments)->every(fn ($a) => ($a['kind'] ?? 'file') === 'thumb');
 @endphp
@@ -57,7 +57,7 @@
     @if ($actions)
         <div class="oc-message__actions">
             @foreach ($actions as $a)
-                <button type="button" @class(['oc-message__action', 'oc-message__action--destructive' => $a['destructive'] ?? false]) aria-label="{{ $a['label'] }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ $icons[$a['icon'] ?? $a['name']] ?? $icons['reply'] }}"/></svg></button>
+                <button type="button" @class(['oc-message__action', 'oc-message__action--destructive' => $a['destructive'] ?? false]) aria-label="{{ $a['label'] }}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ $icons[$a['icon'] ?? $a['name']] ?? $icons['reply'] }}"/></svg></button>
             @endforeach
         </div>
     @endif

@@ -31,7 +31,10 @@ export async function collectCandidates(patterns, cwd = process.cwd()) {
   const candidates = new Set(ALWAYS_KEEP);
   const files = [];
   for (const pattern of [].concat(patterns)) {
-    for await (const rel of fs.glob(pattern, { cwd, exclude: (p) => /node_modules|\.git/.test(p) })) {
+    // node_modules is skipped, unless the pattern itself points into it (the source of a component wrapper package).
+    const intoModules = /node_modules/.test(pattern);
+    const exclude = (p) => /(^|[\\/])\.git([\\/]|$)/.test(p) || (!intoModules && /node_modules/.test(p));
+    for await (const rel of fs.glob(pattern, { cwd, exclude })) {
       const file = path.resolve(cwd, rel);
       const stat = await fs.stat(file).catch(() => null);
       if (!stat || !stat.isFile()) continue;
@@ -53,8 +56,15 @@ export function addCandidates(text, set = new Set()) {
   for (const raw of text.split(/[^A-Za-z0-9_\-:/.%@!]+/)) add(raw);
   // ... and variant tokens with brackets (`has-[img]:flex`, `[&>*]:p-2`, `group-aria-[sort=asc]:x`).
   for (const raw of text.split(/[^A-Za-z0-9_\-:/.%@!\[\]()=&>*~+,#$^|]+/)) if (/[\[\]()=&>*~+,#$^|]/.test(raw)) add(raw);
+  // Component modifiers built in code keep the whole family: 'oc-btn--'.$variant (PHP), 'oc-btn--' + v (JS),
+  // `oc-btn--${v}` (template literal), oc-btn--{{ $v }} (Blade) -> "oc-btn--*". Only BEM modifiers/elements (-- or __):
+  // utilities are never built from pieces, so `text-${color}` keeps nothing extra.
+  for (const m of text.matchAll(/([A-Za-z][A-Za-z0-9-]*(?:--|__))(?:['"`]\s*(?:\.|\+)|\$\{|\{\{)/g)) set.add(`${m[1]}*`);
   return set;
 }
+
+/** The prefixes of the "oc-btn--*" candidates that addCandidates records for modifiers built in code. */
+const prefixesOf = (candidates) => [...candidates].filter((c) => /^[A-Za-z][A-Za-z0-9-]*(?:--|__)\*$/.test(c)).map((c) => c.slice(0, -1));
 
 /** Classes a selector depends on; classes inside :not()/:where()/:is()/:has() are optional. */
 function requiredClasses(selector) {
@@ -81,12 +91,14 @@ function selectorUsed(sel, used) {
  * Generate the used subset of OmniaCSS.
  * @param {string} css full OmniaCSS (with tokens inlined)
  * @param {Set<string>} candidates
- * @param {{ layer?: string|false, keep?: string[], referencedBy?: string[] }} [options]
+ * @param {{ layer?: string|false, baseLayer?: string|false, keep?: string[], referencedBy?: string[] }} [options]
  *   referencedBy: other stylesheets (components, site CSS) whose var(--…) tokens must stay available.
+ *   baseLayer: with layer, the classless rules (reset, :root tokens) go to this separate layer, written first.
  */
 export function generate(css, candidates, options = {}) {
   const keep = new Set([...(options.keep || []), ...ALWAYS_KEEP]);
-  const used = (c) => candidates.has(c) || keep.has(c);
+  const prefixes = prefixesOf(candidates);
+  const used = (c) => candidates.has(c) || keep.has(c) || prefixes.some((p) => c.startsWith(p));
   const root = postcss.parse(css);
 
   // 0. Variants: hover:, md:, group-hover:, has-[..]:, dark: … derived from the base utility's rules (before the filter removes them).
@@ -130,6 +142,17 @@ export function generate(css, candidates, options = {}) {
   const imports = [];
   root.walkAtRules("import", (at) => { imports.push(at.toString() + ";"); at.remove(); });
 
+  // Base layer: top-level rules without a class (the reset, :root tokens) go to their own, earlier layer, so the
+  // reset does not override component styles (`.oc-block-hero p { margin: … }`) in a layer between them.
+  let base = "";
+  if (options.layer && options.baseLayer) {
+    const baseRoot = postcss.root();
+    for (const node of [...root.nodes]) {
+      if (node.type === "rule" && node.selectors.every((sel) => !sel.includes("."))) baseRoot.append(node.remove());
+    }
+    if (baseRoot.nodes.length) base = `@layer ${options.baseLayer} {\n${baseRoot.toString()}\n}\n`;
+  }
+
   let out = root.toString();
 
   // Web font imports: keep only the families the remaining CSS actually uses (no render-blocking requests for unused fonts).
@@ -139,7 +162,7 @@ export function generate(css, candidates, options = {}) {
     const params = m[1].split("&");
     const families = params.filter((p) => p.startsWith("family=")).filter((p) => {
       const name = decodeURIComponent(p.slice(7).split(":")[0]).replace(/\+/g, " ");
-      return out.includes(name);
+      return out.includes(name) || base.includes(name);
     });
     if (!families.length) imports.splice(i, 1);
     else imports[i] = `@import url("https://fonts.googleapis.com/css2?${[...families, ...params.filter((p) => !p.startsWith("family="))].join("&")}");`;
@@ -147,7 +170,7 @@ export function generate(css, candidates, options = {}) {
   if (options.layer) {
     out = `@layer ${options.layer} {\n${out}\n}\n`;
   }
-  return (imports.length ? imports.join("\n") + "\n" : "") + out;
+  return (imports.length ? imports.join("\n") + "\n" : "") + base + out;
 }
 
 /** At-rule chain around a rule (outermost first), without keyframes. */
@@ -265,9 +288,9 @@ export async function loadFullCss(options = {}) {
 }
 
 /** One call: scan content and return the used CSS plus some statistics. */
-export async function buildCss({ content, cwd = process.cwd(), layer = "omnia", keep = [], dist, referencedBy = [] } = {}) {
+export async function buildCss({ content, cwd = process.cwd(), layer = "omnia", baseLayer = layer && `${layer}-base`, keep = [], dist, referencedBy = [] } = {}) {
   if (!content || !content.length) throw new Error("omniacss: no content globs given (e.g. ['src/**/*.{html,vue,jsx,tsx,php}'])");
   const [{ candidates, files }, full] = await Promise.all([collectCandidates(content, cwd), loadFullCss({ dist })]);
-  const css = generate(full, candidates, { layer, keep, referencedBy });
+  const css = generate(full, candidates, { layer, baseLayer, keep, referencedBy });
   return { css, files, stats: { files: files.length, candidates: candidates.size, inputBytes: full.length, outputBytes: css.length } };
 }

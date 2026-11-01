@@ -45,7 +45,7 @@
                     <span @class(['oc-badge', 'oc-badge--'.($status['variant'] ?? '') => ! empty($status['variant'])])>{{ $status['label'] }}</span>
                 @endif
                 @if ($menu)
-                    <button type="button" class="oc-message-thread__icon-btn" popovertarget="{{ $id }}-menu" aria-label="Conversation actions"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+                    <button type="button" class="oc-message-thread__icon-btn" popovertarget="{{ $id }}-menu" aria-label="Conversation actions"><svg data-icon="mdi:dots-vertical" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2"/></svg></button>
                     <div class="oc-dropdown-menu" id="{{ $id }}-menu" popover role="menu">
                         @foreach ($menu as $m)
                             @if (! empty($m['separator']))
