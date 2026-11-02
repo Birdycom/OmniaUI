@@ -1,0 +1,52 @@
+<!--oc-page {"title": "OmniaUI - Lazy loading", "category": "Media", "description": "Images that load when they come near the screen, with a shimmer or a blurred preview until they are there, and sections drawn only when needed.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!-- File: apps/site/src/content/ui/components/lazy.html | Map: hero -> demo -> reference -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Lazy loading</h1>
+        <p class="oc-hero-text">Long pages stay fast when the browser only fetches what you will see. <code>.oc-lazy</code> keeps the place of an image (no jump in the layout), shows a shimmer or a tiny blurred preview, and fades the photo in once it is loaded (<code>loading="lazy"</code> does the waiting, <code>lazy.js</code> only marks it loaded). <code>.oc-lazy-section</code> lets the browser skip laying out and drawing a section until it comes near the screen. <a href="../components.html">All components</a>.</p>
+      </section><section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/lazy.html</span>
+          <p class="oc-section-header__desc">HTML and CSS, with a tiny script for the fade-in. The markup is also available as the snippet <code>packages/ui/snippets/lazy.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Lazy images <span class="oc-badge-version">v0.12.6</span></h3>
+          <oc-demo title="Lazy loading - lazy images">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr));gap:1rem;inline-size:100%">
+  <figure class="oc-lazy"><img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" loading="lazy" decoding="async" width="640" height="400"></figure>
+  <figure class="oc-lazy"><img src="/img/blocks/shop-catalog.jpg" alt="Shop catalog" loading="lazy" decoding="async" width="640" height="400"></figure>
+  <figure class="oc-lazy"><img src="/img/blocks/product-detail.jpg" alt="Product detail" loading="lazy" decoding="async" width="640" height="400"></figure>
+  <figure class="oc-lazy" style="--oc-lazy-ratio: 2 / 3"><img src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" loading="lazy" decoding="async" width="640" height="400"><figcaption>Photo: Serge Cools</figcaption></figure>
+  <figure class="oc-lazy"><img src="/img/blocks/chat-inbox.jpg" alt="Chat inbox" loading="lazy" decoding="async" width="640" height="400"></figure>
+  <figure class="oc-lazy"><img src="/img/blocks/quote-lines.jpg" alt="Quote lines" loading="lazy" decoding="async" width="640" height="400"></figure>
+</div>
+          </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="demo-2">Placeholder while loading</h3>
+          <oc-demo title="Lazy loading - placeholder while loading">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr));gap:1rem;inline-size:100%">
+  <figure class="oc-lazy" role="img" aria-label="Loading"></figure>
+  <figure class="oc-lazy" style="--oc-lazy-preview: url(/img/blocks/shop-cart.jpg)" role="img" aria-label="Loading"></figure>
+</div>
+          </oc-demo>
+        </div>
+      </section><section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/</code>. Colors are theme tokens, so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>figure.oc-lazy &gt; img[loading=lazy]</code></td><td>The image box: keeps its aspect ratio (<code>--oc-lazy-ratio</code>, 16 / 10), a shimmer until the photo is there. Give the image <code>width</code> and <code>height</code>.</td></tr>
+              <tr><td><code>--oc-lazy-preview</code></td><td>A tiny copy of the photo (a few hundred bytes) shown blurred instead of the shimmer: <code>style="--oc-lazy-preview: url(photo-24px.webp)"</code>.</td></tr>
+              <tr><td><code>.is-loaded / .is-error</code></td><td>Added by <code>lazy.js</code>: the photo fades in / the placeholder stays. Without the script the photo shows when it is there.</td></tr>
+              <tr><td><code>figcaption</code></td><td>Optional caption over the bottom of the image.</td></tr>
+              <tr><td><code>.oc-lazy-section</code></td><td>A section the browser lays out and draws only when it comes near the screen (<code>content-visibility: auto</code>); <code>--oc-lazy-size</code> is its estimated height (600px).</td></tr>
+              <tr><td><code>watchLazy(img) / initLazy(scope)</code></td><td>Exported from <code>@birdycom/omniaui/lazy.js</code>; <code>npx omniaui copy-js lazy</code> gives <code>/js/oc-lazy.js</code> that starts on its own.</td></tr>
+            </tbody>
+          </table>
+          <p class="oc-section-content__desc mt-2">The first demo loads photos as you scroll; the second never gets a photo, so you see the shimmer and the blurred preview. Images in the first screen should not be lazy: give those <code>loading="eager"</code> (or leave it out) so they show at once.</p>
+        </div>
+      </section>
+<script type="module" src="/js/oc-lazy.js"></script>

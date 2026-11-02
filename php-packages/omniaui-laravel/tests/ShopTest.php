@@ -74,6 +74,14 @@ class ShopTest extends TestCase
         $this->assertStringContainsString('oc-glass oc-glass--liquid', $this->render('<x-oc::glass liquid>Card</x-oc::glass>'));
     }
 
+    public function test_lazy_image_box_and_loading(): void
+    {
+        $html = $this->render('<x-oc::lazy-image src="/a.jpg" alt="A" ratio="1" caption="Photo" />');
+        $this->assertStringContainsString('<figure class="oc-lazy" style="--oc-lazy-ratio: 1;"', $html);
+        $this->assertStringContainsString('loading="lazy" decoding="async"', $html);
+        $this->assertStringContainsString('<figcaption>Photo</figcaption>', $html);
+    }
+
     public function test_stock_default_text_and_level(): void
     {
         $this->assertStringContainsString('>In stock<', $this->render('<x-oc::stock />'));

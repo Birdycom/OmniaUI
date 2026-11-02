@@ -77,6 +77,7 @@ import OcKbdGroup from './components/OcKbdGroup.vue'
 import OcLabel from './components/OcLabel.vue'
 import OcLanguageSelect from './components/OcLanguageSelect.vue'
 import OcLauncherCard from './components/OcLauncherCard.vue'
+import OcLazyImage from './components/OcLazyImage.vue'
 import OcLightbox from './components/OcLightbox.vue'
 import OcLinkArrow from './components/OcLinkArrow.vue'
 import OcLinkRow from './components/OcLinkRow.vue'
@@ -277,6 +278,7 @@ export {
   OcLabel,
   OcLanguageSelect,
   OcLauncherCard,
+  OcLazyImage,
   OcLightbox,
   OcLinkArrow,
   OcLinkRow,
@@ -536,6 +538,7 @@ export const components: Record<string, Component> = {
   OcLabel,
   OcLanguageSelect,
   OcLauncherCard,
+  OcLazyImage,
   OcLightbox,
   OcLinkArrow,
   OcLinkRow,

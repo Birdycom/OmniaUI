@@ -1,5 +1,5 @@
 // File: packages/vue/tests/shop.test.ts
-// Map: OcRating -> OcRatingInput -> OcPrice -> OcQuantity (steps, limits) -> OcGallery -> OcStock -> OcSpecList -> OcRibbon -> OcGlassBar
+// Map: OcRating -> OcRatingInput -> OcPrice -> OcQuantity (steps, limits) -> OcGallery -> OcStock -> OcSpecList -> OcRibbon -> OcGlassBar -> OcLazyImage
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -10,6 +10,7 @@ import OcRating from '../src/components/OcRating.vue'
 import OcRatingInput from '../src/components/OcRatingInput.vue'
 import OcRibbon from '../src/components/OcRibbon.vue'
 import OcGlassBar from '../src/components/OcGlassBar.vue'
+import OcLazyImage from '../src/components/OcLazyImage.vue'
 import OcSpecList from '../src/components/OcSpecList.vue'
 import OcStock from '../src/components/OcStock.vue'
 
@@ -77,5 +78,13 @@ describe('shop components', () => {
     expect(w.find('a').attributes('aria-current')).toBe('page')
     await w.find('button').trigger('click')
     expect(w.emitted('select')![0]).toEqual([1])
+  })
+
+  it('OcLazyImage fades in once loaded', async () => {
+    const w = mount(OcLazyImage, { props: { src: '/a.jpg', alt: 'A', ratio: '1' } })
+    expect(w.classes()).toEqual(['oc-lazy'])
+    expect(w.find('img').attributes('loading')).toBe('lazy')
+    await w.find('img').trigger('load')
+    expect(w.classes()).toContain('is-loaded')
   })
 })

@@ -58,6 +58,7 @@ export * from "./components/Input";
 export * from "./components/InputGroup";
 export * from "./components/LanguageSelect";
 export * from "./components/LauncherCard";
+export * from "./components/LazyImage";
 export * from "./components/Lightbox";
 export * from "./components/LinkArrow";
 export * from "./components/LinkRow";
