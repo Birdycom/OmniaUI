@@ -1,5 +1,5 @@
 // File: packages/ui/src/barcode.js
-// Map: format guess -> EAN-13 / EAN-8 / UPC-A -> Code 128 (B, or C for even digit runs) -> bars to SVG -> bind -> boot
+// Map: format guess -> EAN-13 / EAN-8 / UPC-A -> Code 128 (B, or C for even digit runs) -> bars to SVG -> SVG file -> bind -> maker -> boot
 // Barcode display without a dependency : <figure class="oc-barcode" data-value="5412345678908">
 // gets an SVG with the bars and the digits under it. data-format="auto|EAN13|EAN8|UPC|CODE128" (default auto).
 
@@ -108,6 +108,26 @@ export function barsToSvg(bits, label = "") {
   return `<svg viewBox="0 0 ${width} 50" preserveAspectRatio="none" fill="currentColor" role="img" aria-label="${escapeHtml(label)}" style="aspect-ratio:${width}/50">${rects}</svg>`;
 }
 
+/** A standalone SVG file (white background, black bars, digits under it) to download, print or put on a label.
+ *  moduleWidth and height are in px; throws like encodeBarcode for a value it cannot encode. */
+export function barcodeFile(value, { format = "auto", digits = true, moduleWidth = 2, height = 70 } = {}) {
+  const { bits, text } = encodeBarcode(value, format);
+  const quiet = 10;
+  const font = 14;
+  const width = (bits.length + quiet * 2) * moduleWidth;
+  const full = height + (digits ? font + 8 : 0) + 8;
+  let rects = "";
+  for (let i = 0; i < bits.length; ) {
+    if (bits[i] !== "1") { i++; continue; }
+    let w = 1;
+    while (bits[i + w] === "1") w++;
+    rects += `<rect x="${(i + quiet) * moduleWidth}" y="4" width="${w * moduleWidth}" height="${height}"/>`;
+    i += w;
+  }
+  const caption = digits ? `<text x="${width / 2}" y="${height + font + 8}" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="${font}" letter-spacing="1">${escapeHtml(text)}</text>` : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${full}" viewBox="0 0 ${width} ${full}"><rect width="100%" height="100%" fill="#fff"/><g fill="#000">${rects}${caption}</g></svg>`;
+}
+
 /** Draw one .oc-barcode from its data-value and data-format. Shows a short error instead of bars when it cannot. */
 export function renderBarcode(el) {
   if (!el) return;
@@ -123,8 +143,43 @@ export function renderBarcode(el) {
   }
 }
 
-/** Draw every .oc-barcode[data-value] under scope. */
+/** [data-oc-barcode-maker]: a value field (name="value"), an optional format select (name="format"), a preview
+ *  figure.oc-barcode and a[data-oc-barcode-download] that saves the SVG file. Redraws while typing. */
+export function bindBarcodeMaker(root) {
+  if (!root || root.dataset.ocBound) return;
+  root.dataset.ocBound = "";
+  const value = root.querySelector('[name="value"]');
+  const format = root.querySelector('[name="format"]');
+  const out = root.querySelector(".oc-barcode");
+  const save = root.querySelector("[data-oc-barcode-download]");
+  if (!value || !out) return;
+  let url = "";
+  const draw = () => {
+    out.dataset.value = value.value;
+    out.dataset.format = format?.value || "auto";
+    renderBarcode(out);
+    const failed = out.hasAttribute("data-error");
+    value.setAttribute("aria-invalid", String(failed && value.value.trim() !== ""));
+    if (!save) return;
+    if (url) URL.revokeObjectURL(url);
+    url = "";
+    save.removeAttribute("href");
+    save.setAttribute("aria-disabled", "true");
+    if (failed) return;
+    url = URL.createObjectURL(new Blob([barcodeFile(value.value, { format: out.dataset.format })], { type: "image/svg+xml" }));
+    save.href = url;
+    save.download = `barcode-${value.value.trim().replace(/[^\w-]+/g, "_").slice(0, 40)}.svg`;
+    save.removeAttribute("aria-disabled");
+  };
+  value.addEventListener("input", draw);
+  format?.addEventListener("change", draw);
+  root.addEventListener("submit", (event) => event.preventDefault());
+  draw();
+}
+
+/** Draw every .oc-barcode[data-value] under scope and wire every barcode maker. */
 export function initBarcodes(scope = document) {
+  scope.querySelectorAll("[data-oc-barcode-maker]").forEach(bindBarcodeMaker);
   scope.querySelectorAll(".oc-barcode[data-value]").forEach(renderBarcode);
 }
 

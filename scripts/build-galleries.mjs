@@ -10,6 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { COMPONENT_CATEGORIES, BLOCK_CATEGORIES, byCategoryOrder } from "./lib/categories.mjs";
+import { introducedIn, newestVersion } from "./lib/page-version.mjs";
 
 const root = process.cwd();
 const contentDir = path.join(root, "apps/site/src/content/ui");
@@ -52,8 +53,8 @@ function readPages(kind) {
       category: meta.category || (kind === "blocks" ? "Blocks" : "Components"),
       desc: desc && sentence(desc),
       demos: (src.match(/<oc-demo\b/g) || []).length,
-      // "0.12" from the first version badge (oc-badge-version "v0.12.0"): the release that brought the page.
-      minor: (src.match(/oc-badge-version">v(\d+\.\d+)\.\d+</) || [])[1] || "",
+      // "0.12.6": the release that brought the page (scripts/lib/page-version.mjs).
+      since: introducedIn(src),
       // "all": an OmniaUI Pro block, "some": a family with Pro variants (meta "pro" of the page)
       pro: meta.pro || "",
     };
@@ -103,13 +104,10 @@ const CSS = `
     }
     :root:is([data-theme="dark"], :has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-light { display: none; }
     :root:is([data-theme="dark"], :has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *))) .gx-shot--themed .gx-dark { display: block; }
-    .gx-new { position: absolute; inset: 0.6rem auto auto 0.6rem; z-index: 1; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-white-50); background: linear-gradient(135deg, var(--color-green-70), var(--color-teal-70)); }
-    /* Cards without a thumbnail (components): the badge sits top right, next to the title instead of over it
-       (left of the Pro badge when there is one), and the title keeps clear of it. */
-    .gx-card:not(:has(.gx-shot)) .gx-new { inset: 0.75rem 0.75rem auto auto; }
-    .gx-card:not(:has(.gx-shot)):has(.gx-pro) .gx-new { inset-inline-end: 4.6rem; }
-    .gx-card:not(:has(.gx-shot)):has(.gx-new) > b { padding-inline-end: 3.75rem; }
-    .gx-card:not(:has(.gx-shot)):has(.gx-new):has(.gx-pro) > b { padding-inline-end: 8.4rem; }
+    /* Title row: the name with the New and Pro badges after it, under the thumbnail, never over the image. */
+    .gx-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.5rem; }
+    .gx-head b { margin-inline-end: auto; }
+    .gx-new { flex: none; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-white-50); background: linear-gradient(135deg, var(--color-green-70), var(--color-teal-70)); }
     /* New in this release: a green edge and a soft green wash, so they stand out in the grid. */
     .gx-card:has(.gx-new) {
       border-color: color-mix(in oklch, var(--color-green-60) 55%, var(--oc-border));
@@ -119,7 +117,7 @@ const CSS = `
     .gx-card:has(.gx-new)::before { background: linear-gradient(var(--color-green-60), var(--color-teal-60)); opacity: 1; }
     .gx-shot img { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; object-position: center; transition: scale 0.4s; }
     .gx-card:hover .gx-shot img { scale: 1.03; }
-    .gx-pro { position: absolute; inset: 0.6rem 0.6rem auto auto; z-index: 1; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-primary-foreground); background: var(--ocd-accent); }
+    .gx-pro { flex: none; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-primary-foreground); background: var(--ocd-accent); }
     @media (prefers-reduced-motion: reduce) { .gx-card, .gx-card::before, .gx-shot img, .gx-chip { transition: none; } }`;
 
 const USED_BY_DOCS = `
@@ -168,13 +166,12 @@ const KINDS = {
 };
 
 // "New" = brought by the newest release that any page names (components and blocks together), so the badge moves
-// on by itself: once v0.13 pages exist, the v0.12 ones lose it.
-const byVersion = (a, b) => { const [x, y] = [a, b].map((v) => v.split(".").map(Number)); return x[0] - y[0] || x[1] - y[1]; };
-const newest = Object.keys(KINDS).flatMap((kind) => readPages(kind).map((p) => p.minor)).filter(Boolean).sort(byVersion).at(-1) || "";
+// on by itself: once v0.12.7 pages exist, the v0.12.6 ones lose it.
+const newest = newestVersion(Object.keys(KINDS).flatMap((kind) => readPages(kind).map((p) => p.since)));
 
 for (const [kind, k] of Object.entries(KINDS)) {
   const pages = readPages(kind);
-  const freshCount = pages.filter((p) => p.minor === newest).length;
+  const freshCount = pages.filter((p) => p.since === newest).length;
   const titles = [...new Set(pages.map((p) => p.category))].sort(byCategoryOrder(k.categories));
   const groups = titles.map((title, i) => ({
     title,
@@ -182,10 +179,10 @@ for (const [kind, k] of Object.entries(KINDS)) {
     items: pages.filter((p) => p.category === title).sort((a, b) => a.title.localeCompare(b.title)),
   }));
   const card = (p, t) => {
-    const fresh = p.minor && p.minor === newest ? `<em class="gx-new">New</em>` : "";
+    const fresh = p.since && p.since === newest ? `<em class="gx-new">New</em>` : "";
     const cli = p.pro === "all" ? "" : addName(kind, p.name);
     const badge = p.pro ? `<em class="gx-pro">${p.pro === "all" ? "Pro" : "Free + Pro"}</em>` : "";
-    return `<a class="gx-card" href="${kind}/${p.name}.html" style="${tone(t)}">${kind === "blocks" ? thumbnail(p.name) : ""}${fresh}${badge}<b>${esc(p.title)}</b><span>${p.desc}</span><small><i>${cli ? `omniaui add ${cli}` : p.pro === "all" ? "OmniaUI Pro" : ""}</i>${p.demos > 1 ? `<em>${p.demos} demos</em>` : ""}</small></a>`;
+    return `<a class="gx-card" href="${kind}/${p.name}.html" style="${tone(t)}">${kind === "blocks" ? thumbnail(p.name) : ""}<div class="gx-head"><b>${esc(p.title)}</b>${fresh}${badge}</div><span>${p.desc}</span><small><i>${cli ? `omniaui add ${cli}` : p.pro === "all" ? "OmniaUI Pro" : ""}</i>${p.demos > 1 ? `<em>${p.demos} demos</em>` : ""}</small></a>`;
   };
   const single = kind === "blocks" ? "block" : "component";
   const body = `<section class="oc-hero gx-hero" id="overview" data-oc-no-compat>

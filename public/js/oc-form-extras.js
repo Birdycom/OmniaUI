@@ -2,7 +2,8 @@
 // Map: ISO week -> date field (week label) -> name card (rename) -> avatar picker (preview, drop, remove) -> quantity
 //      (step buttons) -> init -> boot
 // Small behaviour for four CSS components; each works without it (native date input, <details>, file input, number input).
-// Events on the component root: oc-namecard-rename { name }, oc-avatar-change { file } (null when removed).
+// Events on the component root: oc-namecard-rename { name }, oc-avatar-change { file } (null when removed),
+// oc-avatar-invalid { file, reason } (wrong type or too large).
 
 /** ISO 8601 week of a date: { week, year } (the week with the year's first Thursday is week 1). */
 export function isoWeek(date) {
@@ -73,7 +74,18 @@ export function bindNameCard(root) {
   input.addEventListener("blur", () => finish(true));
 }
 
-/** .oc-avatar-picker: preview the chosen or dropped image; [data-oc-avatar-remove] goes back to the initials. */
+/** Does file match an accept list ("image/*", "image/png,.svg")? An empty list accepts images only. */
+export function acceptsFile(file, accept = "image/*") {
+  if (!file) return false;
+  const rules = (accept || "image/*").split(",").map((r) => r.trim().toLowerCase()).filter(Boolean);
+  const type = (file.type || "").toLowerCase();
+  const name = (file.name || "").toLowerCase();
+  return rules.some((r) => (r.startsWith(".") ? name.endsWith(r) : r.endsWith("/*") ? type.startsWith(r.slice(0, -1)) : type === r));
+}
+
+/** .oc-avatar-picker: preview the chosen or dropped image; [data-oc-avatar-remove] goes back to the initials.
+ *  A file that does not match the input's accept (a PDF picked through "All files") or is larger than
+ *  data-oc-max-kb is refused: the input is cleared and .oc-avatar-picker__error says why (oc-avatar-invalid). */
 export function bindAvatarPicker(root) {
   const preview = root.querySelector(".oc-avatar-picker__preview");
   const file = root.querySelector(".oc-avatar-picker__file");
@@ -81,6 +93,17 @@ export function bindAvatarPicker(root) {
   root.dataset.ocBound = "";
   const initials = preview.querySelector("[data-oc-initials]") || null;
   let url = "";
+  const error = (text) => {
+    let box = root.querySelector(".oc-avatar-picker__error");
+    if (!box && text) {
+      box = document.createElement("span");
+      box.className = "oc-avatar-picker__error";
+      box.setAttribute("role", "alert");
+      (root.querySelector(".oc-avatar-picker__text") || root).append(box);
+    }
+    if (box) { box.textContent = text; box.hidden = !text; }
+    root.classList.toggle("is-invalid", Boolean(text));
+  };
   const show = (picked) => {
     if (url) URL.revokeObjectURL(url);
     url = "";
@@ -95,18 +118,35 @@ export function bindAvatarPicker(root) {
     }
     root.dispatchEvent(new CustomEvent("oc-avatar-change", { bubbles: true, detail: { file: picked || null } }));
   };
-  file.addEventListener("change", () => show(file.files?.[0] || null));
+  const take = (picked) => {
+    if (!picked) return show(null);
+    const maxKb = Number(root.dataset.ocMaxKb || 0);
+    const reason = !acceptsFile(picked, file.accept) ? (root.dataset.ocTypeError || "This file is not an image. Choose a PNG, JPG, WebP or SVG.")
+      : maxKb && picked.size > maxKb * 1024 ? (root.dataset.ocSizeError || `This image is larger than ${maxKb >= 1024 ? `${Math.round(maxKb / 102.4) / 10} MB` : `${maxKb} KB`}.`) : "";
+    if (reason) {
+      file.value = "";
+      error(reason);
+      root.dispatchEvent(new CustomEvent("oc-avatar-invalid", { bubbles: true, detail: { file: picked, reason } }));
+      return;
+    }
+    error("");
+    show(picked);
+  };
+  file.addEventListener("change", () => take(file.files?.[0] || null));
   root.addEventListener("click", (event) => {
     if (event.target.closest("[data-oc-avatar-upload]")) file.click();
-    if (event.target.closest("[data-oc-avatar-remove]")) { file.value = ""; show(null); }
+    if (event.target.closest("[data-oc-avatar-remove]")) { file.value = ""; error(""); show(null); }
   });
   root.addEventListener("dragover", (event) => { event.preventDefault(); root.classList.add("is-dragover"); });
   root.addEventListener("dragleave", () => root.classList.remove("is-dragover"));
   root.addEventListener("drop", (event) => {
     event.preventDefault();
     root.classList.remove("is-dragover");
-    const picked = [...(event.dataTransfer?.files || [])].find((f) => f.type.startsWith("image/"));
-    if (picked) show(picked);
+    const picked = event.dataTransfer?.files?.[0];
+    if (!picked) return;
+    // A dropped file never reaches the input, so put it there for the form (where the browser allows it).
+    if (acceptsFile(picked, file.accept)) try { const dt = new DataTransfer(); dt.items.add(picked); file.files = dt.files; } catch { /* old browsers */ }
+    take(picked);
   });
 }
 

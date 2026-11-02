@@ -1,5 +1,5 @@
 // File: packages/vue/tests/shop.test.ts
-// Map: OcRating -> OcRatingInput -> OcPrice -> OcQuantity (steps, limits) -> OcGallery -> OcStock -> OcSpecList
+// Map: OcRating -> OcRatingInput -> OcPrice -> OcQuantity (steps, limits) -> OcGallery -> OcStock -> OcSpecList -> OcRibbon
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -8,6 +8,7 @@ import OcPrice from '../src/components/OcPrice.vue'
 import OcQuantity from '../src/components/OcQuantity.vue'
 import OcRating from '../src/components/OcRating.vue'
 import OcRatingInput from '../src/components/OcRatingInput.vue'
+import OcRibbon from '../src/components/OcRibbon.vue'
 import OcSpecList from '../src/components/OcSpecList.vue'
 import OcStock from '../src/components/OcStock.vue'
 
@@ -60,5 +61,12 @@ describe('shop components', () => {
     const w = mount(OcSpecList, { props: { groups: [{ title: 'Dimensions', rows: [{ label: 'Height', value: '52 cm' }] }] } })
     expect(w.find('.oc-spec-group__title').text()).toBe('Dimensions')
     expect(w.findAll('.oc-spec-row')).toHaveLength(1)
+  })
+
+  it('OcRibbon puts corner, tone and size on the band', () => {
+    expect(mount(OcRibbon, { slots: { default: 'New' } }).classes()).toEqual(['oc-ribbon'])
+    const w = mount(OcRibbon, { props: { corner: 'bottom-end', tone: 'destructive', size: 'sm' }, slots: { default: 'Sale' } })
+    expect(w.classes()).toEqual(['oc-ribbon', 'oc-ribbon--bottom-end', 'oc-ribbon--destructive', 'oc-ribbon--sm'])
+    expect(w.text()).toBe('Sale')
   })
 })
