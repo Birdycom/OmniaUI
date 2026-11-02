@@ -1,8 +1,7 @@
 // File: packages/react/test/chat.test.tsx
 // Map: attachment -> message (+ list) -> message thread (send, Ctrl+Enter) -> prose -> chart line (paths equal the snippet)
 // Chat and content wrappers: each renders the snippet markup (classes, roles, ids) and its small bits of behaviour.
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import chartLineSnippet from "../../ui/snippets/chart-line.html?raw";
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Attachment, AttachmentImage, AttachmentList, AttachmentThumb, ChartLine, Message, MessageList, MessageThread, Prose, niceMax } from "../src";
@@ -113,7 +112,7 @@ describe("Prose and ChartLine", () => {
   });
 
   it("ChartLine computes the same paths, dots and axis as the snippet", () => {
-    const snippet = readFileSync(resolve(__dirname, "../../ui/snippets/chart-line.html"), "utf8");
+    const snippet = chartLineSnippet;
     const expected = [...snippet.matchAll(/class="oc-chart-line__path" d="([^"]+)"/g)].map((m) => m[1]);
     const { container } = render(<ChartLine />);
     expect(Array.from(container.querySelectorAll(".oc-chart-line__path")).map((p) => p.getAttribute("d"))).toEqual(expected);

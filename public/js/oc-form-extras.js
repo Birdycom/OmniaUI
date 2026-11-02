@@ -1,6 +1,7 @@
 // File: packages/ui/src/form-extras.js
-// Map: ISO week -> date field (week label) -> name card (rename) -> avatar picker (preview, drop, remove) -> init -> boot
-// Small behaviour for three CSS components; each works without it (native date input, <details>, file input).
+// Map: ISO week -> date field (week label) -> name card (rename) -> avatar picker (preview, drop, remove) -> quantity
+//      (step buttons) -> init -> boot
+// Small behaviour for four CSS components; each works without it (native date input, <details>, file input, number input).
 // Events on the component root: oc-namecard-rename { name }, oc-avatar-change { file } (null when removed).
 
 /** ISO 8601 week of a date: { week, year } (the week with the year's first Thursday is week 1). */
@@ -109,11 +110,53 @@ export function bindAvatarPicker(root) {
   });
 }
 
-/** Wire every date field, name card and avatar picker under scope. */
+/** Next value of a quantity: one step (data-oc-step = -1 or 1) within min and max, on the step grid. */
+export function stepQuantity(value, direction, { min = -Infinity, max = Infinity, step = 1 } = {}) {
+  const size = step > 0 ? step : 1;
+  const base = Number.isFinite(min) ? min : 0;
+  const current = Number.isFinite(value) ? value : base;
+  // Off the step grid (2.5 with step 1), the first step lands on the grid: 3 up, 2 down.
+  const k = (current - base) / size;
+  const onGrid = Math.abs(k - Math.round(k)) < 1e-9;
+  const next = onGrid ? current + direction * size : base + (direction > 0 ? Math.ceil(k) : Math.floor(k)) * size;
+  return Math.min(max, Math.max(min, Number(next.toFixed(6))));
+}
+
+/** .oc-quantity: the [data-oc-step] buttons change the number input and disable themselves at min / max. */
+export function bindQuantity(root) {
+  const input = root.querySelector(".oc-quantity__input");
+  if (!input || root.dataset.ocBound) return;
+  root.dataset.ocBound = "";
+  const num = (attr, fallback) => (input.getAttribute(attr) === null || input.getAttribute(attr) === "" ? fallback : Number(input.getAttribute(attr)));
+  const limits = () => ({ min: num("min", -Infinity), max: num("max", Infinity), step: num("step", 1) });
+  const sync = () => {
+    const { min, max } = limits();
+    const value = Number(input.value);
+    root.querySelectorAll("[data-oc-step]").forEach((button) => {
+      const down = Number(button.dataset.ocStep) < 0;
+      button.disabled = input.disabled || (down ? value <= min : value >= max);
+    });
+  };
+  root.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-oc-step]");
+    if (!button || !root.contains(button) || input.disabled || input.readOnly) return;
+    const next = stepQuantity(Number(input.value), Number(button.dataset.ocStep) < 0 ? -1 : 1, limits());
+    if (String(next) === input.value) return;
+    input.value = String(next);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  input.addEventListener("input", sync);
+  input.addEventListener("change", sync);
+  sync();
+}
+
+/** Wire every date field, name card, avatar picker and quantity field under scope. */
 export function initFormExtras(scope = document) {
   scope.querySelectorAll(".oc-date-field").forEach(bindDateField);
   scope.querySelectorAll(".oc-name-card").forEach(bindNameCard);
   scope.querySelectorAll(".oc-avatar-picker").forEach(bindAvatarPicker);
+  scope.querySelectorAll(".oc-quantity").forEach(bindQuantity);
 }
 
 // Starts on its own as /js/oc-form-extras.js (`npx omniaui copy-js`), with ?auto in the URL or data-oc-auto on the tag.

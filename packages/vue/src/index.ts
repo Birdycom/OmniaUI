@@ -59,6 +59,7 @@ import OcFilterCounts from './components/OcFilterCounts.vue'
 import OcFlipCard from './components/OcFlipCard.vue'
 import OcFormField from './components/OcFormField.vue'
 import OcFormSection from './components/OcFormSection.vue'
+import OcGallery from './components/OcGallery.vue'
 import OcGlass from './components/OcGlass.vue'
 import OcGlassPanel from './components/OcGlassPanel.vue'
 import OcGreeting from './components/OcGreeting.vue'
@@ -101,13 +102,17 @@ import OcPasswordInput from './components/OcPasswordInput.vue'
 import OcPasswordRequirements from './components/OcPasswordRequirements.vue'
 import OcPhoneInput from './components/OcPhoneInput.vue'
 import OcPopover from './components/OcPopover.vue'
+import OcPrice from './components/OcPrice.vue'
 import OcPriceCard from './components/OcPriceCard.vue'
 import OcProductMark from './components/OcProductMark.vue'
 import OcProgress from './components/OcProgress.vue'
 import OcProjectCard from './components/OcProjectCard.vue'
 import OcProse from './components/OcProse.vue'
+import OcQuantity from './components/OcQuantity.vue'
 import OcRadio from './components/OcRadio.vue'
 import OcRadioGroup from './components/OcRadioGroup.vue'
+import OcRating from './components/OcRating.vue'
+import OcRatingInput from './components/OcRatingInput.vue'
 import OcRecoveryCodes from './components/OcRecoveryCodes.vue'
 import OcScrollArea from './components/OcScrollArea.vue'
 import OcSegmented from './components/OcSegmented.vue'
@@ -124,6 +129,7 @@ import OcSidebarSeparator from './components/OcSidebarSeparator.vue'
 import OcSkeleton from './components/OcSkeleton.vue'
 import OcSlider from './components/OcSlider.vue'
 import OcSortableRow from './components/OcSortableRow.vue'
+import OcSpecList from './components/OcSpecList.vue'
 import OcSpinner from './components/OcSpinner.vue'
 import OcStackCard from './components/OcStackCard.vue'
 import OcStackList from './components/OcStackList.vue'
@@ -131,6 +137,7 @@ import OcStatCard from './components/OcStatCard.vue'
 import OcStatus from './components/OcStatus.vue'
 import OcStatusDot from './components/OcStatusDot.vue'
 import OcStepper from './components/OcStepper.vue'
+import OcStock from './components/OcStock.vue'
 import OcSwitch from './components/OcSwitch.vue'
 import OcTable from './components/OcTable.vue'
 import OcTableActions from './components/OcTableActions.vue'
@@ -250,6 +257,7 @@ export {
   OcFlipCard,
   OcFormField,
   OcFormSection,
+  OcGallery,
   OcGlass,
   OcGlassPanel,
   OcGreeting,
@@ -292,13 +300,17 @@ export {
   OcPasswordRequirements,
   OcPhoneInput,
   OcPopover,
+  OcPrice,
   OcPriceCard,
   OcProductMark,
   OcProgress,
   OcProjectCard,
   OcProse,
+  OcQuantity,
   OcRadio,
   OcRadioGroup,
+  OcRating,
+  OcRatingInput,
   OcRecoveryCodes,
   OcScrollArea,
   OcSegmented,
@@ -315,6 +327,7 @@ export {
   OcSkeleton,
   OcSlider,
   OcSortableRow,
+  OcSpecList,
   OcSpinner,
   OcStackCard,
   OcStackList,
@@ -322,6 +335,7 @@ export {
   OcStatus,
   OcStatusDot,
   OcStepper,
+  OcStock,
   OcSwitch,
   OcTable,
   OcTableActions,
@@ -397,6 +411,7 @@ export type { DefinitionRow } from './components/OcDefinitionList.vue'
 export type { DocViewerItem } from './components/OcDocViewer.vue'
 export type { FactListRow } from './components/OcFactList.vue'
 export type { FilterCountsItem } from './components/OcFilterCounts.vue'
+export type { GalleryImage } from './components/OcGallery.vue'
 export type { LanguageSelectItem } from './components/OcLanguageSelect.vue'
 export type { MessageAttachment, MessageAction, MessageData } from './components/OcMessage.vue'
 export type { MessageListItem } from './components/OcMessageList.vue'
@@ -408,6 +423,7 @@ export type { PriceCardFeature, PriceCardPrice } from './components/OcPriceCard.
 export type { RadioOption } from './components/OcRadioGroup.vue'
 export type { SegmentedOption } from './components/OcSegmented.vue'
 export type { SelectOption } from './components/OcSelect.vue'
+export type { SpecGroup } from './components/OcSpecList.vue'
 export type { StackListItem } from './components/OcStackList.vue'
 export type { StepperStep } from './components/OcStepper.vue'
 export type { TableColumn, TableSort } from './components/OcTable.vue'
@@ -497,6 +513,7 @@ export const components: Record<string, Component> = {
   OcFlipCard,
   OcFormField,
   OcFormSection,
+  OcGallery,
   OcGlass,
   OcGlassPanel,
   OcGreeting,
@@ -539,13 +556,17 @@ export const components: Record<string, Component> = {
   OcPasswordRequirements,
   OcPhoneInput,
   OcPopover,
+  OcPrice,
   OcPriceCard,
   OcProductMark,
   OcProgress,
   OcProjectCard,
   OcProse,
+  OcQuantity,
   OcRadio,
   OcRadioGroup,
+  OcRating,
+  OcRatingInput,
   OcRecoveryCodes,
   OcScrollArea,
   OcSegmented,
@@ -562,6 +583,7 @@ export const components: Record<string, Component> = {
   OcSkeleton,
   OcSlider,
   OcSortableRow,
+  OcSpecList,
   OcSpinner,
   OcStackCard,
   OcStackList,
@@ -569,6 +591,7 @@ export const components: Record<string, Component> = {
   OcStatus,
   OcStatusDot,
   OcStepper,
+  OcStock,
   OcSwitch,
   OcTable,
   OcTableActions,

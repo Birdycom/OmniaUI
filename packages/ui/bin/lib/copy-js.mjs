@@ -12,11 +12,12 @@ const SCRIPTS = [
   ["@birdycom/omniaui", "dist/data-table.js", "oc-data-table.js", "list table: sort, filter, select, paginate"],
   ["@birdycom/omniaui", "dist/carousel.js", "oc-carousel.js", "looping carousel (.oc-carousel--loop)"],
   ["@birdycom/omniaui", "dist/barcode.js", "oc-barcode.js", "barcode SVG (.oc-barcode: EAN-13, EAN-8, UPC-A, Code 128)"],
-  ["@birdycom/omniaui", "dist/form-extras.js", "oc-form-extras.js", "ISO week in date fields, name card rename, avatar picker preview"],
+  ["@birdycom/omniaui", "dist/form-extras.js", "oc-form-extras.js", "ISO week in date fields, name card rename, avatar picker preview, quantity steps"],
   ["@birdycom/omniaui-pro", "dist/spotlight.js", "oc-spotlight.js", "spotlight cards (Pro)"],
   ["@birdycom/omniaui-pro", "dist/ecosystem-map.js", "oc-ecosystem-map.js", "ecosystem map lines (Pro)"],
   ["@birdycom/omniaui-pro", "dist/infinite-carousel.js", "oc-infinite-carousel.js", "infinite carousel (Pro)"],
   ["@birdycom/omniaui-pro", "dist/data-table-pro.js", "oc-data-table-pro.js", "data table column width and row drag (Pro)"],
+  ["@birdycom/omniaui-pro", "dist/product-picker.js", "oc-product-picker.js", "product picker dialog: search and pick (Pro)"],
 ];
 
 /** public/js when the project has a public folder (Laravel, Vite, Astro …), else js. */

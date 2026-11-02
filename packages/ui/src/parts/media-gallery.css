@@ -1,0 +1,53 @@
+/* File: packages/ui/src/parts/media-gallery.css | Map: gallery grid -> stage and slides (radio + :has, up to 8) -> badge -> thumbnails -> side layout (container query) */
+/* Product gallery without JavaScript: one large photo and a row of thumbnails. Every thumbnail is a label with a
+   radio; :has() shows the slide at the same position. Arrow keys move between the photos (native radios). */
+
+.oc-gallery { container-type: inline-size; inline-size: 100%; display: grid; gap: 0.75rem; min-inline-size: 0; }
+.oc-gallery__stage {
+  position: relative;
+  aspect-ratio: var(--oc-gallery-ratio, 4 / 3);
+  overflow: hidden;
+  background: var(--oc-muted);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+}
+.oc-gallery__slide { display: none; margin: 0; block-size: 100%; }
+.oc-gallery__slide > img { display: block; inline-size: 100%; block-size: 100%; object-fit: var(--oc-gallery-fit, contain); }
+.oc-gallery:not(:has(.oc-gallery__thumb input:checked)) .oc-gallery__slide:first-of-type,
+.oc-gallery:has(.oc-gallery__thumb:nth-of-type(1) input:checked) .oc-gallery__slide:nth-of-type(1),
+.oc-gallery:has(.oc-gallery__thumb:nth-of-type(2) input:checked) .oc-gallery__slide:nth-of-type(2),
+.oc-gallery:has(.oc-gallery__thumb:nth-of-type(3) input:checked) .oc-gallery__slide:nth-of-type(3),
+.oc-gallery:has(.oc-gallery__thumb:nth-of-type(4) input:checked) .oc-gallery__slide:nth-of-type(4),
+.oc-gallery:has(.oc-gallery__thumb:nth-of-type(5) input:checked) .oc-gallery__slide:nth-of-type(5),
+.oc-gallery:has(.oc-gallery__thumb:nth-of-type(6) input:checked) .oc-gallery__slide:nth-of-type(6),
+.oc-gallery:has(.oc-gallery__thumb:nth-of-type(7) input:checked) .oc-gallery__slide:nth-of-type(7),
+.oc-gallery:has(.oc-gallery__thumb:nth-of-type(8) input:checked) .oc-gallery__slide:nth-of-type(8) { display: block; }
+.oc-gallery__badge { position: absolute; inset: 0.75rem auto auto 0.75rem; z-index: 1; }
+
+.oc-gallery__thumbs { display: flex; gap: 0.5rem; min-inline-size: 0; margin: 0; padding: 0.125rem; overflow-x: auto; border: 0; scrollbar-width: thin; }
+.oc-gallery__thumbs > legend { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.oc-gallery__thumb {
+  position: relative;
+  flex: 0 0 auto;
+  inline-size: var(--oc-gallery-thumb, 4rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--oc-muted);
+  border: 2px solid transparent;
+  border-radius: var(--oc-radius);
+  outline: 1px solid var(--oc-border);
+  outline-offset: -1px;
+  cursor: pointer;
+}
+.oc-gallery__thumb > img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.oc-gallery__thumb > input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.oc-gallery__thumb:hover { outline-color: var(--oc-muted-foreground); }
+.oc-gallery__thumb:has(input:checked) { border-color: var(--oc-primary); outline-color: transparent; }
+.oc-gallery__thumb:has(input:focus-visible) { box-shadow: 0 0 0 2px var(--oc-background), 0 0 0 4px var(--oc-ring); }
+
+/* Side: thumbnails in a column on the left once the gallery is wide enough. */
+@container (min-width: 32rem) {
+  .oc-gallery--side { grid-template-columns: var(--oc-gallery-thumb, 4rem) minmax(0, 1fr); align-items: start; }
+  .oc-gallery--side .oc-gallery__stage { grid-column: 2; grid-row: 1; }
+  .oc-gallery--side .oc-gallery__thumbs { grid-column: 1; grid-row: 1; flex-direction: column; overflow: visible; }
+}

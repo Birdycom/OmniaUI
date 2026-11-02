@@ -28,6 +28,7 @@ const snippetAlias = {
   'settings-section': 'settings-page',
   'settings-row': 'settings-page',
   'message-list': 'message',
+  'rating-input': 'rating',
   'attachment-list': 'attachment',
   'attachment-image': 'attachment',
   'attachment-thumb': 'attachment',
