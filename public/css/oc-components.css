@@ -9684,11 +9684,13 @@ a.oc-attachment-image:hover > :is(img, .oc-media-art) { filter: brightness(1.05)
 .oc-gallery__thumb:has(input:checked) { border-color: var(--oc-primary); outline-color: transparent; }
 .oc-gallery__thumb:has(input:focus-visible) { box-shadow: 0 0 0 2px var(--oc-background), 0 0 0 4px var(--oc-ring); }
 
-/* Side: thumbnails in a column on the left once the gallery is wide enough. */
+/* Side: thumbnails in a column on the left once the gallery itself is 32rem wide or more. The grid is always two
+   tracks; below 32rem both children span them, so the query only moves the children (a container cannot query itself). */
+.oc-gallery--side { grid-template-columns: auto minmax(0, 1fr); }
+.oc-gallery--side > * { grid-column: 1 / -1; }
 @container (min-width: 32rem) {
-  .oc-gallery--side { grid-template-columns: var(--oc-gallery-thumb, 4rem) minmax(0, 1fr); align-items: start; }
-  .oc-gallery--side .oc-gallery__stage { grid-column: 2; grid-row: 1; }
-  .oc-gallery--side .oc-gallery__thumbs { grid-column: 1; grid-row: 1; flex-direction: column; overflow: visible; }
+  .oc-gallery--side > .oc-gallery__stage { grid-column: 2; grid-row: 1; }
+  .oc-gallery--side > .oc-gallery__thumbs { grid-column: 1; grid-row: 1; flex-direction: column; overflow: visible; }
 }
 
 /* parts/media-glass.css */

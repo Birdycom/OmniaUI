@@ -18,6 +18,7 @@ const SCRIPTS = [
   ["@birdycom/omniaui-pro", "dist/infinite-carousel.js", "oc-infinite-carousel.js", "infinite carousel (Pro)"],
   ["@birdycom/omniaui-pro", "dist/data-table-pro.js", "oc-data-table-pro.js", "data table column width and row drag (Pro)"],
   ["@birdycom/omniaui-pro", "dist/product-picker.js", "oc-product-picker.js", "product picker dialog: search and pick (Pro)"],
+  ["@birdycom/omniaui-pro", "dist/shop.js", "oc-shop.js", "shop catalog filters and cart totals (Pro)"],
 ];
 
 /** public/js when the project has a public folder (Laravel, Vite, Astro …), else js. */
