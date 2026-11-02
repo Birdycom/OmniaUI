@@ -10,7 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { COMPONENT_CATEGORIES, BLOCK_CATEGORIES, byCategoryOrder } from "./lib/categories.mjs";
-import { introducedIn, newestVersion } from "./lib/page-version.mjs";
+import { freshness, introducedIn, newestVersion } from "./lib/page-version.mjs";
 
 const root = process.cwd();
 const contentDir = path.join(root, "apps/site/src/content/ui");
@@ -55,6 +55,7 @@ function readPages(kind) {
       demos: (src.match(/<oc-demo\b/g) || []).length,
       // "0.12.6": the release that brought the page (scripts/lib/page-version.mjs).
       since: introducedIn(src),
+      src,
       // "all": an OmniaUI Pro block, "some": a family with Pro variants (meta "pro" of the page)
       pro: meta.pro || "",
     };
@@ -122,6 +123,7 @@ const CSS = `
     .gx-card:has(.gx-new)::before { background: linear-gradient(var(--color-green-60), var(--color-teal-60)); opacity: 1; }
     .gx-shot img { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; object-position: center; transition: scale 0.4s; }
     .gx-card:hover .gx-shot img { scale: 1.03; }
+    .gx-new--updated { color: light-dark(var(--color-teal-80), var(--color-teal-10)); background: oklch(from var(--color-teal-60) l c h / 0.16); }
     .gx-pro { flex: none; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-primary-foreground); background: var(--ocd-accent); }
     @media (prefers-reduced-motion: reduce) { .gx-card, .gx-card::before, .gx-shot img, .gx-chip { transition: none; } }`;
 
@@ -184,7 +186,8 @@ for (const [kind, k] of Object.entries(KINDS)) {
     items: pages.filter((p) => p.category === title).sort((a, b) => a.title.localeCompare(b.title)),
   }));
   const card = (p, t) => {
-    const fresh = p.since && p.since === newest ? `<em class="gx-new">New</em>` : "";
+    const state = freshness(p.src, newest);
+    const fresh = state === "new" ? `<em class="gx-new">New</em>` : state === "updated" ? `<em class="gx-new gx-new--updated">Updated</em>` : "";
     const cli = p.pro === "all" ? "" : addName(kind, p.name);
     const badge = p.pro ? `<em class="gx-pro">${p.pro === "all" ? "Pro" : "Free + Pro"}</em>` : "";
     return `<a class="gx-card" href="${kind}/${p.name}.html" style="${tone(t)}">${kind === "blocks" ? thumbnail(p.name) : ""}<div class="gx-head"><b>${esc(p.title)}</b>${fresh}${badge}</div><span>${p.desc}</span><small><i>${cli ? `omniaui add ${cli}` : p.pro === "all" ? "OmniaUI Pro" : ""}</i>${p.demos ? `<em>${p.demos} ${p.demos === 1 ? "demo" : "demos"}</em>` : ""}</small></a>`;
