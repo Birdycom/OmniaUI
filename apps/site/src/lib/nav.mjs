@@ -54,8 +54,9 @@ export function leftSidebar(section, route) {
           return `<li><a class="oc-sidebar-menu-button" href="${esc(childHref)}"${childActive}>${esc(child.label || "")}</a></li>`;
         }).join("")}</ul>`;
       }
-      // "New" (brought by the newest release) and "Pro" badges from scripts/build-nav.mjs.
+      // "New" (brought by the newest release), "Updated" (it added to the page) and "Pro" badges from scripts/build-nav.mjs.
       const badges = (item.new ? `<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v${esc(item.new)}">New</span>` : "")
+        + (item.updated ? `<span class="oc-sidebar-menu-badge ocd-nav-updated" title="Updated in v${esc(item.updated)}">Updated</span>` : "")
         + (item.pro ? '<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span>' : "");
       return `<li><a${active.includes("class=") ? "" : ' class="oc-sidebar-menu-button"'} href="${esc(href)}"${active}>${esc(item.label)}${badges}</a>${children}</li>`;
     }).join("");

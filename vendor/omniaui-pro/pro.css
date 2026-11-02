@@ -1442,6 +1442,27 @@
   .oc-block-ecosystem-node .oc-icon-tile { transition: none; }
 }
 
+/* parts/site-glass-nav.css */
+/* File: packages/pro/src/parts/site-glass-nav.css (OmniaUI Pro)
+   Map: lens (the backdrop bends and shifts colour through the glass) -> filter holder -> glass navigation block
+   Liquid glass navigation: the free .oc-glass--liquid and .oc-glass-bar (OmniaUI) plus the lens. */
+
+/* Lens: what is behind the glass bends like through water and shifts in colour, as on the newest phone and desktop
+   systems. It needs the filter <svg class="oc-glass-defs"> with #oc-glass-lens once on the page. Chromium (Chrome,
+   Edge, Opera, Electron) draws it; Safari and Firefox keep the plain glass, which looks right on its own. */
+@supports (backdrop-filter: url("#oc-glass-lens")) and (not (font: -apple-system-body)) and (not (-moz-appearance: none)) {
+  :is(.oc-glass, .oc-glass-bar).oc-glass--lens {
+    backdrop-filter: url("#oc-glass-lens") blur(var(--oc-liquid-blur, 3px)) saturate(1.9) brightness(1.08);
+  }
+}
+.oc-glass-defs { position: absolute; inline-size: 0; block-size: 0; overflow: hidden; pointer-events: none; }
+
+/* Block: a large glass sheet with an action pill on top and the menu bar below, as on the newest phones. */
+.oc-block-glass-nav { display: grid; place-items: center; min-block-size: 20rem; padding: clamp(1rem, 4vw, 2rem); border-radius: calc(var(--oc-radius) + 6px); }
+.oc-block-glass-nav__sheet { display: grid; justify-items: center; gap: 1rem; inline-size: min(100%, 30rem); padding: 1rem; border-radius: 36px; }
+.oc-block-glass-nav__bar { inline-size: 100%; justify-content: space-around; border-radius: 28px; }
+.oc-block-glass-nav__action .oc-glass-bar__item { grid-auto-flow: column; gap: 0.5rem; font-size: 0.85rem; }
+
 /* parts/site-infinite-carousel.css */
 /* File: packages/pro/src/parts/site-infinite-carousel.css
    Map: block (head + carousel) -> slides (card: art, text) -> copies (no dots) -> buttons -> per view

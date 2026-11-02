@@ -12,7 +12,7 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 [![(Packagist) Laravel](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/split-php.yml?label=%28Packagist%29%20Laravel&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/split-php.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Version:** `0.12.5` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.12.6` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
@@ -126,6 +126,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.12.6` | 2026-11-02 | Winkel- en productblocks, nieuwe componenten (ribbon, lazy loading, rating, gallery …), header/footer-varianten, liquid glass, sneller scrollen |
 | `0.12.5` | 2026-11-01 | Webicons in alle componenten, starterkits-pagina, Filament licht-modus |
 | `0.12.4` | 2026-10-30 | Price card lifetime option and security notices |
 | `0.12.3` | 2026-10-30 | Status dot, glass en title bar; @omniaui in de PostCSS-plugin; copy-js; kleinere build; hover-rand van de cards |

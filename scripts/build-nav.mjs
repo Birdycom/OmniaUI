@@ -9,13 +9,14 @@
 // - category = "category" when present, else "Components" (components) or "Blocks" (blocks).
 // Groups follow scripts/lib/categories.mjs (the same order as the overview galleries), unknown groups after them by name;
 // items are sorted by label. The fixed "Overview" group always comes first.
-// Badges: "new" for pages brought by the newest release (scripts/lib/page-version.mjs), "pro" for OmniaUI Pro blocks.
+// Badges: "new" for pages brought by the newest release, "updated" for older pages it added to (scripts/lib/page-version.mjs),
+// "pro" for OmniaUI Pro blocks.
 
 import fs from "node:fs";
 import path from "node:path";
 import { OMNIACSS_URL } from "../apps/site/src/lib/site.mjs";
 import { COMPONENT_CATEGORIES, BLOCK_CATEGORIES, byCategoryOrder } from "./lib/categories.mjs";
-import { introducedIn, newestVersion } from "./lib/page-version.mjs";
+import { freshness, introducedIn, newestVersion } from "./lib/page-version.mjs";
 
 const root = process.cwd();
 const contentDir = path.join(root, "apps/site/src/content/ui");
@@ -67,7 +68,9 @@ for (const s of SECTIONS) {
     const category = meta.category || s.fallback;
     if (!groups.has(category)) groups.set(category, []);
     const item = { id, label: labelOf(meta, id), href: `/ui/${s.folder}/${file}` };
-    if (newest && introducedIn(fs.readFileSync(path.join(dir, file), "utf8")) === newest) item.new = newest;
+    const fresh = freshness(fs.readFileSync(path.join(dir, file), "utf8"), newest);
+    if (fresh === "new") item.new = newest;
+    if (fresh === "updated") item.updated = newest;
     if (meta.pro === "all") item.pro = true;
     groups.get(category).push(item);
   }

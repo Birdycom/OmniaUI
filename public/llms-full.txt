@@ -1,9 +1,9 @@
 # OmniaUI — full reference for AI assistants
 
 > OmniaUI is the component and block library for OmniaCSS: 159 components and
-> 96 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
+> 97 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
 > wrappers for React, Vue, Laravel Blade and Livewire. Behaviour comes from native HTML (dialog, popover, details,
-> :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; 50 advanced
+> :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; 51 advanced
 > blocks are part of OmniaUI Pro (paid license).
 
 ## Rules for AI assistants
@@ -4933,12 +4933,14 @@ Images that load when they come near the screen, with a shimmer or a blurred pre
 
 ```html
 <!-- OmniaUI component: lazy - Images that load when they come near the screen, with a shimmer or a blurred preview until they are there, and sections drawn only when needed. Needs @birdycom/omniaui CSS.
-     File: packages/ui/snippets/lazy.html | Map: lazy images -> placeholder while loading.
+     File: packages/ui/snippets/lazy.html | Map: lazy images -> lazy table -> placeholder while loading.
      Class API (modifiers are extra classes / attributes on the same element):
        figure.oc-lazy > img[loading=lazy]: The image box: keeps its aspect ratio (--oc-lazy-ratio, 16 / 10), a shimmer until the photo is there. Give the image width and height.
        --oc-lazy-preview: A tiny copy of the photo (a few hundred bytes) shown blurred instead of the shimmer: style="--oc-lazy-preview: url(photo-24px.webp)".
        .is-loaded / .is-error: Added by lazy.js: the photo fades in / the placeholder stays. Without the script the photo shows when it is there.
        figcaption: Optional caption over the bottom of the image.
+       .oc-lazy--thumb: A small square thumbnail (2.5rem) for a table row or a list item.
+       tr.oc-lazy-row / .oc-lazy-bar: Placeholder rows while the next page of a table loads: bars that pulse, --oc-lazy-bar sets their width. Give the rows aria-hidden="true" and say what is loading in a role="status".
        .oc-lazy-section: A section the browser lays out and draws only when it comes near the screen (content-visibility: auto); --oc-lazy-size is its estimated height (600px).
        watchLazy(img) / initLazy(scope): Exported from @birdycom/omniaui/lazy.js; npx omniaui copy-js lazy gives /js/oc-lazy.js that starts on its own.
 -->
@@ -4950,6 +4952,21 @@ Images that load when they come near the screen, with a shimmer or a blurred pre
   <figure class="oc-lazy"><img src="/img/blocks/chat-inbox.jpg" alt="Chat inbox" loading="lazy" decoding="async" width="640" height="400"></figure>
   <figure class="oc-lazy"><img src="/img/blocks/quote-lines.jpg" alt="Quote lines" loading="lazy" decoding="async" width="640" height="400"></figure>
 </div>
+<table class="oc-table" style="inline-size:100%">
+  <thead><tr><th>Product</th><th>Category</th><th data-numeric>Price</th></tr></thead>
+  <tbody>
+      <tr><td><div style="display:flex;align-items:center;gap:0.75rem"><figure class="oc-lazy oc-lazy--thumb"><img src="/img/shop/product-1-front.svg" alt="" loading="lazy" decoding="async" width="40" height="40"></figure><span><strong>Product 1</strong><br><small class="text-muted">PRD-0001</small></span></div></td><td>Lighting</td><td data-numeric>€ 179,00</td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:0.75rem"><figure class="oc-lazy oc-lazy--thumb"><img src="/img/shop/product-2.svg" alt="" loading="lazy" decoding="async" width="40" height="40"></figure><span><strong>Product 2</strong><br><small class="text-muted">PRD-0002</small></span></div></td><td>Furniture</td><td data-numeric>€ 265,00</td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:0.75rem"><figure class="oc-lazy oc-lazy--thumb"><img src="/img/shop/product-3.svg" alt="" loading="lazy" decoding="async" width="40" height="40"></figure><span><strong>Product 3</strong><br><small class="text-muted">PRD-0003</small></span></div></td><td>Furniture</td><td data-numeric>€ 589,00</td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:0.75rem"><figure class="oc-lazy oc-lazy--thumb"><img src="/img/shop/product-4.svg" alt="" loading="lazy" decoding="async" width="40" height="40"></figure><span><strong>Product 4</strong><br><small class="text-muted">PRD-0004</small></span></div></td><td>Garden</td><td data-numeric>€ 22,40</td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:0.75rem"><figure class="oc-lazy oc-lazy--thumb"><img src="/img/shop/product-5.svg" alt="" loading="lazy" decoding="async" width="40" height="40"></figure><span><strong>Product 5</strong><br><small class="text-muted">PRD-0005</small></span></div></td><td>Electronics</td><td data-numeric>€ 129,00</td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:0.75rem"><figure class="oc-lazy oc-lazy--thumb"><img src="/img/shop/product-6.svg" alt="" loading="lazy" decoding="async" width="40" height="40"></figure><span><strong>Product 6</strong><br><small class="text-muted">PRD-0006</small></span></div></td><td>Kitchen</td><td data-numeric>€ 11,95</td></tr>
+      <tr class="oc-lazy-row" aria-hidden="true"><td><div style="display:flex;align-items:center;gap:0.75rem"><span class="oc-lazy oc-lazy--thumb"></span><span class="oc-lazy-bar" style="--oc-lazy-bar: 8rem"></span></div></td><td><span class="oc-lazy-bar" style="--oc-lazy-bar: 5rem"></span></td><td><span class="oc-lazy-bar" style="--oc-lazy-bar: 4rem;margin-inline-start:auto"></span></td></tr>
+      <tr class="oc-lazy-row" aria-hidden="true"><td><div style="display:flex;align-items:center;gap:0.75rem"><span class="oc-lazy oc-lazy--thumb"></span><span class="oc-lazy-bar" style="--oc-lazy-bar: 8rem"></span></div></td><td><span class="oc-lazy-bar" style="--oc-lazy-bar: 5rem"></span></td><td><span class="oc-lazy-bar" style="--oc-lazy-bar: 4rem;margin-inline-start:auto"></span></td></tr>
+      <tr class="oc-lazy-row" aria-hidden="true"><td><div style="display:flex;align-items:center;gap:0.75rem"><span class="oc-lazy oc-lazy--thumb"></span><span class="oc-lazy-bar" style="--oc-lazy-bar: 8rem"></span></div></td><td><span class="oc-lazy-bar" style="--oc-lazy-bar: 5rem"></span></td><td><span class="oc-lazy-bar" style="--oc-lazy-bar: 4rem;margin-inline-start:auto"></span></td></tr>
+  </tbody>
+  <caption class="text-muted" style="caption-side:bottom;padding-block-start:0.5rem;font-size:0.8125rem" role="status">Loading 20 more products…</caption>
+</table>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr));gap:1rem;inline-size:100%">
   <figure class="oc-lazy" role="img" aria-label="Loading"></figure>
   <figure class="oc-lazy" style="--oc-lazy-preview: url(/img/blocks/shop-cart.jpg)" role="img" aria-label="Loading"></figure>
@@ -4982,6 +4999,7 @@ Images that load when they come near the screen, with a shimmer or a blurred pre
 - [Forgot and reset password](https://omniaui.eu/ui/blocks/password-reset)
 - [Form builder (Pro)](https://omniaui.eu/ui/blocks/form-builder): Admin form builder: field cards you can reorder, a palette of field types and a dialog per field
 - [Form page](https://omniaui.eu/ui/blocks/form-page): Collapsible form sections in a grid with a sticky action bar
+- [Glass navigation (Pro)](https://omniaui.eu/ui/blocks/glass-nav): Liquid glass navigation: a clear glass sheet with an action pill and a menu bar; the backdrop bends and shifts colour through the glass
 - [Hero Block](https://omniaui.eu/ui/blocks/hero): Centered hero with badge, headline, text and actions
 - [Hero with code window](https://omniaui.eu/ui/blocks/hero-code): Landing hero: eyebrow, display title with a gradient word, lead text, gradient and glass buttons, and a code window surrounded by floating icon tiles
 - [Hero with orbit](https://omniaui.eu/ui/blocks/hero-orbit): Landing hero with a code window and product marks that slowly orbit around it
@@ -5076,3 +5094,4 @@ Images that load when they come near the screen, with a shimmer or a blurred pre
 - shop-cart: Cart page: lines with photo, variant, quantity, remove and line total, and a summary with delivery, included VAT, discount code and checkout
 - shop-checkout: One-page checkout: steps, contact, delivery address, delivery and payment as choice cards, order summary with totals and terms
 - barcode-maker: Make a barcode: type a value, pick EAN-13, EAN-8, UPC-A or Code 128, see it live and download a print-ready SVG
+- glass-nav: Liquid glass navigation: a clear glass sheet with an action pill and a menu bar; the backdrop bends and shifts colour through the glass
