@@ -87,6 +87,7 @@ async function main() {
   // Barcode SVGs (.oc-barcode) and the date field, name card and avatar picker helpers: same auto-start by name.
   await fs.copyFile(r("packages/ui/src/barcode.js"), r("public/js/oc-barcode.js"));
   await fs.copyFile(r("packages/ui/src/form-extras.js"), r("public/js/oc-form-extras.js"));
+  await fs.copyFile(r("packages/ui/src/lazy.js"), r("public/js/oc-lazy.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
 

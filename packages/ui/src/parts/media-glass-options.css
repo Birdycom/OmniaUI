@@ -1,0 +1,60 @@
+/* File: packages/ui/src/parts/media-glass-options.css
+   Map: amount (--clear: more see-through, --frost: more frosted) -> lens (the backdrop bends and shifts colour through
+   the glass, Chromium) -> light content on a colourful backdrop -> stage (moving colour blobs to show it off)
+   Extras for .oc-glass, .oc-glass--liquid and .oc-glass-bar (media-glass.css, media-glass-liquid.css). The selectors
+   carry two classes so they win over the base glass whatever order the parts load in. */
+
+/* Amount of glass: --clear lets more of the backdrop through, --frost hides more of it. */
+:is(.oc-glass, .oc-glass-bar).oc-glass--clear {
+  --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.32), oklch(from var(--oc-background) l c h / 0.26));
+  --oc-glass-blur: 10px;
+  --oc-liquid-tint: light-dark(oklch(100% 0 0deg / 0.05), oklch(100% 0 0deg / 0.03));
+  --oc-liquid-blur: 2px;
+}
+:is(.oc-glass, .oc-glass-bar).oc-glass--frost {
+  --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.86), oklch(from var(--oc-background) l c h / 0.8));
+  --oc-glass-blur: 40px;
+  --oc-liquid-tint: light-dark(oklch(100% 0 0deg / 0.38), oklch(100% 0 0deg / 0.12));
+  --oc-liquid-blur: 18px;
+}
+
+/* Lens: what is behind the glass bends like through water and shifts in colour, as on the newest phone and desktop
+   systems. It needs the filter <svg class="oc-glass-defs"> with #oc-glass-lens once on the page. Chromium (Chrome,
+   Edge, Opera, Electron) draws it; Safari and Firefox keep the plain glass, which looks right on its own. */
+@supports (backdrop-filter: url("#oc-glass-lens")) and (not (font: -apple-system-body)) and (not (-moz-appearance: none)) {
+  :is(.oc-glass, .oc-glass-bar).oc-glass--lens {
+    backdrop-filter: url("#oc-glass-lens") blur(var(--oc-liquid-blur, 3px)) saturate(1.9) brightness(1.08);
+  }
+}
+.oc-glass-defs { position: absolute; inline-size: 0; block-size: 0; overflow: hidden; pointer-events: none; }
+
+/* Light content: white icons and labels for glass over a dark or very colourful backdrop. */
+.oc-glass-bar.oc-glass-bar--light .oc-glass-bar__item {
+  color: oklch(100% 0 0deg / 0.92);
+  text-shadow: 0 1px 2px oklch(0% 0 0deg / 0.25);
+}
+.oc-glass-bar.oc-glass-bar--light .oc-glass-bar__item:is([aria-current="page"], [aria-pressed="true"], :has(> input:checked)) {
+  color: var(--color-white-50);
+  background: oklch(100% 0 0deg / 0.2);
+}
+.oc-glass-bar.oc-glass-bar--light .oc-glass-bar__item:hover { background: oklch(100% 0 0deg / 0.12); }
+
+/* Stage: round colour shapes that drift slowly, so the change through the glass shows. A background for a hero or a demo. */
+.oc-glass-stage {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 22% 72%, var(--color-magenta-50) 0 16%, transparent 16.5%),
+    radial-gradient(circle at 82% 68%, var(--color-orange-50) 0 18%, transparent 18.5%),
+    radial-gradient(circle at 58% 18%, var(--color-skycyan-50) 0 13%, transparent 13.5%),
+    radial-gradient(60% 70% at 30% 30%, var(--color-magenta-60), transparent 70%),
+    linear-gradient(120deg, var(--color-purple-60), var(--color-violet-80));
+  background-size: 140% 140%;
+  animation: oc-glass-stage 18s ease-in-out infinite alternate;
+}
+@keyframes oc-glass-stage {
+  to { background-position: 100% 60%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-glass-stage { animation: none; }
+}

@@ -1,5 +1,5 @@
 // File: packages/react/test/shop.test.tsx
-// Map: Rating -> RatingInput -> Price (format) -> Quantity (steps, limits) -> Gallery -> Stock -> SpecList -> Ribbon -> GlassBar
+// Map: Rating -> RatingInput -> Price (format) -> Quantity (steps, limits) -> Gallery -> Stock -> SpecList -> Ribbon -> GlassBar -> LazyImage
 
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -9,6 +9,7 @@ import { Quantity } from "../src/components/Quantity";
 import { Rating, RatingInput } from "../src/components/Rating";
 import { Ribbon } from "../src/components/Ribbon";
 import { GlassBar } from "../src/components/GlassBar";
+import { LazyImage } from "../src/components/LazyImage";
 import { SpecList } from "../src/components/SpecList";
 import { Stock } from "../src/components/Stock";
 
@@ -92,5 +93,17 @@ describe("shop components", () => {
     rerender(<GlassBar icons label="Tools" items={[{ label: "Draw", current: true }, { label: "Text" }]} />);
     expect(screen.getByRole("navigation", { name: "Tools" })).toHaveClass("oc-glass-bar--icons");
     expect(screen.getByRole("button", { name: "Draw" })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("lazy image keeps its box and fades in once loaded", () => {
+    const { container } = render(<LazyImage src="/a.jpg" alt="A" ratio="1" preview="/a-24.webp" caption="Photo" />);
+    const fig = container.querySelector("figure")!;
+    const img = screen.getByRole("img", { name: "A" });
+    expect(fig).toHaveClass("oc-lazy");
+    expect(img).toHaveAttribute("loading", "lazy");
+    expect(fig.style.getPropertyValue("--oc-lazy-ratio")).toBe("1");
+    expect(fig.style.getPropertyValue("--oc-lazy-preview")).toBe("url(/a-24.webp)");
+    fireEvent.load(img);
+    expect(fig).toHaveClass("is-loaded");
   });
 });

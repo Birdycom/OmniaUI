@@ -1,0 +1,39 @@
+/* File: packages/ui/src/parts/media-lazy.css | Map: box (aspect ratio, shimmer placeholder or a tiny blurred preview) -> image fades in -> error -> lazy sections
+   Lazy loading. .oc-lazy: an image box that keeps its place, shows a shimmer (or --oc-lazy-preview, a tiny blurred
+   copy) until the photo is there and then fades it in (lazy.js adds .is-loaded). .oc-lazy-section: content the browser
+   only lays out and draws when it comes near the screen (content-visibility). */
+
+.oc-lazy {
+  --oc-lazy-ratio: 16 / 10;
+  position: relative;
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: var(--oc-lazy-ratio);
+  border-radius: var(--oc-radius);
+  background:
+    linear-gradient(100deg, transparent 30%, oklch(from var(--oc-background) l c h / 0.55) 50%, transparent 70%) -150% 0 / 60% 100% no-repeat,
+    var(--oc-muted);
+  animation: oc-lazy-shimmer 1.4s ease-in-out infinite;
+}
+/* A tiny blurred preview instead of the shimmer: style="--oc-lazy-preview: url(photo-20px.webp)". */
+.oc-lazy[style*="--oc-lazy-preview"] { animation: none; background: var(--oc-muted); }
+.oc-lazy[style*="--oc-lazy-preview"]::before { content: ""; position: absolute; inset: 0; background: var(--oc-lazy-preview) center / cover no-repeat; filter: blur(14px); scale: 1.15; }
+.oc-lazy > img { position: relative; display: block; inline-size: 100%; block-size: 100%; object-fit: cover; opacity: 0; transition: opacity 0.45s ease; }
+.oc-lazy.is-loaded { animation: none; background: none; }
+.oc-lazy.is-loaded::before { display: none; }
+.oc-lazy.is-loaded > img { opacity: 1; }
+.oc-lazy.is-error { animation: none; }
+.oc-lazy.is-error > img { opacity: 0; }
+.oc-lazy > figcaption { position: absolute; inset: auto 0 0; padding: 0.4rem 0.6rem; font-size: 0.75rem; color: var(--color-white-50); background: linear-gradient(transparent, oklch(0% 0 0deg / 0.55)); }
+/* Without the script (or when it is off) the photo shows as soon as it is there. */
+@media (scripting: none) { .oc-lazy > img { opacity: 1; } }
+@keyframes oc-lazy-shimmer { to { background-position: 250% 0, 0 0; } }
+
+/* Sections far down a long page: laid out and drawn only when they come near the screen. */
+.oc-lazy-section { content-visibility: auto; contain-intrinsic-size: auto var(--oc-lazy-size, 600px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-lazy { animation: none; }
+  .oc-lazy > img { transition: none; }
+}
