@@ -1,5 +1,5 @@
 // File: packages/react/test/shop.test.tsx
-// Map: Rating -> RatingInput -> Price (format) -> Quantity (steps, limits) -> Gallery -> Stock -> SpecList
+// Map: Rating -> RatingInput -> Price (format) -> Quantity (steps, limits) -> Gallery -> Stock -> SpecList -> Ribbon
 
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -7,6 +7,7 @@ import { Gallery } from "../src/components/Gallery";
 import { Price } from "../src/components/Price";
 import { Quantity } from "../src/components/Quantity";
 import { Rating, RatingInput } from "../src/components/Rating";
+import { Ribbon } from "../src/components/Ribbon";
 import { SpecList } from "../src/components/SpecList";
 import { Stock } from "../src/components/Stock";
 
@@ -74,5 +75,12 @@ describe("shop components", () => {
     expect(container.querySelector(".oc-spec-group__title")?.textContent).toBe("Dimensions");
     expect(container.querySelectorAll(".oc-spec-row")).toHaveLength(2);
     expect(container.querySelector(".oc-spec-row small")?.textContent).toBe("max. 40 W");
+  });
+
+  it("ribbon puts corner, tone and size on the band", () => {
+    const { rerender } = render(<Ribbon>New</Ribbon>);
+    expect(screen.getByText("New").className).toBe("oc-ribbon");
+    rerender(<Ribbon corner="bottom-start" tone="success" size="lg">Paid</Ribbon>);
+    expect(screen.getByText("Paid")).toHaveClass("oc-ribbon", "oc-ribbon--bottom-start", "oc-ribbon--success", "oc-ribbon--lg");
   });
 });

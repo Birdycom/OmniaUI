@@ -2,7 +2,7 @@
 
 namespace Omniacss\Laravel\Tests;
 
-// Shop components: rating, rating-input, price, quantity, gallery, stock, spec-list.
+// Shop components: rating, rating-input, price, quantity, gallery, stock, spec-list, ribbon.
 class ShopTest extends TestCase
 {
     public function test_rating_shows_score_and_label(): void
@@ -56,6 +56,12 @@ class ShopTest extends TestCase
         $this->assertSame(2, substr_count($html, 'class="oc-gallery__slide"'));
         $this->assertSame(2, substr_count($html, 'class="oc-gallery__thumb"'));
         $this->assertSame(1, substr_count($html, 'checked'));
+    }
+
+    public function test_ribbon_corner_tone_and_size(): void
+    {
+        $this->assertStringContainsString('<span class="oc-ribbon">New</span>', $this->render('<x-oc::ribbon>New</x-oc::ribbon>'));
+        $this->assertStringContainsString('class="oc-ribbon oc-ribbon--top-start oc-ribbon--success oc-ribbon--lg">Paid', $this->render('<x-oc::ribbon corner="top-start" tone="success" size="lg">Paid</x-oc::ribbon>'));
     }
 
     public function test_stock_default_text_and_level(): void

@@ -10,6 +10,11 @@
   min-block-size: 0;
   timeline-scope: --oc-titlebar-scroll;
 }
+/* A card with a title bar on top: the bar runs edge to edge, its last button follows the card corner. */
+.oc-card:has(> .oc-titlebar:first-child) { padding: 0; --oc-titlebar-radius: calc(var(--oc-radius) + 3px); }
+/* As the heading of a card section (bar + .oc-card-content): the title lines up with the content below. */
+.oc-card > .oc-titlebar:first-child:has(+ .oc-card-content) { padding-inline-start: 24px; }
+.oc-card > .oc-titlebar:first-child:has(+ .oc-card-content) .oc-titlebar__title { font-size: 0.9375rem; }
 
 .oc-titlebar {
   display: flex;
@@ -17,7 +22,7 @@
   align-items: center;
   gap: 2px;
   min-block-size: 46px;
-  padding: 0 8px 0 14px;
+  padding: 0 0 0 14px;
   border-block-end: 1px solid transparent;
   -webkit-user-select: none;
   user-select: none;
@@ -34,7 +39,7 @@
 /* Title area: grows, cuts the subtitle off with …. */
 .oc-titlebar__main { display: flex; flex: 1; align-items: center; gap: 8px; min-inline-size: 0; }
 .oc-titlebar__icon { flex: none; inline-size: 18px; block-size: 18px; }
-.oc-titlebar__title { flex: none; font-size: 0.8667rem; font-weight: 650; letter-spacing: -0.01em; }
+.oc-titlebar__title { flex: none; margin: 0; font-size: 0.8667rem; font-weight: 650; letter-spacing: -0.01em; }
 .oc-titlebar__subtitle {
   min-inline-size: 0;
   overflow: hidden;
@@ -44,17 +49,19 @@
   white-space: nowrap;
 }
 .oc-titlebar__subtitle::before { content: "·"; margin-inline-end: 8px; }
-.oc-titlebar__actions { display: flex; flex: none; align-items: center; gap: 2px; }
+/* Window buttons sit in the top right corner (as on a desktop window), not centred on the title line. */
+.oc-titlebar__actions { display: flex; flex: none; align-self: flex-start; align-items: flex-start; margin-inline-start: auto; }
 
-/* Compact icon buttons: muted, a light surface on hover, the close button red. */
+/* Window buttons: muted, a light surface on hover, the close button red. The last one follows the
+   rounded corner of the card or window around the bar (--oc-titlebar-radius). */
 .oc-titlebar__btn {
   display: inline-grid;
   place-items: center;
-  inline-size: 30px;
-  block-size: 30px;
+  inline-size: 40px;
+  block-size: 34px;
   padding: 0;
   border: 0;
-  border-radius: 8px;
+  border-radius: 0;
   background: transparent;
   color: var(--oc-muted-foreground);
   font: inherit;
@@ -65,6 +72,7 @@
 .oc-titlebar__btn:hover { background: var(--oc-glass-panel-strong, var(--oc-accent)); color: var(--oc-foreground); }
 .oc-titlebar__btn:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
 .oc-titlebar__btn--close:hover { background: var(--oc-destructive); color: var(--oc-destructive-foreground); }
+.oc-titlebar__actions > .oc-titlebar__btn:last-child { border-start-end-radius: var(--oc-titlebar-radius, calc(var(--oc-radius) - 1px)); }
 
 /* Body: the part that scrolls under the bar. */
 .oc-titlebar-body {
@@ -89,7 +97,7 @@
 
 /* Sizes */
 .oc-titlebar--sm { min-block-size: 36px; padding-inline-start: 10px; }
-.oc-titlebar--sm .oc-titlebar__btn { inline-size: 26px; block-size: 26px; border-radius: 6px; }
+.oc-titlebar--sm .oc-titlebar__btn { inline-size: 34px; block-size: 28px; }
 
 @media (prefers-reduced-motion: reduce) {
   .oc-titlebar-window > .oc-titlebar { animation: none; }

@@ -6748,6 +6748,11 @@ button.oc-stat-card:focus-visible { outline: 2px solid var(--oc-ring); outline-o
   min-block-size: 0;
   timeline-scope: --oc-titlebar-scroll;
 }
+/* A card with a title bar on top: the bar runs edge to edge, its last button follows the card corner. */
+.oc-card:has(> .oc-titlebar:first-child) { padding: 0; --oc-titlebar-radius: calc(var(--oc-radius) + 3px); }
+/* As the heading of a card section (bar + .oc-card-content): the title lines up with the content below. */
+.oc-card > .oc-titlebar:first-child:has(+ .oc-card-content) { padding-inline-start: 24px; }
+.oc-card > .oc-titlebar:first-child:has(+ .oc-card-content) .oc-titlebar__title { font-size: 0.9375rem; }
 
 .oc-titlebar {
   display: flex;
@@ -6755,7 +6760,7 @@ button.oc-stat-card:focus-visible { outline: 2px solid var(--oc-ring); outline-o
   align-items: center;
   gap: 2px;
   min-block-size: 46px;
-  padding: 0 8px 0 14px;
+  padding: 0 0 0 14px;
   border-block-end: 1px solid transparent;
   -webkit-user-select: none;
   user-select: none;
@@ -6772,7 +6777,7 @@ button.oc-stat-card:focus-visible { outline: 2px solid var(--oc-ring); outline-o
 /* Title area: grows, cuts the subtitle off with …. */
 .oc-titlebar__main { display: flex; flex: 1; align-items: center; gap: 8px; min-inline-size: 0; }
 .oc-titlebar__icon { flex: none; inline-size: 18px; block-size: 18px; }
-.oc-titlebar__title { flex: none; font-size: 0.8667rem; font-weight: 650; letter-spacing: -0.01em; }
+.oc-titlebar__title { flex: none; margin: 0; font-size: 0.8667rem; font-weight: 650; letter-spacing: -0.01em; }
 .oc-titlebar__subtitle {
   min-inline-size: 0;
   overflow: hidden;
@@ -6782,17 +6787,19 @@ button.oc-stat-card:focus-visible { outline: 2px solid var(--oc-ring); outline-o
   white-space: nowrap;
 }
 .oc-titlebar__subtitle::before { content: "·"; margin-inline-end: 8px; }
-.oc-titlebar__actions { display: flex; flex: none; align-items: center; gap: 2px; }
+/* Window buttons sit in the top right corner (as on a desktop window), not centred on the title line. */
+.oc-titlebar__actions { display: flex; flex: none; align-self: flex-start; align-items: flex-start; margin-inline-start: auto; }
 
-/* Compact icon buttons: muted, a light surface on hover, the close button red. */
+/* Window buttons: muted, a light surface on hover, the close button red. The last one follows the
+   rounded corner of the card or window around the bar (--oc-titlebar-radius). */
 .oc-titlebar__btn {
   display: inline-grid;
   place-items: center;
-  inline-size: 30px;
-  block-size: 30px;
+  inline-size: 40px;
+  block-size: 34px;
   padding: 0;
   border: 0;
-  border-radius: 8px;
+  border-radius: 0;
   background: transparent;
   color: var(--oc-muted-foreground);
   font: inherit;
@@ -6803,6 +6810,7 @@ button.oc-stat-card:focus-visible { outline: 2px solid var(--oc-ring); outline-o
 .oc-titlebar__btn:hover { background: var(--oc-glass-panel-strong, var(--oc-accent)); color: var(--oc-foreground); }
 .oc-titlebar__btn:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
 .oc-titlebar__btn--close:hover { background: var(--oc-destructive); color: var(--oc-destructive-foreground); }
+.oc-titlebar__actions > .oc-titlebar__btn:last-child { border-start-end-radius: var(--oc-titlebar-radius, calc(var(--oc-radius) - 1px)); }
 
 /* Body: the part that scrolls under the bar. */
 .oc-titlebar-body {
@@ -6827,7 +6835,7 @@ button.oc-stat-card:focus-visible { outline: 2px solid var(--oc-ring); outline-o
 
 /* Sizes */
 .oc-titlebar--sm { min-block-size: 36px; padding-inline-start: 10px; }
-.oc-titlebar--sm .oc-titlebar__btn { inline-size: 26px; block-size: 26px; border-radius: 6px; }
+.oc-titlebar--sm .oc-titlebar__btn { inline-size: 34px; block-size: 28px; }
 
 @media (prefers-reduced-motion: reduce) {
   .oc-titlebar-window > .oc-titlebar { animation: none; }
@@ -7416,6 +7424,84 @@ a.oc-tree-label:focus-visible { outline: 2px solid var(--oc-ring); outline-offse
 td[data-numeric] > .oc-price, .oc-price--end { justify-items: end; text-align: end; }
 td[data-numeric] > .oc-price .oc-price__main, .oc-price--end .oc-price__main { justify-content: flex-end; }
 
+/* parts/data-ribbon.css */
+/* File: packages/ui/src/parts/data-ribbon.css | Map: host (positioned, clipped) -> ribbon band -> four corners -> tones -> size -> RTL */
+/* Corner ribbon: a diagonal band across one corner of a card, an image or a document ("Paid", "New", "Sale").
+   Put .oc-ribbon as a child of the box; the box gets position: relative and clips the band (zero specificity,
+   so your own position or overflow wins). The text is real text, so screen readers read it. */
+
+:where(:has(> .oc-ribbon)) { position: relative; overflow: clip; }
+
+.oc-ribbon {
+  /* Distance from the corner to the middle of the band, along both edges. */
+  --oc-ribbon-inset: 2.25rem;
+  --oc-ribbon-x: 1;
+  --oc-ribbon-y: -1;
+  --oc-ribbon-turn: 45deg;
+  --oc-ribbon-bg: var(--oc-primary);
+  --oc-ribbon-fg: var(--oc-primary-foreground);
+  position: absolute;
+  z-index: 2;
+  inset-block-start: var(--oc-ribbon-inset);
+  inset-inline-end: var(--oc-ribbon-inset);
+  inline-size: calc(var(--oc-ribbon-inset) * 2.83 + 3rem);
+  padding: 0.3em 0;
+  overflow: hidden;
+  color: var(--oc-ribbon-fg);
+  background: var(--oc-ribbon-bg);
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.18);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  translate: calc(50% * var(--oc-ribbon-x)) calc(50% * var(--oc-ribbon-y));
+  rotate: var(--oc-ribbon-turn);
+}
+
+/* Corners: top end is the default. */
+.oc-ribbon--top-start {
+  inset-inline-end: auto;
+  inset-inline-start: var(--oc-ribbon-inset);
+  --oc-ribbon-x: -1;
+  --oc-ribbon-turn: -45deg;
+}
+.oc-ribbon--bottom-end {
+  inset-block-start: auto;
+  inset-block-end: var(--oc-ribbon-inset);
+  --oc-ribbon-y: 1;
+  --oc-ribbon-turn: -45deg;
+}
+.oc-ribbon--bottom-start {
+  inset-block-start: auto;
+  inset-block-end: var(--oc-ribbon-inset);
+  inset-inline-end: auto;
+  inset-inline-start: var(--oc-ribbon-inset);
+  --oc-ribbon-x: -1;
+  --oc-ribbon-y: 1;
+}
+
+/* Tones. */
+.oc-ribbon--success { --oc-ribbon-bg: var(--oc-success); --oc-ribbon-fg: var(--oc-success-foreground); }
+.oc-ribbon--warning { --oc-ribbon-bg: var(--oc-warning); --oc-ribbon-fg: var(--oc-warning-foreground); }
+.oc-ribbon--destructive { --oc-ribbon-bg: var(--oc-destructive); --oc-ribbon-fg: var(--oc-destructive-foreground); }
+.oc-ribbon--muted { --oc-ribbon-bg: var(--oc-muted); --oc-ribbon-fg: var(--oc-muted-foreground); }
+
+/* Sizes: a smaller band for a product card, a larger one for a document or a hero image. */
+.oc-ribbon--sm { --oc-ribbon-inset: 1.6rem; font-size: 0.625rem; }
+.oc-ribbon--lg { --oc-ribbon-inset: 2.9rem; font-size: 0.875rem; }
+
+/* Right to left: start and end swap sides, so the band leans the other way. */
+.oc-ribbon:dir(rtl) { translate: calc(-50% * var(--oc-ribbon-x)) calc(50% * var(--oc-ribbon-y)); rotate: calc(var(--oc-ribbon-turn) * -1); }
+
+@media (forced-colors: active) {
+  .oc-ribbon { forced-color-adjust: none; color: Canvas; background: CanvasText; }
+}
+
 /* parts/data-spec-list.css */
 /* File: packages/ui/src/parts/data-spec-list.css | Map: list (container) -> groups in columns -> group title -> rows (term / value) -> stack modifier */
 /* Technical specifications in named groups (Dimensions, Electrical, Package …): label / value rows with tabular
@@ -7615,6 +7701,9 @@ td[data-numeric] > .oc-price .oc-price__main, .oc-price--end .oc-price__main { j
 .oc-avatar-picker__actions { display: flex; flex-wrap: wrap; gap: 0.375rem; }
 /* "Remove" only while there is an image. */
 .oc-avatar-picker:not(:has(.oc-avatar-picker__preview img)) [data-oc-avatar-remove] { display: none; }
+/* A refused file (wrong type or too large): red outline and the reason under the buttons. */
+.oc-avatar-picker.is-invalid .oc-avatar-picker__preview { border-color: var(--oc-destructive); }
+.oc-avatar-picker__error { font-size: 0.75rem; font-weight: 500; color: var(--oc-destructive); }
 
 /* parts/forms-barcode-input.css */
 /* File: packages/ui/src/parts/forms-barcode-input.css
@@ -8613,7 +8702,7 @@ a.oc-rating-summary__count:hover { color: var(--oc-foreground); }
   content: "";
   position: absolute;
   inset: 0.25rem;
-  background: linear-gradient(90deg, var(--oc-rating-color) calc(var(--oc-hover, var(--oc-pick, 0)) * var(--oc-rating-size)), var(--oc-rating-empty) 0);
+  background: linear-gradient(90deg, var(--oc-rating-color) calc(var(--oc-rating-hover, var(--oc-rating-pick, 0)) * var(--oc-rating-size)), var(--oc-rating-empty) 0);
   -webkit-mask: var(--oc-rating-star) left center / var(--oc-rating-size) var(--oc-rating-size) repeat-x;
   mask: var(--oc-rating-star) left center / var(--oc-rating-size) var(--oc-rating-size) repeat-x;
   pointer-events: none;
@@ -8623,18 +8712,18 @@ a.oc-rating-summary__count:hover { color: var(--oc-foreground); }
 .oc-rating-input > label > input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
 .oc-rating-input > label > span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-.oc-rating-input:has(label:nth-of-type(1) input:checked) { --oc-pick: 1; }
-.oc-rating-input:has(label:nth-of-type(2) input:checked) { --oc-pick: 2; }
-.oc-rating-input:has(label:nth-of-type(3) input:checked) { --oc-pick: 3; }
-.oc-rating-input:has(label:nth-of-type(4) input:checked) { --oc-pick: 4; }
-.oc-rating-input:has(label:nth-of-type(5) input:checked) { --oc-pick: 5; }
+.oc-rating-input:has(label:nth-of-type(1) input:checked) { --oc-rating-pick: 1; }
+.oc-rating-input:has(label:nth-of-type(2) input:checked) { --oc-rating-pick: 2; }
+.oc-rating-input:has(label:nth-of-type(3) input:checked) { --oc-rating-pick: 3; }
+.oc-rating-input:has(label:nth-of-type(4) input:checked) { --oc-rating-pick: 4; }
+.oc-rating-input:has(label:nth-of-type(5) input:checked) { --oc-rating-pick: 5; }
 /* Hover preview (pointer devices only, so a tap does not leave a preview behind). */
 @media (hover: hover) {
-  .oc-rating-input:has(label:nth-of-type(1):hover) { --oc-hover: 1; }
-  .oc-rating-input:has(label:nth-of-type(2):hover) { --oc-hover: 2; }
-  .oc-rating-input:has(label:nth-of-type(3):hover) { --oc-hover: 3; }
-  .oc-rating-input:has(label:nth-of-type(4):hover) { --oc-hover: 4; }
-  .oc-rating-input:has(label:nth-of-type(5):hover) { --oc-hover: 5; }
+  .oc-rating-input:has(label:nth-of-type(1):hover) { --oc-rating-hover: 1; }
+  .oc-rating-input:has(label:nth-of-type(2):hover) { --oc-rating-hover: 2; }
+  .oc-rating-input:has(label:nth-of-type(3):hover) { --oc-rating-hover: 3; }
+  .oc-rating-input:has(label:nth-of-type(4):hover) { --oc-rating-hover: 4; }
+  .oc-rating-input:has(label:nth-of-type(5):hover) { --oc-rating-hover: 5; }
 }
 .oc-rating-input:has(input:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
 .oc-rating-input:has(input:disabled) { opacity: 0.5; }
@@ -9001,6 +9090,15 @@ a.oc-attachment-image:hover > :is(img, .oc-media-art) { filter: brightness(1.05)
 .oc-barcode--compact { padding: 0.375rem 0.5rem; --oc-barcode-height: 2.25rem; }
 .oc-barcode--compact .oc-barcode__digits { font-size: 0.6875rem; letter-spacing: 0.1em; }
 .oc-barcode[data-error] .oc-barcode__digits { color: var(--color-red-70); letter-spacing: 0; }
+
+/* Maker: value and format fields, a live preview and a download link (bindBarcodeMaker in barcode.js). */
+.oc-barcode-maker { display: grid; gap: 1rem; max-inline-size: 36rem; }
+.oc-barcode-maker__fields { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: end; }
+.oc-barcode-maker__fields > :first-child { flex: 3 1 14rem; }
+.oc-barcode-maker__fields > :not(:first-child) { flex: 1 1 8rem; }
+.oc-barcode-maker__preview { display: grid; place-items: center; min-block-size: 8rem; padding: 1rem; background: var(--color-white-50); border: 1px solid var(--oc-border); border-radius: var(--oc-radius); }
+.oc-barcode-maker__actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.oc-barcode-maker [data-oc-barcode-download][aria-disabled="true"] { pointer-events: none; opacity: 0.5; }
 
 /* parts/media-browser-frame.css */
 /* File: packages/ui/src/parts/media-browser-frame.css | Map: frame -> chrome bar (dots, address pill, actions)

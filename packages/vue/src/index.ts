@@ -114,6 +114,7 @@ import OcRadioGroup from './components/OcRadioGroup.vue'
 import OcRating from './components/OcRating.vue'
 import OcRatingInput from './components/OcRatingInput.vue'
 import OcRecoveryCodes from './components/OcRecoveryCodes.vue'
+import OcRibbon from './components/OcRibbon.vue'
 import OcScrollArea from './components/OcScrollArea.vue'
 import OcSegmented from './components/OcSegmented.vue'
 import OcSelect from './components/OcSelect.vue'
@@ -312,6 +313,7 @@ export {
   OcRating,
   OcRatingInput,
   OcRecoveryCodes,
+  OcRibbon,
   OcScrollArea,
   OcSegmented,
   OcSelect,
@@ -568,6 +570,7 @@ export const components: Record<string, Component> = {
   OcRating,
   OcRatingInput,
   OcRecoveryCodes,
+  OcRibbon,
   OcScrollArea,
   OcSegmented,
   OcSelect,

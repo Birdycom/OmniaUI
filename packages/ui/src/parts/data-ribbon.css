@@ -1,0 +1,76 @@
+/* File: packages/ui/src/parts/data-ribbon.css | Map: host (positioned, clipped) -> ribbon band -> four corners -> tones -> size -> RTL */
+/* Corner ribbon: a diagonal band across one corner of a card, an image or a document ("Paid", "New", "Sale").
+   Put .oc-ribbon as a child of the box; the box gets position: relative and clips the band (zero specificity,
+   so your own position or overflow wins). The text is real text, so screen readers read it. */
+
+:where(:has(> .oc-ribbon)) { position: relative; overflow: clip; }
+
+.oc-ribbon {
+  /* Distance from the corner to the middle of the band, along both edges. */
+  --oc-ribbon-inset: 2.25rem;
+  --oc-ribbon-x: 1;
+  --oc-ribbon-y: -1;
+  --oc-ribbon-turn: 45deg;
+  --oc-ribbon-bg: var(--oc-primary);
+  --oc-ribbon-fg: var(--oc-primary-foreground);
+  position: absolute;
+  z-index: 2;
+  inset-block-start: var(--oc-ribbon-inset);
+  inset-inline-end: var(--oc-ribbon-inset);
+  inline-size: calc(var(--oc-ribbon-inset) * 2.83 + 3rem);
+  padding: 0.3em 0;
+  overflow: hidden;
+  color: var(--oc-ribbon-fg);
+  background: var(--oc-ribbon-bg);
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.18);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  translate: calc(50% * var(--oc-ribbon-x)) calc(50% * var(--oc-ribbon-y));
+  rotate: var(--oc-ribbon-turn);
+}
+
+/* Corners: top end is the default. */
+.oc-ribbon--top-start {
+  inset-inline-end: auto;
+  inset-inline-start: var(--oc-ribbon-inset);
+  --oc-ribbon-x: -1;
+  --oc-ribbon-turn: -45deg;
+}
+.oc-ribbon--bottom-end {
+  inset-block-start: auto;
+  inset-block-end: var(--oc-ribbon-inset);
+  --oc-ribbon-y: 1;
+  --oc-ribbon-turn: -45deg;
+}
+.oc-ribbon--bottom-start {
+  inset-block-start: auto;
+  inset-block-end: var(--oc-ribbon-inset);
+  inset-inline-end: auto;
+  inset-inline-start: var(--oc-ribbon-inset);
+  --oc-ribbon-x: -1;
+  --oc-ribbon-y: 1;
+}
+
+/* Tones. */
+.oc-ribbon--success { --oc-ribbon-bg: var(--oc-success); --oc-ribbon-fg: var(--oc-success-foreground); }
+.oc-ribbon--warning { --oc-ribbon-bg: var(--oc-warning); --oc-ribbon-fg: var(--oc-warning-foreground); }
+.oc-ribbon--destructive { --oc-ribbon-bg: var(--oc-destructive); --oc-ribbon-fg: var(--oc-destructive-foreground); }
+.oc-ribbon--muted { --oc-ribbon-bg: var(--oc-muted); --oc-ribbon-fg: var(--oc-muted-foreground); }
+
+/* Sizes: a smaller band for a product card, a larger one for a document or a hero image. */
+.oc-ribbon--sm { --oc-ribbon-inset: 1.6rem; font-size: 0.625rem; }
+.oc-ribbon--lg { --oc-ribbon-inset: 2.9rem; font-size: 0.875rem; }
+
+/* Right to left: start and end swap sides, so the band leans the other way. */
+.oc-ribbon:dir(rtl) { translate: calc(-50% * var(--oc-ribbon-x)) calc(50% * var(--oc-ribbon-y)); rotate: calc(var(--oc-ribbon-turn) * -1); }
+
+@media (forced-colors: active) {
+  .oc-ribbon { forced-color-adjust: none; color: Canvas; background: CanvasText; }
+}

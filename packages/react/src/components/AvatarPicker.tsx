@@ -6,7 +6,7 @@ import { bindAvatarPicker } from "../../../ui/src/form-extras.js";
 import { cx } from "../utils";
 import { Icon } from "./Icon";
 
-export interface AvatarPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface AvatarPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "onInvalid"> {
   initials: string;
   label?: string;
   hint?: string;
@@ -15,31 +15,40 @@ export interface AvatarPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   /** Name of the file input (sent with the form). */
   name?: string;
   accept?: string;
+  /** Refuse larger files (KB); the reason shows under the buttons. */
+  maxKb?: number;
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
   onChange?: (file: File | null) => void;
+  /** A refused file (wrong type for accept, or larger than maxKb) and the reason. */
+  onInvalid?: (file: File, reason: string) => void;
 }
 
 /** Avatar or logo picker with a preview, Upload and Remove, and drag and drop (`.oc-avatar-picker`). */
 export const AvatarPicker = forwardRef<HTMLDivElement, AvatarPickerProps>(function AvatarPicker(
-  { initials, label = "Profile picture", hint, logo, name, accept = "image/*", inputProps, onChange, className, ...rest },
+  { initials, label = "Profile picture", hint, logo, name, accept = "image/*", maxKb, inputProps, onChange, onInvalid, className, ...rest },
   ref,
 ) {
   const id = useId();
   const own = useRef<HTMLDivElement | null>(null);
   const changeRef = useRef(onChange);
   changeRef.current = onChange;
+  const invalidRef = useRef(onInvalid);
+  invalidRef.current = onInvalid;
   useEffect(() => {
     const el = own.current;
     if (!el) return;
     bindAvatarPicker(el);
     const handler = (event: Event) => changeRef.current?.((event as CustomEvent<{ file: File | null }>).detail.file);
+    const refused = (event: Event) => { const { file, reason } = (event as CustomEvent<{ file: File; reason: string }>).detail; invalidRef.current?.(file, reason); };
     el.addEventListener("oc-avatar-change", handler);
-    return () => el.removeEventListener("oc-avatar-change", handler);
+    el.addEventListener("oc-avatar-invalid", refused);
+    return () => { el.removeEventListener("oc-avatar-change", handler); el.removeEventListener("oc-avatar-invalid", refused); };
   }, []);
   return (
     <div
       ref={(node) => { own.current = node; if (typeof ref === "function") ref(node); else if (ref) ref.current = node; }}
       className={cx("oc-avatar-picker", logo && "oc-avatar-picker--square oc-avatar-picker--logo", className)}
+      data-oc-max-kb={maxKb}
       {...rest}
     >
       <label className="oc-avatar-picker__preview" htmlFor={id} title="Choose an image">

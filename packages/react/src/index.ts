@@ -90,6 +90,7 @@ export * from "./components/Prose";
 export * from "./components/Quantity";
 export * from "./components/Rating";
 export * from "./components/RecoveryCodes";
+export * from "./components/Ribbon";
 export * from "./components/Segmented";
 export * from "./components/Select";
 export * from "./components/SeverityCard";

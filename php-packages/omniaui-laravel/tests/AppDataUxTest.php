@@ -161,6 +161,12 @@ class AppDataUxTest extends TestCase
         $picker = $this->render('<x-oc::avatar-picker initials="C1" name="logo" logo />');
         $this->assertStringContainsString('oc-avatar-picker oc-avatar-picker--square oc-avatar-picker--logo', $picker);
         $this->assertStringContainsString('name="logo" type="file"', $picker);
+        $this->assertStringContainsString('data-oc-max-kb="2048"', $this->render('<x-oc::avatar-picker initials="C1" :max-kb="2048" />'));
+        $bag = (new \Illuminate\Support\ViewErrorBag())->put('default', new \Illuminate\Support\MessageBag(['avatar' => ['The avatar must be an image.']]));
+        \Illuminate\Support\Facades\View::share('errors', $bag);
+        $refused = $this->render('<x-oc::avatar-picker initials="C1" />');
+        $this->assertStringContainsString('is-invalid', $refused);
+        $this->assertStringContainsString('<span class="oc-avatar-picker__error" role="alert">The avatar must be an image.</span>', $refused);
 
         $meter = $this->render('<x-oc::meter-row label="Storage" :percent="96" value="9.6 / 10 GB" />');
         $this->assertStringContainsString('data-level="critical" style="--oc-meter: 96%"', $meter);

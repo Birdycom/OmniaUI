@@ -1,22 +1,23 @@
 <!-- File: packages/vue/src/components/OcAvatarPicker.vue | Map: props -> preview + file input -> text and buttons -> change event on mount -->
 <script setup lang="ts">
-/** Avatar or logo picker with a preview, Upload and Remove, and drag and drop. Emits change (File or null). */
+/** Avatar or logo picker with a preview, Upload and Remove, and drag and drop. Emits change (File or null) and invalid (File, reason) for a wrong type or a file over maxKb. */
 import { onMounted, useId, useTemplateRef } from 'vue'
 import { bindAvatarPicker } from '../../../ui/src/form-extras.js'
 
-withDefaults(defineProps<{ initials: string; label?: string; hint?: string; logo?: boolean; name?: string; accept?: string }>(), { label: 'Profile picture', logo: false, accept: 'image/*' })
-const emit = defineEmits<{ change: [file: File | null] }>()
+withDefaults(defineProps<{ initials: string; label?: string; hint?: string; logo?: boolean; name?: string; accept?: string; maxKb?: number }>(), { label: 'Profile picture', logo: false, accept: 'image/*' })
+const emit = defineEmits<{ change: [file: File | null]; invalid: [file: File, reason: string] }>()
 const id = useId()
 const root = useTemplateRef<HTMLDivElement>('root')
 onMounted(() => {
   if (!root.value) return
   bindAvatarPicker(root.value)
   root.value.addEventListener('oc-avatar-change', (e) => emit('change', (e as CustomEvent<{ file: File | null }>).detail.file))
+  root.value.addEventListener('oc-avatar-invalid', (e) => { const d = (e as CustomEvent<{ file: File; reason: string }>).detail; emit('invalid', d.file, d.reason) })
 })
 </script>
 
 <template>
-  <div ref="root" :class="['oc-avatar-picker', logo && 'oc-avatar-picker--square oc-avatar-picker--logo']">
+  <div ref="root" :class="['oc-avatar-picker', logo && 'oc-avatar-picker--square oc-avatar-picker--logo']" :data-oc-max-kb="maxKb">
     <label class="oc-avatar-picker__preview" :for="id" title="Choose an image">
       <span data-oc-initials>{{ initials }}</span>
       <input :id="id" class="oc-avatar-picker__file" type="file" :accept="accept" :name="name">
