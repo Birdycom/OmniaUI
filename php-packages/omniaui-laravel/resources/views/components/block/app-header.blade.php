@@ -34,9 +34,9 @@
       <label><input type="radio" name="oc-appbar-theme" value="light"> Light</label>
       <label><input type="radio" name="oc-appbar-theme" value="dark"> Dark</label>
     </div>
-    <button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" popovertarget="oc-appbar-user" aria-label="User menu"><span class="oc-avatar oc-avatar--sm">SC</span></button>
+    <button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" popovertarget="oc-appbar-user" aria-label="User menu"><span class="oc-avatar oc-avatar--sm">U1</span></button>
     <div class="oc-dropdown-menu" id="oc-appbar-user" popover>
-      <div class="oc-dropdown-label">serge@example.com</div>
+      <div class="oc-dropdown-label">user1@company1.example</div>
       <a class="oc-dropdown-item" href="#">Profile</a>
       <a class="oc-dropdown-item" href="#">Settings</a>
       <div class="oc-dropdown-separator"></div>

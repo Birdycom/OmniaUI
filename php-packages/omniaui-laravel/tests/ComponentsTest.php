@@ -178,11 +178,11 @@ class ComponentsTest extends TestCase
 
     public function test_user_derives_initials(): void
     {
-        $html = $this->render('<x-oc::user name="Serge Cools" email="serge@example.com" />');
+        $html = $this->render('<x-oc::user name="User 1" email="user1@company1.example" />');
 
         $this->assertStringContainsString('class="oc-user"', $html);
-        $this->assertStringContainsString('<span class="oc-avatar"> SC </span>', $html);
-        $this->assertStringContainsString('<span class="oc-user-email">serge@example.com</span>', $html);
+        $this->assertStringContainsString('<span class="oc-avatar"> U1 </span>', $html);
+        $this->assertStringContainsString('<span class="oc-user-email">user1@company1.example</span>', $html);
     }
 
     public function test_dropdown_uses_popover_ids(): void

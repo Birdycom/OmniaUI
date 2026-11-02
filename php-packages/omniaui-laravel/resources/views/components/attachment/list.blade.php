@@ -3,7 +3,7 @@
      as (ul|div), label. Slot: default replaces the items. --}}
 @props([
     'items' => [
-        ['name' => 'Quote kitchen Dewitte v2.pdf', 'size' => '1.2 MB', 'href' => '#quote.pdf'],
+        ['name' => 'Quote kitchen Project 1 v2.pdf', 'size' => '1.2 MB', 'href' => '#quote.pdf'],
         ['name' => 'Measurements ground floor.xlsx', 'size' => '86 KB', 'href' => '#measurements.xlsx'],
         ['name' => 'Contract addendum.docx', 'size' => '240 KB', 'href' => '#contract.docx'],
         ['name' => 'Plans architect.zip', 'size' => '14.8 MB', 'href' => '#plans.zip'],

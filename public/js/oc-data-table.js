@@ -1,10 +1,11 @@
 // File: packages/ui/src/data-table.js
-// Map: page numbers -> compare -> csv -> row filter -> bind one table (search, sort, pages, columns, resize, drag, trash, bulk) -> boot
-// The list table used in Korrekt and OmniaDesk. Markup stays plain HTML.
+// Map: page numbers -> compare -> csv -> row filter -> bind one table (search, column filters, sort, pages, columns, trash,
+//      bulk, cards) -> boot. Column width and row drag are OmniaUI Pro (data-table-pro.js).
+// The list table for business apps. Markup stays plain HTML.
 // This script adds the behaviour. Excel, PDF and the real delete API stay in the app:
-// listen for oc-datatable-bulk, oc-datatable-reorder, oc-datatable-search and oc-datatable-import.
+// listen for oc-datatable-bulk, oc-datatable-row, oc-datatable-search and oc-datatable-import.
 
-/** Page numbers with ellipses, same window as OmniaDesk (current and last are 1-based). */
+/** Page numbers with ellipses, a window around the current page (current and last are 1-based). */
 export function pageItems(current, last) {
   if (last < 1) return [];
   if (last === 1) return [1];
@@ -110,13 +111,20 @@ export function bindDataTable(root) {
   let query = "";
   let filter = root.querySelector("[data-oc-filter][aria-current='true']")?.dataset.ocFilter
     || (root.querySelector("[data-oc-filter]") ? "active" : "all");
-  let sortKey = "";
-  let sortDir = "asc";
+  // Column filters: a <select data-oc-col-filter="type"> or tab buttons with data-oc-col-filter="type" data-oc-value="…".
+  // A row passes when its cell in that column has that value (data-oc-value or its text); "" means all.
+  const colFilters = new Map();
+  root.querySelectorAll("select[data-oc-col-filter]").forEach((sel) => colFilters.set(sel.dataset.ocColFilter, sel.value));
+  root.querySelectorAll("[data-oc-col-filter][aria-selected='true']").forEach((tab) => colFilters.set(tab.dataset.ocColFilter, tab.dataset.ocValue ?? ""));
+  // aria-sort on a header in the HTML: that column is sorted when the table starts.
+  const sortedTh = [...table.tHead.rows[0].cells].find((th) => th.dataset.ocCol && th.hasAttribute("aria-sort"));
+  let sortKey = sortedTh ? sortedTh.dataset.ocCol : "";
+  let sortDir = sortedTh?.getAttribute("aria-sort") === "descending" ? "desc" : "asc";
   let page = 0;
   let pageSize = Number(pageSelect?.value || root.dataset.pageSize || 15);
   const selected = new Set();
 
-  // Remembered choices from the last visit: page size, density, view, column widths, hidden columns.
+  // Remembered choices from the last visit: page size, density, view, hidden columns.
   const savedSize = readStore(id, "pageSize");
   if (savedSize && pageSelect?.querySelector(`option[value="${savedSize}"]`)) {
     pageSelect.value = String(savedSize);
@@ -124,19 +132,30 @@ export function bindDataTable(root) {
   }
   if (readStore(id, "density") === "compact") root.classList.add("oc-data-table--compact");
   if (readStore(id, "view") === "grid") root.classList.add("oc-data-table--grid");
-  const savedWidths = readStore(id, "widths") || {};
-  for (const th of table.tHead.rows[0].cells) {
-    if (savedWidths[th.dataset.ocCol]) {
-      th.style.width = savedWidths[th.dataset.ocCol];
-      table.classList.add("oc-data-table-table--sized");
-    }
-  }
   const savedCols = readStore(id, "cols") || {};
   root.querySelectorAll("[data-col]").forEach((box) => {
     if (!box.disabled && savedCols[box.dataset.col] != null) box.checked = savedCols[box.dataset.col];
   });
 
   const rows = () => [...tbody.querySelectorAll("[data-oc-row]")];
+  // Move a row to the end without taking it out of the page (Element.moveBefore), so <iconify-icon> and other web
+  // components keep their content; where moveBefore is missing, append and let the icons draw again.
+  // <iconify-icon> empties itself while its row is hidden (another page, another filter) and does not always draw
+  // again when the row comes back: set its icon again so it renders.
+  const redrawIcons = (row) => {
+    row.querySelectorAll("iconify-icon[icon]").forEach((icon) => {
+      if (icon.shadowRoot?.querySelector("svg")) return;
+      const name = icon.getAttribute("icon");
+      icon.removeAttribute("icon");
+      icon.setAttribute("icon", name);
+    });
+  };
+  const moveRow = (row) => {
+    if (tbody.lastElementChild === row) return;
+    if (typeof tbody.moveBefore === "function") { tbody.moveBefore(row, null); return; }
+    tbody.append(row);
+    redrawIcons(row);
+  };
   const textOf = (row) => [...row.cells]
     .filter((td) => td.dataset.ocCol && !SKIP_COL.has(td.dataset.ocCol))
     .map((td) => td.dataset.ocValue || td.textContent)
@@ -145,7 +164,8 @@ export function bindDataTable(root) {
     const td = [...row.cells].find((cell) => cell.dataset.ocCol === key);
     return td ? (td.dataset.ocValue || td.textContent.trim()) : "";
   };
-  const matched = () => rows().filter((row) => rowPasses(row.dataset.ocStatus, filter, textOf(row), query));
+  const passesColumns = (row) => [...colFilters].every(([key, want]) => !want || valueOf(row, key) === want);
+  const matched = () => rows().filter((row) => rowPasses(row.dataset.ocStatus, filter, textOf(row), query) && passesColumns(row));
 
   function paintChecks() {
     for (const row of rows()) {
@@ -202,17 +222,51 @@ export function bindDataTable(root) {
     }
     if (!grid) return;
     const onPage = new Set(list.map((row) => row.dataset.ocKey));
+    const heads = [...table.tHead.rows[0].cells];
+    const hiddenCols = new Set([...root.querySelectorAll("[data-col]:not(:checked)")].map((box) => box.dataset.col));
     grid.replaceChildren();
     for (const row of rows()) {
       if (!onPage.has(row.dataset.ocKey)) continue;
       const card = document.createElement("article");
       card.className = "oc-data-table-card";
       card.dataset.ocKey = row.dataset.ocKey;
-      const title = document.createElement("h3");
+      const cells = [...row.cells];
+      const name = cells.find((td) => td.dataset.ocCol === "name") || cells.find((td) => td.dataset.ocCol && !SKIP_COL.has(td.dataset.ocCol));
+      // Title: the rich name cell (avatar, badge, second line) when there is one, else its text.
+      const title = document.createElement("div");
       title.className = "oc-data-table-card-title";
-      const name = [...row.cells].find((td) => td.dataset.ocCol === "name") || [...row.cells].find((td) => td.dataset.ocCol && !SKIP_COL.has(td.dataset.ocCol));
-      title.textContent = name ? name.textContent.trim() : row.dataset.ocKey;
+      if (name?.querySelector(".oc-data-table-name")) title.append(name.querySelector(".oc-data-table-name").cloneNode(true));
+      else title.textContent = name ? name.textContent.trim() : row.dataset.ocKey;
       card.append(title);
+      // The other visible columns as label / value.
+      const fields = document.createElement("dl");
+      fields.className = "oc-data-table-card-fields";
+      cells.forEach((td, index) => {
+        const col = td.dataset.ocCol;
+        if (!col || td === name || SKIP_COL.has(col) || hiddenCols.has(String(index + 1))) return;
+        const dt = document.createElement("dt");
+        dt.textContent = heads[index]?.textContent.trim() || col;
+        const dd = document.createElement("dd");
+        dd.append(...[...td.childNodes].map((node) => node.cloneNode(true)));
+        if (dd.textContent.trim()) fields.append(dt, dd);
+      });
+      if (fields.childElementCount) card.append(fields);
+      // Row actions (buttons and links; popover ids are not copied).
+      const actions = cells.find((td) => td.dataset.ocCol === "actions");
+      if (actions?.children.length) {
+        const bar = document.createElement("div");
+        bar.className = "oc-data-table-card-actions";
+        const trashed = row.dataset.ocStatus === "deleted";
+        for (const el of actions.querySelectorAll("button, a")) {
+          const when = el.closest("[data-oc-when]")?.dataset.ocWhen;
+          if (when && (when === "deleted") !== trashed) continue;
+          const copy = el.cloneNode(true);
+          copy.removeAttribute("id");
+          copy.removeAttribute("popovertarget");
+          bar.append(copy);
+        }
+        card.append(bar);
+      }
       grid.append(card);
     }
   }
@@ -226,18 +280,23 @@ export function bindDataTable(root) {
       const dir = sortDir === "desc" ? -1 : 1;
       list.sort((a, b) => dir * compareValues(valueOf(a, sortKey), valueOf(b, sortKey), numeric));
       const rest = all.filter((row) => !list.includes(row));
-      for (const row of [...list, ...rest]) tbody.append(row);
+      for (const row of [...list, ...rest]) moveRow(row);
     }
     const last = pageSize > 0 ? Math.max(1, Math.ceil(list.length / pageSize)) : 1;
     if (page > last - 1) page = Math.max(0, last - 1);
     const start = pageSize > 0 ? page * pageSize : 0;
     const visible = new Set((pageSize > 0 ? list.slice(start, start + pageSize) : list));
-    for (const row of all) row.hidden = !visible.has(row);
+    for (const row of all) {
+      const shown = visible.has(row);
+      if (row.hidden && shown) queueMicrotask(() => redrawIcons(row));
+      row.hidden = !shown;
+    }
     if (empty) empty.hidden = list.length !== 0;
     if (summary) {
-      summary.textContent = list.length === 0
-        ? "Showing 0 of 0"
-        : `Showing ${start + 1}–${start + visible.size} of ${list.length}`;
+      // data-oc-summary="Toont {from} t/m {to} van {total} resultaten" translates the line; empty = English.
+      const template = summary.dataset.ocSummary || "Showing {from}–{to} of {total}";
+      const values = { from: list.length ? start + 1 : 0, to: start + visible.size, total: list.length };
+      summary.textContent = template.replace(/\{(from|to|total)\}/g, (_, key) => String(values[key]));
     }
     if (sortSummary) {
       const label = sortKey ? table.querySelector(`th[data-oc-col="${sortKey}"] .oc-table-sort`)?.textContent?.trim() : "";
@@ -301,6 +360,11 @@ export function bindDataTable(root) {
       writeStore(id, "pageSize", pageSize);
       apply();
     }
+    if (target.matches?.("select[data-oc-col-filter]")) {
+      colFilters.set(target.dataset.ocColFilter, target.value);
+      page = 0;
+      apply();
+    }
     if (target.matches?.("[data-col]")) {
       const cols = {};
       root.querySelectorAll("[data-col]").forEach((box) => { cols[box.dataset.col] = box.checked; });
@@ -335,7 +399,10 @@ export function bindDataTable(root) {
   });
 
   root.addEventListener("click", (event) => {
-    const sortBtn = event.target.closest(".oc-table-sort");
+    // The whole header cell sorts, not only its label (wide columns leave a lot of empty cell around the label).
+    const headCell = event.target.closest("thead th");
+    const sortBtn = event.target.closest(".oc-table-sort")
+      || (headCell && !event.target.closest("a, button, input, select, label, .oc-data-table-resize") ? headCell.querySelector(".oc-table-sort") : null);
     if (sortBtn && root.contains(sortBtn)) {
       const th = sortBtn.closest("th");
       if (!th?.dataset.ocCol) return;
@@ -356,6 +423,40 @@ export function bindDataTable(root) {
         if (btn === filterBtn) btn.setAttribute("aria-current", "true");
         else btn.removeAttribute("aria-current");
       });
+      apply();
+      return;
+    }
+    // Per-row actions of a trashed row: data-oc-row-action="restore" or "delete" fires oc-datatable-row { action, key };
+    // in the demo (data-oc-live) restore makes the row active again and delete removes it.
+    const rowBtn = event.target.closest("[data-oc-row-action]");
+    if (rowBtn && root.contains(rowBtn)) {
+      const row = rowBtn.closest("[data-oc-row]");
+      if (!row) return;
+      const action = rowBtn.dataset.ocRowAction;
+      emit("oc-datatable-row", { action, key: row.dataset.ocKey });
+      if (live && action === "restore") row.dataset.ocStatus = "active";
+      if (live && action === "delete") { selected.delete(row.dataset.ocKey); row.remove(); }
+      apply();
+      return;
+    }
+    // The sliders button next to the title shows or hides the filter row.
+    const filtersBtn = event.target.closest("[data-oc-filters-toggle]");
+    if (filtersBtn && root.contains(filtersBtn)) {
+      const row = root.querySelector(".oc-data-table-filters");
+      if (row) {
+        row.hidden = !row.hidden;
+        filtersBtn.setAttribute("aria-expanded", row.hidden ? "false" : "true");
+      }
+      return;
+    }
+    const colTab = event.target.closest("button[data-oc-col-filter]");
+    if (colTab && root.contains(colTab)) {
+      const key = colTab.dataset.ocColFilter;
+      colFilters.set(key, colTab.dataset.ocValue ?? "");
+      root.querySelectorAll(`button[data-oc-col-filter="${key}"]`).forEach((tab) => {
+        tab.setAttribute("aria-selected", tab === colTab ? "true" : "false");
+      });
+      page = 0;
       apply();
       return;
     }
@@ -386,12 +487,6 @@ export function bindDataTable(root) {
       exportCsv(null);
       return;
     }
-    if (event.target.closest("[data-oc-reset-widths]")) {
-      for (const th of table.tHead.rows[0].cells) th.style.width = "";
-      table.classList.remove("oc-data-table-table--sized");
-      writeStore(id, "widths", {});
-      return;
-    }
     if (event.target.closest("[data-oc-import]")) {
       root.querySelector("[data-oc-file]")?.click();
       return;
@@ -415,73 +510,15 @@ export function bindDataTable(root) {
     else window.location.href = row.dataset.ocHref;
   });
 
-  // Column resize: drag the handle on the header. Width is remembered per table id.
-  root.addEventListener("pointerdown", (event) => {
-    const handle = event.target.closest(".oc-data-table-resize");
-    if (!handle || !root.contains(handle)) return;
-    const th = handle.closest("th");
-    if (!th) return;
-    event.preventDefault();
-    const startX = event.clientX;
-    const startW = th.getBoundingClientRect().width;
-    const min = Number(th.dataset.ocMin || 64);
-    root.classList.add("is-resizing");
-    table.classList.add("oc-data-table-table--sized");
-    const move = (ev) => {
-      const width = Math.max(min, Math.round(startW + ev.clientX - startX));
-      th.style.width = `${width}px`;
-    };
-    const up = () => {
-      root.classList.remove("is-resizing");
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      const widths = {};
-      for (const head of table.tHead.rows[0].cells) if (head.style.width) widths[head.dataset.ocCol] = head.style.width;
-      writeStore(id, "widths", widths);
-    };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-  });
+  // OmniaUI Pro (data-table-pro.js) changes the rows (drag) and asks the table to show them again.
+  root.addEventListener("oc-datatable-refresh", () => apply());
 
-  // Row drag starts from the grip only, so selecting text in a cell still works.
-  let dragKey = "";
-  root.addEventListener("pointerdown", (event) => {
-    const grip = event.target.closest(".oc-sortable-row-grip");
-    const row = grip?.closest("[data-oc-row]");
-    if (row && root.contains(row)) row.draggable = true;
-  });
-  root.addEventListener("dragstart", (event) => {
-    const row = event.target.closest?.("[data-oc-row]");
-    if (!row?.draggable) return;
-    dragKey = row.dataset.ocKey;
-    row.classList.add("is-dragging", "oc-sortable-row");
-    event.dataTransfer.effectAllowed = "move";
-  });
-  root.addEventListener("dragover", (event) => {
-    const row = event.target.closest?.("[data-oc-row]");
-    if (!row || !dragKey || row.dataset.ocKey === dragKey) return;
-    event.preventDefault();
-    const box = row.getBoundingClientRect();
-    const after = event.clientY > box.top + box.height / 2;
-    tbody.querySelectorAll(".is-drop-before, .is-drop-after").forEach((el) => el.classList.remove("is-drop-before", "is-drop-after"));
-    row.classList.add("oc-sortable-row", after ? "is-drop-after" : "is-drop-before");
-  });
-  root.addEventListener("drop", (event) => {
-    const row = event.target.closest?.("[data-oc-row]");
-    const from = dragKey ? tbody.querySelector(`[data-oc-key="${CSS.escape(dragKey)}"]`) : null;
-    if (!row || !from || row === from) return;
-    event.preventDefault();
-    tbody.insertBefore(from, row.classList.contains("is-drop-after") ? row.nextSibling : row);
-    emit("oc-datatable-reorder", { keys: rows().map((item) => item.dataset.ocKey) });
-    apply();
-  });
-  root.addEventListener("dragend", () => {
-    dragKey = "";
-    for (const row of rows()) {
-      row.draggable = false;
-      row.classList.remove("is-dragging", "is-drop-before", "is-drop-after");
-    }
-  });
+  // Column widths from all rows (every page, also the trash), measured before the first page is shown, so the header
+  // does not jump when sorting or paging brings other rows. Pro column resizing sets its own widths.
+  for (const th of table.tHead.rows[0].cells) {
+    const width = th.getBoundingClientRect().width;
+    if (width && !th.style.width) th.style.minWidth = `${Math.ceil(width)}px`;
+  }
 
   root.querySelectorAll("[data-oc-view]").forEach((btn) => {
     const on = (btn.dataset.ocView === "grid") === root.classList.contains("oc-data-table--grid");
@@ -492,9 +529,9 @@ export function bindDataTable(root) {
   controls.set(root, { apply });
 }
 
-/** Wire every table under scope that is not wired yet. */
+/** Wire every table under scope that is not wired yet (also the data table block: [data-oc-data-table]). */
 export function initDataTables(scope = document) {
-  scope.querySelectorAll(".oc-data-table").forEach((root) => bindDataTable(root));
+  scope.querySelectorAll(".oc-data-table, [data-oc-data-table]").forEach((root) => bindDataTable(root));
 }
 
 // Starts on its own when loaded straight from a <script type="module"> tag: as /js/oc-data-table.js (the docs site,

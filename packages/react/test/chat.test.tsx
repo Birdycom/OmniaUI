@@ -45,7 +45,7 @@ describe("Message", () => {
   it("renders an outgoing bubble with quote, read receipt and actions", () => {
     const onAction = vi.fn();
     const { container, getByLabelText } = render(
-      <Message direction="out" continued avatar="TP" time="09:20" datetime="2026-10-14T09:20" status="read" statusIcon label="You, 09:20"
+      <Message direction="out" continued avatar="C6" time="09:20" datetime="2026-10-14T09:20" status="read" statusIcon label="You, 09:20"
         quote={{ href: "#q", sender: "Lisa", text: "Which?" }} text="Calacatta." actions={[{ name: "reply", label: "Reply" }]} onAction={onAction} />,
     );
     const row = container.querySelector("article")!;
@@ -63,7 +63,7 @@ describe("Message", () => {
     expect(container.firstChild).toHaveAttribute("role", "log");
     expect(container.querySelectorAll("article.oc-message")).toHaveLength(3);
     expect(container.querySelector(".oc-message-divider--system")).toHaveAttribute("role", "note");
-    const thumbs = render(<Message avatar="SC" attachments={[{ kind: "thumb", alt: "A", art: 4 }, { kind: "thumb", alt: "B" }]} />).container;
+    const thumbs = render(<Message avatar="C4" attachments={[{ kind: "thumb", alt: "A", art: 4 }, { kind: "thumb", alt: "B" }]} />).container;
     expect(thumbs.querySelectorAll(".oc-message__attachments > .oc-attachment-list > span.oc-attachment-thumb")).toHaveLength(2);
   });
 });
@@ -91,7 +91,7 @@ describe("MessageThread", () => {
     expect(onSend).toHaveBeenCalledWith("Fine by me");
     const last = Array.from(container.querySelectorAll("article")).pop()!;
     expect(last).toHaveClass("oc-message--out");
-    expect(last.querySelector(".oc-message__avatar")).toHaveTextContent("TP");
+    expect(last.querySelector(".oc-message__avatar")).toHaveTextContent("C6");
     expect(last.querySelector(".oc-message__status")).toHaveTextContent("Sent");
     expect(field.value).toBe("");
   });

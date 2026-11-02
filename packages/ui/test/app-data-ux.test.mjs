@@ -12,7 +12,7 @@ const ui = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const blocks = path.resolve(ui, "../blocks");
 
 const NAMES = [
-  "table-actions", "column-menu", "sortable-row", "tree", "top-progress", "confirm-dialog", "list-toolbar", "data-table",
+  "table-actions", "sortable-row", "tree", "top-progress", "confirm-dialog", "list-toolbar", "data-table",
   "alpha-tabs", "version-banner", "greeting", "stat-card", "severity-card", "upgrade-banner", "page-header",
   "accordion-accent", "table-compact",
 ];

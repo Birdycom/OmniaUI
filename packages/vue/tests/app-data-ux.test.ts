@@ -7,7 +7,6 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { h, nextTick } from 'vue'
 import OcTableActions from '../src/components/OcTableActions.vue'
-import OcColumnMenu from '../src/components/OcColumnMenu.vue'
 import OcSortableRow from '../src/components/OcSortableRow.vue'
 import OcTree from '../src/components/OcTree.vue'
 import OcTableCompact from '../src/components/OcTableCompact.vue'
@@ -41,14 +40,6 @@ describe('data components', () => {
     const menu = w.find('.oc-dropdown-menu')
     expect(menu.attributes('popover')).toBeDefined()
     expect(w.find('.oc-table-actions-more').attributes('popovertarget')).toBe(menu.attributes('id'))
-  })
-
-  it('OcColumnMenu numbers the checkboxes and emits toggle', async () => {
-    const w = mount(OcColumnMenu, { props: { columns: [{ label: 'Name', locked: true }, { label: 'Phone', visible: false }] } })
-    const boxes = w.findAll('input[data-col]')
-    expect(boxes[0].attributes('disabled')).toBeDefined()
-    await boxes[1].setValue(true)
-    expect(w.emitted('toggle')?.[0]).toEqual([2, true])
   })
 
   it('OcSortableRow shows drag states', () => {

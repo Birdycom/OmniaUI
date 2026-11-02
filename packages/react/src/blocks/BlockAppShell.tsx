@@ -37,7 +37,7 @@ export const BlockAppShell = forwardRef<HTMLDivElement, BlockAppShellProps>(func
         {breadcrumbs && (
           <div className="oc-block-shell-breadcrumbs">
             <nav aria-label="Breadcrumb">
-              <ol className="oc-breadcrumb">
+              <ol className="oc-breadcrumb oc-breadcrumb--chevron">
                 {breadcrumbs.map((item, i) =>
                   item.href && i < breadcrumbs.length - 1 ? (
                     <li className="oc-breadcrumb-item" key={i}><a href={item.href}>{item.label}</a></li>

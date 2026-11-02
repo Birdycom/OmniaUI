@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Card with title, actions, toolbar, table, bulk bar and footer. Put an <OcTable> in the default slot.
- * Slots: actions (header buttons), toolbar (.oc-table-toolbar content: search, filter pills, columns popover),
+ * Slots: actions (header buttons), toolbar (.oc-table-toolbar content: search, filter pills),
  * bulk (selection bar, shown when `selectedCount` > 0), default (table), footer (.oc-table-footer: entries text, page size, pagination).
  * Classes: .oc-card.oc-block-datatable, -head, -title, -description, -body, -bulk, .oc-table-toolbar, .oc-table-footer
  */

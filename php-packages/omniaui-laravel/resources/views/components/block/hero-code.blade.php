@@ -20,10 +20,10 @@
       <span class="oc-icon-tile oc-icon-tile--float oc-accent--green absolute" style="inset: -0.5rem auto auto 8%;" aria-hidden="true">&#9670;</span>
       <span class="oc-icon-tile oc-icon-tile--float oc-accent--violet absolute" style="inset: 0 6% auto auto; animation-delay: -2s;" aria-hidden="true">&#9673;</span>
       <span class="oc-icon-tile oc-icon-tile--float oc-accent--orange absolute" style="inset: auto 10% -0.5rem auto; animation-delay: -4s;" aria-hidden="true">&#9650;</span>
-      <div class="oc-code-window">
+      <div class="oc-code-window oc-code-window--dark">
         <div class="oc-code-window__bar"><i></i><i></i><i></i><span class="oc-code-window__title">projects.php</span></div>
 <pre class="oc-code-window__body">return [
-  'erp'    => OmniaDesk::class,
+  'erp'    => Erp::class,
   'design' => OmniaCSS::class,
   'next'   => YourProject::class,
 ];</pre>

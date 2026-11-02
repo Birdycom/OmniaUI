@@ -12,11 +12,11 @@
         {{ $slot }}
     @else
   <div class="oc-block-team-row">
-    <div class="oc-user"><span class="oc-avatar">AL</span><span class="oc-user-text"><span class="oc-user-name">Ada Lovelace</span><span class="oc-user-email">ada@example.com</span></span></div>
+    <div class="oc-user"><span class="oc-avatar">C1</span><span class="oc-user-text"><span class="oc-user-name">Contact 1</span><span class="oc-user-email">info@contact1.example</span></span></div>
     <div class="oc-block-team-meta"><span class="oc-badge">Owner</span></div>
   </div>
   <div class="oc-block-team-row">
-    <div class="oc-user"><span class="oc-avatar">AT</span><span class="oc-user-text"><span class="oc-user-name">Alan Turing</span><span class="oc-user-email">alan@example.com</span></span></div>
+    <div class="oc-user"><span class="oc-avatar">C2</span><span class="oc-user-text"><span class="oc-user-name">Contact 2</span><span class="oc-user-email">info@contact2.example</span></span></div>
     <div class="oc-block-team-meta">
       <span class="oc-badge oc-badge--secondary">Accountant</span>
       <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" popovertarget="oc-team-menu" aria-label="Member actions">&hellip;</button>
@@ -29,7 +29,7 @@
     </div>
   </div>
   <div class="oc-block-team-row">
-    <div class="oc-user"><span class="oc-avatar">GH</span><span class="oc-user-text"><span class="oc-user-name">Grace Hopper</span><span class="oc-user-email">grace@example.com</span></span></div>
+    <div class="oc-user"><span class="oc-avatar">C3</span><span class="oc-user-text"><span class="oc-user-name">Contact 3</span><span class="oc-user-email">info@contact3.example</span></span></div>
     <div class="oc-block-team-meta"><span class="oc-badge oc-badge--warning">Invited</span></div>
   </div>
     @endif

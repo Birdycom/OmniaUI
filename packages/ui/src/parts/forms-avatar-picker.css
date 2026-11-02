@@ -1,0 +1,40 @@
+/* File: packages/ui/src/parts/forms-avatar-picker.css | Map: picker -> preview (initials or image) -> file input -> text and buttons -> drop state -> square and logo */
+/* Logo or avatar picker: a preview, "Upload" and "Remove", a hint, and dropping a file
+   on the preview. The file input is a real <input type="file">; packages/ui/src/avatar-picker.js shows the preview. */
+
+.oc-avatar-picker { display: flex; align-items: center; gap: 1rem; }
+.oc-avatar-picker__preview {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  inline-size: var(--oc-avatar-picker-size, 4.5rem);
+  block-size: var(--oc-avatar-picker-size, 4.5rem);
+  overflow: hidden;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--oc-muted-foreground);
+  background: var(--oc-muted);
+  border: 1px dashed var(--oc-border-strong, var(--oc-border));
+  border-radius: 50%;
+  cursor: pointer;
+}
+.oc-avatar-picker--square .oc-avatar-picker__preview { border-radius: var(--oc-radius); }
+.oc-avatar-picker__preview img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.oc-avatar-picker--logo .oc-avatar-picker__preview img { object-fit: contain; padding: 0.375rem; background: var(--color-white-50); }
+.oc-avatar-picker__preview:has(img) { border-style: solid; }
+.oc-avatar-picker__preview:hover,
+.oc-avatar-picker.is-dragover .oc-avatar-picker__preview {
+  color: var(--oc-primary);
+  background: oklch(from var(--oc-primary) l c h / 0.08);
+  border-color: var(--oc-primary);
+}
+.oc-avatar-picker__preview:has(:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-avatar-picker__file { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.oc-avatar-picker__text { display: grid; gap: 0.375rem; min-inline-size: 0; }
+.oc-avatar-picker__label { font-size: 0.875rem; font-weight: 600; }
+.oc-avatar-picker__hint { font-size: 0.75rem; color: var(--oc-muted-foreground); }
+.oc-avatar-picker__actions { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+/* "Remove" only while there is an image. */
+.oc-avatar-picker:not(:has(.oc-avatar-picker__preview img)) [data-oc-avatar-remove] { display: none; }

@@ -110,7 +110,21 @@
 .oc-slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px oklch(from var(--oc-ring) l c h / 0.28); }
 .oc-slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px oklch(from var(--oc-ring) l c h / 0.28); }
 .oc-slider:disabled { opacity: 0.5; cursor: not-allowed; }
-.oc-slider--vertical { writing-mode: vertical-lr; direction: rtl; inline-size: var(--oc-slider-thumb); block-size: 10rem; }
+/* In a vertical writing mode the inline axis is vertical: inline-size is the height of the slider. */
+.oc-slider--vertical { writing-mode: vertical-lr; direction: rtl; inline-size: 10rem; block-size: var(--oc-slider-thumb); }
+/* Scale under a stepped slider: one mark per step (or per labelled value), centered under the thumb positions.
+   The padding keeps the first and last mark under the thumb center at min and max. */
+.oc-slider-scale {
+  display: flex;
+  justify-content: space-between;
+  padding-inline: calc(var(--oc-slider-thumb, 1.125rem) / 2);
+  margin-block-start: 0.25rem;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--oc-muted-foreground);
+}
+.oc-slider-scale > * { display: flex; flex-direction: column; align-items: center; gap: 0.125rem; inline-size: 0; }
+.oc-slider-scale > *::before { content: ""; inline-size: 1px; block-size: 0.375rem; background: var(--oc-border); }
 .oc-slider--vertical::-webkit-slider-runnable-track {
   background: linear-gradient(to top, var(--oc-primary) var(--oc-slider-progress), var(--oc-muted) var(--oc-slider-progress));
 }

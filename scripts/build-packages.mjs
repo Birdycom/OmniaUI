@@ -84,6 +84,9 @@ async function main() {
   await fs.copyFile(r("packages/ui/src/data-table.js"), r("public/js/oc-data-table.js"));
   // Looping carousel (.oc-carousel--loop): the docs page loads /js/oc-carousel.js (the name turns auto-start on).
   await fs.copyFile(r("packages/ui/src/carousel.js"), r("public/js/oc-carousel.js"));
+  // Barcode SVGs (.oc-barcode) and the date field, name card and avatar picker helpers: same auto-start by name.
+  await fs.copyFile(r("packages/ui/src/barcode.js"), r("public/js/oc-barcode.js"));
+  await fs.copyFile(r("packages/ui/src/form-extras.js"), r("public/js/oc-form-extras.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
 

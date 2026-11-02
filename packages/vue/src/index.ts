@@ -15,8 +15,10 @@ import OcAttachmentList from './components/OcAttachmentList.vue'
 import OcAttachmentThumb from './components/OcAttachmentThumb.vue'
 import OcAvatar from './components/OcAvatar.vue'
 import OcAvatarGroup from './components/OcAvatarGroup.vue'
+import OcAvatarPicker from './components/OcAvatarPicker.vue'
 import OcBackLink from './components/OcBackLink.vue'
 import OcBadge from './components/OcBadge.vue'
+import OcBarcode from './components/OcBarcode.vue'
 import OcBarcodeInput from './components/OcBarcodeInput.vue'
 import OcBreadcrumb from './components/OcBreadcrumb.vue'
 import OcBrowserFrame from './components/OcBrowserFrame.vue'
@@ -33,13 +35,14 @@ import OcChipFilter from './components/OcChipFilter.vue'
 import OcCollapsible from './components/OcCollapsible.vue'
 import OcColorField from './components/OcColorField.vue'
 import OcColorSelect from './components/OcColorSelect.vue'
-import OcColumnMenu from './components/OcColumnMenu.vue'
 import OcCommand from './components/OcCommand.vue'
 import OcConfirmDialog from './components/OcConfirmDialog.vue'
 import OcCookieConsent from './components/OcCookieConsent.vue'
 import OcCopyField from './components/OcCopyField.vue'
 import OcCounter from './components/OcCounter.vue'
 import OcDataTable from './components/OcDataTable.vue'
+import OcDataTableName from './components/OcDataTableName.vue'
+import OcDateField from './components/OcDateField.vue'
 import OcDecimalInput from './components/OcDecimalInput.vue'
 import OcDefinitionList from './components/OcDefinitionList.vue'
 import OcDocViewer from './components/OcDocViewer.vue'
@@ -55,6 +58,7 @@ import OcFactList from './components/OcFactList.vue'
 import OcFilterCounts from './components/OcFilterCounts.vue'
 import OcFlipCard from './components/OcFlipCard.vue'
 import OcFormField from './components/OcFormField.vue'
+import OcFormSection from './components/OcFormSection.vue'
 import OcGlass from './components/OcGlass.vue'
 import OcGlassPanel from './components/OcGlassPanel.vue'
 import OcGreeting from './components/OcGreeting.vue'
@@ -83,7 +87,9 @@ import OcMediaThumb from './components/OcMediaThumb.vue'
 import OcMessage from './components/OcMessage.vue'
 import OcMessageList from './components/OcMessageList.vue'
 import OcMessageThread from './components/OcMessageThread.vue'
+import OcMeterRow from './components/OcMeterRow.vue'
 import OcModal from './components/OcModal.vue'
+import OcNameCard from './components/OcNameCard.vue'
 import OcNavmenu from './components/OcNavmenu.vue'
 import OcNavmenuList from './components/OcNavmenuList.vue'
 import OcNextTeaser from './components/OcNextTeaser.vue'
@@ -200,8 +206,10 @@ export {
   OcAttachmentThumb,
   OcAvatar,
   OcAvatarGroup,
+  OcAvatarPicker,
   OcBackLink,
   OcBadge,
+  OcBarcode,
   OcBarcodeInput,
   OcBreadcrumb,
   OcBrowserFrame,
@@ -218,13 +226,14 @@ export {
   OcCollapsible,
   OcColorField,
   OcColorSelect,
-  OcColumnMenu,
   OcCommand,
   OcConfirmDialog,
   OcCookieConsent,
   OcCopyField,
   OcCounter,
   OcDataTable,
+  OcDataTableName,
+  OcDateField,
   OcDecimalInput,
   OcDefinitionList,
   OcDocViewer,
@@ -240,6 +249,7 @@ export {
   OcFilterCounts,
   OcFlipCard,
   OcFormField,
+  OcFormSection,
   OcGlass,
   OcGlassPanel,
   OcGreeting,
@@ -268,7 +278,9 @@ export {
   OcMessage,
   OcMessageList,
   OcMessageThread,
+  OcMeterRow,
   OcModal,
+  OcNameCard,
   OcNavmenu,
   OcNavmenuList,
   OcNextTeaser,
@@ -380,7 +392,7 @@ export type { ChipFilterItem } from './components/OcChipFilter.vue'
 export type { ColorSelectItem } from './components/OcColorSelect.vue'
 export type { CommandItem } from './components/OcCommand.vue'
 export type { CookieCategory, ConsentChoice } from './components/OcCookieConsent.vue'
-export type { DataTableColumn, DataTableRow } from './components/OcDataTable.vue'
+export type { DataTableColumn, DataTableRow, DataTableTabs, DataTableColumnFilter } from './components/OcDataTable.vue'
 export type { DefinitionRow } from './components/OcDefinitionList.vue'
 export type { DocViewerItem } from './components/OcDocViewer.vue'
 export type { FactListRow } from './components/OcFactList.vue'
@@ -441,8 +453,10 @@ export const components: Record<string, Component> = {
   OcAttachmentThumb,
   OcAvatar,
   OcAvatarGroup,
+  OcAvatarPicker,
   OcBackLink,
   OcBadge,
+  OcBarcode,
   OcBarcodeInput,
   OcBreadcrumb,
   OcBrowserFrame,
@@ -459,13 +473,14 @@ export const components: Record<string, Component> = {
   OcCollapsible,
   OcColorField,
   OcColorSelect,
-  OcColumnMenu,
   OcCommand,
   OcConfirmDialog,
   OcCookieConsent,
   OcCopyField,
   OcCounter,
   OcDataTable,
+  OcDataTableName,
+  OcDateField,
   OcDecimalInput,
   OcDefinitionList,
   OcDocViewer,
@@ -481,6 +496,7 @@ export const components: Record<string, Component> = {
   OcFilterCounts,
   OcFlipCard,
   OcFormField,
+  OcFormSection,
   OcGlass,
   OcGlassPanel,
   OcGreeting,
@@ -509,7 +525,9 @@ export const components: Record<string, Component> = {
   OcMessage,
   OcMessageList,
   OcMessageThread,
+  OcMeterRow,
   OcModal,
+  OcNameCard,
   OcNavmenu,
   OcNavmenuList,
   OcNextTeaser,

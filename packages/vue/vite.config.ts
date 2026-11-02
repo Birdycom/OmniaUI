@@ -2,7 +2,8 @@ import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  plugins: [vue()],
+  // <iconify-icon> (webicons) is a custom element, not a Vue component.
+  plugins: [vue({ template: { compilerOptions: { isCustomElement: (tag) => tag === 'iconify-icon' } } })],
   build: {
     lib: {
       entry: 'src/index.ts',

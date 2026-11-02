@@ -38,7 +38,7 @@ describe('OcAttachment', () => {
 describe('OcMessage', () => {
   it('renders an outgoing bubble with quote, read receipt and actions', async () => {
     const w = mount(OcMessage, {
-      props: { direction: 'out', continued: true, avatar: 'TP', time: '09:20', datetime: '2026-10-14T09:20', status: 'read', statusIcon: true, label: 'You, 09:20',
+      props: { direction: 'out', continued: true, avatar: 'C6', time: '09:20', datetime: '2026-10-14T09:20', status: 'read', statusIcon: true, label: 'You, 09:20',
         quote: { href: '#q', sender: 'Lisa', text: 'Which?' }, text: 'Calacatta.', actions: [{ name: 'reply', label: 'Reply' }] },
     })
     expect(w.classes()).toEqual(['oc-message', 'oc-message--out', 'oc-message--continued'])
@@ -55,7 +55,7 @@ describe('OcMessage', () => {
     expect(w.findAll('article.oc-message')).toHaveLength(3)
     expect(w.find('.oc-message-divider--system').attributes('role')).toBe('note')
     expect(w.find('.oc-message__text ul').exists()).toBe(true)
-    const t = mount(OcMessage, { props: { avatar: 'SC', attachments: [{ kind: 'thumb', alt: 'A', art: 4 }, { kind: 'thumb', alt: 'B' }] } })
+    const t = mount(OcMessage, { props: { avatar: 'C4', attachments: [{ kind: 'thumb', alt: 'A', art: 4 }, { kind: 'thumb', alt: 'B' }] } })
     expect(t.findAll('.oc-message__attachments > .oc-attachment-list > span.oc-attachment-thumb')).toHaveLength(2)
   })
 })
@@ -81,7 +81,7 @@ describe('OcMessageThread', () => {
     expect(onSend).toHaveBeenCalledWith('Fine by me')
     const last = w.findAll('article').at(-1)!
     expect(last.classes()).toContain('oc-message--out')
-    expect(last.find('.oc-message__avatar').text()).toBe('TP')
+    expect(last.find('.oc-message__avatar').text()).toBe('C6')
     expect(last.find('.oc-message__status').text()).toBe('Sent')
     expect(field.value).toBe('')
   })

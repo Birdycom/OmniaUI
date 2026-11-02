@@ -23,7 +23,7 @@
     @else
   <div class="oc-block-authduo-grid">
     <aside class="oc-block-authduo-panel oc-block-authduo-panel--image">
-      <a class="oc-block-authduo-logo" href="#"><svg data-icon="mdi:layers-outline" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/></svg> OmniaDesk</a>
+      <a class="oc-block-authduo-logo" href="#"><svg data-icon="mdi:layers-outline" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/></svg> Company 1</a>
       <blockquote class="oc-block-authduo-quote">
         <p>&ldquo;Setup took ten minutes and the whole team was on board by lunch.&rdquo;</p>
         <footer>Mina Park, product manager</footer>
@@ -38,7 +38,7 @@
         <div class="oc-block-authcard-fields">
           <div class="oc-field">
             <label class="oc-field-label" for="oc-signup02-name">Full name</label>
-            <input class="oc-input" id="oc-signup02-name" name="text" type="text" autocomplete="name" required placeholder="Ada Lovelace">
+            <input class="oc-input" id="oc-signup02-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1">
           </div>
           <div class="oc-field">
             <label class="oc-field-label" for="oc-signup02-email">E-mail</label>

@@ -14,6 +14,6 @@
         @if ($hint)
             <span class="oc-chat-composer__hint">{{ $hint }}</span>
         @endif
-        <button type="submit" class="oc-chat-composer__send" aria-label="Send" @disabled($disabled)>&#10148;</button>
+        <button type="submit" class="oc-chat-composer__send" aria-label="Send" @disabled($disabled)><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 21l21-9L2 3v7l15 2l-15 2z"/></svg></button>
     </div>
 </form>

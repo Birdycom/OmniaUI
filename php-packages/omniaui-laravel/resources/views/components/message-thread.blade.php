@@ -8,20 +8,20 @@
      The script appends a typed message as an outgoing bubble and sends with Ctrl/Cmd + Enter (skipped when the submit event was
      already handled with preventDefault, and inside the chat-inbox block, which has its own script). --}}
 @props([
-    'id', 'title' => 'Kitchen worktop: which finish?', 'project' => 'Villa Dewitte', 'meta' => 'Lisa Verbeke → Tom Peeters · 14 Oct 2026',
-    'participants' => [['initials' => 'LV', 'name' => 'Lisa Verbeke'], ['initials' => 'TP', 'name' => 'Tom Peeters']],
+    'id', 'title' => 'Kitchen worktop: which finish?', 'project' => 'Project 1', 'meta' => 'Customer 1 → Customer 6 · 14 Oct 2026',
+    'participants' => [['initials' => 'C1', 'name' => 'Customer 1'], ['initials' => 'C6', 'name' => 'Customer 6']],
     'status' => ['label' => 'Urgent', 'variant' => 'destructive'],
     'menu' => [['label' => 'Mark as unread'], ['label' => 'Move to archive'], ['separator' => true], ['label' => 'Delete conversation', 'destructive' => true]],
     'messages' => [
         ['divider' => 'Tuesday 14 October'],
-        ['sender' => 'Lisa Verbeke', 'avatar' => 'LV', 'time' => '09:12', 'datetime' => '2026-10-14T09:12', 'text' => 'The supplier dropped off two worktop samples at the workshop. Photo attached.',
+        ['sender' => 'Customer 1', 'avatar' => 'C1', 'time' => '09:12', 'datetime' => '2026-10-14T09:12', 'text' => 'The supplier dropped off two worktop samples at the workshop. Photo attached.',
             'attachments' => [['kind' => 'image', 'href' => '#samples.jpg', 'alt' => 'Two worktop samples on the workbench', 'art' => 6, 'caption' => 'samples.jpg · 2.1 MB']]],
-        ['sender' => 'Lisa Verbeke', 'avatar' => 'LV', 'time' => '09:13', 'datetime' => '2026-10-14T09:13', 'continued' => true,
+        ['sender' => 'Customer 1', 'avatar' => 'C1', 'time' => '09:13', 'datetime' => '2026-10-14T09:13', 'continued' => true,
             'html' => '<p>Which one should we order: <strong>Calacatta matt</strong> or <strong>Nero Marquina polished</strong>? The cutting slot is Friday.</p>'],
-        ['direction' => 'out', 'avatar' => 'TP', 'time' => '09:20', 'datetime' => '2026-10-14T09:20', 'status' => 'read', 'text' => "Calacatta matt, 20 mm. I'll send the updated quote to the client today.",
-            'attachments' => [['name' => 'Quote kitchen Dewitte v2.pdf', 'size' => '1.2 MB', 'href' => '#quote.pdf']], 'actions' => [['name' => 'delete', 'label' => 'Delete this message', 'destructive' => true]]],
+        ['direction' => 'out', 'avatar' => 'C6', 'time' => '09:20', 'datetime' => '2026-10-14T09:20', 'status' => 'read', 'text' => "Calacatta matt, 20 mm. I'll send the updated quote to the client today.",
+            'attachments' => [['name' => 'Quote kitchen Project 1 v2.pdf', 'size' => '1.2 MB', 'href' => '#quote.pdf']], 'actions' => [['name' => 'delete', 'label' => 'Delete this message', 'destructive' => true]]],
         ['divider' => 'Today'],
-        ['sender' => 'Lisa Verbeke', 'avatar' => 'LV', 'time' => '10:02', 'datetime' => '2026-10-24T10:02', 'text' => 'Client signed. Can you confirm the edge profile before 16:00?'],
+        ['sender' => 'Customer 1', 'avatar' => 'C1', 'time' => '10:02', 'datetime' => '2026-10-24T10:02', 'text' => 'Client signed. Can you confirm the edge profile before 16:00?'],
     ],
     'scrollLabel' => 'Messages', 'live' => true, 'busy' => false, 'busyTitle' => 'Sending message…', 'busyText' => 'Please wait, do not close this conversation.',
     'note' => null, 'action' => '#', 'method' => null, 'placeholder' => 'Type your reply…', 'composerLabel' => 'Reply', 'inline' => false,
@@ -82,17 +82,17 @@
                     @if ($tools)
                         <div class="oc-chat-composer__tools">
                             @if (in_array('attach', $tools, true))
-                                <button type="button" class="oc-chat-composer__tool" aria-label="Attach a file">&#128206;</button>
+                                <button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z"/></svg></button>
                             @endif
                             @if (in_array('emoji', $tools, true))
-                                <button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji">&#128578;</button>
+                                <button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/></svg></button>
                             @endif
                         </div>
                     @endif
                     @if ($hint)
                         <span class="oc-chat-composer__hint">{{ $hint }}</span>
                     @endif
-                    <button type="submit" class="oc-chat-composer__send" aria-label="Send">&#10148;</button>
+                    <button type="submit" class="oc-chat-composer__send" aria-label="Send"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 21l21-9L2 3v7l15 2l-15 2z"/></svg></button>
                 </div>
             </form>
         @endif

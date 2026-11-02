@@ -5,7 +5,7 @@
 // Usage: npm run release -- <patch|minor|major|x.y.z> "Short summary of the change" [--dry-run]
 // Map: parse args -> next version -> package.json files -> README (Version + Recent changes) -> docs/release-history.json
 //
-// Rules (same workflow as OmniaDesk, but npm needs 3-part semver):
+// Rules (npm needs 3-part semver):
 //   patch  +0.0.1  bugfix, polish, typo, small UI tweak
 //   minor  +0.1.0  new utilities, components, blocks, pages or other noticeable change
 //   major  +1.0.0  breaking change (renamed/removed classes, new required setup)

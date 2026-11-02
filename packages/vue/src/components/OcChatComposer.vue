@@ -36,7 +36,7 @@ function onKeydown(e: KeyboardEvent) {
     <div class="oc-chat-composer__bar">
       <div v-if="$slots.tools" class="oc-chat-composer__tools"><slot name="tools" /></div>
       <span v-if="hint" class="oc-chat-composer__hint">{{ hint }}</span>
-      <button type="submit" class="oc-chat-composer__send" aria-label="Send" :disabled="disabled">&#10148;</button>
+      <button type="submit" class="oc-chat-composer__send" aria-label="Send" :disabled="disabled"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 21l21-9L2 3v7l15 2l-15 2z"/></svg></button>
     </div>
   </form>
 </template>

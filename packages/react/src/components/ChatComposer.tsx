@@ -66,7 +66,7 @@ export const ChatComposer = forwardRef<HTMLFormElement, ChatComposerProps>(funct
       <div className="oc-chat-composer__bar">
         {tools != null && <div className="oc-chat-composer__tools">{tools}</div>}
         {hint != null && <span className="oc-chat-composer__hint">{hint}</span>}
-        <button type="submit" className="oc-chat-composer__send" aria-label="Send" disabled={disabled}>&#10148;</button>
+        <button type="submit" className="oc-chat-composer__send" aria-label="Send" disabled={disabled}><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 21l21-9L2 3v7l15 2l-15 2z"/></svg></button>
       </div>
     </form>
   );

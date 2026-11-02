@@ -30,6 +30,9 @@
   background: var(--oc-gradient-brand);
   -webkit-background-clip: text;
   background-clip: text;
+  /* The gradient only paints the box: keep italic or tight last letters inside it without moving the text. */
+  padding-inline-end: 0.08em;
+  margin-inline-end: -0.08em;
   color: transparent;
 }
 .oc-text-accent { background-image: linear-gradient(100deg, var(--oc-accent-from), var(--oc-accent-to)); }
@@ -129,17 +132,44 @@
 .oc-lead { margin: 0 0 1rem; color: var(--oc-muted-foreground); font-size: 1.15rem; line-height: 1.65; max-inline-size: 42rem; text-wrap: pretty; }
 .oc-split { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: 3rem; align-items: center; }
 
-/* Code window: editor frame with traffic lights and a file name (always dark, like an editor) */
+/* Code window: editor frame with traffic lights and a file name. It follows the page theme: a light frame and light
+   syntax colors in light mode, the Omnia Dark editor colors in dark mode. --dark keeps it dark on a light page (the
+   hero blocks, where it reads as an editor screenshot). */
 .oc-code-window {
   position: relative;
   border: 1px solid var(--oc-border-strong);
   border-radius: var(--oc-radius-lg);
-  background: oklch(from var(--color-shallowblue-60) l c h / 0.9);
+  background: light-dark(var(--oc-card), oklch(from var(--color-shallowblue-60) l c h / 0.9));
   box-shadow: 0 40px 80px -30px oklch(from var(--color-black-50) l c h / 0.6);
   backdrop-filter: blur(12px);
   overflow: hidden;
-  color-scheme: dark;
+  /* Syntax colors (oc-code-syntax.css) for both themes; the code sits on the window surface. */
+  --oc-syntax-bg: transparent;
+  --oc-syntax-bg-preview: transparent;
+  --oc-syntax-fg: light-dark(var(--color-shallowblue-60), var(--color-silver-60));
+  --oc-syntax-comment: light-dark(var(--color-gray-60), var(--color-purple-2));
+  --oc-syntax-string: light-dark(var(--color-green-80), var(--color-green-2));
+  --oc-syntax-keyword: light-dark(var(--color-purple-70), var(--color-purple-2));
+  --oc-syntax-variable: light-dark(var(--color-skycyan-90), var(--color-skycyan-30));
+  --oc-syntax-function: light-dark(var(--color-skycyan-90), var(--color-skycyan-60));
+  --oc-syntax-number: light-dark(var(--color-peru-80), var(--color-peru-40));
+  --oc-syntax-operator: light-dark(var(--color-red-70), var(--color-red-50));
+  --oc-syntax-constant: light-dark(var(--color-skycyan-90), var(--color-skycyan-70));
+  --oc-syntax-storage: light-dark(var(--color-green-80), var(--color-green-2));
+  --oc-syntax-tag: light-dark(var(--color-brown-70), var(--color-brown-10));
+  --oc-syntax-attr: light-dark(var(--color-skycyan-90), var(--color-skycyan-70));
+  --oc-syntax-prop: light-dark(var(--color-green-80), var(--color-green-2));
+  --oc-syntax-value: light-dark(var(--color-teal-80), var(--color-teal-10));
+  --oc-syntax-cls: light-dark(var(--color-darkgoldenrod-80), var(--color-wheat-70));
+  --oc-syntax-id: light-dark(var(--color-skycyan-90), var(--color-skycyan-70));
+  --oc-syntax-unit: light-dark(var(--color-peru-80), var(--color-peru-40));
+  --oc-syntax-key: light-dark(var(--color-brown-70), var(--color-brown-10));
+  --oc-code-block-line-number-color: light-dark(var(--color-gray-40), oklch(from var(--color-white-2) l c h / 0.25));
 }
+.oc-code-window--dark { color-scheme: dark; box-shadow: 0 40px 80px -30px oklch(from var(--color-black-50) l c h / 0.6); }
+.oc-code-window:not(.oc-code-window--dark) { box-shadow: 0 24px 60px -30px oklch(from var(--color-black-50) l c h / 0.25); }
+/* The code block inside follows the window instead of its own always-dark theme. */
+.oc-code-window :is(.oc-code-block, pre.code-preview) { color-scheme: inherit; }
 .oc-code-window__bar { display: flex; align-items: center; gap: 0.45rem; padding: 0.8rem 1rem; border-block-end: 1px solid var(--oc-border); }
 .oc-code-window__bar > i { inline-size: 0.7rem; aspect-ratio: 1; border-radius: 50%; background: var(--color-red-50); }
 .oc-code-window__bar > i:nth-child(2) { background: var(--color-orange-60); }
