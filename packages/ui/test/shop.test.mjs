@@ -31,7 +31,8 @@ test("shop snippets have the snippet header and their hooks", () => {
   const read = (name) => fs.readFileSync(new URL(`../snippets/${name}.html`, import.meta.url), "utf8");
   for (const [name, hook] of [["rating", "oc-rating-input"], ["price", "oc-price__amount"], ["quantity", "data-oc-step"], ["gallery", "oc-gallery__thumb"], ["stock", "data-level"], ["spec-list", "oc-spec-row"]]) {
     const src = read(name);
-    assert.match(src.split("\n")[0], /Needs @birdycom\/omniaui CSS\.$/, name);
+    // Line endings differ per checkout (CRLF on Windows and in CI with .gitattributes eol=crlf).
+    assert.match(src.split(/\r?\n/)[0], /Needs @birdycom\/omniaui CSS\.$/, name);
     assert.match(src, /File: packages\/ui\/snippets\/.+ \| Map:/, name);
     assert.ok(src.includes(hook), `${name} has ${hook}`);
   }
