@@ -37,7 +37,7 @@
     <article class="oc-block-contact-card">
       <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--blue" aria-hidden="true">&#9993;</span>
       <h3 class="oc-block-contact-title">E-mail</h3>
-      <a class="oc-block-contact-line" href="mailto:hello@example.com">hello@example.com</a>
+      <a class="oc-block-contact-line" href="mailto:info@company1.example">info@company1.example</a>
       <p class="oc-block-contact-line">For quotes and questions.</p>
     </article>
     <article class="oc-block-contact-card">

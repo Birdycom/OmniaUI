@@ -2,15 +2,16 @@
 <script setup lang="ts">
 /**
  * Profile / channel header: banner, overhanging avatar, name, meta, bio, actions and link tabs.
- * Slots: avatar (initials or <img>), actions, bio. Classes: .oc-block-profile (--compact), -banner, -bar, -avatar,
+ * Slots: avatar (initials or <img>), actions, bio, panel-0, panel-1 … (with panel slots the tabs switch on the page
+ * itself: radios + panels, CSS only; without them the tabs are links). Classes: .oc-block-profile (--compact), -banner, -bar, -avatar,
  * -info, -name, -meta, -bio, -actions, -tabs, -tab (aria-current="page")
  */
-import { computed } from 'vue'
+import { computed, useSlots } from 'vue'
 import { useUid } from '../composables/useUid'
 
 export interface ProfileHeaderTab {
   label: string
-  href: string
+  href?: string
   current?: boolean
 }
 const props = withDefaults(
@@ -28,6 +29,8 @@ const props = withDefaults(
   { tabs: () => [], tabsLabel: 'Profile sections', headingLevel: 1 },
 )
 const nameId = useUid('oc-profile-name')
+const slots = useSlots()
+const panels = computed(() => props.tabs.some((_, i) => Boolean(slots[`panel-${i}`])))
 const bannerStyle = computed(() => (props.banner ? `--oc-profile-banner: url("${props.banner}")` : undefined))
 </script>
 
@@ -43,7 +46,15 @@ const bannerStyle = computed(() => (props.banner ? `--oc-profile-banner: url("${
       </div>
       <div v-if="$slots.actions" class="oc-block-profile-actions"><slot name="actions" /></div>
     </div>
-    <nav v-if="tabs.length" class="oc-block-profile-tabs" :aria-label="tabsLabel">
+    <template v-if="tabs.length && panels">
+      <div class="oc-block-profile-tabs" role="radiogroup" :aria-label="tabsLabel">
+        <label v-for="(tab, i) in tabs" :key="i" class="oc-block-profile-tab"><input type="radio" :name="`${nameId}-tab`" :checked="tab.current ?? i === 0">{{ tab.label }}</label>
+      </div>
+      <div class="oc-block-profile-panels">
+        <div v-for="(tab, i) in tabs" :key="i" class="oc-block-profile-panel"><slot :name="`panel-${i}`" /></div>
+      </div>
+    </template>
+    <nav v-else-if="tabs.length" class="oc-block-profile-tabs" :aria-label="tabsLabel">
       <a v-for="(tab, i) in tabs" :key="i" class="oc-block-profile-tab" :href="tab.href" :aria-current="tab.current ? 'page' : undefined">{{ tab.label }}</a>
     </nav>
   </section>

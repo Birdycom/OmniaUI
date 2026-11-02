@@ -1733,13 +1733,16 @@
 .oc-block-spotlight-title { margin: 0; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); font-weight: 700; letter-spacing: -0.02em; }
 .oc-block-spotlight-lead { margin: 0; color: var(--oc-muted-foreground); }
 
-/* The glow: the same gradient as the free card, at the pointer instead of 50% 0%. Two classes, so it wins over the
-   free .oc-product-card whatever order the stylesheets load in. */
+/* The glow: the same gradient as the free card, at the pointer instead of 50% 0%, and stronger (--oc-spot-strength,
+   default 2) so it is seen at once, also in light mode. Two classes, so it wins over the free .oc-product-card
+   whatever order the stylesheets load in. */
 .oc-product-card.oc-product-card--spotlight {
   isolation: isolate;
   background:
-    radial-gradient(var(--oc-spot-size, 22rem) circle at var(--oc-spot-x, 50%) var(--oc-spot-y, 0%), oklch(from var(--oc-accent-from) l c h / var(--oc-glow, 0)), transparent 60%),
+    radial-gradient(var(--oc-spot-size, 22rem) circle at var(--oc-spot-x, 50%) var(--oc-spot-y, 0%), oklch(from var(--oc-accent-from) l c h / calc(var(--oc-glow, 0) * var(--oc-spot-strength, 2))), transparent 60%),
     var(--oc-surface);
+  /* The glow fades in fast, so the light is there as soon as the pointer is. */
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.35s, --oc-glow 0.12s;
 }
 
 /* The border under the pointer lights up too: a ring as wide as the border, cut out with a mask. It sits inside the

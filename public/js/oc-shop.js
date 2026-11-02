@@ -120,7 +120,8 @@ export function stockState(stock, low = 5) {
 
 /** Product page ([data-oc-shop-product]): the name of the chosen option next to its legend ([data-oc-choice="name"]),
  *  and a choice with data-oc-price / data-oc-stock sets the price ([data-oc-shop-price]), the stock ([data-oc-shop-stock]),
- *  the quantity limit and the add button ([data-oc-shop-add], off when out of stock). */
+ *  the quantity limit and the add button ([data-oc-shop-add], off when out of stock). A choice with data-oc-images
+ *  ("a.svg b.svg …") swaps the photos: img[data-oc-variant="0"] gets the first, "1" the second (slides and thumbs). */
 function bindProduct(root) {
   const currency = root.dataset.ocCurrency || "EUR";
   const locale = root.dataset.ocLocale || "nl-BE";
@@ -130,6 +131,7 @@ function bindProduct(root) {
   const qty = root.querySelector(".oc-quantity__input");
   const baseStock = Number(stockEl?.dataset.ocStock ?? NaN);
   const basePrice = Number(priceEl?.dataset.ocPrice ?? NaN);
+  const page = root.closest(".oc-block-shop") || root.parentElement || root;
   const update = () => {
     let stock = baseStock;
     let price = basePrice;
@@ -140,6 +142,13 @@ function bindProduct(root) {
     for (const checked of root.querySelectorAll("input[type=radio]:checked")) {
       if (checked.dataset.ocStock != null) stock = Number(checked.dataset.ocStock);
       if (checked.dataset.ocPrice != null) price = Number(checked.dataset.ocPrice);
+      if (checked.dataset.ocImages) {
+        const list = checked.dataset.ocImages.split(/\s+/).filter(Boolean);
+        page.querySelectorAll("img[data-oc-variant]").forEach((img) => {
+          const src = list[Number(img.dataset.ocVariant)];
+          if (src && img.getAttribute("src") !== src) img.src = src;
+        });
+      }
     }
     if (stockEl && Number.isFinite(stock)) {
       const [text, level] = stockState(stock);

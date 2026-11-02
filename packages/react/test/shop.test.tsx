@@ -1,5 +1,5 @@
 // File: packages/react/test/shop.test.tsx
-// Map: Rating -> RatingInput -> Price (format) -> Quantity (steps, limits) -> Gallery -> Stock -> SpecList -> Ribbon
+// Map: Rating -> RatingInput -> Price (format) -> Quantity (steps, limits) -> Gallery -> Stock -> SpecList -> Ribbon -> GlassBar
 
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -8,6 +8,7 @@ import { Price } from "../src/components/Price";
 import { Quantity } from "../src/components/Quantity";
 import { Rating, RatingInput } from "../src/components/Rating";
 import { Ribbon } from "../src/components/Ribbon";
+import { GlassBar } from "../src/components/GlassBar";
 import { SpecList } from "../src/components/SpecList";
 import { Stock } from "../src/components/Stock";
 
@@ -82,5 +83,14 @@ describe("shop components", () => {
     expect(screen.getByText("New").className).toBe("oc-ribbon");
     rerender(<Ribbon corner="bottom-start" tone="success" size="lg">Paid</Ribbon>);
     expect(screen.getByText("Paid")).toHaveClass("oc-ribbon", "oc-ribbon--bottom-start", "oc-ribbon--success", "oc-ribbon--lg");
+  });
+
+  it("glass bar marks the current link and names icon-only items", () => {
+    const { rerender } = render(<GlassBar items={[{ label: "Home", href: "#h", current: true }, { label: "Library", href: "#l" }]} />);
+    expect(screen.getByRole("navigation", { name: "Main" })).toHaveClass("oc-glass-bar");
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("aria-current", "page");
+    rerender(<GlassBar icons label="Tools" items={[{ label: "Draw", current: true }, { label: "Text" }]} />);
+    expect(screen.getByRole("navigation", { name: "Tools" })).toHaveClass("oc-glass-bar--icons");
+    expect(screen.getByRole("button", { name: "Draw" })).toHaveAttribute("aria-pressed", "true");
   });
 });

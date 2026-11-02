@@ -1,0 +1,93 @@
+/* File: packages/ui/src/parts/media-glass-liquid.css
+   Map: liquid sheet (.oc-glass--liquid: clear tint, strong blur + saturation, inner light, specular rim) -> menu bar
+   (.oc-glass-bar: items with icon and label, the current one in a raised bubble) -> icon-only and round button -> fallbacks
+   Liquid glass in the style of recent desktop and phone systems, in CSS only: the backdrop is blurred and brightened,
+   the edge catches light. Put it over a photo or colourful content; on a plain page it looks like a soft card. */
+
+.oc-glass--liquid,
+.oc-glass-bar {
+  --oc-liquid-tint: light-dark(oklch(100% 0 0deg / 0.22), oklch(100% 0 0deg / 0.07));
+  --oc-liquid-edge: light-dark(oklch(100% 0 0deg / 0.6), oklch(100% 0 0deg / 0.2));
+  --oc-liquid-blur: 14px;
+  position: relative;
+  isolation: isolate;
+  background: var(--oc-liquid-tint);
+  border: 1px solid var(--oc-liquid-edge);
+  box-shadow:
+    0 12px 32px -12px oklch(0% 0 0deg / 0.35),
+    inset 0 1px 1px oklch(100% 0 0deg / 0.75),
+    inset 0 -1px 1px oklch(0% 0 0deg / 0.12),
+    inset 0 0 20px oklch(100% 0 0deg / 0.16);
+  backdrop-filter: blur(var(--oc-liquid-blur)) saturate(1.9) brightness(1.08);
+}
+/* Specular rim: light on the top-left and bottom-right edge, only on the border ring. */
+.oc-glass--liquid::before,
+.oc-glass-bar::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, oklch(100% 0 0deg / 0.9), oklch(100% 0 0deg / 0) 30%, oklch(100% 0 0deg / 0) 70%, oklch(100% 0 0deg / 0.5));
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Menu bar: a pill of items, each an icon over a short label. */
+.oc-glass-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+}
+.oc-glass-bar__item {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  min-inline-size: 4.25rem;
+  padding: 0.45rem 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  color: light-dark(oklch(22% 0.02 260deg / 0.78), oklch(100% 0 0deg / 0.82));
+  background: none;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.25s, color 0.25s, box-shadow 0.25s, scale 0.2s;
+}
+.oc-glass-bar__item > :is(svg, iconify-icon) { inline-size: 1.4rem; block-size: 1.4rem; font-size: 1.4rem; }
+.oc-glass-bar__item:hover { background: light-dark(oklch(100% 0 0deg / 0.28), oklch(100% 0 0deg / 0.08)); }
+.oc-glass-bar__item:active { scale: 0.94; }
+.oc-glass-bar__item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+/* The current item sits in a raised, lighter bubble. */
+.oc-glass-bar__item:is([aria-current="page"], [aria-pressed="true"], :has(> input:checked)) {
+  color: light-dark(var(--oc-primary), var(--color-white-50));
+  background: light-dark(oklch(100% 0 0deg / 0.62), oklch(100% 0 0deg / 0.24));
+  box-shadow: inset 0 1px 1px oklch(100% 0 0deg / 0.85), 0 6px 14px -8px oklch(0% 0 0deg / 0.4);
+}
+.oc-glass-bar__item > input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.oc-glass-bar__item:has(> input:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+/* Icons only, and a separate round button next to the bar (search, compose). */
+.oc-glass-bar--icons .oc-glass-bar__item { min-inline-size: 0; padding: 0.6rem; }
+.oc-glass-bar--round { padding: 0.35rem; border-radius: 999px; }
+.oc-glass-bar--round .oc-glass-bar__item { min-inline-size: 0; padding: 0.6rem; }
+.oc-glass-bar__sep { align-self: stretch; inline-size: 1px; margin: 0.4rem 0.15rem; background: var(--oc-liquid-edge); }
+
+/* Less transparency asked for, or no backdrop-filter: a solid bar that still reads as one. */
+@media (prefers-reduced-transparency: reduce) {
+  .oc-glass--liquid, .oc-glass-bar { --oc-liquid-tint: var(--oc-card); backdrop-filter: none; }
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .oc-glass--liquid, .oc-glass-bar { --oc-liquid-tint: light-dark(oklch(100% 0 0deg / 0.85), oklch(25% 0.02 260deg / 0.9)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-glass-bar__item { transition: none; }
+}

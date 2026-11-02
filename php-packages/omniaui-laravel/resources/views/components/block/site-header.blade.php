@@ -9,7 +9,7 @@
         @if (isset($brand) && trim((string) $brand) !== '')
             {{ $brand }}
         @else
-        <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">&#9670;</span>brand<span class="oc-text-gradient">co</span>
+        <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">&#9670;</span>Company <span class="oc-text-gradient">1</span>
         @endif
     </a>
     <button class="oc-site-header__toggle" popovertarget="site-nav" aria-label="Menu">&#9776;</button>

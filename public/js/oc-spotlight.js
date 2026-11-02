@@ -30,12 +30,16 @@ export function bindSpotlight(root) {
     const card = event.target instanceof Element ? event.target.closest(CARD) : null;
     if (!card || !root.contains(card)) return;
     last = { card, event };
+    // Entering a card: paint now, so the glow starts at the pointer instead of at the top and then jumping.
+    if (event.type === "pointerover") { if (frame) cancelAnimationFrame(frame); paint(); return; }
     if (!frame) frame = requestAnimationFrame(paint);
   };
+  root.addEventListener("pointerover", onMove, { passive: true });
   root.addEventListener("pointermove", onMove, { passive: true });
   root.setAttribute("data-oc-spotlight-bound", "");
 
   return () => {
+    root.removeEventListener("pointerover", onMove);
     root.removeEventListener("pointermove", onMove);
     if (frame) cancelAnimationFrame(frame);
     root.querySelectorAll(CARD).forEach((card) => { card.style.removeProperty("--oc-spot-x"); card.style.removeProperty("--oc-spot-y"); });

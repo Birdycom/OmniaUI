@@ -8,7 +8,7 @@
     @else
   <div class="oc-container oc-split">
     <div>
-      <p class="oc-eyebrow">Software development &middot; since 2001</p>
+      <p class="oc-eyebrow">Software development &middot; for small companies</p>
       <h1 class="oc-display">We build software that moves your business <span class="oc-text-gradient">forward</span>.</h1>
       <p class="oc-lead">From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins.</p>
       <div class="flex flex-wrap gap-1 mt-2">

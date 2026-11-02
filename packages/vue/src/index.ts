@@ -61,6 +61,7 @@ import OcFormField from './components/OcFormField.vue'
 import OcFormSection from './components/OcFormSection.vue'
 import OcGallery from './components/OcGallery.vue'
 import OcGlass from './components/OcGlass.vue'
+import OcGlassBar from './components/OcGlassBar.vue'
 import OcGlassPanel from './components/OcGlassPanel.vue'
 import OcGreeting from './components/OcGreeting.vue'
 import OcHeading from './components/OcHeading.vue'
@@ -260,6 +261,7 @@ export {
   OcFormSection,
   OcGallery,
   OcGlass,
+  OcGlassBar,
   OcGlassPanel,
   OcGreeting,
   OcHeading,
@@ -414,6 +416,7 @@ export type { DocViewerItem } from './components/OcDocViewer.vue'
 export type { FactListRow } from './components/OcFactList.vue'
 export type { FilterCountsItem } from './components/OcFilterCounts.vue'
 export type { GalleryImage } from './components/OcGallery.vue'
+export type { GlassBarItem } from './components/OcGlassBar.vue'
 export type { LanguageSelectItem } from './components/OcLanguageSelect.vue'
 export type { MessageAttachment, MessageAction, MessageData } from './components/OcMessage.vue'
 export type { MessageListItem } from './components/OcMessageList.vue'
@@ -517,6 +520,7 @@ export const components: Record<string, Component> = {
   OcFormSection,
   OcGallery,
   OcGlass,
+  OcGlassBar,
   OcGlassPanel,
   OcGreeting,
   OcHeading,
