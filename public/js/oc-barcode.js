@@ -1,5 +1,5 @@
 // File: packages/ui/src/barcode.js
-// Map: format guess -> EAN-13 / EAN-8 / UPC-A -> Code 128 (B, or C for even digit runs) -> bars to SVG -> SVG file -> bind -> maker -> boot
+// Map: format guess -> EAN-13 / EAN-8 / UPC-A -> Code 128 (B, or C for even digit runs) -> bars to SVG -> SVG file -> bind -> boot
 // Barcode display without a dependency : <figure class="oc-barcode" data-value="5412345678908">
 // gets an SVG with the bars and the digits under it. data-format="auto|EAN13|EAN8|UPC|CODE128" (default auto).
 
@@ -109,6 +109,7 @@ export function barsToSvg(bits, label = "") {
 }
 
 /** A standalone SVG file (white background, black bars, digits under it) to download, print or put on a label.
+ *  The barcode maker form (download, live preview) is part of OmniaUI Pro: @birdycom/omniaui-pro/barcode-maker.js.
  *  moduleWidth and height are in px; throws like encodeBarcode for a value it cannot encode. */
 export function barcodeFile(value, { format = "auto", digits = true, moduleWidth = 2, height = 70 } = {}) {
   const { bits, text } = encodeBarcode(value, format);
@@ -143,43 +144,8 @@ export function renderBarcode(el) {
   }
 }
 
-/** [data-oc-barcode-maker]: a value field (name="value"), an optional format select (name="format"), a preview
- *  figure.oc-barcode and a[data-oc-barcode-download] that saves the SVG file. Redraws while typing. */
-export function bindBarcodeMaker(root) {
-  if (!root || root.dataset.ocBound) return;
-  root.dataset.ocBound = "";
-  const value = root.querySelector('[name="value"]');
-  const format = root.querySelector('[name="format"]');
-  const out = root.querySelector(".oc-barcode");
-  const save = root.querySelector("[data-oc-barcode-download]");
-  if (!value || !out) return;
-  let url = "";
-  const draw = () => {
-    out.dataset.value = value.value;
-    out.dataset.format = format?.value || "auto";
-    renderBarcode(out);
-    const failed = out.hasAttribute("data-error");
-    value.setAttribute("aria-invalid", String(failed && value.value.trim() !== ""));
-    if (!save) return;
-    if (url) URL.revokeObjectURL(url);
-    url = "";
-    save.removeAttribute("href");
-    save.setAttribute("aria-disabled", "true");
-    if (failed) return;
-    url = URL.createObjectURL(new Blob([barcodeFile(value.value, { format: out.dataset.format })], { type: "image/svg+xml" }));
-    save.href = url;
-    save.download = `barcode-${value.value.trim().replace(/[^\w-]+/g, "_").slice(0, 40)}.svg`;
-    save.removeAttribute("aria-disabled");
-  };
-  value.addEventListener("input", draw);
-  format?.addEventListener("change", draw);
-  root.addEventListener("submit", (event) => event.preventDefault());
-  draw();
-}
-
-/** Draw every .oc-barcode[data-value] under scope and wire every barcode maker. */
+/** Draw every .oc-barcode[data-value] under scope. */
 export function initBarcodes(scope = document) {
-  scope.querySelectorAll("[data-oc-barcode-maker]").forEach(bindBarcodeMaker);
   scope.querySelectorAll(".oc-barcode[data-value]").forEach(renderBarcode);
 }
 

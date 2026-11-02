@@ -82,7 +82,8 @@ const CSS = `
     .gx-chip::before { content: ""; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: var(--ci, var(--c)); }
     .gx-chip:hover { border-color: var(--c); }
     .gx-jump small { font: 500 0.7rem var(--ocd-mono); color: var(--oc-muted-foreground); }
-    .gx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 0.75rem; }
+    /* Every card in a grid gets the height of the tallest one (grid-auto-rows: 1fr). */
+    .gx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); grid-auto-rows: 1fr; gap: 0.75rem; }
     .gx-grid--blocks { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
     .gx-card { --c: var(--color-vividblue-60); position: relative; display: grid; grid-template-rows: auto auto 1fr auto; gap: 0.35rem; padding: 1rem 1.1rem 0.9rem; border: 1px solid var(--oc-border); border-radius: 14px; color: inherit; text-decoration: none; overflow: hidden; transition: border-color 0.2s, translate 0.2s, box-shadow 0.2s; }
     /* The accent edge stays on the straight part of the left side: running into the rounded corners, it cut the
@@ -91,10 +92,14 @@ const CSS = `
     .gx-card:hover { border-color: color-mix(in oklch, var(--c) 55%, var(--oc-border)); translate: 0 -2px; box-shadow: 0 10px 30px -18px var(--c); }
     .gx-card:hover::before { opacity: 1; }
     .gx-card:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+    /* Without a thumbnail (components): title row, text that takes the free room, footer at the bottom. */
+    .gx-card:not(:has(.gx-shot)) { grid-template-rows: auto 1fr auto; }
     .gx-card b { font: 600 1.02rem var(--ocd-display); }
     .gx-card span { font-size: 0.86rem; line-height: 1.5; color: var(--oc-muted-foreground); }
     .gx-card span code { font-size: 0.8em; }
-    .gx-card small { display: flex; justify-content: space-between; gap: 0.5rem; margin-block-start: 0.35rem; font: 500 0.7rem var(--ocd-mono); color: var(--oc-muted-foreground); }
+    /* Footer: the add command (or Pro) left, the number of demos right, under a hairline. */
+    .gx-card small { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 0.5rem; margin-block-start: 0.35rem; padding-block-start: 0.6rem; border-block-start: 1px solid var(--oc-border); font: 500 0.7rem var(--ocd-mono); color: var(--oc-muted-foreground); }
+    .gx-card small em { font-style: normal; white-space: nowrap; }
     .gx-card small i { font-style: normal; color: var(--ci, var(--c)); }
     .gx-shot { margin: -1rem -1.1rem 0.4rem; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 13px 13px 0 0; border-block-end: 1px solid var(--oc-border); background: var(--oc-muted); }
     .gx-shot--themed .gx-dark { display: none; }
@@ -182,7 +187,7 @@ for (const [kind, k] of Object.entries(KINDS)) {
     const fresh = p.since && p.since === newest ? `<em class="gx-new">New</em>` : "";
     const cli = p.pro === "all" ? "" : addName(kind, p.name);
     const badge = p.pro ? `<em class="gx-pro">${p.pro === "all" ? "Pro" : "Free + Pro"}</em>` : "";
-    return `<a class="gx-card" href="${kind}/${p.name}.html" style="${tone(t)}">${kind === "blocks" ? thumbnail(p.name) : ""}<div class="gx-head"><b>${esc(p.title)}</b>${fresh}${badge}</div><span>${p.desc}</span><small><i>${cli ? `omniaui add ${cli}` : p.pro === "all" ? "OmniaUI Pro" : ""}</i>${p.demos > 1 ? `<em>${p.demos} demos</em>` : ""}</small></a>`;
+    return `<a class="gx-card" href="${kind}/${p.name}.html" style="${tone(t)}">${kind === "blocks" ? thumbnail(p.name) : ""}<div class="gx-head"><b>${esc(p.title)}</b>${fresh}${badge}</div><span>${p.desc}</span><small><i>${cli ? `omniaui add ${cli}` : p.pro === "all" ? "OmniaUI Pro" : ""}</i>${p.demos ? `<em>${p.demos} ${p.demos === 1 ? "demo" : "demos"}</em>` : ""}</small></a>`;
   };
   const single = kind === "blocks" ? "block" : "component";
   const body = `<section class="oc-hero gx-hero" id="overview" data-oc-no-compat>
