@@ -49,6 +49,7 @@ export * from "./components/FormField";
 export * from "./components/FormSection";
 export * from "./components/Gallery";
 export * from "./components/Glass";
+export * from "./components/GlassBar";
 export * from "./components/Greeting";
 export * from "./components/Heading";
 export * from "./components/Icon";

@@ -64,6 +64,16 @@ class ShopTest extends TestCase
         $this->assertStringContainsString('class="oc-ribbon oc-ribbon--top-start oc-ribbon--success oc-ribbon--lg">Paid', $this->render('<x-oc::ribbon corner="top-start" tone="success" size="lg">Paid</x-oc::ribbon>'));
     }
 
+    public function test_glass_bar_and_liquid_glass(): void
+    {
+        $items = [['label' => 'Home', 'icon' => 'mdi:home', 'href' => '#h', 'current' => true], ['label' => 'Library', 'href' => '#l']];
+        $bar = $this->render('<x-oc::glass-bar :items="$items" />', ['items' => $items]);
+        $this->assertStringContainsString('class="oc-glass-bar" aria-label="Main"', $bar);
+        $this->assertStringContainsString('aria-current="page"', $bar);
+        $this->assertStringContainsString('<span>Library</span>', $bar);
+        $this->assertStringContainsString('oc-glass oc-glass--liquid', $this->render('<x-oc::glass liquid>Card</x-oc::glass>'));
+    }
+
     public function test_stock_default_text_and_level(): void
     {
         $this->assertStringContainsString('>In stock<', $this->render('<x-oc::stock />'));

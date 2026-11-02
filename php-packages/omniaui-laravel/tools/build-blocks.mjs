@@ -195,8 +195,9 @@ const CONFIG = external?.CONFIG ?? {
       { name: "meta", match: '<p class="oc-block-profile-meta"', inner: true },
       { name: "bio", match: '<p class="oc-block-profile-bio"', inner: true },
       { name: "actions", match: '<div class="oc-block-profile-actions"', inner: true },
+      { name: "tabs", match: '<div class="oc-block-profile-tabs"', inner: true },
     ],
-    default: '<nav class="oc-block-profile-tabs"',
+    default: '<div class="oc-block-profile-panels"',
   },
   // 0.10.0 blocks. Markup after the root (a dialog, the optional script) is kept as "tail": scripts go in @once,
   // and a slot with `tail: true` is looked up there.

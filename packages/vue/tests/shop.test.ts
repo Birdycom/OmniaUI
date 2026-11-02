@@ -1,5 +1,5 @@
 // File: packages/vue/tests/shop.test.ts
-// Map: OcRating -> OcRatingInput -> OcPrice -> OcQuantity (steps, limits) -> OcGallery -> OcStock -> OcSpecList -> OcRibbon
+// Map: OcRating -> OcRatingInput -> OcPrice -> OcQuantity (steps, limits) -> OcGallery -> OcStock -> OcSpecList -> OcRibbon -> OcGlassBar
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -9,6 +9,7 @@ import OcQuantity from '../src/components/OcQuantity.vue'
 import OcRating from '../src/components/OcRating.vue'
 import OcRatingInput from '../src/components/OcRatingInput.vue'
 import OcRibbon from '../src/components/OcRibbon.vue'
+import OcGlassBar from '../src/components/OcGlassBar.vue'
 import OcSpecList from '../src/components/OcSpecList.vue'
 import OcStock from '../src/components/OcStock.vue'
 
@@ -68,5 +69,13 @@ describe('shop components', () => {
     const w = mount(OcRibbon, { props: { corner: 'bottom-end', tone: 'destructive', size: 'sm' }, slots: { default: 'Sale' } })
     expect(w.classes()).toEqual(['oc-ribbon', 'oc-ribbon--bottom-end', 'oc-ribbon--destructive', 'oc-ribbon--sm'])
     expect(w.text()).toBe('Sale')
+  })
+
+  it('OcGlassBar marks the current item and emits select', async () => {
+    const w = mount(OcGlassBar, { props: { items: [{ label: 'Home', href: '#h', current: true }, { label: 'Text' }] } })
+    expect(w.classes()).toEqual(['oc-glass-bar'])
+    expect(w.find('a').attributes('aria-current')).toBe('page')
+    await w.find('button').trigger('click')
+    expect(w.emitted('select')![0]).toEqual([1])
   })
 })

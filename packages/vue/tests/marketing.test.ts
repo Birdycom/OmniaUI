@@ -102,6 +102,10 @@ describe('marketing blocks', () => {
   it('OcBlockProfileHeader and OcBlockPortfolioGrid render their parts', () => {
     const profile = mount(OcBlockProfileHeader, { props: { name: 'Acme', tabs: [{ label: 'Home', href: '#h', current: true }] } })
     expect(profile.find('.oc-block-profile-tab').attributes('aria-current')).toBe('page')
+    const panels = mount(OcBlockProfileHeader, { props: { name: 'Company 1', tabs: [{ label: 'Home' }, { label: 'About' }] }, slots: { 'panel-0': 'Home panel', 'panel-1': 'About panel' } })
+    expect(panels.findAll('input[type=radio]')).toHaveLength(2)
+    expect((panels.find('input[type=radio]').element as HTMLInputElement).checked).toBe(true)
+    expect(panels.findAll('.oc-block-profile-panel').map((p) => p.text())).toEqual(['Home panel', 'About panel'])
     const grid = mount(OcBlockPortfolioGrid, { props: { title: 'Work', projects: [{ href: '#1', name: 'One', accent: 'violet' }] } })
     expect(grid.find('.oc-project-card').classes()).toContain('oc-accent--violet')
   })

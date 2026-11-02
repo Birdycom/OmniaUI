@@ -9,8 +9,8 @@
   <div class="oc-container">
     <div class="oc-site-footer__grid">
       <div class="oc-site-footer__about">
-        <a class="oc-site-header__brand" href="/"><span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">&#9670;</span>brandco</a>
-        <p>Software development since 2001: web applications, desktop tools and plugins, built and maintained in-house.</p>
+        <a class="oc-site-header__brand" href="/"><span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">&#9670;</span>Company 1</a>
+        <p>Web apps, sites and tools for small companies, built and maintained in-house.</p>
       </div>
       <div>
         <h2 class="oc-site-footer__title">Software</h2>
@@ -31,14 +31,14 @@
       <div>
         <h2 class="oc-site-footer__title">Contact</h2>
         <address class="oc-site-footer__list">
-          <a href="mailto:hello@example.com">hello@example.com</a>
-          <span>Main street 1</span>
-          <span>2530 Boechout</span>
+          <a href="mailto:info@company1.example">info@company1.example</a>
+          <span>Street 1</span>
+          <span>1000 City 1</span>
         </address>
       </div>
     </div>
     <div class="oc-site-footer__bottom">
-      <span>&copy; 2026 brandco. All rights reserved.</span>
+      <span>&copy; 2026 Company 1. All rights reserved.</span>
       <span>Built with OmniaCSS</span>
     </div>
   </div>

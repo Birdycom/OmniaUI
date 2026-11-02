@@ -1,12 +1,14 @@
 {{-- OmniaUI block: profile-header - Channel / profile header: banner, overhanging avatar, name, meta, actions and a tab bar. Needs @birdycom/omniaui-blocks + @birdycom/omniaui CSS.
-     File: packages/blocks/blocks/profile-header.html | Map: section.oc-block-profile -> banner -> bar (avatar, info, actions) -> nav tabs
+     File: packages/blocks/blocks/profile-header.html | Map: section.oc-block-profile -> banner -> bar (avatar, info, actions) -> tabs (radios) -> panels
      Class API: .oc-block-profile (modifier --compact: low banner, smaller avatar), -banner (style="--oc-profile-banner: url(…)",
        default gradient from the .oc-accent--* preset), -bar, -avatar (on an .oc-avatar), -info, -name, -meta, -bio, -actions,
-       -tabs (nav), -tab (link; aria-current="page" marks the active tab).
+       -tabs, -tab: links (aria-current="page" marks the active one) or, for tabs on the page itself, labels with a
+       radio; then -panels holds one -panel per tab (same order) and the checked tab shows its panel (CSS only).
+       -grid / -thumb: the cards in the demo panels.
      Blade: <x-oc::block.profile-header> - attributes merge onto the root element.
-     Blade slots (each falls back to the snippet content when empty): avatar, name, meta, bio, actions, default.
+     Blade slots (each falls back to the snippet content when empty): avatar, name, meta, bio, actions, tabs, default.
 --}}
-@props(['avatar' => null, 'name' => null, 'meta' => null, 'bio' => null, 'actions' => null])
+@props(['avatar' => null, 'name' => null, 'meta' => null, 'bio' => null, 'actions' => null, 'tabs' => null])
 <section {{ $attributes->merge(['class' => 'oc-block-profile oc-accent--violet', 'aria-labelledby' => 'oc-profile-name']) }}>
   <div class="oc-block-profile-banner" aria-hidden="true"></div>
   <div class="oc-block-profile-bar">
@@ -14,7 +16,7 @@
         @if (isset($avatar) && trim((string) $avatar) !== '')
             {{ $avatar }}
         @else
-        AS
+        C1
         @endif
     </span>
     <div class="oc-block-profile-info">
@@ -22,14 +24,14 @@
           @if (isset($name) && trim((string) $name) !== '')
               {{ $name }}
           @else
-          Acme Studio
+          Company 1
           @endif
       </h1>
       <p class="oc-block-profile-meta">
           @if (isset($meta) && trim((string) $meta) !== '')
               {{ $meta }}
           @else
-          @@acmestudio &middot; 12.4K followers &middot; 86 videos
+          @@company1 &middot; 12.4K followers &middot; 86 videos
           @endif
       </p>
       <p class="oc-block-profile-bio">
@@ -49,14 +51,32 @@
         @endif
     </div>
   </div>
-  <nav class="oc-block-profile-tabs" aria-label="Profile sections">
+  <div class="oc-block-profile-tabs" role="radiogroup" aria-label="Profile sections">
+      @if (isset($tabs) && trim((string) $tabs) !== '')
+          {{ $tabs }}
+      @else
+    <label class="oc-block-profile-tab"><input type="radio" name="oc-profile-tab" checked>Home</label>
+    <label class="oc-block-profile-tab"><input type="radio" name="oc-profile-tab">Videos</label>
+    <label class="oc-block-profile-tab"><input type="radio" name="oc-profile-tab">Playlists</label>
+    <label class="oc-block-profile-tab"><input type="radio" name="oc-profile-tab">About</label>
+      @endif
+  </div>
+  <div class="oc-block-profile-panels">
       @if (! $slot->isEmpty())
           {{ $slot }}
       @else
-    <a class="oc-block-profile-tab" href="#home" aria-current="page">Home</a>
-    <a class="oc-block-profile-tab" href="#videos">Videos</a>
-    <a class="oc-block-profile-tab" href="#playlists">Playlists</a>
-    <a class="oc-block-profile-tab" href="#about">About</a>
+    <div class="oc-block-profile-panel">
+      <ul class="oc-block-profile-grid"><li><span class="oc-block-profile-thumb"></span><strong>Video 1</strong><small>Container queries in 8 minutes</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 2</strong><small>Colors in OKLCH</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 3</strong><small>A form without JavaScript</small></li></ul>
+    </div>
+    <div class="oc-block-profile-panel">
+      <ul class="oc-block-profile-grid"><li><span class="oc-block-profile-thumb"></span><strong>Video 4</strong><small>Scroll snap carousel</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 5</strong><small>Anchor positioning</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 6</strong><small>Dark mode with light-dark()</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 7</strong><small>Dialogs and popovers</small></li></ul>
+    </div>
+    <div class="oc-block-profile-panel">
+      <ul class="oc-block-profile-grid"><li><span class="oc-block-profile-thumb"></span><strong>Playlist 1</strong><small>Modern CSS · 12 videos</small></li><li><span class="oc-block-profile-thumb"></span><strong>Playlist 2</strong><small>Small business apps · 8 videos</small></li></ul>
+    </div>
+    <div class="oc-block-profile-panel">
+      <p class="oc-block-profile-bio" style="margin:0">Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.</p>
+    </div>
       @endif
-  </nav>
+  </div>
 </section>

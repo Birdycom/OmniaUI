@@ -133,6 +133,15 @@ describe("marketing blocks", () => {
     expect(screen.getByRole("link", { name: "About" })).not.toHaveAttribute("aria-current");
   });
 
+  it("BlockProfileHeader with content switches tabs on the page", () => {
+    const { container } = render(<BlockProfileHeader name="Company 1" avatar="C1" tabs={[{ label: "Home", content: "Home panel" }, { label: "About", content: "About panel" }]} />);
+    const radios = screen.getAllByRole("radio");
+    expect(radios).toHaveLength(2);
+    expect(radios[0]).toBeChecked();
+    expect(container.querySelectorAll(".oc-block-profile-panels > .oc-block-profile-panel")).toHaveLength(2);
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
   it("BlockPortfolioGrid renders project cards with their accent", () => {
     const { container } = render(<BlockPortfolioGrid title="Work" two projects={[{ href: "#1", name: "One", accent: "violet" }]} />);
     expect(container.firstChild).toHaveClass("oc-block-portfolio", "oc-section-pad", "oc-block-portfolio--two");
