@@ -19,8 +19,8 @@ OmniaUI CLI
                                         copy components/blocks into your project (you own the code)
   omniaui add <name...> -f vue --import  print the import line for the npm package instead
   omniaui list [blocks|components] [-f vue]  show what can be added in a flavour
-  omniaui copy-js [name...] [--to public/js]  copy the scripts (data table, carousel; Pro: spotlight, ecosystem map,
-                                        infinite carousel) as oc-<name>.js, which start on their own from a script tag
+  omniaui copy-js [name...] [--to public/js]  copy the scripts (data table, carousel, barcode; Pro: spotlight, ecosystem map,
+                                        infinite carousel, barcode maker …) as oc-<name>.js, which start on their own from a script tag
 
 Options:
   -f, --framework <fw>   css | vue | react | blade (default: "framework" in omnia.config.json, else detected

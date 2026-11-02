@@ -263,6 +263,18 @@
 
 @media (max-width: 36rem) { .oc-block-cal-side { padding-inline-start: 0; border-inline-start: 0; } }
 
+/* parts/app-barcode-maker.css */
+/* File: packages/pro/src/parts/app-barcode-maker.css | Map: maker grid -> fields -> preview on white -> actions -> download off while invalid */
+/* OmniaUI Pro barcode maker (barcode-maker.js): type a value, pick a format, download a print-ready SVG. */
+
+.oc-barcode-maker { display: grid; gap: 1rem; max-inline-size: 36rem; }
+.oc-barcode-maker__fields { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: end; }
+.oc-barcode-maker__fields > :first-child { flex: 3 1 14rem; }
+.oc-barcode-maker__fields > :not(:first-child) { flex: 1 1 8rem; }
+.oc-barcode-maker__preview { display: grid; place-items: center; min-block-size: 8rem; padding: 1rem; background: var(--color-white-50); border: 1px solid var(--oc-border); border-radius: var(--oc-radius); }
+.oc-barcode-maker__actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.oc-barcode-maker [data-oc-barcode-download][aria-disabled="true"] { pointer-events: none; opacity: 0.5; }
+
 /* parts/app-chat-inbox.css */
 /* File: packages/pro/src/parts/app-chat-inbox.css | Map: block (container) -> layout (list | view) -> list head (title, search)
    -> conversation rows (radio, avatar, name, time, subject, preview, unread dot) -> unread counter -> view (threads by :has,
@@ -1551,6 +1563,137 @@
 
 @media (prefers-reduced-motion: reduce) {
   .oc-block-masonry-item > :is(img, .oc-media-art), .oc-block-masonry-caption { transition: none; }
+}
+
+/* parts/site-mega-menu.css */
+/* File: packages/pro/src/parts/site-mega-menu.css (OmniaUI Pro)
+   (Link rules carry .oc-mega so they win over the header's own nav link styles.)
+   Map: trigger (chevron turns while open) -> panel (popover, under the header) -> link columns (icon, title, text)
+   -> feature card (photo or colour, text, link) -> small screens
+   Mega menu: <button class="oc-mega-trigger" popovertarget="id"> opens <div class="oc-mega" id="id" popover>. The
+   popover closes on Escape and on a click outside, without JavaScript. Anchor positioning puts it under the header
+   (.oc-site-header or .oc-topbar names the anchor); browsers without it show it under the top of the window. */
+
+:is(.oc-site-header, .oc-topbar) { anchor-name: --oc-mega-header; anchor-scope: --oc-mega-header; }
+
+.oc-mega-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.7rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--oc-muted-foreground);
+  font: inherit;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+}
+.oc-mega-trigger::after {
+  content: "";
+  inline-size: 0.9em;
+  block-size: 0.9em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6l-6-6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6l-6-6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: rotate 0.2s;
+}
+.oc-mega-trigger:hover,
+.oc-mega-trigger:has(+ .oc-mega:popover-open) { color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.1); }
+.oc-mega-trigger:has(+ .oc-mega:popover-open)::after { rotate: 180deg; }
+.oc-mega-trigger:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+.oc-mega {
+  position-anchor: --oc-mega-header;
+  inset: auto;
+  inset-block-start: anchor(bottom);
+  inset-inline-start: anchor(center);
+  translate: -50% 0.5rem;
+  inline-size: min(58rem, calc(100vw - 1.5rem));
+  max-block-size: calc(100dvh - 6rem);
+  margin: 0;
+  padding: 1.25rem;
+  overflow: auto;
+  color: var(--oc-foreground);
+  background: var(--oc-background);
+  border: 1px solid var(--oc-border);
+  border-radius: 18px;
+  box-shadow: 0 30px 60px -30px oklch(from var(--color-black-60) l c h / 0.45);
+}
+@supports not (anchor-name: --oc-a) {
+  .oc-mega { position: fixed; inset-block-start: 4.75rem; inset-inline-start: 50%; }
+}
+.oc-mega:popover-open { display: grid; grid-template-columns: minmax(0, 1fr) minmax(13rem, 17rem); gap: 1.25rem; }
+
+.oc-mega__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem 1.5rem; align-content: start; }
+.oc-mega__title { margin: 0 0 0.5rem; color: var(--oc-foreground); padding-inline: 0.6rem; font-size: 0.95rem; font-weight: 700; }
+.oc-mega__links { display: grid; gap: 0.125rem; margin: 0; padding: 0; list-style: none; }
+.oc-mega.oc-mega .oc-mega__links a:not(.oc-btn) {
+  margin: 0;
+  font-size: inherit;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.05rem 0.7rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 10px;
+  color: var(--oc-foreground);
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+.oc-mega.oc-mega .oc-mega__links a:not(.oc-btn):hover { color: var(--oc-foreground); background: var(--oc-muted); }
+.oc-mega__links a:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-mega__links b { font-size: 0.9rem; font-weight: 600; }
+.oc-mega__links small { grid-column: 2; font-size: 0.78rem; line-height: 1.4; color: var(--oc-muted-foreground); }
+.oc-mega__icon {
+  display: grid;
+  place-items: center;
+  grid-row: span 2;
+  inline-size: 2.1rem;
+  block-size: 2.1rem;
+  border-radius: 9px;
+  color: var(--oc-primary);
+  background: oklch(from var(--oc-primary) l c h / 0.1);
+}
+.oc-mega__icon > :is(svg, iconify-icon) { inline-size: 1.15rem; block-size: 1.15rem; font-size: 1.15rem; }
+.oc-mega__links a:not(:has(.oc-mega__icon)) { grid-template-columns: minmax(0, 1fr); }
+.oc-mega__links a:not(:has(.oc-mega__icon)) small { grid-column: 1; }
+
+/* Feature: a photo on top (or only colour) with a short text and a link pill. */
+.oc-mega.oc-mega .oc-mega__feature:not(.oc-btn) {
+  padding: 0;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  border-radius: 14px;
+  color: var(--color-white-50);
+  background: linear-gradient(150deg, var(--oc-accent-from, var(--oc-primary)), var(--oc-accent-to, var(--oc-primary)));
+  text-decoration: none;
+}
+.oc-mega__feature img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 16 / 10; object-fit: cover; }
+.oc-mega__feature-body { display: grid; gap: 0.4rem; align-content: start; padding: 1rem 1.1rem 1.1rem; }
+.oc-mega__feature-body b { font-size: 1.05rem; }
+.oc-mega__feature-body small { font-size: 0.8rem; line-height: 1.45; color: oklch(from var(--color-white-50) l c h / 0.85); }
+.oc-mega__feature-link {
+  justify-self: start;
+  margin-block-start: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid oklch(from var(--color-white-50) l c h / 0.5);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  transition: background-color 0.2s;
+}
+.oc-mega.oc-mega .oc-mega__feature:not(.oc-btn):hover { color: var(--color-white-50); }
+.oc-mega__feature:hover .oc-mega__feature-link { background: oklch(from var(--color-white-50) l c h / 0.18); }
+.oc-mega__feature:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* Small screens: one column, the feature under the links. */
+@media (max-width: 40rem) {
+  .oc-mega:popover-open { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-mega-trigger, .oc-mega-trigger::after, .oc-mega__links a { transition: none; }
 }
 
 /* parts/site-pricing-plans.css */

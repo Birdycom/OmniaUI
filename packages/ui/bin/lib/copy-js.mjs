@@ -19,6 +19,7 @@ const SCRIPTS = [
   ["@birdycom/omniaui-pro", "dist/data-table-pro.js", "oc-data-table-pro.js", "data table column width and row drag (Pro)"],
   ["@birdycom/omniaui-pro", "dist/product-picker.js", "oc-product-picker.js", "product picker dialog: search and pick (Pro)"],
   ["@birdycom/omniaui-pro", "dist/shop.js", "oc-shop.js", "shop catalog filters and cart totals (Pro)"],
+  ["@birdycom/omniaui-pro", "dist/barcode-maker.js", "oc-barcode-maker.js", "barcode maker: live preview and SVG download (Pro, needs oc-barcode.js)"],
 ];
 
 /** public/js when the project has a public folder (Laravel, Vite, Astro …), else js. */
@@ -45,7 +46,9 @@ export async function cmdCopyJs(names, flags) {
     if ((await exists(to)) && !flags.force && !flags["dry-run"]) { console.log(`skip ${rel} (exists, use --force)`); continue; }
     if (!flags["dry-run"]) {
       await fs.mkdir(dir, { recursive: true });
-      await fs.copyFile(from, to);
+      // A Pro script that builds on a free one imports "@birdycom/omniaui/<name>.js": in the copy that is ./oc-<name>.js.
+      const code = await fs.readFile(from, "utf8");
+      await fs.writeFile(to, code.replace(/(["'])@birdycom\/omniaui\/([\w-]+)\.js\1/g, "$1./oc-$2.js$1"));
     }
     console.log(`${flags["dry-run"] ? "would copy" : "copied"} ${rel}  (${what})`);
     copied.push(target);

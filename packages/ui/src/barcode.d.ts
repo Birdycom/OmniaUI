@@ -12,5 +12,4 @@ export function encodeBarcode(value: string, format?: BarcodeFormat | string): {
 export function barsToSvg(bits: string, label?: string): string;
 export function barcodeFile(value: string, options?: { format?: BarcodeFormat | string; digits?: boolean; moduleWidth?: number; height?: number }): string;
 export function renderBarcode(el: HTMLElement): void;
-export function bindBarcodeMaker(root: HTMLElement): void;
 export function initBarcodes(scope?: ParentNode): void;

@@ -18,6 +18,7 @@
 // Map: parse -> demos -> code blocks -> browser support + source footer -> compat -> expandable tables -> headings -> serialize
 
 import { parseHTML } from "linkedom";
+import { inlineIcons } from "./inline-icons.mjs";
 import { codeBlock, dedent } from "./highlight.mjs";
 import fs from "node:fs";
 import path from "node:path";
@@ -387,6 +388,8 @@ export function transform(content, route = "") {
       const id = a.getAttribute("href").slice(1);
       if (id && !inner.has(id)) a.setAttribute("href", `#demo-${n}-${id}`);
     }
+    // Webicons in the preview become inline SVG (lib/inline-icons.mjs): faster pages, no Iconify API request.
+    inlineIcons(document, demo);
     const scoped = demo.innerHTML;
     replaceWithHtml(document, demo, `<div class="oc-demo oc-demo--v2${pro ? " oc-demo--pro" : ""}"><div class="oc-demo__bar"><h4 class="oc-demo__title">${title}${pro ? ' <span class="oc-demo__pro-badge">Pro</span>' : ""}</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show">${tabs}</div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width">${widths}</div></div><div class="oc-demo__preview oc-theme-scope${size}">${scoped}</div>${panels}</div>`);
   }

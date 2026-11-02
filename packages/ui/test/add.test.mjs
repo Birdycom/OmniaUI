@@ -116,3 +116,15 @@ test("copy-js copies the installed scripts as oc-<name>.js into public/js", asyn
   assert.match(run(dir, "copy-js", "data-table"), /exists, use --force/);
   assert.throws(() => run(dir, "copy-js", "nope"), /unknown script: nope/);
 });
+
+test("copy-js points a Pro script at the copied free script next to it", async () => {
+  const dir = await project({
+    "public/.keep": "",
+    "node_modules/@birdycom/omniaui-pro/package.json": { name: "@birdycom/omniaui-pro" },
+    "node_modules/@birdycom/omniaui-pro/dist/barcode-maker.js": 'import { barcodeFile } from "@birdycom/omniaui/barcode.js";\nexport const ok = barcodeFile;\n',
+  });
+  run(dir, "copy-js", "barcode-maker");
+  const copied = await fs.readFile(path.join(dir, "public/js/oc-barcode-maker.js"), "utf8");
+  assert.match(copied, /from "\.\/oc-barcode\.js"/);
+  assert.doesNotMatch(copied, /@birdycom\/omniaui\//);
+});
