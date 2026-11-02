@@ -1,0 +1,65 @@
+/* File: packages/ui/src/parts/app-name-card.css | Map: card (details) -> head (chevron, name, rename, amount, actions) -> rename input -> body -> nested cards */
+/* Name card: a collapsible card for one part of a quote or plan,
+   with its name, a rename pencil, an optional amount and a delete button. Native <details>: it opens without script;
+   packages/ui/src/name-card.js adds the rename (pencil -> input, Enter saves, Escape cancels). */
+
+.oc-name-card {
+  background: var(--oc-card);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+}
+.oc-name-card + .oc-name-card { margin-block-start: 0.5rem; }
+.oc-name-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+  padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+  list-style: none;
+  cursor: pointer;
+}
+.oc-name-card__head::-webkit-details-marker { display: none; }
+.oc-name-card__head::before {
+  content: "";
+  flex-shrink: 0;
+  inline-size: 1rem;
+  block-size: 1rem;
+  background: var(--oc-muted-foreground);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: rotate var(--oc-transition-fast);
+}
+.oc-name-card[open] > .oc-name-card__head::before { rotate: 90deg; }
+.oc-name-card__head:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; border-radius: var(--oc-radius); }
+.oc-name-card__title { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.oc-name-card__meta { font-size: 0.75rem; color: var(--oc-muted-foreground); white-space: nowrap; }
+.oc-name-card__head .oc-btn { flex-shrink: 0; }
+/* Amount and actions sit on the right; the amount is tabular so a column of cards lines up. */
+.oc-name-card__amount { margin-inline-start: auto; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.oc-name-card__actions { display: inline-flex; flex-shrink: 0; gap: 0.25rem; margin-inline-start: auto; }
+.oc-name-card__amount + .oc-name-card__actions { margin-inline-start: 0.5rem; }
+
+/* Rename: the title becomes an input of the same size (hidden toggles between the two). */
+.oc-name-card__input {
+  flex: 1;
+  min-inline-size: 0;
+  block-size: 2rem;
+  padding: 0 0.5rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--oc-foreground);
+  background: var(--oc-background);
+  border: 1px solid var(--oc-ring);
+  border-radius: calc(var(--oc-radius) - 2px);
+}
+.oc-name-card__input[hidden],
+.oc-name-card__title[hidden] { display: none; }
+
+.oc-name-card__body { padding: 0.75rem 0.75rem 0.875rem 2.25rem; border-block-start: 1px solid var(--oc-border); }
+/* Nested cards (the parts of a title) use a quieter surface; --total colors the amount of the main card. */
+.oc-name-card__body > .oc-name-card { background: var(--oc-surface); }
+.oc-name-card--total > .oc-name-card__head .oc-name-card__amount { color: var(--oc-primary); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-name-card__head::before { transition: none; }
+}

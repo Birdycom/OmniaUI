@@ -30,7 +30,7 @@
     <div class="oc-block-authcard-fields">
       <div class="oc-field">
         <label class="oc-field-label" for="oc-signup01-name">Full name</label>
-        <input class="oc-input" id="oc-signup01-name" name="text" type="text" autocomplete="name" required placeholder="Ada Lovelace">
+        <input class="oc-input" id="oc-signup01-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1">
       </div>
       <div class="oc-field">
         <label class="oc-field-label" for="oc-signup01-email">E-mail</label>

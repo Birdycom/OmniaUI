@@ -49,7 +49,7 @@ class ChatTest extends TestCase
 
     public function test_message_renders_quote_status_and_actions(): void
     {
-        $html = $this->render('<x-oc::message direction="out" avatar="TP" time="09:20" datetime="2026-10-14T09:20" status="read" status-icon continued label="You, 09:20"
+        $html = $this->render('<x-oc::message direction="out" avatar="C6" time="09:20" datetime="2026-10-14T09:20" status="read" status-icon continued label="You, 09:20"
             :quote="[\'href\' => \'#q\', \'sender\' => \'Lisa\', \'text\' => \'Which?\']" text="Calacatta." :actions="[[\'name\' => \'reply\', \'label\' => \'Reply\']]" />');
 
         $this->assertElement($html, 'article', 'oc-message oc-message--out oc-message--continued', ['aria-label' => 'You, 09:20']);
@@ -61,11 +61,11 @@ class ChatTest extends TestCase
     public function test_message_list_demo_has_dividers_and_attachment_kinds(): void
     {
         $html = $this->render('<x-oc::message.list />');
-        $this->assertElement($html, 'div', 'oc-message-list', ['role' => 'log', 'aria-label' => 'Conversation with Lisa Verbeke']);
-        $this->assertStringContainsString('<div class="oc-message-divider oc-message-divider--system" role="note"><span>Lisa Verbeke marked this question as answered</span></div>', $html);
+        $this->assertElement($html, 'div', 'oc-message-list', ['role' => 'log', 'aria-label' => 'Conversation with Customer 1']);
+        $this->assertStringContainsString('<div class="oc-message-divider oc-message-divider--system" role="note"><span>Customer 1 marked this question as answered</span></div>', $html);
         $this->assertStringContainsString('id="oc-message-demo-question"', $html);
 
-        $thumbs = $this->render('<x-oc::message avatar="SC" :attachments="[[\'kind\' => \'thumb\', \'alt\' => \'Tile\', \'art\' => 4]]" />');
+        $thumbs = $this->render('<x-oc::message avatar="C4" :attachments="[[\'kind\' => \'thumb\', \'alt\' => \'Tile\', \'art\' => 4]]" />');
         $this->assertStringContainsString('<div class="oc-message__attachments"> <div class="oc-attachment-list"> <span class="oc-attachment-thumb">', $thumbs);
     }
 
@@ -75,7 +75,7 @@ class ChatTest extends TestCase
 
         $this->assertElement($html, 'section', 'oc-message-thread', ['aria-labelledby' => 't-title', 'aria-busy' => 'true']);
         $this->assertStringContainsString('popovertarget="t-menu" aria-label="Conversation actions"', $html);
-        $this->assertStringContainsString('<span class="oc-avatar" title="Lisa Verbeke">LV</span>', $html);
+        $this->assertStringContainsString('<span class="oc-avatar" title="Customer 1">C1</span>', $html);
         $this->assertStringContainsString('<textarea class="oc-chat-composer__input" id="t-input" name="message" rows="1" placeholder="Type your reply…" required></textarea>', $html);
         $this->assertStringContainsString('<p class="oc-message-thread__note">Closed</p>', $html);
         $this->assertSame(1, substr_count($html, 'oc-message-thread__busy'));

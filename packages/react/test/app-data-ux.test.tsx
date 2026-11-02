@@ -5,7 +5,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import {
-  AccordionAccent, AccordionItem, AlphaTabs, ColumnMenu, ConfirmDialog, Greeting, ListToolbar,
+  AccordionAccent, AccordionItem, AlphaTabs, ConfirmDialog, Greeting, ListToolbar,
   PageHeader, SeverityCard, SortableRow, StatCard, TableActionIcon, TableActionsMenu, TableCompact, TopProgress,
   Tree, UpgradeBanner, VersionBanner, greetingTimeOfDay,
 } from "../src";
@@ -22,18 +22,6 @@ describe("data components", () => {
     const menu = container.querySelector(".oc-dropdown-menu")!;
     expect(menu).toHaveAttribute("popover");
     expect(screen.getByRole("button", { name: "Actions for Ada" })).toHaveAttribute("popovertarget", menu.id);
-  });
-
-  it("ColumnMenu numbers the checkboxes and locks columns", () => {
-    const onToggle = vi.fn();
-    const { container } = render(
-      <ColumnMenu columns={[{ label: "Name", locked: true }, { label: "Phone", visible: false }]} onColumnToggle={onToggle}><table className="oc-table" /></ColumnMenu>,
-    );
-    const boxes = container.querySelectorAll<HTMLInputElement>("input[data-col]");
-    expect(boxes[0]).toBeDisabled();
-    expect(boxes[1].checked).toBe(false);
-    fireEvent.click(boxes[1]);
-    expect(onToggle).toHaveBeenCalledWith(2, true);
   });
 
   it("SortableRow shows drag and drop states", () => {

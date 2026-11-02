@@ -63,7 +63,7 @@
     <header class="oc-block-sb-bar">
       <span class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" aria-hidden="true"><svg data-icon="mdi:dock-left" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 14H9V6h11Z"/></svg></span>
       <span class="oc-block-sb-sep"></span>
-      <nav aria-label="Breadcrumb"><ol class="oc-breadcrumb"><li class="oc-breadcrumb-item"><a href="#">Building</a></li><li class="oc-breadcrumb-item" aria-current="page">Overview</li></ol></nav>
+      <nav aria-label="Breadcrumb"><ol class="oc-breadcrumb oc-breadcrumb--chevron"><li class="oc-breadcrumb-item"><a href="#"><svg data-icon="mdi:home-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3"/></svg>Building</a></li><li class="oc-breadcrumb-item" aria-current="page">Overview</li></ol></nav>
     </header>
     <div class="oc-block-sb-body">
       <div class="oc-block-sb-ph"></div><div class="oc-block-sb-ph"></div><div class="oc-block-sb-ph"></div>

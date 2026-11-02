@@ -19,7 +19,7 @@
   </ul>
   <figure>
     <div class="oc-media-art oc-media-art--6" role="img" aria-label="Kitchen with oak fronts and a light stone worktop"></div>
-    <figcaption>Villa Dewitte: oak fronts with a Calacatta matt worktop, finished in October 2026.</figcaption>
+    <figcaption>Project 1: oak fronts with a Calacatta matt worktop, finished in October 2026.</figcaption>
   </figure>
   <h3>From design to installation</h3>
   <ol>
@@ -30,7 +30,7 @@
   </ol>
   <blockquote>
     <p>The planning was clear from day one. We always knew who was coming and when, and the kitchen was ready a week early.</p>
-    <footer>— Ann Dewitte, client in Ghent</footer>
+    <footer>— Customer 8, client in Ghent</footer>
   </blockquote>
   <h2>Worktop materials compared</h2>
   <table>
@@ -44,7 +44,7 @@
   </table>
   <h3>Sharing your floor plan</h3>
   <p>Upload a PDF or a photo in the client portal, or send it by e-mail. Press <kbd>Ctrl</kbd> + <kbd>V</kbd> in the chat to paste a screenshot. Files are stored as <code>project-id/plans/</code> and only your project team can see them.</p>
-  <pre><code>Project:   2026-114 Villa Dewitte
+  <pre><code>Project:   2026-114 Project 1
 Room:      Kitchen, ground floor
 Wall A:    412 cm (window at 160 cm)
 Wall B:    298 cm (door at the left)</code></pre>

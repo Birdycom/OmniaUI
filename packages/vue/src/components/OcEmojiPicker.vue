@@ -3,7 +3,7 @@
 /**
  * Emoji picker on the popover attribute (same markup as snippets/emoji-picker.html).
  * Props: groups ({ label?, emojis[] }[]), inline (always visible, no popover), triggerLabel, label.
- * Emits: select(emoji) and then closes the popover. Slot: trigger (button content, default 🙂).
+ * Emits: select(emoji) and then closes the popover. Slot: trigger (button content, default a smiley webicon).
  * Classes: .oc-emoji-picker(--inline), __trigger, __label, __grid, __item
  */
 import { useUid } from '../composables/useUid'
@@ -32,7 +32,7 @@ function pick(e: MouseEvent, emoji: string) {
 
 <template>
   <button v-if="!inline" type="button" class="oc-emoji-picker__trigger" :popovertarget="id" :aria-label="triggerLabel">
-    <slot name="trigger">🙂</slot>
+    <slot name="trigger"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/></svg></slot>
   </button>
   <div :id="id" :class="['oc-emoji-picker', inline && 'oc-emoji-picker--inline']" :popover="inline ? undefined : ''" :role="inline ? 'group' : undefined" :aria-label="label">
     <div v-for="(g, gi) in groups" :key="gi">

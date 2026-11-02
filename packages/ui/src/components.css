@@ -416,14 +416,63 @@ flex-direction: column;
   border-radius: calc(var(--oc-radius) + 2px);
 }
 
+/* Square, exactly as tall as a text button of the same size, so both line up in a toolbar. */
 .oc-btn--icon {
-  padding: 0.5rem;
-  aspect-ratio: 1;
+  --oc-btn-square: calc(2.25rem + 2px);
+  padding: 0;
+  inline-size: var(--oc-btn-square);
+  block-size: var(--oc-btn-square);
+  flex-shrink: 0;
 }
 
-.oc-btn--icon.oc-btn--xs { padding: 0.25rem; }
-.oc-btn--icon.oc-btn--sm { padding: 0.375rem; }
-.oc-btn--icon.oc-btn--lg { padding: 0.625rem; }
+.oc-btn--icon.oc-btn--xs { --oc-btn-square: calc(1.75rem + 2px); }
+.oc-btn--icon.oc-btn--sm { --oc-btn-square: calc(2rem + 2px); }
+.oc-btn--icon.oc-btn--lg { --oc-btn-square: calc(2.5rem + 2px); }
+
+/* Webicons in a button: <iconify-icon> before (or after) the label, the same size as an inline SVG. */
+.oc-btn > iconify-icon { font-size: 1.15em; flex-shrink: 0; }
+
+/* Soft — tinted background in a tone, for row actions (edit, view, delete …) and quiet secondary actions.
+   --soft-primary | --soft-success | --soft-warning | --soft-destructive | --soft-info */
+.oc-btn[class*="oc-btn--soft-"] {
+  background: light-dark(oklch(from var(--oc-btn-tone) l c h / 0.12), oklch(from var(--oc-btn-tone) l c h / 0.22));
+  color: var(--oc-btn-tone);
+  border-color: transparent;
+}
+.oc-btn[class*="oc-btn--soft-"]:hover {
+  background: light-dark(oklch(from var(--oc-btn-tone) l c h / 0.2), oklch(from var(--oc-btn-tone) l c h / 0.32));
+  opacity: 1;
+}
+.oc-btn--soft-primary { --oc-btn-tone: var(--oc-primary); }
+.oc-btn--soft-success { --oc-btn-tone: var(--oc-success); }
+.oc-btn--soft-warning { --oc-btn-tone: var(--oc-warning); }
+.oc-btn--soft-destructive { --oc-btn-tone: var(--oc-destructive); }
+.oc-btn--soft-info { --oc-btn-tone: var(--oc-info, light-dark(var(--color-deepskyblue-70), var(--color-skyblue-50))); }
+
+/* Plain — only the icon: no surface, no padding; muted until hovered (menus, toolbars, inline actions). */
+.oc-btn--plain {
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
+  color: var(--oc-muted-foreground);
+}
+.oc-btn--plain:hover,
+.oc-btn--plain[aria-expanded="true"] { color: var(--oc-primary); opacity: 1; }
+
+/* Loading — aria-busy="true": a spinner in front of the label (it replaces a leading icon); not clickable. */
+.oc-btn[aria-busy="true"] { pointer-events: none; }
+.oc-btn[aria-busy="true"]::before {
+  content: "";
+  inline-size: 1em;
+  block-size: 1em;
+  flex-shrink: 0;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: oc-btn-spin 0.7s linear infinite;
+}
+.oc-btn[aria-busy="true"] > :is(svg, iconify-icon):first-child { display: none; }
+@keyframes oc-btn-spin { to { rotate: 360deg; } }
 
 /* Button group */
 .oc-btn-group {
@@ -1563,6 +1612,8 @@ textarea.oc-input {
 /* Vertical tabs */
 .oc-tab-list--vertical {
   flex-direction: column;
+  /* Every tab as wide as the list, so the active line on the right stays on one vertical line. */
+  align-items: stretch;
   border-bottom: none;
   border-right: 1px solid var(--oc-border);
 }
@@ -1575,7 +1626,9 @@ textarea.oc-input {
   text-align: left;
 }
 
-.oc-tab-list--vertical .oc-tab-trigger.is-active {
+.oc-tab-list--vertical .oc-tab-trigger.is-active,
+.oc-tab-list--vertical .oc-tab-trigger[aria-selected="true"] {
+  border-bottom-color: transparent;
   border-right-color: var(--oc-foreground);
 }
 
@@ -1778,6 +1831,12 @@ textarea.oc-input {
   border-radius: calc(var(--oc-radius) + 2px);
 }
 .oc-table-wrap > .oc-table { min-inline-size: 32rem; }
+/* The rounded frame draws the outer border; the cells keep only the inner lines, so nothing is cut at the corners. */
+.oc-table-wrap:has(> .oc-table) { border: 1px solid var(--oc-border); }
+.oc-table-wrap > .oc-table :is(th, td):first-child { border-inline-start: 0; }
+.oc-table-wrap > .oc-table :is(th, td):last-child { border-inline-end: 0; }
+.oc-table-wrap > .oc-table > :first-child > tr:first-child > * { border-block-start: 0; }
+.oc-table-wrap > .oc-table > :last-child > tr:last-child > * { border-block-end: 0; }
 
 /* ===================================================================
    Shared docs utility table styles (dark theme)
@@ -1913,6 +1972,42 @@ a.oc-breadcrumb-item:hover {
   color: var(--oc-foreground);
   font-weight: 500;
 }
+
+/* Icons: a webicon or SVG before the label of any item (the link or the item itself). */
+.oc-breadcrumb-item,
+.oc-breadcrumb-item a { gap: 0.375rem; }
+.oc-breadcrumb-item a { display: inline-flex; align-items: center; }
+.oc-breadcrumb-item :is(svg, iconify-icon) { font-size: 1.1em; inline-size: 1.1em; block-size: 1.1em; flex-shrink: 0; }
+
+/* --chevron: a › chevron between the items instead of "/". */
+.oc-breadcrumb--chevron .oc-breadcrumb-item + .oc-breadcrumb-item::before {
+  content: "";
+  inline-size: 1em;
+  block-size: 1em;
+  margin: 0 0.25rem;
+  background: currentColor;
+  color: var(--oc-muted-foreground);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Collapsed middle of a long trail: a "…" button (opens a menu with the hidden levels). */
+.oc-breadcrumb-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.75rem;
+  block-size: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  font: inherit;
+  cursor: pointer;
+}
+.oc-breadcrumb-ellipsis:hover { background: var(--oc-accent); color: var(--oc-foreground); }
+.oc-breadcrumb-ellipsis:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
 
 /* ===================================================================
    PROGRESS BAR

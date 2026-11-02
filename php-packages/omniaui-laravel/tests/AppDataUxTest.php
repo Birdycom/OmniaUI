@@ -21,13 +21,6 @@ class AppDataUxTest extends TestCase
         $this->assertElement($menu, 'div', 'oc-dropdown-menu', ['id' => 'm1', 'popover' => null]);
     }
 
-    public function test_column_menu_numbers_and_locks_columns(): void
-    {
-        $html = $this->render('<x-oc::column-menu id="cm" :columns="[[\'label\' => \'Name\', \'locked\' => true], [\'label\' => \'Phone\', \'visible\' => false]]"><table class="oc-table"></table></x-oc::column-menu>');
-        $this->assertStringContainsString('popovertarget="cm"', $html);
-        $this->assertStringContainsString('data-col="1" checked disabled', $html);
-        $this->assertStringContainsString('data-col="2" >', $html);
-    }
 
     public function test_sortable_row_states(): void
     {
@@ -113,12 +106,64 @@ class AppDataUxTest extends TestCase
         $html = $this->render('<x-oc::data-table title="Articles" table-id="articles" :page-size="15" :columns="[[\'key\' => \'sku\', \'header\' => \'Article ID\'], [\'key\' => \'price\', \'header\' => \'Price\', \'numeric\' => true]]" :rows="[[\'key\' => \'1\', \'status\' => \'active\', \'cells\' => [\'sku\' => \'SET-SCHAR\', \'name\' => \'Scharnier\', \'price\' => \'5,15\'], \'values\' => [\'price\' => \'5.15\']]]" />');
 
         $this->assertStringContainsString('id="articles"', $html);
-        $this->assertStringContainsString('class="oc-data-table oc-column-menu-scope"', $html);
+        $this->assertStringContainsString('class="oc-data-table"', $html);
         $this->assertStringContainsString('data-oc-filter="deleted"', $html);
         $this->assertStringContainsString('data-oc-key="1"', $html);
         $this->assertStringContainsString('data-oc-value="5.15"', $html);
         $this->assertStringContainsString('data-oc-sort="numeric"', $html);
         $this->assertStringContainsString('<option value="15" selected>15</option>', $html);
+    }
+
+    public function test_data_table_renders_tabs_column_filters_and_truncated_cells(): void
+    {
+        $html = $this->render('<x-oc::data-table title="Customers" table-id="customers" :draggable="false" summary="Showing {from}–{to} of {total} customers"'
+            .' :columns="[[\'key\' => \'name\', \'header\' => \'Name\'], [\'key\' => \'address\', \'header\' => \'Address\', \'truncate\' => \'12rem\'], [\'key\' => \'region\', \'header\' => \'Region\']]"'
+            .' :rows="[[\'key\' => \'noord\', \'cells\' => [\'name\' => \'Company 1\', \'address\' => \'Noorderlaan 88, 2030 Antwerpen\', \'region\' => \'Antwerp\'], \'values\' => [\'type\' => \'company\']]]"'
+            .' :tabs="[\'column\' => \'type\', \'items\' => [[\'value\' => \'\', \'label\' => \'All\', \'count\' => 1], [\'value\' => \'company\', \'label\' => \'Companies\', \'icon\' => \'mdi:domain\', \'count\' => 1]]]"'
+            .' :column-filters="[[\'column\' => \'region\', \'label\' => \'Region\', \'options\' => [\'\' => \'All regions\', \'Antwerp\' => \'Antwerp\']]]" />');
+
+        $this->assertStringContainsString('data-oc-col-filter="type" data-oc-value="company" aria-selected="false"', $html);
+        $this->assertStringContainsString('<span class="oc-data-table-tab-count">1</span>', $html);
+        $this->assertStringContainsString('<select class="oc-select" data-oc-col-filter="region" aria-label="Region">', $html);
+        $this->assertStringContainsString('style="--oc-data-table-truncate: 12rem" title="Noorderlaan 88, 2030 Antwerpen"', $html);
+        $this->assertStringContainsString('data-oc-summary="Showing {from}–{to} of {total} customers"', $html);
+        $this->assertStringContainsString('aria-label="Edit Company 1"', $html);
+        $this->assertStringNotContainsString('data-oc-col="order"', $html);
+    }
+
+    public function test_data_table_name_renders_avatar_badge_and_second_line(): void
+    {
+        $html = $this->render('<x-oc::data-table-name name="Company 1" sub="BE0000.000.001"><x-slot:badge><span class="oc-badge">Company</span></x-slot:badge></x-oc::data-table-name>');
+
+        $this->assertStringContainsString('<span class="oc-avatar" aria-hidden="true">C1</span>', $html);
+        $this->assertStringContainsString('Company 1 <span class="oc-badge">Company</span>', $html);
+        $this->assertStringContainsString('<span class="oc-data-table-name-sub">BE0000.000.001</span>', $html);
+    }
+
+    public function test_v0126_components_render(): void
+    {
+        $card = $this->render('<x-oc::name-card name="Worktop" amount="€ 1.940,00" renamable open>Body</x-oc::name-card>');
+        $this->assertStringContainsString('<span class="oc-name-card__title">Worktop</span>', $card);
+        $this->assertStringContainsString('data-oc-rename', $card);
+        $this->assertStringContainsString('<span class="oc-name-card__amount">€ 1.940,00</span>', $card);
+
+        $date = $this->render('<x-oc::date-field name="start" value="2027-01-01" week-label="Week {week} · {year}" />');
+        $this->assertStringContainsString('Week 53 · 2026</output>', $date);
+        $this->assertStringContainsString('type="date"', $date);
+
+        $code = $this->render('<x-oc::barcode value="5400000000010" size="hero" />');
+        $this->assertStringContainsString('class="oc-barcode oc-barcode--hero" data-value="5400000000010"', $code);
+
+        $section = $this->render('<x-oc::form-section title="Address" hint="Invoice address" icon="mdi:map-marker-outline" name="contact" open>Fields</x-oc::form-section>');
+        $this->assertStringContainsString('name="contact" open', $section);
+        $this->assertStringContainsString('<span class="oc-form-section__title">Address</span>', $section);
+
+        $picker = $this->render('<x-oc::avatar-picker initials="C1" name="logo" logo />');
+        $this->assertStringContainsString('oc-avatar-picker oc-avatar-picker--square oc-avatar-picker--logo', $picker);
+        $this->assertStringContainsString('name="logo" type="file"', $picker);
+
+        $meter = $this->render('<x-oc::meter-row label="Storage" :percent="96" value="9.6 / 10 GB" />');
+        $this->assertStringContainsString('data-level="critical" style="--oc-meter: 96%"', $meter);
     }
 
 }

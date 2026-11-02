@@ -19,7 +19,7 @@
         @if (isset($logo) && trim((string) $logo) !== '')
             {{ $logo }}
         @else
-        <svg data-icon="mdi:home-outline" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3"/></svg> OmniaDesk
+        <svg data-icon="mdi:home-outline" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3"/></svg> Company 1
         @endif
     </a>
     <blockquote class="oc-block-authsplit-quote">
@@ -27,7 +27,7 @@
             {{ $quote }}
         @else
       <p>&ldquo;One calm place for contacts, invoices and the day-to-day work.&rdquo;</p>
-      <footer>Serge Cools, founder</footer>
+      <footer>User 1, founder</footer>
         @endif
     </blockquote>
   </aside>

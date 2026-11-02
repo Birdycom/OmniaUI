@@ -1,6 +1,6 @@
 /* File: public/css/oc-icons.css
    Icon pages of the OmniaUI site only (ui/icons/catalog, catalog/category, settings); loaded from their page head.
-   Map: tile grid -> labelled scale (settings demos) -> icon toolbar (head, option rows, code, copy)
+   Map: tile grid -> labelled scale (settings demos) -> icon toolbar (head, option rows, code, copy) -> search box -> search over all sets
    Theme tokens only, so light and dark follow the site switch. The toolbar markup comes from public/js/oc-icons.js. */
 
 /* ---- Tile grid ---- */
@@ -48,7 +48,6 @@
 .oci-item:is(:hover, :focus-visible, [aria-expanded="true"])::after { opacity: 1; }
 
 /* ---- Category page ---- */
-#icons-search { max-width: 280px; margin-bottom: 1rem; }
 .oci-section { margin-bottom: 2rem; }
 .oci-category-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin-top: 0.5rem; }
 .oci-category-links a { font-size: 0.9rem; }
@@ -132,3 +131,67 @@
 }
 .oci-tb__foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
 .oci-tb__status { font-size: 0.75rem; color: var(--oc-muted-foreground); }
+
+/* ---- Search box (as the site header search): magnifier, input, clear button. public/js/oc-icons-search.js ---- */
+.oci-search { position: relative; display: flex; align-items: center; max-inline-size: 28rem; margin-block-end: 1rem; }
+.oci-search--lg { max-inline-size: none; }
+.oci-search > iconify-icon:first-child {
+  position: absolute;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  display: block;
+  inset-inline-start: 0.75rem;
+  font-size: 1.125rem;
+  color: var(--oc-muted-foreground);
+  pointer-events: none;
+}
+/* The input fills the box (older page rules gave the filter a fixed width), so the clear button sits inside it. */
+.oci-search .oc-input { flex: 1; inline-size: 100%; max-inline-size: none; margin: 0; padding-inline: 2.5rem 2.25rem; }
+.oci-search--lg .oc-input { block-size: 2.75rem; font-size: 1rem; }
+.oci-search .oc-input::-webkit-search-cancel-button { appearance: none; }
+.oci-search__clear {
+  position: absolute;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inset-inline-end: 0.375rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  font-size: 1.125rem;
+  cursor: pointer;
+}
+.oci-search__clear:hover { background: var(--oc-accent); color: var(--oc-foreground); }
+.oci-search__clear:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+.oci-search__clear[hidden] { display: none; }
+
+/* ---- Search over all sets: set chips with counts, status line, result tiles with their set name ---- */
+.oci-sets { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-block-end: 0.75rem; }
+.oci-sets[hidden] { display: none; }
+.oci-set-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  block-size: 2rem;
+  padding-inline: 0.75rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--oc-foreground);
+  background: var(--oc-card);
+  border: 1px solid var(--oc-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.oci-set-chip:hover { background: var(--oc-accent); }
+.oci-set-chip[aria-pressed="true"] { color: var(--oc-primary-foreground); background: var(--oc-primary); border-color: var(--oc-primary); }
+.oci-set-chip:disabled { opacity: 0.45; cursor: default; }
+.oci-set-chip__count { font-size: 0.6875rem; font-variant-numeric: tabular-nums; opacity: 0.8; }
+.oci-search-status { margin: 0 0 0.75rem; font-size: 0.8125rem; color: var(--oc-muted-foreground); }
+.oci-search-status:empty { display: none; }
+.oci-set { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--oc-muted-foreground); }

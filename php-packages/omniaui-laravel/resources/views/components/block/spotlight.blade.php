@@ -10,10 +10,10 @@
     <div class="oc-spotlight oc-accent--green">
       <div>
         <span class="oc-pill oc-pill--accent"><span class="oc-status-dot"></span>Our flagship</span>
-        <h2 class="oc-spotlight__title"><span class="oc-icon-tile oc-icon-tile--lg" aria-hidden="true">&#9670;</span>OmniaDesk</h2>
+        <h2 class="oc-spotlight__title"><span class="oc-icon-tile oc-icon-tile--lg" aria-hidden="true">&#9670;</span>Product 1</h2>
         <p class="oc-spotlight__tagline">The modular ERP for small businesses</p>
         <p class="oc-lead">One web application for CRM, sales, invoicing, bookkeeping and stock - built from integrated modules, so your data never lives on separate islands again.</p>
-        <a class="oc-btn oc-btn--gradient oc-btn--lg" href="#">Discover OmniaDesk &rarr;</a>
+        <a class="oc-btn oc-btn--gradient oc-btn--lg" href="#">Discover Product 1 &rarr;</a>
       </div>
       <ul class="oc-spotlight__modules">
         <li><span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">&#9787;</span>CRM &amp; contacts</li>

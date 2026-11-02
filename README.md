@@ -57,7 +57,7 @@ Copy a component into your project (HTML, React or Vue, depending on your framew
 ```bash
 npx omniaui list
 npx omniaui add button card
-npx omniaui copy-js            # the scripts (data table, carousel; Pro blocks) to public/js/oc-*.js
+npx omniaui copy-js            # the scripts (data table, carousel, barcode, form extras; Pro blocks) to public/js/oc-*.js
 ```
 
 The OmniaCSS CLI (`npx omniacss build`) includes the OmniaUI CSS automatically when the package is installed.
@@ -142,7 +142,7 @@ See [php-packages/README.md](php-packages/README.md).
 | `0.8.2` | 2026-10-23 | Same version as OmniaCSS: color CSS in IntelliSense |
 | `0.8.1` | 2026-10-23 | Linux binaries of Rollup and esbuild stay in the lockfile |
 | `0.8.0` | 2026-10-18 | Same version as OmniaCSS: IntelliSense |
-| `0.7.0` | 2026-10-16 | List table from Korrekt and OmniaDesk, price and barcode fields on the left |
+| `0.7.0` | 2026-10-16 | List table for business apps, price and barcode fields on the left |
 | `0.6.0` | 2026-10-15 | OmniaUI split off from OmniaCSS: components, blocks, React/Vue, Laravel/Livewire and webicons; npm scope @birdycom. New components for forms, data/app UX, media and marketing, plus the blocks status-page, faq, about-timeline, contact-grid, hero-orbit, profile-header, watch-layout and portfolio-grid. |
 
 ## License

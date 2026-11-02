@@ -43,7 +43,7 @@ export interface MessageData {
   text?: ReactNode;
   attachments?: MessageAttachment[];
   actions?: MessageAction[];
-  /** aria-label of the row, e.g. "Lisa Verbeke, 09:12". */
+  /** aria-label of the row, e.g. "Customer 1, 09:12". */
   label?: string;
   id?: string;
 }
@@ -135,9 +135,9 @@ export interface MessageListProps extends HTMLAttributes<HTMLDivElement> {
 
 const DEMO: MessageListItem[] = [
   { divider: "Tuesday 14 October" },
-  { sender: "Lisa Verbeke", avatar: "LV", time: "09:12", datetime: "2026-10-14T09:12", label: "Lisa Verbeke, 09:12", text: "Morning Tom! The worktop supplier sent two samples for Villa Dewitte." },
+  { sender: "Customer 1", avatar: "C1", time: "09:12", datetime: "2026-10-14T09:12", label: "Customer 1, 09:12", text: "Morning Tom! The worktop supplier sent two samples for Project 1." },
   {
-    sender: "Lisa Verbeke", avatar: "LV", time: "09:13", datetime: "2026-10-14T09:13", label: "Lisa Verbeke, 09:13", continued: true, id: "oc-message-demo-question",
+    sender: "Customer 1", avatar: "C1", time: "09:13", datetime: "2026-10-14T09:13", label: "Customer 1, 09:13", continued: true, id: "oc-message-demo-question",
     text: (
       <>
         <p>Which finish should we order?</p>
@@ -147,17 +147,17 @@ const DEMO: MessageListItem[] = [
     ),
   },
   {
-    direction: "out", avatar: "TP", time: "09:20", datetime: "2026-10-14T09:20", label: "You, 09:20", status: "read", statusIcon: true,
-    quote: { href: "#oc-message-demo-question", sender: "Lisa Verbeke", text: "Which finish should we order? Calacatta matt, 20 mm or Nero Marquina polished, 12 mm" },
+    direction: "out", avatar: "C6", time: "09:20", datetime: "2026-10-14T09:20", label: "You, 09:20", status: "read", statusIcon: true,
+    quote: { href: "#oc-message-demo-question", sender: "Customer 1", text: "Which finish should we order? Calacatta matt, 20 mm or Nero Marquina polished, 12 mm" },
     text: "Calacatta matt. The client wants the lighter look next to the oak fronts.",
     actions: [{ name: "reply", label: "Reply to this message" }, { name: "delete", label: "Delete this message", destructive: true }],
   },
-  { divider: "Lisa Verbeke marked this question as answered", system: true },
+  { divider: "Customer 1 marked this question as answered", system: true },
 ];
 
 /** `.oc-message-list`: column of messages and dividers. */
 export const MessageList = forwardRef<HTMLDivElement, MessageListProps>(function MessageList(
-  { items = DEMO, log = true, onAction, className, children, "aria-label": label = log ? "Conversation with Lisa Verbeke" : undefined, ...rest },
+  { items = DEMO, log = true, onAction, className, children, "aria-label": label = log ? "Conversation with Customer 1" : undefined, ...rest },
   ref,
 ) {
   return (

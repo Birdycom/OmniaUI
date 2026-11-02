@@ -21,7 +21,7 @@
     <div class="oc-sidebar-header">
       <a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#">
         <svg data-icon="mdi:home-outline" class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3"/></svg>
-        <span class="oc-sidebar-menu-label"><strong>OmniaDesk</strong></span>
+        <span class="oc-sidebar-menu-label"><strong>Company 1</strong></span>
       </a>
     </div>
     <div class="oc-sidebar-content">
@@ -51,8 +51,8 @@
     </div>
     <div class="oc-sidebar-footer">
       <div class="oc-user">
-        <span class="oc-avatar oc-avatar--sm">SC</span>
-        <span class="oc-user-text"><span class="oc-user-name">Serge Cools</span><span class="oc-user-email">serge@example.com</span></span>
+        <span class="oc-avatar oc-avatar--sm">U1</span>
+        <span class="oc-user-text"><span class="oc-user-name">User 1</span><span class="oc-user-email">user1@company1.example</span></span>
       </div>
     </div>
   </aside>
@@ -75,9 +75,9 @@
           <label><input type="radio" name="oc-shell-theme" value="light"> Light</label>
           <label><input type="radio" name="oc-shell-theme" value="dark"> Dark</label>
         </div>
-        <button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" popovertarget="oc-shell-user" aria-label="User menu"><span class="oc-avatar oc-avatar--sm">SC</span></button>
+        <button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" popovertarget="oc-shell-user" aria-label="User menu"><span class="oc-avatar oc-avatar--sm">U1</span></button>
         <div class="oc-dropdown-menu" id="oc-shell-user" popover>
-          <div class="oc-dropdown-label">serge@example.com</div>
+          <div class="oc-dropdown-label">user1@company1.example</div>
           <a class="oc-dropdown-item" href="#">Profile</a>
           <a class="oc-dropdown-item" href="#">Settings</a>
           <div class="oc-dropdown-separator"></div>
@@ -90,7 +90,7 @@
         @if (isset($breadcrumbs) && trim((string) $breadcrumbs) !== '')
             {{ $breadcrumbs }}
         @else
-        <nav aria-label="Breadcrumb"><ol class="oc-breadcrumb"><li class="oc-breadcrumb-item"><a href="#">Home</a></li><li class="oc-breadcrumb-item"><a href="#">CRM</a></li><li class="oc-breadcrumb-item" aria-current="page">Contacts</li></ol></nav>
+        <nav aria-label="Breadcrumb"><ol class="oc-breadcrumb oc-breadcrumb--chevron"><li class="oc-breadcrumb-item"><a href="#"><svg data-icon="mdi:home-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3"/></svg>Home</a></li><li class="oc-breadcrumb-item"><a href="#"><svg data-icon="mdi:account-group-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 5a3.5 3.5 0 0 0-3.5 3.5A3.5 3.5 0 0 0 12 12a3.5 3.5 0 0 0 3.5-3.5A3.5 3.5 0 0 0 12 5m0 2a1.5 1.5 0 0 1 1.5 1.5A1.5 1.5 0 0 1 12 10a1.5 1.5 0 0 1-1.5-1.5A1.5 1.5 0 0 1 12 7M5.5 8A2.5 2.5 0 0 0 3 10.5c0 .94.53 1.75 1.29 2.18c.36.2.77.32 1.21.32s.85-.12 1.21-.32c.37-.21.68-.51.91-.87A5.42 5.42 0 0 1 6.5 8.5v-.28c-.3-.14-.64-.22-1-.22m13 0c-.36 0-.7.08-1 .22v.28c0 1.2-.39 2.36-1.12 3.31c.12.19.25.34.4.49a2.48 2.48 0 0 0 1.72.7c.44 0 .85-.12 1.21-.32c.76-.43 1.29-1.24 1.29-2.18A2.5 2.5 0 0 0 18.5 8M12 14c-2.34 0-7 1.17-7 3.5V19h14v-1.5c0-2.33-4.66-3.5-7-3.5m-7.29.55C2.78 14.78 0 15.76 0 17.5V19h3v-1.93c0-1.01.69-1.85 1.71-2.52m14.58 0c1.02.67 1.71 1.51 1.71 2.52V19h3v-1.5c0-1.74-2.78-2.72-4.71-2.95M12 16c1.53 0 3.24.5 4.23 1H7.77c.99-.5 2.7-1 4.23-1"/></svg>CRM</a></li><li class="oc-breadcrumb-item" aria-current="page"><svg data-icon="mdi:card-account-details-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 3H2c-1.09.04-1.96.91-2 2v14c.04 1.09.91 1.96 2 2h20c1.09-.04 1.96-.91 2-2V5a2.074 2.074 0 0 0-2-2m0 16H2V5h20zm-8-2v-1.25c0-1.66-3.34-2.5-5-2.5s-5 .84-5 2.5V17zM9 7a2.5 2.5 0 0 0-2.5 2.5A2.5 2.5 0 0 0 9 12a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 9 7m5 0v1h6V7zm0 2v1h6V9zm0 2v1h4v-1z"/></svg>Contacts</li></ol></nav>
         @endif
     </div>
     <main class="oc-block-shell-content">

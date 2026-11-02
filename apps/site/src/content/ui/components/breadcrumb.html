@@ -1,8 +1,8 @@
-<!--oc-page {"title": "OmniaUI - Breadcrumb", "category": "Navigation", "description": "Breadcrumb trail: where the page sits in the site, with the current page marked by aria-current.", "nav": "Breadcrumb", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
-<!-- File: apps/site/src/content/ui/components/breadcrumb.html | Map: hero -> demo (trail, above a page title) -> reference -> frameworks -> browser support -> source footer -->
+<!--oc-page {"title": "OmniaUI - Breadcrumb", "category": "Navigation", "description": "Breadcrumb trail: where the page sits in the site, with the current page marked by aria-current.", "nav": "Breadcrumb", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!-- File: apps/site/src/content/ui/components/breadcrumb.html | Map: hero -> demo (trail, icons + chevron, collapsed, above a page title) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Breadcrumb</h1>
-        <p class="oc-hero-text">A trail of links that shows where the page sits in the site. A <code>&lt;nav&gt;</code> with links; the separators come from CSS and the current page is marked with <code>aria-current="page"</code>, so screen readers announce it. No JavaScript. <a href="../components.html">All components</a>.</p>
+        <p class="oc-hero-text">A trail of links that shows where the page sits in the site. A <code>&lt;nav&gt;</code> with links; the separators come from CSS and the current page is marked with <code>aria-current="page"</code>, so screen readers announce it. Items can carry a webicon, and <code>--chevron</code> puts a › between them. No JavaScript. <a href="../components.html">All components</a>.</p>
       </section>
 
       <section class="oc-docs-section" id="demo">
@@ -18,6 +18,27 @@
   <a class="oc-breadcrumb-item" href="#">Home</a>
   <a class="oc-breadcrumb-item" href="#">Docs</a>
   <span class="oc-breadcrumb-item" aria-current="page">Components</span>
+</nav>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="icons">With icons and chevrons <span class="oc-badge-version">v0.12.6</span></h3>
+          <p class="oc-section-content__desc">A webicon (or SVG) before the label of each level, and <code>.oc-breadcrumb--chevron</code> for a › between the items: the trail of an app, where every module has its own icon.</p>
+          <oc-demo title="Breadcrumb - icons">
+<nav class="oc-breadcrumb oc-breadcrumb--chevron" aria-label="Breadcrumb">
+  <a class="oc-breadcrumb-item" href="#icons"><iconify-icon icon="mdi:home-outline" aria-hidden="true"></iconify-icon>Dashboard</a>
+  <a class="oc-breadcrumb-item" href="#icons"><iconify-icon icon="mdi:card-account-details-outline" aria-hidden="true"></iconify-icon>Relations</a>
+  <span class="oc-breadcrumb-item" aria-current="page"><iconify-icon icon="mdi:account-multiple-outline" aria-hidden="true"></iconify-icon>Customers</span>
+</nav>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="collapsed">Collapsed trail <span class="oc-badge-version">v0.12.6</span></h3>
+          <p class="oc-section-content__desc">For deep pages keep the first and the last levels and fold the middle into <code>.oc-breadcrumb-ellipsis</code>, a button that opens a <a href="dropdown-menu.html">dropdown menu</a> with the hidden levels.</p>
+          <oc-demo title="Breadcrumb - collapsed">
+<nav class="oc-breadcrumb oc-breadcrumb--chevron" aria-label="Breadcrumb">
+  <a class="oc-breadcrumb-item" href="#collapsed"><iconify-icon icon="mdi:home-outline" aria-hidden="true"></iconify-icon>Dashboard</a>
+  <span class="oc-breadcrumb-item"><button type="button" class="oc-breadcrumb-ellipsis" aria-label="Show 3 more levels"><iconify-icon icon="mdi:dots-horizontal" aria-hidden="true"></iconify-icon></button></span>
+  <a class="oc-breadcrumb-item" href="#collapsed"><iconify-icon icon="mdi:folder-outline" aria-hidden="true"></iconify-icon>Projects</a>
+  <span class="oc-breadcrumb-item" aria-current="page"><iconify-icon icon="mdi:file-document-outline" aria-hidden="true"></iconify-icon>Kitchen – ground floor</span>
 </nav>
           </oc-demo>
 
@@ -49,6 +70,9 @@
               <tr><td><code>nav.oc-breadcrumb</code></td><td>The trail. Give it <code>aria-label="Breadcrumb"</code>.</td></tr>
               <tr><td><code>a.oc-breadcrumb-item</code></td><td>A link in the trail (muted, darker on hover). A "/" separator is added before every item but the first.</td></tr>
               <tr><td><code>span.oc-breadcrumb-item[aria-current="page"]</code></td><td>The current page: not a link, full text color and medium weight.</td></tr>
+              <tr><td><code>.oc-breadcrumb--chevron</code></td><td>A › chevron between the items instead of "/".</td></tr>
+              <tr><td><code>&lt;iconify-icon&gt;</code> / <code>&lt;svg&gt;</code> in an item</td><td>An icon before the label (1.1em, muted on links, full color on the current page).</td></tr>
+              <tr><td><code>button.oc-breadcrumb-ellipsis</code></td><td>"…" for the collapsed middle of a long trail; opens a menu with the hidden levels.</td></tr>
               <tr><td><code>li.oc-breadcrumb-item &gt; a</code></td><td>Older list markup (<code>&lt;ol class="oc-breadcrumb"&gt;</code>) keeps working; there the last item is the current page.</td></tr>
             </tbody>
           </table>
@@ -58,7 +82,7 @@
       <section class="oc-docs-section" id="frameworks">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Framework wrappers</h2>
-          <p class="oc-section-header__desc">Pass the items; the last one becomes the current page (no link, <code>aria-current="page"</code>).</p>
+          <p class="oc-section-header__desc">Pass the items; the last one becomes the current page (no link, <code>aria-current="page"</code>). An item takes an optional <code>icon</code> (React: any node; Vue and Blade: a webicon name) and <code>separator="chevron"</code> switches to chevrons.</p>
         </div>
         <div class="oc-section-content">
           <oc-code lang="html">&lt;!-- React --&gt;
@@ -66,7 +90,15 @@
 &lt;!-- Vue --&gt;
 &lt;OcBreadcrumb :items="[{ label: 'Home', href: '/' }, { label: 'Docs', href: '/docs' }, { label: 'Components' }]" /&gt;
 &lt;!-- Laravel Blade --&gt;
-&lt;x-oc::breadcrumb :items="[['label' =&gt; 'Home', 'href' =&gt; '/'], ['label' =&gt; 'Docs', 'href' =&gt; '/docs'], ['label' =&gt; 'Components']]" /&gt;</oc-code>
+&lt;x-oc::breadcrumb :items="[['label' =&gt; 'Home', 'href' =&gt; '/'], ['label' =&gt; 'Docs', 'href' =&gt; '/docs'], ['label' =&gt; 'Components']]" /&gt;
+
+&lt;!-- With icons and chevrons --&gt;
+&lt;Breadcrumb separator="chevron" items={[
+  { label: "Dashboard", href: "/", icon: &lt;iconify-icon icon="mdi:home-outline" /&gt; },
+  { label: "Customers", icon: &lt;iconify-icon icon="mdi:account-multiple-outline" /&gt; },
+]} /&gt;
+&lt;OcBreadcrumb separator="chevron" :items="[{ label: 'Dashboard', href: '/', icon: 'mdi:home-outline' }, { label: 'Customers', icon: 'mdi:account-multiple-outline' }]" /&gt;
+&lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Dashboard', 'href' =&gt; '/', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Customers', 'icon' =&gt; 'mdi:account-multiple-outline']]" /&gt;</oc-code>
         </div>
       </section>
 

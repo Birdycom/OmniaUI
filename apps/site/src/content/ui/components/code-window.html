@@ -13,10 +13,14 @@
   <div class="oc-code-window__bar">
     <i></i><i></i><i></i>
     <span class="oc-code-window__title">index.html</span>
-    <button type="button" class="oc-code-copy" data-oc-copy="#oc-sample-code">Copy</button>
+    <button type="button" class="oc-code-copy" data-oc-copy="#oc-sample-code .code-preview">Copy</button>
   </div>
-  <pre class="oc-code-window__body"><code id="oc-sample-code">&lt;link rel="stylesheet" href="omnia.css"&gt;
-&lt;button class="oc-btn"&gt;Hello&lt;/button&gt;</code></pre>
+  <div id="oc-sample-code"><oc-code lang="html">&lt;link rel="stylesheet" href="omnia.css"&gt;
+&lt;!-- A primary button with a webicon --&gt;
+&lt;button class="oc-btn" type="button"&gt;
+  &lt;iconify-icon icon="mdi:content-save-outline"&gt;&lt;/iconify-icon&gt;
+  Save
+&lt;/button&gt;</oc-code></div>
 </div>
 <script>
 document.addEventListener("click", async (e) => {
@@ -25,6 +29,29 @@ document.addEventListener("click", async (e) => {
   b.classList.add("is-copied"); b.textContent = "Copied"; setTimeout(() => { b.classList.remove("is-copied"); b.textContent = "Copy"; }, 1500);
 });
 </script>
+<oc-code lang="html">&lt;div class="oc-code-window"&gt;
+  &lt;div class="oc-code-window__bar"&gt;
+    &lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;
+    &lt;span class="oc-code-window__title"&gt;index.html&lt;/span&gt;
+    &lt;button type="button" class="oc-code-copy" data-oc-copy="#sample"&gt;Copy&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;!-- Highlighted code: an .oc-code-block (or pre.code-preview) with .hl-tag, .hl-attr, .hl-string … spans --&gt;
+  &lt;div class="oc-code-block" id="sample"&gt;…&lt;/div&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+        <h3 id="dark" class="oc-section-content__title mt-2">Always dark <span class="oc-badge-version">v0.12.6</span></h3>
+        <p class="oc-section-content__desc">The window follows the page theme. <code>.oc-code-window--dark</code> keeps it dark on a light page too, as an editor screenshot in a hero (the <a href="../blocks/hero-code.html">hero with code</a> block uses it).</p>
+          <oc-demo title="Code window - dark">
+<div class="oc-code-window oc-code-window--dark">
+  <div class="oc-code-window__bar"><i></i><i></i><i></i><span class="oc-code-window__title">omnia.config.json</span></div>
+  <oc-code lang="json">{
+  "content": ["resources/**/*.blade.php", "resources/js/**/*.vue"],
+  "pro": true,
+  "theme": { "primary": "vividblue" }
+}</oc-code>
+</div>
+<oc-code lang="html">&lt;div class="oc-code-window oc-code-window--dark"&gt;…&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -40,6 +67,7 @@ document.addEventListener("click", async (e) => {
               <tr><td><code>.oc-code-window__bar</code></td><td>Title bar with the three dots</td></tr>
               <tr><td><code>.oc-code-window__title</code></td><td>File name</td></tr>
               <tr><td><code>.oc-code-window__body</code></td><td>Plain code area</td></tr>
+              <tr><td><code>.oc-code-window--dark</code></td><td>Always dark (editor look in a hero), also on light pages</td></tr>
               <tr><td><code>.oc-code-copy</code></td><td>Copy button; state <code>.is-copied</code></td></tr>
             </tbody>
           </table>
@@ -48,7 +76,7 @@ document.addEventListener("click", async (e) => {
 <li><code>.oc-code-window</code>: rounded frame with a border.</li>
 <li><code>.oc-code-window__bar</code>: title bar. Three <code>&lt;i&gt;</code> elements draw the dots (palette colors), <code>.oc-code-window__title</code> the file name.</li>
 <li><code>.oc-code-copy</code>: the copy button. Inside the bar it sits at the right; on its own it is positioned in the top right corner of a <code>.oc-code-window</code> or any relatively positioned code block.</li>
-<li><code>.oc-code-window__body</code> for plain code, or an <code>.oc-code-block</code> for line numbers and syntax colors.</li>
+<li><code>.oc-code-window__body</code> for plain code, or an <code>.oc-code-block</code> for line numbers and syntax colors. The window follows the page theme (light syntax colors in light mode); <code>.oc-code-window--dark</code> keeps it dark.</li>
 </ul>
         <h3 id="copy" class="oc-section-content__title mt-2">Copy button: the one piece that needs JavaScript</h3>
 <p>Writing to the clipboard is a script-only capability, so the button carries a <code>data-oc-copy</code> attribute with the selector of the code element and one small event handler (shown in the snippet) does the rest. The button is a real <code>&lt;button type="button"&gt;</code>: focusable, <kbd>Enter</kbd>/<kbd>Space</kbd> activate it. After copying it gets <code>.is-copied</code> (success color) for 1.5 seconds. Without JavaScript the button is simply inert; hide it with <code>.no-js .oc-code-copy { display: none }</code> if that matters to you.</p>

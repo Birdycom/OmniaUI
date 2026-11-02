@@ -1,0 +1,161 @@
+/* File: packages/ui/src/parts/app-data-table-rich.css | Map: control height -> header (sort icons, columns) -> type tabs -> filter row -> name, truncate and count cells -> card fields */
+/* The rich relations list on top of app-data-table.css: tabs that filter a column, filter selects with an icon,
+   rich cells and the label/value lines of the card view. Behaviour: data-oc-col-filter in src/data-table.js. */
+
+/* Every control is 2rem high: search, filter selects, trash pills, icon buttons, rows per page and the pager. */
+.oc-data-table :is(.oc-data-table-toolbar, .oc-data-table-filters, .oc-data-table-footer) :is(.oc-input, .oc-select) { block-size: 2rem; padding-block: 0; font-size: 0.8125rem; }
+.oc-data-table .oc-data-table-page { min-block-size: 2rem; }
+.oc-data-table :is(.oc-data-table-toolbar, .oc-data-table-filters, thead) .oc-btn--icon { --oc-btn-square: 2rem; }
+.oc-data-table-toolbar .oc-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  block-size: 2rem;
+  padding-inline: 0.625rem;
+  border-radius: calc(var(--oc-radius) - 2px);
+}
+
+/* Header: the sort mark only on the sorted column (and on hover); the actions header holds the column button. */
+/* The sort mark always keeps its 1rem, so sorting another column never moves the header: empty while unsorted,
+   faint chevrons on hover, the accent sort icon on the sorted column. */
+:is(.oc-data-table, .oc-block-datatable) th:has(.oc-table-sort) { cursor: pointer; }
+:is(.oc-data-table, .oc-block-datatable) th .oc-table-sort::after { content: ""; flex-shrink: 0; inline-size: 1rem; block-size: 1rem; opacity: 1; }
+:is(.oc-data-table, .oc-block-datatable) th:not([aria-sort]):hover .oc-table-sort::after {
+  background: var(--oc-muted-foreground);
+  opacity: 0.6;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 18.17L8.83 15l-1.41 1.41L12 21l4.59-4.59L15.17 15M12 5.83L15.17 9l1.41-1.41L12 3L7.41 7.59L8.83 9z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 18.17L8.83 15l-1.41 1.41L12 21l4.59-4.59L15.17 15M12 5.83L15.17 9l1.41-1.41L12 3L7.41 7.59L8.83 9z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* Sorted column: a bold label and a sort icon in the accent color. aria-sort on a header in the HTML
+   is the column sorted when the page opens. */
+:is(.oc-data-table, .oc-block-datatable) th[aria-sort] .oc-table-sort { color: var(--oc-foreground); }
+:is(.oc-data-table, .oc-block-datatable) th[aria-sort] .oc-table-sort::after {
+  content: "";
+  inline-size: 1rem;
+  block-size: 1rem;
+  opacity: 1;
+  background: var(--oc-primary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 17h3l-4 4l-4-4h3V3h2M2 17h10v2H2M6 5v2H2V5m0 6h7v2H2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 17h3l-4 4l-4-4h3V3h2M2 17h10v2H2M6 5v2H2V5m0 6h7v2H2z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+:is(.oc-data-table, .oc-block-datatable) th[aria-sort="descending"] .oc-table-sort::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 7h3l-4-4l-4 4h3v14h2M2 17h10v2H2M6 5v2H2V5m0 6h7v2H2z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 7h3l-4-4l-4 4h3v14h2M2 17h10v2H2M6 5v2H2V5m0 6h7v2H2z'/%3E%3C/svg%3E");
+}
+.oc-data-table th[data-oc-col="actions"] .oc-data-table-th { justify-content: flex-end; gap: 0.5rem; font-weight: 500; color: var(--oc-muted-foreground); }
+.oc-data-table td[data-oc-col="actions"] { text-align: end; }
+/* Row actions per status: data-oc-when="active" (edit, view) only on live rows, data-oc-when="deleted" (restore,
+   delete permanently) only on rows in the trash. */
+.oc-data-table tr[data-oc-status="deleted"] [data-oc-when="active"],
+.oc-data-table tr:not([data-oc-status="deleted"]) [data-oc-when="deleted"] { display: none; }
+/* The column chooser in the actions header: a large plain icon (1.75rem), no button frame. */
+.oc-data-table-columns-btn { font-size: 1.75rem; }
+.oc-data-table-columns-btn > :is(svg, iconify-icon) { font-size: 1em; inline-size: 1em; block-size: 1em; }
+
+/* Tabs above the toolbar (All / Customers / Companies …): icon, label and a count; they filter one column. */
+.oc-data-table-tabs { display: flex; inline-size: 100%; overflow-x: auto; scrollbar-width: none; }
+.oc-data-table-tabs .oc-tab-trigger { flex-shrink: 0; }
+.oc-data-table-tabs .oc-tab-trigger { display: inline-flex; align-items: center; gap: 0.4rem; }
+.oc-data-table-tabs .oc-tab-trigger :is(svg, iconify-icon) { font-size: 1.1em; inline-size: 1.1em; block-size: 1.1em; }
+.oc-data-table-tabs .oc-tab-trigger[aria-selected="true"] { color: var(--oc-primary); border-bottom-color: var(--oc-primary); }
+.oc-data-table-tab-count {
+  min-inline-size: 1.25rem;
+  padding: 0 0.375rem;
+  font-size: 0.6875rem;
+  line-height: 1.125rem;
+  text-align: center;
+  color: var(--oc-muted-foreground);
+  background: var(--oc-muted);
+  border-radius: 999px;
+}
+.oc-data-table-tabs [aria-selected="true"] .oc-data-table-tab-count { color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.12); }
+/* A count in the color of its type (the same tone as the type badge in the table). */
+.oc-data-table-tab-count:is(.oc-data-table-tab-count--success, .oc-data-table-tab-count--info, .oc-data-table-tab-count--warning) {
+  color: var(--oc-tab-tone);
+  background: oklch(from var(--oc-tab-tone) l c h / 0.12);
+  box-shadow: inset 0 0 0 1px oklch(from var(--oc-tab-tone) l c h / 0.35);
+}
+.oc-data-table-tab-count--success { --oc-tab-tone: var(--oc-success); }
+.oc-data-table-tab-count--info { --oc-tab-tone: var(--oc-info, light-dark(var(--color-deepskyblue-70), var(--color-skyblue-50))); }
+.oc-data-table-tab-count--warning { --oc-tab-tone: var(--oc-warning); }
+
+/* Filter row: selects with a leading icon (status, type …) and the column button on the right. */
+.oc-data-table-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.oc-data-table-filters[hidden] { display: none; }
+.oc-data-table-filters > :last-child:is(.oc-btn) { margin-inline-start: auto; }
+.oc-data-table-filter { position: relative; display: inline-flex; align-items: center; }
+.oc-data-table-filter > :is(svg, iconify-icon) {
+  position: absolute;
+  inset-inline-start: 0.625rem;
+  font-size: 1rem;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--oc-muted-foreground);
+  pointer-events: none;
+}
+.oc-data-table-filter > .oc-select { inline-size: auto; min-inline-size: 11rem; padding-inline-start: 2.125rem; }
+
+/* Cells. Name: avatar, name with a badge, and a muted second line (VAT number, e-mail …). */
+.oc-data-table-name { display: flex; align-items: center; gap: 0.625rem; min-inline-size: 0; }
+.oc-data-table-name .oc-avatar { inline-size: 2.25rem; block-size: 2.25rem; font-size: 0.75rem; }
+.oc-data-table-name-text { display: grid; min-inline-size: 0; }
+.oc-data-table-name-line { display: flex; align-items: center; gap: 0.375rem; font-weight: 600; }
+.oc-data-table-name-sub { font-size: 0.75rem; color: var(--oc-muted-foreground); }
+/* One line with an ellipsis; put the full text in title="". */
+.oc-data-table-truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-inline-size: var(--oc-data-table-truncate, 18rem); }
+/* A count that opens the related list (projects, invoices …); muted while it is 0. */
+.oc-data-table-count { font-variant-numeric: tabular-nums; }
+.oc-data-table-count[data-count="0"] { color: var(--oc-muted-foreground); opacity: 0.75; }
+/* The sort is visible in the header (icon, bold label); the summary line is for screen readers only. */
+.oc-data-table-sort-summary {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.oc-data-table-file { display: none; }
+
+/* The other visible columns as label / value lines, and the row actions at the bottom. */
+.oc-data-table-card-fields { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.25rem 0.75rem; margin: 0; font-size: 0.8125rem; }
+.oc-data-table-card-fields dt { color: var(--oc-muted-foreground); }
+.oc-data-table-card-fields dd { margin: 0; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-data-table-card-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.375rem; margin-block-start: auto; }
+
+/* Code cells (article numbers, SKUs): monospace and a step smaller. */
+.oc-data-table-code { font-family: var(--oc-font-mono); font-size: 0.75rem; }
+
+/* Version 2, ".oc-data-table--bordered": a tinted header row, a line between the columns and the
+   sort chevrons always visible; the filter select has its icon in a zone of its own. The rest is the same table. */
+.oc-data-table.oc-data-table--bordered .oc-table :is(th, td) { border-inline-end: 1px solid var(--oc-border); }
+.oc-data-table.oc-data-table--bordered .oc-table :is(th, td):last-child { border-inline-end: 0; }
+.oc-data-table.oc-data-table--bordered .oc-table thead th {
+  font-weight: 500;
+  background: color-mix(in oklch, var(--oc-card), var(--oc-foreground) 4%);
+}
+.oc-data-table.oc-data-table--bordered .oc-table thead th[data-oc-col="actions"] {
+  background: color-mix(in oklch, var(--oc-card), var(--oc-foreground) 4%);
+}
+.oc-data-table--bordered td[data-oc-col="actions"] { text-align: center; }
+.oc-data-table--bordered th[data-oc-col="actions"] .oc-data-table-th { justify-content: center; }
+.oc-data-table--bordered th:not([aria-sort]) .oc-table-sort::after,
+.oc-data-table--bordered th:not([aria-sort]):hover .oc-table-sort::after {
+  content: "";
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  opacity: 0.5;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 18.17L8.83 15l-1.41 1.41L12 21l4.59-4.59L15.17 15M12 5.83L15.17 9l1.41-1.41L12 3L7.41 7.59L8.83 9z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 18.17L8.83 15l-1.41 1.41L12 21l4.59-4.59L15.17 15M12 5.83L15.17 9l1.41-1.41L12 3L7.41 7.59L8.83 9z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.oc-data-table--bordered .oc-data-table-filter::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 2rem;
+  inline-size: 1px;
+  background: var(--oc-border);
+  pointer-events: none;
+}
+.oc-data-table--bordered .oc-data-table-filter > .oc-select { padding-inline-start: 2.75rem; }
