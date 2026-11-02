@@ -1,8 +1,7 @@
 // File: packages/vue/tests/chat.test.ts
 // Map: attachment -> message (+ list) -> message thread (send) -> prose -> chart line (paths equal the snippet)
 // Chat and content Vue wrappers: same markup as the snippets (classes, roles, ids), plus their emits and send handling.
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import chartLineSnippet from '../../ui/snippets/chart-line.html?raw'
 import { describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import OcAttachment from '../src/components/OcAttachment.vue'
@@ -96,7 +95,7 @@ describe('OcProse and OcChartLine', () => {
   })
 
   it('OcChartLine computes the same paths, dots and axis as the snippet', () => {
-    const snippet = readFileSync(resolve(__dirname, '../../ui/snippets/chart-line.html'), 'utf8')
+    const snippet = chartLineSnippet
     const expected = [...snippet.matchAll(/class="oc-chart-line__path" d="([^"]+)"/g)].map((m) => m[1])
     const w = mount(OcChartLine)
     expect(w.findAll('.oc-chart-line__path').map((p) => p.attributes('d'))).toEqual(expected)

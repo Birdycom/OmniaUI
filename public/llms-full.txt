@@ -1,9 +1,9 @@
 # OmniaUI — full reference for AI assistants
 
-> OmniaUI is the component and block library for OmniaCSS: 151 components and
-> 87 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
+> OmniaUI is the component and block library for OmniaCSS: 157 components and
+> 91 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
 > wrappers for React, Vue, Laravel Blade and Livewire. Behaviour comes from native HTML (dialog, popover, details,
-> :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; 41 advanced
+> :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; 45 advanced
 > blocks are part of OmniaUI Pro (paid license).
 
 ## Rules for AI assistants
@@ -4686,6 +4686,190 @@ Collapsible card with a name, rename pencil, amount and delete button; nests for
 </div>
 ```
 
+### gallery
+
+Product photos with thumbnails: one large photo and a row (or column) of thumbnails. No JavaScript
+
+```html
+<!-- OmniaUI component: gallery - Product photos with thumbnails: one large photo and a row (or column) of thumbnails. No JavaScript. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/gallery.html | Map: gallery.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-gallery: The gallery (a container): __stage with one figure.oc-gallery__slide per photo, then __thumbs.
+       fieldset.oc-gallery__thumbs: The thumbnails: one label.oc-gallery__thumb per photo with a radio (same name) and an image with alt text. The first photo shows when none is checked.
+       .oc-gallery__badge: A badge on the photo ("-20%", "New").
+       .oc-gallery--side: Thumbnails in a column on the left once the gallery is 32rem wide or more.
+       --oc-gallery-ratio / --oc-gallery-fit / --oc-gallery-thumb: Photo ratio (default 4 / 3), contain or cover, thumbnail size (4rem).
+-->
+<div class="oc-gallery oc-gallery--side" style="inline-size:min(100%,34rem)">
+  <div class="oc-gallery__stage">
+    <span class="oc-badge oc-badge--destructive oc-gallery__badge">-20%</span>
+    <figure class="oc-gallery__slide"><img src="/img/shop/product-1-front.svg" alt="Product 1, front" width="800" height="600"></figure>
+    <figure class="oc-gallery__slide"><img src="/img/shop/product-1-angle.svg" alt="Product 1, from the side" width="800" height="600" loading="lazy"></figure>
+    <figure class="oc-gallery__slide"><img src="/img/shop/product-1-detail.svg" alt="Product 1, the shade from below" width="800" height="600" loading="lazy"></figure>
+    <figure class="oc-gallery__slide"><img src="/img/shop/product-1-box.svg" alt="Product 1, in its box" width="800" height="600" loading="lazy"></figure>
+  </div>
+  <fieldset class="oc-gallery__thumbs">
+    <legend>Photos of Product 1</legend>
+    <label class="oc-gallery__thumb"><input type="radio" name="oc-gallery-demo" checked><img src="/img/shop/product-1-front.svg" alt="Front"></label>
+    <label class="oc-gallery__thumb"><input type="radio" name="oc-gallery-demo"><img src="/img/shop/product-1-angle.svg" alt="Side"></label>
+    <label class="oc-gallery__thumb"><input type="radio" name="oc-gallery-demo"><img src="/img/shop/product-1-detail.svg" alt="Shade from below"></label>
+    <label class="oc-gallery__thumb"><input type="radio" name="oc-gallery-demo"><img src="/img/shop/product-1-box.svg" alt="In its box"></label>
+  </fieldset>
+</div>
+```
+
+### price
+
+A price with old price, discount, VAT note and the amount incl. or excl. VAT
+
+```html
+<!-- OmniaUI component: price - A price with old price, discount, VAT note and the amount incl. or excl. VAT. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/price.html | Map: prices.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-price: The block: __main line, then __note and __alt below.
+       .oc-price__amount: The price (bold, tabular digits, never wraps).
+       .oc-price__old: The old price, struck through. Add an .oc-badge in __main for the discount.
+       .oc-price__note / __alt: A quiet note ("excl. VAT") and the other amount ("€ 121,00 incl. VAT").
+       .oc-price--sm / --lg / --sale: Smaller or larger amount; --sale colors the amount red.
+       .oc-price--inline / --end: Amount and note on one line (lists); right aligned (also automatic in a td[data-numeric]).
+-->
+<div class="flex flex-wrap gap-2 align-items-start">
+  <div class="oc-price oc-price--lg">
+    <div class="oc-price__main"><span class="oc-price__amount">€ 149,00</span></div>
+    <span class="oc-price__note">excl. VAT</span>
+    <span class="oc-price__alt">€ 180,29 incl. VAT</span>
+  </div>
+  <div class="oc-price oc-price--lg oc-price--sale">
+    <div class="oc-price__main"><span class="oc-price__amount">€ 119,00</span><s class="oc-price__old">€ 149,00</s><span class="oc-badge oc-badge--destructive">-20%</span></div>
+    <span class="oc-price__note">incl. VAT · free delivery</span>
+  </div>
+  <div class="oc-price oc-price--sm">
+    <div class="oc-price__main"><span class="oc-price__amount">€ 6,40</span></div>
+    <span class="oc-price__note">per piece · from 10 pieces € 5,90</span>
+  </div>
+</div>
+```
+
+### quantity
+
+Number field with minus and plus buttons for amounts in carts, orders and stock
+
+```html
+<!-- OmniaUI component: quantity - Number field with minus and plus buttons for amounts in carts, orders and stock. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/quantity.html | Map: quantity.
+     Behaviour: form-extras.js (npx omniaui copy-js form-extras); works without it.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-quantity: The frame. --sm for a 2rem field in tables and carts.
+       .oc-quantity__input: A native type="number" with min, max, step and name; the spinners are hidden.
+       [data-oc-step="-1"] / [data-oc-step="1"]: The minus and plus buttons (.oc-quantity__step); with form-extras.js they change the value and fire input and change.
+-->
+<div class="flex flex-wrap gap-2 align-items-center">
+  <div class="oc-quantity"><button class="oc-quantity__step" type="button" data-oc-step="-1" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13H5v-2h14z"/></svg></button><input class="oc-quantity__input" id="oc-qty-demo-1" type="number" inputmode="numeric" name="quantity" value="1" min="1" max="10" step="1" aria-label="Quantity"><button class="oc-quantity__step" type="button" data-oc-step="1" aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg></button></div>
+  <div class="oc-quantity oc-quantity--sm"><button class="oc-quantity__step" type="button" data-oc-step="-1" aria-label="Decrease pieces"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13H5v-2h14z"/></svg></button><input class="oc-quantity__input" id="oc-qty-demo-2" type="number" inputmode="numeric" name="quantity" value="12" min="0" max="500" step="1" aria-label="Pieces"><button class="oc-quantity__step" type="button" data-oc-step="1" aria-label="Increase pieces"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg></button></div>
+</div>
+```
+
+### rating
+
+Star rating: show a score with halves, or let people pick 1 to 5 stars. No JavaScript
+
+```html
+<!-- OmniaUI component: rating - Star rating: show a score with halves, or let people pick 1 to 5 stars. No JavaScript. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/rating.html | Map: score and summary -> pick a rating.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-rating: The stars of a score. --oc-rating is the score (decimals work), --oc-rating-max the number of stars (default 5). Give it role="img" and an aria-label ("4.5 out of 5").
+       .oc-rating--sm / --lg: Smaller or larger stars (--oc-rating-size sets any size).
+       .oc-rating-summary: Stars, the score (__score) and the number of reviews (__count, a link or text) on one line.
+       fieldset.oc-rating-input: Five <label>s with a radio inside (value 1–5) and a hidden text ("3 stars"). The checked or hovered star fills the stars before it. --sm / --lg sizes.
+       --oc-rating-color / --oc-rating-empty: Colors of the filled and empty stars (default: the warning token and a light muted tone).
+-->
+<div class="flex flex-column gap-1">
+  <span class="oc-rating" style="--oc-rating: 4.5" role="img" aria-label="4.5 out of 5"></span>
+  <div class="oc-rating-summary">
+    <span class="oc-rating oc-rating--sm" style="--oc-rating: 4.2" role="img" aria-label="4.2 out of 5"></span>
+    <span class="oc-rating-summary__score">4.2</span>
+    <a class="oc-rating-summary__count" href="#reviews">128 reviews</a>
+  </div>
+  <span class="oc-rating oc-rating--lg" style="--oc-rating: 3" role="img" aria-label="3 out of 5"></span>
+</div>
+<fieldset class="oc-rating-input oc-rating-input--lg">
+  <legend>Your rating</legend>
+  <label><input type="radio" name="oc-rating-demo" value="1"><span>1 star</span></label>
+  <label><input type="radio" name="oc-rating-demo" value="2"><span>2 stars</span></label>
+  <label><input type="radio" name="oc-rating-demo" value="3"><span>3 stars</span></label>
+  <label><input type="radio" name="oc-rating-demo" value="4" checked><span>4 stars</span></label>
+  <label><input type="radio" name="oc-rating-demo" value="5"><span>5 stars</span></label>
+</fieldset>
+```
+
+### spec-list
+
+Technical specifications in named groups: label and value rows, two columns when there is room
+
+```html
+<!-- OmniaUI component: spec-list - Technical specifications in named groups: label and value rows, two columns when there is room. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/spec-list.html | Map: specifications.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-spec-list: The list (a container): groups side by side from 40rem wide. --stack keeps one column.
+       .oc-spec-group / __title: A group and its title (small caps, an optional icon).
+       dl.oc-spec-group__rows > .oc-spec-row: The rows: a <div> with <dt> (label) and <dd> (value; a <small> inside is a quiet unit or note).
+-->
+<div class="oc-spec-list">
+  <section class="oc-spec-group">
+    <h3 class="oc-spec-group__title">Dimensions</h3>
+    <dl class="oc-spec-group__rows">
+      <div class="oc-spec-row"><dt>Height</dt><dd>52 cm</dd></div>
+      <div class="oc-spec-row"><dt>Shade diameter</dt><dd>28 cm</dd></div>
+      <div class="oc-spec-row"><dt>Base</dt><dd>18 × 18 cm</dd></div>
+      <div class="oc-spec-row"><dt>Weight</dt><dd>2.4 kg</dd></div>
+    </dl>
+  </section>
+  <section class="oc-spec-group">
+    <h3 class="oc-spec-group__title">Electrical</h3>
+    <dl class="oc-spec-group__rows">
+      <div class="oc-spec-row"><dt>Lamp holder</dt><dd>E27 <small>max. 40 W</small></dd></div>
+      <div class="oc-spec-row"><dt>Cable</dt><dd>1.8 m, with switch</dd></div>
+      <div class="oc-spec-row"><dt>Energy class</dt><dd>A+</dd></div>
+    </dl>
+  </section>
+  <section class="oc-spec-group">
+    <h3 class="oc-spec-group__title">Article</h3>
+    <dl class="oc-spec-group__rows">
+      <div class="oc-spec-row"><dt>Article number</dt><dd>PRD-0001</dd></div>
+      <div class="oc-spec-row"><dt>EAN</dt><dd>5400000000010</dd></div>
+      <div class="oc-spec-row"><dt>Warranty</dt><dd>24 months</dd></div>
+    </dl>
+  </section>
+</div>
+```
+
+### stock
+
+Stock status with a colored dot: in stock, low, out of stock or on order
+
+```html
+<!-- OmniaUI component: stock - Stock status with a colored dot: in stock, low, out of stock or on order. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/stock.html | Map: stock.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-stock: A dot and the text. Without data-level the dot is green (in stock).
+       data-level="low" / "out" / "order": Orange (only a few left), red (out of stock), blue (on order).
+       .oc-stock__count / __note: A bold number ("12") and a quiet extra ("delivered in 2–3 days").
+       .oc-stock--badge: A tinted pill for tables and product cards.
+-->
+<div class="flex flex-column gap-1">
+  <span class="oc-stock"><span><span class="oc-stock__count">24</span> in stock</span> <span class="oc-stock__note">· delivered in 1–2 days</span></span>
+  <span class="oc-stock" data-level="low">Only <span class="oc-stock__count">3</span> left</span>
+  <span class="oc-stock" data-level="out">Out of stock</span>
+  <span class="oc-stock" data-level="order">On order <span class="oc-stock__note">· expected 14 November</span></span>
+  <div class="flex flex-wrap gap-0.5">
+    <span class="oc-stock oc-stock--badge">In stock</span>
+    <span class="oc-stock oc-stock--badge" data-level="low">Low</span>
+    <span class="oc-stock oc-stock--badge" data-level="out">Out</span>
+    <span class="oc-stock oc-stock--badge" data-level="order">On order</span>
+  </div>
+</div>
+```
+
 ## Blocks
 
 - [CMS dashboard (Pro)](https://omniaui.eu/ui/blocks/cms-dashboard): CMS admin home: dark sidebar with sections, top bar with page title and user, flash message, content tiles and recent changes
@@ -4725,7 +4909,11 @@ Collapsible card with a name, rename pencil, amount and delete button; nests for
 - [Portfolio grid](https://omniaui.eu/ui/blocks/portfolio-grid): Portfolio section: heading with an "all projects" link and a grid of project cards
 - [Pricing plans (Pro)](https://omniaui.eu/ui/blocks/pricing-plans): License pricing as on omniaui.eu: launch offer, plans with a yearly/lifetime switch per card, a featured plan, VAT note and checkout help
 - [Process & marquee](https://omniaui.eu/ui/blocks/process): Numbered steps (the numbers come from a CSS counter) and an endless, pausable marquee of technologies
+- [Product detail (Pro)](https://omniaui.eu/ui/blocks/product-detail): Product page for the back office: gallery, summary with price, stock and barcode, commercial and technical sections, stock movements, serial numbers and linked invoices and documents
+- [Product editor (Pro)](https://omniaui.eu/ui/blocks/product-editor): Product form in sections (identification, commercial, stock, media, description, specifications, publication) with a preview and a sticky save bar
 - [Product grid](https://omniaui.eu/ui/blocks/product-grid): Grid of product cards
+- [Product picker (Pro)](https://omniaui.eu/ui/blocks/product-picker): Dialog to add a product to a quote, order or invoice: search, products with photo, article number, price and stock, quantity and Add
+- [Products list (Pro)](https://omniaui.eu/ui/blocks/product-list): Products list with photos, type tabs with counts, category and stock filters, stock badges, prices excl. and incl. VAT, draft badges, row actions, cards and footer
 - [Profile header](https://omniaui.eu/ui/blocks/profile-header): Channel / profile header: banner, overhanging avatar, name, meta, actions and a tab bar
 - [Quote lines (Pro)](https://omniaui.eu/ui/blocks/quote-lines): Quote or order lines you put in order by dragging: page head, a bordered data table with grips, column widths and the column menu, and the totals
 - [Relations list (Pro)](https://omniaui.eu/ui/blocks/relations-list): A complete relations screen: breadcrumb, title, type tabs with colored counts, list toolbar, filters, a data table with avatar names, type badges, counts and row actions per status, cards and footer
@@ -4788,3 +4976,7 @@ Collapsible card with a name, rename pencil, amount and delete button; nests for
 - ecosystem-map: Ecosystem map: your logo on top, your apps per level, dotted flowing lines to what each app builds on
 - relations-list: A complete relations screen: breadcrumb, title, type tabs with colored counts, list toolbar, filters, a data table with avatar names, type badges, counts and row actions per status, cards and footer
 - quote-lines: Quote or order lines you put in order by dragging: page head, a bordered data table with grips, column widths and the column menu, and the totals
+- product-list: Products list with photos, type tabs with counts, category and stock filters, stock badges, prices excl. and incl. VAT, draft badges, row actions, cards and footer
+- product-detail: Product page for the back office: gallery, summary with price, stock and barcode, commercial and technical sections, stock movements, serial numbers and linked invoices and documents
+- product-editor: Product form in sections (identification, commercial, stock, media, description, specifications, publication) with a preview and a sticky save bar
+- product-picker: Dialog to add a product to a quote, order or invoice: search, products with photo, article number, price and stock, quantity and Add
