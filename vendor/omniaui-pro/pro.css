@@ -961,6 +961,93 @@
 .oc-block-relations-heading { display: grid; gap: 0.375rem; min-inline-size: 0; }
 .oc-block-relations-title { margin: 0; font-size: 1.375rem; font-weight: 700; line-height: 1.25; }
 
+/* parts/app-shop-front.css */
+/* File: packages/pro/src/parts/app-shop-front.css | Map: catalog (filters + grid, cards) -> product page (buy box, delivery list, reviews) -> cart (lines, summary) -> checkout (choice cards, summary) */
+/* The shop side of the product blocks (OmniaUI Pro): catalog, product page, cart and checkout. Uses the same
+   .oc-block-shop root and head as app-products.css; prices, stock, gallery, rating and quantity are free components. */
+
+/* ---- Catalog: filters on the left from 42rem, cards in an auto grid ---- */
+.oc-block-shop-catalog { display: grid; gap: 1.25rem; align-items: start; }
+@container (min-width: 42rem) { .oc-block-shop-catalog { grid-template-columns: 13.5rem minmax(0, 1fr); } }
+.oc-block-shop-filters { display: grid; gap: 0.25rem; min-inline-size: 0; }
+.oc-block-shop-filters > details { border-block-end: 1px solid var(--oc-border); }
+.oc-block-shop-filters summary { display: flex; justify-content: space-between; padding: 0.625rem 0; font-size: 0.875rem; font-weight: 600; cursor: pointer; list-style: none; }
+.oc-block-shop-filters summary::-webkit-details-marker { display: none; }
+.oc-block-shop-filters summary::after { content: "+"; color: var(--oc-muted-foreground); }
+.oc-block-shop-filters details[open] > summary::after { content: "\2212"; }
+.oc-block-shop-filter-body { display: grid; gap: 0.5rem; padding-block-end: 0.75rem; font-size: 0.875rem; }
+.oc-block-shop-filter-body label { display: flex; align-items: center; gap: 0.5rem; }
+.oc-block-shop-filter-body small { margin-inline-start: auto; color: var(--oc-muted-foreground); font-variant-numeric: tabular-nums; }
+.oc-block-shop-range { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.375rem; }
+.oc-block-shop-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-block-end: 0.75rem; }
+.oc-block-shop-count { margin: 0; font-size: 0.875rem; color: var(--oc-muted-foreground); }
+.oc-block-shop-toolbar .oc-select { inline-size: auto; block-size: 2.25rem; }
+.oc-block-shop-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.oc-block-shop-card { position: relative; display: grid; grid-template-rows: auto 1fr; overflow: hidden; background: var(--oc-card, var(--oc-background)); border: 1px solid var(--oc-border); border-radius: calc(var(--oc-radius) + 4px); transition: box-shadow var(--oc-transition-fast), border-color var(--oc-transition-fast); }
+.oc-block-shop-card:hover { border-color: var(--oc-muted-foreground); box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.08); }
+.oc-block-shop-card[hidden] { display: none; }
+.oc-block-shop-card > img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 4 / 3; object-fit: cover; background: var(--oc-muted); }
+.oc-block-shop-card-body { display: grid; gap: 0.5rem; align-content: start; padding: 0.875rem; }
+.oc-block-shop-card-body h3 { margin: 0; font-size: 0.9375rem; line-height: 1.3; }
+/* The whole card is the link to the product; the Add button sits above that link. */
+.oc-block-shop-card-body h3 a { color: inherit; text-decoration: none; }
+.oc-block-shop-card-body h3 a::after { content: ""; position: absolute; inset: 0; }
+.oc-block-shop-card-body h3 a:focus-visible { outline: none; }
+.oc-block-shop-card:has(h3 a:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-block-shop-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-block-start: 0.25rem; }
+.oc-block-shop-card-foot .oc-btn { position: relative; z-index: 1; }
+.oc-block-shop-card .oc-badge { position: absolute; inset: 0.625rem auto auto 0.625rem; z-index: 1; }
+.oc-block-shop-none { margin: 0; padding: 2rem 1rem; text-align: center; color: var(--oc-muted-foreground); }
+
+/* ---- Product page: buy box ---- */
+.oc-block-shop-buy-box { display: grid; gap: 1rem; align-content: start; min-inline-size: 0; }
+.oc-block-shop-buy-box h1 { margin: 0; font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem); line-height: 1.2; }
+.oc-block-shop-option-group { display: grid; gap: 0.5rem; margin: 0; padding: 0; border: 0; }
+.oc-block-shop-option-group > legend { margin-block-end: 0.375rem; padding: 0; font-size: 0.8125rem; font-weight: 600; }
+.oc-block-shop-delivery { display: grid; gap: 0.5rem; margin: 0; padding: 0.875rem 1rem; font-size: 0.875rem; list-style: none; background: var(--oc-muted); border-radius: var(--oc-radius); }
+.oc-block-shop-delivery li { display: flex; align-items: center; gap: 0.5rem; }
+.oc-block-shop-delivery :is(svg, iconify-icon) { flex-shrink: 0; inline-size: 1.125rem; block-size: 1.125rem; font-size: 1.125rem; color: var(--oc-success); }
+.oc-block-shop-reviews { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.oc-block-shop-reviews li { display: grid; gap: 0.375rem; padding-block-end: 1rem; border-block-end: 1px solid var(--oc-border); }
+.oc-block-shop-reviews li:last-child { border-block-end: 0; }
+.oc-block-shop-reviews p { margin: 0; font-size: 0.9375rem; line-height: 1.55; }
+.oc-block-shop-reviews small { color: var(--oc-muted-foreground); }
+
+/* ---- Cart: one row per line, a summary card ---- */
+.oc-block-shop-lines { display: grid; margin: 0; padding: 0; list-style: none; }
+.oc-block-shop-line { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) auto; gap: 0.5rem 1rem; align-items: center; padding: 1rem 0; border-block-end: 1px solid var(--oc-border); }
+.oc-block-shop-line > img { inline-size: 4.5rem; block-size: 4.5rem; object-fit: cover; background: var(--oc-muted); border: 1px solid var(--oc-border); border-radius: var(--oc-radius); }
+.oc-block-shop-line-text { display: grid; gap: 0.125rem; min-inline-size: 0; }
+.oc-block-shop-line-text strong a { color: inherit; text-decoration: none; }
+.oc-block-shop-line-text span { font-size: 0.8125rem; color: var(--oc-muted-foreground); }
+.oc-block-shop-line-total { font-weight: 700; font-variant-numeric: tabular-nums; text-align: end; }
+.oc-block-shop-line-tools { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+@container (min-width: 40rem) {
+  .oc-block-shop-line { grid-template-columns: 4.5rem minmax(0, 1fr) auto 7rem; }
+  .oc-block-shop-line-tools { grid-column: 3; grid-row: 1; }
+  .oc-block-shop-line-total { grid-column: 4; }
+}
+.oc-block-shop-totals { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem 1rem; margin: 0; font-size: 0.875rem; }
+.oc-block-shop-totals dt { color: var(--oc-muted-foreground); }
+.oc-block-shop-totals dd { margin: 0; text-align: end; font-variant-numeric: tabular-nums; }
+.oc-block-shop-totals .is-total { padding-block-start: 0.625rem; font-size: 1.0625rem; font-weight: 700; color: var(--oc-foreground); border-block-start: 1px solid var(--oc-border); }
+.oc-block-shop-coupon { display: flex; gap: 0.5rem; }
+.oc-block-shop-coupon .oc-input { min-inline-size: 0; }
+
+/* ---- Checkout: choice cards for delivery and payment ---- */
+.oc-block-shop-choices { display: grid; gap: 0.5rem; margin: 0; padding: 0; border: 0; }
+.oc-block-shop-choices > legend { margin-block-end: 0.5rem; padding: 0; font-weight: 600; }
+.oc-block-shop-choice { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.75rem; align-items: center; padding: 0.875rem 1rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); cursor: pointer; }
+.oc-block-shop-choice:hover { border-color: var(--oc-muted-foreground); }
+.oc-block-shop-choice:has(input:checked) { border-color: var(--oc-primary); box-shadow: inset 0 0 0 1px var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.05); }
+.oc-block-shop-choice:has(input:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-block-shop-choice > span { display: grid; gap: 0.125rem; min-inline-size: 0; }
+.oc-block-shop-choice small { color: var(--oc-muted-foreground); }
+.oc-block-shop-choice > b { font-variant-numeric: tabular-nums; }
+.oc-block-shop-fields { display: grid; gap: 0.75rem 1rem; }
+@container (min-width: 36rem) { .oc-block-shop-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } .oc-block-shop-fields > .is-wide { grid-column: 1 / -1; } }
+.oc-block-shop a.oc-stepper-item { color: inherit; text-decoration: none; }
+
 /* parts/app-status-page.css */
 /* File: packages/pro/src/parts/app-status-page.css | Map: split grid -> visual panel (big code, rings, quote) -> content column + card -> code badge, title, text, detail -> actions + help -> status modifiers (403, 500, maintenance) -> full height */
 /* Status page block: 404 / 403 / 500 page in a split layout (visual panel + content card).
