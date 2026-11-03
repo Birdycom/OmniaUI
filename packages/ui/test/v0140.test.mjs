@@ -8,7 +8,8 @@ import fs from "node:fs";
 import { languageCode } from "../src/form-extras.js";
 import { particleOptions } from "../src/particles.js";
 
-const read = (p) => fs.readFileSync(new URL(p, import.meta.url), "utf8");
+// The checkout can have CRLF line ends (.gitattributes eol=crlf): compare with LF.
+const read = (p) => fs.readFileSync(new URL(p, import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const part = (name) => read(`../src/parts/${name}.css`);
 
 test("meter row: a sub-line with its own bar, a fill element that replaces the drawn fill, a dense list", () => {
