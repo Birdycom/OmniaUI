@@ -20,6 +20,7 @@ import OcBackLink from './components/OcBackLink.vue'
 import OcBadge from './components/OcBadge.vue'
 import OcBarcode from './components/OcBarcode.vue'
 import OcBarcodeInput from './components/OcBarcodeInput.vue'
+import OcBrandMark from './components/OcBrandMark.vue'
 import OcBreadcrumb from './components/OcBreadcrumb.vue'
 import OcBrowserFrame from './components/OcBrowserFrame.vue'
 import OcBusyOverlay from './components/OcBusyOverlay.vue'
@@ -55,6 +56,7 @@ import OcEmojiPicker from './components/OcEmojiPicker.vue'
 import OcEmptyState from './components/OcEmptyState.vue'
 import OcEntityCard from './components/OcEntityCard.vue'
 import OcFactList from './components/OcFactList.vue'
+import OcFeatureCard from './components/OcFeatureCard.vue'
 import OcFilterCounts from './components/OcFilterCounts.vue'
 import OcFlipCard from './components/OcFlipCard.vue'
 import OcFormField from './components/OcFormField.vue'
@@ -80,6 +82,7 @@ import OcLauncherCard from './components/OcLauncherCard.vue'
 import OcLazyImage from './components/OcLazyImage.vue'
 import OcLightbox from './components/OcLightbox.vue'
 import OcLinkArrow from './components/OcLinkArrow.vue'
+import OcLinkCard from './components/OcLinkCard.vue'
 import OcLinkRow from './components/OcLinkRow.vue'
 import OcListToolbar from './components/OcListToolbar.vue'
 import OcLiveFrame from './components/OcLiveFrame.vue'
@@ -100,6 +103,7 @@ import OcNumberInput from './components/OcNumberInput.vue'
 import OcOtpInput from './components/OcOtpInput.vue'
 import OcPageHeader from './components/OcPageHeader.vue'
 import OcPagination from './components/OcPagination.vue'
+import OcPanel from './components/OcPanel.vue'
 import OcPasswordInput from './components/OcPasswordInput.vue'
 import OcPasswordRequirements from './components/OcPasswordRequirements.vue'
 import OcPhoneInput from './components/OcPhoneInput.vue'
@@ -116,6 +120,7 @@ import OcRadioGroup from './components/OcRadioGroup.vue'
 import OcRating from './components/OcRating.vue'
 import OcRatingInput from './components/OcRatingInput.vue'
 import OcRecoveryCodes from './components/OcRecoveryCodes.vue'
+import OcResult from './components/OcResult.vue'
 import OcRibbon from './components/OcRibbon.vue'
 import OcScrollArea from './components/OcScrollArea.vue'
 import OcSegmented from './components/OcSegmented.vue'
@@ -173,6 +178,7 @@ import OcBlockAppHeader from './blocks/OcBlockAppHeader.vue'
 import OcBlockAppShell from './blocks/OcBlockAppShell.vue'
 import OcBlockAuth from './blocks/OcBlockAuth.vue'
 import OcBlockAuthSplit from './blocks/OcBlockAuthSplit.vue'
+import OcBlockContactForm from './blocks/OcBlockContactForm.vue'
 import OcBlockContactGrid from './blocks/OcBlockContactGrid.vue'
 import OcBlockCta from './blocks/OcBlockCta.vue'
 import OcBlockDataTable from './blocks/OcBlockDataTable.vue'
@@ -221,6 +227,7 @@ export {
   OcBadge,
   OcBarcode,
   OcBarcodeInput,
+  OcBrandMark,
   OcBreadcrumb,
   OcBrowserFrame,
   OcBusyOverlay,
@@ -256,6 +263,7 @@ export {
   OcEmptyState,
   OcEntityCard,
   OcFactList,
+  OcFeatureCard,
   OcFilterCounts,
   OcFlipCard,
   OcFormField,
@@ -281,6 +289,7 @@ export {
   OcLazyImage,
   OcLightbox,
   OcLinkArrow,
+  OcLinkCard,
   OcLinkRow,
   OcListToolbar,
   OcLiveFrame,
@@ -301,6 +310,7 @@ export {
   OcOtpInput,
   OcPageHeader,
   OcPagination,
+  OcPanel,
   OcPasswordInput,
   OcPasswordRequirements,
   OcPhoneInput,
@@ -317,6 +327,7 @@ export {
   OcRating,
   OcRatingInput,
   OcRecoveryCodes,
+  OcResult,
   OcRibbon,
   OcScrollArea,
   OcSegmented,
@@ -374,6 +385,7 @@ export {
   OcBlockAppShell,
   OcBlockAuth,
   OcBlockAuthSplit,
+  OcBlockContactForm,
   OcBlockContactGrid,
   OcBlockCta,
   OcBlockDataTable,
@@ -438,6 +450,7 @@ export type { TableCompactColumn } from './components/OcTableCompact.vue'
 export type { TabItem } from './components/OcTabs.vue'
 export type { TimelineEntry } from './components/OcTimeline.vue'
 export type { OcTreeItem } from './components/OcTree.vue'
+export type { ContactFormLine, ContactFormCard, ContactFormSubject } from './blocks/OcBlockContactForm.vue'
 export type { ContactGridLine, ContactGridCard } from './blocks/OcBlockContactGrid.vue'
 export type { FaqItem } from './blocks/OcBlockFaq.vue'
 export type { FeatureItem } from './blocks/OcBlockFeatures.vue'
@@ -481,6 +494,7 @@ export const components: Record<string, Component> = {
   OcBadge,
   OcBarcode,
   OcBarcodeInput,
+  OcBrandMark,
   OcBreadcrumb,
   OcBrowserFrame,
   OcBusyOverlay,
@@ -516,6 +530,7 @@ export const components: Record<string, Component> = {
   OcEmptyState,
   OcEntityCard,
   OcFactList,
+  OcFeatureCard,
   OcFilterCounts,
   OcFlipCard,
   OcFormField,
@@ -541,6 +556,7 @@ export const components: Record<string, Component> = {
   OcLazyImage,
   OcLightbox,
   OcLinkArrow,
+  OcLinkCard,
   OcLinkRow,
   OcListToolbar,
   OcLiveFrame,
@@ -561,6 +577,7 @@ export const components: Record<string, Component> = {
   OcOtpInput,
   OcPageHeader,
   OcPagination,
+  OcPanel,
   OcPasswordInput,
   OcPasswordRequirements,
   OcPhoneInput,
@@ -577,6 +594,7 @@ export const components: Record<string, Component> = {
   OcRating,
   OcRatingInput,
   OcRecoveryCodes,
+  OcResult,
   OcRibbon,
   OcScrollArea,
   OcSegmented,
@@ -634,6 +652,7 @@ export const components: Record<string, Component> = {
   OcBlockAppShell,
   OcBlockAuth,
   OcBlockAuthSplit,
+  OcBlockContactForm,
   OcBlockContactGrid,
   OcBlockCta,
   OcBlockDataTable,

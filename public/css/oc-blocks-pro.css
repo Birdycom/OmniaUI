@@ -1261,7 +1261,7 @@
 /* The display slot: content fills it (an .oc-live-frame sets its own ratio, other content gets 16:10). */
 .oc-device__display { position: relative; display: block; overflow: hidden; background: var(--oc-device-ink); }
 .oc-device__display:not(.oc-live-frame) { aspect-ratio: 16 / 10; }
-.oc-device__display > :is(img, video, .oc-media-art) { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
+.oc-device__display:not(.oc-live-frame) > :is(img, video, .oc-media-art) { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
 
 /* ---- Laptop ---- */
 .oc-device--laptop { padding-inline: 4%; }
@@ -1441,6 +1441,403 @@
   .oc-block-ecosystem-lines path { animation: none; }
   .oc-block-ecosystem-node .oc-icon-tile { transition: none; }
 }
+
+/* parts/site-event-scene.css */
+/* File: packages/pro/src/parts/site-event-scene.css (OmniaUI Pro)
+   Map: hall (tokens, frame) -> haze -> truss + beams -> stage, floor, LED wall -> crowd (bob, jump, wave, phones)
+        -> front of house (technicians, desk, console, laptop) -> reduced motion -> phone -> gradient stops
+   Event scene block: a 3D hall in CSS for a live demo: two screens (an LED wall above the stage and a laptop at the
+   front of house) around .oc-live-frame, a moving crowd, lights and a mixing console. Only transform and opacity move.
+   Screens: Pro device mockups (.oc-device--display --glow, .oc-device--laptop); a watermark over the hall: .oc-watermark. */
+
+/* The hall: colors from the site tokens (--oc-*) and the OmniaCSS palette (--color-*), as --oc-scene-* so a theme
+   can change one. 16:10 (square on a phone); a size container, so the beams follow the width of the hall. */
+.oc-block-scene {
+  /* A hall is dark in light mode too: the tokens resolve to their dark values inside it. */
+  color-scheme: dark;
+  --oc-scene-light: var(--oc-brand-1);
+  --oc-scene-glow: oklch(from var(--oc-brand-1) calc(l + 0.1) c h);
+  --oc-scene-lamp: oklch(from var(--oc-brand-1) 0.96 0.03 h);
+  --oc-scene-violet: var(--oc-brand-3);
+  --oc-scene-magenta: var(--color-fuchsia-60);
+  --oc-scene-amber: var(--color-orange-60);
+  --oc-scene-ink: var(--oc-background);
+  --oc-scene-metal: var(--oc-card);
+  --oc-scene-vu-low: var(--color-green-20);
+  --oc-scene-vu-mid: var(--color-yellow-60);
+  --oc-scene-vu-high: var(--color-red-50);
+  --oc-scene-body-top: oklch(from var(--oc-brand-2) 0.3 0.06 h);
+  --oc-scene-body-far-top: oklch(from var(--oc-brand-2) 0.4 0.08 h);
+  position: relative;
+  aspect-ratio: 16 / 10;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg);
+  background:
+    radial-gradient(55% 40% at 32% 30%, oklch(from var(--oc-scene-light) l c h / 0.14), transparent 70%),
+    linear-gradient(color-mix(in oklch, var(--oc-scene-ink), black 30%) 0%, var(--oc-scene-ink) 55%, color-mix(in oklch, var(--oc-scene-ink), black 40%) 100%);
+}
+.oc-block-scene > * { pointer-events: none; }
+.oc-block-scene .oc-block-scene-led__panel,
+.oc-block-scene .oc-block-scene-laptop__panel { pointer-events: auto; }
+.oc-block-scene { container-type: inline-size; }
+
+.oc-block-scene > .oc-watermark { z-index: 20; --oc-watermark-opacity: 0.13; }
+
+/* Haze: smoke that drifts slowly through the light. */
+.oc-block-scene-haze i {
+  position: absolute;
+  top: 2%;
+  left: -12%;
+  width: 72%;
+  height: 60%;
+  background: radial-gradient(50% 50% at 50% 42%, oklch(from var(--oc-muted-foreground) l c h / 0.16), transparent 70%);
+  filter: blur(22px);
+  animation: oc-scene-drift 17s ease-in-out infinite alternate;
+}
+.oc-block-scene-haze i:nth-child(2) { left: 36%; animation-duration: 23s; animation-delay: -9s; }
+
+@keyframes oc-scene-drift {
+  from { transform: translateX(-4%) scale(1); opacity: 0.55; }
+  to { transform: translateX(7%) scale(1.1); opacity: 1; }
+}
+
+/* Truss with five lamps; each beam (<b>) hangs from its lamp, sweeps around it and changes color. */
+.oc-block-scene-truss {
+  position: absolute;
+  z-index: 2;
+  top: 3%;
+  left: 6%;
+  right: 6%;
+  height: 2.2%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  border: 1px solid color-mix(in oklch, var(--oc-scene-metal), white 16%);
+  background: repeating-linear-gradient(60deg, color-mix(in oklch, var(--oc-scene-metal), white 7%) 0 6px, color-mix(in oklch, var(--oc-scene-metal), white 16%) 6px 8px);
+}
+.oc-block-scene-truss i {
+  --a: 0deg;
+  position: relative;
+  width: 2%;
+  aspect-ratio: 1;
+  margin-bottom: -1.1%;
+}
+.oc-block-scene-truss i::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--oc-scene-lamp);
+  box-shadow: 0 0 12px 4px oklch(from var(--oc-scene-glow) l c h / 0.6);
+  animation: oc-scene-spot 3.2s ease-in-out var(--d, 0s) infinite alternate;
+}
+.oc-block-scene-truss i:nth-child(1) { --a: 11deg; --t: 8s; --c: 6s; }
+.oc-block-scene-truss i:nth-child(2) { --a: 5deg; --t: 11s; --d: -4s; --c: 9s; }
+.oc-block-scene-truss i:nth-child(3) { --t: 9.5s; --d: -7s; --c: 5s; }
+.oc-block-scene-truss i:nth-child(4) { --a: -5deg; --t: 10s; --d: -2s; --c: 8s; }
+.oc-block-scene-truss i:nth-child(5) { --a: -11deg; --t: 8.5s; --d: -5s; --c: 6.5s; }
+
+@keyframes oc-scene-spot {
+  from { opacity: 0.65; }
+  to { opacity: 1; }
+}
+
+.oc-block-scene-truss b {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16cqw;
+  height: 39cqw;
+  translate: -50% 0;
+  transform-origin: 50% 0;
+  transform: rotate(var(--a));
+  animation: oc-scene-sweep var(--t, 9s) ease-in-out var(--d, 0s) infinite alternate;
+}
+.oc-block-scene-truss b::before,
+.oc-block-scene-truss b::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(47% 0, 53% 0, 100% 100%, 0 100%);
+  background: linear-gradient(oklch(from var(--oc-scene-glow) l c h / 0.3), transparent 85%);
+  filter: blur(5px);
+  mix-blend-mode: screen;
+}
+.oc-block-scene-truss b::after {
+  background: linear-gradient(oklch(from var(--oc-scene-magenta) l c h / 0.3), transparent 85%);
+  opacity: 0;
+  animation: oc-scene-color var(--c, 7s) ease-in-out var(--d, 0s) infinite alternate;
+}
+.oc-block-scene-truss i:nth-child(2) b::before,
+.oc-block-scene-truss i:nth-child(5) b::before { background: linear-gradient(oklch(from var(--oc-scene-violet) l c h / 0.3), transparent 85%); }
+.oc-block-scene-truss i:nth-child(2) b::after,
+.oc-block-scene-truss i:nth-child(5) b::after { background: linear-gradient(oklch(from var(--oc-scene-light) l c h / 0.3), transparent 85%); }
+.oc-block-scene-truss i:nth-child(3) b::after { background: linear-gradient(oklch(from var(--oc-scene-amber) l c h / 0.26), transparent 85%); }
+
+@keyframes oc-scene-sweep {
+  from { transform: rotate(calc(var(--a) - 9deg)); }
+  to { transform: rotate(calc(var(--a) + 9deg)); }
+}
+@keyframes oc-scene-color {
+  0%, 30% { opacity: 0; }
+  70%, 100% { opacity: 1; }
+}
+
+/* Stage, a light show on the floor (colored washes under the crowd) and the LED wall (Pro device mockup). */
+.oc-block-scene-stage {
+  position: absolute;
+  z-index: 1;
+  top: 47.5%;
+  left: 0;
+  width: 66%;
+  height: 10%;
+  background: linear-gradient(color-mix(in oklch, var(--oc-scene-metal), white 8%), var(--oc-scene-ink));
+  clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
+  box-shadow: inset 0 2px 0 oklch(from var(--oc-scene-glow) l c h / 0.35);
+}
+.oc-block-scene-floor {
+  position: absolute;
+  z-index: 2;
+  top: 46%;
+  left: 0;
+  width: 100%;
+  height: 42%;
+  overflow: hidden;
+}
+.oc-block-scene-floor i {
+  position: absolute;
+  top: -10%;
+  width: 40%;
+  height: 90%;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  filter: blur(18px);
+  animation: oc-scene-wash var(--t, 12s) ease-in-out var(--d, 0s) infinite alternate;
+}
+.oc-block-scene-floor i:nth-child(1) { left: 2%; background: radial-gradient(closest-side, oklch(from var(--oc-scene-light) l c h / 0.32), transparent); --t: 11s; }
+.oc-block-scene-floor i:nth-child(2) { left: 30%; background: radial-gradient(closest-side, oklch(from var(--oc-scene-violet) l c h / 0.3), transparent); --t: 14s; --d: -6s; }
+.oc-block-scene-floor i:nth-child(3) { left: 58%; background: radial-gradient(closest-side, oklch(from var(--oc-scene-amber) l c h / 0.22), transparent); --t: 13s; --d: -3s; }
+
+@keyframes oc-scene-wash {
+  from { transform: translateX(-18%) scale(0.9); opacity: 0.6; }
+  to { transform: translateX(18%) scale(1.15); opacity: 1; }
+}
+
+.oc-block-scene-led { position: absolute; z-index: 4; top: 6%; left: 7%; width: 47%; }
+/* Crowd: silhouettes in four rows (SVG); each group of six bobs at its own tempo (--t) and phase (--d), some jump,
+   now and then an arm goes up and waves, phones sway with a flickering light. */
+.oc-block-scene-crowd {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  top: 46%;
+  width: 100%;
+  height: 40%;
+  fill: url(#oc-scene-body);
+  stroke: oklch(from var(--oc-scene-glow) l c h / 0.1);
+  stroke-width: 0.6;
+}
+.oc-block-scene-crowd g { animation: oc-scene-bob var(--t, 0.6s) ease-in-out var(--d, 0s) infinite alternate; }
+.oc-block-scene-row0 { --a: -2px; fill: url(#oc-scene-body-far); stroke: oklch(from var(--oc-scene-glow) l c h / 0.2); }
+.oc-block-scene-row1 { --a: -3px; fill: url(#oc-scene-body-far); }
+.oc-block-scene-row2 { --a: -4.5px; }
+.oc-block-scene-row3 { --a: -6px; stroke: none; }
+.oc-block-scene-crowd .oc-block-scene-jump { animation: oc-scene-jump calc(var(--t, 0.6s) * 4) ease-in-out var(--d, 0s) infinite; }
+
+@keyframes oc-scene-bob {
+  to { transform: translateY(var(--a, -4px)); }
+}
+@keyframes oc-scene-jump {
+  0%, 50%, 100% { transform: translateY(0); }
+  25% { transform: translateY(var(--a, -4px)); }
+  62% { transform: translateY(calc(var(--a, -4px) * 3.2)); }
+  75% { transform: translateY(0); }
+  87% { transform: translateY(calc(var(--a, -4px) * 2.4)); }
+}
+
+.oc-block-scene-crowd .oc-block-scene-arm {
+  fill: url(#oc-scene-body-far);
+  stroke: oklch(from var(--oc-scene-glow) l c h / 0.35);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  opacity: 0;
+  animation: oc-scene-wave 14s ease-in-out var(--d, 0s) infinite;
+}
+@keyframes oc-scene-wave {
+  0%, 62% { transform: rotate(70deg); opacity: 0; }
+  67% { transform: rotate(-8deg); opacity: 1; }
+  72% { transform: rotate(12deg); }
+  77% { transform: rotate(-12deg); }
+  82% { transform: rotate(10deg); }
+  88% { transform: rotate(-4deg); opacity: 1; }
+  93%, 100% { transform: rotate(70deg); opacity: 0; }
+}
+
+.oc-block-scene-crowd .oc-block-scene-phone {
+  fill: var(--oc-scene-lamp);
+  stroke: none;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: oc-scene-sway 2.6s ease-in-out var(--d, 0s) infinite alternate;
+}
+.oc-block-scene-crowd .oc-block-scene-phone circle { animation: oc-scene-flicker 1.9s ease-in-out var(--d, 0s) infinite alternate; }
+@keyframes oc-scene-sway {
+  from { transform: rotate(-12deg); }
+  to { transform: rotate(12deg); }
+}
+@keyframes oc-scene-flicker {
+  from { opacity: 0.45; }
+  to { opacity: 1; }
+}
+
+/* Front of house: two technicians (head ::before, shoulders ::after), the desk edge, a mixing console with VU meters,
+   knobs and faders, and a laptop (Pro device mockup). */
+.oc-block-scene-tech { position: absolute; z-index: 7; }
+.oc-block-scene-tech::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  translate: -50% 0;
+  background: radial-gradient(circle at 35% 35%, color-mix(in oklch, var(--oc-scene-metal), white 4%), color-mix(in oklch, var(--oc-scene-ink), black 40%) 65%);
+  box-shadow: inset -4px -4px 8px oklch(from var(--oc-scene-glow) l c h / 0.35);
+  animation: oc-scene-nod 6s ease-in-out infinite;
+}
+.oc-block-scene-tech::after {
+  content: '';
+  position: absolute;
+  inset: 32% 0 0;
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+  background: linear-gradient(var(--oc-scene-metal), color-mix(in oklch, var(--oc-scene-ink), black 40%) 60%);
+  box-shadow: inset 0 3px 8px oklch(from var(--oc-scene-glow) l c h / 0.22);
+}
+.oc-block-scene-tech--left { left: 12%; bottom: 16%; width: 14%; height: 24%; animation: oc-scene-tech 11s ease-in-out infinite; }
+.oc-block-scene-tech--right {
+  right: -4%;
+  bottom: -7%;
+  width: 20%;
+  height: 36%;
+  z-index: 6;
+  filter: blur(1.5px);
+  animation: oc-scene-tech 15s ease-in-out -5s infinite;
+}
+@keyframes oc-scene-tech {
+  0%, 100% { transform: translate(0, 0); }
+  30% { transform: translate(-4%, 1%) rotate(-2deg); }
+  55% { transform: translate(3%, -1%); }
+  78% { transform: translate(-1%, 1.5%) rotate(1.5deg); }
+}
+@keyframes oc-scene-nod {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(3%) rotate(-3deg); }
+  70% { transform: translateY(-2%) rotate(2deg); }
+}
+
+.oc-block-scene-desk {
+  position: absolute;
+  z-index: 8;
+  left: 1%;
+  right: 1%;
+  bottom: 0;
+  height: 16%;
+  background: linear-gradient(oklch(from var(--oc-foreground) l c h / 0.45), oklch(from var(--oc-muted-foreground) l c h / 0.3) 2.5%, oklch(from var(--oc-scene-ink) l c h / 0.92) 20%, color-mix(in oklch, var(--oc-scene-ink), black 40%) 100%);
+  clip-path: polygon(3% 0, 97% 0, 100% 100%, 0 100%);
+}
+
+.oc-block-scene-console {
+  position: absolute;
+  z-index: 9;
+  left: 5%;
+  bottom: 5%;
+  width: 30%;
+  height: 24%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 26% 16% 1fr;
+  gap: 7%;
+  padding: 3% 4%;
+  border: 1px solid color-mix(in oklch, var(--oc-scene-metal), white 20%);
+  border-radius: 6px;
+  background: linear-gradient(color-mix(in oklch, var(--oc-scene-metal), white 5%), var(--oc-scene-ink));
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--oc-scene-ink), black 30%), 0 12px 24px -6px oklch(from var(--oc-scene-ink) l c h / 0.85);
+  transform: perspective(600px) rotateX(48deg);
+  transform-origin: 50% 100%;
+}
+.oc-block-scene-console__meters { display: flex; gap: 4%; }
+.oc-block-scene-console__meters i {
+  flex: 1;
+  background: linear-gradient(var(--oc-scene-vu-high) 0 14%, var(--oc-scene-vu-mid) 14% 38%, var(--oc-scene-vu-low) 38%);
+  transform: scaleY(0.4);
+  transform-origin: 50% 100%;
+  animation: oc-scene-meter 0.7s ease-in-out infinite alternate;
+}
+.oc-block-scene-console__meters i:nth-child(2n) { animation-duration: 0.55s; animation-delay: -0.2s; }
+.oc-block-scene-console__meters i:nth-child(3n) { animation-duration: 0.85s; animation-delay: -0.4s; }
+.oc-block-scene-console__meters i:nth-child(5n) { animation-delay: -0.1s; }
+.oc-block-scene-console__meters i:nth-child(7n) { animation-duration: 0.62s; animation-delay: -0.5s; }
+@keyframes oc-scene-meter {
+  from { transform: scaleY(0.2); }
+  to { transform: scaleY(0.95); }
+}
+.oc-block-scene-console__knobs { background: radial-gradient(circle, var(--oc-muted-foreground) 26%, color-mix(in oklch, var(--oc-scene-metal), white 10%) 30% 42%, transparent 46%) 0 50% / 10% 100% repeat-x; }
+.oc-block-scene-console__faders { display: flex; gap: 4%; }
+.oc-block-scene-console__faders b {
+  flex: 1;
+  position: relative;
+  background: linear-gradient(90deg, transparent 42%, color-mix(in oklch, var(--oc-scene-ink), black 30%) 42% 58%, transparent 58%);
+}
+.oc-block-scene-console__faders b::after {
+  content: '';
+  position: absolute;
+  top: var(--f, 40%);
+  left: 8%;
+  right: 8%;
+  height: 20%;
+  border-radius: 2px;
+  background: linear-gradient(var(--oc-foreground), var(--oc-muted-foreground));
+}
+
+.oc-block-scene-laptop {
+  position: absolute;
+  z-index: 10;
+  left: 56%;
+  bottom: 4%;
+  width: 36%;
+}
+
+/* Reduce motion: everything stands still. */
+@media (prefers-reduced-motion: reduce) {
+  .oc-block-scene *,
+  .oc-block-scene *::before,
+  .oc-block-scene *::after { animation: none !important; }
+}
+
+/* Phone: a square hall, a larger LED wall and laptop, one technician. */
+@media (max-width: 640px) {
+  .oc-block-scene { aspect-ratio: 1; }
+  .oc-block-scene-truss { top: 2%; }
+  .oc-block-scene-truss b { height: 50cqw; }
+  .oc-block-scene-led { top: 5%; left: 4%; width: 58%; }
+  .oc-block-scene-stage { top: 40%; width: 74%; height: 7%; }
+  .oc-block-scene-floor { top: 38%; height: 50%; }
+  .oc-block-scene-crowd { top: 38%; height: 44%; }
+  .oc-block-scene-tech--left { left: 8%; bottom: 14%; width: 16%; height: 20%; }
+  .oc-block-scene-tech--right { display: none; }
+  .oc-block-scene-desk { height: 13%; }
+  .oc-block-scene-console { left: 3%; bottom: 4%; width: 36%; height: 18%; }
+  .oc-block-scene-laptop { left: 46%; bottom: 3%; width: 50%; }
+}
+
+/* Stops of the SVG gradients (crowd) from the tokens above. */
+.oc-block-scene-stop-body { stop-color: var(--oc-scene-body-top); }
+.oc-block-scene-stop-far { stop-color: var(--oc-scene-body-far-top); }
+.oc-block-scene-stop-ink { stop-color: var(--oc-scene-ink); }
+.oc-block-scene-stop-lamp { stop-color: var(--oc-scene-lamp); }
 
 /* parts/site-glass-nav.css */
 /* File: packages/pro/src/parts/site-glass-nav.css (OmniaUI Pro)

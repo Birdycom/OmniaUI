@@ -103,8 +103,8 @@ class BlocksTest extends TestCase
     {
         $out = [];
         foreach (self::allBlocks() as $name => $_) {
-            // form blocks add a CSRF field, the wizard builds its stepper from props
-            if (! in_array($name, ['form-page', 'auth-split', 'wizard-dialog'], true)) {
+            // form blocks add a CSRF field (contact-form also builds fields and cards from props), the wizard builds its stepper from props
+            if (! in_array($name, ['form-page', 'auth-split', 'wizard-dialog', 'contact-form'], true)) {
                 $out[$name] = [$name];
             }
         }

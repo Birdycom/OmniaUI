@@ -1,0 +1,226 @@
+<!--oc-page {"title": "OmniaUI - Contact form Block", "category": "Marketing", "description": "Contact form in a panel next to a column of contact cards, with field errors, a busy state and a thank-you result.", "nav": "Contact form", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!-- File: apps/site/src/content/ui/blocks/contact-form.html | Map: hero -> demo (form + cards, errors) -> script (protocol) -> frameworks -> reference -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Contact form</h1>
+        <p class="oc-hero-text">A contact form in a <a href="../components/panel.html">panel</a> with a soft glow, next to a column of contact cards (mail, phone, visit, helpdesk). The fields are a <a href="../components/forms.html#filled-form">filled form</a> with a hint in a label, a honeypot against bots and a note next to the button. It works without JavaScript (POST + redirect); <code>contact-form.js</code> sends it without a reload and shows the field errors or the <a href="../components/result.html">result</a> in place. Install with <code>npx omniaui add contact-form</code>. <a href="../blocks.html">All blocks</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">blocks/contact-form.html</span>
+          <p class="oc-section-header__desc">Try it: send it empty to see the field errors, fill it in to see the result. On this page a small stand-in answers for the server.</p>
+        </div>
+        <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Form and contact cards <span class="oc-badge-version">v0.13.0</span></h3>
+          <oc-demo title="Contact form" size="tall">
+<section class="oc-block-contact-form" aria-label="Contact">
+  <div class="oc-block-contact-form-layout" data-contact-root>
+    <div class="oc-panel oc-panel--glow" id="contact-form">
+      <div class="oc-result" role="status" tabindex="-1" data-contact-success hidden>
+        <span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><iconify-icon icon="mdi:check"></iconify-icon></span>
+        <h2 class="oc-result__title">Thank you, your message was sent</h2>
+        <p class="oc-result__text">You will get a confirmation by e-mail. We usually answer within one working day.<br>Urgent? Call us on <a href="tel:+3230000000">+32 3 000 00 00</a>.</p>
+        <div class="oc-result__actions">
+          <a class="oc-btn oc-btn--outline" href="#contact-form" data-contact-again>Send another message</a>
+        </div>
+      </div>
+
+      <div data-contact-body>
+        <h2 class="oc-block-contact-form-title">Send us a message</h2>
+        <p class="oc-block-contact-form-intro">We usually answer within one working day.</p>
+        <p class="oc-alert oc-alert--danger" role="alert" data-contact-alert hidden></p>
+
+        <form class="oc-form oc-form--filled" method="post" action="/contact" novalidate data-contact-form>
+          <div class="oc-honeypot" aria-hidden="true">
+            <label for="contact-website">Leave this field empty</label>
+            <input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="oc-field-group oc-field-group--row">
+            <div class="oc-field">
+              <label class="oc-field-label" for="contact-name">Name</label>
+              <input class="oc-input" type="text" id="contact-name" name="name" required maxlength="100" autocomplete="name">
+            </div>
+            <div class="oc-field">
+              <label class="oc-field-label" for="contact-email">E-mail</label>
+              <input class="oc-input" type="email" id="contact-email" name="email" required maxlength="254" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="oc-field-group oc-field-group--row">
+            <div class="oc-field">
+              <label class="oc-field-label" for="contact-phone">Phone <span class="oc-field-label__hint">(optional)</span></label>
+              <input class="oc-input" type="tel" id="contact-phone" name="phone" maxlength="40" autocomplete="tel" inputmode="tel">
+            </div>
+            <div class="oc-field">
+              <label class="oc-field-label" for="contact-subject">What is it about?</label>
+              <select class="oc-select" id="contact-subject" name="subject" required>
+                <option value="">Choose a subject</option>
+                <option value="project">A new project</option>
+                <option value="support">Support</option>
+                <option value="other">Something else</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="oc-field">
+            <label class="oc-field-label" for="contact-message">Your message</label>
+            <textarea class="oc-input oc-textarea" id="contact-message" name="message" rows="6" required maxlength="5000"></textarea>
+          </div>
+
+          <div class="oc-form-actions">
+            <button class="oc-btn oc-btn--lg" type="submit" data-contact-submit><span data-contact-label>Send message</span></button>
+            <p class="oc-form-note">We only use your details to answer you. See the <a href="#privacy">privacy statement</a>.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="oc-block-contact-form-cards">
+      <article class="oc-block-contact-card">
+        <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><iconify-icon icon="mdi:email-outline"></iconify-icon></span>
+        <h3 class="oc-block-contact-title">Mail us</h3>
+        <a class="oc-block-contact-line" href="mailto:info@company1.example">info@company1.example</a>
+      </article>
+      <article class="oc-block-contact-card">
+        <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><iconify-icon icon="mdi:phone-outline"></iconify-icon></span>
+        <h3 class="oc-block-contact-title">Call us</h3>
+        <a class="oc-block-contact-line" href="tel:+3230000000">+32 3 000 00 00</a>
+      </article>
+      <article class="oc-block-contact-card">
+        <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><iconify-icon icon="mdi:map-marker-outline"></iconify-icon></span>
+        <h3 class="oc-block-contact-title">We come to you</h3>
+        <p class="oc-block-contact-line">We work on location.</p>
+        <p class="oc-block-contact-line">Make an appointment by mail or phone.</p>
+      </article>
+      <article class="oc-block-contact-card">
+        <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><iconify-icon icon="mdi:headset"></iconify-icon></span>
+        <h3 class="oc-block-contact-title">Helpdesk</h3>
+        <a class="oc-block-contact-line" href="mailto:support@company1.example">support@company1.example</a>
+      </article>
+    </div>
+  </div>
+</section>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="demo-2">After a failed post</h3>
+          <p class="oc-section-content__desc">The server renders the errors without JavaScript the same way: <code>aria-invalid="true"</code> and <code>aria-describedby</code> on the field, <code>&lt;p class="oc-field-error" id="err-&lt;name&gt;"&gt;</code> under it and the alert above the form.</p>
+          <oc-demo title="Contact form - errors" size="tall">
+<section class="oc-block-contact-form" aria-label="Contact">
+  <div class="oc-block-contact-form-layout" style="--oc-contact-form-cols: 1fr">
+    <div class="oc-panel oc-panel--glow">
+      <h2 class="oc-block-contact-form-title">Send us a message</h2>
+      <p class="oc-alert oc-alert--danger" role="alert">Please check the fields in red.</p>
+      <form class="oc-form oc-form--filled" method="post" action="/contact" novalidate>
+        <div class="oc-field-group oc-field-group--row">
+          <div class="oc-field">
+            <label class="oc-field-label" for="contact-err-name">Name</label>
+            <input class="oc-input" type="text" id="contact-err-name" name="name" value="Customer 1">
+          </div>
+          <div class="oc-field">
+            <label class="oc-field-label" for="contact-err-email">E-mail</label>
+            <input class="oc-input" type="email" id="contact-err-email" name="email" value="customer1@" aria-invalid="true" aria-describedby="err-email">
+            <p class="oc-field-error" id="err-email">Fill in a valid e-mail address.</p>
+          </div>
+        </div>
+        <div class="oc-field">
+          <label class="oc-field-label" for="contact-err-message">Your message</label>
+          <textarea class="oc-input oc-textarea" id="contact-err-message" name="message" rows="4" aria-invalid="true" aria-describedby="err-message"></textarea>
+          <p class="oc-field-error" id="err-message">Write a short message.</p>
+        </div>
+        <div class="oc-form-actions">
+          <button class="oc-btn oc-btn--lg" type="submit">Send message</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="script">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Sending without a reload</h2>
+          <p class="oc-section-header__desc"><code>npx omniaui copy-js contact-form</code> puts <code>oc-contact-form.js</code> in <code>public/js</code>; load it with <code>&lt;script type="module" src="/js/oc-contact-form.js"&gt;&lt;/script&gt;</code> and it binds every <code>form[data-contact-form]</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <ul class="oc-docs-list">
+            <li><strong>Request</strong>: <code>POST</code> of the form data to <code>form.action</code> with <code>Accept: application/json</code>.</li>
+            <li><strong>Answer</strong>: <code>{ "sent": true }</code> (200), or <code>{ "sent": false, "errors": { "email": "…", "form": "…" } }</code> (422). <code>errors.form</code> is the message above the form; without it the alert says <em>Please check the fields in red.</em></li>
+            <li><strong>While it sends</strong>: <code>aria-busy="true"</code> on the form, the button disabled and its label (<code>[data-contact-label]</code>) set to <em>Sending…</em>.</li>
+            <li><strong>Texts</strong>: <code>data-busy-label</code>, <code>data-error-fields</code> and <code>data-error-network</code> on the form, for your language.</li>
+            <li><strong>Done</strong>: the form resets, <code>[data-contact-body]</code> hides, <code>[data-contact-success]</code> shows and gets the focus; the form fires <code>oc-contact-sent</code>. <code>[data-contact-again]</code> brings the form back.</li>
+          </ul>
+<oc-code lang="php">// Laravel: one route for both (JSON for the script, a redirect without it)
+public function send(Request $request)
+{
+    $data = $request->validate(['name' => 'required', 'email' => 'required|email', 'message' => 'required']);
+    if ($request->filled('website')) { return $request->wantsJson() ? ['sent' => true] : back(); } // honeypot
+    Mail::to('info@company1.example')->send(new ContactMessage($data));
+
+    return $request->wantsJson() ? ['sent' => true] : back()->with('sent', true);
+}</oc-code>
+          <p class="oc-section-content__desc">Laravel answers a failed <code>validate()</code> on a JSON request with 422 and <code>{ errors: { field: ["…"] } }</code>; the script takes the first message of a list.</p>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Laravel, React and Vue</h2>
+        </div>
+        <div class="oc-section-content">
+<oc-code lang="html">&lt;!-- Blade: errors and old values come from Laravel, @csrf is in it --&gt;
+&lt;x-oc::block.contact-form :action="route('contact.send')" :sent="session('sent')"
+    :subjects="['project' =&gt; 'A new project', 'support' =&gt; 'Support']"
+    :cards="[['title' =&gt; 'Mail us', 'icon' =&gt; 'mdi:email-outline', 'lines' =&gt; [['info@company1.example', 'mailto:info@company1.example']]]]" /&gt;
+
+&lt;!-- React (Inertia): --&gt;
+&lt;BlockContactForm errors={errors} busy={processing} sent={wasSuccessful} onSubmit={submit} onAgain={reset} cards={cards} /&gt;
+
+&lt;!-- Vue (Inertia): --&gt;
+&lt;OcBlockContactForm :errors="form.errors" :busy="form.processing" :sent="form.wasSuccessful" :cards="cards" @submit.prevent="send" @again="form.reset()" /&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/blocks/src/parts/site-contact-form.css</code>; the form, panel and result classes are OmniaUI components.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-block-contact-form</code></td><td>Section; <code>--oc-contact-form-cols</code> sets the split (1.6fr 1fr)</td></tr>
+              <tr><td><code>.oc-block-contact-form-layout</code></td><td>Form panel next to the cards; one column up to 960px, the cards then side by side</td></tr>
+              <tr><td><code>.oc-block-contact-form-title / -intro</code></td><td>Title and intro in the panel</td></tr>
+              <tr><td><code>.oc-block-contact-form-cards</code></td><td>Column of <code>.oc-block-contact-card</code> (contact grid block); links muted, foreground on hover</td></tr>
+              <tr><td><code>.oc-panel.oc-panel--glow</code></td><td>The frame with the light (<a href="../components/panel.html">Panel</a>)</td></tr>
+              <tr><td><code>.oc-form.oc-form--filled</code></td><td>The fields (<a href="../components/forms.html#filled-form">Forms</a>)</td></tr>
+              <tr><td><code>.oc-result</code></td><td>Thank-you block (<a href="../components/result.html">Result</a>)</td></tr>
+              <tr><td><code>[data-contact-*]</code></td><td>Hooks for <code>contact-form.js</code>: root, form, body, success, alert, submit, label, again</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+<script type="module" src="/js/oc-contact-form.js"></script>
+<script>
+  // Stand-in for the server on this page only: answers POST /contact like the protocol above.
+  (() => {
+    const real = window.fetch.bind(window);
+    window.fetch = async (url, init) => {
+      if (new URL(String(url), location.href).pathname !== "/contact") return real(url, init);
+      const data = init.body;
+      const errors = {};
+      if (!String(data.get("name") || "").trim()) errors.name = "Fill in your name.";
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(data.get("email") || ""))) errors.email = "Fill in a valid e-mail address.";
+      if (!data.get("subject")) errors.subject = "Choose a subject.";
+      if (!String(data.get("message") || "").trim()) errors.message = "Write a short message.";
+      await new Promise((done) => setTimeout(done, 700));
+      const sent = Object.keys(errors).length === 0;
+      return new Response(JSON.stringify(sent ? { sent } : { sent, errors }), { status: sent ? 200 : 422, headers: { "Content-Type": "application/json" } });
+    };
+  })();
+</script>

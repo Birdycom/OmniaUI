@@ -105,6 +105,61 @@ class MarketingTest extends TestCase
         $this->assertStringContainsString('<p>Custom</p>', $custom);
     }
 
+    public function test_feature_card_and_link_card(): void
+    {
+        $f = $this->render('<x-oc::feature-card title="Apps" icon="mdi:apps" accent="green" :level="2">Built for you.</x-oc::feature-card>');
+        $this->assertElement($f, 'article', 'oc-feature-card');
+        $this->assertElement($f, 'h2', 'oc-feature-card__title', [], 'Apps');
+        $this->assertElement($f, 'span', 'oc-icon-tile oc-icon-tile--sm oc-accent--green');
+        $l = $this->render('<x-oc::link-card href="/a" title="Agent 1" accent="violet" more="Read more">Reads invoices.</x-oc::link-card>');
+        $this->assertElement($l, 'a', 'oc-link-card oc-accent--violet', ['href' => '/a']);
+        $this->assertElement($l, 'span', 'oc-link-card__more', [], 'Read more');
+    }
+
+    public function test_brand_mark(): void
+    {
+        $html = $this->render('<x-oc::brand-mark name="Company" accent="1" tagline="Software" size="lg" aria-label="Company 1"><x-slot:icon><svg class="oc-brand-mark__icon"></svg></x-slot:icon></x-oc::brand-mark>');
+        $this->assertElement($html, 'a', 'oc-brand-mark oc-brand-mark--lg', ['href' => '/', 'aria-label' => 'Company 1']);
+        $this->assertElement($html, 'span', 'oc-brand-mark__accent', [], '1');
+        $this->assertElement($html, 'span', 'oc-brand-mark__tagline', [], 'Software');
+        $this->assertStringContainsString('class="oc-brand-mark__icon"', $html);
+    }
+
+    public function test_panel_and_result(): void
+    {
+        $this->assertElement($this->render('<x-oc::panel glow="end">X</x-oc::panel>'), 'div', 'oc-panel oc-panel--glow oc-panel--glow-end', [], 'X');
+        $html = $this->render('<x-oc::result title="Sent" icon="mdi:check" accent="green" center>Thanks.<x-slot:actions><a href="#form">Again</a></x-slot:actions></x-oc::result>');
+        $this->assertElement($html, 'div', 'oc-result oc-result--center', ['role' => 'status', 'tabindex' => '-1']);
+        $this->assertElement($html, 'span', 'oc-icon-tile oc-icon-tile--sm oc-accent--green');
+        $this->assertElement($html, 'p', 'oc-result__text', [], 'Thanks.');
+        $this->assertElement($html, 'div', 'oc-result__actions');
+    }
+
+    public function test_contact_form_renders_fields_errors_cards_and_result(): void
+    {
+        // Laravel shares $errors with every view (ShareErrorsFromSession); the test does the same.
+        view()->share('errors', (new \Illuminate\Support\ViewErrorBag)->put('default', new \Illuminate\Support\MessageBag(['email' => 'Fill in a valid e-mail address.'])));
+        $html = $this->render(<<<'BLADE'
+            <x-oc::block.contact-form action="/contact" class="mine" :subjects="['project' => 'A new project']" :cards="[['title' => 'Mail us', 'icon' => 'mdi:email-outline', 'lines' => [['info@company1.example', 'mailto:info@company1.example'], ['We answer within a day', null]]]]" />
+            BLADE);
+        view()->share('errors', new \Illuminate\Support\ViewErrorBag);
+
+        $this->assertStringContainsString('class="oc-block-contact-form mine"', $html);
+        $this->assertElement($html, 'form', 'oc-form oc-form--filled', ['action' => '/contact', 'method' => 'post']);
+        $this->assertStringContainsString('name="_token"', $html);
+        $this->assertElement($html, 'div', 'oc-honeypot', ['aria-hidden' => 'true']);
+        $this->assertMatchesRegularExpression('/id="contact-email"[^>]*aria-invalid="true"/', $html);
+        $this->assertElement($html, 'p', 'oc-field-error', ['id' => 'err-email'], 'Fill in a valid e-mail address.');
+        $this->assertStringContainsString('Please check the fields in red.', $html);
+        $this->assertMatchesRegularExpression('#<option value="project"\s*>A new project</option>#', $html);
+        $this->assertElement($html, 'a', 'oc-block-contact-line', ['href' => 'mailto:info@company1.example'], 'info@company1.example');
+        $this->assertMatchesRegularExpression('/data-contact-success\s+hidden/', $html);
+
+        $sent = $this->render('<x-oc::block.contact-form action="/contact" sent success-text="We answer within a day." />');
+        $this->assertMatchesRegularExpression('/data-contact-body\s+hidden/', $sent);
+        $this->assertElement($sent, 'p', 'oc-result__text', [], 'We answer within a day.');
+    }
+
     public function test_link_row_renders_links_with_noopener_on_external_ones(): void
     {
         $html = $this->render(<<<'BLADE'

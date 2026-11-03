@@ -54,7 +54,8 @@
   /* border-box: the gradient also runs under the transparent 1px border of .oc-btn; from the padding box it would
      repeat in that border and show a thin stripe of the other end's color on both sides. */
   background: linear-gradient(100deg, var(--oc-accent-from), var(--oc-accent-to)) border-box;
-  color: var(--color-white-50);
+  /* --oc-btn-gradient-ink: dark text on a light accent (set it with the accent). */
+  color: var(--oc-btn-gradient-ink, var(--color-white-50));
   box-shadow: 0 10px 30px -10px var(--oc-accent-to);
   transition: transform 0.2s var(--oc-ease-out), box-shadow 0.2s;
 }
@@ -81,7 +82,8 @@
 
 /* Backdrop: slowly drifting color blobs + fine grid behind the page.
    <div class="oc-backdrop" aria-hidden="true"><i class="oc-backdrop__blob"></i><i class="oc-backdrop__grid"></i></div>
-   .oc-backdrop--local keeps it inside a positioned section instead of the viewport. */
+   .oc-backdrop--local keeps it inside a positioned section instead of the viewport.
+   A theme sets the colors: --oc-backdrop-1, -2, -3 (the blobs), --oc-backdrop-3-opacity and --oc-backdrop-grid (the lines). */
 .oc-backdrop {
   position: fixed;
   inset: 0;
@@ -102,24 +104,27 @@
   opacity: var(--oc-backdrop-opacity, 0.35);
   animation: oc-drift 24s ease-in-out infinite alternate;
 }
-.oc-backdrop::before { background: var(--color-blue-40); inset-block-start: -18rem; inset-inline-start: -12rem; }
-.oc-backdrop::after { background: var(--color-purple-30); inset-block-start: 10rem; inset-inline-end: -16rem; animation-delay: -8s; }
-.oc-backdrop > .oc-backdrop__blob { background: var(--color-teal-40); inset-block-end: -20rem; inset-inline-start: 30%; animation-delay: -16s; opacity: calc(var(--oc-backdrop-opacity, 0.35) * 0.6); }
+.oc-backdrop::before { background: var(--oc-backdrop-1, var(--color-blue-40)); inset-block-start: -18rem; inset-inline-start: -12rem; }
+.oc-backdrop::after { background: var(--oc-backdrop-2, var(--color-purple-30)); inset-block-start: 10rem; inset-inline-end: -16rem; animation-delay: -8s; }
+.oc-backdrop > .oc-backdrop__blob { background: var(--oc-backdrop-3, var(--color-teal-40)); inset-block-end: -20rem; inset-inline-start: 30%; animation-delay: -16s; opacity: var(--oc-backdrop-3-opacity, calc(var(--oc-backdrop-opacity, 0.35) * 0.6)); }
 .oc-backdrop > .oc-backdrop__grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(oklch(from var(--oc-foreground) l c h / 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(from var(--oc-foreground) l c h / 0.05) 1px, transparent 1px);
+    linear-gradient(var(--oc-backdrop-grid, oklch(from var(--oc-foreground) l c h / 0.05)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--oc-backdrop-grid, oklch(from var(--oc-foreground) l c h / 0.05)) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(ellipse at 50% 0%, black 20%, transparent 70%);
 }
 @keyframes oc-drift { to { transform: translate(6rem, 4rem) scale(1.15); } }
 
 /* Container, section spacing and display headings */
-.oc-container { inline-size: min(100% - 2.5rem, var(--oc-container, 1200px)); margin-inline: auto; }
+/* --oc-container is the width, --oc-container-gutter the room on each side on a narrower screen (1.25rem). */
+.oc-container { inline-size: min(100% - 2 * var(--oc-container-gutter, 1.25rem), var(--oc-container, 1200px)); margin-inline: auto; }
 .oc-section-pad { padding-block: clamp(4rem, 9vw, 7rem); }
 .oc-section-pad--tight { padding-block: clamp(2rem, 5vw, 3.5rem); }
+/* The hero of a home page: a little less room on top and below than a section. */
+.oc-section-pad--hero { padding-block: clamp(3.5rem, 9vw, 7rem) clamp(3rem, 6vw, 5rem); }
 .oc-display {
   margin: 0 0 1.5rem;
   font-size: clamp(2.6rem, 5.6vw, 4.6rem);
@@ -129,8 +134,28 @@
   text-wrap: balance;
 }
 .oc-display--md { font-size: clamp(1.9rem, 4vw, 3rem); }
+.oc-display--sm { font-size: clamp(1.5rem, 3vw, 2.1rem); }
 .oc-lead { margin: 0 0 1rem; color: var(--oc-muted-foreground); font-size: 1.15rem; line-height: 1.65; max-inline-size: 42rem; text-wrap: pretty; }
-.oc-split { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: 3rem; align-items: center; }
+/* Larger and narrower, for a home hero. */
+.oc-lead--lg { font-size: 1.2rem; max-inline-size: 36rem; }
+.oc-split { display: grid; grid-template-columns: var(--oc-split-cols, repeat(auto-fit, minmax(min(100%, 24rem), 1fr))); gap: var(--oc-split-gap, 3rem); align-items: center; }
+/* Ratio presets (one column up to 960px): --lead makes the text column wider, --media the image column.
+   Your own ratio: set --oc-split-cols in a class (and to 1fr in a media query for small screens). */
+.oc-split--lead { --oc-split-cols: 1.25fr 1fr; }
+.oc-split--media { --oc-split-cols: 1fr 1.15fr; }
+.oc-split__media { display: grid; place-items: center; }
+/* Columns aligned at the top (a fact list next to a long text). */
+.oc-split--top { align-items: start; }
+/* --oc-split-cols-wide: your own ratio that only applies above 960px, so the split still stacks on a phone. */
+@media (min-width: 961px) {
+  .oc-split { grid-template-columns: var(--oc-split-cols-wide, var(--oc-split-cols, repeat(auto-fit, minmax(min(100%, 24rem), 1fr)))); }
+}
+@media (max-width: 960px) {
+  .oc-split--lead, .oc-split--media { --oc-split-cols: 1fr; }
+  /* The image (a product mark, a screenshot) comes first on a small screen, aligned at the start, and an xl tile shrinks. */
+  .oc-split__media { order: -1; justify-items: start; }
+  .oc-split__media .oc-icon-tile--xl { --oc-tile-size: 7rem; }
+}
 
 /* Code window: editor frame with traffic lights and a file name. It follows the page theme: a light frame and light
    syntax colors in light mode, the Omnia Dark editor colors in dark mode. --dark keeps it dark on a light page (the
@@ -218,7 +243,12 @@
 @keyframes oc-float { 50% { translate: 0 -12px; } }
 
 /* Product / feature card with hover lift and accent glow */
-.oc-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--oc-card-min, 17rem)), 1fr)); gap: 1.25rem; }
+.oc-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--oc-card-min, 17rem)), 1fr)); gap: var(--oc-card-gap, 1.25rem); }
+/* Wide cards (projects, case studies): from 32rem, three in a row on a wide screen. */
+.oc-card-grid--wide { --oc-card-min: 32rem; --oc-card-gap: 1.5rem; }
+/* --fit: the cards stretch over the full width when there are fewer than fit in a row (auto-fit instead of auto-fill). */
+.oc-card-grid--fit { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--oc-card-min, 17rem)), 1fr)); }
+@media (min-width: 1280px) { .oc-card-grid--wide { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .oc-product-card {
   position: relative;
   display: flex;
@@ -232,7 +262,7 @@
     var(--oc-surface);
   color: var(--oc-foreground);
   text-decoration: none;
-  transition: transform 0.35s var(--oc-ease-out), border-color 0.35s, --oc-glow 0.35s;
+  transition: translate 0.35s var(--oc-ease-out), border-color 0.35s, --oc-glow 0.35s;
 }
 @property --oc-glow {
   syntax: "<number>";
@@ -241,7 +271,8 @@
 }
 .oc-product-card:hover {
   --oc-glow: 0.22;
-  transform: translateY(-6px);
+  /* The lift uses translate; a fly-in (.oc-reveal--fly) animates the transform, so both keep working. */
+  translate: 0 calc(-1 * var(--oc-hover-lift, 6px));
   border-color: oklch(from var(--oc-accent-from) l c h / 0.55);
 }
 .oc-product-card__top { display: flex; justify-content: space-between; align-items: flex-start; margin-block-end: 0.75rem; }
@@ -297,9 +328,17 @@
 }
 .oc-stat-strip__item { padding: 2rem 1.5rem; border-inline-start: 1px solid var(--oc-border); }
 .oc-stat-strip__item:first-child { border-inline-start: 0; }
-.oc-stat-strip__value { font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; line-height: 1.1; }
+.oc-stat-strip__value { font-family: var(--oc-font-display, inherit); font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; line-height: 1.1; }
 .oc-stat-strip__suffix { color: var(--oc-brand-1); }
 .oc-stat-strip__label { display: block; color: var(--oc-muted-foreground); font-size: 0.92rem; }
+/* Plain: no lines and no background of its own, for a strip inside an .oc-band (full width) or a card. */
+.oc-stat-strip--plain { border-block: 0; background: none; }
+/* Four figures on a narrower screen: two rows of two instead of three and one. */
+@media (max-width: 960px) {
+  .oc-stat-strip:has(> .oc-stat-strip__item:nth-child(4):last-child) { grid-template-columns: 1fr 1fr; }
+  .oc-stat-strip:has(> .oc-stat-strip__item:nth-child(4):last-child) > .oc-stat-strip__item:nth-child(3) { border-inline-start: 0; }
+  .oc-stat-strip:has(> .oc-stat-strip__item:nth-child(4):last-child) > .oc-stat-strip__item:nth-child(n + 3) { border-block-start: 1px solid var(--oc-border); }
+}
 
 /* Spotlight: large highlighted panel with copy + module list */
 .oc-spotlight {
@@ -317,8 +356,12 @@
 }
 .oc-spotlight__title { display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0 0.5rem; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.1; }
 .oc-spotlight__tagline { color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); font-size: 1.2rem; font-weight: 600; }
+/* --oc-spotlight-cols: your own ratio above 960px (copy | modules); on a smaller screen the spotlight stacks. */
+@media (min-width: 961px) {
+  .oc-spotlight { grid-template-columns: var(--oc-spotlight-cols, repeat(auto-fit, minmax(min(100%, 22rem), 1fr))); }
+}
 .oc-spotlight__modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
-.oc-spotlight__modules > li { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius-md); background: var(--oc-surface); font-size: 0.95rem; }
+.oc-spotlight__modules > li { display: flex; align-items: center; gap: 0.75rem; padding: 0.9rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius-md); background: var(--oc-spotlight-module-bg, var(--oc-surface)); font-size: 0.95rem; }
 
 /* Steps: numbered process with a gradient tick (numbers come from a CSS counter) */
 .oc-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1.25rem; margin: 0; padding: 0; list-style: none; counter-reset: oc-step; }
@@ -351,6 +394,9 @@
 /* Tag list (tech stack) and check list */
 .oc-tag-list { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
 .oc-tag-list > li { padding: 0.55rem 1.1rem; border: 1px solid oklch(from var(--oc-accent-from) l c h / 0.35); border-radius: 999px; background: oklch(from var(--oc-accent-from) l c h / 0.1); font-family: var(--oc-font-mono); font-size: 0.88rem; }
+/* Neutral chips (no accent color) and large chips in the display font, e.g. a strip of brand names. */
+.oc-tag-list--neutral > li { border-color: var(--oc-border); background: var(--oc-surface); color: var(--oc-foreground); }
+.oc-tag-list--lg > li { padding: 0.45rem 1rem; font-family: var(--oc-font-display, inherit); font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; }
 .oc-check-list { display: grid; gap: 0.5rem; margin: 1.1rem 0 0; padding: 0; list-style: none; font-size: 0.93rem; }
 .oc-check-list > li { display: flex; gap: 0.5rem; align-items: baseline; }
 .oc-check-list > li::before { content: "✓"; color: var(--oc-brand-1); font-weight: 700; }
@@ -385,6 +431,8 @@
 .oc-site-header__nav a:not(.oc-btn):hover,
 .oc-site-header__nav a[aria-current="page"] { color: var(--oc-foreground); }
 .oc-site-header__toggle { display: none; padding: 0.5rem 0.7rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius-md); background: var(--oc-surface); color: var(--oc-foreground); cursor: pointer; }
+/* The icon in the menu button is a block, so the button is as tall as a line of text (no inline gap under it). */
+.oc-site-header__toggle :is(svg, img, iconify-icon, .oc-icon) { display: block; }
 @media (min-width: 861px) {
   /* Desktop: the popover nav is always visible in the header bar. */
   .oc-site-header__nav[popover] { display: flex; }
@@ -409,6 +457,8 @@
     backdrop-filter: blur(16px);
   }
   .oc-site-header__nav[popover] a:not(.oc-btn) { padding: 0.75rem 0; font-size: 1.1rem; }
+  /* The call to action (.oc-site-header__cta, a button) gets room above it in the open menu. */
+  .oc-site-header__cta { margin-block-start: 0.75rem; }
 }
 
 /* Site footer: brand column + link columns + bottom bar */
@@ -416,20 +466,32 @@
   margin-block-start: 4rem;
   padding-block-start: 4rem;
   border-block-start: 1px solid var(--oc-border);
-  background: linear-gradient(to bottom, transparent, var(--oc-surface-strong));
+  background: var(--oc-footer-bg, linear-gradient(to bottom, transparent, var(--oc-surface-strong)));
   color: var(--oc-muted-foreground);
   font-size: 0.95rem;
+  container-type: inline-size;
 }
-.oc-site-footer__grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 2.5rem; }
+/* Columns: --oc-footer-cols (about + 3 link columns). Footer narrower than 66rem (about a 1060px screen):
+   --oc-footer-cols-md columns (3) with the about column over the full width; narrower than 54rem: two columns.
+   Container queries on the footer, so a footer in a narrow column or a preview follows its own width. */
+.oc-site-footer__grid { display: grid; grid-template-columns: var(--oc-footer-cols, 1.6fr repeat(3, 1fr)); gap: 2.5rem; }
 .oc-site-footer__about p { margin-block: 1rem 0; max-inline-size: 22rem; }
 .oc-site-footer__title { margin: 0 0 1rem; color: var(--oc-foreground); font-size: 0.95rem; font-weight: 700; }
 .oc-site-footer__list { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; padding: 0; list-style: none; font-style: normal; }
 .oc-site-footer a { color: inherit; text-decoration: none; }
 .oc-site-footer a:hover { color: var(--oc-foreground); }
-.oc-site-footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-block-start: 3rem; padding-block: 1.5rem; border-block-start: 1px solid var(--oc-border); font-size: 0.85rem; }
-@media (max-width: 860px) {
-  .oc-site-footer__grid { grid-template-columns: 1fr 1fr; }
+.oc-site-footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-block-start: 3rem; padding-block: 1.5rem; border-block-start: 1px solid var(--oc-border); color: var(--oc-footer-bottom-color, inherit); font-size: 0.85rem; }
+/* A second title further down in a column (e.g. "Tools" under the projects). */
+.oc-site-footer__subtitle { margin-block-start: 1.75rem; }
+/* Legal links in the bottom bar (Terms · Privacy · Cookies) and the build number after them. */
+.oc-site-footer__legal { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin: 0; padding: 0; list-style: none; }
+.oc-site-footer__build { opacity: 0.7; font-variant-numeric: tabular-nums; }
+@container (max-width: 66rem) {
+  .oc-site-footer__grid { grid-template-columns: repeat(var(--oc-footer-cols-md, 3), minmax(0, 1fr)); }
   .oc-site-footer__about { grid-column: 1 / -1; }
+}
+@container (max-width: 54rem) {
+  .oc-site-footer__grid { grid-template-columns: 1fr 1fr; }
 }
 
 /* Reveal on scroll: elements slide in when they enter the viewport (scroll-driven, no JS; visible without support) */
