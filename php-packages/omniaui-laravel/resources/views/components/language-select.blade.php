@@ -1,8 +1,8 @@
 {{-- File: resources/views/components/language-select.blade.php | Map: props -> label pill -> icon (globe or symbol) -> native select
-     OmniaUI language / currency switcher. Props: options (value => label), value (selected), label (aria-label), currency, ghost, icon (text symbol).
+     OmniaUI language / currency switcher. Props: options (value => label), value (selected), label (aria-label), currency, ghost, code (closed: only the code, "NL"), icon (text symbol).
      Attributes (name, onchange, wire:model...) go to the select. --}}
-@props(['options' => [], 'value' => null, 'label' => null, 'currency' => false, 'ghost' => false, 'icon' => null])
-<label @class(['oc-language-select', 'oc-language-select--ghost' => $ghost, 'oc-language-select--currency' => $currency])>
+@props(['options' => [], 'value' => null, 'label' => null, 'currency' => false, 'ghost' => false, 'code' => false, 'icon' => null])
+<label @class(['oc-language-select', 'oc-language-select--ghost' => $ghost, 'oc-language-select--currency' => $currency, 'oc-language-select--code' => $code]) @if($code) data-code="{{ strtoupper((string) ($value ?? array_key_first($options))) }}" @endif>
     <span class="oc-language-select-icon" aria-hidden="true">
         @if ($icon || $currency)
             {{ $icon ?? '€' }}

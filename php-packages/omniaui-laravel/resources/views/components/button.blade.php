@@ -1,5 +1,5 @@
 {{-- OmniaCSS button. Props: variant (primary|secondary|outline|ghost|destructive|success|link|soft-primary|soft-success|
-     soft-warning|soft-destructive|soft-info|plain), size (xs|sm|lg), icon (square icon button), href (renders an <a>),
+     soft-warning|soft-destructive|soft-info|plain|gradient|glass|neon), size (xs|sm|lg), icon (square icon button), href (renders an <a>),
      type (button|submit|reset), inline (link button inside running text), loading (spinner, aria-busy). Slot: label. --}}
 @props(['variant' => 'primary', 'size' => null, 'icon' => false, 'href' => null, 'type' => 'button', 'inline' => false, 'loading' => false])
 @php

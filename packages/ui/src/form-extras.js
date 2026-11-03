@@ -1,7 +1,8 @@
 // File: packages/ui/src/form-extras.js
 // Map: ISO week -> date field (week label) -> name card (rename) -> avatar picker (preview, drop, remove) -> quantity
-//      (step buttons) -> init -> boot
-// Small behaviour for four CSS components; each works without it (native date input, <details>, file input, number input).
+//      (step buttons) -> language code (the closed code select) -> init -> boot
+// Small behaviour for five CSS components; each works without it (native date input, <details>, file input, number input,
+// native select).
 // Events on the component root: oc-namecard-rename { name }, oc-avatar-change { file } (null when removed),
 // oc-avatar-invalid { file, reason } (wrong type or too large).
 
@@ -191,12 +192,29 @@ export function bindQuantity(root) {
   sync();
 }
 
-/** Wire every date field, name card, avatar picker and quantity field under scope. */
+/** The code shown by a closed .oc-language-select--code: the chosen option's data-code, else its value, upper case. */
+export function languageCode(select) {
+  const option = select.selectedOptions?.[0] ?? select.options?.[select.selectedIndex];
+  return String(option?.dataset.code || select.value || "").toUpperCase();
+}
+
+/** .oc-language-select--code: keep data-code on the wrapper in step with the select. */
+export function bindLanguageCode(root) {
+  const select = root.querySelector("select");
+  if (!select || root.dataset.ocBound) return;
+  root.dataset.ocBound = "";
+  const sync = () => { root.dataset.code = languageCode(select); };
+  select.addEventListener("change", sync);
+  sync();
+}
+
+/** Wire every date field, name card, avatar picker, quantity field and code language select under scope. */
 export function initFormExtras(scope = document) {
   scope.querySelectorAll(".oc-date-field").forEach(bindDateField);
   scope.querySelectorAll(".oc-name-card").forEach(bindNameCard);
   scope.querySelectorAll(".oc-avatar-picker").forEach(bindAvatarPicker);
   scope.querySelectorAll(".oc-quantity").forEach(bindQuantity);
+  scope.querySelectorAll(".oc-language-select--code").forEach(bindLanguageCode);
 }
 
 // Starts on its own as /js/oc-form-extras.js (`npx omniaui copy-js`), with ?auto in the URL or data-oc-auto on the tag.

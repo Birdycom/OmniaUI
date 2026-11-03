@@ -1,0 +1,68 @@
+/* File: packages/ui/src/parts/site-backgrounds.css | Map: grid (--fixed, --fade) -> orb (--sm, --drift) -> scan lines -> particle canvas -> reduced motion */
+/* Background pack: decorative layers behind (or over) a page or a section. All are aria-hidden, ignore the pointer and
+   follow the theme tokens; put them in a positioned parent (scan lines and the particle canvas cover the viewport unless --local).
+   <div class="oc-bg-grid" aria-hidden="true"></div>   <div class="oc-orb" aria-hidden="true"></div>
+   <div class="oc-scanlines" aria-hidden="true"></div> <canvas class="oc-particles" aria-hidden="true"></canvas> (+ particles.js) */
+
+/* Grid: thin lines in the primary color. --oc-bg-grid-size (60px) and --oc-bg-grid-line set the size and the color. */
+.oc-bg-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--oc-bg-grid-line, oklch(from var(--oc-primary) l c h / 0.04)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--oc-bg-grid-line, oklch(from var(--oc-primary) l c h / 0.04)) 1px, transparent 1px);
+  background-size: var(--oc-bg-grid-size, 60px) var(--oc-bg-grid-size, 60px);
+}
+.oc-bg-grid--fixed { position: fixed; --oc-bg-grid-size: 40px; }
+/* Fade: the lines disappear towards the edges. */
+.oc-bg-grid--fade { mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%); }
+
+/* Orb: a soft round glow in the accent color (.oc-accent--violet for another color). Place it with inset-* or translate. */
+.oc-orb {
+  position: absolute;
+  z-index: -1;
+  inline-size: var(--oc-orb-size, min(500px, 90vw));
+  aspect-ratio: 1;
+  pointer-events: none;
+  background: radial-gradient(circle, oklch(from var(--oc-accent-from) l c h / var(--oc-orb-strength, 0.15)) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(var(--oc-orb-blur, 50px));
+}
+.oc-orb--sm { --oc-orb-size: 18rem; --oc-orb-blur: 35px; }
+.oc-orb--drift { animation: oc-orb-drift 18s ease-in-out infinite alternate; }
+@keyframes oc-orb-drift { to { translate: 3rem 2rem; scale: 1.1; } }
+
+/* Scan lines: a fine horizontal raster over the page (2% primary). --local keeps it inside a positioned parent. */
+.oc-scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: var(--oc-scanlines-z, 9999);
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 2px,
+    var(--oc-scanlines-color, oklch(from var(--oc-primary) l c h / 0.02)) 2px 4px
+  );
+}
+.oc-scanlines--local { position: absolute; z-index: 1; }
+
+/* Particle canvas: particles.js draws drifting points with thin lines between neighbours. It reads two colors from
+   this element: color (points and lines) and border-color (a second point color). --local fills a positioned parent. */
+.oc-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  color: var(--oc-accent-from);
+  border: 0 solid var(--oc-accent-to);
+}
+.oc-particles--local { position: absolute; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-orb--drift { animation: none; }
+}

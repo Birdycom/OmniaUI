@@ -1,14 +1,14 @@
 <script setup lang="ts">
 /**
  * Button. Renders <a> when `href` is set, otherwise <button>.
- * Classes: .oc-btn + --secondary/--outline/--ghost/--link/--destructive/--success/--gradient/--glass,
+ * Classes: .oc-btn + --secondary/--outline/--ghost/--link/--destructive/--success/--gradient/--glass/--neon,
  * --soft-primary/-success/-warning/-destructive/-info (row actions), --plain (icon only, no surface),
  * --xs/--sm/--lg, --icon, --pill, --inline (link button inside running text). `loading` sets aria-busy (spinner).
  */
 withDefaults(
   defineProps<{
     variant?:
-      | 'default' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive' | 'success' | 'gradient' | 'glass'
+      | 'default' | 'secondary' | 'outline' | 'ghost' | 'link' | 'destructive' | 'success' | 'gradient' | 'glass' | 'neon'
       | 'soft-primary' | 'soft-success' | 'soft-warning' | 'soft-destructive' | 'soft-info' | 'plain'
     size?: 'xs' | 'sm' | 'md' | 'lg'
     icon?: boolean

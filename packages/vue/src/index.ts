@@ -27,6 +27,7 @@ import OcBusyOverlay from './components/OcBusyOverlay.vue'
 import OcButton from './components/OcButton.vue'
 import OcButtonGroup from './components/OcButtonGroup.vue'
 import OcButtonGroupText from './components/OcButtonGroupText.vue'
+import OcCallout from './components/OcCallout.vue'
 import OcCard from './components/OcCard.vue'
 import OcChartLine from './components/OcChartLine.vue'
 import OcChatComposer from './components/OcChatComposer.vue'
@@ -66,6 +67,7 @@ import OcGlass from './components/OcGlass.vue'
 import OcGlassBar from './components/OcGlassBar.vue'
 import OcGlassPanel from './components/OcGlassPanel.vue'
 import OcGreeting from './components/OcGreeting.vue'
+import OcGroup from './components/OcGroup.vue'
 import OcHeading from './components/OcHeading.vue'
 import OcHoverCard from './components/OcHoverCard.vue'
 import OcImageZoom from './components/OcImageZoom.vue'
@@ -90,6 +92,7 @@ import OcMarquee from './components/OcMarquee.vue'
 import OcMediaCard from './components/OcMediaCard.vue'
 import OcMediaRow from './components/OcMediaRow.vue'
 import OcMediaThumb from './components/OcMediaThumb.vue'
+import OcMenuStatic from './components/OcMenuStatic.vue'
 import OcMessage from './components/OcMessage.vue'
 import OcMessageList from './components/OcMessageList.vue'
 import OcMessageThread from './components/OcMessageThread.vue'
@@ -104,6 +107,7 @@ import OcOtpInput from './components/OcOtpInput.vue'
 import OcPageHeader from './components/OcPageHeader.vue'
 import OcPagination from './components/OcPagination.vue'
 import OcPanel from './components/OcPanel.vue'
+import OcParticleField from './components/OcParticleField.vue'
 import OcPasswordInput from './components/OcPasswordInput.vue'
 import OcPasswordRequirements from './components/OcPasswordRequirements.vue'
 import OcPhoneInput from './components/OcPhoneInput.vue'
@@ -119,6 +123,7 @@ import OcRadio from './components/OcRadio.vue'
 import OcRadioGroup from './components/OcRadioGroup.vue'
 import OcRating from './components/OcRating.vue'
 import OcRatingInput from './components/OcRatingInput.vue'
+import OcReading from './components/OcReading.vue'
 import OcRecoveryCodes from './components/OcRecoveryCodes.vue'
 import OcResult from './components/OcResult.vue'
 import OcRibbon from './components/OcRibbon.vue'
@@ -234,6 +239,7 @@ export {
   OcButton,
   OcButtonGroup,
   OcButtonGroupText,
+  OcCallout,
   OcCard,
   OcChartLine,
   OcChatComposer,
@@ -273,6 +279,7 @@ export {
   OcGlassBar,
   OcGlassPanel,
   OcGreeting,
+  OcGroup,
   OcHeading,
   OcHoverCard,
   OcImageZoom,
@@ -297,6 +304,7 @@ export {
   OcMediaCard,
   OcMediaRow,
   OcMediaThumb,
+  OcMenuStatic,
   OcMessage,
   OcMessageList,
   OcMessageThread,
@@ -311,6 +319,7 @@ export {
   OcPageHeader,
   OcPagination,
   OcPanel,
+  OcParticleField,
   OcPasswordInput,
   OcPasswordRequirements,
   OcPhoneInput,
@@ -326,6 +335,7 @@ export {
   OcRadioGroup,
   OcRating,
   OcRatingInput,
+  OcReading,
   OcRecoveryCodes,
   OcResult,
   OcRibbon,
@@ -501,6 +511,7 @@ export const components: Record<string, Component> = {
   OcButton,
   OcButtonGroup,
   OcButtonGroupText,
+  OcCallout,
   OcCard,
   OcChartLine,
   OcChatComposer,
@@ -540,6 +551,7 @@ export const components: Record<string, Component> = {
   OcGlassBar,
   OcGlassPanel,
   OcGreeting,
+  OcGroup,
   OcHeading,
   OcHoverCard,
   OcImageZoom,
@@ -564,6 +576,7 @@ export const components: Record<string, Component> = {
   OcMediaCard,
   OcMediaRow,
   OcMediaThumb,
+  OcMenuStatic,
   OcMessage,
   OcMessageList,
   OcMessageThread,
@@ -578,6 +591,7 @@ export const components: Record<string, Component> = {
   OcPageHeader,
   OcPagination,
   OcPanel,
+  OcParticleField,
   OcPasswordInput,
   OcPasswordRequirements,
   OcPhoneInput,
@@ -593,6 +607,7 @@ export const components: Record<string, Component> = {
   OcRadioGroup,
   OcRating,
   OcRatingInput,
+  OcReading,
   OcRecoveryCodes,
   OcResult,
   OcRibbon,

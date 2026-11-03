@@ -1,4 +1,4 @@
-/* File: packages/ui/src/parts/app-accordion-accent.css | Map: accent accordion (separate cards) -> item card + left accent -> trigger -> open state -> color modifiers (presets) -> flush combination */
+/* File: packages/ui/src/parts/app-accordion-accent.css | Map: accent accordion (separate cards) -> item card + left accent -> trigger -> open state -> color modifiers (presets) -> status (data-status) -> status dot -> flush combination */
 /* Accordion accent: every item becomes its own card with a colored accent on the start edge.
    Add .oc-accordion--accent to an .oc-accordion. The color comes from --oc-accordion-accent:
    primary by default, or an existing .oc-accent--* preset (blue, cyan, green, orange, red, violet, yellow)
@@ -51,6 +51,23 @@
 .oc-accordion--accent.oc-accordion--warning .oc-accordion-item { --oc-accordion-accent: var(--oc-warning); }
 .oc-accordion--accent .oc-accordion-item--danger,
 .oc-accordion--accent.oc-accordion--danger .oc-accordion-item { --oc-accordion-accent: var(--oc-destructive); }
+
+/* Info and muted (not checked, skipped). */
+.oc-accordion--accent .oc-accordion-item--info { --oc-accordion-accent: var(--oc-info, light-dark(var(--color-deepskyblue-70), var(--color-skyblue-50))); }
+.oc-accordion--accent .oc-accordion-item--muted { --oc-accordion-accent: var(--oc-muted-foreground); }
+
+/* Status of a check (one row per check): data-status="ok|warn|error|skip|pending" on the item. Pending is primary. */
+.oc-accordion--accent .oc-accordion-item[data-status="ok"] { --oc-accordion-accent: var(--oc-success); }
+.oc-accordion--accent .oc-accordion-item[data-status="warn"] { --oc-accordion-accent: var(--oc-warning); }
+.oc-accordion--accent .oc-accordion-item[data-status="error"] { --oc-accordion-accent: var(--oc-destructive); }
+.oc-accordion--accent .oc-accordion-item[data-status="skip"] { --oc-accordion-accent: var(--oc-muted-foreground); }
+.oc-accordion--accent .oc-accordion-item[data-status="pending"] { --oc-accordion-accent: var(--oc-primary); }
+.oc-accordion--accent .oc-accordion-item[data-status="skip"] > .oc-accordion-trigger { color: var(--oc-muted-foreground); }
+
+/* A dot in the status color at the start of the trigger (hollow while pending). */
+.oc-accordion-accent-dot { flex-shrink: 0; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: var(--oc-accordion-accent); }
+.oc-accordion-trigger:has(> .oc-accordion-accent-dot) { justify-content: flex-start; gap: 0.6rem; }
+.oc-accordion-item[data-status="pending"] .oc-accordion-accent-dot { background: transparent; border: 1.5px solid var(--oc-accordion-accent); }
 
 /* Accent + flush: no frame around each card except the accent edge. */
 .oc-accordion--accent.oc-accordion--flush .oc-accordion-item { border-block: 0; border-inline-end: 0; border-radius: 0; }

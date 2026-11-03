@@ -814,6 +814,43 @@
   .oc-block-media-manager-actions { grid-column: 2 / -1; }
 }
 
+/* parts/app-network-graph.css */
+/* File: packages/pro/src/parts/app-network-graph.css | Map: frame -> list (the data, hidden once drawn) -> entrance -> legend -> reduced motion */
+/* Network graph (Pro): the frame around the free graph look (OmniaUI parts/data-graph.css), the list the script reads,
+   a staggered entrance and a legend of the levels. */
+
+.oc-network-graph { min-block-size: var(--oc-network-graph-min, 18rem); }
+.oc-network-graph .oc-graph__svg { max-block-size: var(--oc-network-graph-max, 32rem); margin-inline: auto; touch-action: none; }
+.oc-network-graph .oc-graph__node:not(.oc-graph__node--center) { cursor: pointer; }
+
+/* The list is the data and the fallback without the script; once drawn it stays for screen readers only. */
+.oc-network-graph[data-oc-bound] .oc-network-graph__list {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.oc-network-graph__list { display: grid; gap: 0.25rem; margin: 0; padding-inline-start: 1.25rem; font-size: 0.875rem; }
+
+/* Nodes appear one after the other. */
+.oc-network-graph .oc-graph__node:not(.oc-graph__node--center) { animation: oc-network-graph-in 0.45s ease-out both; animation-delay: calc(var(--oc-graph-i, 0) * 100ms); }
+@keyframes oc-network-graph-in { from { opacity: 0; } }
+
+/* Legend: one dot per level. */
+.oc-network-graph-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem; margin: 0.75rem 0 0; padding: 0; list-style: none; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+.oc-network-graph-legend li { display: inline-flex; align-items: center; gap: 0.375rem; }
+.oc-network-graph-legend li::before { content: ""; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: var(--oc-graph-color, var(--oc-muted-foreground)); }
+.oc-network-graph-legend [data-level="low"] { --oc-graph-color: var(--oc-success); }
+.oc-network-graph-legend [data-level="medium"] { --oc-graph-color: var(--oc-warning); }
+.oc-network-graph-legend [data-level="high"] { --oc-graph-color: var(--oc-destructive); }
+.oc-network-graph-legend [data-level="critical"] { --oc-graph-color: light-dark(var(--color-red-95), var(--color-red-30)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-network-graph .oc-graph__node { animation: none; }
+}
+
 /* parts/app-products.css */
 /* File: packages/pro/src/parts/app-products.css | Map: page head -> list (thumb in the name cell) -> detail (grid, hero, cards, movements, linked documents) -> editor (grid, media, spec rows, save bar) -> picker (dialog, options) */
 /* Product blocks (OmniaUI Pro): list, detail, editor and picker. They are built from free parts — data table, gallery,

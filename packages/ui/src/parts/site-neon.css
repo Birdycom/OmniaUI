@@ -1,0 +1,33 @@
+/* File: packages/ui/src/parts/site-neon.css | Map: glowing border (animated) -> neon button -> reduced motion */
+/* Neon: a border that slowly glows from one accent color to the other, and a button with a neon gradient.
+   Colors: --oc-accent-from and --oc-accent-to (brand-1 and brand-2, or an .oc-accent--* preset).
+   .oc-glow-border goes on anything with a border: <form class="oc-glass oc-glow-border">, an .oc-card, a panel. */
+
+.oc-glow-border {
+  border-color: var(--oc-accent-from);
+  box-shadow: 0 0 10px oklch(from var(--oc-accent-from) l c h / 0.35), var(--oc-glow-extra, 0 0 transparent);
+  animation: oc-glow-border var(--oc-glow-border-duration, 3s) ease-in-out infinite;
+}
+/* Glass keeps its light top edge and drop shadow under the glow. */
+.oc-glass.oc-glow-border { --oc-glow-extra: var(--oc-glass-shadow), inset 0 1px 0 var(--oc-glass-edge-hi); }
+@keyframes oc-glow-border {
+  0%, 100% { border-color: var(--oc-accent-from); box-shadow: 0 0 10px oklch(from var(--oc-accent-from) l c h / 0.35), var(--oc-glow-extra, 0 0 transparent); }
+  50% { border-color: var(--oc-accent-to); box-shadow: 0 0 20px oklch(from var(--oc-accent-to) l c h / 0.35), var(--oc-glow-extra, 0 0 transparent); }
+}
+
+/* Neon button: gradient from one accent to the other, with a glow. --oc-btn-neon-ink sets the text color. */
+.oc-btn--neon {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--oc-btn-neon-ink, light-dark(var(--color-white-50), var(--color-black-40)));
+  background: linear-gradient(135deg, var(--oc-accent-from), var(--oc-accent-to)) border-box;
+  border-color: transparent;
+  box-shadow: 0 0 24px oklch(from var(--oc-accent-from) l c h / 0.4);
+  transition: filter var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
+}
+.oc-btn--neon:hover:not(:disabled) { filter: brightness(1.08); box-shadow: 0 0 32px oklch(from var(--oc-accent-from) l c h / 0.55); opacity: 1; }
+.oc-btn--neon:disabled { color: var(--oc-muted-foreground); background: var(--oc-muted); box-shadow: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-glow-border { animation: none; }
+}

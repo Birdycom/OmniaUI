@@ -1,0 +1,50 @@
+/* File: packages/ui/src/parts/nav-menu-static.css | Map: static menu (no popover, fills its box) -> check column -> hint -> group title */
+/* Static menu: the dropdown menu as a whole surface of its own, for a tray menu in its own small window or a menu
+   inside a panel. .oc-dropdown-menu--static drops the popover position and fills its container.
+   Items can carry a check column (.oc-dropdown-check, 20px, shows ✓ when the item has aria-checked="true") and a
+   muted hint on the right (.oc-dropdown-hint). Group titles: .oc-dropdown-label; red item: .oc-dropdown-item--destructive. */
+
+.oc-dropdown-menu.oc-dropdown-menu--static,
+.oc-dropdown-menu.oc-dropdown-menu--static[popover] {
+  position: static;
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  margin: 0;
+  animation: none;
+}
+/* In a transparent desktop window the window is the frame: --flat drops the border and shadow. */
+.oc-dropdown-menu--static.oc-dropdown-menu--flat { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+
+.oc-dropdown-check {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  inline-size: 20px;
+  margin-inline-start: -4px;
+  color: var(--oc-primary);
+}
+.oc-dropdown-check::before {
+  content: "";
+  inline-size: 0.35rem;
+  block-size: 0.65rem;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  rotate: 45deg;
+  translate: 0 -10%;
+  opacity: 0;
+}
+.oc-dropdown-item[aria-checked="true"] > .oc-dropdown-check::before { opacity: 1; }
+/* With its own check column, the role-based check mark is not drawn a second time. */
+.oc-dropdown-item:has(> .oc-dropdown-check) { padding-inline-start: 10px; }
+.oc-dropdown-item:has(> .oc-dropdown-check)::before { content: none; }
+
+.oc-dropdown-hint {
+  margin-inline-start: auto;
+  padding-inline-start: 1rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--oc-muted-foreground);
+  white-space: nowrap;
+}
+.oc-dropdown-menu--static .oc-dropdown-label { font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; }

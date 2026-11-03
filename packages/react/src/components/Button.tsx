@@ -3,7 +3,7 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
 import { cx } from "../utils";
 
 export type ButtonVariant =
-  | "default" | "secondary" | "outline" | "ghost" | "link" | "destructive" | "success" | "gradient" | "glass"
+  | "default" | "secondary" | "outline" | "ghost" | "link" | "destructive" | "success" | "gradient" | "glass" | "neon"
   | "soft-primary" | "soft-success" | "soft-warning" | "soft-destructive" | "soft-info" | "plain";
 export type ButtonSize = "xs" | "sm" | "md" | "lg";
 

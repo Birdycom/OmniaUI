@@ -1,6 +1,8 @@
-/* File: packages/ui/src/parts/data-meter-row.css | Map: row grid -> label and value -> bar and fill -> levels -> reset line -> list */
+/* File: packages/ui/src/parts/data-meter-row.css | Map: row grid -> label and value -> bar and fill (or a fill element) -> levels -> reset line -> sub-line -> list (compact, dense) */
 /* Usage meter row: a label, the usage as text, a bar and when it resets. The fill comes from
-   --oc-meter (0–100%); data-level="warn" or "critical" changes the color. */
+   --oc-meter (0–100%); data-level="warn" or "critical" changes the color.
+   A live meter can also carry its own fill element (<span class="oc-meter-row__fill" style="inline-size: 42%">):
+   patch its inline width in place; the bar then draws no fill of its own. */
 
 .oc-meter-row {
   display: grid;
@@ -27,14 +29,65 @@
   border-radius: inherit;
   transition: inline-size 0.4s ease;
 }
+.oc-meter-row__bar:has(> .oc-meter-row__fill)::before { content: none; }
+.oc-meter-row__fill {
+  display: block;
+  max-inline-size: 100%;
+  block-size: 100%;
+  background: var(--oc-meter-color, var(--oc-success));
+  border-radius: inherit;
+  transition: inline-size 0.4s ease;
+}
 .oc-meter-row[data-level="warn"] { --oc-meter-color: var(--oc-warning); }
 .oc-meter-row[data-level="critical"] { --oc-meter-color: var(--oc-destructive); }
 .oc-meter-row[data-level="critical"] .oc-meter-row__value strong { color: var(--oc-destructive); }
 .oc-meter-row__reset { grid-column: 1 / -1; display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; color: var(--oc-muted-foreground); }
+/* Sub-line: a muted second reading under the bar ("VRAM 2.7 / 8.0 GB") with an optional thin bar of its own.
+   The thin bar takes --oc-meter on itself (or an .oc-meter-row__fill child) and its own data-level. */
+.oc-meter-row__sub {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--oc-muted-foreground);
+  white-space: nowrap;
+}
+.oc-meter-row__subbar {
+  --oc-meter-color: var(--oc-muted-foreground);
+  flex: 1;
+  min-inline-size: 2rem;
+  block-size: 3px;
+  overflow: hidden;
+  background: var(--oc-muted);
+  border-radius: 999px;
+}
+.oc-meter-row__subbar::before {
+  content: "";
+  display: block;
+  inline-size: clamp(0%, var(--oc-meter, 0%), 100%);
+  block-size: 100%;
+  background: var(--oc-meter-color);
+  border-radius: inherit;
+  transition: inline-size 0.4s ease;
+}
+.oc-meter-row__subbar:has(> .oc-meter-row__fill)::before { content: none; }
+.oc-meter-row__subbar[data-level="warn"] { --oc-meter-color: var(--oc-warning); }
+.oc-meter-row__subbar[data-level="critical"] { --oc-meter-color: var(--oc-destructive); }
+
 .oc-meter-list { display: grid; gap: 1rem; }
 .oc-meter-list--compact { gap: 0.625rem; }
 .oc-meter-list--compact .oc-meter-row__bar { block-size: 0.375rem; }
+/* Dense: for a small widget or tray window (5px bar, smaller label). */
+.oc-meter-list--dense { gap: 0.5rem; }
+.oc-meter-list--dense .oc-meter-row { gap: 0.25rem 0.625rem; }
+.oc-meter-list--dense .oc-meter-row__label { font-size: 0.8rem; }
+.oc-meter-list--dense .oc-meter-row__value { font-size: 0.75rem; }
+.oc-meter-list--dense .oc-meter-row__bar { block-size: 5px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .oc-meter-row__bar::before { transition: none; }
+  .oc-meter-row__bar::before,
+  .oc-meter-row__subbar::before,
+  .oc-meter-row__fill { transition: none; }
 }
