@@ -5,8 +5,8 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import {
-  OcBlockAboutTimeline, OcBlockContactGrid, OcBlockFaq, OcBlockHeroOrbit, OcBlockPortfolioGrid, OcBlockProfileHeader,
-  OcFactList, OcLinkArrow, OcLinkRow, OcMarquee, OcNextTeaser, OcPriceCard, OcProductMark, OcProjectCard, OcStackList, OcTimeline,
+  OcBlockAboutTimeline, OcBlockContactForm, OcBrandMark, OcFeatureCard, OcLinkCard, OcBlockContactGrid, OcBlockFaq, OcBlockHeroOrbit, OcBlockPortfolioGrid, OcBlockProfileHeader,
+  OcFactList, OcLinkArrow, OcLinkRow, OcMarquee, OcNextTeaser, OcPanel, OcPriceCard, OcProductMark, OcProjectCard, OcResult, OcStackList, OcTimeline,
 } from '../src'
 
 describe('marketing components', () => {
@@ -90,6 +90,48 @@ describe('marketing blocks', () => {
     })
     expect(contact.find('address.oc-block-contact-card').exists()).toBe(true)
     expect(contact.find('a.oc-block-contact-line').attributes('href')).toBe('mailto:a@b.c')
+  })
+
+  it('OcFeatureCard and OcLinkCard render their parts', () => {
+    const f = mount(OcFeatureCard, { props: { title: 'Apps', icon: 'mdi:apps', accent: 'green', headingLevel: 2 }, slots: { default: 'Built for you.' } })
+    expect(f.find('h2.oc-feature-card__title').text()).toBe('Apps')
+    expect(f.find('.oc-icon-tile').classes()).toContain('oc-accent--green')
+    const l = mount(OcLinkCard, { props: { title: 'Agent 1', href: '/a', accent: 'violet', more: 'Read more' }, slots: { default: 'Reads invoices.' } })
+    expect(l.classes()).toEqual(['oc-link-card', 'oc-accent--violet'])
+    expect(l.find('.oc-link-card__more').text()).toBe('Read more')
+  })
+
+  it('OcBrandMark renders the word, accent and tagline', () => {
+    const w = mount(OcBrandMark, { props: { name: 'Company', accent: '1', tagline: 'Software', size: 'sm' } })
+    expect(w.classes()).toEqual(['oc-brand-mark', 'oc-brand-mark--sm'])
+    expect(w.find('.oc-brand-mark__accent').text()).toBe('1')
+    expect(w.find('.oc-brand-mark__tagline').text()).toBe('Software')
+  })
+
+  it('OcPanel and OcResult render their classes', () => {
+    expect(mount(OcPanel, { props: { glow: 'both' }, slots: { default: 'x' } }).classes()).toEqual(['oc-panel', 'oc-panel--glow-both'])
+    const r = mount(OcResult, { props: { title: 'Sent', icon: 'mdi:check', accent: 'green', center: true }, slots: { default: 'Thanks.', actions: '<a href="#form">Again</a>' } })
+    expect(r.classes()).toContain('oc-result--center')
+    expect(r.attributes('role')).toBe('status')
+    expect(r.find('.oc-icon-tile').classes()).toContain('oc-accent--green')
+    expect(r.find('.oc-result__text').text()).toBe('Thanks.')
+    expect(r.find('.oc-result__actions a').attributes('href')).toBe('#form')
+  })
+
+  it('OcBlockContactForm shows field errors, cards and the result, and emits again', async () => {
+    const w = mount(OcBlockContactForm, {
+      props: { action: '/contact', subjects: [{ value: 'project', label: 'A new project' }], errors: { email: 'Fill in a valid e-mail address.' }, cards: [{ title: 'Mail us', icon: 'mdi:email-outline', lines: [{ text: 'info@company1.example', href: 'mailto:info@company1.example' }] }] },
+    })
+    expect(w.find('form.oc-form.oc-form--filled').attributes('action')).toBe('/contact')
+    expect(w.find('input[name="email"]').attributes('aria-invalid')).toBe('true')
+    expect(w.find('#err-email').text()).toBe('Fill in a valid e-mail address.')
+    expect(w.find('.oc-alert--danger').text()).toBe('Please check the fields in red.')
+    expect(w.find('option[value="project"]').exists()).toBe(true)
+    expect(w.find('a.oc-block-contact-line').attributes('href')).toBe('mailto:info@company1.example')
+    await w.setProps({ sent: true, errors: {} })
+    expect(w.find('form').exists()).toBe(false)
+    await w.find('.oc-result button').trigger('click')
+    expect(w.emitted('again')).toHaveLength(1)
   })
 
   it('OcBlockHeroOrbit spreads the marks over the ring', () => {

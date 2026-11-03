@@ -1,0 +1,183 @@
+/* File: packages/ui/src/parts/site-cards.css */
+/* Map: feature card -> link card -> icon list (+ points) -> accent list + note -> badge row + accent tagline
+   -> screenshot grid -> browser frame glow + mark */
+/* Cards and lists for the pages of a company site: services and features (icon tile + title + text), cards that are
+   links, a list of icon rows in frames (or as points with a title), a list with markers in the accent color, a small
+   note, a row of badges, a tagline in the accent color, a grid of screenshots that open in the lightbox, and a browser
+   frame with a glow in the accent color and a product mark on it. */
+
+/* Feature / service card: tile, title, text; a quiet hover. In an .oc-card-grid (--oc-card-min sets the column width). */
+.oc-feature-card {
+  padding: 1.6rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg, 1.25rem);
+  background: var(--oc-surface);
+  transition: border-color 0.3s, background 0.3s;
+}
+.oc-feature-card:hover {
+  border-color: var(--oc-border-strong);
+  background: var(--oc-surface-strong);
+}
+.oc-feature-card > .oc-icon-tile { margin-block-end: 1.1rem; }
+.oc-feature-card__title {
+  margin: 0 0 0.6rem;
+  font-family: var(--oc-font-display, inherit);
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+.oc-feature-card__text {
+  margin: 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.95rem;
+}
+
+/* Card that is a link (an agent, a tool, a document): tile, title, text and a "more" line; hover in the accent color. */
+.oc-link-card {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  padding: 1.25rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg, 1.25rem);
+  background: var(--oc-surface);
+  color: var(--oc-foreground);
+  text-decoration: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+/* --oc-link-card-hover: the hover color alone (without an accent preset, so the tile keeps its own color). */
+.oc-link-card:hover {
+  border-color: oklch(from var(--oc-link-card-hover, var(--oc-accent-from)) l c h / 0.5);
+  background: var(--oc-surface-strong);
+}
+.oc-link-card:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+.oc-link-card > .oc-icon-tile { margin-block-end: 0.4rem; }
+.oc-link-card__title { font-family: var(--oc-font-display, inherit); font-weight: 700; }
+.oc-link-card__text { color: var(--oc-muted-foreground); font-size: 0.93rem; }
+.oc-link-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-block-start: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.oc-link-card__more::after { content: "→"; transition: translate 0.25s var(--oc-ease-out, ease); }
+.oc-link-card:hover .oc-link-card__more::after { translate: 4px 0; }
+
+/* Icon list: rows with an icon in a frame. --points: an icon tile next to a title and a text, without frames. */
+.oc-icon-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.oc-icon-list > li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-md, 0.75rem);
+  background: var(--oc-surface);
+}
+.oc-icon-list > li > :is(svg, iconify-icon, .oc-icon) {
+  flex: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  font-size: 1.25rem;
+  color: var(--oc-primary);
+}
+.oc-icon-list--points { gap: 1rem; }
+.oc-icon-list--points > li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.25rem 0.9rem;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.oc-icon-list--points > li > .oc-icon-tile { grid-row: span 2; }
+.oc-icon-list__title { font-family: var(--oc-font-display, inherit); font-weight: 700; }
+.oc-icon-list__text { color: var(--oc-muted-foreground); font-size: 0.95rem; }
+
+/* List with markers in the accent color, and a small note under a block. */
+.oc-list--accent {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-inline-start: 1.1rem;
+  list-style: disc;
+  color: var(--oc-muted-foreground);
+  font-size: 0.95rem;
+}
+.oc-list--accent > li::marker { color: var(--oc-accent-from, var(--oc-primary)); }
+.oc-note {
+  margin: 1.25rem 0 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.85rem;
+}
+.oc-note--md {
+  max-inline-size: 60rem;
+  font-size: 1rem;
+}
+
+/* Row of badges or pills above a title, and a tagline in the accent color (lighter, so it reads on a dark page). */
+.oc-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block-end: 1.25rem;
+}
+.oc-tagline--accent {
+  margin: 0 0 1rem;
+  color: light-dark(var(--oc-accent-from), color-mix(in oklch, var(--oc-accent-from) 55%, white));
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 600;
+}
+
+/* Screenshot grid: figures with the whole image visible (contain, 16:10 on the card color) and a caption;
+   a link or a button around the image opens the lightbox
+   (<button command="show-modal" commandfor="<lightbox id>">). A <picture> (animated WebP with a still image) works the same. */
+.oc-shot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--oc-shot-min, 18rem)), 1fr));
+  gap: 1.25rem;
+}
+.oc-shot {
+  margin: 0;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg, 1.25rem);
+  overflow: hidden;
+  background: var(--oc-surface);
+}
+.oc-shot > :is(a, button) { display: block; inline-size: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.oc-shot > :is(a, button):focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-shot :is(picture) { display: block; }
+.oc-shot img {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: var(--oc-shot-ratio, 16 / 10);
+  object-fit: contain;
+  background: var(--oc-card);
+}
+.oc-shot > figcaption {
+  padding: 0.8rem 1rem;
+  color: var(--oc-muted-foreground);
+  font-size: 0.88rem;
+}
+
+/* Browser frame with a shadow in the accent color and a product mark on the bottom end corner. */
+.oc-browser-frame--glow {
+  position: relative;
+  box-shadow: 0 40px 90px -40px color-mix(in srgb, var(--oc-accent-from) 70%, transparent);
+}
+.oc-browser-frame--glow :is(.oc-browser-frame__view, .oc-browser-frame__body) img { transition: scale 0.6s var(--oc-ease-out, ease); }
+.oc-browser-frame--glow:hover :is(.oc-browser-frame__view, .oc-browser-frame__body) img { scale: 1.02; }
+.oc-browser-frame__mark {
+  position: absolute;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  filter: drop-shadow(0 10px 20px oklch(0 0 0 / 0.6));
+}

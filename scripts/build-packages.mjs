@@ -88,6 +88,8 @@ async function main() {
   await fs.copyFile(r("packages/ui/src/barcode.js"), r("public/js/oc-barcode.js"));
   await fs.copyFile(r("packages/ui/src/form-extras.js"), r("public/js/oc-form-extras.js"));
   await fs.copyFile(r("packages/ui/src/lazy.js"), r("public/js/oc-lazy.js"));
+  await fs.copyFile(r("packages/ui/src/contact-form.js"), r("public/js/oc-contact-form.js"));
+  await fs.copyFile(r("packages/ui/src/fly.js"), r("public/js/oc-fly.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
 

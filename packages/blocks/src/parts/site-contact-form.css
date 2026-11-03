@@ -1,0 +1,50 @@
+/* File: packages/blocks/src/parts/site-contact-form.css
+   Map: section -> layout (form panel | card column) -> panel title + intro -> cards (tile, title, lines) -> narrow
+   Contact form block: the form in a panel with a glow (.oc-panel--glow + .oc-form--filled) next to a column of contact
+   cards (.oc-block-contact-card from the contact-grid block). Script: contact-form.js (optional). */
+
+.oc-block-contact-form {
+  max-inline-size: var(--oc-block-max-width, 1200px);
+  margin-inline: auto;
+  padding: clamp(2rem, 5vw, 4rem) var(--oc-block-gap, 24px);
+  container-type: inline-size;
+}
+
+/* Form 1.6 : cards 1. --oc-contact-form-cols sets another split. */
+.oc-block-contact-form-layout {
+  display: grid;
+  grid-template-columns: var(--oc-contact-form-cols, 1.6fr 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.oc-block-contact-form-title {
+  margin: 0 0 0.6rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.oc-block-contact-form-intro {
+  margin: 0 0 1.5rem;
+  color: var(--oc-muted-foreground);
+}
+.oc-block-contact-form .oc-alert { margin: 0 0 1.25rem; }
+
+.oc-block-contact-form-cards {
+  display: grid;
+  gap: 1.25rem;
+}
+.oc-block-contact-form-cards .oc-block-contact-card > .oc-icon-tile { margin-block-end: 0.75rem; }
+/* Lines stay muted; a link turns to the foreground color on hover. */
+.oc-block-contact-form-cards a.oc-block-contact-line {
+  color: var(--oc-muted-foreground);
+  font-weight: 400;
+}
+.oc-block-contact-form-cards a.oc-block-contact-line:hover { color: var(--oc-foreground); }
+
+/* When the block is narrower than 52rem (about a 960px screen) the cards move under the form, side by side as far as
+   they fit. A container query, so it also works in a sidebar layout or a narrow column. */
+@container (max-width: 52rem) {
+  .oc-block-contact-form-layout { grid-template-columns: 1fr; }
+  .oc-block-contact-form-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+}

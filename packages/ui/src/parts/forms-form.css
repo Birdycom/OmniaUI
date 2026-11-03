@@ -1,0 +1,76 @@
+/* File: packages/ui/src/parts/forms-form.css */
+/* Map: form grid -> label hint -> actions + note -> busy -> filled variant */
+/* A form as one grid of fields with one gap, an "(optional)" hint in a label, a row with the submit button and a short
+   note, the busy state while it sends (aria-busy on the form), and .oc-form--filled: fields with a fill and a stronger
+   border, for a form on a card, a photo or a dark band. All through the field tokens of .oc-input. */
+
+.oc-form {
+  display: grid;
+  gap: var(--oc-form-gap, 1.1rem);
+}
+.oc-form .oc-field-group { gap: var(--oc-form-gap, 1.1rem); }
+.oc-form .oc-field {
+  gap: 0.4rem;
+  margin-bottom: 0;
+}
+
+/* <label class="oc-field-label">Phone <span class="oc-field-label__hint">(optional)</span></label> */
+.oc-field-label__hint {
+  color: var(--oc-muted-foreground);
+  font-weight: 400;
+}
+
+/* Submit button with a short note next to it (wraps under it on a narrow form). */
+.oc-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-block-start: 0.4rem;
+}
+.oc-form-note {
+  flex: 1 1 16rem;
+  margin: 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.85rem;
+}
+.oc-form-note a {
+  color: var(--oc-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.oc-form-note a:hover { color: var(--oc-foreground); }
+
+/* While the form sends (form aria-busy="true"): the submit button dims and shows a progress cursor. */
+.oc-form[aria-busy="true"] :is([type="submit"], button:not([type])) {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* Filled fields: a fill (dark in dark mode), the strong border, more room and a wider focus ring. */
+.oc-form--filled {
+  --oc-input-bg: light-dark(oklch(from var(--oc-foreground) l c h / 0.03), oklch(0 0 0 / 0.25));
+  --oc-input-border: var(--oc-border-strong);
+  --oc-input-padding: 0.75rem 0.9rem;
+  --oc-input-radius: var(--oc-radius-md, 0.75rem);
+  --oc-input-size: 1rem;
+  --oc-ring-width: 3px;
+  --oc-textarea-min: 9rem;
+}
+.oc-form--filled .oc-field-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.oc-form--filled .oc-field-error { font-size: 0.85rem; }
+.oc-form--filled .oc-select option { background: var(--oc-card); }
+
+/* Honeypot: a field for bots, off screen for people. Not display:none (some bots skip hidden fields). Give the wrapper
+   aria-hidden="true" and the input tabindex="-1" autocomplete="off"; the server ignores a form where it is filled. */
+.oc-honeypot {
+  position: absolute;
+  inset-inline-start: -10000px;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+}

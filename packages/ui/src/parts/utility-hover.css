@@ -1,0 +1,44 @@
+/* File: packages/ui/src/parts/utility-hover.css */
+/* Map: smooth timing -> lift / grow / glow / none -> steady hover area -> reduced motion */
+/* Hover effect of a card, chosen with one class on the card (any card: .oc-card, product, feature, link, price, project …):
+     .oc-hover-lift   moves up (--oc-hover-lift, 6px) with a soft shadow; what a product card does by default
+     .oc-hover-grow   grows a little in place (--oc-hover-scale, 1.02)
+     .oc-hover-glow   stays in place, with a glow in the accent color
+     .oc-hover-none   no movement (also turns off the default lift of a product or price card)
+   They share one smooth curve: --oc-hover-duration (0.45s) and --oc-hover-ease. This file loads after the cards, so the class wins. */
+
+:is(.oc-hover-lift, .oc-hover-grow, .oc-hover-glow, .oc-product-card) {
+  transition:
+    translate var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    scale var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    box-shadow var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 0.35s,
+    background-color 0.35s,
+    --oc-glow 0.35s;
+}
+.oc-product-card:hover { translate: 0 calc(-1 * var(--oc-hover-lift, 6px)); }
+.oc-hover-lift:hover {
+  translate: 0 calc(-1 * var(--oc-hover-lift, 6px));
+  box-shadow: 0 1.25rem 2.5rem -1.25rem oklch(from var(--color-black-60) l c h / 0.35);
+}
+.oc-hover-grow:hover { translate: none; scale: var(--oc-hover-scale, 1.02); }
+.oc-hover-glow:hover {
+  translate: none;
+  box-shadow:
+    0 0 0 1px oklch(from var(--oc-accent-from, var(--oc-primary)) l c h / 0.4),
+    0 0.75rem 2.5rem -0.75rem oklch(from var(--oc-accent-from, var(--oc-primary)) l c h / 0.5);
+}
+.oc-hover-none:hover { translate: none; scale: none; }
+
+/* While a card moves up, the strip it leaves keeps the hover, so a mouse at the bottom edge does not make it bounce. */
+:where(.oc-hover-lift) { position: relative; }
+:is(.oc-hover-lift, .oc-product-card:not([class*="oc-hover-"])):hover::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 calc(-1 * var(--oc-hover-lift, 6px) - 2px);
+  z-index: -1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.oc-hover-lift, .oc-hover-grow, .oc-product-card):hover { translate: none; scale: none; }
+}

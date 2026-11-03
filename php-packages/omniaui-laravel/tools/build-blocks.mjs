@@ -204,7 +204,7 @@ const CONFIG = external?.CONFIG ?? {
 };
 
 /** Blocks that are written by hand (multi-root markup). */
-const MANUAL = new Set(external ? external.MANUAL ?? [] : ["wizard-dialog"]);
+const MANUAL = new Set(external ? external.MANUAL ?? [] : ["wizard-dialog", "contact-form"]);
 
 const VOID = new Set(["input", "br", "img", "hr", "meta", "link", "source", "wbr", "col", "area", "base", "embed", "track", "param"]);
 

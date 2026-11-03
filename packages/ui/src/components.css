@@ -276,7 +276,8 @@ flex-direction: column;
   justify-content: center;
   gap: 8px;
   font-family: inherit;
-  font-weight: 500;
+  /* --oc-btn-weight: a theme can make every button bolder (600). */
+  font-weight: var(--oc-btn-weight, 500);
   font-size: 0.875rem;
   line-height: 1.25rem;
   padding: 0.5rem 1rem;
@@ -411,8 +412,8 @@ flex-direction: column;
 }
 
 .oc-btn--lg {
-  font-size: 1rem;
-  padding: 0.625rem 1.5rem;
+  font-size: var(--oc-btn-lg-size, 1rem);
+  padding: var(--oc-btn-lg-padding, 0.625rem 1.5rem);
   border-radius: calc(var(--oc-radius) + 2px);
 }
 
@@ -640,8 +641,10 @@ flex-direction: column;
 }
 
 .oc-field-error {
+  margin: 0;
   font-size: 0.8rem;
-  color: var(--oc-destructive);
+  /* In dark mode lifted to at least OKLCH L 0.78, so the message stays readable on a dark card. */
+  color: light-dark(var(--oc-destructive), oklch(from var(--oc-destructive) max(l, 0.78) c h));
 }
 
 /* Field group — wraps multiple fields with consistent spacing */
@@ -654,17 +657,23 @@ flex-direction: column;
   grid-template-columns: 1fr 1fr;
 }
 
-/* Text input */
+/* Narrow screens: the fields of a row stack. */
+@media (max-width: 560px) {
+  .oc-field-group--row { grid-template-columns: 1fr; }
+}
+
+/* Text input. A theme or a form variant (.oc-form--filled) can set the field tokens: --oc-input-bg, --oc-input-border,
+   --oc-input-padding, --oc-input-radius, --oc-input-size, --oc-ring-width and --oc-ring-alpha (focus ring). */
 .oc-input {
   display: block;
   width: 100%;
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: var(--oc-input-size, 0.875rem);
   line-height: 1.5;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--oc-input);
-  border-radius: var(--oc-radius);
-  background: transparent;
+  padding: var(--oc-input-padding, 0.5rem 0.75rem);
+  border: 1px solid var(--oc-input-border, var(--oc-input));
+  border-radius: var(--oc-input-radius, var(--oc-radius));
+  background: var(--oc-input-bg, transparent);
   color: var(--oc-foreground);
   transition: border-color var(--oc-transition-fast), box-shadow var(--oc-transition-fast);
   outline: none;
@@ -676,7 +685,7 @@ flex-direction: column;
 
 .oc-input:focus {
   border-color: var(--oc-ring);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+  box-shadow: 0 0 0 var(--oc-ring-width, 2px) color-mix(in srgb, var(--oc-ring) var(--oc-ring-alpha, 25%), transparent);
 }
 
 .oc-input:disabled {
@@ -692,12 +701,13 @@ flex-direction: column;
 
 .oc-input[aria-invalid="true"]:focus,
 .oc-input--error:focus {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-destructive) 25%, transparent);
+  box-shadow: 0 0 0 var(--oc-ring-width, 2px) color-mix(in srgb, var(--oc-destructive) var(--oc-ring-alpha, 25%), transparent);
 }
 
 /* Textarea — same base as input */
-textarea.oc-input {
-  min-height: 80px;
+textarea.oc-input,
+.oc-textarea {
+  min-height: var(--oc-textarea-min, 80px);
   resize: vertical;
 }
 
@@ -741,12 +751,13 @@ textarea.oc-input {
   display: block;
   width: 100%;
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: var(--oc-input-size, 0.875rem);
   line-height: 1.5;
-  padding: 0.5rem 2rem 0.5rem 0.75rem;
-  border: 1px solid var(--oc-input);
-  border-radius: var(--oc-radius);
-  background: transparent;
+  padding: var(--oc-input-padding, 0.5rem 0.75rem);
+  padding-inline-end: 2rem;
+  border: 1px solid var(--oc-input-border, var(--oc-input));
+  border-radius: var(--oc-input-radius, var(--oc-radius));
+  background-color: var(--oc-input-bg, transparent);
   color: var(--oc-foreground);
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2371717a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
@@ -760,8 +771,9 @@ textarea.oc-input {
 
 .oc-select:focus {
   border-color: var(--oc-ring);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ring) 25%, transparent);
+  box-shadow: 0 0 0 var(--oc-ring-width, 2px) color-mix(in srgb, var(--oc-ring) var(--oc-ring-alpha, 25%), transparent);
 }
+.oc-select[aria-invalid="true"] { border-color: var(--oc-destructive); }
 
 /* Select option dark theme — prevents white background in dropdowns */
 .oc-select option {
@@ -1529,7 +1541,7 @@ textarea.oc-input {
   border: none;
   height: 1px;
   background: var(--oc-border);
-  margin: 16px 0;
+  margin: var(--oc-separator-space, 16px) 0;
 }
 
 .oc-separator--vertical {

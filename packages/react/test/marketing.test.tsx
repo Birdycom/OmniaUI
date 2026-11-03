@@ -5,8 +5,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import {
-  BlockAboutTimeline, BlockContactGrid, BlockFaq, BlockHeroOrbit, BlockPortfolioGrid, BlockProfileHeader,
-  FactList, LinkArrow, LinkRow, Marquee, NextTeaser, PriceCard, ProductMark, ProjectCard, StackList, Timeline,
+  BlockAboutTimeline, BlockContactForm, BrandMark, FeatureCard, LinkCard, BlockContactGrid, BlockFaq, BlockHeroOrbit, BlockPortfolioGrid, BlockProfileHeader,
+  FactList, LinkArrow, LinkRow, Marquee, NextTeaser, Panel, PriceCard, ProductMark, ProjectCard, Result, StackList, Timeline,
 } from "../src";
 
 describe("marketing components", () => {
@@ -116,6 +116,47 @@ describe("marketing blocks", () => {
     expect(container.querySelector("a.oc-block-contact-line")).toHaveAttribute("href", "mailto:a@b.c");
     expect(container.querySelector("address.oc-block-contact-card")).not.toBeNull();
     expect(container.querySelector(".oc-product-mark")).toHaveClass("oc-accent--blue");
+  });
+
+  it("FeatureCard and LinkCard render their parts", () => {
+    const { container } = render(<><FeatureCard title="Apps" icon="A" accent="green" headingLevel={2}>Built for you.</FeatureCard><LinkCard href="/a" title="Agent 1" accent="violet" more="Read more">Reads invoices.</LinkCard></>);
+    expect(container.querySelector("h2.oc-feature-card__title")).toHaveTextContent("Apps");
+    expect(container.querySelector(".oc-feature-card .oc-icon-tile")).toHaveClass("oc-accent--green");
+    expect(container.querySelector(".oc-feature-card__text")).toHaveTextContent("Built for you.");
+    expect(container.querySelector("a.oc-link-card")).toHaveClass("oc-accent--violet");
+    expect(container.querySelector(".oc-link-card__more")).toHaveTextContent("Read more");
+  });
+
+  it("BrandMark renders the word, accent and tagline", () => {
+    const { container } = render(<BrandMark href="/" name="Company" accent="1" tagline="Software" size="lg" aria-label="Company 1" />);
+    expect(container.firstChild).toHaveClass("oc-brand-mark", "oc-brand-mark--lg");
+    expect(container.querySelector(".oc-brand-mark__accent")).toHaveTextContent("1");
+    expect(container.querySelector(".oc-brand-mark__tagline")).toHaveTextContent("Software");
+  });
+
+  it("Panel and Result render their classes", () => {
+    const { container } = render(<Panel glow="end"><Result title="Sent" accent="green" icon="✓" actions={<a href="#form">Again</a>}>Thanks.</Result></Panel>);
+    expect(container.firstChild).toHaveClass("oc-panel", "oc-panel--glow", "oc-panel--glow-end");
+    expect(container.querySelector(".oc-result")).toHaveAttribute("role", "status");
+    expect(container.querySelector(".oc-icon-tile")).toHaveClass("oc-accent--green");
+    expect(container.querySelector(".oc-result__text")).toHaveTextContent("Thanks.");
+    expect(container.querySelector(".oc-result__actions a")).toHaveAttribute("href", "#form");
+  });
+
+  it("BlockContactForm shows field errors, cards and the result", () => {
+    const { container, rerender } = render(
+      <BlockContactForm action="/contact" subjects={[{ value: "project", label: "A new project" }]} errors={{ email: "Fill in a valid e-mail address." }} cards={[{ title: "Mail us", lines: [{ text: "info@company1.example", href: "mailto:info@company1.example" }] }]} />,
+    );
+    expect(container.querySelector("form.oc-form.oc-form--filled")).toHaveAttribute("action", "/contact");
+    expect(container.querySelector('input[name="email"]')).toHaveAttribute("aria-invalid", "true");
+    expect(container.querySelector("#err-email")).toHaveTextContent("Fill in a valid e-mail address.");
+    expect(container.querySelector(".oc-alert--danger")).toHaveTextContent("Please check the fields in red.");
+    expect(container.querySelector('select[name="subject"] option[value="project"]')).not.toBeNull();
+    expect(container.querySelector(".oc-honeypot input")).toHaveAttribute("tabindex", "-1");
+    expect(container.querySelector("a.oc-block-contact-line")).toHaveAttribute("href", "mailto:info@company1.example");
+    rerender(<BlockContactForm sent successText="We answer within a day." onAgain={() => {}} />);
+    expect(container.querySelector("form")).toBeNull();
+    expect(container.querySelector(".oc-result .oc-result__text")).toHaveTextContent("We answer within a day.");
   });
 
   it("BlockHeroOrbit spreads the marks over the ring", () => {

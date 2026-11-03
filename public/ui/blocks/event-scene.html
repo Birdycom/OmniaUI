@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" class="scrollbar-omnia" data-section="blocks" data-sister-site="https://omniacss.test">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="A 3D hall in CSS for a live demo: an LED wall above the stage and a laptop at the front of house around two live screens, with a moving crowd, lights and a mixing console.">
+  <meta name="generator" content="OmniaUI 0.12.6">
+  <title>OmniaUI - Event scene Block</title>
+  <!-- Favicon: SVG for modern browsers, ICO/PNG as fallback (Safari, Google, /favicon.ico). "icon": "pro" in the
+       page meta shows the OmniaUI Pro star instead of the OmniaUI puzzle piece. -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  
+  <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/omnia-site.css?v=b1b7a3725b"><link rel="stylesheet" href="/css/oc-components.css?v=ce6a273da4"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=428a419512"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=7c8331bcd6"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=c45622127f"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=a79c967493">
+  <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
+  <script>
+    // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
+    try { const u = new URL(location.href), q = u.searchParams.get("oc-theme"); if (q) { localStorage.setItem("oc-theme", q); u.searchParams.delete("oc-theme"); history.replaceState(history.state, "", u); } const t = q || localStorage.getItem("oc-theme"); if (t && t !== "system") document.documentElement.dataset.theme = t; } catch {}
+    const carryTheme = (e) => { const a = e.target.closest && e.target.closest("a[href]"); const sister = document.documentElement.dataset.sisterSite; if (!a || !sister || a.origin !== new URL(sister).origin) return; try { const t = localStorage.getItem("oc-theme"); if (!t) return; const u = new URL(a.href); u.searchParams.set("oc-theme", t); a.href = u.href; } catch {} };
+    addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
+    addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
+    // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
+    // a click in a demo still themes only that demo (.oc-theme-scope).
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
+    addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
+  </script>
+  <script src="/js/oc-docs-v2.js?v=e308b0c60c" defer></script>
+  
+</head>
+<body>
+  <header class="oc-topbar oc-topbar--fixed">
+    <input type="checkbox" id="ocd-nav-toggle" class="ocd-nav-toggle" aria-label="Show the menu">
+    <label class="ocd-nav-button" for="ocd-nav-toggle" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></label>
+    <a class="oc-topbar-brand" href="/">OmniaUI<span class="oc-badge-version ml-1">v0.12.6</span></a>
+    <nav class="oc-topbar-nav" aria-label="Main">
+      <ul class="oc-navmenu oc-navmenu--site">
+        <li><a class="oc-navmenu-link" href="https://omniacss.test/">OmniaCSS</a></li><li><a class="oc-navmenu-link" href="https://omniacss.test/docs/">Docs</a></li><li><a class="oc-navmenu-link" href="/ui/components">Components</a></li><li><a class="oc-navmenu-link" href="/ui/blocks" aria-current="page">Blocks</a></li><li><a class="oc-navmenu-link" href="/ui/starter-kits">Starter kits</a></li><li><a class="oc-navmenu-link" href="/ui/webicons">Webicons</a></li>
+        <li><a class="oc-navmenu-link" href="https://github.com/Birdycom/OmniaUI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="oc-navmenu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"></path></svg></a></li>
+      </ul>
+    </nav>
+    <div class="ocd-topbar-actions">
+      <a class="oc-btn oc-btn--sm" href="/ui/pro#pricing">Pro</a>
+      <button type="button" class="ocd-search-trigger" data-ocd-search aria-label="Search components and blocks (Ctrl K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span>Search OmniaUI…</span><kbd>Ctrl K</kbd></button>
+      <fieldset class="oc-theme-switch ocm-theme" aria-label="Color theme">
+        <label><input type="radio" name="oc-theme" value="system" checked> System</label>
+        <label><input type="radio" name="oc-theme" value="light"> Light</label>
+        <label><input type="radio" name="oc-theme" value="dark"> Dark</label>
+      </fieldset>
+    </div>
+  </header>
+
+  <dialog class="ocd-search-dialog" id="ocd-search" aria-label="Search">
+    <div class="ocd-search-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input type="search" placeholder="Search components, blocks and classes" aria-label="Search" role="combobox" aria-controls="ocd-search-results" aria-expanded="true" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div>
+    <ul class="ocd-search-results" id="ocd-search-results" role="listbox" aria-label="Results"></ul>
+    <p class="ocd-search-empty" hidden>No results. Try a component such as <code>dialog</code>, a block such as <code>pricing</code> or a class such as <code>oc-btn</code>.</p>
+    <p class="ocd-search-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> to move</span><span><kbd>Enter</kbd> to open</span><span><kbd>Esc</kbd> to close</span></p>
+  </dialog>
+
+  <div class="ocd-shell">
+      <aside class="ocd-sidebar-left"><nav class="oc-sidebar oc-sidebar--docs" aria-label="OmniaUI Blocks"><h2 class="oc-sidebar-title">OmniaUI Blocks</h2><p class="oc-sidebar-group-label">Overview</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks">All blocks</a></li><li><a class="oc-sidebar-menu-button" href="/ui/pro">OmniaUI Pro</a></li><li><a class="oc-sidebar-menu-button" href="/ui/security">Security notices</a></li></ul><p class="oc-sidebar-group-label">App UX</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/app-header">App header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/app-shell">App shell</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/barcode-maker">Barcode maker<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/calendars">Calendars<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/charts">Charts gallery<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/chat-inbox">Chat inbox<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/cms-dashboard">CMS dashboard<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/dashboard-01">Dashboard 01<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/dashboard-stats">Dashboard stats<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/data-table">Data table</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/form-builder">Form builder<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/form-page">Form page</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hub-launcher">Hub launcher<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/media-manager">Media manager<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/module-header">Module header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/onboarding-checklist">Onboarding checklist<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-detail">Product detail<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-editor">Product editor<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-picker">Product picker<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-list">Products list<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/quote-lines">Quote lines<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/relations-list">Relations list<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/settings-page">Settings page<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-cart">Shop cart<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-catalog">Shop catalog<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-checkout">Shop checkout<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-product">Shop product<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/sidebars">Sidebars</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/status-page">Status page<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/wizard-dialog">Wizard dialog</a></li></ul><p class="oc-sidebar-group-label">Authentication</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/auth-split">Auth split</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/auth">Authentication</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/password-reset">Forgot and reset password</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/login">Login</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/otp">OTP verification</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/signup">Signup</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/two-factor">Two-factor setup</a></li></ul><p class="oc-sidebar-group-label">Marketing</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/about-timeline">About timeline</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/cta">Call to Action<span class="oc-sidebar-menu-badge ocd-nav-updated" title="Updated in v0.13.0">Updated</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/contact-form">Contact form<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.13.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/contact-grid">Contact grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/device-mockups">Device mockups<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/ecosystem-map">Ecosystem map<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/event-scene" aria-current="page" data-ocd-active="true">Event scene<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.13.0">New</span><span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/faq">FAQ</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/features">Features</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/footer">Footer</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/glass-nav">Glass navigation<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero">Hero</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero-orbit">Hero orbit<span class="oc-sidebar-menu-badge ocd-nav-updated" title="Updated in v0.13.0">Updated</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero-code">Hero with code window</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/portfolio-grid">Portfolio grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/pricing">Pricing</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/pricing-plans">Pricing plans<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/process">Process &amp; marquee</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-grid">Product grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/profile-header">Profile header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/services-tabs">Services tabs<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/showcase">Showcase (portfolio)</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/site-footer">Site footer<span class="oc-sidebar-menu-badge ocd-nav-updated" title="Updated in v0.13.0">Updated</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/site-header">Site header<span class="oc-sidebar-menu-badge ocd-nav-updated" title="Updated in v0.13.0">Updated</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/spotlight">Spotlight</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/spotlight-cards">Spotlight cards<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/stats">Stats</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/team-list">Team list</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/watch-layout">Watch layout<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li></ul><p class="oc-sidebar-group-label">Media</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/infinite-carousel">Infinite carousel<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/masonry-gallery">Masonry gallery<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li></ul></nav></aside>
+      <script>(() => { const nav = document.currentScript.previousElementSibling; const key = "oc-nav-scroll"; try { const y = sessionStorage.getItem(key); if (y !== null) nav.scrollTop = +y; } catch {} const act = [...nav.querySelectorAll('[data-ocd-active="true"]')].pop(); if (act) { const a = act.getBoundingClientRect(), n = nav.getBoundingClientRect(); if (a.top < n.top || a.bottom > n.bottom) nav.scrollTop += a.top - n.top - n.height / 3; } addEventListener("pagehide", () => { try { sessionStorage.setItem(key, nav.scrollTop); } catch {} }); })();</script><main class="ocd-content"><!-- File: apps/site/src/content/ui/blocks/event-scene.html | Map: hero -> live demo -> what is in it -> frameworks -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Event scene</h1>
+        <p class="oc-hero-text">Show a live demo of an event app where it would really run: a hall in 3D, made only with CSS. The customer screen hangs as an LED wall above the stage, the control screen stands on a laptop at the front of house, and in between a crowd bobs, jumps and waves with phones in the air while beams sweep through the haze. Both screens are <a href="../components/live-frame">live frames</a>, so an iframe of your own demo runs in them. <a href="../blocks">All blocks</a>.</p>
+      </section><section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 id="demo-2" class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-js oc-badge-nojs" title="The demos on this page run without JavaScript">0 KB JavaScript</span><span class="oc-section-header__badge-support oc-badge-support oc-badge-support--baseline" title="Works in Chrome, Firefox and Safari, on desktop and mobile">Baseline</span><span class="oc-section-header__badge-version oc-badge-version">v0.13.0</span>
+          <p class="oc-section-header__desc">Here the screens show two still images; put an <code>&lt;iframe&gt;</code> of your demo in each live frame. With <em>reduce motion</em> the hall stands still.</p>
+        </div>
+        <div class="oc-section-content">
+          <div class="oc-demo oc-demo--v2 oc-demo--pro"><div class="oc-demo__bar"><h4 class="oc-demo__title">Event scene <span class="oc-demo__pro-badge">Pro</span></h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-1"><span>Code</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width" title="Full width"><input type="radio" name="oc-demo-1-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width" title="Tablet (48rem)"><input type="radio" name="oc-demo-1-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width" title="Phone (24rem)"><input type="radio" name="oc-demo-1-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+<figure class="oc-block-scene" aria-label="Event hall with the live demo: the customer screen on the LED wall and the control screen on the laptop">
+  <div class="oc-block-scene-haze" aria-hidden="true"><i></i><i></i></div>
+  <div class="oc-block-scene-truss" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+  <div class="oc-block-scene-stage" aria-hidden="true"></div>
+  <div class="oc-block-scene-floor" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="oc-block-scene-led">
+    <figure class="oc-device oc-device--display oc-device--glow m-0">
+      <div class="oc-device__display oc-live-frame oc-block-scene-led__panel" style="--oc-live-w: 1280; --oc-live-h: 800">
+        <img src="/img/blocks/dashboard-01-dark.jpg" alt="Customer screen of the demo" width="1280" height="800">
+      </div>
+    </figure>
+  </div>
+  <svg class="oc-block-scene-crowd" viewBox="0 0 1000 250" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <lineargradient id="oc-scene-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="oc-block-scene-stop-body" /><stop offset="0.55" class="oc-block-scene-stop-ink" /></lineargradient>
+      <lineargradient id="oc-scene-body-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="oc-block-scene-stop-far" /><stop offset="0.6" class="oc-block-scene-stop-ink" /></lineargradient>
+      <radialgradient id="oc-scene-glow"><stop offset="0" class="oc-block-scene-stop-lamp" stop-opacity="0.9" /><stop offset="1" class="oc-block-scene-stop-lamp" stop-opacity="0" /></radialgradient>
+    </defs>
+    <g class="oc-block-scene-row0" style="--d:-0s;--t:0.5s">
+      <ellipse cx="6.3" cy="63.57" rx="11.8" ry="8.85" /><circle cx="6.3" cy="50" r="5.9" />
+      <g class="oc-block-scene-phone" style="--d:-0.4s"><circle cx="14.56" cy="40.56" r="9.44" fill="url(#oc-scene-glow)" /><rect x="12.79" y="37.02" width="3.54" height="6.49" rx="1" /></g>
+      <ellipse cx="27.5" cy="58.25" rx="13" ry="9.75" /><circle cx="27.5" cy="43.3" r="6.5" />
+      <ellipse cx="35.6" cy="61.93" rx="14.2" ry="10.65" /><circle cx="35.6" cy="45.6" r="7.1" />
+      <ellipse cx="62.3" cy="62.87" rx="11.8" ry="8.85" /><circle cx="62.3" cy="49.3" r="5.9" />
+      <ellipse cx="66.1" cy="57.05" rx="13" ry="9.75" /><circle cx="66.1" cy="42.1" r="6.5" />
+      <ellipse cx="95.5" cy="64.23" rx="14.2" ry="10.65" /><circle cx="95.5" cy="47.9" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.37s;--t:0.61s">
+      <ellipse cx="98.3" cy="60.87" rx="11.8" ry="8.85" /><circle cx="98.3" cy="47.3" r="5.9" />
+      <ellipse cx="126.9" cy="57.25" rx="13" ry="9.75" /><circle cx="126.9" cy="42.3" r="6.5" />
+      <g class="oc-block-scene-arm" style="--d:-3.2s"><rect x="140.01" y="38.95" width="3.55" height="22.72" rx="1.77" /><circle cx="141.78" cy="38.24" r="3.19" /></g>
+      <ellipse cx="132.2" cy="65.93" rx="14.2" ry="10.65" /><circle cx="132.2" cy="49.6" r="7.1" />
+      <ellipse cx="156.8" cy="58.47" rx="11.8" ry="8.85" /><circle cx="156.8" cy="44.9" r="5.9" />
+      <ellipse cx="167.4" cy="58.85" rx="13" ry="9.75" /><circle cx="167.4" cy="43.9" r="6.5" />
+      <ellipse cx="185.8" cy="66.23" rx="14.2" ry="10.65" /><circle cx="185.8" cy="49.9" r="7.1" />
+      <g class="oc-block-scene-phone" style="--d:-1s"><circle cx="195.74" cy="38.54" r="11.36" fill="url(#oc-scene-glow)" /><rect x="193.61" y="34.28" width="4.26" height="7.81" rx="1" /></g>
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.74s;--t:0.72s">
+      <ellipse cx="203.1" cy="56.47" rx="11.8" ry="8.85" /><circle cx="203.1" cy="42.9" r="5.9" />
+      <ellipse cx="214.6" cy="61.15" rx="13" ry="9.75" /><circle cx="214.6" cy="46.2" r="6.5" />
+      <ellipse cx="238.4" cy="65.13" rx="14.2" ry="10.65" /><circle cx="238.4" cy="48.8" r="7.1" />
+      <ellipse cx="244.3" cy="55.57" rx="11.8" ry="8.85" /><circle cx="244.3" cy="42" r="5.9" />
+      <ellipse cx="272.6" cy="63.45" rx="13" ry="9.75" /><circle cx="272.6" cy="48.5" r="6.5" />
+      <ellipse cx="275.5" cy="63.03" rx="14.2" ry="10.65" /><circle cx="275.5" cy="46.7" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.01s;--t:0.53s">
+      <ellipse cx="305" cy="56.17" rx="11.8" ry="8.85" /><circle cx="305" cy="42.6" r="5.9" />
+      <ellipse cx="308.4" cy="64.75" rx="13" ry="9.75" /><circle cx="308.4" cy="49.8" r="6.5" />
+      <ellipse cx="335.8" cy="60.63" rx="14.2" ry="10.65" /><circle cx="335.8" cy="44.3" r="7.1" />
+      <g class="oc-block-scene-arm" style="--d:-2.6s"><rect x="349.49" y="35.65" width="2.95" height="18.88" rx="1.48" /><circle cx="350.96" cy="35.06" r="2.66" /></g>
+      <ellipse cx="343" cy="58.07" rx="11.8" ry="8.85" /><circle cx="343" cy="44.5" r="5.9" />
+      <ellipse cx="365.2" cy="64.75" rx="13" ry="9.75" /><circle cx="365.2" cy="49.8" r="6.5" />
+      <g class="oc-block-scene-phone" style="--d:-1.6s"><circle cx="374.3" cy="39.4" r="10.4" fill="url(#oc-scene-glow)" /><rect x="372.35" y="35.5" width="3.9" height="7.15" rx="1" /></g>
+      <ellipse cx="378.5" cy="58.83" rx="14.2" ry="10.65" /><circle cx="378.5" cy="42.5" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.38s;--t:0.64s">
+      <ellipse cx="394" cy="60.47" rx="11.8" ry="8.85" /><circle cx="394" cy="46.9" r="5.9" />
+      <ellipse cx="414.1" cy="63.25" rx="13" ry="9.75" /><circle cx="414.1" cy="48.3" r="6.5" />
+      <ellipse cx="423.1" cy="58.33" rx="14.2" ry="10.65" /><circle cx="423.1" cy="42" r="7.1" />
+      <ellipse cx="449.1" cy="62.57" rx="11.8" ry="8.85" /><circle cx="449.1" cy="49" r="5.9" />
+      <ellipse cx="453.3" cy="60.95" rx="13" ry="9.75" /><circle cx="453.3" cy="46" r="6.5" />
+      <ellipse cx="482.5" cy="59.33" rx="14.2" ry="10.65" /><circle cx="482.5" cy="43" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.75s;--t:0.75s">
+      <ellipse cx="485.2" cy="63.57" rx="11.8" ry="8.85" /><circle cx="485.2" cy="50" r="5.9" />
+      <ellipse cx="514.3" cy="58.65" rx="13" ry="9.75" /><circle cx="514.3" cy="43.7" r="6.5" />
+      <ellipse cx="518.9" cy="61.43" rx="14.2" ry="10.65" /><circle cx="518.9" cy="45.1" r="7.1" />
+      <ellipse cx="544.4" cy="63.07" rx="11.8" ry="8.85" /><circle cx="544.4" cy="49.5" r="5.9" />
+      <g class="oc-block-scene-phone" style="--d:-2.1s"><circle cx="552.66" cy="40.06" r="9.44" fill="url(#oc-scene-glow)" /><rect x="550.89" y="36.52" width="3.54" height="6.49" rx="1" /></g>
+      <g class="oc-block-scene-arm" style="--d:-2s"><rect x="561.05" y="32.45" width="3.25" height="20.8" rx="1.62" /><circle cx="562.67" cy="31.8" r="2.93" /></g>
+      <ellipse cx="553.9" cy="57.15" rx="13" ry="9.75" /><circle cx="553.9" cy="42.2" r="6.5" />
+      <ellipse cx="573.4" cy="63.83" rx="14.2" ry="10.65" /><circle cx="573.4" cy="47.5" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.02s;--t:0.56s">
+      <ellipse cx="589.6" cy="61.27" rx="11.8" ry="8.85" /><circle cx="589.6" cy="47.7" r="5.9" />
+      <ellipse cx="602.2" cy="57.15" rx="13" ry="9.75" /><circle cx="602.2" cy="42.2" r="6.5" />
+      <ellipse cx="625.1" cy="65.73" rx="14.2" ry="10.65" /><circle cx="625.1" cy="49.4" r="7.1" />
+      <ellipse cx="631.7" cy="58.87" rx="11.8" ry="8.85" /><circle cx="631.7" cy="45.3" r="5.9" />
+      <ellipse cx="659.5" cy="58.45" rx="13" ry="9.75" /><circle cx="659.5" cy="43.5" r="6.5" />
+      <ellipse cx="662.6" cy="66.33" rx="14.2" ry="10.65" /><circle cx="662.6" cy="50" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.39s;--t:0.67s">
+      <ellipse cx="692.2" cy="56.77" rx="11.8" ry="8.85" /><circle cx="692.2" cy="43.2" r="5.9" />
+      <ellipse cx="695.3" cy="60.75" rx="13" ry="9.75" /><circle cx="695.3" cy="45.8" r="6.5" />
+      <ellipse cx="723.2" cy="65.43" rx="14.2" ry="10.65" /><circle cx="723.2" cy="49.1" r="7.1" />
+      <g class="oc-block-scene-phone" style="--d:-2.6s"><circle cx="733.14" cy="37.74" r="11.36" fill="url(#oc-scene-glow)" /><rect x="731.01" y="33.48" width="4.26" height="7.81" rx="1" /></g>
+      <ellipse cx="729.6" cy="55.67" rx="11.8" ry="8.85" /><circle cx="729.6" cy="42.1" r="5.9" />
+      <ellipse cx="752.8" cy="63.05" rx="13" ry="9.75" /><circle cx="752.8" cy="48.1" r="6.5" />
+      <g class="oc-block-scene-arm" style="--d:-1.5s"><rect x="772.81" y="36.45" width="3.55" height="22.72" rx="1.77" /><circle cx="774.59" cy="35.74" r="3.19" /></g>
+      <ellipse cx="765" cy="63.43" rx="14.2" ry="10.65" /><circle cx="765" cy="47.1" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.76s;--t:0.78s">
+      <ellipse cx="781.6" cy="55.97" rx="11.8" ry="8.85" /><circle cx="781.6" cy="42.4" r="5.9" />
+      <ellipse cx="800.7" cy="64.65" rx="13" ry="9.75" /><circle cx="800.7" cy="49.7" r="6.5" />
+      <ellipse cx="810.6" cy="61.03" rx="14.2" ry="10.65" /><circle cx="810.6" cy="44.7" r="7.1" />
+      <ellipse cx="835.8" cy="57.57" rx="11.8" ry="8.85" /><circle cx="835.8" cy="44" r="5.9" />
+      <ellipse cx="840.6" cy="64.85" rx="13" ry="9.75" /><circle cx="840.6" cy="49.9" r="6.5" />
+      <ellipse cx="869.6" cy="59.03" rx="14.2" ry="10.65" /><circle cx="869.6" cy="42.7" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.03s;--t:0.59s">
+      <ellipse cx="872.3" cy="59.97" rx="11.8" ry="8.85" /><circle cx="872.3" cy="46.4" r="5.9" />
+      <ellipse cx="901.6" cy="63.65" rx="13" ry="9.75" /><circle cx="901.6" cy="48.7" r="6.5" />
+      <g class="oc-block-scene-phone" style="--d:-0.1s"><circle cx="910.7" cy="38.3" r="10.4" fill="url(#oc-scene-glow)" /><rect x="908.75" y="34.4" width="3.9" height="7.15" rx="1" /></g>
+      <ellipse cx="905.7" cy="58.33" rx="14.2" ry="10.65" /><circle cx="905.7" cy="42" r="7.1" />
+      <ellipse cx="931.9" cy="62.17" rx="11.8" ry="8.85" /><circle cx="931.9" cy="48.6" r="5.9" />
+      <ellipse cx="940.5" cy="61.45" rx="13" ry="9.75" /><circle cx="940.5" cy="46.5" r="6.5" />
+      <ellipse cx="961" cy="59.03" rx="14.2" ry="10.65" /><circle cx="961" cy="42.7" r="7.1" />
+    </g>
+    <g class="oc-block-scene-row0" style="--d:-0.4s;--t:0.7s">
+      <g class="oc-block-scene-arm" style="--d:-0.9s"><rect x="982.69" y="41.05" width="2.95" height="18.88" rx="1.48" /><circle cx="984.17" cy="40.46" r="2.66" /></g>
+      <ellipse cx="976.2" cy="63.47" rx="11.8" ry="8.85" /><circle cx="976.2" cy="49.9" r="5.9" />
+      <ellipse cx="989.8" cy="59.05" rx="13" ry="9.75" /><circle cx="989.8" cy="44.1" r="6.5" />
+    </g>
+    <g class="oc-block-scene-row1" style="--d:-0.23s;--t:0.57s">
+      <ellipse cx="2.1" cy="110.37" rx="15.8" ry="11.85" /><circle cx="2.1" cy="92.2" r="7.9" />
+      <ellipse cx="23.2" cy="105.65" rx="17" ry="12.75" /><circle cx="23.2" cy="86.1" r="8.5" />
+      <g class="oc-block-scene-arm" style="--d:-6.7s"><rect x="61.31" y="79.45" width="4.55" height="29.12" rx="2.27" /><circle cx="63.58" cy="78.54" r="4.09" /></g>
+      <ellipse cx="51.3" cy="114.03" rx="18.2" ry="13.65" /><circle cx="51.3" cy="93.1" r="9.1" />
+      <ellipse cx="75.4" cy="107.97" rx="15.8" ry="11.85" /><circle cx="75.4" cy="89.8" r="7.9" />
+      <ellipse cx="89.4" cy="106.65" rx="17" ry="12.75" /><circle cx="89.4" cy="87.1" r="8.5" />
+      <ellipse cx="99.9" cy="114.93" rx="18.2" ry="13.65" /><circle cx="99.9" cy="94" r="9.1" />
+    </g>
+    <g class="oc-block-scene-row1 oc-block-scene-jump" style="--d:-0.6s;--t:0.68s">
+      <ellipse cx="117.7" cy="105.67" rx="15.8" ry="11.85" /><circle cx="117.7" cy="87.5" r="7.9" />
+      <ellipse cx="144.6" cy="108.85" rx="17" ry="12.75" /><circle cx="144.6" cy="89.3" r="8.5" />
+      <ellipse cx="171.1" cy="114.33" rx="18.2" ry="13.65" /><circle cx="171.1" cy="93.4" r="9.1" />
+      <ellipse cx="188.1" cy="104.37" rx="15.8" ry="11.85" /><circle cx="188.1" cy="86.2" r="7.9" />
+      <g class="oc-block-scene-phone" style="--d:-1.2s"><circle cx="199.16" cy="73.56" r="12.64" fill="url(#oc-scene-glow)" /><rect x="196.79" y="68.82" width="4.74" height="8.69" rx="1" /></g>
+      <ellipse cx="198.4" cy="111.25" rx="17" ry="12.75" /><circle cx="198.4" cy="91.7" r="8.5" />
+      <ellipse cx="213.1" cy="112.53" rx="18.2" ry="13.65" /><circle cx="213.1" cy="91.6" r="9.1" />
+    </g>
+    <g class="oc-block-scene-row1" style="--d:-0.97s;--t:0.79s">
+      <ellipse cx="237.8" cy="104.37" rx="15.8" ry="11.85" /><circle cx="237.8" cy="86.2" r="7.9" />
+      <ellipse cx="265.7" cy="113.05" rx="17" ry="12.75" /><circle cx="265.7" cy="93.5" r="8.5" />
+      <ellipse cx="286.1" cy="110.13" rx="18.2" ry="13.65" /><circle cx="286.1" cy="89.2" r="9.1" />
+      <g class="oc-block-scene-arm" style="--d:-10.7s"><rect x="306.09" y="75.75" width="3.95" height="25.28" rx="1.98" /><circle cx="308.06" cy="74.96" r="3.56" /></g>
+      <ellipse cx="297.4" cy="105.77" rx="15.8" ry="11.85" /><circle cx="297.4" cy="87.6" r="7.9" />
+      <ellipse cx="309.6" cy="113.55" rx="17" ry="12.75" /><circle cx="309.6" cy="94" r="8.5" />
+      <ellipse cx="331.4" cy="107.93" rx="18.2" ry="13.65" /><circle cx="331.4" cy="87" r="9.1" />
+    </g>
+    <g class="oc-block-scene-row1" style="--d:-0.24s;--t:0.6s">
+      <ellipse cx="359.6" cy="108.17" rx="15.8" ry="11.85" /><circle cx="359.6" cy="90" r="7.9" />
+      <ellipse cx="383" cy="112.55" rx="17" ry="12.75" /><circle cx="383" cy="93" r="8.5" />
+      <ellipse cx="396.5" cy="106.93" rx="18.2" ry="13.65" /><circle cx="396.5" cy="86" r="9.1" />
+      <g class="oc-block-scene-phone" style="--d:-0.8s"><circle cx="409.24" cy="71.44" r="14.56" fill="url(#oc-scene-glow)" /><rect x="406.51" y="65.98" width="5.46" height="10.01" rx="1" /></g>
+      <ellipse cx="407.1" cy="110.47" rx="15.8" ry="11.85" /><circle cx="407.1" cy="92.3" r="7.9" />
+      <ellipse cx="425.6" cy="110.45" rx="17" ry="12.75" /><circle cx="425.6" cy="90.9" r="8.5" />
+      <ellipse cx="452.9" cy="107.43" rx="18.2" ry="13.65" /><circle cx="452.9" cy="86.5" r="9.1" />
+    </g>
+    <g class="oc-block-scene-row1 oc-block-scene-jump" style="--d:-0.61s;--t:0.71s">
+      <ellipse cx="478.9" cy="111.97" rx="15.8" ry="11.85" /><circle cx="478.9" cy="93.8" r="7.9" />
+      <ellipse cx="495.3" cy="108.05" rx="17" ry="12.75" /><circle cx="495.3" cy="88.5" r="8.5" />
+      <ellipse cx="505.5" cy="109.13" rx="18.2" ry="13.65" /><circle cx="505.5" cy="88.2" r="9.1" />
+      <ellipse cx="520.9" cy="112.07" rx="15.8" ry="11.85" /><circle cx="520.9" cy="93.9" r="7.9" />
+      <g class="oc-block-scene-arm" style="--d:-1s"><rect x="555.45" y="73.85" width="4.25" height="27.2" rx="2.12" /><circle cx="557.58" cy="73" r="3.83" /></g>
+      <ellipse cx="546.1" cy="106.15" rx="17" ry="12.75" /><circle cx="546.1" cy="86.6" r="8.5" />
+      <ellipse cx="573.8" cy="111.53" rx="18.2" ry="13.65" /><circle cx="573.8" cy="90.6" r="9.1" />
+    </g>
+    <g class="oc-block-scene-row1" style="--d:-0.98s;--t:0.52s">
+      <ellipse cx="593.4" cy="110.67" rx="15.8" ry="11.85" /><circle cx="593.4" cy="92.5" r="7.9" />
+      <ellipse cx="604.5" cy="105.55" rx="17" ry="12.75" /><circle cx="604.5" cy="86" r="8.5" />
+      <g class="oc-block-scene-phone" style="--d:-0.3s"><circle cx="616.4" cy="72.4" r="13.6" fill="url(#oc-scene-glow)" /><rect x="613.85" y="67.3" width="5.1" height="9.35" rx="1" /></g>
+      <ellipse cx="617.1" cy="113.73" rx="18.2" ry="13.65" /><circle cx="617.1" cy="92.8" r="9.1" />
+      <ellipse cx="639.6" cy="108.47" rx="15.8" ry="11.85" /><circle cx="639.6" cy="90.3" r="7.9" />
+      <ellipse cx="667.8" cy="106.35" rx="17" ry="12.75" /><circle cx="667.8" cy="86.8" r="8.5" />
+      <ellipse cx="690.6" cy="114.83" rx="18.2" ry="13.65" /><circle cx="690.6" cy="93.9" r="9.1" />
+    </g>
+    <g class="oc-block-scene-row1" style="--d:-0.25s;--t:0.63s">
+      <ellipse cx="703.6" cy="106.07" rx="15.8" ry="11.85" /><circle cx="703.6" cy="87.9" r="7.9" />
+      <ellipse cx="714.5" cy="108.35" rx="17" ry="12.75" /><circle cx="714.5" cy="88.8" r="8.5" />
+      <ellipse cx="733.7" cy="114.53" rx="18.2" ry="13.65" /><circle cx="733.7" cy="93.6" r="9.1" />
+      <ellipse cx="761.2" cy="104.47" rx="15.8" ry="11.85" /><circle cx="761.2" cy="86.3" r="7.9" />
+      <ellipse cx="786.8" cy="110.85" rx="17" ry="12.75" /><circle cx="786.8" cy="91.3" r="8.5" />
+      <g class="oc-block-scene-arm" style="--d:-6.3s"><rect x="812.41" y="78.35" width="4.55" height="29.12" rx="2.27" /><circle cx="814.68" cy="77.44" r="4.09" /></g>
+      <ellipse cx="802.4" cy="112.93" rx="18.2" ry="13.65" /><circle cx="802.4" cy="92" r="9.1" />
+    </g>
+    <g class="oc-block-scene-row1 oc-block-scene-jump" style="--d:-0.62s;--t:0.74s">
+      <ellipse cx="812.7" cy="104.27" rx="15.8" ry="11.85" /><circle cx="812.7" cy="86.1" r="7.9" />
+      <g class="oc-block-scene-phone" style="--d:-2.9s"><circle cx="823.76" cy="73.46" r="12.64" fill="url(#oc-scene-glow)" /><rect x="821.39" y="68.72" width="4.74" height="8.69" rx="1" /></g>
+      <ellipse cx="828.7" cy="112.75" rx="17" ry="12.75" /><circle cx="828.7" cy="93.2" r="8.5" />
+      <ellipse cx="854.5" cy="110.53" rx="18.2" ry="13.65" /><circle cx="854.5" cy="89.6" r="9.1" />
+      <ellipse cx="881.9" cy="105.47" rx="15.8" ry="11.85" /><circle cx="881.9" cy="87.3" r="7.9" />
+      <ellipse cx="900.7" cy="113.55" rx="17" ry="12.75" /><circle cx="900.7" cy="94" r="8.5" />
+      <ellipse cx="911.5" cy="108.33" rx="18.2" ry="13.65" /><circle cx="911.5" cy="87.4" r="9.1" />
+    </g>
+    <g class="oc-block-scene-row1" style="--d:-0.99s;--t:0.55s">
+      <ellipse cx="924.7" cy="107.67" rx="15.8" ry="11.85" /><circle cx="924.7" cy="89.5" r="7.9" />
+      <ellipse cx="947.8" cy="112.85" rx="17" ry="12.75" /><circle cx="947.8" cy="93.3" r="8.5" />
+      <ellipse cx="976.1" cy="107.03" rx="18.2" ry="13.65" /><circle cx="976.1" cy="86.1" r="9.1" />
+      <ellipse cx="998.2" cy="110.07" rx="15.8" ry="11.85" /><circle cx="998.2" cy="91.9" r="7.9" />
+    </g>
+    <g class="oc-block-scene-row2" style="--d:-0.46s;--t:0.64s">
+      <ellipse cx="16.8" cy="165.37" rx="21.8" ry="16.35" /><circle cx="16.8" cy="140.3" r="10.9" />
+      <ellipse cx="44.3" cy="166.85" rx="23" ry="17.25" /><circle cx="44.3" cy="140.4" r="11.5" />
+      <ellipse cx="69.5" cy="173.63" rx="24.2" ry="18.15" /><circle cx="69.5" cy="145.8" r="12.1" />
+      <ellipse cx="92.1" cy="163.57" rx="21.8" ry="16.35" /><circle cx="92.1" cy="138.5" r="10.9" />
+      <ellipse cx="112.4" cy="169.25" rx="23" ry="17.25" /><circle cx="112.4" cy="142.8" r="11.5" />
+      <ellipse cx="131.4" cy="172.23" rx="24.2" ry="18.15" /><circle cx="131.4" cy="144.4" r="12.1" />
+    </g>
+    <g class="oc-block-scene-row2 oc-block-scene-jump" style="--d:-0.83s;--t:0.75s">
+      <ellipse cx="150.2" cy="163.07" rx="21.8" ry="16.35" /><circle cx="150.2" cy="138" r="10.9" />
+      <ellipse cx="170.2" cy="171.35" rx="23" ry="17.25" /><circle cx="170.2" cy="144.9" r="11.5" />
+      <g class="oc-block-scene-phone" style="--d:-2.9s"><circle cx="186.3" cy="126.5" r="18.4" fill="url(#oc-scene-glow)" /><rect x="182.85" y="119.6" width="6.9" height="12.65" rx="1" /></g>
+      <ellipse cx="192.4" cy="169.93" rx="24.2" ry="18.15" /><circle cx="192.4" cy="142.1" r="12.1" />
+      <g class="oc-block-scene-arm" style="--d:-0.2s"><rect x="229.19" y="122.65" width="5.45" height="34.88" rx="2.73" /><circle cx="231.91" cy="121.56" r="4.91" /></g>
+      <ellipse cx="217.2" cy="164.07" rx="21.8" ry="16.35" /><circle cx="217.2" cy="139" r="10.9" />
+      <ellipse cx="244.4" cy="172.45" rx="23" ry="17.25" /><circle cx="244.4" cy="146" r="11.5" />
+      <ellipse cx="273" cy="167.63" rx="24.2" ry="18.15" /><circle cx="273" cy="139.8" r="12.1" />
+    </g>
+    <g class="oc-block-scene-row2" style="--d:-0.1s;--t:0.56s">
+      <ellipse cx="301.8" cy="166.07" rx="21.8" ry="16.35" /><circle cx="301.8" cy="141" r="10.9" />
+      <ellipse cx="329.6" cy="171.95" rx="23" ry="17.25" /><circle cx="329.6" cy="145.5" r="11.5" />
+      <ellipse cx="355.2" cy="166.13" rx="24.2" ry="18.15" /><circle cx="355.2" cy="138.3" r="12.1" />
+      <ellipse cx="378.2" cy="168.57" rx="21.8" ry="16.35" /><circle cx="378.2" cy="143.5" r="10.9" />
+      <ellipse cx="398.8" cy="170.25" rx="23" ry="17.25" /><circle cx="398.8" cy="143.8" r="11.5" />
+      <ellipse cx="417.9" cy="165.93" rx="24.2" ry="18.15" /><circle cx="417.9" cy="138.1" r="12.1" />
+    </g>
+    <g class="oc-block-scene-row2" style="--d:-0.47s;--t:0.67s">
+      <ellipse cx="436.6" cy="170.37" rx="21.8" ry="16.35" /><circle cx="436.6" cy="145.3" r="10.9" />
+      <g class="oc-block-scene-phone" style="--d:-0.6s"><circle cx="451.86" cy="127.86" r="17.44" fill="url(#oc-scene-glow)" /><rect x="448.59" y="121.32" width="6.54" height="11.99" rx="1" /></g>
+      <ellipse cx="456.4" cy="167.85" rx="23" ry="17.25" /><circle cx="456.4" cy="141.4" r="11.5" />
+      <ellipse cx="478.2" cy="167.23" rx="24.2" ry="18.15" /><circle cx="478.2" cy="139.4" r="12.1" />
+      <ellipse cx="502.6" cy="171.07" rx="21.8" ry="16.35" /><circle cx="502.6" cy="146" r="10.9" />
+      <g class="oc-block-scene-arm" style="--d:-12.8s"><rect x="542.05" y="121.95" width="5.75" height="36.8" rx="2.88" /><circle cx="544.92" cy="120.8" r="5.17" /></g>
+      <ellipse cx="529.4" cy="165.65" rx="23" ry="17.25" /><circle cx="529.4" cy="139.2" r="11.5" />
+      <ellipse cx="557.9" cy="169.53" rx="24.2" ry="18.15" /><circle cx="557.9" cy="141.7" r="12.1" />
+    </g>
+    <g class="oc-block-scene-row2 oc-block-scene-jump" style="--d:-0.84s;--t:0.78s">
+      <ellipse cx="586.8" cy="170.27" rx="21.8" ry="16.35" /><circle cx="586.8" cy="145.2" r="10.9" />
+      <ellipse cx="614.8" cy="164.55" rx="23" ry="17.25" /><circle cx="614.8" cy="138.1" r="11.5" />
+      <ellipse cx="640.8" cy="171.93" rx="24.2" ry="18.15" /><circle cx="640.8" cy="144.1" r="12.1" />
+      <ellipse cx="664.2" cy="168.27" rx="21.8" ry="16.35" /><circle cx="664.2" cy="143.2" r="10.9" />
+      <ellipse cx="685.2" cy="164.85" rx="23" ry="17.25" /><circle cx="685.2" cy="138.4" r="11.5" />
+      <ellipse cx="704.4" cy="173.53" rx="24.2" ry="18.15" /><circle cx="704.4" cy="145.7" r="12.1" />
+      <g class="oc-block-scene-phone" style="--d:-1.3s"><circle cx="721.34" cy="126.34" r="19.36" fill="url(#oc-scene-glow)" /><rect x="717.71" y="119.08" width="7.26" height="13.31" rx="1" /></g>
+    </g>
+    <g class="oc-block-scene-row2" style="--d:-0.11s;--t:0.59s">
+      <ellipse cx="723.1" cy="165.87" rx="21.8" ry="16.35" /><circle cx="723.1" cy="140.8" r="10.9" />
+      <ellipse cx="742.6" cy="166.45" rx="23" ry="17.25" /><circle cx="742.6" cy="140" r="11.5" />
+      <ellipse cx="764.1" cy="173.73" rx="24.2" ry="18.15" /><circle cx="764.1" cy="145.9" r="12.1" />
+      <ellipse cx="788" cy="163.87" rx="21.8" ry="16.35" /><circle cx="788" cy="138.8" r="10.9" />
+      <ellipse cx="814.5" cy="168.85" rx="23" ry="17.25" /><circle cx="814.5" cy="142.4" r="11.5" />
+      <g class="oc-block-scene-arm" style="--d:-11.6s"><rect x="856.11" y="126.55" width="6.05" height="38.72" rx="3.02" /><circle cx="859.13" cy="125.34" r="5.45" /></g>
+      <ellipse cx="842.8" cy="172.53" rx="24.2" ry="18.15" /><circle cx="842.8" cy="144.7" r="12.1" />
+    </g>
+    <g class="oc-block-scene-row2" style="--d:-0.48s;--t:0.7s">
+      <ellipse cx="871.7" cy="163.07" rx="21.8" ry="16.35" /><circle cx="871.7" cy="138" r="10.9" />
+      <ellipse cx="900" cy="171.05" rx="23" ry="17.25" /><circle cx="900" cy="144.6" r="11.5" />
+      <ellipse cx="926.3" cy="170.33" rx="24.2" ry="18.15" /><circle cx="926.3" cy="142.5" r="12.1" />
+      <ellipse cx="950.2" cy="163.77" rx="21.8" ry="16.35" /><circle cx="950.2" cy="138.7" r="10.9" />
+      <ellipse cx="971.5" cy="172.35" rx="23" ry="17.25" /><circle cx="971.5" cy="145.9" r="11.5" />
+      <g class="oc-block-scene-phone" style="--d:-2s"><circle cx="987.6" cy="127.5" r="18.4" fill="url(#oc-scene-glow)" /><rect x="984.15" y="120.6" width="6.9" height="12.65" rx="1" /></g>
+      <ellipse cx="990.9" cy="167.93" rx="24.2" ry="18.15" /><circle cx="990.9" cy="140.1" r="12.1" />
+    </g>
+    <g class="oc-block-scene-row3" style="--d:-0.69s;--t:0.71s">
+      <ellipse cx="27.8" cy="235.12" rx="28.8" ry="21.6" /><circle cx="27.8" cy="202" r="14.4" />
+      <ellipse cx="36.5" cy="242.7" rx="30" ry="22.5" /><circle cx="36.5" cy="208.2" r="15" />
+      <ellipse cx="88.4" cy="242.88" rx="31.2" ry="23.4" /><circle cx="88.4" cy="207" r="15.6" />
+      <g class="oc-block-scene-arm" style="--d:-2.1s"><rect x="139.94" y="180.8" width="7.2" height="46.08" rx="3.6" /><circle cx="143.54" cy="179.36" r="6.48" /></g>
+      <ellipse cx="124.1" cy="235.52" rx="28.8" ry="21.6" /><circle cx="124.1" cy="202.4" r="14.4" />
+      <ellipse cx="136.1" cy="244.2" rx="30" ry="22.5" /><circle cx="136.1" cy="209.7" r="15" />
+      <ellipse cx="192.7" cy="240.48" rx="31.2" ry="23.4" /><circle cx="192.7" cy="204.6" r="15.6" />
+      <g class="oc-block-scene-phone" style="--d:-1.5s"><circle cx="214.54" cy="179.64" r="24.96" fill="url(#oc-scene-glow)" /><rect x="209.86" y="170.28" width="9.36" height="17.16" rx="1" /></g>
+    </g>
+    <g class="oc-block-scene-row3 oc-block-scene-jump" style="--d:-1.06s;--t:0.52s">
+      <ellipse cx="219.3" cy="237.32" rx="28.8" ry="21.6" /><circle cx="219.3" cy="204.2" r="14.4" />
+      <ellipse cx="237.4" cy="244.4" rx="30" ry="22.5" /><circle cx="237.4" cy="209.9" r="15" />
+      <ellipse cx="295.8" cy="238.58" rx="31.2" ry="23.4" /><circle cx="295.8" cy="202.7" r="15.6" />
+      <ellipse cx="314.2" cy="239.72" rx="28.8" ry="21.6" /><circle cx="314.2" cy="206.6" r="14.4" />
+      <ellipse cx="340.5" cy="243.1" rx="30" ry="22.5" /><circle cx="340.5" cy="208.6" r="15" />
+      <ellipse cx="397.3" cy="237.88" rx="31.2" ry="23.4" /><circle cx="397.3" cy="202" r="15.6" />
+    </g>
+    <g class="oc-block-scene-row3" style="--d:-0.33s;--t:0.63s">
+      <ellipse cx="409.4" cy="241.82" rx="28.8" ry="21.6" /><circle cx="409.4" cy="208.7" r="14.4" />
+      <ellipse cx="444.8" cy="240.8" rx="30" ry="22.5" /><circle cx="444.8" cy="206.3" r="15" />
+      <ellipse cx="496.8" cy="238.68" rx="31.2" ry="23.4" /><circle cx="496.8" cy="202.8" r="15.6" />
+      <ellipse cx="505.6" cy="243.02" rx="28.8" ry="21.6" /><circle cx="505.6" cy="209.9" r="14.4" />
+      <g class="oc-block-scene-arm" style="--d:-1.5s"><rect x="566.3" y="181.5" width="7.5" height="48" rx="3.75" /><circle cx="570.05" cy="180" r="6.75" /></g>
+      <ellipse cx="549.8" cy="238.5" rx="30" ry="22.5" /><circle cx="549.8" cy="204" r="15" />
+      <g class="oc-block-scene-phone" style="--d:-2.5s"><circle cx="570.8" cy="180" r="24" fill="url(#oc-scene-glow)" /><rect x="566.3" y="171" width="9" height="16.5" rx="1" /></g>
+      <ellipse cx="594.6" cy="240.68" rx="31.2" ry="23.4" /><circle cx="594.6" cy="204.8" r="15.6" />
+    </g>
+    <g class="oc-block-scene-row3" style="--d:-0.7s;--t:0.74s">
+      <ellipse cx="603.3" cy="242.82" rx="28.8" ry="21.6" /><circle cx="603.3" cy="209.7" r="14.4" />
+      <ellipse cx="654.9" cy="236.9" rx="30" ry="22.5" /><circle cx="654.9" cy="202.4" r="15" />
+      <ellipse cx="690.9" cy="243.08" rx="31.2" ry="23.4" /><circle cx="690.9" cy="207.2" r="15.6" />
+      <ellipse cx="702.7" cy="241.12" rx="28.8" ry="21.6" /><circle cx="702.7" cy="208" r="14.4" />
+      <ellipse cx="759.2" cy="236.6" rx="30" ry="22.5" /><circle cx="759.2" cy="202.1" r="15" />
+      <ellipse cx="786.2" cy="245.08" rx="31.2" ry="23.4" /><circle cx="786.2" cy="209.2" r="15.6" />
+    </g>
+    <g class="oc-block-scene-row3 oc-block-scene-jump" style="--d:-1.07s;--t:0.55s">
+      <ellipse cx="804" cy="238.82" rx="28.8" ry="21.6" /><circle cx="804" cy="205.7" r="14.4" />
+      <ellipse cx="862.4" cy="237.7" rx="30" ry="22.5" /><circle cx="862.4" cy="203.2" r="15" />
+      <ellipse cx="881.1" cy="245.88" rx="31.2" ry="23.4" /><circle cx="881.1" cy="210" r="15.6" />
+      <ellipse cx="907" cy="236.52" rx="28.8" ry="21.6" /><circle cx="907" cy="203.4" r="14.4" />
+      <g class="oc-block-scene-phone" style="--d:-0.5s"><circle cx="927.16" cy="180.36" r="23.04" fill="url(#oc-scene-glow)" /><rect x="922.84" y="171.72" width="8.64" height="15.84" rx="1" /></g>
+      <ellipse cx="963.9" cy="239.9" rx="30" ry="22.5" /><circle cx="963.9" cy="205.4" r="15" />
+      <g class="oc-block-scene-arm" style="--d:-0.9s"><rect x="993.36" y="185.9" width="7.8" height="49.92" rx="3.9" /><circle cx="997.26" cy="184.34" r="7.02" /></g>
+      <ellipse cx="976.2" cy="245.18" rx="31.2" ry="23.4" /><circle cx="976.2" cy="209.3" r="15.6" />
+    </g>
+  </svg>
+  <div class="oc-block-scene-tech oc-block-scene-tech--right" aria-hidden="true"></div>
+  <div class="oc-block-scene-tech oc-block-scene-tech--left" aria-hidden="true"></div>
+  <div class="oc-block-scene-desk" aria-hidden="true"></div>
+  <div class="oc-block-scene-console" aria-hidden="true">
+    <div class="oc-block-scene-console__meters"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="oc-block-scene-console__knobs"></div>
+    <div class="oc-block-scene-console__faders"><b style="--f:30%"></b><b style="--f:55%"></b><b style="--f:40%"></b><b style="--f:20%"></b><b style="--f:62%"></b><b style="--f:35%"></b><b style="--f:48%"></b><b style="--f:25%"></b><b style="--f:58%"></b><b style="--f:42%"></b></div>
+  </div>
+  <div class="oc-block-scene-laptop">
+    <figure class="oc-device oc-device--laptop m-0">
+      <div class="oc-device__lid">
+        <div class="oc-device__display oc-live-frame oc-block-scene-laptop__panel" style="--oc-live-w: 1280; --oc-live-h: 800">
+          <img src="/img/blocks/data-table-dark.jpg" alt="Control screen of the demo" width="1280" height="800">
+        </div>
+      </div>
+      <span class="oc-device__base" aria-hidden="true"></span>
+    </figure>
+  </div>
+  <span class="oc-watermark" aria-hidden="true"><span>Demo</span></span>
+</figure>
+          </div><div class="oc-demo__code oc-demo__pro-lock" data-code="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg><p><strong>Part of OmniaUI Pro.</strong> The HTML, Blade, React and Vue code of this block comes with an OmniaUI Pro license.</p><a class="oc-btn oc-btn--primary oc-btn--sm" href="/ui/pro">About OmniaUI Pro</a></div></div>
+        </div>
+      </section><section class="oc-docs-section" id="contents">
+        <div class="oc-section-header">
+          <h2 id="what-is-in-it" class="oc-section-header__title">What is in it</h2>
+          <p class="oc-section-header__desc">Styles: <code>packages/pro/src/parts/site-event-scene.css</code> (OmniaUI Pro) with the Pro device mockups, the free live frame and watermark. No script; only transform and opacity move.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Part</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>figure.oc-block-scene</code></td><td>The hall: 16:10, square on a phone; a size container.</td></tr>
+              <tr><td><code>-haze</code>, <code>-truss</code> (lamps <code>i</code> with beams <code>b</code>), <code>-stage</code>, <code>-floor</code></td><td>Smoke, five sweeping spots that change color, the stage and colored washes on the floor.</td></tr>
+              <tr><td><code>-led</code> + <code>-led__panel</code></td><td>The LED wall: <code>.oc-device--display --glow</code> around an <code>.oc-live-frame</code> (<code>--oc-live-w</code> / <code>--oc-live-h</code> = virtual size of the page).</td></tr>
+              <tr><td><code>-crowd</code></td><td>SVG silhouettes in four rows (<code>-row0..3</code>), groups that bob or jump (<code>-jump</code>), arms that wave (<code>-arm</code>), phones with a light (<code>-phone</code>).</td></tr>
+              <tr><td><code>-tech</code>, <code>-desk</code>, <code>-console</code> (<code>__meters</code>, <code>__knobs</code>, <code>__faders</code>)</td><td>Front of house: two technicians, the desk edge and a mixing console with VU meters and faders (<code>--f</code>).</td></tr>
+              <tr><td><code>-laptop</code> + <code>-laptop__panel</code></td><td>The laptop: <code>.oc-device--laptop</code> around an <code>.oc-live-frame</code>.</td></tr>
+              <tr><td><code>--oc-scene-*</code></td><td>Colors from the site tokens: <code>light</code>, <code>glow</code>, <code>lamp</code>, <code>violet</code>, <code>magenta</code>, <code>amber</code>, <code>ink</code>, <code>metal</code>, <code>vu-low/-mid/-high</code>, <code>body-top</code>, <code>body-far-top</code>.</td></tr>
+              <tr><td><code>.oc-watermark</code></td><td>Optional text over the whole hall (Demo, Concept).</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section><section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 id="laravel-react-and-vue" class="oc-section-header__title">Laravel, React and Vue</h2>
+        </div>
+        <div class="oc-section-content">
+<div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14</pre><pre class="code-preview"><code><span class="hl-comment">&lt;!-- Blade --&gt;</span>
+&lt;x-oc::block.event-scene&gt;
+  <span class="hl-tag">&lt;x-slot:led</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iframe</span> <span class="hl-attr">src</span>=<span class="hl-string">"/demo/screen"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Customer screen"</span> <span class="hl-attr">width</span>=<span class="hl-string">"1280"</span> <span class="hl-attr">height</span>=<span class="hl-string">"800"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iframe</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/x-slot:led</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;x-slot:laptop</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iframe</span> <span class="hl-attr">src</span>=<span class="hl-string">"/demo/control"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Control screen"</span> <span class="hl-attr">width</span>=<span class="hl-string">"1280"</span> <span class="hl-attr">height</span>=<span class="hl-string">"800"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iframe</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/x-slot:laptop</span><span class="hl-tag">&gt;</span>
+&lt;/x-oc::block.event-scene&gt;
+
+<span class="hl-comment">&lt;!-- React --&gt;</span>
+<span class="hl-tag">&lt;BlockEventScene</span> <span class="hl-attr">watermark</span>=<span class="hl-string">"Demo"</span> <span class="hl-attr">led</span>=<span class="hl-string">{{</span> <span class="hl-attr">content:</span> <span class="hl-attr">&lt;iframe</span> <span class="hl-attr">src</span>=<span class="hl-string">"/demo/screen"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Customer screen"</span> <span class="hl-tag">/&gt;</span> }} laptop={{ content: <span class="hl-tag">&lt;iframe</span> <span class="hl-attr">src</span>=<span class="hl-string">"/demo/control"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Control screen"</span> <span class="hl-tag">/&gt;</span> }} /&gt;
+
+<span class="hl-comment">&lt;!-- Vue --&gt;</span>
+<span class="hl-tag">&lt;OcBlockEventScene</span> <span class="hl-attr">watermark</span>=<span class="hl-string">"Demo"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;template</span> <span class="hl-attr">#led</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iframe</span> <span class="hl-attr">src</span>=<span class="hl-string">"/demo/screen"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Customer screen"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/template</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;template</span> <span class="hl-attr">#laptop</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iframe</span> <span class="hl-attr">src</span>=<span class="hl-string">"/demo/control"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Control screen"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/template</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/OcBlockEventScene</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div>
+        </div>
+      </section><section id="support" class="oc-docs-section"><div class="oc-section-header"><h2 id="browser-support" class="oc-section-header__title">Browser support</h2></div><div class="oc-section-content"><div class="oc-compat"><div class="oc-compat__scroll"><table class="oc-compat__table"><thead><tr><th scope="col" rowspan="2" class="oc-compat__feature-head">Feature</th><th scope="colgroup" colspan="5" class="oc-compat__group">Desktop</th><th scope="colgroup" colspan="5" class="oc-compat__group oc-compat__group--mobile">Mobile</th></tr><tr><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/chrome.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Chrome</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/edge.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Edge</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/firefox.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Firefox</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/safari.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Safari</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/opera.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Opera</span></th><th scope="col" class="oc-compat__browser oc-compat__first-mobile"><img class="oc-compat__logo" src="/img/browsers/chrome.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Chrome Android</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/firefox.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Firefox Android</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/safari.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Safari iOS</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/samsung.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Samsung Internet</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/opera.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Opera Android</span></th></tr></thead><tbody><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/color_value/light-dark" target="_blank" rel="noopener"><code>light-dark()</code></a></th><td class="oc-compat__cell is-yes" title="Chrome: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Chrome: Supported since 123</span></td><td class="oc-compat__cell is-yes" title="Edge: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Edge: Supported since 123</span></td><td class="oc-compat__cell is-yes" title="Firefox: Supported since 120"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">120</span><span class="sr-only">Firefox: Supported since 120</span></td><td class="oc-compat__cell is-yes" title="Safari: Supported since 17.5"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">17.5</span><span class="sr-only">Safari: Supported since 17.5</span></td><td class="oc-compat__cell is-yes" title="Opera: Supported since 109"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">109</span><span class="sr-only">Opera: Supported since 109</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes" title="Chrome Android: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Chrome Android: Supported since 123</span></td><td class="oc-compat__cell is-yes" title="Firefox Android: Supported since 120"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">120</span><span class="sr-only">Firefox Android: Supported since 120</span></td><td class="oc-compat__cell is-yes" title="Safari iOS: Supported since 17.5"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">17.5</span><span class="sr-only">Safari iOS: Supported since 17.5</span></td><td class="oc-compat__cell is-yes" title="Samsung Internet: Supported since 27.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">27.0</span><span class="sr-only">Samsung Internet: Supported since 27.0</span></td><td class="oc-compat__cell is-yes" title="Opera Android: Supported since 82"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">82</span><span class="sr-only">Opera Android: Supported since 82</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/color_value/color-mix" target="_blank" rel="noopener"><code>color-mix()</code></a></th><td class="oc-compat__cell is-yes" title="Chrome: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Chrome: Supported since 111</span></td><td class="oc-compat__cell is-yes" title="Edge: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Edge: Supported since 111</span></td><td class="oc-compat__cell is-yes" title="Firefox: Supported since 113"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">113</span><span class="sr-only">Firefox: Supported since 113</span></td><td class="oc-compat__cell is-yes" title="Safari: Supported since 16.2"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16.2</span><span class="sr-only">Safari: Supported since 16.2</span></td><td class="oc-compat__cell is-yes" title="Opera: Supported since 97"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">97</span><span class="sr-only">Opera: Supported since 97</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes" title="Chrome Android: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Chrome Android: Supported since 111</span></td><td class="oc-compat__cell is-yes" title="Firefox Android: Supported since 113"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">113</span><span class="sr-only">Firefox Android: Supported since 113</span></td><td class="oc-compat__cell is-yes" title="Safari iOS: Supported since 16.2"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16.2</span><span class="sr-only">Safari iOS: Supported since 16.2</span></td><td class="oc-compat__cell is-yes" title="Samsung Internet: Supported since 22.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">22.0</span><span class="sr-only">Samsung Internet: Supported since 22.0</span></td><td class="oc-compat__cell is-yes" title="Opera Android: Supported since 75"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">75</span><span class="sr-only">Opera Android: Supported since 75</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/color_value/oklch" target="_blank" rel="noopener"><code>oklch()</code></a></th><td class="oc-compat__cell is-yes" title="Chrome: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Chrome: Supported since 111</span></td><td class="oc-compat__cell is-yes" title="Edge: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Edge: Supported since 111</span></td><td class="oc-compat__cell is-yes" title="Firefox: Supported since 113"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">113</span><span class="sr-only">Firefox: Supported since 113</span></td><td class="oc-compat__cell is-yes" title="Safari: Supported since 15.4"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">15.4</span><span class="sr-only">Safari: Supported since 15.4</span></td><td class="oc-compat__cell is-yes" title="Opera: Supported since 97"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">97</span><span class="sr-only">Opera: Supported since 97</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes" title="Chrome Android: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Chrome Android: Supported since 111</span></td><td class="oc-compat__cell is-yes" title="Firefox Android: Supported since 113"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">113</span><span class="sr-only">Firefox Android: Supported since 113</span></td><td class="oc-compat__cell is-yes" title="Safari iOS: Supported since 15.4"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">15.4</span><span class="sr-only">Safari iOS: Supported since 15.4</span></td><td class="oc-compat__cell is-yes" title="Samsung Internet: Supported since 22.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">22.0</span><span class="sr-only">Samsung Internet: Supported since 22.0</span></td><td class="oc-compat__cell is-yes" title="Opera Android: Supported since 75"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">75</span><span class="sr-only">Opera Android: Supported since 75</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/At-rules/@container" target="_blank" rel="noopener"><code>@container</code></a></th><td class="oc-compat__cell is-yes" title="Chrome: Supported since 105"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">105</span><span class="sr-only">Chrome: Supported since 105</span></td><td class="oc-compat__cell is-yes" title="Edge: Supported since 105"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">105</span><span class="sr-only">Edge: Supported since 105</span></td><td class="oc-compat__cell is-yes" title="Firefox: Supported since 110"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">110</span><span class="sr-only">Firefox: Supported since 110</span></td><td class="oc-compat__cell is-yes" title="Safari: Supported since 16"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16</span><span class="sr-only">Safari: Supported since 16</span></td><td class="oc-compat__cell is-yes" title="Opera: Supported since 91"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">91</span><span class="sr-only">Opera: Supported since 91</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes" title="Chrome Android: Supported since 105"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">105</span><span class="sr-only">Chrome Android: Supported since 105</span></td><td class="oc-compat__cell is-yes" title="Firefox Android: Supported since 110"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">110</span><span class="sr-only">Firefox Android: Supported since 110</span></td><td class="oc-compat__cell is-yes" title="Safari iOS: Supported since 16"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16</span><span class="sr-only">Safari iOS: Supported since 16</span></td><td class="oc-compat__cell is-yes" title="Samsung Internet: Supported since 20.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">20.0</span><span class="sr-only">Samsung Internet: Supported since 20.0</span></td><td class="oc-compat__cell is-yes" title="Opera Android: Supported since 72"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">72</span><span class="sr-only">Opera Android: Supported since 72</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/aspect-ratio" target="_blank" rel="noopener"><code>aspect-ratio</code></a></th><td class="oc-compat__cell is-yes" title="Chrome: Supported since 88"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">88</span><span class="sr-only">Chrome: Supported since 88</span></td><td class="oc-compat__cell is-yes" title="Edge: Supported since 88"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">88</span><span class="sr-only">Edge: Supported since 88</span></td><td class="oc-compat__cell is-yes" title="Firefox: Supported since 89"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">89</span><span class="sr-only">Firefox: Supported since 89</span></td><td class="oc-compat__cell is-yes" title="Safari: Supported since 15"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">15</span><span class="sr-only">Safari: Supported since 15</span></td><td class="oc-compat__cell is-yes" title="Opera: Supported since 74"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">74</span><span class="sr-only">Opera: Supported since 74</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes" title="Chrome Android: Supported since 88"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">88</span><span class="sr-only">Chrome Android: Supported since 88</span></td><td class="oc-compat__cell is-yes" title="Firefox Android: Supported since 89"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">89</span><span class="sr-only">Firefox Android: Supported since 89</span></td><td class="oc-compat__cell is-yes" title="Safari iOS: Supported since 15"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">15</span><span class="sr-only">Safari iOS: Supported since 15</span></td><td class="oc-compat__cell is-yes" title="Samsung Internet: Supported since 15.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">15.0</span><span class="sr-only">Samsung Internet: Supported since 15.0</span></td><td class="oc-compat__cell is-yes" title="Opera Android: Supported since 63"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">63</span><span class="sr-only">Opera Android: Supported since 63</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/animation" target="_blank" rel="noopener"><code>animation</code></a></th><td class="oc-compat__cell is-yes" title="Chrome: Supported since 43 — earlier: -webkit- since 3"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">43</span><span class="oc-compat__earlier">◐ -webkit- 3</span><span class="sr-only">Chrome: Supported since 43 — earlier: -webkit- since 3</span></td><td class="oc-compat__cell is-yes" title="Edge: Supported since 12 — earlier: -webkit- since 12"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">12</span><span class="oc-compat__earlier">◐ -webkit- 12</span><span class="sr-only">Edge: Supported since 12 — earlier: -webkit- since 12</span></td><td class="oc-compat__cell is-yes" title="Firefox: Supported since 16 — earlier: -webkit- since 49"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16</span><span class="oc-compat__earlier">◐ -webkit- 49</span><span class="sr-only">Firefox: Supported since 16 — earlier: -webkit- since 49</span></td><td class="oc-compat__cell is-yes" title="Safari: Supported since 9 — earlier: -webkit- since 4"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">9</span><span class="oc-compat__earlier">◐ -webkit- 4</span><span class="sr-only">Safari: Supported since 9 — earlier: -webkit- since 4</span></td><td class="oc-compat__cell is-yes" title="Opera: Supported since 30 — earlier: -webkit- since 15"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">30</span><span class="oc-compat__earlier">◐ -webkit- 15</span><span class="sr-only">Opera: Supported since 30 — earlier: -webkit- since 15</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes" title="Chrome Android: Supported since 43 — earlier: -webkit- since 18"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">43</span><span class="oc-compat__earlier">◐ -webkit- 18</span><span class="sr-only">Chrome Android: Supported since 43 — earlier: -webkit- since 18</span></td><td class="oc-compat__cell is-yes" title="Firefox Android: Supported since 16 — earlier: -webkit- since 49"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16</span><span class="oc-compat__earlier">◐ -webkit- 49</span><span class="sr-only">Firefox Android: Supported since 16 — earlier: -webkit- since 49</span></td><td class="oc-compat__cell is-yes" title="Safari iOS: Supported since 9 — earlier: -webkit- since 3.2"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">9</span><span class="oc-compat__earlier">◐ -webkit- 3.2</span><span class="sr-only">Safari iOS: Supported since 9 — earlier: -webkit- since 3.2</span></td><td class="oc-compat__cell is-yes" title="Samsung Internet: Supported since 4.0 — earlier: -webkit- since 1.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">4.0</span><span class="oc-compat__earlier">◐ -webkit- 1.0</span><span class="sr-only">Samsung Internet: Supported since 4.0 — earlier: -webkit- since 1.0</span></td><td class="oc-compat__cell is-yes" title="Opera Android: Supported since 30 — earlier: -webkit- since 14"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">30</span><span class="oc-compat__earlier">◐ -webkit- 14</span><span class="sr-only">Opera Android: Supported since 30 — earlier: -webkit- since 14</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/inset" target="_blank" rel="noopener"><code>inset</code></a></th><td class="oc-compat__cell is-yes" title="Chrome: Supported since 87"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">87</span><span class="sr-only">Chrome: Supported since 87</span></td><td class="oc-compat__cell is-yes" title="Edge: Supported since 87"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">87</span><span class="sr-only">Edge: Supported since 87</span></td><td class="oc-compat__cell is-yes" title="Firefox: Supported since 66"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">66</span><span class="sr-only">Firefox: Supported since 66</span></td><td class="oc-compat__cell is-yes" title="Safari: Supported since 14.1"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">14.1</span><span class="sr-only">Safari: Supported since 14.1</span></td><td class="oc-compat__cell is-yes" title="Opera: Supported since 73"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">73</span><span class="sr-only">Opera: Supported since 73</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes" title="Chrome Android: Supported since 87"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">87</span><span class="sr-only">Chrome Android: Supported since 87</span></td><td class="oc-compat__cell is-yes" title="Firefox Android: Supported since 66"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">66</span><span class="sr-only">Firefox Android: Supported since 66</span></td><td class="oc-compat__cell is-yes" title="Safari iOS: Supported since 14.5"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">14.5</span><span class="sr-only">Safari iOS: Supported since 14.5</span></td><td class="oc-compat__cell is-yes" title="Samsung Internet: Supported since 14.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">14.0</span><span class="sr-only">Samsung Internet: Supported since 14.0</span></td><td class="oc-compat__cell is-yes" title="Opera Android: Supported since 62"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">62</span><span class="sr-only">Opera Android: Supported since 62</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-columns" target="_blank" rel="noopener"><code>grid-template-columns</code></a></th><td class="oc-compat__cell is-yes" title="Chrome: Supported since 57"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">57</span><span class="sr-only">Chrome: Supported since 57</span></td><td class="oc-compat__cell is-yes" title="Edge: Supported since 16"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16</span><span class="sr-only">Edge: Supported since 16</span></td><td class="oc-compat__cell is-yes" title="Firefox: Supported since 52"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">52</span><span class="sr-only">Firefox: Supported since 52</span></td><td class="oc-compat__cell is-yes" title="Safari: Supported since 10.1"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">10.1</span><span class="sr-only">Safari: Supported since 10.1</span></td><td class="oc-compat__cell is-yes" title="Opera: Supported since 44"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">44</span><span class="sr-only">Opera: Supported since 44</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes" title="Chrome Android: Supported since 57"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">57</span><span class="sr-only">Chrome Android: Supported since 57</span></td><td class="oc-compat__cell is-yes" title="Firefox Android: Supported since 52"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">52</span><span class="sr-only">Firefox Android: Supported since 52</span></td><td class="oc-compat__cell is-yes" title="Safari iOS: Supported since 10.3"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">10.3</span><span class="sr-only">Safari iOS: Supported since 10.3</span></td><td class="oc-compat__cell is-yes" title="Samsung Internet: Supported since 6.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">6.0</span><span class="sr-only">Samsung Internet: Supported since 6.0</span></td><td class="oc-compat__cell is-yes" title="Opera Android: Supported since 43"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">43</span><span class="sr-only">Opera Android: Supported since 43</span></td></tr></tbody></table></div><ul class="oc-compat__legend"><li class="is-yes"><span aria-hidden="true">✓</span> Supported</li><li class="is-partial"><span aria-hidden="true">◐</span> Partial support</li><li class="is-preview"><span aria-hidden="true">◷</span> Coming: in preview / beta</li><li class="is-flag"><span aria-hidden="true">⚑</span> Behind a flag</li><li class="is-no"><span aria-hidden="true">✕</span> Not supported</li></ul><p class="oc-compat__source">Version = first release with support. Hover a cell for notes. Data: <a href="https://github.com/mdn/browser-compat-data" target="_blank" rel="noopener">MDN browser-compat-data</a> 8.1.5 (2026-10-08).</p></div></div></section>
+</main>
+      <aside class="ocd-sidebar-right"><nav class="oc-toc" aria-label="On this page"><p class="oc-toc-title">On This Page</p><ul class="oc-toc-list"><li><a class="oc-toc-link" href="#demo-2">Demo</a></li><li><a class="oc-toc-link" href="#what-is-in-it">What is in it</a></li><li><a class="oc-toc-link" href="#laravel-react-and-vue">Laravel, React and Vue</a></li><li><a class="oc-toc-link" href="#browser-support">Browser support</a></li></ul></nav></aside>
+      <script>(() => { if (CSS.supports("selector(:target-current)")) return; const links = [...document.querySelectorAll(".oc-toc a[href^='#']")]; const root = document.querySelector(".oc-docs-content, .ocd-content"); if (!links.length || !root) return; const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))); let raf = 0; const update = () => { raf = 0; const top = root.getBoundingClientRect().top + 80; let cur = 0; heads.forEach((h, i) => { if (h && h.getBoundingClientRect().top <= top) cur = i; }); if (root.scrollTop + root.clientHeight >= root.scrollHeight - 4) cur = links.length - 1; links.forEach((a, i) => a.classList.toggle("is-active", i === cur)); }; root.addEventListener("scroll", () => { raf ||= requestAnimationFrame(update); }, { passive: true }); update(); })();</script>
+    </div>
+
+  <footer class="oc-footerbar oc-footerbar--fixed">OmniaUI v0.12.6 — CSS-first components and blocks on OmniaCSS · <a href="https://omniacss.test/docs/">OmniaCSS docs</a> · <a href="https://github.com/Birdycom/OmniaUI">GitHub</a> · <a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a> · <a href="/legal/cookies">Cookies</a></footer>
+</body>
+</html>

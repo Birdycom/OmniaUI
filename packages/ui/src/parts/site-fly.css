@@ -1,0 +1,40 @@
+/* File: packages/ui/src/parts/site-fly.css */
+/* Map: fly in (only with fly.js) -> visible -> reduced motion -> product card badge -> code window tokens */
+/* Cards that fly in when they scroll into view: they start from the middle of their row (--oc-fly-x, set by fly.js),
+   70px lower, smaller and tilted, and land in their place. Without fly.js (html.oc-fly-ready is missing) or with
+   "reduce motion" everything simply stands in its place. Options: --oc-fly-step (offset per column), --oc-fly-stagger
+   (delay per column) and data-oc-fly-repeat (fly out again when leaving the view). The lift on hover uses translate, so it never fights the
+   transform of the fly-in. Also: a "New" badge in a product card name and short syntax classes for a code window. */
+
+.oc-fly-ready .oc-reveal--fly {
+  /* --oc-fly-delay: set per card by fly.js from --oc-fly-stagger (delay per column). */
+  transition:
+    opacity 0.6s var(--oc-ease-out, ease) var(--oc-fly-delay, 0s),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--oc-fly-delay, 0s),
+    border-color 0.35s;
+}
+.oc-fly-ready .oc-reveal--fly:not(.is-visible) {
+  opacity: 0;
+  transform: perspective(900px) translate3d(var(--oc-fly-x, 0), 70px, 0) scale(0.9) rotateX(14deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-fly-ready .oc-reveal--fly:not(.is-visible) { opacity: 1; transform: none; }
+}
+
+/* "New" after the name of a product card: <h3 class="oc-product-card__name">Product 1 <span class="oc-product-card__badge oc-pill">New</span></h3> */
+.oc-product-card__badge {
+  margin-inline-start: 0.4rem;
+  vertical-align: middle;
+  font-family: var(--oc-font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Short syntax classes for hand-written code in an .oc-code-window: keyword, string, constant, function, muted.
+   They take the colors of the window (--oc-syntax-*), so they follow light and dark mode and a theme can change them. */
+.oc-code-window .oc-tok-k { color: var(--oc-syntax-keyword); }
+.oc-code-window .oc-tok-s { color: var(--oc-syntax-string); }
+.oc-code-window .oc-tok-c { color: var(--oc-syntax-constant); }
+.oc-code-window .oc-tok-f { color: var(--oc-syntax-function); }
+.oc-code-window .oc-tok-m { color: var(--oc-syntax-comment); }
