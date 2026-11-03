@@ -15,13 +15,15 @@ const SCRIPTS = [
   ["@birdycom/omniaui", "dist/lazy.js", "oc-lazy.js", "lazy images: fade in over the placeholder (.oc-lazy)"],
   ["@birdycom/omniaui", "dist/contact-form.js", "oc-contact-form.js", "contact form: send with fetch, field errors and the result in place ([data-contact-form])"],
   ["@birdycom/omniaui", "dist/fly.js", "oc-fly.js", "cards that fly in from the middle of their row on scroll (.oc-reveal--fly)"],
-  ["@birdycom/omniaui", "dist/form-extras.js", "oc-form-extras.js", "ISO week in date fields, name card rename, avatar picker preview, quantity steps"],
+  ["@birdycom/omniaui", "dist/particles.js", "oc-particles.js", "particle field: drifting points with lines on a background canvas (canvas.oc-particles)"],
+  ["@birdycom/omniaui", "dist/form-extras.js", "oc-form-extras.js", "ISO week in date fields, name card rename, avatar picker preview, quantity steps, language code"],
   ["@birdycom/omniaui-pro", "dist/spotlight.js", "oc-spotlight.js", "spotlight cards (Pro)"],
   ["@birdycom/omniaui-pro", "dist/ecosystem-map.js", "oc-ecosystem-map.js", "ecosystem map lines (Pro)"],
   ["@birdycom/omniaui-pro", "dist/infinite-carousel.js", "oc-infinite-carousel.js", "infinite carousel (Pro)"],
   ["@birdycom/omniaui-pro", "dist/data-table-pro.js", "oc-data-table-pro.js", "data table column width and row drag (Pro)"],
   ["@birdycom/omniaui-pro", "dist/product-picker.js", "oc-product-picker.js", "product picker dialog: search and pick (Pro)"],
   ["@birdycom/omniaui-pro", "dist/shop.js", "oc-shop.js", "shop catalog filters and cart totals (Pro)"],
+  ["@birdycom/omniaui-pro", "dist/network-graph.js", "oc-network-graph.js", "network graph: a center with its nodes on a ring, tooltip and highlight (Pro)"],
   ["@birdycom/omniaui-pro", "dist/barcode-maker.js", "oc-barcode-maker.js", "barcode maker: live preview and SVG download (Pro, needs oc-barcode.js)"],
 ];
 

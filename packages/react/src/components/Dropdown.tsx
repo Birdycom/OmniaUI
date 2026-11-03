@@ -41,12 +41,27 @@ export function DropdownSeparator({ className, ...rest }: HTMLAttributes<HTMLDiv
   return <div className={cx("oc-dropdown-separator", className)} {...rest} />;
 }
 
-type ItemProps = (AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) | (ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined });
+interface ItemExtras {
+  /** A check column: true or false makes it a check item (role menuitemcheckbox, ✓ when true). */
+  checked?: boolean;
+  /** Muted text on the right ("Ctrl+Q", "2 h"). */
+  hint?: ReactNode;
+}
+type ItemProps = ItemExtras & ((AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) | (ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined }));
 
 /** `.oc-dropdown-item`: an anchor when `href` is set, otherwise a button. */
-export function DropdownItem({ className, ...props }: ItemProps) {
+export function DropdownItem({ className, checked, hint, children, ...props }: ItemProps) {
+  const check = checked !== undefined;
+  const content = (
+    <>
+      {check && <span className="oc-dropdown-check" aria-hidden="true" />}
+      {children}
+      {hint != null && <span className="oc-dropdown-hint">{hint}</span>}
+    </>
+  );
+  const extra = check ? { role: "menuitemcheckbox", "aria-checked": checked } : {};
   if (props.href !== undefined) {
-    return <a className={cx("oc-dropdown-item", className)} {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)} />;
+    return <a className={cx("oc-dropdown-item", className)} {...extra} {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}>{content}</a>;
   }
-  return <button type="button" className={cx("oc-dropdown-item", className)} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)} />;
+  return <button type="button" className={cx("oc-dropdown-item", className)} {...extra} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}>{content}</button>;
 }

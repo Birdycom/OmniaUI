@@ -58,4 +58,34 @@ class WidgetTest extends TestCase
         $this->assertElement($html, 'button', 'oc-btn oc-btn--link oc-btn--inline');
         $this->assertElement($html, 'article', 'oc-prose oc-prose--compact');
     }
+
+    public function test_meter_row_sub_line(): void
+    {
+        $html = $this->render('<x-oc::meter-row label="GPU" :percent="40" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34" sub-level="warn" />');
+
+        $this->assertElement($html, 'span', 'oc-meter-row__subbar', ['data-level' => 'warn', 'style' => '--oc-meter: 34%']);
+        $this->assertStringContainsString('VRAM 2.7 / 8.0 GB', $html);
+    }
+
+    public function test_reading_callout_and_group(): void
+    {
+        $html = $this->render('<x-oc::reading level="warm">72 °C</x-oc::reading><x-oc::callout>Like it?<x-slot:action><button>Go</button></x-slot:action></x-oc::callout><x-oc::group title="Service 1" aside="2 busy" tone="busy" meta="2 min ago">rows</x-oc::group>');
+
+        $this->assertElement($html, 'span', 'oc-reading oc-reading--warm', [], '72 °C');
+        $this->assertElement($html, 'div', 'oc-callout__text', [], 'Like it?');
+        $this->assertElement($html, 'div', 'oc-callout__action');
+        $this->assertElement($html, 'h2', 'oc-group__title', [], 'Service 1');
+        $this->assertElement($html, 'span', 'oc-group__aside', ['data-tone' => 'busy'], '2 busy');
+    }
+
+    public function test_static_menu_code_language_select_and_particles(): void
+    {
+        $html = $this->render('<x-oc::menu-static flat><button class="oc-dropdown-item">Quit</button></x-oc::menu-static>'
+            .'<x-oc::language-select code ghost :options="[\'nl\' => \'Nederlands\', \'en\' => \'English\']" value="en" />'
+            .'<x-oc::particle-field local :count="40" />');
+
+        $this->assertElement($html, 'div', 'oc-dropdown-menu oc-dropdown-menu--static oc-dropdown-menu--flat', ['role' => 'menu']);
+        $this->assertElement($html, 'label', 'oc-language-select oc-language-select--ghost oc-language-select--code', ['data-code' => 'EN']);
+        $this->assertElement($html, 'canvas', 'oc-particles oc-particles--local', ['data-count' => '40', 'aria-hidden' => 'true']);
+    }
 }

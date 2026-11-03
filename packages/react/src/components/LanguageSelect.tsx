@@ -22,6 +22,8 @@ export interface LanguageSelectProps extends Omit<SelectHTMLAttributes<HTMLSelec
   currency?: boolean;
   /** No frame until hover / focus. */
   ghost?: boolean;
+  /** Closed it shows only the code ("NL"); pair with ghost in a title bar. The option's value, upper case. */
+  code?: boolean;
   /** Replaces the globe icon (e.g. "€"). */
   icon?: ReactNode;
   /** Class for the wrapping label (`className` goes to the select). */
@@ -35,12 +37,15 @@ const Globe = () => (
 
 /** `.oc-language-select`: native select in a pill with a leading icon. */
 export const LanguageSelect = forwardRef<HTMLSelectElement, LanguageSelectProps>(function LanguageSelect(
-  { options, value, defaultValue, onChange, currency, ghost, icon, labelClassName, className, ...rest },
+  { options, value, defaultValue, onChange, currency, ghost, code, icon, labelClassName, className, ...rest },
   ref,
 ) {
   const [current, setCurrent] = useControllable<string>(value, defaultValue ?? options[0]?.value ?? "", onChange);
   return (
-    <label className={cx("oc-language-select", ghost && "oc-language-select--ghost", currency && "oc-language-select--currency", labelClassName)}>
+    <label
+      className={cx("oc-language-select", ghost && "oc-language-select--ghost", currency && "oc-language-select--currency", code && "oc-language-select--code", labelClassName)}
+      data-code={code ? current.toUpperCase() : undefined}
+    >
       <span className="oc-language-select-icon" aria-hidden="true">{icon ?? (currency ? "\u20AC" : <Globe />)}</span>
       <select
         ref={ref}

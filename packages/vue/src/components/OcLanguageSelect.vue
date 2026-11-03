@@ -18,6 +18,8 @@ defineProps<{
   label?: string
   currency?: boolean
   ghost?: boolean
+  /** Closed it shows only the code ("NL"), the value in upper case */
+  code?: boolean
   /** Text icon, e.g. "€" (default: globe, or € with `currency`) */
   icon?: string
 }>()
@@ -26,7 +28,7 @@ const { root, control } = useAttrsSplit()
 </script>
 
 <template>
-  <label v-bind="root" :class="['oc-language-select', ghost && 'oc-language-select--ghost', currency && 'oc-language-select--currency']">
+  <label v-bind="root" :class="['oc-language-select', ghost && 'oc-language-select--ghost', currency && 'oc-language-select--currency', code && 'oc-language-select--code']" :data-code="code ? String(model ?? options[0]?.value ?? '').toUpperCase() : undefined">
     <span class="oc-language-select-icon" aria-hidden="true">
       <slot name="icon">
         <template v-if="icon || currency">{{ icon ?? '€' }}</template>

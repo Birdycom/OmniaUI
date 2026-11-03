@@ -1,0 +1,132 @@
+/* File: packages/ui/src/parts/data-graph.css
+   Map: frame -> edges (moving dashes) -> nodes (halo, dot, mark, label) -> levels -> center node + pulse -> focus
+   (one node lit, the rest dimmed) -> tooltip -> reduced motion
+   Graph: the look of a small network graph in SVG, a center (a person, an account, a server) with linked nodes
+   around it. Draw it yourself (by hand, d3 or any code) with these classes, or let OmniaUI Pro's network graph
+   lay it out. Node colors follow the severity tokens: data-level="low|medium|high|critical" on .oc-graph__node.
+   <div class="oc-graph"><svg class="oc-graph__svg" viewBox="…">
+     <line class="oc-graph__edge" …/>
+     <g class="oc-graph__node" data-level="high" transform="translate(…)"><circle class="oc-graph__halo" r="21"/>
+       <circle class="oc-graph__dot" r="14"/><text class="oc-graph__mark">▲</text><text class="oc-graph__label" y="27">…</text></g>
+   </svg></div> */
+
+.oc-graph {
+  --oc-graph-accent: var(--oc-accent-from, var(--oc-primary));
+  position: relative;
+  inline-size: 100%;
+  color: var(--oc-foreground);
+}
+.oc-graph__svg { display: block; inline-size: 100%; block-size: auto; overflow: visible; }
+
+/* Edges: thin dashed lines in the accent color that flow from the center outwards. */
+.oc-graph__edge {
+  fill: none;
+  stroke: var(--oc-graph-accent);
+  stroke-opacity: 0.35;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  animation: oc-graph-flow 1.5s linear infinite;
+  transition: stroke-opacity 0.3s, stroke-width 0.3s;
+}
+@keyframes oc-graph-flow { to { stroke-dashoffset: -20; } }
+
+/* Nodes: a soft halo, a dot in the level color, a mark inside and a label under it. */
+.oc-graph__node {
+  --oc-graph-color: var(--oc-muted-foreground);
+  cursor: default;
+  outline: none;
+  transition: opacity 0.3s;
+}
+.oc-graph__node[role="button"] { cursor: pointer; }
+.oc-graph__halo {
+  fill: none;
+  stroke: var(--oc-graph-color);
+  stroke-opacity: 0.25;
+  stroke-width: 9;
+  filter: blur(3px);
+  transition: stroke-opacity 0.3s, stroke-width 0.3s;
+}
+.oc-graph__dot {
+  fill: var(--oc-graph-color);
+  fill-opacity: 0.88;
+  transition: fill-opacity 0.3s, scale 0.3s;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.oc-graph__mark {
+  fill: var(--color-white-50);
+  font-size: 10px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+.oc-graph__label {
+  fill: var(--oc-muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 8.5px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.oc-graph__node:focus-visible .oc-graph__dot { stroke: var(--oc-ring); stroke-width: 2.5; }
+
+/* Levels (the same tokens as the severity card); the tooltip takes the level of its node. */
+.oc-graph__node[data-level="low"],
+.oc-graph__tip[data-level="low"] { --oc-graph-color: var(--oc-success); }
+.oc-graph__node[data-level="medium"],
+.oc-graph__tip[data-level="medium"] { --oc-graph-color: var(--oc-warning); }
+.oc-graph__node[data-level="high"],
+.oc-graph__tip[data-level="high"] { --oc-graph-color: var(--oc-destructive); }
+.oc-graph__node[data-level="critical"],
+.oc-graph__tip[data-level="critical"] { --oc-graph-color: light-dark(var(--color-red-95), var(--color-red-30)); }
+
+/* Center: the accent color, a thin white ring and a pulse that grows and fades. */
+.oc-graph__node--center { --oc-graph-color: var(--oc-graph-accent); }
+.oc-graph__node--center .oc-graph__dot { stroke: var(--color-white-50); stroke-opacity: 0.3; stroke-width: 1.5; }
+.oc-graph__node--center .oc-graph__mark { font-size: 13px; }
+.oc-graph__node--center .oc-graph__label { fill: var(--oc-graph-accent); }
+.oc-graph__pulse {
+  fill: none;
+  stroke: var(--oc-graph-accent);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: oc-graph-pulse 2.2s ease-out infinite;
+}
+@keyframes oc-graph-pulse {
+  from { scale: 1; opacity: 0.6; }
+  to { scale: 2; opacity: 0; }
+}
+
+/* Focus: .is-focused on the graph and .is-active on one node light that node and its edge; the rest dims. */
+.oc-graph.is-focused .oc-graph__node:not(.is-active, .oc-graph__node--center) { opacity: 0.15; }
+.oc-graph.is-focused .oc-graph__edge { stroke-opacity: 0.08; stroke-width: 1; }
+.oc-graph.is-focused .oc-graph__edge.is-active { stroke-opacity: 0.8; stroke-width: 3; }
+.oc-graph__node.is-active .oc-graph__dot { fill-opacity: 1; scale: 1.55; }
+.oc-graph__node.is-active .oc-graph__halo { stroke-opacity: 0.6; stroke-width: 14; }
+.oc-graph__node.is-active .oc-graph__label { fill: var(--oc-graph-accent); }
+
+/* Tooltip: level, title and meta lines of the node under the pointer. */
+.oc-graph__tip {
+  position: absolute;
+  z-index: 5;
+  min-inline-size: 10rem;
+  max-inline-size: 14rem;
+  padding: 0.75rem;
+  pointer-events: none;
+  opacity: 0;
+  background: var(--oc-popover);
+  color: var(--oc-popover-foreground);
+  border: 1px solid var(--oc-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.15);
+  transition: opacity 0.15s;
+}
+.oc-graph__tip.is-visible { opacity: 1; }
+.oc-graph__tip-level { margin-block-end: 0.25rem; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--oc-graph-color, var(--oc-muted-foreground)); }
+.oc-graph__tip-title { margin-block-end: 0.375rem; font-size: 0.75rem; font-weight: 700; }
+.oc-graph__tip-meta { font-size: 0.6875rem; line-height: 1.6; color: var(--oc-muted-foreground); }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-graph__edge, .oc-graph__pulse { animation: none; }
+  .oc-graph__pulse { opacity: 0; }
+}
