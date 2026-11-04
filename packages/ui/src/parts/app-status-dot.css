@@ -16,17 +16,32 @@
   vertical-align: middle;
 }
 
-/* Tones. --working pulses a ring outwards. */
+/* Tones. --working pulses a ring outwards: a ::after that only scales and fades (transform + opacity), so the GPU
+   draws it and the page does no style or paint work per frame, also in a window that is always open.
+   --oc-status-dot-pulses: how many times (default infinite; 3 = pulse three times and then stay a steady dot).
+   --still: working without the pulse. */
+:where(.oc-status-dot--working) { position: relative; }
 .oc-status-dot--working {
   --oc-status-dot-color: var(--oc-primary);
-  animation: oc-status-dot-pulse 1.8s ease-in-out infinite;
 }
+.oc-status-dot--working::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--oc-status-dot-color);
+  opacity: 0;
+  pointer-events: none;
+  animation: oc-status-dot-pulse 1.8s ease-out var(--oc-status-dot-pulses, infinite);
+}
+.oc-status-dot--still::after { content: none; }
 .oc-status-dot--waiting { --oc-status-dot-color: var(--oc-warning); }
 .oc-status-dot--done { --oc-status-dot-color: var(--oc-success); }
 .oc-status-dot--error { --oc-status-dot-color: var(--oc-destructive); }
 .oc-status-dot--idle { --oc-status-dot-color: var(--oc-muted-foreground); box-shadow: none; opacity: 0.7; }
 @keyframes oc-status-dot-pulse {
-  50% { box-shadow: 0 0 0 5px oklch(from var(--oc-status-dot-color) l c h / 0.08); }
+  0% { transform: scale(1); opacity: 0.35; }
+  100% { transform: scale(2.25); opacity: 0; }
 }
 
 /* Sizes */
@@ -46,5 +61,5 @@
 .oc-status__meta { flex: none; margin-inline-start: auto; color: var(--oc-muted-foreground); font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) {
-  .oc-status-dot--working { animation: none; }
+  .oc-status-dot--working::after { animation: none; }
 }

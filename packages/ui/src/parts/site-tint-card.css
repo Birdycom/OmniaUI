@@ -1,0 +1,223 @@
+/* File: packages/ui/src/parts/site-tint-card.css */
+/* Map: tint card (link, tint, lift) -> head (title + go chip) -> text + meta -> corner art (drift, tilt on hover)
+   -> glow -> tones -> large cards -> reduced motion */
+/* Tint card: a card that is a link, tinted in one color (--oc-tint), with a large outline webicon that sticks out of the
+   bottom corner. The icon drifts slowly up and down (each card in a grid on its own beat) and tilts and grows on hover;
+   a soft glow behind it grows with it. The arrow chip top right fills with the tint and the arrow flies out and back
+   in. The card lifts 4px with a shadow in its own tint. For a row of services, training modules or product areas in an
+   .oc-card-grid. Colors mix with the card color, so light and dark mode work without extra classes. */
+
+.oc-tint-card {
+  --oc-tint: var(--oc-primary);
+  --oc-tint-foreground: var(--oc-primary-foreground);
+  --oc-tint-mix: 9%;
+  --oc-tint-mix-hover: 15%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 9rem;
+  padding: 1.5rem;
+  border: 1px solid color-mix(in oklab, var(--oc-tint) 14%, transparent);
+  border-radius: var(--oc-radius-xl, 1.5rem);
+  background: color-mix(in oklab, var(--oc-tint) var(--oc-tint-mix), var(--oc-card, var(--oc-background)));
+  color: var(--oc-foreground);
+  text-decoration: none;
+  transition:
+    translate 0.3s var(--oc-ease-out, ease-out),
+    box-shadow 0.3s var(--oc-ease-out, ease-out),
+    background-color 0.3s var(--oc-ease-out, ease-out);
+}
+@media (min-width: 40rem) {
+  .oc-tint-card { min-block-size: 15rem; padding: 1.75rem; }
+}
+.oc-tint-card:is(a, button):hover,
+.oc-tint-card:is(a, button):focus-visible,
+.oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible)) {
+  translate: 0 -4px;
+  background: color-mix(in oklab, var(--oc-tint) var(--oc-tint-mix-hover), var(--oc-card, var(--oc-background)));
+  box-shadow: 0 24px 48px -24px color-mix(in oklab, var(--oc-tint) 45%, transparent);
+}
+.oc-tint-card:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+/* A card that is not a link itself: the title link covers the whole card. */
+.oc-tint-card__link { color: inherit; text-decoration: none; }
+.oc-tint-card__link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.oc-tint-card__link:focus-visible { outline: none; }
+.oc-tint-card__link:focus-visible::after { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+
+/* Head: title on the left, the arrow chip on the right. */
+.oc-tint-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.oc-tint-card__title {
+  margin: 0;
+  font-family: var(--oc-font-display, inherit);
+  font-size: 1.125rem;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.oc-tint-card__text {
+  margin: 0.5rem 0 0;
+  max-inline-size: 26ch;
+  color: var(--oc-muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+/* Meta line at the bottom (12 modules, New, From € 9): in the tint, pushed down. */
+.oc-tint-card__meta {
+  margin-block-start: auto;
+  padding-block-start: 1rem;
+  color: color-mix(in oklab, var(--oc-tint) 75%, var(--oc-foreground));
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+@container (min-width: 16rem) {
+  .oc-tint-card__title { font-size: 1.25rem; }
+  .oc-tint-card__text { font-size: 0.94rem; }
+}
+
+/* Arrow chip: a round chip in the tint; on hover it fills and the arrow flies out top right and back in from below. */
+.oc-tint-card__go {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 2rem;
+  block-size: 2rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--oc-tint) 16%, transparent);
+  color: var(--oc-tint);
+  font-size: 1.1rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+.oc-tint-card__go > * { display: block; }
+:is(a.oc-tint-card, button.oc-tint-card):is(:hover, :focus-visible) .oc-tint-card__go,
+.oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible)) .oc-tint-card__go {
+  background: var(--oc-tint);
+  color: var(--oc-tint-foreground);
+}
+:is(a.oc-tint-card, button.oc-tint-card):is(:hover, :focus-visible) .oc-tint-card__go > *,
+.oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible)) .oc-tint-card__go > * {
+  animation: oc-tint-go 0.55s var(--oc-ease-out, ease-out);
+}
+@keyframes oc-tint-go {
+  0% { translate: 0 0; opacity: 1; }
+  45% { translate: 130% -130%; opacity: 0; }
+  46% { translate: -130% 130%; opacity: 0; }
+  100% { translate: 0 0; opacity: 1; }
+}
+
+/* Corner art: a large outline webicon (mdi-light or material-symbols ...-outline), half outside the bottom corner.
+   It drifts slowly (transform); hover tilts and grows it (rotate, scale), so the two never fight. */
+.oc-tint-card__art {
+  position: absolute;
+  inset-block-end: -1rem;
+  inset-inline-end: -0.75rem;
+  z-index: -1;
+  display: block;
+  color: var(--oc-tint);
+  font-size: 6rem;
+  line-height: 1;
+  opacity: 0.32;
+  pointer-events: none;
+  transform-origin: 70% 70%;
+  will-change: transform;
+  animation: oc-tint-drift var(--oc-tint-drift, 6s) ease-in-out var(--oc-tint-delay, 0s) infinite alternate;
+  transition:
+    rotate 0.5s var(--oc-ease-out, ease-out),
+    scale 0.5s var(--oc-ease-out, ease-out),
+    opacity 0.5s var(--oc-ease-out, ease-out);
+}
+.oc-tint-card__art > * { display: block; }
+/* transform (not translate) + will-change: the drift runs on the GPU, so it costs no style work per frame. */
+@keyframes oc-tint-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-4px, -10px, 0); }
+}
+/* Each card in a row drifts on its own beat. */
+.oc-tint-card:nth-child(5n + 2) { --oc-tint-delay: -1.2s; }
+.oc-tint-card:nth-child(5n + 3) { --oc-tint-delay: -2.4s; }
+.oc-tint-card:nth-child(5n + 4) { --oc-tint-delay: -3.6s; }
+.oc-tint-card:nth-child(5n + 5) { --oc-tint-delay: -4.8s; }
+:is(a.oc-tint-card, button.oc-tint-card):is(:hover, :focus-visible) .oc-tint-card__art,
+.oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible)) .oc-tint-card__art {
+  rotate: -8deg;
+  scale: 1.12;
+  opacity: 0.5;
+}
+
+/* Glow: a soft spot in the tint behind the icon that grows on hover. */
+.oc-tint-card::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -35%;
+  inset-inline-end: -25%;
+  z-index: -2;
+  inline-size: min(75%, 14rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in oklab, var(--oc-tint) 24%, transparent), transparent 68%);
+  scale: 0.8;
+  pointer-events: none;
+  transition: scale 0.6s var(--oc-ease-out, ease-out);
+}
+.oc-tint-card:is(a, button):is(:hover, :focus-visible)::after,
+.oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible))::after { scale: 1.15; }
+
+/* On a phone the cards are low and wide: the icon stays small there and only grows from 40rem (in a card of 16rem+). */
+@media (min-width: 40rem) {
+  .oc-tint-card__art { inset-block-end: -1.5rem; inset-inline-end: -1.5rem; font-size: 7rem; }
+  @container (min-width: 16rem) {
+    .oc-tint-card__art { font-size: 9rem; }
+  }
+}
+
+/* Tones (or set --oc-tint yourself: style="--oc-tint: #e8590c"). */
+.oc-tint-card--success { --oc-tint: var(--oc-success); --oc-tint-foreground: var(--oc-success-foreground); }
+.oc-tint-card--warning { --oc-tint: var(--oc-warning); --oc-tint-foreground: var(--oc-warning-foreground); }
+.oc-tint-card--destructive { --oc-tint: var(--oc-destructive); --oc-tint-foreground: var(--oc-destructive-foreground); }
+.oc-tint-card--info {
+  --oc-tint: var(--oc-info, light-dark(var(--color-deepskyblue-70), var(--color-skyblue-50)));
+  --oc-tint-foreground: #fff;
+}
+.oc-tint-card--muted { --oc-tint: var(--oc-muted-foreground); --oc-tint-foreground: var(--oc-background); }
+
+/* Large: a card for a row of two or three, with more room and a larger icon. */
+.oc-tint-card--lg { min-block-size: 18rem; }
+@media (min-width: 40rem) {
+  .oc-tint-card--lg { padding: 2.25rem; }
+}
+.oc-tint-card--lg .oc-tint-card__title { font-size: 1.5rem; }
+.oc-tint-card--lg .oc-tint-card__text { max-inline-size: 34ch; font-size: 1rem; }
+@media (min-width: 40rem) {
+  @container (min-width: 22rem) {
+    .oc-tint-card--lg .oc-tint-card__art { font-size: 12rem; }
+  }
+}
+
+/* With the fly-in (.oc-reveal--fly + fly.js) the card keeps its own hover transitions next to the fly-in ones. */
+.oc-fly-ready .oc-tint-card.oc-reveal--fly {
+  transition:
+    opacity 0.6s var(--oc-ease-out, ease) var(--oc-fly-delay, 0s),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--oc-fly-delay, 0s),
+    translate 0.3s var(--oc-ease-out, ease-out),
+    box-shadow 0.3s var(--oc-ease-out, ease-out),
+    background-color 0.3s var(--oc-ease-out, ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-tint-card,
+  .oc-tint-card__art,
+  .oc-tint-card::after { transition: none; animation: none; }
+  .oc-tint-card:is(a, button):is(:hover, :focus-visible),
+  .oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible)) { translate: none; }
+  .oc-tint-card .oc-tint-card__go > * { animation: none !important; }
+}

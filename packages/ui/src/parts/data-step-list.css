@@ -1,0 +1,42 @@
+/* File: packages/ui/src/parts/data-step-list.css | Map: list (one column, counter) -> row (number + text) -> number color
+   -> links -> small */
+/* Step list: a compact numbered list of steps inside a card or a disclosure ("How to remove this", the steps per
+   service, what a scan does). One row per step: the number on the left in the display font, the text on the right.
+   The number takes --oc-step-list-color, else the color of the severity card it sits in (--oc-severity-color), else
+   primary. Start at another number: style="counter-reset: oc-step-list 3" (the first step is then 4).
+   Not to be confused with .oc-steps, the large process section of a website. */
+
+.oc-step-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: oc-step-list;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+/* The text flows as normal text (bold words and links stay inline); the number hangs in the indent on the first line. */
+.oc-step-list > li {
+  position: relative;
+  padding-inline-start: 1.85rem;
+  counter-increment: oc-step-list;
+}
+.oc-step-list > li::before {
+  content: counter(oc-step-list);
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 1.25rem;
+  color: var(--oc-step-list-color, var(--oc-severity-color, var(--oc-primary)));
+  font-family: var(--oc-font-display, inherit);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+.oc-step-list > li > :first-child { margin-block-start: 0; }
+.oc-step-list > li > :last-child { margin-block-end: 0; }
+.oc-step-list a { text-underline-offset: 2px; }
+
+/* Small: tighter rows and a smaller text, for a dense panel. */
+.oc-step-list--sm { gap: 0.4rem; font-size: 0.8125rem; }

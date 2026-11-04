@@ -57,9 +57,17 @@
 .oc-sidebar--docs.oc-sidebar--collapsed { inline-size: auto; }
 
 /* ---- On this page: .oc-toc ---------------------------------------------------------------------- */
-.oc-toc { position: sticky; inset-block-start: 0; max-block-size: 100%; overflow: auto; padding-block-start: 2px; padding-inline-end: 0.5rem; }
+/* Sticky only from 64rem: stacked above the text on a phone it would stay over the text. It stops under a sticky site
+   header (--oc-sticky-offset, see parts/site-doc-layout.css). */
+.oc-toc { max-block-size: 100%; overflow: auto; padding-block-start: 2px; padding-inline-end: 0.5rem; }
+@media (min-width: 64rem) {
+  .oc-toc { position: sticky; inset-block-start: var(--oc-sticky-offset, 0px); }
+}
 .oc-toc-title { margin: 1rem 0 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--oc-muted-foreground); }
 .oc-toc-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+/* Label above a group of links (Articles, Annexes): a <p> between two lists, or an <li> inside one list. */
+.oc-toc-group-label { margin: 1.25rem 0 0.4rem; padding-inline: 0.5rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--oc-subtle-foreground, var(--oc-muted-foreground)); }
+.oc-toc-group-label:first-child { margin-block-start: 0; }
 .oc-toc-link {
   display: block;
   padding: 0.375rem 0.5rem;
@@ -76,6 +84,9 @@
 .oc-toc-link.is-active { color: var(--oc-foreground); border-color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.1); }
 /* Scroll-spy without JavaScript: the link of the heading you are reading is highlighted (native :target-current). */
 .oc-toc-list { scroll-target-group: auto; }
+/* One group for the whole table of contents, so with several lists (one per group) only one link lights up. */
+.oc-toc { scroll-target-group: auto; }
+.oc-toc .oc-toc-list { scroll-target-group: none; }
 .oc-toc-link:target-current { color: var(--oc-foreground); border-color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.1); }
 .oc-toc-item--sub { margin-inline-start: 0.75rem; }
 .oc-toc-item--sub .oc-toc-link { font-size: 0.8125rem; }

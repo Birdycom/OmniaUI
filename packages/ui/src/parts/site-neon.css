@@ -3,16 +3,30 @@
    Colors: --oc-accent-from and --oc-accent-to (brand-1 and brand-2, or an .oc-accent--* preset).
    .oc-glow-border goes on anything with a border: <form class="oc-glass oc-glow-border">, an .oc-card, a panel. */
 
+/* The element keeps a steady border and glow in --oc-accent-from; a ::after with the border and a wider glow in
+   --oc-accent-to fades in and out over it. Only opacity animates, so the GPU does it: no style or paint work per frame.
+   position: relative only when the element has no position of its own (:where = no specificity). */
+:where(.oc-glow-border) { position: relative; }
 .oc-glow-border {
   border-color: var(--oc-accent-from);
   box-shadow: 0 0 10px oklch(from var(--oc-accent-from) l c h / 0.35), var(--oc-glow-extra, 0 0 transparent);
+}
+.oc-glow-border::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--oc-glow-border-width, 1px));
+  border: var(--oc-glow-border-width, 1px) solid var(--oc-accent-to);
+  border-radius: inherit;
+  box-shadow: 0 0 20px oklch(from var(--oc-accent-to) l c h / 0.35);
+  opacity: 0;
+  pointer-events: none;
   animation: oc-glow-border var(--oc-glow-border-duration, 3s) ease-in-out infinite;
 }
 /* Glass keeps its light top edge and drop shadow under the glow. */
 .oc-glass.oc-glow-border { --oc-glow-extra: var(--oc-glass-shadow), inset 0 1px 0 var(--oc-glass-edge-hi); }
 @keyframes oc-glow-border {
-  0%, 100% { border-color: var(--oc-accent-from); box-shadow: 0 0 10px oklch(from var(--oc-accent-from) l c h / 0.35), var(--oc-glow-extra, 0 0 transparent); }
-  50% { border-color: var(--oc-accent-to); box-shadow: 0 0 20px oklch(from var(--oc-accent-to) l c h / 0.35), var(--oc-glow-extra, 0 0 transparent); }
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 
 /* Neon button: gradient from one accent to the other, with a glow. --oc-btn-neon-ink sets the text color. */
@@ -29,5 +43,5 @@
 .oc-btn--neon:disabled { color: var(--oc-muted-foreground); background: var(--oc-muted); box-shadow: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .oc-glow-border { animation: none; }
+  .oc-glow-border::after { animation: none; }
 }

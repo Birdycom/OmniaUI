@@ -1,0 +1,89 @@
+<!--oc-page {"title": "OmniaUI - Document layout", "category": "Layout", "description": "A document page with a table of contents in a side column that stays in view next to the text, clear of a sticky site header.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/doc-layout.html | Map: hero -> demo -> sticky offset -> script -> reference -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Document layout</h1>
+        <p class="oc-hero-text">For a privacy policy, terms of use or a manual: a <a href="toc.html">table of contents</a> in a side column next to the text. From 64rem the column is sticky and stops under the sticky site header; on a phone it stacks above the text and scrolls away with it. A link in the table of contents jumps to its heading without hiding it under the header. <a href="../components.html">All components</a>.</p>
+      </section><section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/doc-layout.html</span>
+          <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/doc-layout.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Legal page with a table of contents <span class="oc-badge-version">v0.14.1</span></h3>
+          <p class="oc-section-content__desc">Group labels (<code>.oc-toc-group-label</code>) split the articles from the annexes; <code>.oc-prose--ruled</code> draws a line under every article title.</p>
+          <oc-demo title="Document layout - legal page">
+<div class="oc-doc-layout" style="inline-size:100%">
+  <aside class="oc-doc-layout__aside">
+    <nav class="oc-toc" aria-label="On this page">
+      <p class="oc-toc-group-label">Articles</p>
+      <ul class="oc-toc-list">
+        <li><a class="oc-toc-link" href="#doc-who" aria-current="true">1. Who we are</a></li>
+        <li><a class="oc-toc-link" href="#doc-data">2. What data we keep</a></li>
+        <li><a class="oc-toc-link" href="#doc-rights">3. Your rights</a></li>
+      </ul>
+      <p class="oc-toc-group-label">Annexes</p>
+      <ul class="oc-toc-list">
+        <li><a class="oc-toc-link" href="#doc-cookies">A. Cookies</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="oc-doc-layout__main">
+    <div class="oc-prose oc-prose--legal oc-prose--ruled">
+      <h2 id="doc-who">1. Who we are</h2>
+      <p>Company 1 builds and maintains software for small teams. You can reach us at info@company1.example.</p>
+      <h2 id="doc-data">2. What data we keep</h2>
+      <p>Only what we need to deliver the service: your name, your e-mail address and the invoices of your plan.</p>
+      <ul><li>Account data, as long as the account exists.</li><li>Invoices, for seven years.</li></ul>
+      <h2 id="doc-rights">3. Your rights</h2>
+      <p>You can ask to see, correct or delete your data at any time. We answer within 30 days.</p>
+      <h2 id="doc-cookies">A. Cookies</h2>
+      <p>We only use the cookies that keep you signed in and remember your language.</p>
+    </div>
+  </div>
+</div>
+          </oc-demo>
+        </div>
+      </section><section class="oc-docs-section" id="offset">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Sticky offset</h2>
+        </div>
+        <div class="oc-section-content">
+          <p class="oc-section-content__desc"><code>--oc-sticky-offset</code> is where sticky parts stop: <code>.oc-doc-layout__aside</code>, <code>.oc-toc</code> and <code>.oc-page-header--sticky</code>. It is also the scroll padding of the page, so a heading you jump to stays clear of the header. With an <code>.oc-site-header</code> outside <code>&lt;main&gt;</code> it follows the header on its own: <code>--oc-site-header-height</code> (4.5rem) plus 1rem. Another header: set it yourself.</p>
+          <pre class="oc-code"><code>:root { --oc-sticky-offset: 5rem; }  /* your own header of 4rem + 1rem air */
+.oc-site-header { --oc-site-header-height: 5rem; }  /* only when your .oc-site-header is taller */</code></pre>
+        </div>
+      </section><section class="oc-docs-section" id="script">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Current heading in every browser</h2>
+        </div>
+        <div class="oc-section-content">
+          <p class="oc-section-content__desc">The table of contents highlights the heading you are reading with <code>:target-current</code>, without a script. Browsers that do not have it yet get the same highlight from <code>toc.js</code>: it does nothing where <code>:target-current</code> works, and elsewhere puts <code>aria-current="true"</code> on the link of the last heading above 35% of the window (<code>data-oc-toc-line="0.25"</code> on the <code>.oc-toc</code> moves that line). In every browser it also scrolls a table of contents that is taller than its column, so the current link stays in view.</p>
+          <pre class="oc-code"><code>npx omniaui copy-js toc
+&lt;script type="module" src="/js/oc-toc.js"&gt;&lt;/script&gt;
+
+// or in a bundle
+import { initToc } from "@birdycom/omniaui/toc.js";
+initToc(document);</code></pre>
+        </div>
+      </section><section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/site-doc-layout.css</code>, <code>docs-ui.css</code> (table of contents) and <code>parts/site-prose.css</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-doc-layout</code></td><td>Grid of the side column (<code>--oc-doc-aside</code>, 17rem) and the text; stacked below 64rem with the side column first. Gap <code>--oc-doc-gap</code> (2rem 4rem).</td></tr>
+              <tr><td><code>.oc-doc-layout--end</code></td><td>Side column on the right on a wide screen (still first on a phone).</td></tr>
+              <tr><td><code>.oc-doc-layout__aside</code></td><td>Side column: from 64rem sticky at <code>--oc-sticky-offset</code>, at most the window height minus the offset, scrolls itself. A <code>.oc-toc</code> inside it is not sticky itself.</td></tr>
+              <tr><td><code>.oc-doc-layout__main</code></td><td>The text column (<code>min-inline-size: 0</code>, so wide tables and code scroll inside it).</td></tr>
+              <tr><td><code>--oc-sticky-offset</code></td><td>Where sticky parts stop, and the scroll padding of the page. Default 0, or the site header height + 1rem.</td></tr>
+              <tr><td><code>.oc-toc-group-label</code></td><td>Label above a group of links: a <code>&lt;p&gt;</code> between two <code>.oc-toc-list</code>s, or an <code>&lt;li&gt;</code> inside one list. The whole <code>.oc-toc</code> is one scroll-target group, so only one link lights up.</td></tr>
+              <tr><td><code>.oc-prose--ruled</code></td><td>A line under every <code>h2</code> of the prose.</td></tr>
+              <tr><td><code>toc.js</code> (<code>oc-toc.js</code>)</td><td><code>initToc(scope)</code>: <code>aria-current</code> on the link of the current heading where <code>:target-current</code> is missing, and the current link kept in view in a long table of contents.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>

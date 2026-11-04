@@ -16,6 +16,8 @@ const SCRIPTS = [
   ["@birdycom/omniaui", "dist/contact-form.js", "oc-contact-form.js", "contact form: send with fetch, field errors and the result in place ([data-contact-form])"],
   ["@birdycom/omniaui", "dist/fly.js", "oc-fly.js", "cards that fly in from the middle of their row on scroll (.oc-reveal--fly)"],
   ["@birdycom/omniaui", "dist/particles.js", "oc-particles.js", "particle field: drifting points with lines on a background canvas (canvas.oc-particles)"],
+  ["@birdycom/omniaui", "dist/language-select.js", "oc-language-select.js", "language select: go to the chosen language's page, keeping the #hash ([data-oc-language-select])"],
+  ["@birdycom/omniaui", "dist/toc.js", "oc-toc.js", "table of contents: highlight the heading you are reading where :target-current is missing (.oc-toc)"],
   ["@birdycom/omniaui", "dist/form-extras.js", "oc-form-extras.js", "ISO week in date fields, name card rename, avatar picker preview, quantity steps, language code"],
   ["@birdycom/omniaui-pro", "dist/spotlight.js", "oc-spotlight.js", "spotlight cards (Pro)"],
   ["@birdycom/omniaui-pro", "dist/ecosystem-map.js", "oc-ecosystem-map.js", "ecosystem map lines (Pro)"],

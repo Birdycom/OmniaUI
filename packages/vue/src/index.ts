@@ -47,6 +47,7 @@ import OcDataTableName from './components/OcDataTableName.vue'
 import OcDateField from './components/OcDateField.vue'
 import OcDecimalInput from './components/OcDecimalInput.vue'
 import OcDefinitionList from './components/OcDefinitionList.vue'
+import OcDocLayout from './components/OcDocLayout.vue'
 import OcDocViewer from './components/OcDocViewer.vue'
 import OcDropdown from './components/OcDropdown.vue'
 import OcDropdownItem from './components/OcDropdownItem.vue'
@@ -149,6 +150,7 @@ import OcStackList from './components/OcStackList.vue'
 import OcStatCard from './components/OcStatCard.vue'
 import OcStatus from './components/OcStatus.vue'
 import OcStatusDot from './components/OcStatusDot.vue'
+import OcStepList from './components/OcStepList.vue'
 import OcStepper from './components/OcStepper.vue'
 import OcStock from './components/OcStock.vue'
 import OcSwitch from './components/OcSwitch.vue'
@@ -162,6 +164,7 @@ import OcTextarea from './components/OcTextarea.vue'
 import OcThemeSwitch from './components/OcThemeSwitch.vue'
 import OcTimeInput from './components/OcTimeInput.vue'
 import OcTimeline from './components/OcTimeline.vue'
+import OcTintCard from './components/OcTintCard.vue'
 import OcTitlebar from './components/OcTitlebar.vue'
 import OcTitlebarBody from './components/OcTitlebarBody.vue'
 import OcTitlebarButton from './components/OcTitlebarButton.vue'
@@ -259,6 +262,7 @@ export {
   OcDateField,
   OcDecimalInput,
   OcDefinitionList,
+  OcDocLayout,
   OcDocViewer,
   OcDropdown,
   OcDropdownItem,
@@ -361,6 +365,7 @@ export {
   OcStatCard,
   OcStatus,
   OcStatusDot,
+  OcStepList,
   OcStepper,
   OcStock,
   OcSwitch,
@@ -374,6 +379,7 @@ export {
   OcThemeSwitch,
   OcTimeInput,
   OcTimeline,
+  OcTintCard,
   OcTitlebar,
   OcTitlebarBody,
   OcTitlebarButton,
@@ -531,6 +537,7 @@ export const components: Record<string, Component> = {
   OcDateField,
   OcDecimalInput,
   OcDefinitionList,
+  OcDocLayout,
   OcDocViewer,
   OcDropdown,
   OcDropdownItem,
@@ -633,6 +640,7 @@ export const components: Record<string, Component> = {
   OcStatCard,
   OcStatus,
   OcStatusDot,
+  OcStepList,
   OcStepper,
   OcStock,
   OcSwitch,
@@ -646,6 +654,7 @@ export const components: Record<string, Component> = {
   OcThemeSwitch,
   OcTimeInput,
   OcTimeline,
+  OcTintCard,
   OcTitlebar,
   OcTitlebarBody,
   OcTitlebarButton,

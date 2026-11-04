@@ -2366,6 +2366,102 @@
   .oc-product-card--spotlight { --oc-spot-x: 50% !important; --oc-spot-y: 0% !important; }
 }
 
+/* parts/site-tint-card-fill.css */
+/* File: packages/pro/src/parts/site-tint-card-fill.css (OmniaUI Pro) */
+/* Map: fill card (own measures, lift, border in the tint) -> line on top (grows over the full width) -> icon inside
+   the card (fills up from below) -> text clear of the icon -> large -> reduced motion */
+/* Fill: the Pro shape of the free tint card (.oc-tint-card, OmniaUI). The icon stays inside the card, light at rest,
+   and fills up from below on hover (a mask sweep); a line in the tint on top grows over the full width; the card has
+   the radius and padding of the feature card, lifts 2px and gets a border and a soft shadow in the tint. It keeps the
+   free parts: tones, --oc-tint, the arrow chip and the slow drift of the icon. Markup: the free tint card plus
+   .oc-tint-card--fill (Pro snippet components/tint-card-fill.html). */
+
+.oc-tint-card--fill {
+  --oc-tint-mix: 6%;
+  --oc-tint-mix-hover: 11%;
+  min-block-size: 11rem;
+  padding: 1.6rem;
+  border-radius: var(--oc-radius-lg, 1.25rem);
+  transition:
+    translate 0.35s var(--oc-ease-out, ease-out),
+    box-shadow 0.35s var(--oc-ease-out, ease-out),
+    background-color 0.35s var(--oc-ease-out, ease-out),
+    border-color 0.35s var(--oc-ease-out, ease-out);
+}
+@media (min-width: 40rem) {
+  .oc-tint-card--fill { min-block-size: 13rem; padding: 1.6rem; }
+}
+.oc-tint-card--fill.oc-tint-card:is(a, button):is(:hover, :focus-visible),
+.oc-tint-card--fill.oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible)) {
+  translate: 0 -2px;
+  border-color: color-mix(in oklab, var(--oc-tint) 45%, transparent);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--oc-tint) 20%, transparent), 0 14px 32px -20px color-mix(in oklab, var(--oc-tint) 60%, transparent);
+}
+/* Line on top: short at rest, the full width on hover. */
+.oc-tint-card--fill::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 1.6rem;
+  inline-size: 2.5rem;
+  block-size: 3px;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(90deg, var(--oc-tint), color-mix(in oklab, var(--oc-tint) 35%, transparent));
+  transition: inline-size 0.5s var(--oc-ease-out, ease-out), inset-inline-start 0.5s var(--oc-ease-out, ease-out);
+}
+.oc-tint-card--fill.oc-tint-card:is(a, button):is(:hover, :focus-visible)::before,
+.oc-tint-card--fill.oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible))::before {
+  inset-inline-start: 0;
+  inline-size: 100%;
+}
+.oc-tint-card--fill::after { content: none; }
+/* Icon inside the card, bottom right; light at rest, it fills up from below on hover. */
+.oc-tint-card--fill .oc-tint-card__art {
+  inset-block-end: 1.1rem;
+  inset-inline-end: 1.1rem;
+  font-size: 3.75rem;
+  opacity: 1;
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to top, #000 50%, rgb(0 0 0 / 0.28) 50%);
+  mask-size: 100% 200%;
+  mask-position: 0 0;
+  transition:
+    mask-position 0.6s var(--oc-ease-out, ease-out),
+    scale 0.5s var(--oc-ease-out, ease-out);
+}
+@media (min-width: 40rem) {
+  .oc-tint-card--fill .oc-tint-card__art { inset-block-end: 1.25rem; inset-inline-end: 1.25rem; font-size: 4.5rem; }
+  @container (min-width: 16rem) {
+    .oc-tint-card--fill .oc-tint-card__art { font-size: 4.5rem; }
+  }
+}
+.oc-tint-card--fill.oc-tint-card:is(a, button):is(:hover, :focus-visible) .oc-tint-card__art,
+.oc-tint-card--fill.oc-tint-card:has(.oc-tint-card__link:is(:hover, :focus-visible)) .oc-tint-card__art {
+  rotate: none;
+  scale: 1.06;
+  opacity: 1;
+  mask-position: 0 100%;
+}
+/* Text stays clear of the icon. */
+.oc-tint-card--fill .oc-tint-card__text { max-inline-size: min(26ch, calc(100% - 4rem)); }
+@media (prefers-reduced-motion: reduce) {
+  .oc-tint-card--fill::before { transition: none; }
+}
+
+/* Large fill card: more room, a larger icon that still stays inside the card. */
+.oc-tint-card--fill.oc-tint-card--lg { min-block-size: 16rem; }
+@media (min-width: 40rem) {
+  .oc-tint-card--fill.oc-tint-card--lg { padding: 2rem; }
+  .oc-tint-card--fill.oc-tint-card--lg::before { inset-inline-start: 2rem; }
+}
+.oc-tint-card--fill.oc-tint-card--lg .oc-tint-card__art { inset-block-end: 1.5rem; inset-inline-end: 1.5rem; font-size: 5rem; }
+@media (min-width: 40rem) {
+  @container (min-width: 22rem) {
+    .oc-tint-card--fill.oc-tint-card--lg .oc-tint-card__art { font-size: 6.5rem; }
+  }
+}
+.oc-tint-card--fill.oc-tint-card--lg .oc-tint-card__text { max-inline-size: min(34ch, calc(100% - 6rem)); }
+
 /* parts/site-watch-layout.css */
 /* File: packages/pro/src/parts/site-watch-layout.css
    Map: section (container) -> grid (player column + side list) -> player placeholder -> title/meta/description
