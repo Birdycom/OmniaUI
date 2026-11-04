@@ -88,4 +88,39 @@ class WidgetTest extends TestCase
         $this->assertElement($html, 'label', 'oc-language-select oc-language-select--ghost oc-language-select--code', ['data-code' => 'EN']);
         $this->assertElement($html, 'canvas', 'oc-particles oc-particles--local', ['data-count' => '40', 'aria-hidden' => 'true']);
     }
+
+    public function test_tint_card(): void
+    {
+        $html = $this->render('<x-oc::tint-card href="/delivery" title="Delivery" icon="mdi-light:truck" tone="destructive" meta="12 modules">Routes on the phone</x-oc::tint-card><x-oc::tint-card title="Reports" size="lg" :level="2" :arrow="false" />');
+
+        $this->assertElement($html, 'a', 'oc-tint-card oc-tint-card--destructive', ['href' => '/delivery']);
+        $this->assertElement($html, 'iconify-icon', 'oc-tint-card__art', ['icon' => 'mdi-light:truck', 'aria-hidden' => 'true']);
+        $this->assertElement($html, 'h3', 'oc-tint-card__title', [], 'Delivery');
+        $this->assertElement($html, 'span', 'oc-tint-card__go', ['aria-hidden' => 'true']);
+        $this->assertElement($html, 'p', 'oc-tint-card__text', [], 'Routes on the phone');
+        $this->assertElement($html, 'p', 'oc-tint-card__meta', [], '12 modules');
+        $this->assertElement($html, 'article', 'oc-tint-card oc-tint-card--lg');
+        $this->assertElement($html, 'h2', 'oc-tint-card__title', [], 'Reports');
+        $this->assertSame(1, substr_count($html, 'oc-tint-card__go'));
+
+        $fill = $this->render('<x-oc::tint-card href="/a" title="A" fill />');
+        $this->assertElement($fill, 'a', 'oc-tint-card oc-tint-card--fill', ['href' => '/a']);
+    }
+
+    public function test_doc_layout(): void
+    {
+        $html = $this->render('<x-oc::doc-layout end><x-slot:aside><nav class="oc-toc"></nav></x-slot:aside><p>Text</p></x-oc::doc-layout>');
+
+        $this->assertElement($html, 'div', 'oc-doc-layout oc-doc-layout--end');
+        $this->assertElement($html, 'aside', 'oc-doc-layout__aside');
+        $this->assertElement($html, 'div', 'oc-doc-layout__main');
+        $this->assertStringContainsString('<p>Text</p>', $html);
+
+        $dl = $this->render('<x-oc::definition-list glossary :items="[\'Service\' => \'The software.\']" />');
+        $this->assertElement($dl, 'dl', 'oc-dl oc-dl--glossary');
+
+        $steps = $this->render('<x-oc::step-list size="sm" :items="[\'Sign in\', \'Open Settings\']" />');
+        $this->assertElement($steps, 'ol', 'oc-step-list oc-step-list--sm');
+        $this->assertSame(2, substr_count($steps, '<li>'));
+    }
 }

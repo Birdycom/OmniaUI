@@ -29,9 +29,26 @@
   block-size: 0.5rem;
   border-radius: 50%;
   background: var(--oc-version-banner-color);
+  position: relative;
+}
+/* The pulse is a ::after that scales and fades (transform + opacity): drawn by the GPU, no work per frame. */
+.oc-version-banner-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--oc-version-banner-color);
+  opacity: 0;
+  pointer-events: none;
   animation: oc-version-banner-pulse 2s ease-in-out infinite;
 }
-@keyframes oc-version-banner-pulse { 50% { box-shadow: 0 0 0 4px oklch(from var(--oc-version-banner-color) l c h / 0.2); } }
+@keyframes oc-version-banner-pulse {
+  0%, 100% { transform: scale(1); opacity: 0; }
+  50% { transform: scale(2); opacity: 0.2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-version-banner-dot::after { animation: none; }
+}
 
 /* Text: the long text hides on small screens, the short one shows instead. */
 .oc-version-banner-text { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

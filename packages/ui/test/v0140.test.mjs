@@ -57,9 +57,9 @@ test("accordion status colors one row per check", () => {
 
 test("neon, backgrounds and the graph follow the accent colors and stand still with reduced motion", () => {
   const neon = part("site-neon");
-  assert.match(neon, /@keyframes oc-glow-border[\s\S]*var\(--oc-accent-to\)/);
+  assert.match(neon, /\.oc-glow-border::after \{[^}]*solid var\(--oc-accent-to\)/);
   assert.match(neon, /\.oc-btn--neon \{[^}]*linear-gradient\(135deg, var\(--oc-accent-from\), var\(--oc-accent-to\)\)/);
-  assert.match(neon, /prefers-reduced-motion[\s\S]*\.oc-glow-border \{ animation: none; \}/);
+  assert.match(neon, /prefers-reduced-motion[\s\S]*\.oc-glow-border::after \{ animation: none; \}/);
   const bg = part("site-backgrounds");
   for (const cls of ["oc-bg-grid", "oc-orb", "oc-scanlines", "oc-particles"]) assert.match(bg, new RegExp(`\\.${cls} \\{[^}]*pointer-events: none`));
   assert.match(bg, /prefers-reduced-motion[\s\S]*\.oc-orb--drift \{ animation: none; \}/);

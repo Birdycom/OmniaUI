@@ -30,11 +30,12 @@
           <table class="oc-table-ref">
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td><code>.oc-toc</code></td><td>Root <code>nav</code>, sticky, scrolls when too tall</td></tr>
+              <tr><td><code>.oc-toc</code></td><td>Root <code>nav</code>; sticky from 64rem at <code>--oc-sticky-offset</code> (under a sticky site header), scrolls when too tall</td></tr>
               <tr><td><code>.oc-toc-title</code></td><td>Small heading above the list</td></tr>
-              <tr><td><code>.oc-toc-list</code></td><td>The <code>ul</code>; enables native scroll-spy</td></tr>
+              <tr><td><code>.oc-toc-list</code></td><td>The <code>ul</code>; native scroll-spy (inside an <code>.oc-toc</code> the whole table of contents is one group, so several lists light up one link)</td></tr>
               <tr><td><code>.oc-toc-link</code></td><td>Link to a heading. Current: <code>:target-current</code>, <code>aria-current</code> or <code>.is-active</code></td></tr>
               <tr><td><code>.oc-toc-item--sub</code></td><td>Indented item for a sub heading</td></tr>
+              <tr><td><code>.oc-toc-group-label</code></td><td>Label above a group of links (Articles, Annexes): a <code>p</code> between two lists or an <code>li</code> inside one</td></tr>
             </tbody>
           </table>
         <h3 id="anatomy" class="oc-section-content__title mt-2">Anatomy</h3>
@@ -45,12 +46,12 @@
 <li><strong>Link</strong> <code>a.oc-toc-link</code>: points to the heading id (<code>#install</code>). The docs build creates the ids and the list from the <code>h2</code>/<code>h3</code> elements of the page.</li>
 </ul>
         <h3 id="active" class="oc-section-content__title mt-2">Active heading (scroll-spy without JavaScript)</h3>
-<p>The list sets <code>scroll-target-group: auto</code>, so browsers that support it mark the link of the heading currently in view with <code>:target-current</code> and the component highlights it. In other browsers nothing is highlighted, the links still work. If you prefer to control it yourself, set <code>aria-current="true"</code> (or <code>.is-active</code>) on the link, as the demo above does for "Install".</p>
+<p>The list sets <code>scroll-target-group: auto</code>, so browsers that support it mark the link of the heading currently in view with <code>:target-current</code> and the component highlights it. In other browsers <code>toc.js</code> (<code>npx omniaui copy-js toc</code>) sets <code>aria-current</code> instead; without it nothing is highlighted, the links still work. A page with the table of contents next to the text: <a href="doc-layout.html">Document layout</a>. If you prefer to control it yourself, set <code>aria-current="true"</code> (or <code>.is-active</code>) on the link, as the demo above does for "Install".</p>
         <h3 id="a11y" class="oc-section-content__title mt-2">Accessibility, keyboard and responsive behaviour</h3>
 <ul>
 <li>It is a <code>nav</code> with its own label, so it is not confused with the main navigation.</li>
-<li><kbd>Tab</kbd> moves through the links and <kbd>Enter</kbd> jumps to the heading; use <code>scroll-padding-top</code> on the scroll container so the heading is not hidden under a fixed header, and <code>scroll-behavior: smooth</code> (wrapped in <code>prefers-reduced-motion: no-preference</code>) for animation.</li>
-<li>Responsive: a table of contents is secondary navigation. On narrow screens hide it with <code>@media (max-width: 1100px) { .oc-toc { display: none; } }</code> or place it inside a <code>&lt;details&gt;</code> ("On this page") above the article.</li>
+<li><kbd>Tab</kbd> moves through the links and <kbd>Enter</kbd> jumps to the heading; the page keeps <code>--oc-sticky-offset</code> as scroll padding, so the heading is not hidden under a sticky header, and <code>scroll-behavior: smooth</code> (wrapped in <code>prefers-reduced-motion: no-preference</code>) for animation.</li>
+<li>Responsive: a table of contents is secondary navigation. Below 64rem it is not sticky, so stacked above the article it scrolls away with it. You can also hide it there, or place it inside a <code>&lt;details&gt;</code> ("On this page") above the article.</li>
 </ul>
         </div>
       </section>

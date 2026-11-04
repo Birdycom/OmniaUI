@@ -105,3 +105,65 @@ button.oc-language-select:hover { background: var(--oc-surface); }
 .oc-language-select--code::after,
 .oc-language-select--code .oc-language-select-icon { display: none; }
 .oc-language-select--code .oc-language-select-control { position: absolute; inset: 0; padding: 0; opacity: 0; }
+
+/* Open list in the OmniaUI dropdown look (Chrome and Edge 135+: customizable select, appearance: base-select).
+   The native list of the system looked like a bare Windows list: narrow, small, no padding. Now it is a popover with
+   the colors, padding, radius and shadow of .oc-dropdown-menu, as wide as the longest language (at least 8rem), with a check at the current
+   language. Other browsers keep the system list (the select still works the same). */
+@supports (appearance: base-select) {
+  .oc-language-select-control,
+  .oc-language-select-control::picker(select) { appearance: base-select; }
+  .oc-language-select-control {
+    min-inline-size: 0;
+    border: 0;
+    background: transparent;
+  }
+  /* The list lines up with the whole pill (icon included), not only with the select inside it. anchor-scope keeps
+     every pill its own anchor when a page has several. */
+  .oc-language-select:has(> .oc-language-select-control) { anchor-name: --oc-language-select; anchor-scope: --oc-language-select; }
+  .oc-language-select-control::picker(select) { position-anchor: --oc-language-select; }
+  /* The label draws its own chevron (::after). */
+  .oc-language-select-control::picker-icon { display: none; }
+  .oc-language-select-control::picker(select) {
+    /* As wide as the longest language, at least 8rem and never narrower than the field. */
+    min-inline-size: max(8rem, anchor-size(inline));
+    margin-block: 4px;
+    padding: 4px;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    background: var(--oc-popover);
+    color: var(--oc-popover-foreground);
+    box-shadow: 0 8px 24px oklch(from var(--color-black-60) l c h / 0.15);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    position-area: block-end span-inline-end;
+    /* Under the field; above it only when it does not fit below (normal order: no "side with the most room"). */
+    position-try-order: normal;
+    position-try-fallbacks: flip-block;
+  }
+  .oc-language-select-control option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 8px 10px;
+    border-radius: calc(var(--oc-radius) - 2px);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+  .oc-language-select-control option:hover,
+  .oc-language-select-control option:focus-visible {
+    background: var(--oc-accent);
+    color: var(--oc-accent-foreground);
+    outline: none;
+  }
+  .oc-language-select-control option:checked { font-weight: 600; }
+  /* The check of the current language on the right, in the primary color. */
+  .oc-language-select-control option::checkmark { order: 1; margin-inline-start: auto; color: var(--oc-primary); }
+
+  /* Code: the select lies over the whole button (still invisible text), the list opens under it, aligned right. */
+  .oc-language-select--code .oc-language-select-control { opacity: 1; color: transparent; overflow: hidden; }
+  .oc-language-select--code .oc-language-select-control::picker(select) { position-area: block-end span-inline-start; }
+}

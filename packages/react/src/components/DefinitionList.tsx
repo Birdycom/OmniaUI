@@ -13,18 +13,20 @@ export interface DefinitionListProps extends Omit<HTMLAttributes<HTMLDivElement>
   items: DefinitionItem[];
   /** Optional footer (actions). */
   footer?: ReactNode;
+  /** Term + explanation (`.oc-dl--glossary`): the term bold, the explanation normal text. */
+  glossary?: boolean;
 }
 
 /** `<div class="oc-dl-panel" role="region">` with a `dl` of label / value rows. */
 export const DefinitionList = forwardRef<HTMLDivElement, DefinitionListProps>(function DefinitionList(
-  { title, description, items, footer, className, ...rest },
+  { title, description, items, footer, glossary, className, ...rest },
   ref,
 ) {
   return (
     <div ref={ref} className={cx("oc-dl-panel", className)} role="region" {...rest}>
       {title != null && <h3 className="oc-dl-title">{title}</h3>}
       {description != null && <p className="oc-dl-description">{description}</p>}
-      <dl className="oc-dl">
+      <dl className={cx("oc-dl", glossary && "oc-dl--glossary")}>
         {items.map((item, i) => (
           <div className="oc-dl-row" key={i}>
             <dt className="oc-dl-term">{item.term}</dt>

@@ -1,0 +1,39 @@
+/* File: packages/ui/src/parts/site-doc-layout.css */
+/* Map: sticky offset (token, auto under a site header, scroll padding for anchors) -> document layout (side column +
+   text) -> sticky side column from 64rem -> a table of contents inside it */
+/* A document page with a side column (a table of contents next to a privacy policy, terms or a manual) and the offset
+   that keeps sticky parts and anchor jumps clear of a sticky site header.
+   --oc-sticky-offset: how far from the top sticky parts stop. Set it yourself (:root { --oc-sticky-offset: 5rem }), or
+   let it follow .oc-site-header: its height (--oc-site-header-height, 4.5rem) plus 1rem. Used by .oc-toc,
+   .oc-doc-layout__aside, .oc-page-header--sticky and the scroll padding of the page, so a heading you jump to from the
+   table of contents is not hidden under the header. */
+
+/* Only the header of the page itself (not one shown as an example inside <main>); :where keeps it overridable, also
+   by a scroll-p* utility on <html>. */
+:where(html:has(.oc-site-header:not(main *))) { --oc-sticky-offset: calc(var(--oc-site-header-height, 4.5rem) + 1rem); }
+:where(html) { scroll-padding-block-start: var(--oc-sticky-offset, 0px); }
+
+/* Document layout: side column (--oc-doc-aside, 17rem) and the text; stacked below 64rem, side column first.
+   --end puts the side column on the right on a wide screen. */
+.oc-doc-layout {
+  display: grid;
+  gap: var(--oc-doc-gap, 2rem 4rem);
+  align-items: start;
+}
+.oc-doc-layout__aside,
+.oc-doc-layout__main { min-inline-size: 0; }
+@media (min-width: 64rem) {
+  .oc-doc-layout { grid-template-columns: var(--oc-doc-aside, 17rem) minmax(0, 1fr); }
+  .oc-doc-layout--end { grid-template-columns: minmax(0, 1fr) var(--oc-doc-aside, 17rem); }
+  .oc-doc-layout--end > .oc-doc-layout__aside { order: 1; }
+  /* Sticky only next to the text: stacked on a phone it would stay over the text. */
+  .oc-doc-layout__aside {
+    position: sticky;
+    inset-block-start: var(--oc-sticky-offset, 0px);
+    max-block-size: calc(100dvh - var(--oc-sticky-offset, 0px) - 1rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+}
+/* The column is sticky itself, so the table of contents in it is not. */
+.oc-doc-layout__aside .oc-toc { position: static; max-block-size: none; overflow: visible; }

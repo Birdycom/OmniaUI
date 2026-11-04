@@ -14,6 +14,7 @@
 .oc-meter-row__value { font-size: 0.8125rem; font-variant-numeric: tabular-nums; color: var(--oc-muted-foreground); white-space: nowrap; }
 .oc-meter-row__value strong { color: var(--oc-foreground); }
 .oc-meter-row__bar {
+  contain: layout paint;
   grid-column: 1 / -1;
   block-size: 0.5rem;
   overflow: hidden;
@@ -56,6 +57,7 @@
 }
 .oc-meter-row__subbar {
   --oc-meter-color: var(--oc-muted-foreground);
+  contain: layout paint;
   flex: 1;
   min-inline-size: 2rem;
   block-size: 3px;
@@ -85,6 +87,11 @@
 .oc-meter-list--dense .oc-meter-row__label { font-size: 0.8rem; }
 .oc-meter-list--dense .oc-meter-row__value { font-size: 0.75rem; }
 .oc-meter-list--dense .oc-meter-row__bar { block-size: 5px; }
+/* Live meters (a value every few seconds, a window that stays open): no width transition, so no layout per frame.
+   The dense list is meant for that, so it has none either. */
+:is(.oc-meter-list--live, .oc-meter-list--dense) .oc-meter-row__bar::before,
+:is(.oc-meter-list--live, .oc-meter-list--dense) .oc-meter-row__subbar::before,
+:is(.oc-meter-list--live, .oc-meter-list--dense) .oc-meter-row__fill { transition: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .oc-meter-row__bar::before,

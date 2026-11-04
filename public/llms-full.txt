@@ -1,6 +1,6 @@
 # OmniaUI — full reference for AI assistants
 
-> OmniaUI is the component and block library for OmniaCSS: 176 components and
+> OmniaUI is the component and block library for OmniaCSS: 179 components and
 > 99 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
 > wrappers for React, Vue, Laravel Blade and Livewire. Behaviour comes from native HTML (dialog, popover, details,
 > :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; 52 advanced
@@ -231,7 +231,7 @@ Avatars and avatar group
 Progress bar
 
 ```html
-<!-- OmniaUI component: progress — Progress bar. Needs @birdycom/omniaui CSS. -->
+<!-- OmniaUI component: progress — Progress bar. Needs @birdycom/omniaui CSS. .oc-progress--live: no width transition (a value every few seconds). -->
 <div class="oc-progress" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
   <div class="oc-progress-bar" style="width: 60%"></div>
 </div>
@@ -670,6 +670,7 @@ Label / value rows in a panel (dl)
        .oc-dl-panel: Panel wrapper (role="region")
        .oc-dl-title / -description: Panel heading and note
        .oc-dl: The dl
+       .oc-dl--glossary: Term + explanation: the term bold, the explanation normal, first lines on one line
        .oc-dl-row: div grouping one term and detail
        .oc-dl-term / .oc-dl-detail: dt / dd
        .oc-dl-footer: Optional footer (actions)
@@ -1121,7 +1122,7 @@ OmniaCSS docs sidebar: titled groups of outlined links with an active state (var
 
 ```html
 <!-- OmniaUI component: toc - "On this page" list of heading links. Needs @birdycom/omniaui CSS.
-     Class API: .oc-toc (root nav, sticky) · .oc-toc-title · .oc-toc-list (ul) · .oc-toc-link (a; aria-current / .is-active = current heading) · .oc-toc-item--sub (li, sub heading)
+     Class API: .oc-toc (root nav, sticky from 64rem at --oc-sticky-offset) · .oc-toc-group-label (label between two lists) · .oc-toc-title · .oc-toc-list (ul) · .oc-toc-link (a; aria-current / .is-active = current heading) · .oc-toc-item--sub (li, sub heading)
 -->
 <nav class="oc-toc" aria-label="On this page">
   <p class="oc-toc-title">On this page</p>
@@ -4348,6 +4349,7 @@ A small live state light for a job, agent, sync or server, with the state in tex
        .oc-status-dot: 8 px dot with a soft ring in the tone color
        Tones: --working (primary, pulses), --waiting (warning), --done (success), --error (destructive), --idle (muted); none = muted
        Sizes: --sm, --lg
+       --still: working without the pulse; --oc-status-dot-pulses: 3 = pulse three times, then a steady dot (default infinite)
        .oc-status: dot + one line of text that cuts off with …; .oc-status__text, .oc-status__meta (right, tabular numbers)
        Token: --oc-status-dot-color (any color)
      The dot is decoration (aria-hidden): the text says the state. A dot without text needs role="img" and an aria-label.
@@ -4619,7 +4621,8 @@ Usage line with a label, the amount as text, a colored bar and when it resets
        data-level="warn" / "critical": Orange / red bar (and a red value at critical). Without it the bar is green.
        .oc-meter-row__bar[role=meter]: The bar; give it aria-valuenow and a label for screen readers.
        .oc-meter-list (--compact): A stack of rows; --compact for a small widget.
-       .oc-meter-list--dense: Tighter rows with a 5px bar and a 0.8rem label, for a tray window.
+       .oc-meter-list--dense: Tighter rows with a 5px bar and a 0.8rem label, for a tray window (no width transition).
+       .oc-meter-list--live: No width transition, for values that change every few seconds.
        .oc-meter-row__sub: Muted second line under the bar; .oc-meter-row__subbar: its thin bar (--oc-meter, data-level).
        .oc-meter-row__fill: Optional fill element inside a bar or sub-bar; patch its inline inline-size in place.
 -->
@@ -5149,7 +5152,7 @@ Building blocks for the pages of a company site: the header of an inner page, a 
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-section-pad--page: Header of an inner page: padding clamp(4rem, 10vw, 7rem) on top, clamp(2rem, 5vw, 3rem) below.
        .oc-display--page: Larger display title for that header: clamp(2.5rem, 6.5vw, 4.75rem).
-       .oc-section-head: Head of a section (eyebrow, title, lead): max 46rem, 3rem below. --center centers it.
+       .oc-section-head: Head of a section (eyebrow, title, lead): max 46rem, 3rem below. --center centers it; --split: title left, lead right (one column below 56rem).
        .oc-section-more: Row under a section (a <em>see all</em> link): 2.5rem above.
        .oc-actions: Row of buttons that wraps: gap .75rem, 2rem above. --center, --end, --tight (1rem above).
        .oc-group-title: Title of a group of cards; .oc-group-title__count is the number in a pill.
@@ -5643,6 +5646,160 @@ The look of a small network graph in SVG: a center with linked nodes, colored by
     <g class="oc-graph__node" data-level="low" transform="translate(-70.5 97.1)"><circle class="oc-graph__halo" r="21"/><circle class="oc-graph__dot" r="14"/><text class="oc-graph__mark">○</text><text class="oc-graph__label" y="27">Register 1</text></g>
     <g class="oc-graph__node" data-level="low" transform="translate(-114.1 -37.1)"><circle class="oc-graph__halo" r="21"/><circle class="oc-graph__dot" r="14"/><text class="oc-graph__mark">○</text><text class="oc-graph__label" y="27">Image search 1</text></g>
   </svg>
+</div>
+```
+
+### tint-card
+
+Link cards tinted in one color, with a large outline webicon in the corner that drifts and tilts on hover, and an arrow chip that flies out and back in
+
+```html
+<!-- OmniaUI component: tint-card - Link cards tinted in one color, with a large outline webicon in the corner that drifts and tilts on hover, and an arrow chip that flies out and back in. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/tint-card.html | Map: split section head -> grid of five tint cards (one per tone).
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-tint-card: The card (an <a>, or a <div> with a title link): tint background (--oc-tint, 9% / 15% on hover), lift 4px, shadow in the tint.
+       .oc-tint-card__head: Row with the title and the arrow chip.
+       .oc-tint-card__title: Title (display font); 1.25rem when the card is 16rem or wider.
+       .oc-tint-card__text: Short text, muted, max 26ch.
+       .oc-tint-card__meta: Line at the bottom in the tint (12 modules, New).
+       .oc-tint-card__go: Round arrow chip; fills with the tint on hover, the arrow flies out and back in.
+       .oc-tint-card__art: Large outline webicon half outside the bottom corner; drifts slowly, tilts and grows on hover.
+       .oc-tint-card__link: Title link for a card that is a <div>: it covers the whole card.
+       .oc-tint-card--success|warning|destructive|info|muted: Tones; or set --oc-tint (and --oc-tint-foreground) yourself.
+       .oc-tint-card--lg: Larger card for a row of two or three.
+       .oc-section-head--split: Section head with the title on the left and the lead on the right (one column below 56rem).
+-->
+<section style="inline-size:100%">
+  <div class="oc-section-head oc-section-head--split">
+    <div>
+      <p class="oc-eyebrow">Services</p>
+      <h2 class="oc-display oc-display--md">Everything your team needs, in one place</h2>
+    </div>
+    <p class="oc-lead">Five services that work together: from the warehouse to the report. Start with one, add the others when you grow.</p>
+  </div>
+  <div class="oc-card-grid oc-card-grid--fit" style="--oc-card-min:12.5rem;--oc-card-gap:1rem">
+    <a class="oc-tint-card oc-tint-card--warning" href="#warehouse">
+      <iconify-icon class="oc-tint-card__art" icon="mdi-light:factory" aria-hidden="true"></iconify-icon>
+      <div class="oc-tint-card__head">
+        <h3 class="oc-tint-card__title">Warehouse</h3>
+        <span class="oc-tint-card__go" aria-hidden="true"><iconify-icon icon="material-symbols:arrow-outward-rounded"></iconify-icon></span>
+      </div>
+      <p class="oc-tint-card__text">Stock, locations and picking lists that stay up to date</p>
+    </a>
+    <a class="oc-tint-card oc-tint-card--destructive" href="#delivery">
+      <iconify-icon class="oc-tint-card__art" icon="mdi-light:truck" aria-hidden="true"></iconify-icon>
+      <div class="oc-tint-card__head">
+        <h3 class="oc-tint-card__title">Delivery</h3>
+        <span class="oc-tint-card__go" aria-hidden="true"><iconify-icon icon="material-symbols:arrow-outward-rounded"></iconify-icon></span>
+      </div>
+      <p class="oc-tint-card__text">Routes, time slots and proof of delivery on the phone</p>
+    </a>
+    <a class="oc-tint-card oc-tint-card--success" href="#reports">
+      <iconify-icon class="oc-tint-card__art" icon="mdi-light:chart-line" aria-hidden="true"></iconify-icon>
+      <div class="oc-tint-card__head">
+        <h3 class="oc-tint-card__title">Reports</h3>
+        <span class="oc-tint-card__go" aria-hidden="true"><iconify-icon icon="material-symbols:arrow-outward-rounded"></iconify-icon></span>
+      </div>
+      <p class="oc-tint-card__text">Figures per week, per customer and per product</p>
+    </a>
+    <a class="oc-tint-card oc-tint-card--info" href="#security">
+      <iconify-icon class="oc-tint-card__art" icon="mdi-light:shield" aria-hidden="true"></iconify-icon>
+      <div class="oc-tint-card__head">
+        <h3 class="oc-tint-card__title">Security</h3>
+        <span class="oc-tint-card__go" aria-hidden="true"><iconify-icon icon="material-symbols:arrow-outward-rounded"></iconify-icon></span>
+      </div>
+      <p class="oc-tint-card__text">Roles, two-step login and a log of every change</p>
+    </a>
+    <a class="oc-tint-card oc-tint-card--muted" href="#more">
+      <iconify-icon class="oc-tint-card__art" icon="mdi-light:sitemap" aria-hidden="true"></iconify-icon>
+      <div class="oc-tint-card__head">
+        <h3 class="oc-tint-card__title">More services</h3>
+        <span class="oc-tint-card__go" aria-hidden="true"><iconify-icon icon="material-symbols:arrow-outward-rounded"></iconify-icon></span>
+      </div>
+      <p class="oc-tint-card__text">Links to your own tools and custom work</p>
+    </a>
+  </div>
+</section>
+```
+
+### doc-layout
+
+A document page with a table of contents in a side column that stays in view next to the text (privacy, terms, a manual), clear of a sticky site header
+
+```html
+<!-- OmniaUI component: doc-layout - A document page with a table of contents in a side column that stays in view next to the text (privacy, terms, a manual), clear of a sticky site header. Needs @birdycom/omniaui CSS; dist/toc.js (oc-toc.js) highlights the current heading where :target-current is missing.
+     File: packages/ui/snippets/doc-layout.html | Map: layout -> side column (toc with group labels) -> text (ruled legal prose).
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-doc-layout: Grid: side column (--oc-doc-aside, 17rem) and the text; stacked below 64rem, side column first. --end: side column on the right.
+       .oc-doc-layout__aside: Side column; sticky from 64rem at --oc-sticky-offset, at most the window height, scrolls itself.
+       .oc-doc-layout__main: The text column.
+       --oc-sticky-offset: Where sticky parts stop and how much room an anchor jump keeps; follows .oc-site-header (4.5rem + 1rem) or set it on :root.
+       .oc-toc-group-label: Label above a group of links in the table of contents (between two lists).
+       .oc-prose--ruled: A line under every h2 of the prose.
+-->
+<div class="oc-doc-layout" style="inline-size:100%">
+  <aside class="oc-doc-layout__aside">
+    <nav class="oc-toc" aria-label="On this page">
+      <p class="oc-toc-group-label">Articles</p>
+      <ul class="oc-toc-list">
+        <li><a class="oc-toc-link" href="#doc-who" aria-current="true">1. Who we are</a></li>
+        <li><a class="oc-toc-link" href="#doc-data">2. What data we keep</a></li>
+        <li><a class="oc-toc-link" href="#doc-rights">3. Your rights</a></li>
+      </ul>
+      <p class="oc-toc-group-label">Annexes</p>
+      <ul class="oc-toc-list">
+        <li><a class="oc-toc-link" href="#doc-cookies">A. Cookies</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <div class="oc-doc-layout__main">
+    <div class="oc-prose oc-prose--legal oc-prose--ruled">
+      <h2 id="doc-who">1. Who we are</h2>
+      <p>Company 1 builds and maintains software for small teams. You can reach us at info@company1.example.</p>
+      <h2 id="doc-data">2. What data we keep</h2>
+      <p>Only what we need to deliver the service: your name, your e-mail address and the invoices of your plan.</p>
+      <ul><li>Account data, as long as the account exists.</li><li>Invoices, for seven years.</li></ul>
+      <h2 id="doc-rights">3. Your rights</h2>
+      <p>You can ask to see, correct or delete your data at any time. We answer within 30 days.</p>
+      <h2 id="doc-cookies">A. Cookies</h2>
+      <p>We only use the cookies that keep you signed in and remember your language.</p>
+    </div>
+  </div>
+</div>
+```
+
+### step-list
+
+Compact numbered list of steps inside a card or a disclosure; the number takes the color of the severity card around it
+
+```html
+<!-- OmniaUI component: step-list - Compact numbered list of steps inside a card or a disclosure; the number takes the color of the severity card around it. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/step-list.html | Map: plain list -> inside a high severity card (numbers in its color).
+     Class API (modifiers are extra classes / attributes on the same element):
+       ol.oc-step-list: One column, gap 0.6rem, 0.875rem text; every li is a row with its number (CSS counter) on the left.
+       --oc-step-list-color: Color of the numbers; default the severity card color (--oc-severity-color), else primary.
+       .oc-step-list--sm: Tighter rows, 0.8125rem text.
+       style="counter-reset: oc-step-list 3": Start at another number (the first step is 4).
+-->
+<div style="display:grid;gap:1rem;inline-size:min(100%,30rem)">
+  <ol class="oc-step-list">
+    <li>Sign in to the account of Service 1.</li>
+    <li>Open <strong>Settings</strong> and choose <strong>Privacy</strong>.</li>
+    <li>Click <a href="#remove">Delete my data</a> and confirm the e-mail you receive.</li>
+  </ol>
+  <details class="oc-severity-card oc-severity-card--high" open>
+    <summary class="oc-severity-card-head">
+      <span class="oc-severity-card-main"><span class="oc-severity-card-title">Address found at Company 1</span></span>
+      <span class="oc-severity-card-level">High</span>
+    </summary>
+    <div class="oc-severity-card-body">
+      <ol class="oc-step-list oc-step-list--sm">
+        <li>Go to the removal page of Company 1.</li>
+        <li>Fill in the e-mail address info@company1.example.</li>
+        <li>Send the request; it takes up to 30 days.</li>
+      </ol>
+    </div>
+  </details>
 </div>
 ```
 
