@@ -43,6 +43,11 @@ export async function proBlockNames() {
   try { return (await readJson(path.join((await registry("block")).dir, "pro.json"))).items.map((i) => i.name); } catch { return []; }
 }
 
+/** Names of the OmniaUI Pro components (column-menu, network-graph, tint-card-fill), same source and purpose. */
+export async function proComponentNames() {
+  try { return ((await readJson(path.join((await registry("block")).dir, "pro.json"))).components || []).map((i) => i.name); } catch { return []; }
+}
+
 /** Root folder holding the sources of a flavour (installed package first, monorepo second). Returns null when missing. */
 async function flavourRoot(fw) {
   if (fw === "vue" || fw === "react") return findPkg(`@birdycom/omniaui-${fw}`, path.join(monoPackages, fw));
@@ -86,6 +91,7 @@ export async function catalog(fw) {
     }
     const pro = await proRegistry();
     for (const i of pro?.manifest.items || []) entries.push({ kind: "block", name: i.name, files: [i.file], description: i.description, root: pro.dir, pro: true });
+    for (const i of pro?.manifest.components || []) entries.push({ kind: "component", name: i.name, files: [i.file], description: i.description, root: pro.dir, pro: true });
     return { root: null, entries };
   }
   const root = await flavourRoot(fw);

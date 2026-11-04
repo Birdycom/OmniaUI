@@ -138,3 +138,33 @@ test("step list: one row per step, the number in the severity color of the card 
   const manifest = JSON.parse(read("../manifest.json"));
   assert.ok(manifest.items.some((i) => i.name === "step-list"));
 });
+
+test("definition list in prose keeps its own rhythm; glossary terms hyphenate; flush has no line above", () => {
+  const css = part("data-dl-glossary");
+  assert.ok(css.includes(".oc-prose .oc-dl > .oc-dl-row { margin-block: 0; }"));
+  assert.ok(css.includes(".oc-prose .oc-dl :is(.oc-dl-term, .oc-dl-detail) { margin: 0; padding-inline-start: 0; }"));
+  assert.ok(css.includes(".oc-dl--glossary .oc-dl-term { hyphens: auto; overflow-wrap: break-word; }"));
+  assert.ok(css.includes(".oc-dl--flush { margin-block-start: 0; border-block-start: 0; }"));
+});
+
+test("severity card: no double space in a stack, text under the title without an icon; step list stays inside", () => {
+  const sev = part("app-severity-card");
+  assert.ok(sev.includes(".oc-stack > .oc-severity-card + .oc-severity-card { margin-block-start: 0; }"));
+  assert.ok(sev.includes(".oc-severity-card:not(:has(> .oc-severity-card-head .oc-severity-card-icon)) .oc-severity-card-body { padding-inline-start: 1rem; }"));
+  const steps = part("data-step-list");
+  assert.match(steps, /\.oc-step-list \{[^}]*grid-template-columns: minmax\(0, 1fr\);/);
+  assert.match(steps, /\.oc-step-list > li \{[^}]*min-inline-size: 0;/);
+});
+
+test("modal: the dialog is as large as its card, so closedby=any closes it on a click next to the card", () => {
+  const css = read("../src/components.css");
+  const rule = css.match(/\ndialog\.oc-modal \{([^}]*)\}/)?.[1] ?? "";
+  // A full-screen dialog (width/height 100%) swallowed every click as "inside": it never closed on the backdrop.
+  assert.match(rule, /width: fit-content;/);
+  assert.match(rule, /height: fit-content;/);
+  assert.match(rule, /margin: auto;/);
+  assert.match(rule, /padding: 0;/);
+  assert.doesNotMatch(rule, /(?:^|\s)(?:width|height): 100%;/);
+  // The card still takes the room its size allows, with a low specificity so a block's own width wins.
+  assert.match(css, /:where\(dialog\.oc-modal\[open\]\) \.oc-modal-content \{\n  width: calc\(100vw - 32px\);/);
+});
