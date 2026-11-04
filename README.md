@@ -12,7 +12,7 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 [![(Packagist) Laravel](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/split-php.yml?label=%28Packagist%29%20Laravel&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/split-php.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Version:** `0.14.1` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.14.2` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
@@ -126,6 +126,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.14.2` | 2026-11-04 | Pro components (mega menu, data table Pro and more) counted and labelled from one source; modals close on a click outside; severity card, step list and glossary fixes |
 | `0.14.1` | 2026-11-04 | Tint card, document layout with table of contents, step list, glossary, styled language list; animations on the GPU |
 | `0.14.0` | 2026-11-03 | Reading, callout, static menu, group, accordion status, neon, backgrounds, particle field and graph; Pro network graph |
 | `0.13.0` | 2026-11-03 | Site building blocks without own CSS: forms, panel, result, brand-mark, page sections, feature and link cards, icon list, shot grid, fly-in, hover effects, contact-form block |
