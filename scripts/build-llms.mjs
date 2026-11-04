@@ -19,6 +19,9 @@ const components = (await json("packages/ui/manifest.json")).items;
 const blocks = (await json("packages/blocks/manifest.json")).items;
 const pro = (await json("packages/blocks/pro.json")).items;
 const proNames = new Set(pro.map((i) => i.name));
+// Counts and Pro components as the galleries show them (scripts/build-galleries.mjs writes the file).
+const counts = await json("public/data/oc-counts.json");
+const proComponents = (await json("packages/blocks/pro.json")).components || [];
 
 const describe = new Map([...components, ...blocks, ...pro].map((i) => [i.name, i.description]));
 const slug = (u) => u.split("/").pop();
@@ -28,11 +31,11 @@ const line = (p, tag = "") => {
 };
 const group = (g) => pages.filter((p) => p.g === g);
 
-const SUMMARY = `> OmniaUI is the component and block library for OmniaCSS: ${components.length} components and
-> ${blocks.length + pro.length} page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
+const SUMMARY = `> OmniaUI is the component and block library for OmniaCSS: ${counts.components} components and
+> ${counts.blocks} page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
 > wrappers for React, Vue, Laravel Blade and Livewire. Behaviour comes from native HTML (dialog, popover, details,
-> :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; ${pro.length} advanced
-> blocks are part of OmniaUI Pro (paid license).`;
+> :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; ${counts["pro-blocks"]} advanced
+> blocks and ${counts["pro-components"]} components are part of OmniaUI Pro (paid license).`;
 
 const RULES = `## Rules for AI assistants
 
@@ -42,7 +45,8 @@ const RULES = `## Rules for AI assistants
   which are NOT Tailwind: read ${CSS_SITE}/llms.txt.
 - Colors come from theme tokens (--oc-primary, --oc-background, --oc-foreground, --oc-border …) that switch with light
   and dark mode via light-dark(). Do not hard-code colors on components.
-- Blocks marked (Pro) need an OmniaUI Pro license; their markup is not public. Suggest a free block or component instead
+- Components and blocks marked (Pro) need an OmniaUI Pro license; their markup is not public. (Free + Pro): free, with
+  a Pro addition (only that addition needs the license). Suggest a free block or component instead
   unless the project has @birdycom/omniaui-pro installed.
 - The MCP server gives the exact markup of every component and block: claude mcp add omniacss -- npx -y @birdycom/omniacss-mcp`;
 
@@ -71,8 +75,10 @@ svg-spinners:, flag:, vscode-icons:. Never Lucide or another icon set.`;
 
 const sections = [
   ["Guides", [...group("Ui"), ...group("Catalog")].map((p) => line(p))],
-  ["Components", group("Components").map((p) => line(p))],
-  ["Blocks", group("Blocks").map((p) => line(p, proNames.has(slug(p.u)) ? " (Pro)" : ""))],
+  // The label after the title is the one on the site ("Pro", "Free + Pro"), from the search index.
+  ["Components", group("Components").map((p) => line(p, p.p ? ` (${p.p})` : ""))],
+  ["Blocks", group("Blocks").map((p) => line(p, p.p ? ` (${p.p})` : proNames.has(slug(p.u)) ? " (Pro)" : ""))],
+  ["Pro components (license)", proComponents.map((i) => `- ${i.name}: ${i.description}`)],
   ["Pro blocks (license)", pro.map((i) => `- ${i.name}: ${i.description}`)],
 ];
 

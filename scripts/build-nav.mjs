@@ -10,7 +10,7 @@
 // Groups follow scripts/lib/categories.mjs (the same order as the overview galleries), unknown groups after them by name;
 // items are sorted by label. The fixed "Overview" group always comes first.
 // Badges: "new" for pages brought by the newest release, "updated" for older pages it added to (scripts/lib/page-version.mjs),
-// "pro" for OmniaUI Pro blocks.
+// "pro" for OmniaUI Pro ("all") and free pages with a Pro addition ("some").
 
 import fs from "node:fs";
 import path from "node:path";
@@ -71,7 +71,8 @@ for (const s of SECTIONS) {
     const fresh = freshness(fs.readFileSync(path.join(dir, file), "utf8"), newest);
     if (fresh === "new") item.new = newest;
     if (fresh === "updated") item.updated = newest;
-    if (meta.pro === "all") item.pro = true;
+    // "all" (Pro) or "some" (Free + Pro): the same label as the galleries (apps/site/src/lib/pro.mjs).
+    if (meta.pro) item.pro = meta.pro;
     groups.get(category).push(item);
   }
   const sections = [...groups.keys()].sort(byCategoryOrder(s.categories)).map((title) => ({

@@ -28,13 +28,13 @@
                     <div class="oc-card">
                         <div class="oc-card-header">
                             <h2 class="oc-card-title">Capacity</h2>
-                            <p class="oc-card-description">Warning from 70 %, critical from 90 %</p>
+                            <p class="oc-card-description">Warning from 75 %, critical from 90 %</p>
                         </div>
-                        <div class="oc-card-content oc-stack">
-                            <x-oc::progress :value="42" label="CPU, web cluster" levels />
-                            <x-oc::progress :value="76" label="Memory, queue workers" levels />
-                            <x-oc::progress :value="93" label="Disk, media storage" levels />
-                            <x-oc::progress :value="58" label="Database connections" levels :marker="80" />
+                        <div class="oc-card-content oc-meter-list">
+                            <x-oc::meter-row label="CPU, web cluster" :percent="42" value="8 of 19 cores" />
+                            <x-oc::meter-row label="Memory, queue workers" :percent="76" value="24.3 / 32 GB" />
+                            <x-oc::meter-row label="Disk, media storage" :percent="93" value="1.86 / 2 TB" />
+                            <x-oc::meter-row label="Database connections" :percent="58" value="58 of 100" />
                         </div>
                     </div>
                 </div>
@@ -66,19 +66,21 @@
                         ['level' => 'warn', 'time' => '14:02:51', 'message' => 'Queue depth 1,204 above 1,000: scaling workers to 8'],
                         ['level' => 'info', 'time' => '14:03:05', 'message' => 'Canary at 5 %: 0 errors in 1,912 requests'],
                         ['level' => 'debug', 'time' => '14:03:06', 'message' => 'p95 181 ms (baseline 196 ms)'],
-                    ]" prompt />
+                    ]" prompt height="none" />
                 </div>
             </x-oc::tabs.panel>
 
             <x-oc::tabs.panel>
+                {{-- The tiles filter the list below without JavaScript (:has on the checked radio, see the style at the end). --}}
+                <div class="oc-stack ops-incidents">
                 <x-oc::filter-counts name="incident-filter" value="open" label="Incidents" :options="[
                     ['value' => 'open', 'label' => 'Open', 'count' => 3, 'tone' => 'destructive'],
-                    ['value' => 'watching', 'label' => 'Watching', 'count' => 5],
-                    ['value' => 'resolved', 'label' => 'Resolved this week', 'count' => 18, 'tone' => 'success'],
+                    ['value' => 'watching', 'label' => 'Watching', 'count' => 2],
+                    ['value' => 'resolved', 'label' => 'Resolved this week', 'count' => 2, 'tone' => 'success'],
                 ]" />
 
-                <div class="oc-stack">
-                    <x-oc::severity-card level="critical" title="Payments: card authorisations failing for one provider" :tags="['payments', 'EU-west']" name="incidents" open>
+                <div class="oc-stack ops-incident-list">
+                    <x-oc::severity-card data-state="open" level="critical" title="Payments: card authorisations failing for one provider" :tags="['payments', 'EU-west']" name="incidents" open>
                         Since 13:41, 4.2 % of card authorisations through the second provider time out. Traffic is moved to the primary
                         provider; failed orders get an automatic retry email.
                         <x-slot:actions>
@@ -86,13 +88,21 @@
                             <x-oc::button size="sm" variant="outline">Assign to me</x-oc::button>
                         </x-slot:actions>
                     </x-oc::severity-card>
-                    <x-oc::severity-card level="high" title="Media storage at 93 %" :tags="['storage']" name="incidents">
+                    <x-oc::severity-card data-state="open" level="high" title="Media storage at 93 %" :tags="['storage']" name="incidents">
                         The media disk grows 1.1 % a day. The lifecycle rule for thumbnails older than 180 days is not running.
                     </x-oc::severity-card>
-                    <x-oc::severity-card level="medium" title="Search index lags 4 minutes behind" :tags="['search', 'queue']" name="incidents">
+                    <x-oc::severity-card data-state="open" level="medium" title="Search index lags 4 minutes behind" :tags="['search', 'queue']" name="incidents">
                         Re-indexing jobs wait behind the newsletter batch; they get their own queue in the next release.
                     </x-oc::severity-card>
-                    <x-oc::severity-card level="low" title="Certificate for status.example.eu renews in 12 days" :tags="['tls']" name="incidents" resolved />
+                    <x-oc::severity-card data-state="watching" level="low" title="Latency in EU-north slightly above baseline" :tags="['api']" name="incidents">
+                        p95 is 12 ms above last week since the network change on Monday. No action yet; the alert fires at +40 ms.
+                    </x-oc::severity-card>
+                    <x-oc::severity-card data-state="watching" level="medium" title="Backup window overlaps the invoice batch" :tags="['backup', 'queue']" name="incidents">
+                        Both start at 02:00. The backup takes 9 minutes longer on nights with a large batch.
+                    </x-oc::severity-card>
+                    <x-oc::severity-card data-state="resolved" level="low" title="Certificate for status.example.eu renews in 12 days" :tags="['tls']" name="incidents" resolved />
+                    <x-oc::severity-card data-state="resolved" level="high" title="Mail to one provider delayed 20 minutes" :tags="['mail']" name="incidents" resolved />
+                </div>
                 </div>
             </x-oc::tabs.panel>
 
@@ -135,5 +145,10 @@
         .ops-grid { display: grid; gap: 1.5rem; }
         @media (min-width: 64rem) { .ops-grid { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
         .oc-stack { display: grid; gap: 1.5rem; }
+        .ops-incident-list { gap: 0.75rem; }
+        /* Filter without JavaScript: the checked tile shows only the incidents with that state. */
+        .ops-incidents:has(input[value="open"]:checked) [data-state]:not([data-state="open"]),
+        .ops-incidents:has(input[value="watching"]:checked) [data-state]:not([data-state="watching"]),
+        .ops-incidents:has(input[value="resolved"]:checked) [data-state]:not([data-state="resolved"]) { display: none; }
     </style>
 </x-filament-panels::page>

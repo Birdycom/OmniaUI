@@ -24,6 +24,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { compatTable, hasCompat, mdnLink, supportSummary } from "./compat.mjs";
 import { REPO, CONTENT } from "./site.mjs";
+import { proLabel } from "./pro.mjs";
 
 const slug = (s) => s.toLowerCase().replace(/&amp;|&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "section";
 
@@ -311,6 +312,10 @@ function uiSourceFiles(kind, slug) {
 function uiPageExtras(body, route, document) {
   const m = route.match(/^ui\/(components|blocks)\/([a-z0-9-]+)\.html$/);
   if (!m || !fs.existsSync(path.join(REPO, "packages/ui"))) return;
+  // "Pro" / "Free + Pro" after the page title, the same label as the sidebar and the galleries; the search index reads it.
+  const label = proLabel(JSON.parse(rd(path.join(CONTENT, route)).match(/^<!--oc-page (.*?)-->/)?.[1] || "{}").pro);
+  const h1 = body.querySelector(".oc-hero-title");
+  if (label && h1 && !h1.querySelector(".ocd-pro-label")) h1.insertAdjacentHTML("beforeend", ` <a class="ocd-pro-label" href="../pro.html" data-ocd-pro="${label}">${label}</a>`);
   const demos = body.querySelectorAll(".oc-demo");
   if (demos.length && [...demos].every((d) => d.classList.contains("oc-demo--pro"))) return;
   const [, kind, slug] = m;

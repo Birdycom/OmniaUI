@@ -11,6 +11,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { COMPONENT_CATEGORIES, BLOCK_CATEGORIES, byCategoryOrder } from "./lib/categories.mjs";
 import { freshness, introducedIn, newestVersion } from "./lib/page-version.mjs";
+import { proLabel } from "../apps/site/src/lib/pro.mjs";
 
 const root = process.cwd();
 const contentDir = path.join(root, "apps/site/src/content/ui");
@@ -25,7 +26,27 @@ for (const [kind, pkg] of [["components", "ui"], ["blocks", "blocks"]]) {
 /** Number of blocks: free (packages/blocks) and Pro (vendor/omniaui-pro, committed copy of the Pro manifest). A gallery
  *  card is one page and can hold several numbered blocks, so these counts differ from the number of cards. */
 const proPath = path.join(root, "vendor/omniaui-pro/manifest.json");
-const blockCount = { free: registry.blocks.size, pro: fs.existsSync(proPath) ? JSON.parse(fs.readFileSync(proPath, "utf8")).items.length : 0 };
+const proManifest = fs.existsSync(proPath) ? JSON.parse(fs.readFileSync(proPath, "utf8")) : { items: [] };
+const blockCount = { free: registry.blocks.size, pro: proManifest.items.length };
+/** Pro components from the same manifest (packages/pro/manifest.json "components"). A free page with a Pro addition
+ *  ("extends": tint card, data table) counts once as free and its addition once as Pro, like a Pro block next to free ones. */
+const proComponentCount = (proManifest.components || []).length;
+
+/** Every Pro component has its label: its own page "all", or "some" on the free page it extends. Nothing else is Pro,
+ *  so the counts and the labels cannot drift apart (a missing or extra label stops the build). */
+function checkProPages(pages) {
+  if (!proManifest.components) return;
+  const want = new Map();
+  for (const c of proManifest.components) want.set(c.extends || c.name, c.extends ? "some" : "all");
+  const errors = [];
+  for (const [name, pro] of want) {
+    const page = pages.find((p) => p.name === name);
+    if (!page) errors.push(`${name}: no page in ui/components (Pro component in vendor/omniaui-pro/manifest.json)`);
+    else if (page.pro !== pro) errors.push(`${name}.html: meta "pro" is "${page.pro}", the Pro manifest wants "${pro}"`);
+  }
+  for (const p of pages) if (p.pro && !want.has(p.name)) errors.push(`${p.name}.html: meta "pro" is "${p.pro}" but the Pro manifest has no component for it`);
+  if (errors.length) throw new Error(`[galleries] Pro labels do not match the Pro manifest:\n  ${errors.join("\n  ")}`);
+}
 
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const esc = (s) => s.replace(/&(?!\w+;|#\d+;)/g, "&amp;");
@@ -181,15 +202,21 @@ const KINDS = {
 // on by itself: once v0.12.7 pages exist, the v0.12.6 ones lose it.
 const newest = newestVersion(Object.keys(KINDS).flatMap((kind) => readPages(kind).map((p) => p.since)));
 
+const allCounts = {};
 for (const [kind, k] of Object.entries(KINDS)) {
   const pages = readPages(kind);
   const freshCount = pages.filter((p) => p.since === newest).length;
   const updatedCount = pages.filter((p) => freshness(p.src, newest) === "updated").length;
-  // Free and Pro: blocks from the two manifests (a card can hold several numbered blocks), components per page.
+  // Free and Pro: blocks from the two manifests (a card can hold several numbered blocks); free components per page
+  // (every page that is not Pro only), Pro components from the Pro manifest (a page can hold a free and a Pro one).
   const proPages = pages.filter((p) => p.pro === "all").length;
+  const free = pages.length - proPages;
+  if (kind === "components") checkProPages(pages);
+  const pro = proComponentCount;
   const counts = kind === "blocks"
     ? { total: blockCount.free + blockCount.pro, free: blockCount.free, pro: blockCount.pro }
-    : { total: pages.length, free: pages.length - proPages, pro: proPages };
+    : { total: free + pro, free, pro };
+  allCounts[kind] = counts;
   const titles = [...new Set(pages.map((p) => p.category))].sort(byCategoryOrder(k.categories));
   const groups = titles.map((title, i) => ({
     title,
@@ -200,7 +227,7 @@ for (const [kind, k] of Object.entries(KINDS)) {
     const state = freshness(p.src, newest);
     const fresh = state === "new" ? `<em class="gx-new">New</em>` : state === "updated" ? `<em class="gx-new gx-new--updated">Updated</em>` : "";
     const cli = p.pro === "all" ? "" : addName(kind, p.name);
-    const badge = p.pro ? `<em class="gx-pro">${p.pro === "all" ? "Pro" : "Free + Pro"}</em>` : "";
+    const badge = p.pro ? `<em class="gx-pro">${proLabel(p.pro)}</em>` : "";
     return `<a class="gx-card" href="${kind}/${p.name}.html" style="${tone(t)}">${kind === "blocks" ? thumbnail(p.name) : ""}<div class="gx-head"><b>${esc(p.title)}</b>${fresh}${badge}</div><span>${p.desc}</span><small><i>${cli ? `omniaui add ${cli}` : p.pro === "all" ? "OmniaUI Pro" : ""}</i>${p.demos ? `<em>${p.demos} ${p.demos === 1 ? "demo" : "demos"}</em>` : ""}</small></a>`;
   };
   const single = kind === "blocks" ? "block" : "component";
@@ -236,3 +263,27 @@ ${k.tail}`;
   const missing = pages.filter((p) => !p.desc).map((p) => p.name);
   console.log(`[galleries] apps/site/src/content/ui/${kind}.html: ${pages.length} cards in ${groups.length} group(s)${missing.length ? ` (no description: ${missing.join(", ")})` : ""}`);
 }
+
+// The same counts on the other pages that name them: <span data-ocd-count="components">180</span> in the home page and
+// the Pro page is rewritten here, so a number can never differ from the galleries. Also public/data/oc-counts.json
+// (scripts/build-llms.mjs). Keys: components, blocks, free-components, free-blocks, pro-components, pro-blocks.
+const countValues = {
+  components: allCounts.components.total, blocks: allCounts.blocks.total,
+  "free-components": allCounts.components.free, "free-blocks": allCounts.blocks.free,
+  "pro-components": allCounts.components.pro, "pro-blocks": allCounts.blocks.pro,
+};
+fs.writeFileSync(path.join(root, "public/data/oc-counts.json"), JSON.stringify({ ...countValues, proComponents: (proManifest.components || []).map((c) => c.name) }, null, 2) + "\n");
+for (const file of ["index.html", "ui/pro.html"]) {
+  const full = path.join(contentDir, "..", file);
+  const src = fs.readFileSync(full, "utf8");
+  const out = src.replace(/(<span data-ocd-count="([a-z-]+)">)[^<]*(<\/span>)/g, (m, open, key, close) => {
+    if (!(key in countValues)) throw new Error(`[galleries] ${file}: unknown data-ocd-count "${key}"`);
+    return `${open}${countValues[key]}${close}`;
+  });
+  if (out !== src) fs.writeFileSync(full, out);
+}
+// Every Pro component is on the Pro page (a link to its page), so the list there cannot miss one.
+const proPage = fs.readFileSync(path.join(contentDir, "pro.html"), "utf8");
+const unlisted = (proManifest.components || []).filter((c) => !proPage.includes(`href="components/${c.extends || c.name}.html`));
+if (unlisted.length) throw new Error(`[galleries] ui/pro.html does not list the Pro component(s) ${unlisted.map((c) => c.name).join(", ")}`);
+console.log(`[galleries] counts: ${Object.entries(countValues).map(([k, v]) => `${k} ${v}`).join(", ")}`);

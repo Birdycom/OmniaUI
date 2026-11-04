@@ -4,7 +4,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { catalog, closure, findEntries, INSTALL_HINT, proBlockNames } from "./catalog.mjs";
+import { catalog, closure, findEntries, INSTALL_HINT, proBlockNames, proComponentNames } from "./catalog.mjs";
 import { cwd, defaultDir, ensureContentGlob, exists, pascal, posix, readJson, requireFromProject, resolveFramework } from "./project.mjs";
 
 /** Copied Blade files call each other as <x-oc.name>, matching the folder they land in. */
@@ -78,6 +78,12 @@ export async function cmdAdd(args, flags) {
       throw new Error(fw === "css"
         ? `"${input}" is an OmniaUI Pro block. Install @birdycom/omniaui-pro (licensed) to add it.`
         : `"${input}" is an OmniaUI Pro block: use it from @birdycom/omniaui-pro-${fw === "blade" ? "laravel" : fw} (licensed) instead of copying.`);
+    }
+    if (!hits.length && (await proComponentNames()).includes(input)) {
+      // tint-card-fill has no wrapper of its own: the free TintCard / OcTintCard / x-oc::tint-card take "fill".
+      throw new Error(fw === "css" || input === "tint-card-fill"
+        ? `"${input}" is an OmniaUI Pro component. Install @birdycom/omniaui-pro (licensed) to add it${fw === "css" ? "" : `; in ${fw} use the free tint card with fill`}.`
+        : `"${input}" is an OmniaUI Pro component: use it from @birdycom/omniaui-pro-${fw === "blade" ? "laravel" : fw} (licensed) instead of copying.`);
     }
     if (!hits.length) throw new Error(`Unknown ${kind || "component or block"} "${input}" for ${fw}. Run "omniaui list -f ${fw}" to see the options.`);
     if (hits.length > 1) throw new Error(`"${input}" exists as component and block. Pass --kind component or --kind block.`);

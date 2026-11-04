@@ -2301,14 +2301,19 @@ button.oc-pagination-item:focus-visible {
    The older .is-open / aria-expanded hooks keep working for script-driven setups.
    =================================================================== */
 
-/* Modal — <dialog>: focus trap, Esc to close and ::backdrop come from the browser */
+/* Modal — <dialog>: focus trap, Esc to close and ::backdrop come from the browser.
+   The dialog is as large as its card, not the whole screen: closedby="any" closes it on a click outside the
+   dialog's box, so a full-screen dialog never closed on a click next to the card. The card keeps the sizes
+   (sm, lg, xl, full or your own max-width); the browser centers the dialog (margin: auto). */
 dialog.oc-modal {
   display: none;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  margin: 0;
+  width: fit-content;
+  height: fit-content;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  overflow: visible;
   border: 0;
   background: transparent;
   color: var(--oc-foreground);
@@ -2319,6 +2324,11 @@ dialog.oc-modal[open] {
 dialog.oc-modal::backdrop {
   background: oklch(from var(--color-black-60) l c h / 0.5);
   backdrop-filter: blur(4px);
+}
+/* The card asks for the full width; its max-width (480px, or a size modifier) decides. Low specificity, so a
+   block's own width on the card still wins. */
+:where(dialog.oc-modal[open]) .oc-modal-content {
+  width: calc(100vw - 32px);
 }
 dialog.oc-modal[open] .oc-modal-content {
   transition: opacity var(--oc-transition-normal), scale var(--oc-transition-normal);
