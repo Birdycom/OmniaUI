@@ -1,3 +1,6 @@
+// OmniaUI Pro v0.14.4 - commercial software, NOT open source and NOT under the MIT license.
+// Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
+// Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/barcode-maker.js
 // Map: bind one maker (value, format, preview, download) -> init -> boot
 // OmniaUI Pro barcode maker: a form [data-oc-barcode-maker] with a value field (name="value"), an optional format select

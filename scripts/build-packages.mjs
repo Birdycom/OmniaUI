@@ -38,13 +38,17 @@ async function parts(srcDir) {
 // which Chrome rejects, so scroll-driven animations stop. Same list as the omniacss CLI (--minify).
 const v = (major, minor = 0) => (major << 16) | (minor << 8);
 const MINIFY_TARGETS = { chrome: v(123), edge: v(123), firefox: v(120), safari: v(17, 5), ios_saf: v(17, 5) };
+// Minifying turns CSS escapes back into raw characters ("\002192" -> "→"). Served as text/css without a charset, a
+// non-UTF-8 page then shows "â†’". So non-ASCII in `content` goes back to a 6-digit escape after minifying.
+const escapeContent = (css) => css.replace(/(\bcontent\s*:)([^;}]*)/g, (m, prop, value) =>
+  prop + value.replace(/[^\x00-\x7F]/gu, (ch) => "\\" + ch.codePointAt(0).toString(16).padStart(6, "0")));
 
 /** Write a CSS file and a minified copy next to it (<name>.min.css) for CDN use (jsDelivr/unpkg). */
 async function writeWithMin(file, css) {
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, css);
   const { code } = transform({ filename: file, code: Buffer.from(css), minify: true, targets: MINIFY_TARGETS });
-  await fs.writeFile(file.replace(/\.css$/, ".min.css"), code);
+  await fs.writeFile(file.replace(/\.css$/, ".min.css"), escapeContent(code.toString()));
   console.log("[packages]", path.relative(root, file), `(${css.length} bytes, min ${code.length} bytes)`);
 }
 

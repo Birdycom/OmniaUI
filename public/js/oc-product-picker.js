@@ -1,3 +1,6 @@
+// OmniaUI Pro v0.14.4 - commercial software, NOT open source and NOT under the MIT license.
+// Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
+// Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/product-picker.js
 // Map: text of an option -> filter (search field) -> pick (Add button / double click / Enter) -> chosen list (rows, quantity,
 //      remove, total) -> bind -> boot

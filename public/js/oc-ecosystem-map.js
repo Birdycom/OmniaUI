@@ -1,3 +1,6 @@
+// OmniaUI Pro v0.14.4 - commercial software, NOT open source and NOT under the MIT license.
+// Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
+// Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/ecosystem-map.js
 // Map: nodes (data-oc-node, data-oc-parents) -> edges -> SVG curves from the bottom of a parent to the top of its child
 //      (redrawn on resize) -> pointing at a node: its way up + its children light up, caption -> boot
