@@ -1,3 +1,6 @@
+// OmniaUI Pro v0.14.4 - commercial software, NOT open source and NOT under the MIT license.
+// Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
+// Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/spotlight.js
 // Map: one pointermove listener per [data-oc-spotlight] -> the card under the pointer -> --oc-spot-x / --oc-spot-y
 //      (once per frame) -> boot

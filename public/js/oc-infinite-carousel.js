@@ -1,3 +1,6 @@
+// OmniaUI Pro v0.14.4 - commercial software, NOT open source and NOT under the MIT license.
+// Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
+// Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/infinite-carousel.js
 // Map: copy the slides before and after the real ones -> start on the first real slide -> prev/next one slide
 //      -> when scrolling stops on a copy, jump (without animation) to the same real slide -> boot

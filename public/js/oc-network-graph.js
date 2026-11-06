@@ -1,3 +1,6 @@
+// OmniaUI Pro v0.14.4 - commercial software, NOT open source and NOT under the MIT license.
+// Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
+// Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/network-graph.js
 // Map: read the data (list items or an object) -> ring layout (rings grow until no node touches another) -> SVG (edges,
 //      nodes, center pulse) with a viewBox around everything -> tooltip -> select (click, Enter, Space) -> drag ->

@@ -12,7 +12,7 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 [![(Packagist) Laravel](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/split-php.yml?label=%28Packagist%29%20Laravel&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/split-php.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Version:** `0.14.3` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.14.4` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
@@ -126,6 +126,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.14.4` | 2026-11-06 | Pijlen en vinkjes uit CSS tonen weer goed (escapes, ook na minify); Pro-kopieën in de repo duidelijk niet onder MIT |
 | `0.14.3` | 2026-11-05 | omniacss build: utilities in the last cascade layer, so a utility on a component always wins |
 | `0.14.2` | 2026-11-04 | Pro components (mega menu, data table Pro and more) counted and labelled from one source; modals close on a click outside; severity card, step list and glossary fixes |
 | `0.14.1` | 2026-11-04 | Tint card, document layout with table of contents, step list, glossary, styled language list; animations on the GPU |
@@ -153,4 +154,6 @@ See [php-packages/README.md](php-packages/README.md).
 
 ## License
 
-MIT — Serge Cools (Birdycom). OmniaUI Pro has its own commercial license.
+MIT — Serge Cools (Birdycom).
+
+**Except OmniaUI Pro.** OmniaUI Pro is commercial software under its own [OmniaUI Pro license](https://omniaui.eu/legal/pro-license), not MIT. This repository holds copies of the built Pro CSS and Pro block scripts only for the live previews on omniaui.eu: `vendor/omniaui-pro/` and the scripts in `public/js/` that start with the "OmniaUI Pro" banner (listed in [vendor/omniaui-pro/LICENSE.md](vendor/omniaui-pro/LICENSE.md)). The MIT license does not cover them; using them needs a [Pro license](https://omniaui.eu/ui/pro).

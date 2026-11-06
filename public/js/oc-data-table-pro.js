@@ -1,3 +1,6 @@
+// OmniaUI Pro v0.14.4 - commercial software, NOT open source and NOT under the MIT license.
+// Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
+// Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/data-table-pro.js
 // Map: store -> column width (handle, remembered, reset) -> row drag (grip, drop line, reorder event) -> bind -> boot
 // OmniaUI Pro on top of the free data table (@birdycom/omniaui/data-table.js): drag a column edge
