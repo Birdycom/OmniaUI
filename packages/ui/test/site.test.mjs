@@ -61,7 +61,7 @@ test("round 2: ratios only above 960px, fit grid, muted text, gutter and fly opt
   assert.match(showcase, /var\(--oc-container-gutter, 1\.25rem\)/);
   assert.match(layout, /\.oc-text-muted \{ color: var\(--oc-muted-foreground\); \}/);
   const fly = read("../src/fly.js");
-  for (const option of ["--oc-fly-step", "--oc-fly-stagger", "--oc-fly-delay", "data-oc-fly-repeat"]) assert.ok(fly.includes(option), option);
+  for (const option of ["--oc-fly-step", "--oc-fly-stagger", "--oc-fly-delay", "data-oc-fly-repeat", "data-oc-fly-random", "data-oc-fly-trigger"]) assert.ok(fly.includes(option), option);
   assert.match(read("../src/parts/site-fly.css"), /var\(--oc-fly-delay, 0s\)/);
 });
 
@@ -72,4 +72,16 @@ test("hover effects: one class per card, smooth curve, steady hover area", () =>
   assert.match(hover, /:hover::before \{[^}]*z-index: -1/, "the strip under a lifted card keeps the hover");
   assert.match(hover, /prefers-reduced-motion: reduce/);
   assert.match(read("../src/parts/site-base.css"), /\.oc-skip-link:focus \{ translate: none; \}/);
+});
+
+test("fly timing options and the reading progress in the site header", () => {
+  const css = read("../src/parts/site-fly.css");
+  for (const v of ["--oc-fly-duration", "--oc-fly-fade", "--oc-fly-ease", "--oc-fly-rise", "--oc-fly-blur"]) assert.ok(css.includes(v), v);
+  // The fly timing must beat a card's own transition (the Pro spotlight card comes later), but only while flying.
+  assert.ok(css.includes("html.oc-fly-ready .oc-reveal--fly.is-flying"));
+  assert.ok(read("../src/fly.js").includes("is-flying"));
+  const progress = read("../src/parts/site-header-progress.css");
+  assert.match(progress, /\.oc-site-header__progress/);
+  assert.match(progress, /animation-timeline: scroll\(root\)/);
+  assert.match(progress, /@supports \(animation-timeline: scroll\(\)\)/);
 });
