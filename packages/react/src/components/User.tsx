@@ -7,7 +7,7 @@ import type { AvatarSize } from "./Avatar";
 export interface UserProps extends HTMLAttributes<HTMLDivElement> {
   name: ReactNode;
   email?: ReactNode;
-  /** Initials shown in the avatar (default: from `name` when it is a string). */
+  /** Initials shown in the avatar (default: from the text of `name`, also when it is a ReactNode). */
   initials?: string;
   /** Avatar image URL (wins over initials). */
   avatarSrc?: string;

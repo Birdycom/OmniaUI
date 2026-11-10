@@ -13,17 +13,30 @@
   --oc-liquid-blur: 5px;
   position: relative;
   isolation: isolate;
-  background: var(--oc-liquid-tint);
+  background: none;
   border: 1px solid var(--oc-liquid-edge);
-  /* Light enters at the top left and leaves at the bottom right; a soft glow runs along the inner edge,
-     so the sheet reads as a thick, clear lens rather than frosted plastic. */
+  box-shadow: 0 10px 30px -10px oklch(0% 0 0deg / 0.35);
+}
+/* The lens itself sits on ::after behind the content (not on the element: backdrop-filter there would trap a
+   position: fixed tooltip inside). Light enters at the top left and leaves at the bottom right; a soft glow runs
+   along the inner edge, so the sheet reads as a thick, clear lens rather than frosted plastic. */
+.oc-glass.oc-glass--liquid::after,
+.oc-glass--liquid::after,
+.oc-glass-bar::after,
+.oc-site-header--glass .oc-site-header__inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--oc-liquid-tint);
   box-shadow:
-    0 10px 30px -10px oklch(0% 0 0deg / 0.35),
     inset 2px 2px 1px -2px oklch(100% 0 0deg / 0.95),
     inset -2px -2px 1px -2px oklch(100% 0 0deg / 0.7),
     inset 0 0 10px 1px oklch(100% 0 0deg / 0.22),
     inset 0 -8px 16px -12px oklch(100% 0 0deg / 0.35);
   backdrop-filter: blur(var(--oc-liquid-blur)) saturate(1.9) brightness(1.1) contrast(1.05);
+  pointer-events: none;
 }
 /* Specular rim: bright on the top-left and bottom-right edge, only on the border ring. */
 .oc-glass--liquid::before,
@@ -89,7 +102,8 @@
 
 /* Less transparency asked for, or no backdrop-filter: a solid bar that still reads as one. */
 @media (prefers-reduced-transparency: reduce) {
-  .oc-glass--liquid, .oc-glass-bar { --oc-liquid-tint: var(--oc-card); backdrop-filter: none; }
+  .oc-glass--liquid, .oc-glass-bar { --oc-liquid-tint: var(--oc-card); }
+  .oc-glass--liquid::after, .oc-glass-bar::after { backdrop-filter: none; }
 }
 @supports not (backdrop-filter: blur(1px)) {
   .oc-glass--liquid, .oc-glass-bar { --oc-liquid-tint: light-dark(oklch(100% 0 0deg / 0.85), oklch(25% 0.02 260deg / 0.9)); }

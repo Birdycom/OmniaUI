@@ -19,11 +19,22 @@ export function attrs(record: Record<string, string | undefined>): object {
 
 export type Slot = ReactNode;
 
-/** "Contact 1" -> "AL": the first letters of the first two words (as the Blade components do). */
+/** "Contact 1" -> "C1": the first letters of the first two words (as the Blade components do). */
 export function initialsOf(name: unknown): string {
-  return typeof name === "string"
-    ? name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("")
-    : "";
+  // A ReactNode name (<>Contact 1 <small>(you)</small></>) counts by its text. A part in brackets ("(you)",
+  // "(admin)") and words without a letter or digit ("·", "—") give no initial.
+  return textOf(name).replace(/\([^)]*\)/g, " ").trim().split(/\s+/)
+    .map((w) => w.match(/[\p{L}\p{N}]/u)?.[0] ?? "")
+    .filter(Boolean).slice(0, 2).join("").toUpperCase();
+}
+
+/** The plain text of a React node: strings, numbers, arrays and the children of elements. */
+export function textOf(node: unknown): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join("");
+  if (typeof node === "object" && "props" in node) return textOf((node as { props?: { children?: unknown } }).props?.children);
+  return "";
 }
 
 /** Call a handler, then call another one. */
