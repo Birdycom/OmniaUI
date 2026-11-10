@@ -37,7 +37,7 @@ return [
     | Version used for CDN links (npm version or range)
     |--------------------------------------------------------------------------
     */
-    'version' => env('OMNIACSS_VERSION', '0.14.4'),
+    'version' => env('OMNIACSS_VERSION', '0.15.0'),
 
     'cdn' => [
         'base' => 'https://cdn.jsdelivr.net/npm',
