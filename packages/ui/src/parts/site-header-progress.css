@@ -1,0 +1,29 @@
+/* File: packages/ui/src/parts/site-header-progress.css */
+/* Map: thin line at the bottom of the site header -> fills with the scroll position of the page (no JS) -> fallback */
+/* Reading progress in the site header: put <span class="oc-site-header__progress" aria-hidden="true"></span> inside
+   .oc-site-header (sticky, so it is the containing block). A thin gradient line at the bottom of the header fills from
+   left to right while you scroll the page: a scroll-driven animation, no JS. Browsers without scroll-driven animations
+   simply do not show it. Options: --oc-header-progress-height (3px) and --oc-header-progress-color (brand gradient). */
+
+.oc-site-header__progress {
+  display: none;
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: -1px;
+  block-size: var(--oc-header-progress-height, 3px);
+  background: var(--oc-header-progress-color, linear-gradient(90deg, var(--oc-brand-1), var(--oc-brand-2), var(--oc-brand-3)));
+  border-radius: 0 999px 999px 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+@supports (animation-timeline: scroll()) {
+  .oc-site-header__progress {
+    display: block;
+    animation: oc-header-progress linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes oc-header-progress {
+  to { transform: scaleX(1); }
+}
