@@ -4,21 +4,29 @@
    70px lower, smaller and tilted, and land in their place. Without fly.js (html.oc-fly-ready is missing) or with
    "reduce motion" everything simply stands in its place. Options: --oc-fly-step (offset per column), --oc-fly-stagger
    (delay per column) and data-oc-fly-repeat (fly out again when leaving the view). The lift on hover uses translate, so it never fights the
-   transform of the fly-in. Also: a "New" badge in a product card name and short syntax classes for a code window. */
+   transform of the fly-in. Also: a "New" badge in a product card name and short syntax classes for a code window.
+   Timing (on the grid or a card): --oc-fly-duration (movement, 0.9s), --oc-fly-fade (opacity, 0.6s), --oc-fly-ease,
+   --oc-fly-rise (start lower, 70px) and --oc-fly-blur (start blurred, 0px). Later trigger: data-oc-fly-trigger (fly.js). */
 
-.oc-fly-ready .oc-reveal--fly {
-  /* --oc-fly-delay: set per card by fly.js from --oc-fly-stagger (delay per column). */
+/* The fly timing only while hidden (flying out) and while landing (.is-flying, set by fly.js until the card stands
+   still). After that the card's own transition (hover lift, spotlight tilt) is back, so hover stays quick.
+   html.oc-fly-ready: stronger than a card's own transition rule (e.g. the spotlight card of Pro), which comes later. */
+html.oc-fly-ready .oc-reveal--fly:not(.is-visible),
+html.oc-fly-ready .oc-reveal--fly.is-flying {
+  /* --oc-fly-delay: set per card by fly.js from --oc-fly-stagger (delay per column) or data-oc-fly-random. */
   transition:
-    opacity 0.6s var(--oc-ease-out, ease) var(--oc-fly-delay, 0s),
-    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--oc-fly-delay, 0s),
+    opacity var(--oc-fly-fade, 0.6s) var(--oc-ease-out, ease) var(--oc-fly-delay, 0s),
+    transform var(--oc-fly-duration, 0.9s) var(--oc-fly-ease, cubic-bezier(0.16, 1, 0.3, 1)) var(--oc-fly-delay, 0s),
+    filter var(--oc-fly-fade, 0.6s) var(--oc-ease-out, ease) var(--oc-fly-delay, 0s),
     border-color 0.35s;
 }
-.oc-fly-ready .oc-reveal--fly:not(.is-visible) {
+html.oc-fly-ready .oc-reveal--fly:not(.is-visible) {
   opacity: 0;
-  transform: perspective(900px) translate3d(var(--oc-fly-x, 0), 70px, 0) scale(0.9) rotateX(14deg);
+  filter: blur(var(--oc-fly-blur, 0px));
+  transform: perspective(900px) translate3d(var(--oc-fly-x, 0), var(--oc-fly-rise, 70px), 0) scale(0.9) rotateX(14deg);
 }
 @media (prefers-reduced-motion: reduce) {
-  .oc-fly-ready .oc-reveal--fly:not(.is-visible) { opacity: 1; transform: none; }
+  html.oc-fly-ready .oc-reveal--fly:not(.is-visible) { opacity: 1; filter: none; transform: none; }
 }
 
 /* "New" after the name of a product card: <h3 class="oc-product-card__name">Product 1 <span class="oc-product-card__badge oc-pill">New</span></h3> */
