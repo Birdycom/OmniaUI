@@ -1,4 +1,4 @@
-// OmniaUI Pro v0.15.0 - commercial software, NOT open source and NOT under the MIT license.
+// OmniaUI Pro v0.15.1 - commercial software, NOT open source and NOT under the MIT license.
 // Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
 // Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/product-picker.js
