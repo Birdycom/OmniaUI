@@ -2,7 +2,7 @@
 // Which release brought a docs page, and which pages are new: shared by the sidebar (build-nav.mjs) and the
 // overview galleries (build-galleries.mjs), so both mark the same pages.
 // Map: introduced version (section header badge, else the badge of the first demo) -> versions named on the page
-//      -> newest version (new = brought by it, updated = an older page with a part brought by it)
+//      -> newest version named on any page (new = brought by it, updated = an older page with a part brought by it)
 
 /** "0.12.6" from the version badge in the Demo header, else from the first demo title (demo-1); "" when neither has one.
  *  A badge further down (a new variant of an older component) does not make the page new. */
@@ -30,3 +30,7 @@ export const byVersion = (a, b) => { const [x, y] = [parts(a), parts(b)]; return
 
 /** The newest version in the list ("" for none): pages brought by it are "new", so the badge moves on by itself. */
 export const newestVersion = (versions) => versions.filter(Boolean).sort(byVersion).at(-1) || "";
+
+/** The newest version any page names, also in a badge further down: a release that only adds demos to older pages
+ *  (0.15.0) still becomes the newest, so those pages show "updated" instead of the previous release staying "new". */
+export const newestOnPages = (sources) => newestVersion(sources.flatMap(versionsOn));

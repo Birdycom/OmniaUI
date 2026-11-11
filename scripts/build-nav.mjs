@@ -16,7 +16,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { OMNIACSS_URL } from "../apps/site/src/lib/site.mjs";
 import { COMPONENT_CATEGORIES, BLOCK_CATEGORIES, byCategoryOrder } from "./lib/categories.mjs";
-import { freshness, introducedIn, newestVersion } from "./lib/page-version.mjs";
+import { freshness, newestOnPages } from "./lib/page-version.mjs";
 
 const root = process.cwd();
 const contentDir = path.join(root, "apps/site/src/content/ui");
@@ -57,7 +57,7 @@ function readMeta(file) {
 const labelOf = (meta, id) => meta.nav || (meta.title || id).replace(/^Omnia(?:CSS|UI)(?: UI)? - /, "").replace(/ Blocks?$/, "");
 
 const pageFiles = (folder) => fs.readdirSync(path.join(contentDir, folder)).filter((f) => f.endsWith(".html"));
-const newest = newestVersion(SECTIONS.flatMap((s) => pageFiles(s.folder).map((f) => introducedIn(fs.readFileSync(path.join(contentDir, s.folder, f), "utf8")))));
+const newest = newestOnPages(SECTIONS.flatMap((s) => pageFiles(s.folder).map((f) => fs.readFileSync(path.join(contentDir, s.folder, f), "utf8"))));
 
 for (const s of SECTIONS) {
   const dir = path.join(contentDir, s.folder);
