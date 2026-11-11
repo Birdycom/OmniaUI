@@ -10,7 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { COMPONENT_CATEGORIES, BLOCK_CATEGORIES, byCategoryOrder } from "./lib/categories.mjs";
-import { freshness, introducedIn, newestVersion } from "./lib/page-version.mjs";
+import { freshness, introducedIn, newestOnPages } from "./lib/page-version.mjs";
 import { proLabel } from "../apps/site/src/lib/pro.mjs";
 
 const root = process.cwd();
@@ -198,9 +198,9 @@ const KINDS = {
   },
 };
 
-// "New" = brought by the newest release that any page names (components and blocks together), so the badge moves
-// on by itself: once v0.12.7 pages exist, the v0.12.6 ones lose it.
-const newest = newestVersion(Object.keys(KINDS).flatMap((kind) => readPages(kind).map((p) => p.since)));
+// "New" / "Updated" = the newest release that any page names, also in a demo badge (components and blocks together), so
+// the badge moves on by itself: once a v0.15.0 demo exists, the v0.14.1 pages lose it.
+const newest = newestOnPages(Object.keys(KINDS).flatMap((kind) => readPages(kind).map((p) => p.src)));
 
 const allCounts = {};
 for (const [kind, k] of Object.entries(KINDS)) {
