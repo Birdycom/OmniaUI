@@ -2939,6 +2939,14 @@ details.oc-sidebar-collapsible[open] > summary::after { transform: rotate(225deg
 
 /* Icon-only mode */
 .oc-sidebar--collapsed { inline-size: var(--oc-sidebar-width-icon); }
+/* Overlay (0.17.0): for a tablet. The layout keeps only the rail width (a negative margin), so opening the sidebar does
+   not push the page: it lies over the content, which darkens (a wide shadow of the sidebar itself). A click outside it
+   and Escape close it; the components do that. Collapsed it is the normal rail. */
+.oc-sidebar.oc-sidebar--overlay { position: relative; z-index: 60; }
+.oc-sidebar.oc-sidebar--overlay:not(.oc-sidebar--collapsed) {
+  margin-inline-end: calc(var(--oc-sidebar-width-icon) - var(--oc-sidebar-width));
+  box-shadow: 0 0 0 100vmax oklch(from var(--color-black-60) l c h / 0.32), 0 0 40px -12px oklch(from var(--color-black-60) l c h / 0.45);
+}
 .oc-sidebar--collapsed .oc-sidebar-menu-label,
 .oc-sidebar--collapsed .oc-sidebar-menu-badge,
 .oc-sidebar--collapsed .oc-sidebar-menu-sub,

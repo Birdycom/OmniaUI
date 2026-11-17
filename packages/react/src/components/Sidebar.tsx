@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 import type { AnchorHTMLAttributes, HTMLAttributes, LiHTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
 import { useControllable } from "../hooks";
@@ -18,17 +18,30 @@ export interface SidebarProps extends Omit<HTMLAttributes<HTMLElement>, "title">
   header?: ReactNode;
   /** Fixed bottom area (user). */
   footer?: ReactNode;
+  /** Open over the content instead of next to it (a tablet): the page darkens; a click outside or Escape collapses it. */
+  overlay?: boolean;
+  /** Called when the overlay asks to collapse (a click outside, Escape). */
+  onCollapsedChange?: (collapsed: boolean) => void;
 }
 
 /** `<aside class="oc-sidebar">`: children go in the scrolling `oc-sidebar-content`. */
 export const Sidebar = forwardRef<HTMLElement, SidebarProps>(function Sidebar(
-  { collapsed, right, floating, dark, header, footer, className, children, ...rest },
+  { collapsed, right, floating, dark, header, footer, overlay, onCollapsedChange, className, children, ...rest },
   ref,
 ) {
+  const open = overlay && !collapsed;
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onCollapsedChange?.(true); };
+    const onDown = (e: PointerEvent) => { if (!(e.target as Element | null)?.closest?.(".oc-sidebar--overlay")) onCollapsedChange?.(true); };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onDown);
+    return () => { document.removeEventListener("keydown", onKey); document.removeEventListener("pointerdown", onDown); };
+  }, [open, onCollapsedChange]);
   return (
     <aside
       ref={ref}
-      className={cx("oc-sidebar", collapsed && "oc-sidebar--collapsed", right && "oc-sidebar--right", floating && "oc-sidebar--floating", dark && "oc-sidebar--dark", className)}
+      className={cx("oc-sidebar", collapsed && "oc-sidebar--collapsed", right && "oc-sidebar--right", floating && "oc-sidebar--floating", dark && "oc-sidebar--dark", overlay && "oc-sidebar--overlay", className)}
       {...rest}
     >
       {header != null && <div className="oc-sidebar-header">{header}</div>}

@@ -84,3 +84,9 @@ test("countdown.js: format and state", async () => {
   assert.equal(countdownState(100, 1000, 120).state, "low");
   assert.equal(countdownState(0, 300).state, "done");
 });
+
+test("sidebar --overlay keeps only the rail width in the layout and darkens the page", async () => {
+  const css = await read("components.css");
+  assert.ok(css.includes("margin-inline-end: calc(var(--oc-sidebar-width-icon) - var(--oc-sidebar-width));"));
+  assert.ok(css.includes("box-shadow: 0 0 0 100vmax"));
+});

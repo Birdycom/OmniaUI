@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state -> hint -> header settings
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state -> hint -> header settings -> overlay sidebar
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -17,7 +17,7 @@ import { DataTable } from "../src/components/DataTable";
 import { Table, TableActions } from "../src/components/Table";
 import { TableActionIcon } from "../src/components/TableActions";
 import { ColorField, contrastRatio, pickOnColor } from "../src/components/ColorField";
-import { SidebarMenuButton } from "../src/components/Sidebar";
+import { Sidebar, SidebarMenuButton } from "../src/components/Sidebar";
 import { Alert } from "../src/components/Alert";
 import { Countdown } from "../src/components/Countdown";
 import { BlockStepView } from "../src/blocks/BlockStepView";
@@ -391,5 +391,20 @@ describe("0.17.0 header settings", () => {
     expect(g.getAttribute("role")).toBe("group");
     expect(g.querySelector(".oc-language-select--icon .oc-language-flag svg")!.getAttribute("data-webicon")).toBe("flag:nl-4x3");
     expect(g.querySelector("[aria-pressed=\"true\"]")!.getAttribute("data-tooltip")).toBe("Light theme");
+  });
+});
+
+describe("0.17.0 overlay sidebar", () => {
+  it("open overlay closes on Escape and on a click outside; collapsed it listens to nothing", () => {
+    const onCollapsedChange = vi.fn();
+    const { container, rerender } = render(<div><Sidebar overlay onCollapsedChange={onCollapsedChange}>x</Sidebar><main id="m">page</main></div>);
+    expect(container.querySelector("aside")!.className).toBe("oc-sidebar oc-sidebar--overlay");
+    fireEvent.keyDown(document, { key: "Escape" });
+    fireEvent.pointerDown(container.querySelector("#m")!);
+    fireEvent.pointerDown(container.querySelector("aside")!);
+    expect(onCollapsedChange).toHaveBeenCalledTimes(2);
+    rerender(<div><Sidebar overlay collapsed onCollapsedChange={onCollapsedChange}>x</Sidebar><main id="m">page</main></div>);
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onCollapsedChange).toHaveBeenCalledTimes(2);
   });
 });
