@@ -19,6 +19,7 @@ export * from "./components/Breadcrumb";
 export * from "./components/BrowserFrame";
 export * from "./components/BusyOverlay";
 export * from "./components/Button";
+export * from "./components/Calendar";
 export * from "./components/Callout";
 export * from "./components/Card";
 export * from "./components/ChartLine";

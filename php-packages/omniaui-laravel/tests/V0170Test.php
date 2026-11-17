@@ -108,6 +108,21 @@ class V0170Test extends TestCase
         $this->assertStringContainsString('data-oc-theme-toggle', $html);
     }
 
+    public function test_calendar(): void
+    {
+        $html = $this->render('<x-oc::calendar month="2026-10" value="2026-10-20" today="2026-10-14" min="2026-10-05" name="date" locale="en" />');
+        $this->assertStringContainsString('data-oc-calendar=""', $html);
+        $this->assertSame(42, substr_count($html, 'class="oc-calendar-day'));
+        $this->assertStringContainsString('data-date="2026-10-20" tabindex="0" aria-selected="true"', $html);
+        $this->assertStringContainsString('oc-calendar-day--today', $html);
+        $this->assertMatchesRegularExpression('/data-date="2026-10-01"[^>]*disabled/', $html);
+        $this->assertStringContainsString('October 2026', $html);
+        $this->assertStringContainsString('name="date" value="2026-10-20" data-oc-calendar-value', $html);
+        $range = $this->render('<x-oc::calendar mode="range" month="2026-10" start="2026-10-28" end="2026-10-30" today="2026-10-14" :nav="false" />');
+        $this->assertStringContainsString('data-oc-calendar="range"', $range);
+        $this->assertMatchesRegularExpression('/oc-calendar-day--range-middle" data-date="2026-10-29"/', $range);
+    }
+
     public function test_save_status(): void
     {
         $html = $this->render('<x-oc::save-status state="saved" saved-at="2026-11-17 12:04:00" />');

@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state -> hint -> header settings -> overlay sidebar
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state -> hint -> header settings -> overlay sidebar -> calendar
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -18,6 +18,7 @@ import { Table, TableActions } from "../src/components/Table";
 import { TableActionIcon } from "../src/components/TableActions";
 import { ColorField, contrastRatio, pickOnColor } from "../src/components/ColorField";
 import { Sidebar, SidebarMenuButton } from "../src/components/Sidebar";
+import { Calendar } from "../src/components/Calendar";
 import { Alert } from "../src/components/Alert";
 import { Countdown } from "../src/components/Countdown";
 import { BlockStepView } from "../src/blocks/BlockStepView";
@@ -406,5 +407,33 @@ describe("0.17.0 overlay sidebar", () => {
     rerender(<div><Sidebar overlay collapsed onCollapsedChange={onCollapsedChange}>x</Sidebar><main id="m">page</main></div>);
     fireEvent.keyDown(document, { key: "Escape" });
     expect(onCollapsedChange).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("0.17.0 calendar", () => {
+  it("shows the month of the value, picks a day, disables outside min/max", () => {
+    const onChange = vi.fn();
+    const { container } = render(<Calendar defaultValue="2026-10-20" today="2026-10-14" min="2026-10-05" onChange={onChange} locale="en" />);
+    expect(container.querySelector(".oc-calendar-title")!.textContent).toBe("October 2026");
+    expect(container.querySelectorAll(".oc-calendar-day")).toHaveLength(42);
+    expect(container.querySelector("[aria-selected=\"true\"]")!.getAttribute("data-date")).toBe("2026-10-20");
+    expect(container.querySelector(".oc-calendar-day--today")!.getAttribute("data-date")).toBe("2026-10-14");
+    expect((container.querySelector("[data-date=\"2026-10-01\"]") as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(container.querySelector("[data-date=\"2026-10-22\"]")!);
+    expect(onChange).toHaveBeenCalledWith("2026-10-22");
+    expect(container.querySelector("[aria-selected=\"true\"]")!.getAttribute("data-date")).toBe("2026-10-22");
+  });
+  it("range mode, next month, and the arrow keys cross into the next month", () => {
+    const onRangeChange = vi.fn();
+    const { container } = render(<Calendar mode="range" defaultMonth="2026-10" today="2026-10-14" onRangeChange={onRangeChange} locale="en" />);
+    fireEvent.click(container.querySelector("[data-date=\"2026-10-28\"]")!);
+    fireEvent.click(container.querySelector("[data-date=\"2026-10-30\"]")!);
+    expect(onRangeChange).toHaveBeenLastCalledWith({ start: "2026-10-28", end: "2026-10-30" });
+    expect(container.querySelector(".oc-calendar-day--range-middle")!.getAttribute("data-date")).toBe("2026-10-29");
+    const d31 = container.querySelector("[data-date=\"2026-10-31\"]:not(.oc-calendar-day--outside)") as HTMLButtonElement;
+    fireEvent.keyDown(d31, { key: "ArrowDown" });
+    expect(container.querySelector(".oc-calendar-title")!.textContent).toBe("November 2026");
+    fireEvent.click(container.querySelectorAll(".oc-calendar-nav")[0]);
+    expect(container.querySelector(".oc-calendar-title")!.textContent).toBe("October 2026");
   });
 });

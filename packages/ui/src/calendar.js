@@ -35,6 +35,26 @@ export function dayState(iso, start, end) {
 
 const RANGE = ["oc-calendar-day--range-start", "oc-calendar-day--range-middle", "oc-calendar-day--range-end"];
 
+/** The weeks of a month for a calendar grid: 6 rows of 7 ISO dates, Monday first (weekStart 1) or Sunday (0), with
+ *  `outside` for the days of the months before and after. month: "2026-10". */
+export function monthGrid(month, weekStart = 1) {
+  const [y, m] = month.split("-").map(Number);
+  const first = new Date(y, m - 1, 1, 12);
+  const lead = (first.getDay() - weekStart + 7) % 7;
+  const start = toIso(new Date(y, m - 1, 1 - lead, 12));
+  return Array.from({ length: 6 }, (_, w) => Array.from({ length: 7 }, (_, d) => {
+    const iso = shiftDate(start, w * 7 + d);
+    return { iso, day: Number(iso.slice(8)), outside: iso.slice(0, 7) !== month };
+  }));
+}
+
+/** "2026-10" plus or minus some months. */
+export function shiftMonth(month, by) {
+  const [y, m] = month.split("-").map(Number);
+  const d = new Date(y, m - 1 + by, 1, 12);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
 /** Starts one calendar root. Returns a function that stops it. */
 export function bindCalendar(root) {
   if (root.dataset.ocBound != null) return () => {};

@@ -9,3 +9,7 @@ export function dayState(iso: string, start?: string, end?: string): { selected:
 export function bindCalendar(root: HTMLElement): () => void;
 /** Starts every [data-oc-calendar] in scope. */
 export function initCalendar(scope?: ParentNode): Array<() => void>;
+/** 6 weeks of 7 days for a month grid ("2026-10"), Monday first (1) or Sunday first (0); outside = another month. */
+export function monthGrid(month: string, weekStart?: 0 | 1): Array<Array<{ iso: string; day: number; outside: boolean }>>;
+/** "2026-10" plus or minus some months. */
+export function shiftMonth(month: string, by: number): string;

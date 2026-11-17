@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown -> answer tiles -> save status
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown -> answer tiles -> save status -> calendar
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -18,6 +18,7 @@ import OcColorField from '../src/components/OcColorField.vue'
 import OcCountdown from '../src/components/OcCountdown.vue'
 import OcBlockStepView from '../src/blocks/OcBlockStepView.vue'
 import OcSaveStatus from '../src/components/OcSaveStatus.vue'
+import OcCalendar from '../src/components/OcCalendar.vue'
 import { contrastRatio, languageFlag, pickOnColor } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -174,5 +175,17 @@ describe('0.17.0 save status', () => {
     expect(w.attributes('aria-live')).toBe('polite')
     expect(w.find('.oc-status-dot').classes()).toContain('oc-status-dot--waiting')
     expect(w.text()).toBe('Unsaved changes')
+  })
+})
+
+describe('0.17.0 calendar', () => {
+  it('picks a day and a range', async () => {
+    const w = mount(OcCalendar, { props: { modelValue: '2026-10-20', today: '2026-10-14', locale: 'en' } })
+    expect(w.find('.oc-calendar-title').text()).toBe('October 2026')
+    await w.find('[data-date="2026-10-22"]').trigger('click')
+    expect(w.emitted('update:modelValue')![0]).toEqual(['2026-10-22'])
+    const r = mount(OcCalendar, { props: { mode: 'range', month: '2026-10', today: '2026-10-14', locale: 'en', range: { start: '2026-10-28' } } })
+    await r.find('[data-date="2026-10-30"]').trigger('click')
+    expect(r.emitted('update:range')![0]).toEqual([{ start: '2026-10-28', end: '2026-10-30' }])
   })
 })

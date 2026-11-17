@@ -27,6 +27,7 @@ import OcBusyOverlay from './components/OcBusyOverlay.vue'
 import OcButton from './components/OcButton.vue'
 import OcButtonGroup from './components/OcButtonGroup.vue'
 import OcButtonGroupText from './components/OcButtonGroupText.vue'
+import OcCalendar from './components/OcCalendar.vue'
 import OcCallout from './components/OcCallout.vue'
 import OcCard from './components/OcCard.vue'
 import OcCardBand from './components/OcCardBand.vue'
@@ -259,6 +260,7 @@ export {
   OcButton,
   OcButtonGroup,
   OcButtonGroupText,
+  OcCalendar,
   OcCallout,
   OcCard,
   OcCardBand,
@@ -562,6 +564,7 @@ export const components: Record<string, Component> = {
   OcButton,
   OcButtonGroup,
   OcButtonGroupText,
+  OcCalendar,
   OcCallout,
   OcCard,
   OcCardBand,
