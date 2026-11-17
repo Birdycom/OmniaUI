@@ -15,6 +15,12 @@ export interface StepViewQuestion {
   onSend?: () => void;
   hint?: ReactNode;
   name?: string;
+  /** After checking (0.17.0): the picked and the right answer; the answers turn green / red and lock. */
+  result?: { picked: number; correct: number };
+  /** Shown in place of the send button once there is a result (an Alert with an icon, points). */
+  feedback?: ReactNode;
+  /** Hidden words on the marked answers, for a screen reader. */
+  resultLabels?: { correct?: string; wrong?: string };
 }
 
 export interface BlockStepViewProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
@@ -49,6 +55,12 @@ export const BlockStepView = forwardRef<HTMLElement, BlockStepViewProps>(functio
   const auto = useId().replace(/[^\w-]/g, "");
   const titleId = `oc-stepview-${auto}`;
   const askId = `${titleId}-ask`;
+  /** "correct" on the right answer, "wrong" on a wrong pick, once there is a result. */
+  const mark = (i: number): "correct" | "wrong" | undefined => {
+    const r = question?.result;
+    if (!r) return undefined;
+    return i === r.correct ? "correct" : i === r.picked ? "wrong" : undefined;
+  };
   return (
     <article ref={ref} className={cx("oc-block-step-view", className)} aria-labelledby={titleId} {...rest}>
       {(back != null || distance != null) && <div className="oc-block-step-view-top">{back ?? <span />}{distance}</div>}
@@ -64,20 +76,21 @@ export const BlockStepView = forwardRef<HTMLElement, BlockStepViewProps>(functio
       {task != null && <p className="oc-block-step-view-task">{icon("mdi:target")} {task}</p>}
       {blocks != null && <div className="oc-block-step-view-blocks">{blocks}</div>}
       {question && (
-        <div className="oc-block-step-view-question">
+        <div className="oc-block-step-view-question" data-answered={question.result ? "" : undefined}>
           {question.kicker != null && <span className="oc-block-step-view-kicker">{question.kicker}</span>}
           <p className="oc-block-step-view-ask" id={askId}>{question.text}</p>
           <fieldset className="oc-block-step-view-answers" aria-labelledby={askId}>
             {question.options.map((o, i) => (
-              <label key={i} className="oc-radio-item oc-radio-item--card">
-                <input className="oc-radio" type="radio" name={question.name ?? `${titleId}-answer`} value={i}
-                  {...(question.value !== undefined ? { checked: question.value === i } : {})}
+              <label key={i} className="oc-radio-item oc-radio-item--card" data-result={mark(i)}>
+                <input className="oc-radio" type="radio" name={question.name ?? `${titleId}-answer`} value={i} disabled={question.result != null}
+                  {...(question.value !== undefined ? { checked: question.value === i } : question.result ? { checked: question.result.picked === i } : {})}
                   onChange={() => question.onValueChange?.(i)} />
                 <span>{o}</span>
+                {mark(i) && <span className="oc-visually-hidden"> {mark(i) === "correct" ? question.resultLabels?.correct ?? "Correct" : question.resultLabels?.wrong ?? "Wrong"}</span>}
               </label>
             ))}
           </fieldset>
-          <button className="oc-btn oc-btn--lg oc-block-step-view-send" type="button" onClick={question.onSend}>{question.sendLabel ?? "Send answer"}</button>
+          {question.result ? question.feedback : <button className="oc-btn oc-btn--lg oc-block-step-view-send" type="button" onClick={question.onSend}>{question.sendLabel ?? "Send answer"}</button>}
           {question.hint != null && <p className="oc-block-step-view-hint">{question.hint}</p>}
         </div>
       )}

@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown -> answer tiles
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -16,6 +16,7 @@ import OcBlockContentBlocks from '../src/blocks/OcBlockContentBlocks.vue'
 import OcDataTable from '../src/components/OcDataTable.vue'
 import OcColorField from '../src/components/OcColorField.vue'
 import OcCountdown from '../src/components/OcCountdown.vue'
+import OcBlockStepView from '../src/blocks/OcBlockStepView.vue'
 import { contrastRatio, languageFlag, pickOnColor } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -154,5 +155,14 @@ describe('0.17.0 countdown', () => {
     expect(w.find('.oc-countdown-time').text()).toBe('0:00')
     expect(w.emitted('end')).toHaveLength(1)
     vi.useRealTimers()
+  })
+})
+
+describe('0.17.0 answer tiles', () => {
+  it('result marks the answers and shows the feedback slot', () => {
+    const w = mount(OcBlockStepView, { props: { title: 'Old gate', question: { text: 'Year?', options: ['1890', '1910', '1930'], result: { picked: 2, correct: 1 } } }, slots: { feedback: '<p class="fb">Not quite</p>' } })
+    expect(w.findAll('.oc-radio-item--card').map((c) => c.attributes('data-result'))).toEqual([undefined, 'correct', 'wrong'])
+    expect(w.find('.fb').exists()).toBe(true)
+    expect(w.find('.oc-block-step-view-send').exists()).toBe(false)
   })
 })

@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -20,6 +20,7 @@ import { ColorField, contrastRatio, pickOnColor } from "../src/components/ColorF
 import { SidebarMenuButton } from "../src/components/Sidebar";
 import { Alert } from "../src/components/Alert";
 import { Countdown } from "../src/components/Countdown";
+import { BlockStepView } from "../src/blocks/BlockStepView";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -316,5 +317,18 @@ describe("0.17.0 countdown", () => {
     await act(async () => { vi.advanceTimersByTime(2000); });
     expect(onEnd).toHaveBeenCalledTimes(1);
     vi.useRealTimers();
+  });
+});
+
+describe("0.17.0 answer tiles", () => {
+  it("result marks the right and the wrong answer, locks the radios and shows the feedback", () => {
+    const { container } = render(<BlockStepView title="Old gate" question={{ text: "Year?", options: ["1890", "1910", "1930"], result: { picked: 2, correct: 1 }, feedback: <p className="fb">Not quite</p> }} />);
+    const cards = [...container.querySelectorAll(".oc-radio-item--card")];
+    expect(cards.map((c) => c.getAttribute("data-result"))).toEqual([null, "correct", "wrong"]);
+    expect(cards.every((c) => (c.querySelector("input") as HTMLInputElement).disabled)).toBe(true);
+    expect((cards[2].querySelector("input") as HTMLInputElement).checked).toBe(true);
+    expect(cards[1].textContent).toContain("Correct");
+    expect(container.querySelector(".fb")!.textContent).toBe("Not quite");
+    expect(container.querySelector(".oc-block-step-view-send")).toBeNull();
   });
 });

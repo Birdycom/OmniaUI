@@ -942,6 +942,33 @@ input.oc-input[type="month"] { inline-size: auto; min-inline-size: 11rem; }
 .oc-radio-item--card { padding: 0.75rem 1rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius); }
 .oc-radio-item--card:has(:checked) { border-color: var(--oc-primary); background: color-mix(in oklab, var(--oc-primary) 8%, transparent); }
 .oc-radio-item--card:has(:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+/* Answered (0.17.0): data-result="correct" | "wrong" on a card once the answer is checked: a green or red edge and a
+   mark at the end; the cards nobody chose fade. Put the word in the card too for a screen reader
+   (<span class="oc-visually-hidden">Correct</span>); the mark is only a picture. */
+.oc-radio-item--card[data-result] { position: relative; padding-inline-end: 2.75rem; }
+.oc-radio-item--card[data-result="correct"] { --oc-answer-tone: var(--oc-success); }
+.oc-radio-item--card[data-result="wrong"] { --oc-answer-tone: var(--oc-destructive); }
+.oc-radio-item--card[data-result],
+.oc-radio-item--card[data-result]:has(:checked) {
+  border-color: var(--oc-answer-tone);
+  background: color-mix(in oklab, var(--oc-answer-tone) 10%, transparent);
+}
+.oc-radio-item--card[data-result]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0.85rem;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  translate: 0 -50%;
+  background: var(--oc-answer-tone);
+}
+.oc-radio-item--card[data-result="correct"]::after { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10s10-4.5 10-10S17.5 2 12 2m-2 15l-5-5l1.41-1.41L10 14.17l7.59-7.59L19 8z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10s10-4.5 10-10S17.5 2 12 2m-2 15l-5-5l1.41-1.41L10 14.17l7.59-7.59L19 8z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.oc-radio-item--card[data-result="wrong"]::after { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m5 13.59L15.59 17L12 13.41L8.41 17L7 15.59L10.59 12L7 8.41L8.41 7L12 10.59L15.59 7L17 8.41L13.41 12z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m5 13.59L15.59 17L12 13.41L8.41 17L7 15.59L10.59 12L7 8.41L8.41 7L12 10.59L15.59 7L17 8.41L13.41 12z'/%3E%3C/svg%3E") center / contain no-repeat; }
+:is(fieldset, .oc-radio-group):has(> .oc-radio-item--card[data-result]) > .oc-radio-item--card:not([data-result]) { opacity: 0.55; }
+/* The radios lock once there is a result; the marked cards stay fully readable. */
+.oc-radio-item--card[data-result]:has(:disabled) { opacity: 1; cursor: default; }
+.oc-radio-item--card[data-result] input.oc-radio:disabled { opacity: 1; }
 
 .oc-scroll-area {
   max-block-size: 14rem;

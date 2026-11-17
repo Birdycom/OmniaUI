@@ -206,6 +206,61 @@ const answer = ref&lt;number&gt;()
   &lt;/div&gt;
 &lt;/article&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="demo-answered">After the answer: right and wrong <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Once the answer is checked, <code>data-result="correct"</code> or <code>"wrong"</code> on an answer card gives it a green or red edge and a mark; the other cards fade and the radios lock. The result itself is an <a href="../components/alert.html">alert with an icon</a> in place of the send button. A hidden word ("Correct", "Wrong") in the marked cards tells a screen reader the same. React and Vue: <code>question.result = { picked, correct }</code>, and <code>feedback</code> (React prop, Vue slot).</p>
+          <oc-demo title="Step view - after the answer">
+<div style="inline-size:min(100%,28rem)">
+  <div class="oc-block-step-view-question" data-answered>
+    <span class="oc-block-step-view-kicker">Question · 20 points</span>
+    <p class="oc-block-step-view-ask" id="oc-stepview-done-ask">In which year was the town hall built?</p>
+    <fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-done-ask">
+      <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-stepview-done" value="a" disabled><span>1890</span></label>
+      <label class="oc-radio-item oc-radio-item--card" data-result="correct"><input class="oc-radio" type="radio" name="oc-stepview-done" value="b" disabled><span>1910</span><span class="oc-visually-hidden"> Correct</span></label>
+      <label class="oc-radio-item oc-radio-item--card" data-result="wrong"><input class="oc-radio" type="radio" name="oc-stepview-done" value="c" disabled checked><span>1930</span><span class="oc-visually-hidden"> Wrong</span></label>
+      <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-stepview-done" value="d" disabled><span>1950</span></label>
+    </fieldset>
+    <div class="oc-alert oc-alert--danger" role="status">
+      <span class="oc-alert-icon" aria-hidden="true"><iconify-icon icon="mdi:close-circle-outline"></iconify-icon></span>
+      <div class="oc-alert-body">
+        <h4 class="oc-alert-title">Not quite: it was 1910</h4>
+        <p class="oc-alert-description">0 points for this step. Walk on to the clock.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;div style="inline-size:min(100%,28rem)"&gt;
+  &lt;div class="oc-block-step-view-question" data-answered&gt;
+    &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
+    &lt;p class="oc-block-step-view-ask" id="oc-stepview-done-ask"&gt;In which year was the town hall built?&lt;/p&gt;
+    &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-done-ask"&gt;
+      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="a" disabled&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
+      &lt;label class="oc-radio-item oc-radio-item--card" data-result="correct"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="b" disabled&gt;&lt;span&gt;1910&lt;/span&gt;&lt;span class="oc-visually-hidden"&gt; Correct&lt;/span&gt;&lt;/label&gt;
+      &lt;label class="oc-radio-item oc-radio-item--card" data-result="wrong"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="c" disabled checked&gt;&lt;span&gt;1930&lt;/span&gt;&lt;span class="oc-visually-hidden"&gt; Wrong&lt;/span&gt;&lt;/label&gt;
+      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="d" disabled&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
+    &lt;/fieldset&gt;
+    &lt;div class="oc-alert oc-alert--danger" role="status"&gt;
+      &lt;span class="oc-alert-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:close-circle-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+      &lt;div class="oc-alert-body"&gt;
+        &lt;h4 class="oc-alert-title"&gt;Not quite: it was 1910&lt;/h4&gt;
+        &lt;p class="oc-alert-description"&gt;0 points for this step. Walk on to the clock.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;BlockStepView
+  title="Old gate"
+  question={{
+    text: "In which year was the town hall built?",
+    options: ["1890", "1910", "1930", "1950"],
+    result: { picked: 2, correct: 1 },
+    feedback: &lt;Alert variant="danger" icon="mdi:close-circle-outline" title="Not quite: it was 1910"&gt;0 points for this step.&lt;/Alert&gt;,
+  }}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcBlockStepView title="Old gate" :question="{ text: 'In which year …', options: ['1890', '1910', '1930', '1950'], result: { picked: 2, correct: 1 } }"&gt;
+  &lt;template #feedback&gt;&lt;OcAlert variant="danger" icon="mdi:close-circle-outline" title="Not quite: it was 1910"&gt;0 points for this step.&lt;/OcAlert&gt;&lt;/template&gt;
+&lt;/OcBlockStepView&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
