@@ -1,7 +1,7 @@
 <?php
 
 // File: tests/V0170Test.php
-// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display
+// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG
 // Components and options of 0.17.0: Blade renders the same classes as the HTML snippets.
 
 declare(strict_types=1);
@@ -52,5 +52,15 @@ class V0170Test extends TestCase
         $this->assertElement($html, 'input', 'oc-copy-field-value', ['value' => 'K7QM 2XPA']);
         $this->assertElement($html, 'button', 'oc-copy-field-button', ['data-copy' => 'K7QM2XPA']);
         $this->assertElement($html, 'p', 'oc-copy-field-caption', [], 'Type it in the app');
+    }
+
+    public function test_icon_props_render_inline_svg(): void
+    {
+        $html = $this->render('<x-oc::breadcrumb :items="[[\'label\' => \'Home\', \'href\' => \'/\', \'icon\' => \'mdi:check\'], [\'label\' => \'Page\']]" />');
+        $this->assertStringContainsString('data-webicon="mdi:check"', $html);
+        $this->assertStringNotContainsString('class=""', $html);
+        // an icon that is not on disk still works with the Iconify runtime
+        $unknown = $this->render('<x-oc::feature-card icon="mdi:no-such-icon-xyz" title="T">x</x-oc::feature-card>');
+        $this->assertStringContainsString('<iconify-icon icon="mdi:no-such-icon-xyz"', $unknown);
     }
 }

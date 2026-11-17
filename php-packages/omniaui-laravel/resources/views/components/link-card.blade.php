@@ -2,7 +2,7 @@
 @props(['title' => '', 'href' => '#', 'icon' => null, 'accent' => null, 'more' => null])
 <a {{ $attributes->class(['oc-link-card', 'oc-accent--'.$accent => $accent])->merge(['href' => $href]) }}>
     @if ($icon)
-        <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><iconify-icon icon="{{ $icon }}"></iconify-icon></span>
+        <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><x-oc::webicon :name="$icon" bare fallback="iconify" /></span>
     @endif
     <span class="oc-link-card__title">{{ $title }}</span>
     @if (trim((string) $slot) !== '')

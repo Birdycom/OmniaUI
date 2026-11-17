@@ -2,7 +2,7 @@
 @props(['title' => '', 'icon' => null, 'accent' => null, 'center' => false])
 <div {{ $attributes->class(['oc-result', 'oc-result--center' => $center])->merge(['role' => 'status', 'tabindex' => '-1']) }}>
     @if ($icon)
-        <span @class(['oc-icon-tile oc-icon-tile--sm', 'oc-accent--'.$accent => $accent]) aria-hidden="true"><iconify-icon icon="{{ $icon }}"></iconify-icon></span>
+        <span @class(['oc-icon-tile oc-icon-tile--sm', 'oc-accent--'.$accent => $accent]) aria-hidden="true"><x-oc::webicon :name="$icon" bare fallback="iconify" /></span>
     @endif
     <h2 class="oc-result__title">{{ $title }}</h2>
     @if (trim((string) $slot) !== '')

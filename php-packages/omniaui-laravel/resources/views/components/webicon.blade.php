@@ -9,7 +9,7 @@
 @php($icon = \Omniacss\Laravel\Webicons::get((string) $name))
 @if ($icon)
 @php($svg = \Omniacss\Laravel\Webicons::svg($icon, $label))
-<svg {{ $attributes->class(['oc-icon' => ! $bare, 'oc-icon--'.$size => $size && ! $bare])->merge(array_filter([
+<svg {{ $attributes->class(['oc-icon' => ! $bare, 'oc-icon--'.$size => $size && ! $bare])->filter(fn ($value) => $value !== '')->merge(array_filter([
     'xmlns' => 'http://www.w3.org/2000/svg',
     'viewBox' => $svg['viewBox'],
     'width' => $svg['ratio'].'em',

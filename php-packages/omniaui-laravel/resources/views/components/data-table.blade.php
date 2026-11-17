@@ -41,7 +41,7 @@
     @if ($tabs)
         <div class="oc-tab-list oc-data-table-tabs" role="tablist" aria-label="{{ $tabs['label'] ?? 'Filter' }}">
             @foreach ($tabs['items'] as $i => $tab)
-                <button class="oc-tab-trigger" role="tab" type="button" data-oc-col-filter="{{ $tabs['column'] }}" data-oc-value="{{ $tab['value'] }}" aria-selected="{{ $i === 0 ? 'true' : 'false' }}">@if (!empty($tab['icon']))<iconify-icon icon="{{ $tab['icon'] }}" aria-hidden="true"></iconify-icon>@endif{{ $tab['label'] }}@isset($tab['count'])<span @class(['oc-data-table-tab-count', 'oc-data-table-tab-count--'.($tab['tone'] ?? '') => !empty($tab['tone'])])>{{ $tab['count'] }}</span>@endisset</button>
+                <button class="oc-tab-trigger" role="tab" type="button" data-oc-col-filter="{{ $tabs['column'] }}" data-oc-value="{{ $tab['value'] }}" aria-selected="{{ $i === 0 ? 'true' : 'false' }}">@if (!empty($tab['icon']))<x-oc::webicon :name="$tab['icon']" bare fallback="iconify" />@endif{{ $tab['label'] }}@isset($tab['count'])<span @class(['oc-data-table-tab-count', 'oc-data-table-tab-count--'.($tab['tone'] ?? '') => !empty($tab['tone'])])>{{ $tab['count'] }}</span>@endisset</button>
             @endforeach
         </div>
     @endif
@@ -86,7 +86,7 @@
         <div class="oc-data-table-filters" id="{{ $tableId }}-filters">
             @foreach ($columnFilters as $filter)
                 <label class="oc-data-table-filter">
-                    @if (!empty($filter['icon']))<iconify-icon icon="{{ $filter['icon'] }}" aria-hidden="true"></iconify-icon>@else<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 19.88c.04.3-.06.62-.29.83a.996.996 0 0 1-1.41 0L9.29 16.7a.99.99 0 0 1-.29-.83v-5.12L4.21 4.62a1 1 0 0 1 .17-1.4c.19-.14.4-.22.62-.22h14c.22 0 .43.08.62.22a1 1 0 0 1 .17 1.4L15 10.75zM7.04 5L11 10.06v5.52l2 2v-7.53L16.96 5z"/></svg>@endif
+                    @if (!empty($filter['icon']))<x-oc::webicon :name="$filter['icon']" bare fallback="iconify" />@else<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 19.88c.04.3-.06.62-.29.83a.996.996 0 0 1-1.41 0L9.29 16.7a.99.99 0 0 1-.29-.83v-5.12L4.21 4.62a1 1 0 0 1 .17-1.4c.19-.14.4-.22.62-.22h14c.22 0 .43.08.62.22a1 1 0 0 1 .17 1.4L15 10.75zM7.04 5L11 10.06v5.52l2 2v-7.53L16.96 5z"/></svg>@endif
                     <select class="oc-select" data-oc-col-filter="{{ $filter['column'] }}" aria-label="{{ $filter['label'] }}">
                         @foreach ($filter['options'] as $value => $text)
                             <option value="{{ $value }}" @selected((string) $value === '')>{{ $text }}</option>

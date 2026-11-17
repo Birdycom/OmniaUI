@@ -118,7 +118,7 @@
                 @foreach ($cards as $card)
                     <article class="oc-block-contact-card">
                         @if (! empty($card['icon']))
-                            <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><iconify-icon icon="{{ $card['icon'] }}"></iconify-icon></span>
+                            <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><x-oc::webicon :name="$card['icon']" bare fallback="iconify" /></span>
                         @endif
                         <h3 class="oc-block-contact-title">{{ $card['title'] }}</h3>
                         @foreach ($card['lines'] ?? [] as [$text, $href])

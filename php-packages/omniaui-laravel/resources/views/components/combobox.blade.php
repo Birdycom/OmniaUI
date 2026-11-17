@@ -11,7 +11,7 @@
 @php($fieldIcon = $chosen['icon'] ?? $icon)
 <div {{ $attributes->class(['oc-combobox']) }} data-oc-combobox>
 @if ($withIcons)
-    <span class="oc-combobox-icon" aria-hidden="true">@if ($fieldIcon)<iconify-icon icon="{{ $fieldIcon }}" aria-hidden="true"></iconify-icon>@endif</span>
+    <span class="oc-combobox-icon" aria-hidden="true">@if ($fieldIcon)<x-oc::webicon :name="$fieldIcon" bare fallback="iconify" />@endif</span>
 @endif
     <input class="oc-input oc-combobox-input" type="text" role="combobox" autocomplete="off" aria-expanded="false" aria-controls="{{ $id }}" aria-autocomplete="list" aria-label="{{ $label }}" @if ($placeholder) placeholder="{{ $placeholder }}" @endif value="{{ $chosen['label'] ?? '' }}">
 @if ($name)
@@ -19,7 +19,7 @@
 @endif
     <ul class="oc-combobox-list" id="{{ $id }}" role="listbox" aria-label="{{ $label }}">
 @foreach ($items as $optionValue => $option)
-        <li class="oc-combobox-option" role="option" tabindex="-1" data-value="{{ $optionValue }}" aria-selected="{{ (string) $optionValue === (string) $value ? 'true' : 'false' }}" @if (! empty($option['disabled'])) aria-disabled="true" @endif>@if (! empty($option['icon']))<span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="{{ $option['icon'] }}" aria-hidden="true"></iconify-icon></span>@endif{{ $option['label'] }}</li>
+        <li class="oc-combobox-option" role="option" tabindex="-1" data-value="{{ $optionValue }}" aria-selected="{{ (string) $optionValue === (string) $value ? 'true' : 'false' }}" @if (! empty($option['disabled'])) aria-disabled="true" @endif>@if (! empty($option['icon']))<span class="oc-combobox-option-icon" aria-hidden="true"><x-oc::webicon :name="$option['icon']" bare fallback="iconify" /></span>@endif{{ $option['label'] }}</li>
 @endforeach
         <li class="oc-combobox-empty" role="presentation" hidden>{{ $empty }}</li>
     </ul>

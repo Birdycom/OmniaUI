@@ -7,6 +7,6 @@
 @endphp
 <fieldset {{ $attributes->class(['oc-theme-switch', 'oc-theme-switch--icons' => $iconOnly])->merge(['aria-label' => $label]) }}>
     @foreach (['system' => 'System', 'light' => 'Light', 'dark' => 'Dark'] as $option => $text)
-        <label @if ($iconOnly) title="{{ $text }}" @endif><input type="radio" name="{{ $name }}" value="{{ $option }}" @checked($value === $option)>@if ($icons)<iconify-icon icon="{{ $iconNames[$option] }}" aria-hidden="true"></iconify-icon>@endif @if ($iconOnly)<span class="oc-theme-switch__text">{{ $text }}</span>@else{{ $text }}@endif</label>
+        <label @if ($iconOnly) title="{{ $text }}" @endif><input type="radio" name="{{ $name }}" value="{{ $option }}" @checked($value === $option)>@if ($icons)<x-oc::webicon :name="$iconNames[$option]" bare fallback="iconify" />@endif @if ($iconOnly)<span class="oc-theme-switch__text">{{ $text }}</span>@else{{ $text }}@endif</label>
     @endforeach
 </fieldset>

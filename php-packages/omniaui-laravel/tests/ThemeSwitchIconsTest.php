@@ -12,7 +12,8 @@ class ThemeSwitchIconsTest extends TestCase
         $html = $this->render('<x-oc::theme-switch :icons="true" />');
 
         $this->assertStringContainsString('class="oc-theme-switch oc-theme-switch--icons"', $html);
-        $this->assertStringContainsString('<iconify-icon icon="mdi:weather-night" aria-hidden="true"></iconify-icon>', $html);
+        // 0.17.0: inline SVG (built-in webicon) instead of <iconify-icon>
+        $this->assertStringContainsString('data-webicon="mdi:weather-night" aria-hidden="true"', $html);
         $this->assertStringContainsString('<span class="oc-theme-switch__text">Light</span>', $html);
         $this->assertStringContainsString('title="System"', $html);
     }
@@ -25,7 +26,7 @@ class ThemeSwitchIconsTest extends TestCase
         $this->assertStringNotContainsString('oc-theme-switch__text', $text);
 
         $plain = $this->render('<x-oc::theme-switch />');
-        $this->assertStringNotContainsString('iconify-icon', $plain);
+        $this->assertStringNotContainsString('data-webicon', $plain);
         $this->assertStringContainsString('Dark</label>', $plain);
     }
 }
