@@ -27,7 +27,7 @@
           @if (isset($lead) && trim((string) $lead) !== '')
               {{ $lead }}
           @else
-          Everything you need to know before you start. Can't find your answer? Just ask.
+          The questions we get most before a project starts.
           @endif
       </p>
     </div>
@@ -36,8 +36,8 @@
             {{ $slot }}
         @else
       <details class="oc-accordion-item" name="oc-faq" open>
-        <summary class="oc-accordion-trigger">Can I try it for free?</summary>
-        <div class="oc-accordion-content">Yes. Every plan starts with a 30-day trial. No credit card needed.</div>
+        <summary class="oc-accordion-trigger">How long does a project take?</summary>
+        <div class="oc-accordion-content">A website takes four to six weeks, a business app three to six months. You get a planning with dates before we start.</div>
       </details>
       <details class="oc-accordion-item" name="oc-faq">
         <summary class="oc-accordion-trigger">Can I switch plans later?</summary>

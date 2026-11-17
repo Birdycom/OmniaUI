@@ -8,7 +8,7 @@
     @else
   <div class="oc-container">
     <p class="oc-eyebrow">How we work</p>
-    <h2 class="oc-display oc-display--md">From idea to <span class="oc-text-gradient">support</span>, one point of contact.</h2>
+    <h2 class="oc-display oc-display--md">From idea to support, one point of contact.</h2>
     <ol class="oc-steps">
       <li><h3>Listen</h3><p>We start with your workflow, not with technology.</p></li>
       <li><h3>Design</h3><p>Screens and data model, approved before we build.</p></li>

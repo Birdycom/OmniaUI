@@ -1,5 +1,5 @@
 {{-- OmniaCSS dropdown menu (popover). Props: label (trigger text), variant (trigger button variant), id,
-     items (list of ['label', 'href'] | ['group' => ...] | ['separator' => true]). Slots: default = extra items, trigger (replaces the button). --}}
+     items (list of ['label', 'href', 'icon' => 'mdi:pencil'] | ['group' => ...] | ['separator' => true]). Slots: default = extra items, trigger (replaces the button). --}}
 @props(['label' => 'Options', 'variant' => 'outline', 'id' => null, 'items' => []])
 @php($id = $id ?: 'oc-menu-'.substr(md5(uniqid('', true)), 0, 6))
 @if (isset($trigger) && trim((string) $trigger) !== '')
@@ -14,7 +14,7 @@
         @elseif (! empty($item['separator']))
             <div class="oc-dropdown-separator"></div>
         @else
-            <a class="oc-dropdown-item" href="{{ $item['href'] ?? '#' }}">{{ $item['label'] ?? '' }}</a>
+            <a class="oc-dropdown-item" href="{{ $item['href'] ?? '#' }}">@if (! empty($item['icon']))<span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="{{ $item['icon'] }}" aria-hidden="true"></iconify-icon></span>@endif{{ $item['label'] ?? '' }}</a>
         @endif
     @endforeach
     {{ $slot }}

@@ -1,0 +1,125 @@
+/* File: packages/ui/src/parts/app-mode-badge.css
+   Map: mode tokens -> mode badge (test, live, both as two parts; sizes) -> card accent (border + band in the tone)
+        -> code plate (a white plate around a QR code or barcode, caption on the plate) -> print -> forced colors
+   Test and live apart at a glance: a mode badge in fixed colors (the same in light and dark mode, also on a photo or a
+   print), a card with a colored band for a set that belongs to one mode, and a caption on the white plate of a code.
+   Mode colors: --oc-mode-test (amber) and --oc-mode-live (green), with dark text (--oc-mode-ink). Flat colors only. */
+
+:root {
+  --oc-mode-test: var(--color-orange-20);
+  --oc-mode-live: var(--color-green-10);
+  --oc-mode-ink: var(--color-duskblue-90);
+}
+
+/* Mode badge: <span class="oc-mode-badge" data-mode="test">Test</span>. Both: two parts side by side,
+   <span class="oc-mode-badge" data-mode="both"><span>Test</span><span>Live</span></span>. */
+.oc-mode-badge {
+  --oc-mode: var(--oc-mode-test);
+  display: inline-flex;
+  flex: none;
+  align-items: stretch;
+  overflow: hidden;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--oc-mode);
+  color: var(--oc-mode-ink);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.oc-mode-badge[data-mode="live"] { --oc-mode: var(--oc-mode-live); }
+.oc-mode-badge[data-mode="both"] { padding: 0; background: none; }
+.oc-mode-badge[data-mode="both"] > * { padding: 0.2rem 0.6rem; background: var(--oc-mode-test); }
+.oc-mode-badge[data-mode="both"] > * + * { background: var(--oc-mode-live); }
+.oc-mode-badge--sm { font-size: 0.625rem; }
+.oc-mode-badge--sm:not([data-mode="both"]),
+.oc-mode-badge--sm[data-mode="both"] > * { padding: 0.1rem 0.45rem; }
+.oc-mode-badge--lg { font-size: 1rem; letter-spacing: 0.12em; }
+.oc-mode-badge--lg:not([data-mode="both"]),
+.oc-mode-badge--lg[data-mode="both"] > * { padding: 0.35rem 0.9rem; }
+
+/* Card accent: the card belongs to one tone or mode. A 2px border in that color and, optionally, a band at the top
+   (.oc-card-band) on a soft background with a label, a title and a status. data-tone: primary, info, success,
+   warning, destructive, test, live. data-active="false" marks a set that is not in use now (dashed, calm band). */
+.oc-card.oc-card--accent {
+  --oc-card-tone: var(--oc-primary);
+  overflow: clip;
+  border: 2px solid var(--oc-card-tone);
+  box-shadow: none;
+}
+.oc-card.oc-card--accent[data-tone] { box-shadow: none; } /* no start bar of the plain tone card, also not right-to-left */
+.oc-card--accent[data-tone="info"] { --oc-card-tone: var(--oc-info, var(--oc-primary)); }
+.oc-card--accent[data-tone="success"] { --oc-card-tone: var(--oc-success); }
+.oc-card--accent[data-tone="warning"] { --oc-card-tone: var(--oc-warning); }
+.oc-card--accent[data-tone="destructive"] { --oc-card-tone: var(--oc-destructive); }
+.oc-card--accent[data-tone="test"] { --oc-card-tone: var(--oc-mode-test); }
+.oc-card--accent[data-tone="live"] { --oc-card-tone: var(--oc-mode-live); }
+.oc-card-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  background: color-mix(in oklab, var(--oc-card-tone, var(--oc-primary)) 14%, var(--oc-card));
+  border-block-end: 1px solid color-mix(in oklab, var(--oc-card-tone, var(--oc-primary)) 50%, transparent);
+}
+.oc-card-band:last-child { border-block-end: 0; }
+.oc-card-band__title { flex: 1 1 12rem; min-inline-size: 0; margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--oc-foreground); }
+.oc-card-band__title small { display: block; font-size: 0.8125rem; font-weight: 400; color: var(--oc-muted-foreground); }
+.oc-card--accent[data-active="false"] { border-style: dashed; }
+.oc-card--accent[data-active="false"] .oc-card-band { background: var(--oc-surface); }
+
+/* Code plate: a QR code or barcode on its own white plate, always light (scans in any theme and on paper), with an
+   optional caption ON the plate, so the label is on a photo or a print too. data-mode / data-tone colors the caption. */
+.oc-code-plate {
+  color-scheme: light;
+  display: inline-grid;
+  justify-items: stretch;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0.375rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  background: var(--color-white-50);
+  color: var(--color-duskblue-90);
+  vertical-align: top;
+}
+.oc-code-plate > :is(img, svg, canvas, .oc-barcode) { display: block; inline-size: 100%; block-size: auto; max-inline-size: 100%; }
+.oc-code-plate__caption {
+  display: block;
+  padding: 0.15rem 0.4rem;
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: var(--color-frostblue-10);
+  color: var(--color-duskblue-90);
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.oc-code-plate[data-mode="test"] .oc-code-plate__caption { background: var(--oc-mode-test); }
+.oc-code-plate[data-mode="live"] .oc-code-plate__caption { background: var(--oc-mode-live); }
+.oc-code-plate[data-mode="both"] .oc-code-plate__caption { display: flex; padding: 0; overflow: hidden; }
+.oc-code-plate[data-mode="both"] .oc-code-plate__caption > * { flex: 1 1 0; padding: 0.15rem 0.4rem; background: var(--oc-mode-test); }
+.oc-code-plate[data-mode="both"] .oc-code-plate__caption > * + * { background: var(--oc-mode-live); }
+.oc-code-plate--sm { padding: 0.2rem; }
+.oc-code-plate--sm .oc-code-plate__caption { font-size: 0.5625rem; letter-spacing: 0.06em; padding-block: 0.05rem; }
+
+@media print {
+  .oc-mode-badge,
+  .oc-mode-badge > *,
+  .oc-card--accent,
+  .oc-card-band,
+  .oc-code-plate__caption,
+  .oc-code-plate__caption > * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+@media (forced-colors: active) {
+  .oc-mode-badge,
+  .oc-mode-badge[data-mode="both"] > * { border: 1px solid CanvasText; }
+}

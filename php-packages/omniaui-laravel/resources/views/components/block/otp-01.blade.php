@@ -32,7 +32,7 @@
       <div class="oc-field">
         <label class="oc-field-label" for="oc-otp01-code">Verification code</label>
         <input class="oc-otp" id="oc-otp01-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" style="--oc-otp-length: 6">
-        <p class="oc-field-description">Enter the 6-digit code we sent to name@company.com.</p>
+        <p class="oc-field-description">Enter the 6-digit code we sent to name@company1.example.</p>
       </div>
       <button class="oc-btn oc-block-authcard-submit" type="submit">Verify</button>
     </div>

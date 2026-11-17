@@ -29,14 +29,17 @@ import OcButtonGroup from './components/OcButtonGroup.vue'
 import OcButtonGroupText from './components/OcButtonGroupText.vue'
 import OcCallout from './components/OcCallout.vue'
 import OcCard from './components/OcCard.vue'
+import OcCardBand from './components/OcCardBand.vue'
 import OcChartLine from './components/OcChartLine.vue'
 import OcChatComposer from './components/OcChatComposer.vue'
 import OcCheckbox from './components/OcCheckbox.vue'
 import OcChecklist from './components/OcChecklist.vue'
 import OcChipFilter from './components/OcChipFilter.vue'
+import OcCodePlate from './components/OcCodePlate.vue'
 import OcCollapsible from './components/OcCollapsible.vue'
 import OcColorField from './components/OcColorField.vue'
 import OcColorSelect from './components/OcColorSelect.vue'
+import OcCombobox from './components/OcCombobox.vue'
 import OcCommand from './components/OcCommand.vue'
 import OcConfirmDialog from './components/OcConfirmDialog.vue'
 import OcCookieConsent from './components/OcCookieConsent.vue'
@@ -80,6 +83,7 @@ import OcItemSeparator from './components/OcItemSeparator.vue'
 import OcKbd from './components/OcKbd.vue'
 import OcKbdGroup from './components/OcKbdGroup.vue'
 import OcLabel from './components/OcLabel.vue'
+import OcLanguageMenu from './components/OcLanguageMenu.vue'
 import OcLanguageSelect from './components/OcLanguageSelect.vue'
 import OcLauncherCard from './components/OcLauncherCard.vue'
 import OcLazyImage from './components/OcLazyImage.vue'
@@ -89,6 +93,7 @@ import OcLinkCard from './components/OcLinkCard.vue'
 import OcLinkRow from './components/OcLinkRow.vue'
 import OcListToolbar from './components/OcListToolbar.vue'
 import OcLiveFrame from './components/OcLiveFrame.vue'
+import OcLogo from './components/OcLogo.vue'
 import OcMarquee from './components/OcMarquee.vue'
 import OcMediaCard from './components/OcMediaCard.vue'
 import OcMediaRow from './components/OcMediaRow.vue'
@@ -99,6 +104,7 @@ import OcMessageList from './components/OcMessageList.vue'
 import OcMessageThread from './components/OcMessageThread.vue'
 import OcMeterRow from './components/OcMeterRow.vue'
 import OcModal from './components/OcModal.vue'
+import OcModeBadge from './components/OcModeBadge.vue'
 import OcNameCard from './components/OcNameCard.vue'
 import OcNavmenu from './components/OcNavmenu.vue'
 import OcNavmenuList from './components/OcNavmenuList.vue'
@@ -139,6 +145,7 @@ import OcSidebarCollapsible from './components/OcSidebarCollapsible.vue'
 import OcSidebarGroup from './components/OcSidebarGroup.vue'
 import OcSidebarMenu from './components/OcSidebarMenu.vue'
 import OcSidebarMenuButton from './components/OcSidebarMenuButton.vue'
+import OcSidebarMeta from './components/OcSidebarMeta.vue'
 import OcSidebarSeparator from './components/OcSidebarSeparator.vue'
 import OcSkeleton from './components/OcSkeleton.vue'
 import OcSlider from './components/OcSlider.vue'
@@ -188,6 +195,7 @@ import OcBlockAuth from './blocks/OcBlockAuth.vue'
 import OcBlockAuthSplit from './blocks/OcBlockAuthSplit.vue'
 import OcBlockContactForm from './blocks/OcBlockContactForm.vue'
 import OcBlockContactGrid from './blocks/OcBlockContactGrid.vue'
+import OcBlockContentBlocks from './blocks/OcBlockContentBlocks.vue'
 import OcBlockCta from './blocks/OcBlockCta.vue'
 import OcBlockDataTable from './blocks/OcBlockDataTable.vue'
 import OcBlockFaq from './blocks/OcBlockFaq.vue'
@@ -205,14 +213,18 @@ import OcBlockPricing from './blocks/OcBlockPricing.vue'
 import OcBlockProcess from './blocks/OcBlockProcess.vue'
 import OcBlockProductGrid from './blocks/OcBlockProductGrid.vue'
 import OcBlockProfileHeader from './blocks/OcBlockProfileHeader.vue'
+import OcBlockRouteProgress from './blocks/OcBlockRouteProgress.vue'
+import OcBlockRouteSteps from './blocks/OcBlockRouteSteps.vue'
 import OcBlockShowcase from './blocks/OcBlockShowcase.vue'
 import OcBlockSiteFooter from './blocks/OcBlockSiteFooter.vue'
 import OcBlockSiteHeader from './blocks/OcBlockSiteHeader.vue'
 import OcBlockSpotlight from './blocks/OcBlockSpotlight.vue'
 import OcBlockStats from './blocks/OcBlockStats.vue'
 import OcBlockStatsCounter from './blocks/OcBlockStatsCounter.vue'
+import OcBlockStepView from './blocks/OcBlockStepView.vue'
 import OcBlockTeamList from './blocks/OcBlockTeamList.vue'
 import OcBlockTwoFactor from './blocks/OcBlockTwoFactor.vue'
+import OcBlockTypePicker from './blocks/OcBlockTypePicker.vue'
 import OcBlockWizardDialog from './blocks/OcBlockWizardDialog.vue'
 
 export {
@@ -244,14 +256,17 @@ export {
   OcButtonGroupText,
   OcCallout,
   OcCard,
+  OcCardBand,
   OcChartLine,
   OcChatComposer,
   OcCheckbox,
   OcChecklist,
   OcChipFilter,
+  OcCodePlate,
   OcCollapsible,
   OcColorField,
   OcColorSelect,
+  OcCombobox,
   OcCommand,
   OcConfirmDialog,
   OcCookieConsent,
@@ -295,6 +310,7 @@ export {
   OcKbd,
   OcKbdGroup,
   OcLabel,
+  OcLanguageMenu,
   OcLanguageSelect,
   OcLauncherCard,
   OcLazyImage,
@@ -304,6 +320,7 @@ export {
   OcLinkRow,
   OcListToolbar,
   OcLiveFrame,
+  OcLogo,
   OcMarquee,
   OcMediaCard,
   OcMediaRow,
@@ -314,6 +331,7 @@ export {
   OcMessageThread,
   OcMeterRow,
   OcModal,
+  OcModeBadge,
   OcNameCard,
   OcNavmenu,
   OcNavmenuList,
@@ -354,6 +372,7 @@ export {
   OcSidebarGroup,
   OcSidebarMenu,
   OcSidebarMenuButton,
+  OcSidebarMeta,
   OcSidebarSeparator,
   OcSkeleton,
   OcSlider,
@@ -403,6 +422,7 @@ export {
   OcBlockAuthSplit,
   OcBlockContactForm,
   OcBlockContactGrid,
+  OcBlockContentBlocks,
   OcBlockCta,
   OcBlockDataTable,
   OcBlockFaq,
@@ -420,14 +440,18 @@ export {
   OcBlockProcess,
   OcBlockProductGrid,
   OcBlockProfileHeader,
+  OcBlockRouteProgress,
+  OcBlockRouteSteps,
   OcBlockShowcase,
   OcBlockSiteFooter,
   OcBlockSiteHeader,
   OcBlockSpotlight,
   OcBlockStats,
   OcBlockStatsCounter,
+  OcBlockStepView,
   OcBlockTeamList,
   OcBlockTwoFactor,
+  OcBlockTypePicker,
   OcBlockWizardDialog,
 }
 
@@ -438,6 +462,7 @@ export type { ChartLineSeries } from './components/OcChartLine.vue'
 export type { ChecklistItem } from './components/OcChecklist.vue'
 export type { ChipFilterItem } from './components/OcChipFilter.vue'
 export type { ColorSelectItem } from './components/OcColorSelect.vue'
+export type { ComboboxItem } from './components/OcCombobox.vue'
 export type { CommandItem } from './components/OcCommand.vue'
 export type { CookieCategory, ConsentChoice } from './components/OcCookieConsent.vue'
 export type { DataTableColumn, DataTableRow, DataTableTabs, DataTableColumnFilter } from './components/OcDataTable.vue'
@@ -447,6 +472,7 @@ export type { FactListRow } from './components/OcFactList.vue'
 export type { FilterCountsItem } from './components/OcFilterCounts.vue'
 export type { GalleryImage } from './components/OcGallery.vue'
 export type { GlassBarItem } from './components/OcGlassBar.vue'
+export type { LanguageMenuItem } from './components/OcLanguageMenu.vue'
 export type { LanguageSelectItem } from './components/OcLanguageSelect.vue'
 export type { MessageAttachment, MessageAction, MessageData } from './components/OcMessage.vue'
 export type { MessageListItem } from './components/OcMessageList.vue'
@@ -468,6 +494,7 @@ export type { TimelineEntry } from './components/OcTimeline.vue'
 export type { OcTreeItem } from './components/OcTree.vue'
 export type { ContactFormLine, ContactFormCard, ContactFormSubject } from './blocks/OcBlockContactForm.vue'
 export type { ContactGridLine, ContactGridCard } from './blocks/OcBlockContactGrid.vue'
+export type { ContentBlockItem } from './blocks/OcBlockContentBlocks.vue'
 export type { FaqItem } from './blocks/OcBlockFaq.vue'
 export type { FeatureItem } from './blocks/OcBlockFeatures.vue'
 export type { FooterColumn } from './blocks/OcBlockFooter.vue'
@@ -477,13 +504,17 @@ export type { PricingPlan } from './blocks/OcBlockPricing.vue'
 export type { ProcessStep } from './blocks/OcBlockProcess.vue'
 export type { ProductItem } from './blocks/OcBlockProductGrid.vue'
 export type { ProfileHeaderTab } from './blocks/OcBlockProfileHeader.vue'
+export type { RouteProgressState, RouteProgressStep, RouteProgressNext } from './blocks/OcBlockRouteProgress.vue'
+export type { RouteStep, RouteStepsKind } from './blocks/OcBlockRouteSteps.vue'
 export type { ShowcaseProject } from './blocks/OcBlockShowcase.vue'
 export type { SiteFooterColumn, SiteFooterContact } from './blocks/OcBlockSiteFooter.vue'
 export type { SiteHeaderLink } from './blocks/OcBlockSiteHeader.vue'
 export type { SpotlightModule } from './blocks/OcBlockSpotlight.vue'
 export type { StatItem } from './blocks/OcBlockStats.vue'
 export type { CounterStat } from './blocks/OcBlockStatsCounter.vue'
+export type { StepViewQuestion } from './blocks/OcBlockStepView.vue'
 export type { TeamAction, TeamMember } from './blocks/OcBlockTeamList.vue'
+export type { TypePickerOption, TypePickerCategory } from './blocks/OcBlockTypePicker.vue'
 
 export { useToast } from './composables/useToast'
 export type { ToastItem, ToastOptions, ToastVariant } from './composables/useToast'
@@ -519,14 +550,17 @@ export const components: Record<string, Component> = {
   OcButtonGroupText,
   OcCallout,
   OcCard,
+  OcCardBand,
   OcChartLine,
   OcChatComposer,
   OcCheckbox,
   OcChecklist,
   OcChipFilter,
+  OcCodePlate,
   OcCollapsible,
   OcColorField,
   OcColorSelect,
+  OcCombobox,
   OcCommand,
   OcConfirmDialog,
   OcCookieConsent,
@@ -570,6 +604,7 @@ export const components: Record<string, Component> = {
   OcKbd,
   OcKbdGroup,
   OcLabel,
+  OcLanguageMenu,
   OcLanguageSelect,
   OcLauncherCard,
   OcLazyImage,
@@ -579,6 +614,7 @@ export const components: Record<string, Component> = {
   OcLinkRow,
   OcListToolbar,
   OcLiveFrame,
+  OcLogo,
   OcMarquee,
   OcMediaCard,
   OcMediaRow,
@@ -589,6 +625,7 @@ export const components: Record<string, Component> = {
   OcMessageThread,
   OcMeterRow,
   OcModal,
+  OcModeBadge,
   OcNameCard,
   OcNavmenu,
   OcNavmenuList,
@@ -629,6 +666,7 @@ export const components: Record<string, Component> = {
   OcSidebarGroup,
   OcSidebarMenu,
   OcSidebarMenuButton,
+  OcSidebarMeta,
   OcSidebarSeparator,
   OcSkeleton,
   OcSlider,
@@ -678,6 +716,7 @@ export const components: Record<string, Component> = {
   OcBlockAuthSplit,
   OcBlockContactForm,
   OcBlockContactGrid,
+  OcBlockContentBlocks,
   OcBlockCta,
   OcBlockDataTable,
   OcBlockFaq,
@@ -695,14 +734,18 @@ export const components: Record<string, Component> = {
   OcBlockProcess,
   OcBlockProductGrid,
   OcBlockProfileHeader,
+  OcBlockRouteProgress,
+  OcBlockRouteSteps,
   OcBlockShowcase,
   OcBlockSiteFooter,
   OcBlockSiteHeader,
   OcBlockSpotlight,
   OcBlockStats,
   OcBlockStatsCounter,
+  OcBlockStepView,
   OcBlockTeamList,
   OcBlockTwoFactor,
+  OcBlockTypePicker,
   OcBlockWizardDialog,
 }
 

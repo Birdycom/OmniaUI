@@ -3,6 +3,8 @@
  * Side panel on a native <dialog>. v-model:open. Slots: header (replaces title + description),
  * default (body), footer (scoped: { close }). Classes: dialog.oc-sheet(--left/--top/--bottom),
  * .oc-sheet-content(--wide), -header, -title, -description, -body, -footer, -close.
+ * glass: see-through panel and a light scrim without blur; inset: a strip of the page stays free beside the panel;
+ * footer-panel: the footer is a block of content on its own background.
  */
 import { ref } from 'vue'
 import { useDialog } from '../composables/useDialog'
@@ -15,6 +17,9 @@ withDefaults(
     title?: string
     description?: string
     closeLabel?: string
+    glass?: boolean
+    inset?: boolean
+    footerPanel?: boolean
   }>(),
   { side: 'right', closeLabel: 'Close' },
 )
@@ -29,7 +34,7 @@ defineExpose({ close })
 <template>
   <dialog
     ref="el"
-    :class="['oc-sheet', side !== 'right' && `oc-sheet--${side}`]"
+    :class="['oc-sheet', side !== 'right' && `oc-sheet--${side}`, glass && 'oc-sheet--glass', inset && 'oc-sheet--inset']"
     closedby="any"
     :aria-labelledby="title ? titleId : undefined"
     @close="onClose"
@@ -43,7 +48,7 @@ defineExpose({ close })
         </slot>
       </div>
       <div v-if="$slots.default" class="oc-sheet-body"><slot /></div>
-      <div v-if="$slots.footer" class="oc-sheet-footer"><slot name="footer" :close="close" /></div>
+      <div v-if="$slots.footer" :class="['oc-sheet-footer', footerPanel && 'oc-sheet-footer--panel']"><slot name="footer" :close="close" /></div>
     </div>
   </dialog>
 </template>

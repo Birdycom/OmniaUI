@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en" class="scrollbar-omnia" data-section="blocks" data-sister-site="https://omniacss.test">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Ordered steps of a route or course in an editor: numbers that follow the order, drag handle, status and menu.">
+  <meta name="generator" content="OmniaUI 0.15.1">
+  <title>OmniaUI - Route steps Block</title>
+  <!-- Favicon: SVG for modern browsers, ICO/PNG as fallback (Safari, Google, /favicon.ico). "icon": "pro" in the
+       page meta shows the OmniaUI Pro star instead of the OmniaUI puzzle piece. -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  
+  <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/omnia-site.css?v=a1622f6a3a"><link rel="stylesheet" href="/css/oc-components.css?v=ce8dd1affc"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=667f0292e8"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=2cc5f1b7f0"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=2df0c61c2f"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
+  <script>
+    // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
+    try { const u = new URL(location.href), q = u.searchParams.get("oc-theme"); if (q) { localStorage.setItem("oc-theme", q); u.searchParams.delete("oc-theme"); history.replaceState(history.state, "", u); } const t = q || localStorage.getItem("oc-theme"); if (t && t !== "system") document.documentElement.dataset.theme = t; } catch {}
+    const carryTheme = (e) => { const a = e.target.closest && e.target.closest("a[href]"); const sister = document.documentElement.dataset.sisterSite; if (!a || !sister || a.origin !== new URL(sister).origin) return; try { const t = localStorage.getItem("oc-theme"); if (!t) return; const u = new URL(a.href); u.searchParams.set("oc-theme", t); a.href = u.href; } catch {} };
+    addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
+    addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
+    // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
+    // a click in a demo still themes only that demo (.oc-theme-scope).
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
+    addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
+  </script>
+  <script src="/js/oc-docs-v2.js?v=504c13ff81" defer></script>
+  
+</head>
+<body>
+  <header class="oc-topbar oc-topbar--fixed">
+    <input type="checkbox" id="ocd-nav-toggle" class="ocd-nav-toggle" aria-label="Show the menu">
+    <label class="ocd-nav-button" for="ocd-nav-toggle" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></label>
+    <a class="oc-topbar-brand" href="/">OmniaUI<span class="oc-badge-version ml-1">v0.15.1</span></a>
+    <nav class="oc-topbar-nav" aria-label="Main">
+      <ul class="oc-navmenu oc-navmenu--site">
+        <li><a class="oc-navmenu-link" href="https://omniacss.test/">OmniaCSS</a></li><li><a class="oc-navmenu-link" href="https://omniacss.test/docs/">Docs</a></li><li><a class="oc-navmenu-link" href="/ui/components">Components</a></li><li><a class="oc-navmenu-link" href="/ui/blocks" aria-current="page">Blocks</a></li><li><a class="oc-navmenu-link" href="/ui/starter-kits">Starter kits</a></li><li><a class="oc-navmenu-link" href="/ui/webicons">Webicons</a></li>
+        <li><a class="oc-navmenu-link" href="https://github.com/Birdycom/OmniaUI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="oc-navmenu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"></path></svg></a></li>
+      </ul>
+    </nav>
+    <div class="ocd-topbar-actions">
+      <a class="oc-btn oc-btn--sm" href="/ui/pro#pricing">Pro</a>
+      <button type="button" class="ocd-search-trigger" data-ocd-search aria-label="Search components and blocks (Ctrl K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span>Search OmniaUI…</span><kbd>Ctrl K</kbd></button>
+      <fieldset class="oc-theme-switch ocm-theme" aria-label="Color theme">
+        <label><input type="radio" name="oc-theme" value="system" checked> System</label>
+        <label><input type="radio" name="oc-theme" value="light"> Light</label>
+        <label><input type="radio" name="oc-theme" value="dark"> Dark</label>
+      </fieldset>
+    </div>
+  </header>
+
+  <dialog class="ocd-search-dialog" id="ocd-search" aria-label="Search">
+    <div class="ocd-search-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input type="search" placeholder="Search components, blocks and classes" aria-label="Search" role="combobox" aria-controls="ocd-search-results" aria-expanded="true" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div>
+    <ul class="ocd-search-results" id="ocd-search-results" role="listbox" aria-label="Results"></ul>
+    <p class="ocd-search-empty" hidden>No results. Try a component such as <code>dialog</code>, a block such as <code>pricing</code> or a class such as <code>oc-btn</code>.</p>
+    <p class="ocd-search-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> to move</span><span><kbd>Enter</kbd> to open</span><span><kbd>Esc</kbd> to close</span></p>
+  </dialog>
+
+  <div class="ocd-shell">
+      <aside class="ocd-sidebar-left"><nav class="oc-sidebar oc-sidebar--docs" aria-label="OmniaUI Blocks"><h2 class="oc-sidebar-title">OmniaUI Blocks</h2><p class="oc-sidebar-group-label">Overview</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks">All blocks</a></li><li><a class="oc-sidebar-menu-button" href="/ui/pro">OmniaUI Pro</a></li><li><a class="oc-sidebar-menu-button" href="/ui/security">Security notices</a></li></ul><p class="oc-sidebar-group-label">App UX</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/app-header">App header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/app-shell">App shell</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/barcode-maker">Barcode maker<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/calendars">Calendars<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/charts">Charts gallery<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/chat-inbox">Chat inbox<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/cms-dashboard">CMS dashboard<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/content-blocks">Content blocks<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/dashboard-01">Dashboard 01<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/dashboard-stats">Dashboard stats<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/data-table">Data table</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/form-builder">Form builder<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/form-page">Form page</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hub-launcher">Hub launcher<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/media-manager">Media manager<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/module-header">Module header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/onboarding-checklist">Onboarding checklist<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-detail">Product detail<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-editor">Product editor<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-picker">Product picker<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-list">Products list<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/quote-lines">Quote lines<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/relations-list">Relations list<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/route-progress">Route progress<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/route-steps" aria-current="page" data-ocd-active="true">Route steps<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/settings-page">Settings page<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-cart">Shop cart<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-catalog">Shop catalog<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-checkout">Shop checkout<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-product">Shop product<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/sidebars">Sidebars<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/status-page">Status page<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/step-view">Step view<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/type-picker">Type picker<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/wizard-dialog">Wizard dialog</a></li></ul><p class="oc-sidebar-group-label">Authentication</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/auth-split">Auth split</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/auth">Authentication</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/password-reset">Forgot and reset password</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/login">Login<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/otp">OTP verification<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/signup">Signup<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/two-factor">Two-factor setup</a></li></ul><p class="oc-sidebar-group-label">Marketing</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/about-timeline">About timeline</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/cta">Call to Action</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/contact-form">Contact form</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/contact-grid">Contact grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/device-mockups">Device mockups<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/ecosystem-map">Ecosystem map<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/event-scene">Event scene<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/faq">FAQ</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/features">Features</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/footer">Footer</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/glass-nav">Glass navigation<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero">Hero</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero-orbit">Hero orbit</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero-code">Hero with code window</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/portfolio-grid">Portfolio grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/pricing">Pricing</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/pricing-plans">Pricing plans<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/process">Process &amp; marquee</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-grid">Product grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/profile-header">Profile header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/services-tabs">Services tabs<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/showcase">Showcase (portfolio)</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/site-footer">Site footer</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/site-header">Site header<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/spotlight">Spotlight</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/spotlight-cards">Spotlight cards<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/stats">Stats</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/team-list">Team list</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/watch-layout">Watch layout<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li></ul><p class="oc-sidebar-group-label">Media</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/infinite-carousel">Infinite carousel<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/masonry-gallery">Masonry gallery<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li></ul></nav></aside>
+      <script>(() => { const nav = document.currentScript.previousElementSibling; const key = "oc-nav-scroll"; try { const y = sessionStorage.getItem(key); if (y !== null) nav.scrollTop = +y; } catch {} const act = [...nav.querySelectorAll('[data-ocd-active="true"]')].pop(); if (act) { const a = act.getBoundingClientRect(), n = nav.getBoundingClientRect(); if (a.top < n.top || a.bottom > n.bottom) nav.scrollTop += a.top - n.top - n.height / 3; } addEventListener("pagehide", () => { try { sessionStorage.setItem(key, nav.scrollTop); } catch {} }); })();</script><main class="ocd-content"><!-- File: apps/site/src/content/ui/blocks/route-steps.html | Map: hero -> demos -> reference -> frameworks -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Route steps</h1>
+        <p class="oc-hero-text">The ordered list of the steps of a route, a tour or a course in an editor: stops, stations, lessons or tasks. The order numbers are a CSS counter, so they follow the order after every move by themselves. Steps that do not count (intro, photo task, finish) show an icon instead of a number. Install with <code>npx omniaui add route-steps</code>. <a href="../blocks">All blocks</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 id="demo-2" class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">blocks/route-steps.html</span><span class="oc-section-header__badge-support oc-badge-support oc-badge-support--baseline oc-tooltip oc-tooltip--multiline" data-tooltip="Works in Chrome, Firefox and Safari, on desktop and mobile">Baseline</span>
+          <p class="oc-section-header__desc">Selecting and the menus work without script (buttons and popovers); filtering and moving use the optional script.</p>
+        </div>
+        <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Route steps <span class="oc-badge-version">v0.16.0</span></h3>
+          <p class="oc-section-content__desc">Click a step to select it. Drag a step by the dots, or open its menu (three dots) and pick Move up or Move down: the numbers follow the new order. Duplicate and Delete work from the same menu. Type <em>gate</em> in the search field or click a kind: the numbers of the steps that stay visible do not change. This demo uses the script at the end of the code.</p>
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Route steps</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-4"><span>Blade</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-1-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-1-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-1-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope oc-demo__preview--tall">
+<section class="oc-block-route-steps" aria-labelledby="oc-rsteps-title">
+  <div class="oc-block-route-steps-head">
+    <h2 class="oc-block-route-steps-title" id="oc-rsteps-title">Steps of Route 1</h2>
+    <span class="oc-block-route-steps-count">7 steps · 4 count</span>
+  </div>
+  <div class="oc-block-route-steps-tools">
+    <div class="oc-input-group oc-input-group--affix">
+      <span class="oc-input-addon" aria-hidden="true"><svg data-icon="mdi:magnify" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5l-1.5 1.5l-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5" /></svg></span>
+      <input class="oc-input oc-block-route-steps-search" type="search" placeholder="Search steps" aria-label="Search steps">
+    </div>
+    <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-route-steps-kinds" aria-label="Kind">
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-rsteps-kind" value="all" checked> All</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-rsteps-kind" value="step"> Steps</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-rsteps-kind" value="photo"> Photo tasks</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-rsteps-kind" value="intro finish"> Start and finish</label>
+    </fieldset>
+  </div>
+  <ol class="oc-block-route-steps-list" aria-label="Steps in route order">
+    <li class="oc-block-route-steps-item" data-id="s1" data-kind="intro">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move Welcome" aria-pressed="false"></button>
+      <button class="oc-block-route-steps-main" type="button">
+        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-indigo-60)"><svg data-icon="mdi:play-circle-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m-2 14.5l6-4.5l-6-4.5z" /></svg></span>
+        <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Welcome</span><span class="oc-block-route-steps-meta"><span>Intro</span><span>does not count</span></span></span>
+      </button>
+      <span class="oc-badge oc-badge--secondary oc-block-route-steps-status">Ready</span>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-1" aria-label="Actions for Welcome"><svg data-icon="mdi:dots-vertical" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /></svg></button>
+      <div class="oc-dropdown-menu" id="oc-rsteps-menu-1" popover="">
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-up" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M13 20h-2V8l-5.5 5.5l-1.42-1.42L12 4.16l7.92 7.92l-1.42 1.42L13 8z" /></svg></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M11 4h2v12l5.5-5.5l1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5L11 16z" /></svg></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:content-copy" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z" /></svg></span>Duplicate</button>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:trash-can-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /></svg></span>Delete</button>
+      </div>
+    </li>
+    <li class="oc-block-route-steps-item" data-id="s2" data-kind="step">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move Old gate" aria-pressed="false"></button>
+      <button class="oc-block-route-steps-main" type="button" aria-current="true">
+        <span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"></span>
+        <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Old gate</span><span class="oc-block-route-steps-meta"><span>Question</span><span>20 points</span></span></span>
+      </button>
+      <span class="oc-badge oc-badge--success oc-block-route-steps-status">Ready</span>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-2" aria-label="Actions for Old gate"><svg data-icon="mdi:dots-vertical" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /></svg></button>
+      <div class="oc-dropdown-menu" id="oc-rsteps-menu-2" popover="">
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-up" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M13 20h-2V8l-5.5 5.5l-1.42-1.42L12 4.16l7.92 7.92l-1.42 1.42L13 8z" /></svg></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M11 4h2v12l5.5-5.5l1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5L11 16z" /></svg></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:content-copy" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z" /></svg></span>Duplicate</button>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:trash-can-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /></svg></span>Delete</button>
+      </div>
+    </li>
+    <li class="oc-block-route-steps-item" data-id="s3" data-kind="step">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move Market square" aria-pressed="false"></button>
+      <button class="oc-block-route-steps-main" type="button">
+        <span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" class="oc-block-art-sky" /><circle cx="30" cy="11" r="5" class="oc-block-art-sun" /><path d="M0 40V28l10-8 9 7 7-5 14 10v8z" class="oc-block-art-land" /></svg></span>
+        <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Market square</span><span class="oc-block-route-steps-meta"><span>Question</span><span>20 points</span></span></span>
+      </button>
+      <span class="oc-badge oc-badge--success oc-block-route-steps-status">Ready</span>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-3" aria-label="Actions for Market square"><svg data-icon="mdi:dots-vertical" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /></svg></button>
+      <div class="oc-dropdown-menu" id="oc-rsteps-menu-3" popover="">
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-up" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M13 20h-2V8l-5.5 5.5l-1.42-1.42L12 4.16l7.92 7.92l-1.42 1.42L13 8z" /></svg></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M11 4h2v12l5.5-5.5l1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5L11 16z" /></svg></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:content-copy" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z" /></svg></span>Duplicate</button>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:trash-can-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /></svg></span>Delete</button>
+      </div>
+    </li>
+    <li class="oc-block-route-steps-item" data-id="s4" data-kind="step">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move Town hall" aria-pressed="false"></button>
+      <button class="oc-block-route-steps-main" type="button">
+        <span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"></span>
+        <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Town hall</span><span class="oc-block-route-steps-meta"><span>Text only</span></span></span>
+      </button>
+      <span class="oc-badge oc-badge--warning oc-block-route-steps-status">No question</span>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-4" aria-label="Actions for Town hall"><svg data-icon="mdi:dots-vertical" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /></svg></button>
+      <div class="oc-dropdown-menu" id="oc-rsteps-menu-4" popover="">
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-up" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M13 20h-2V8l-5.5 5.5l-1.42-1.42L12 4.16l7.92 7.92l-1.42 1.42L13 8z" /></svg></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M11 4h2v12l5.5-5.5l1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5L11 16z" /></svg></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:content-copy" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z" /></svg></span>Duplicate</button>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:trash-can-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /></svg></span>Delete</button>
+      </div>
+    </li>
+    <li class="oc-block-route-steps-item" data-id="s5" data-kind="step">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move River bridge" aria-pressed="false"></button>
+      <button class="oc-block-route-steps-main" type="button">
+        <span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"></span>
+        <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">River bridge</span><span class="oc-block-route-steps-meta"><span>Question</span><span>10 points</span></span></span>
+      </button>
+      <span class="oc-badge oc-badge--outline oc-block-route-steps-status">Draft</span>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-5" aria-label="Actions for River bridge"><svg data-icon="mdi:dots-vertical" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /></svg></button>
+      <div class="oc-dropdown-menu" id="oc-rsteps-menu-5" popover="">
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-up" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M13 20h-2V8l-5.5 5.5l-1.42-1.42L12 4.16l7.92 7.92l-1.42 1.42L13 8z" /></svg></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M11 4h2v12l5.5-5.5l1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5L11 16z" /></svg></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:content-copy" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z" /></svg></span>Duplicate</button>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:trash-can-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /></svg></span>Delete</button>
+      </div>
+    </li>
+    <li class="oc-block-route-steps-item" data-id="s6" data-kind="photo">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move Team photo" aria-pressed="false"></button>
+      <button class="oc-block-route-steps-main" type="button">
+        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-teal-60)"><svg data-icon="mdi:camera-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M20 4h-3.17L15 2H9L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 14H4V6h4.05l1.83-2h4.24l1.83 2H20zM12 7a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3a3 3 0 0 1 3-3a3 3 0 0 1 3 3a3 3 0 0 1-3 3" /></svg></span>
+        <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Team photo</span><span class="oc-block-route-steps-meta"><span>Photo task</span><span>does not count</span></span></span>
+      </button>
+      <span class="oc-badge oc-badge--success oc-block-route-steps-status">Ready</span>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-6" aria-label="Actions for Team photo"><svg data-icon="mdi:dots-vertical" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /></svg></button>
+      <div class="oc-dropdown-menu" id="oc-rsteps-menu-6" popover="">
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-up" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M13 20h-2V8l-5.5 5.5l-1.42-1.42L12 4.16l7.92 7.92l-1.42 1.42L13 8z" /></svg></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M11 4h2v12l5.5-5.5l1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5L11 16z" /></svg></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:content-copy" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z" /></svg></span>Duplicate</button>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:trash-can-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /></svg></span>Delete</button>
+      </div>
+    </li>
+    <li class="oc-block-route-steps-item" data-id="s7" data-kind="finish">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move Finish" aria-pressed="false"></button>
+      <button class="oc-block-route-steps-main" type="button">
+        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-forestgreen-60)"><svg data-icon="mdi:flag-checkered" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M14.4 6H20v10h-7l-.4-2H7v7H5V4h9zm-.4 8h2v-2h2v-2h-2V8h-2v2l-1-2V6h-2v2H9V6H7v2h2v2H7v2h2v-2h2v2h2v-2l1 2zm-3-4V8h2v2zm3 0h2v2h-2z" /></svg></span>
+        <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Finish</span><span class="oc-block-route-steps-meta"><span>Check-in</span></span></span>
+      </button>
+      <span class="oc-badge oc-badge--success oc-block-route-steps-status">Ready</span>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-7" aria-label="Actions for Finish"><svg data-icon="mdi:dots-vertical" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /></svg></button>
+      <div class="oc-dropdown-menu" id="oc-rsteps-menu-7" popover="">
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-up" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M13 20h-2V8l-5.5 5.5l-1.42-1.42L12 4.16l7.92 7.92l-1.42 1.42L13 8z" /></svg></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:arrow-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M11 4h2v12l5.5-5.5l1.42 1.42L12 19.84l-7.92-7.92L5.5 10.5L11 16z" /></svg></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:content-copy" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z" /></svg></span>Duplicate</button>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><svg data-icon="mdi:trash-can-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /></svg></span>Delete</button>
+      </div>
+    </li>
+  </ol>
+  <p class="oc-block-route-steps-empty" hidden>No step matches your search.</p>
+  <div class="oc-block-route-steps-foot">
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button"><svg data-icon="mdi:plus" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z" /></svg> Add step</button>
+    <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"><svg data-icon="mdi:camera-outline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M20 4h-3.17L15 2H9L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 14H4V6h4.05l1.83-2h4.24l1.83 2H20zM12 7a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3a3 3 0 0 1 3-3a3 3 0 0 1 3 3a3 3 0 0 1-3 3" /></svg> Add photo task</button>
+  </div>
+  <p class="oc-block-route-steps-status-line oc-visually-hidden" aria-live="polite"></p>
+</section>
+<script>
+  // Optional: filter, select, move (menu, drag, keyboard on the grip), duplicate and remove steps in every .oc-block-route-steps.
+  document.querySelectorAll(".oc-block-route-steps").forEach((root) => {
+    const list = root.querySelector(".oc-block-route-steps-list");
+    const items = () => [...list.children];
+    const label = (li) => li.querySelector(".oc-block-route-steps-name")?.textContent.trim() || "Step";
+    const say = (text) => { const s = root.querySelector(".oc-block-route-steps-status-line"); if (s) s.textContent = text; };
+    const fire = (type, detail) => root.dispatchEvent(new CustomEvent(type, { bubbles: true, detail }));
+    const changed = (action, li) => fire("oc-route-steps-change", { action, id: li?.dataset.id, order: items().map((x) => x.dataset.id) });
+    let moving = false;
+    const move = (li, to, focus) => {
+      const all = items();
+      if (to < 0 || to >= all.length || to === all.indexOf(li)) return;
+      moving = true;
+      to > all.indexOf(li) ? all[to].after(li) : all[to].before(li);
+      moving = false;
+      changed("move", li);
+      say(`${label(li)}: position ${to + 1} of ${all.length}`);
+      (focus || li.querySelector(".oc-block-route-steps-main")).focus();
+    };
+    const filter = () => {
+      const q = (root.querySelector(".oc-block-route-steps-search")?.value || "").trim().toLowerCase();
+      const kinds = (root.querySelector(".oc-block-route-steps-kinds input:checked")?.value || "all").split(" ");
+      let shown = 0;
+      items().forEach((li) => {
+        const match = (kinds.includes("all") || kinds.includes(li.dataset.kind)) && li.textContent.toLowerCase().includes(q);
+        li.classList.toggle("is-filtered", !match);
+        if (match) shown++;
+      });
+      const empty = root.querySelector(".oc-block-route-steps-empty");
+      if (empty) empty.hidden = shown > 0;
+    };
+    root.addEventListener("input", (e) => { if (e.target.closest(".oc-block-route-steps-tools")) filter(); });
+    root.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      const li = btn.closest(".oc-block-route-steps-item");
+      const act = btn.dataset.action;
+      if (btn.classList.contains("oc-block-route-steps-main")) {
+        root.querySelectorAll(".oc-block-route-steps-main[aria-current]").forEach((b) => b.removeAttribute("aria-current"));
+        btn.setAttribute("aria-current", "true");
+        fire("oc-route-steps-select", { id: li.dataset.id });
+      } else if (act === "up" || act === "down") move(li, items().indexOf(li) + (act === "up" ? -1 : 1));
+      else if (act === "duplicate") {
+        const copy = li.cloneNode(true);
+        const menu = copy.querySelector("[popover]"), id = `${menu.id}-${Date.now()}`;
+        copy.querySelectorAll(`[popovertarget="${menu.id}"]`).forEach((b) => b.setAttribute("popovertarget", id));
+        menu.id = id;
+        copy.dataset.id = `${li.dataset.id}-copy-${Date.now()}`;
+        copy.querySelector(".oc-block-route-steps-name").textContent = `${label(li)} (copy)`;
+        copy.querySelectorAll("[aria-label]").forEach((el) => el.setAttribute("aria-label", el.getAttribute("aria-label").replace(label(li), label(copy))));
+        copy.querySelector(".oc-block-route-steps-main").removeAttribute("aria-current");
+        li.after(copy);
+        changed("duplicate", copy);
+        say(`${label(copy)} added`);
+        copy.querySelector(".oc-block-route-steps-main").focus();
+      } else if (act === "remove") {
+        const next = li.nextElementSibling || li.previousElementSibling;
+        li.remove();
+        changed("remove", li);
+        say(`${label(li)} removed`);
+        next?.querySelector(".oc-block-route-steps-main")?.focus();
+      } else if (btn.classList.contains("oc-sortable-row-grip")) {
+        btn.setAttribute("aria-pressed", String(btn.getAttribute("aria-pressed") !== "true"));
+        if (btn.getAttribute("aria-pressed") === "true") say(`${label(li)} picked up. Use the arrow keys, then Enter.`);
+      }
+    });
+    root.addEventListener("keydown", (e) => {
+      const grip = e.target.closest('.oc-sortable-row-grip[aria-pressed="true"]');
+      if (!grip) return;
+      const li = grip.closest(".oc-block-route-steps-item");
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); move(li, items().indexOf(li) + (e.key === "ArrowUp" ? -1 : 1), grip); }
+      else if (e.key === "Escape" || e.key === "Enter" || e.key === " ") { e.preventDefault(); grip.setAttribute("aria-pressed", "false"); say(`${label(li)} dropped`); }
+    });
+    root.addEventListener("focusout", (e) => { if (!moving && e.target.matches?.(".oc-sortable-row-grip")) e.target.setAttribute("aria-pressed", "false"); });
+    // Drag with the mouse, only from the grip.
+    let dragged = null;
+    const clear = () => items().forEach((x) => x.classList.remove("is-drop-before", "is-drop-after"));
+    root.addEventListener("pointerdown", (e) => { const g = e.target.closest(".oc-sortable-row-grip"); if (g) g.parentElement.draggable = true; });
+    root.addEventListener("pointerup", () => { if (!dragged) items().forEach((x) => { x.draggable = false; }); });
+    list.addEventListener("dragstart", (e) => { dragged = e.target.closest(".oc-block-route-steps-item"); dragged?.classList.add("is-dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragged?.dataset.id || ""); });
+    list.addEventListener("dragover", (e) => {
+      const over = e.target.closest(".oc-block-route-steps-item");
+      if (!dragged || !over) return;
+      e.preventDefault();
+      clear();
+      const r = over.getBoundingClientRect();
+      if (over !== dragged) over.classList.add(e.clientY < r.top + r.height / 2 ? "is-drop-before" : "is-drop-after");
+    });
+    list.addEventListener("drop", (e) => {
+      const over = list.querySelector(".is-drop-before, .is-drop-after");
+      if (!dragged || !over) return;
+      e.preventDefault();
+      const all = items(), from = all.indexOf(dragged);
+      let to = all.indexOf(over) + (over.classList.contains("is-drop-after") ? 1 : 0);
+      if (to > from) to--;
+      move(dragged, to);
+    });
+    list.addEventListener("dragend", () => { clear(); dragged?.classList.remove("is-dragging"); if (dragged) dragged.draggable = false; dragged = null; });
+  });
+</script>
+
+
+
+
+          </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239</pre><pre class="code-preview"><code><span class="hl-tag">&lt;section</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps"</span> <span class="hl-attr">aria-labelledby</span>=<span class="hl-string">"oc-rsteps-title"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-head"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;h2</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-title"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-rsteps-title"</span><span class="hl-tag">&gt;</span>Steps of Route 1<span class="hl-tag">&lt;/h2</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-count"</span><span class="hl-tag">&gt;</span>7 steps · 4 count<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-tools"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input-group oc-input-group--affix"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input-addon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:magnify"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input oc-block-route-steps-search"</span> <span class="hl-attr">type</span>=<span class="hl-string">"search"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Search steps"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Search steps"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;fieldset</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter oc-chip-filter--sm oc-block-route-steps-kinds"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Kind"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-rsteps-kind"</span> <span class="hl-attr">value</span>=<span class="hl-string">"all"</span> <span class="hl-attr">checked</span><span class="hl-tag">&gt;</span> All<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-rsteps-kind"</span> <span class="hl-attr">value</span>=<span class="hl-string">"step"</span><span class="hl-tag">&gt;</span> Steps<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-rsteps-kind"</span> <span class="hl-attr">value</span>=<span class="hl-string">"photo"</span><span class="hl-tag">&gt;</span> Photo tasks<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-rsteps-kind"</span> <span class="hl-attr">value</span>=<span class="hl-string">"intro finish"</span><span class="hl-tag">&gt;</span> Start and finish<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/fieldset</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;ol</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-list"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Steps in route order"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;li</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-item"</span> <span class="hl-attr">data-id</span>=<span class="hl-string">"s1"</span> <span class="hl-attr">data-kind</span>=<span class="hl-string">"intro"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-sortable-row-grip"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Move Welcome"</span> <span class="hl-attr">aria-pressed</span>=<span class="hl-string">"false"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-main"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-thumb"</span> <span class="hl-attr">style</span>=<span class="hl-string">"--oc-step-color: var(--color-indigo-60)"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:play-circle-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-name"</span><span class="hl-tag">&gt;</span>Welcome<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-meta"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Intro<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>does not count<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-badge oc-badge--secondary oc-block-route-steps-status"</span><span class="hl-tag">&gt;</span>Ready<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-1"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Welcome"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:dots-vertical"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-rsteps-menu-1"</span> <span class="hl-attr">popover</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"up"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-1"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-up"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move up<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"down"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-1"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-down"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move down<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"duplicate"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-1"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-separator"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item oc-dropdown-item--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"remove"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-1"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/li</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;li</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-item"</span> <span class="hl-attr">data-id</span>=<span class="hl-string">"s2"</span> <span class="hl-attr">data-kind</span>=<span class="hl-string">"step"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-sortable-row-grip"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Move Old gate"</span> <span class="hl-attr">aria-pressed</span>=<span class="hl-string">"false"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-main"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-current</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-thumb oc-block-route-steps-thumb--num"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-name"</span><span class="hl-tag">&gt;</span>Old gate<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-meta"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Question<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>20 points<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-badge oc-badge--success oc-block-route-steps-status"</span><span class="hl-tag">&gt;</span>Ready<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-2"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Old gate"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:dots-vertical"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-rsteps-menu-2"</span> <span class="hl-attr">popover</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"up"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-2"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-up"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move up<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"down"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-2"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-down"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move down<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"duplicate"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-2"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-separator"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item oc-dropdown-item--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"remove"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-2"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/li</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;li</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-item"</span> <span class="hl-attr">data-id</span>=<span class="hl-string">"s3"</span> <span class="hl-attr">data-kind</span>=<span class="hl-string">"step"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-sortable-row-grip"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Move Market square"</span> <span class="hl-attr">aria-pressed</span>=<span class="hl-string">"false"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-main"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-thumb oc-block-route-steps-thumb--num"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;svg</span> <span class="hl-attr">viewBox</span>=<span class="hl-string">"0 0 40 40"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;rect</span> <span class="hl-attr">width</span>=<span class="hl-string">"40"</span> <span class="hl-attr">height</span>=<span class="hl-string">"40"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-sky"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;circle</span> <span class="hl-attr">cx</span>=<span class="hl-string">"30"</span> <span class="hl-attr">cy</span>=<span class="hl-string">"11"</span> <span class="hl-attr">r</span>=<span class="hl-string">"5"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-sun"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;path</span> <span class="hl-attr">d</span>=<span class="hl-string">"M0 40V28l10-8 9 7 7-5 14 10v8z"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-land"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/svg</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-name"</span><span class="hl-tag">&gt;</span>Market square<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-meta"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Question<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>20 points<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-badge oc-badge--success oc-block-route-steps-status"</span><span class="hl-tag">&gt;</span>Ready<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-3"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Market square"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:dots-vertical"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-rsteps-menu-3"</span> <span class="hl-attr">popover</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"up"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-3"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-up"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move up<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"down"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-3"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-down"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move down<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"duplicate"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-3"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-separator"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item oc-dropdown-item--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"remove"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-3"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/li</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;li</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-item"</span> <span class="hl-attr">data-id</span>=<span class="hl-string">"s4"</span> <span class="hl-attr">data-kind</span>=<span class="hl-string">"step"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-sortable-row-grip"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Move Town hall"</span> <span class="hl-attr">aria-pressed</span>=<span class="hl-string">"false"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-main"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-thumb oc-block-route-steps-thumb--num"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-name"</span><span class="hl-tag">&gt;</span>Town hall<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-meta"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Text only<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-badge oc-badge--warning oc-block-route-steps-status"</span><span class="hl-tag">&gt;</span>No question<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-4"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Town hall"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:dots-vertical"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-rsteps-menu-4"</span> <span class="hl-attr">popover</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"up"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-4"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-up"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move up<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"down"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-4"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-down"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move down<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"duplicate"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-4"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-separator"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item oc-dropdown-item--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"remove"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-4"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/li</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;li</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-item"</span> <span class="hl-attr">data-id</span>=<span class="hl-string">"s5"</span> <span class="hl-attr">data-kind</span>=<span class="hl-string">"step"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-sortable-row-grip"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Move River bridge"</span> <span class="hl-attr">aria-pressed</span>=<span class="hl-string">"false"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-main"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-thumb oc-block-route-steps-thumb--num"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-name"</span><span class="hl-tag">&gt;</span>River bridge<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-meta"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Question<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>10 points<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-badge oc-badge--outline oc-block-route-steps-status"</span><span class="hl-tag">&gt;</span>Draft<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-5"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for River bridge"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:dots-vertical"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-rsteps-menu-5"</span> <span class="hl-attr">popover</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"up"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-5"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-up"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move up<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"down"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-5"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-down"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move down<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"duplicate"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-5"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-separator"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item oc-dropdown-item--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"remove"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-5"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/li</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;li</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-item"</span> <span class="hl-attr">data-id</span>=<span class="hl-string">"s6"</span> <span class="hl-attr">data-kind</span>=<span class="hl-string">"photo"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-sortable-row-grip"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Move Team photo"</span> <span class="hl-attr">aria-pressed</span>=<span class="hl-string">"false"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-main"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-thumb"</span> <span class="hl-attr">style</span>=<span class="hl-string">"--oc-step-color: var(--color-teal-60)"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:camera-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-name"</span><span class="hl-tag">&gt;</span>Team photo<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-meta"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Photo task<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>does not count<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-badge oc-badge--success oc-block-route-steps-status"</span><span class="hl-tag">&gt;</span>Ready<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-6"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Team photo"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:dots-vertical"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-rsteps-menu-6"</span> <span class="hl-attr">popover</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"up"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-6"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-up"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move up<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"down"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-6"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-down"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move down<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"duplicate"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-6"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-separator"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item oc-dropdown-item--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"remove"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-6"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/li</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;li</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-item"</span> <span class="hl-attr">data-id</span>=<span class="hl-string">"s7"</span> <span class="hl-attr">data-kind</span>=<span class="hl-string">"finish"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-sortable-row-grip"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Move Finish"</span> <span class="hl-attr">aria-pressed</span>=<span class="hl-string">"false"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-main"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-thumb"</span> <span class="hl-attr">style</span>=<span class="hl-string">"--oc-step-color: var(--color-forestgreen-60)"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:flag-checkered"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-name"</span><span class="hl-tag">&gt;</span>Finish<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-meta"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Check-in<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-badge oc-badge--success oc-block-route-steps-status"</span><span class="hl-tag">&gt;</span>Ready<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-7"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Finish"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:dots-vertical"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-rsteps-menu-7"</span> <span class="hl-attr">popover</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"up"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-7"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-up"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move up<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"down"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-7"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:arrow-down"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Move down<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"duplicate"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-7"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-separator"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item oc-dropdown-item--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-action</span>=<span class="hl-string">"remove"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-rsteps-menu-7"</span> <span class="hl-attr">popovertargetaction</span>=<span class="hl-string">"hide"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-icon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/li</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/ol</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-empty"</span> <span class="hl-attr">hidden</span><span class="hl-tag">&gt;</span>No step matches your search.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-foot"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:plus"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span> Add step<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:camera-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span> Add photo task<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-route-steps-status-line oc-visually-hidden"</span> <span class="hl-attr">aria-live</span>=<span class="hl-string">"polite"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/section</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;script</span><span class="hl-tag">&gt;</span>
+  // Optional: filter, select, move (menu, drag, keyboard on the grip), duplicate and remove steps in every .oc-block-route-steps.
+  document.querySelectorAll(".oc-block-route-steps").forEach((root) =&gt; {
+    const list = root.querySelector(".oc-block-route-steps-list");
+    const items = () =&gt; [...list.children];
+    const label = (li) =&gt; li.querySelector(".oc-block-route-steps-name")?.textContent.trim() || "Step";
+    const say = (text) =&gt; { const s = root.querySelector(".oc-block-route-steps-status-line"); if (s) s.textContent = text; };
+    const fire = (type, detail) =&gt; root.dispatchEvent(new CustomEvent(type, { bubbles: true, detail }));
+    const changed = (action, li) =&gt; fire("oc-route-steps-change", { action, id: li?.dataset.id, order: items().map((x) =&gt; x.dataset.id) });
+    let moving = false;
+    const move = (li, to, focus) =&gt; {
+      const all = items();
+      if (to &lt; 0 || to &gt;= all.length || to === all.indexOf(li)) return;
+      moving = true;
+      to &gt; all.indexOf(li) ? all[to].after(li) : all[to].before(li);
+      moving = false;
+      changed("move", li);
+      say(`${label(li)}: position ${to + 1} of ${all.length}`);
+      (focus || li.querySelector(".oc-block-route-steps-main")).focus();
+    };
+    const filter = () =&gt; {
+      const q = (root.querySelector(".oc-block-route-steps-search")?.value || "").trim().toLowerCase();
+      const kinds = (root.querySelector(".oc-block-route-steps-kinds input:checked")?.value || "all").split(" ");
+      let shown = 0;
+      items().forEach((li) =&gt; {
+        const match = (kinds.includes("all") || kinds.includes(li.dataset.kind)) &amp;&amp; li.textContent.toLowerCase().includes(q);
+        li.classList.toggle("is-filtered", !match);
+        if (match) shown++;
+      });
+      const empty = root.querySelector(".oc-block-route-steps-empty");
+      if (empty) empty.hidden = shown &gt; 0;
+    };
+    root.addEventListener("input", (e) =&gt; { if (e.target.closest(".oc-block-route-steps-tools")) filter(); });
+    root.addEventListener("click", (e) =&gt; {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      const li = btn.closest(".oc-block-route-steps-item");
+      const act = btn.dataset.action;
+      if (btn.classList.contains("oc-block-route-steps-main")) {
+        root.querySelectorAll(".oc-block-route-steps-main[aria-current]").forEach((b) =&gt; b.removeAttribute("aria-current"));
+        btn.setAttribute("aria-current", "true");
+        fire("oc-route-steps-select", { id: li.dataset.id });
+      } else if (act === "up" || act === "down") move(li, items().indexOf(li) + (act === "up" ? -1 : 1));
+      else if (act === "duplicate") {
+        const copy = li.cloneNode(true);
+        const menu = copy.querySelector("[popover]"), id = `${menu.id}-${Date.now()}`;
+        copy.querySelectorAll(`[popovertarget="${menu.id}"]`).forEach((b) =&gt; b.setAttribute("popovertarget", id));
+        menu.id = id;
+        copy.dataset.id = `${li.dataset.id}-copy-${Date.now()}`;
+        copy.querySelector(".oc-block-route-steps-name").textContent = `${label(li)} (copy)`;
+        copy.querySelectorAll("[aria-label]").forEach((el) =&gt; el.setAttribute("aria-label", el.getAttribute("aria-label").replace(label(li), label(copy))));
+        copy.querySelector(".oc-block-route-steps-main").removeAttribute("aria-current");
+        li.after(copy);
+        changed("duplicate", copy);
+        say(`${label(copy)} added`);
+        copy.querySelector(".oc-block-route-steps-main").focus();
+      } else if (act === "remove") {
+        const next = li.nextElementSibling || li.previousElementSibling;
+        li.remove();
+        changed("remove", li);
+        say(`${label(li)} removed`);
+        next?.querySelector(".oc-block-route-steps-main")?.focus();
+      } else if (btn.classList.contains("oc-sortable-row-grip")) {
+        btn.setAttribute("aria-pressed", String(btn.getAttribute("aria-pressed") !== "true"));
+        if (btn.getAttribute("aria-pressed") === "true") say(`${label(li)} picked up. Use the arrow keys, then Enter.`);
+      }
+    });
+    root.addEventListener("keydown", (e) =&gt; {
+      const grip = e.target.closest('.oc-sortable-row-grip[aria-pressed="true"]');
+      if (!grip) return;
+      const li = grip.closest(".oc-block-route-steps-item");
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); move(li, items().indexOf(li) + (e.key === "ArrowUp" ? -1 : 1), grip); }
+      else if (e.key === "Escape" || e.key === "Enter" || e.key === " ") { e.preventDefault(); grip.setAttribute("aria-pressed", "false"); say(`${label(li)} dropped`); }
+    });
+    root.addEventListener("focusout", (e) =&gt; { if (!moving &amp;&amp; e.target.matches?.(".oc-sortable-row-grip")) e.target.setAttribute("aria-pressed", "false"); });
+    // Drag with the mouse, only from the grip.
+    let dragged = null;
+    const clear = () =&gt; items().forEach((x) =&gt; x.classList.remove("is-drop-before", "is-drop-after"));
+    root.addEventListener("pointerdown", (e) =&gt; { const g = e.target.closest(".oc-sortable-row-grip"); if (g) g.parentElement.draggable = true; });
+    root.addEventListener("pointerup", () =&gt; { if (!dragged) items().forEach((x) =&gt; { x.draggable = false; }); });
+    list.addEventListener("dragstart", (e) =&gt; { dragged = e.target.closest(".oc-block-route-steps-item"); dragged?.classList.add("is-dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragged?.dataset.id || ""); });
+    list.addEventListener("dragover", (e) =&gt; {
+      const over = e.target.closest(".oc-block-route-steps-item");
+      if (!dragged || !over) return;
+      e.preventDefault();
+      clear();
+      const r = over.getBoundingClientRect();
+      if (over !== dragged) over.classList.add(e.clientY &lt; r.top + r.height / 2 ? "is-drop-before" : "is-drop-after");
+    });
+    list.addEventListener("drop", (e) =&gt; {
+      const over = list.querySelector(".is-drop-before, .is-drop-after");
+      if (!dragged || !over) return;
+      e.preventDefault();
+      const all = items(), from = all.indexOf(dragged);
+      let to = all.indexOf(over) + (over.classList.contains("is-drop-after") ? 1 : 0);
+      if (to &gt; from) to--;
+      move(dragged, to);
+    });
+    list.addEventListener("dragend", () =&gt; { clear(); dragged?.classList.remove("is-dragging"); if (dragged) dragged.draggable = false; dragged = null; });
+  });
+<span class="hl-tag">&lt;/script</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre><pre class="code-preview"><code>import { BlockRouteSteps, Button } from "@birdycom/omniaui-react";
+
+&lt;BlockRouteSteps
+  title="Steps of Route 1"
+  count="7 steps · 4 count"
+  kinds={[{ value: "step", label: "Steps" }, { value: "photo", label: "Photo tasks" }, { value: "intro finish", label: "Start and finish" }]}
+  steps={[
+    { id: "s1", name: "Welcome", kind: "intro", numbered: false, icon: "mdi:play-circle-outline", meta: ["Intro", "does not count"], status: "Ready", statusTone: "secondary" },
+    { id: "s2", name: "Old gate", kind: "step", meta: ["Question", "20 points"], status: "Ready", statusTone: "success" },
+    { id: "s4", name: "Town hall", kind: "step", meta: ["Text only"], status: "No question", statusTone: "warning" },
+  ]}
+  selected={current}
+  onSelect={setCurrent}
+  onMove={moveTo}
+  onDuplicate={duplicate}
+  onRemove={remove}
+  footer={&lt;Button variant="outline" size="sm"&gt;Add step&lt;/Button&gt;}
+/&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16</pre><pre class="code-preview"><code>&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcBlockRouteSteps } from '@birdycom/omniaui-vue'
+const current = ref('s2')
+const steps = ref([
+  { id: 's1', name: 'Welcome', kind: 'intro', numbered: false, icon: 'mdi:play-circle-outline', meta: ['Intro'], status: 'Ready', statusTone: 'secondary' },
+  { id: 's2', name: 'Old gate', kind: 'step', meta: ['Question', '20 points'], status: 'Ready', statusTone: 'success' },
+])
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockRouteSteps title="Steps of Route 1" :steps="steps" :selected="current" :kinds="[{ value: 'step', label: 'Steps' }]"
+    @select="(id) =&gt; (current = id)" @move="moveTo" @duplicate="duplicate" @remove="remove"&gt;
+    &lt;template #footer&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Add step&lt;/button&gt;&lt;/template&gt;
+  &lt;/OcBlockRouteSteps&gt;
+&lt;/template&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14</pre><pre class="code-preview"><code>&lt;x-oc::block.route-steps&gt;
+  &lt;x-slot:title&gt;Steps of {{ $route-&gt;name }}&lt;/x-slot:title&gt;
+  &lt;x-slot:count&gt;{{ $route-&gt;steps-&gt;count() }} steps&lt;/x-slot:count&gt;
+  @foreach ($route-&gt;steps as $step)
+    &lt;li class="oc-block-route-steps-item" data-id="{{ $step-&gt;id }}" data-kind="{{ $step-&gt;kind }}"&gt;
+      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move {{ $step-&gt;name }}" aria-pressed="false"&gt;&lt;/button&gt;
+      &lt;button class="oc-block-route-steps-main" type="button" @if ($step-&gt;is($current)) aria-current="true" @endif&gt;
+        &lt;span @class(['oc-block-route-steps-thumb', 'oc-block-route-steps-thumb--num' =&gt; $step-&gt;counts])&gt;&lt;/span&gt;
+        &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;{{ $step-&gt;name }}&lt;/span&gt;&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;span class="oc-badge oc-badge--success oc-block-route-steps-status"&gt;{{ $step-&gt;status }}&lt;/span&gt;
+    &lt;/li&gt;
+  @endforeach
+&lt;/x-oc::block.route-steps&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 id="reference-2" class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/blocks/src/parts/app-route-steps.css</code>. The script fires <code>oc-route-steps-change</code> (<code>{ action, id, order }</code>) and <code>oc-route-steps-select</code> (<code>{ id }</code>) on the frame: save from there.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-block-route-steps</code></td><td>Frame. Container query: the status goes under the name below 26rem; search and chips side by side from 34rem</td></tr>
+              <tr><td><code>.oc-block-route-steps-head / -title / -count</code></td><td>Heading and the number of steps</td></tr>
+              <tr><td><code>.oc-block-route-steps-tools</code></td><td>Search (<code>.oc-block-route-steps-search</code>) and kind chips (<code>.oc-block-route-steps-kinds</code>, radios; a value can hold several kinds: <code>"intro finish"</code>)</td></tr>
+              <tr><td><code>ol.oc-block-route-steps-list</code></td><td>The steps; the counter <code>oc-route-step</code> numbers them</td></tr>
+              <tr><td><code>li.oc-block-route-steps-item[data-id][data-kind]</code></td><td>One step. States: <code>.is-dragging</code>, <code>.is-drop-before</code>, <code>.is-drop-after</code>, <code>.is-filtered</code> (filtered out: collapsed but still counted, so the numbers stay true; not <code>hidden</code>, which would drop the step from the count)</td></tr>
+              <tr><td><code>.oc-sortable-row-grip</code></td><td>Drag handle. Click it (or Enter), move with the arrow keys, Enter or Escape drops</td></tr>
+              <tr><td><code>button.oc-block-route-steps-main</code></td><td>Thumb + name + meta. <code>aria-current="true"</code> = the step open in the editor</td></tr>
+              <tr><td><code>.oc-block-route-steps-thumb</code></td><td>Icon thumb (<code>--oc-step-color</code> tints the icon). <code>--num</code>: the order number, and the step counts; an img or svg inside: photo with a small number</td></tr>
+              <tr><td><code>.oc-block-route-steps-name / -meta</code></td><td>Name (one line, ellipsis) and short facts separated by a dot</td></tr>
+              <tr><td><code>.oc-block-route-steps-status</code></td><td>Status badge: <code>.oc-badge--success</code>, <code>--warning</code>, <code>--outline</code>, <code>--secondary</code></td></tr>
+              <tr><td><code>.oc-block-route-steps-menu + .oc-dropdown-menu[popover]</code></td><td>Row menu; items with <code>data-action="up"</code>, <code>"down"</code>, <code>"duplicate"</code>, <code>"remove"</code></td></tr>
+              <tr><td><code>.oc-block-route-steps-empty / -foot / -status-line</code></td><td>No match line, add buttons, live region</td></tr>
+            </tbody>
+          </table>
+
+        </div>
+      </section><section class="oc-docs-section" id="frameworks"><div class="oc-section-header"><h2 id="framework-wrappers" class="oc-section-header__title">Framework wrappers</h2><p class="oc-section-header__desc">The same markup and classes as React, Vue and Blade components. Their props follow the class modifiers on this page; see the source files below.</p></div><div class="oc-section-content"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8</pre><pre class="code-preview"><code><span class="hl-comment">&lt;!-- React --&gt;</span>
+import { BlockRouteSteps } from "@birdycom/omniaui-react";
+<span class="hl-tag">&lt;BlockRouteSteps</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">&lt;!-- Vue --&gt;</span>
+import { OcBlockRouteSteps } from "@birdycom/omniaui-vue";
+<span class="hl-tag">&lt;OcBlockRouteSteps</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">&lt;!-- Laravel Blade --&gt;</span>
+&lt;x-oc::block.route-steps /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></section><section id="support" class="oc-docs-section"><div class="oc-section-header"><h2 id="browser-support" class="oc-section-header__title">Browser support</h2></div><div class="oc-section-content"><div class="oc-compat"><div class="oc-compat__scroll"><table class="oc-compat__table"><thead><tr><th scope="col" rowspan="2" class="oc-compat__feature-head">Feature</th><th scope="colgroup" colspan="5" class="oc-compat__group">Desktop</th><th scope="colgroup" colspan="5" class="oc-compat__group oc-compat__group--mobile">Mobile</th></tr><tr><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/chrome.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Chrome</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/edge.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Edge</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/firefox.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Firefox</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/safari.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Safari</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/opera.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Opera</span></th><th scope="col" class="oc-compat__browser oc-compat__first-mobile"><img class="oc-compat__logo" src="/img/browsers/chrome.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Chrome Android</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/firefox.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Firefox Android</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/safari.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Safari iOS</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/samsung.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Samsung Internet</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/opera.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Opera Android</span></th></tr></thead><tbody><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/HTML/Reference/Global_attributes/popover" target="_blank" rel="noopener"><code>popover</code></a></th><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome: Supported since 114"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">114</span><span class="sr-only">Chrome: Supported since 114</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Edge: Supported since 114"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">114</span><span class="sr-only">Edge: Supported since 114</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox: Supported since 125"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">125</span><span class="sr-only">Firefox: Supported since 125</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari: Supported since 17"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">17</span><span class="sr-only">Safari: Supported since 17</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera: Supported since 100"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">100</span><span class="sr-only">Opera: Supported since 100</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome Android: Supported since 114"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">114</span><span class="sr-only">Chrome Android: Supported since 114</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox Android: Supported since 125"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">125</span><span class="sr-only">Firefox Android: Supported since 125</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari iOS: Supported since 17"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">17</span><span class="sr-only">Safari iOS: Supported since 17</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Samsung Internet: Supported since 23.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">23.0</span><span class="sr-only">Samsung Internet: Supported since 23.0</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera Android: Supported since 76"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">76</span><span class="sr-only">Opera Android: Supported since 76</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/position-area" target="_blank" rel="noopener"><code>position-area</code></a></th><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome: Supported since 129 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663."><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">129</span><span class="sr-only">Chrome: Supported since 129 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663.</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Edge: Supported since 129 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663."><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">129</span><span class="sr-only">Edge: Supported since 129 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663.</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox: Supported since 147"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">147</span><span class="sr-only">Firefox: Supported since 147</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari: Supported since 26"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">26</span><span class="sr-only">Safari: Supported since 26</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera: Supported since 115 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663."><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">115</span><span class="sr-only">Opera: Supported since 115 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663.</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome Android: Supported since 129 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663."><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">129</span><span class="sr-only">Chrome Android: Supported since 129 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663.</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox Android: Supported since 147"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">147</span><span class="sr-only">Firefox Android: Supported since 147</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari iOS: Supported since 26"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">26</span><span class="sr-only">Safari iOS: Supported since 26</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Samsung Internet: Supported since 28.0 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663."><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">28.0</span><span class="sr-only">Samsung Internet: Supported since 28.0 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663.</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera Android: Supported since 86 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663."><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">86</span><span class="sr-only">Opera Android: Supported since 86 — The position-area property changes the position of absolutely positioned elements that do not find an anchor. See bug 388575663.</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/color_value/light-dark" target="_blank" rel="noopener"><code>light-dark()</code></a></th><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Chrome: Supported since 123</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Edge: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Edge: Supported since 123</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox: Supported since 120"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">120</span><span class="sr-only">Firefox: Supported since 120</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari: Supported since 17.5"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">17.5</span><span class="sr-only">Safari: Supported since 17.5</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera: Supported since 109"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">109</span><span class="sr-only">Opera: Supported since 109</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome Android: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Chrome Android: Supported since 123</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox Android: Supported since 120"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">120</span><span class="sr-only">Firefox Android: Supported since 120</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari iOS: Supported since 17.5"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">17.5</span><span class="sr-only">Safari iOS: Supported since 17.5</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Samsung Internet: Supported since 27.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">27.0</span><span class="sr-only">Samsung Internet: Supported since 27.0</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera Android: Supported since 82"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">82</span><span class="sr-only">Opera Android: Supported since 82</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/color_value/color-mix" target="_blank" rel="noopener"><code>color-mix()</code></a></th><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Chrome: Supported since 111</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Edge: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Edge: Supported since 111</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox: Supported since 113"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">113</span><span class="sr-only">Firefox: Supported since 113</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari: Supported since 16.2"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16.2</span><span class="sr-only">Safari: Supported since 16.2</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera: Supported since 97"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">97</span><span class="sr-only">Opera: Supported since 97</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome Android: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Chrome Android: Supported since 111</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox Android: Supported since 113"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">113</span><span class="sr-only">Firefox Android: Supported since 113</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari iOS: Supported since 16.2"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16.2</span><span class="sr-only">Safari iOS: Supported since 16.2</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Samsung Internet: Supported since 22.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">22.0</span><span class="sr-only">Samsung Internet: Supported since 22.0</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera Android: Supported since 75"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">75</span><span class="sr-only">Opera Android: Supported since 75</span></td></tr></tbody></table></div><ul class="oc-compat__legend"><li class="is-yes"><span aria-hidden="true">✓</span> Supported</li><li class="is-partial"><span aria-hidden="true">◐</span> Partial support</li><li class="is-preview"><span aria-hidden="true">◷</span> Coming: in preview / beta</li><li class="is-flag"><span aria-hidden="true">⚑</span> Behind a flag</li><li class="is-no"><span aria-hidden="true">✕</span> Not supported</li></ul><p class="oc-compat__source">Version = first release with support. Hover a cell for notes. Data: <a href="https://github.com/mdn/browser-compat-data" target="_blank" rel="noopener">MDN browser-compat-data</a> 8.1.5 (2026-10-08).</p></div></div></section><section id="source" class="oc-docs-section"><div class="oc-section-header"><h2 id="source-and-further-reading" class="oc-section-header__title">Source &amp; Further Reading</h2></div><div class="oc-section-content"><h3 class="oc-section-content__title">Source files</h3><table class="oc-table-ref"><thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead><tbody><tr><td><code>packages/blocks/src/parts/app-route-steps.css</code></td><td>Styles</td></tr><tr><td><code>packages/blocks/blocks/route-steps.html</code></td><td>Copy-paste markup</td></tr><tr><td><code>packages/react/src/blocks/BlockRouteSteps.tsx</code> / <code>packages/vue/src/blocks/OcBlockRouteSteps.vue</code></td><td>Wrappers</td></tr><tr><td><code>resources/views/components/block/route-steps.blade.php</code></td><td>Laravel: <code>&lt;x-oc::block.route-steps&gt;</code></td></tr></tbody></table></div></section>
+</main>
+      <aside class="ocd-sidebar-right"><nav class="oc-toc" aria-label="On this page"><p class="oc-toc-title">On This Page</p><ul class="oc-toc-list"><li><a class="oc-toc-link" href="#demo-2">Demo</a></li><li class="oc-toc-item--sub"><a class="oc-toc-link" href="#demo-1">Route steps v0.16.0</a></li><li><a class="oc-toc-link" href="#reference-2">Reference</a></li><li><a class="oc-toc-link" href="#framework-wrappers">Framework wrappers</a></li><li><a class="oc-toc-link" href="#browser-support">Browser support</a></li><li><a class="oc-toc-link" href="#source-and-further-reading">Source &amp; Further Reading</a></li></ul></nav></aside>
+      <script>(() => { if (CSS.supports("selector(:target-current)")) return; const links = [...document.querySelectorAll(".oc-toc a[href^='#']")]; const root = document.querySelector(".oc-docs-content, .ocd-content"); if (!links.length || !root) return; const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))); let raf = 0; const update = () => { raf = 0; const top = root.getBoundingClientRect().top + 80; let cur = 0; heads.forEach((h, i) => { if (h && h.getBoundingClientRect().top <= top) cur = i; }); if (root.scrollTop + root.clientHeight >= root.scrollHeight - 4) cur = links.length - 1; links.forEach((a, i) => a.classList.toggle("is-active", i === cur)); }; root.addEventListener("scroll", () => { raf ||= requestAnimationFrame(update); }, { passive: true }); update(); })();</script>
+    </div>
+
+  <footer class="oc-footerbar oc-footerbar--fixed">OmniaUI v0.15.1 — CSS-first components and blocks on OmniaCSS · <a href="https://omniacss.test/docs/">OmniaCSS docs</a> · <a href="https://github.com/Birdycom/OmniaUI">GitHub</a> · <a href="/legal/terms#license">License</a> · <a href="https://birdycom.be/en/terms/omniaui-pro">Terms</a> · <a href="https://birdycom.be/en/privacy">Privacy</a> · <a href="https://birdycom.be/en/cookies">Cookies</a></footer>
+</body>
+</html>

@@ -210,7 +210,7 @@
 
 .oc-block-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); /* three plans on one row from about 44rem */
   gap: 20px;
 }
 
@@ -270,7 +270,8 @@
 }
 
 .oc-block-pricing-features li::before {
-  content: "\002713 ";
+  content: "\002713"; /* the space after a CSS escape ends the escape, so the gap comes from the margin */
+  margin-inline-end: 0.4em;
   color: var(--oc-block-accent);
   font-weight: 600;
 }
@@ -300,7 +301,7 @@
 
 .oc-block-features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); /* four cards fit on one row from about 44rem, instead of three and a lone one */
   gap: 20px;
   text-align: left;
 }
@@ -402,7 +403,7 @@
 
 .oc-block-footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); /* four columns on one row from about 42rem */
   gap: 32px;
   margin-bottom: 32px;
 }
@@ -452,42 +453,86 @@
    =================================================================== */
 
 .oc-block-cta {
-  background: linear-gradient(135deg, oklch(from var(--color-vividblue-50) l c h / 0.12), oklch(from var(--color-indigo-10) l c h / 0.08));
-  border: 1px solid var(--oc-block-border);
-  border-radius: var(--oc-block-radius);
-  padding: 40px;
-  text-align: center;
+  /* A flat panel: the title and text on the left, the buttons on the right. Under 44rem everything stacks. */
+  display: grid;
+  gap: 0.5rem 2.5rem;
+  align-items: center;
+  box-sizing: border-box;
   max-width: var(--oc-block-max-width);
   margin: 48px auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid var(--oc-border-strong, var(--oc-block-border));
+  border-radius: var(--oc-block-radius);
+  background: var(--oc-card);
+  color: var(--oc-block-text);
+  text-align: start;
 }
 
 .oc-block-cta h2 {
-  margin: 0 0 10px;
-  font-size: 1.5rem;
-  color: var(--oc-block-text);
+  margin: 0;
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: inherit;
 }
 
 .oc-block-cta p {
-  margin: 0 0 24px;
+  margin: 0;
+  max-width: 34rem;
   color: var(--oc-block-text-soft);
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
+  text-wrap: pretty;
 }
 
-/* --glow: a panel with two soft lights (brand 1 top start, brand 3 bottom end), a larger title and a narrow text. */
+.oc-block-cta .oc-block-hero-actions { justify-content: flex-start; margin-block-start: 1rem; }
+
+@media (min-width: 44rem) {
+  .oc-block-cta:not(.oc-block-cta--center, .oc-block-cta--glow) { grid-template-columns: minmax(0, 1fr) auto; }
+  .oc-block-cta:not(.oc-block-cta--center, .oc-block-cta--glow) > :is(h2, p) { grid-column: 1; }
+  .oc-block-cta:not(.oc-block-cta--center, .oc-block-cta--glow) > .oc-block-hero-actions { grid-column: 2; grid-row: 1 / span 2; margin-block-start: 0; flex-direction: column; align-items: stretch; }
+  .oc-block-cta:not(.oc-block-cta--center, .oc-block-cta--glow) > .oc-block-hero-actions:only-child,
+  .oc-block-cta:not(.oc-block-cta--center, .oc-block-cta--glow) > h2:first-child:nth-last-child(2) ~ .oc-block-hero-actions { grid-row: 1; }
+}
+
+/* --center: everything in the middle, for a closing band at the end of a page. */
+.oc-block-cta--center { justify-items: center; text-align: center; }
+.oc-block-cta--center p { margin-inline: auto; }
+.oc-block-cta--center .oc-block-hero-actions { justify-content: center; }
+
+/* --solid: the panel in the brand color, with the buttons turned around (light button, brand text). */
+.oc-block-cta--solid {
+  border-color: transparent;
+  background: var(--oc-primary);
+  color: var(--oc-primary-foreground);
+}
+.oc-block-cta--solid p { color: color-mix(in oklch, var(--oc-primary-foreground) 88%, var(--oc-primary)); }
+.oc-block-cta--solid .oc-btn:not(.oc-btn--outline, .oc-btn--ghost) {
+  border-color: transparent;
+  background: var(--oc-primary-foreground);
+  color: var(--oc-primary);
+}
+.oc-block-cta--solid .oc-btn:not(.oc-btn--outline, .oc-btn--ghost):hover { background: color-mix(in oklch, var(--oc-primary-foreground) 90%, var(--oc-primary)); }
+.oc-block-cta--solid .oc-btn:is(.oc-btn--outline, .oc-btn--ghost) {
+  border-color: color-mix(in oklch, var(--oc-primary-foreground) 55%, transparent);
+  background: transparent;
+  color: var(--oc-primary-foreground);
+}
+.oc-block-cta--solid .oc-btn:is(.oc-btn--outline, .oc-btn--ghost):hover { background: color-mix(in oklch, var(--oc-primary-foreground) 14%, transparent); }
+.oc-block-cta--solid .oc-btn:focus-visible { outline: 2px solid var(--oc-primary-foreground); outline-offset: 2px; }
+
+/* --glow: one soft light in the brand color behind the title (no color wash), a larger centered title, narrow text.
+   --oc-cta-glow sets the color of the light. */
 .oc-block-cta--glow {
+  justify-items: center;
+  text-align: center;
   padding: clamp(2.5rem, 6vw, 4.5rem);
-  border-color: var(--oc-border-strong);
-  border-radius: calc(var(--oc-radius-lg, 1.25rem) * 1.6);
   background:
-    radial-gradient(40rem circle at 0% 0%, oklch(from var(--oc-brand-1) l c h / 0.18), transparent 55%),
-    radial-gradient(40rem circle at 100% 100%, oklch(from var(--oc-brand-3) l c h / 0.2), transparent 55%),
+    radial-gradient(60% 90% at 50% 0%, oklch(from var(--oc-cta-glow, var(--oc-primary)) l c h / 0.14), transparent 70%),
     var(--oc-card);
 }
 .oc-block-cta--glow h2 { margin-block-end: 1rem; font-size: clamp(1.8rem, 4vw, 2.75rem); line-height: 1.15; }
-.oc-block-cta--glow p { max-width: 36rem; color: var(--oc-muted-foreground); }
-.oc-block-cta--glow .oc-block-hero-actions { justify-content: center; }
+.oc-block-cta--glow p { max-width: 36rem; margin-inline: auto; color: var(--oc-muted-foreground); }
+.oc-block-cta--glow .oc-block-hero-actions { justify-content: center; margin-block-start: 1.5rem; }
 
 /* ===================================================================
    STATS BLOCK
@@ -921,9 +966,10 @@
 
 .oc-block-authcard-center { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
 
-.oc-block-authsocial { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 0.5rem; }
+/* Flex, not a grid: a button that ends up alone on a row (three buttons in a narrow form) fills that row. */
+.oc-block-authsocial { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
-.oc-block-authsocial .oc-btn { inline-size: 100%; }
+.oc-block-authsocial .oc-btn { flex: 1 1 7.5rem; }
 
 /* Split: panel + form, switches to two columns by container width */
 
@@ -957,7 +1003,7 @@
   position: absolute;
   inset: 0;
   background:
-    repeating-linear-gradient(135deg, oklch(from var(--oc-primary-foreground) l c h / 0.07) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(135deg in srgb, oklch(from var(--oc-primary-foreground) l c h / 0.07) 0 1px, transparent 1px 14px),
     linear-gradient(to top, oklch(from var(--oc-primary) l c h / 0.7), transparent 60%);
   pointer-events: none;
 }

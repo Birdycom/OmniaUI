@@ -8,14 +8,14 @@
       @if (isset($title) && trim((string) $title) !== '')
           {{ $title }}
       @else
-      Everything you need
+      What we do
       @endif
   </h2>
   <p>
       @if (isset($text) && trim((string) $text) !== '')
           {{ $text }}
       @else
-      Built for speed, customization and developer experience.
+      Four services from one team, with one contact person.
       @endif
   </p>
   <div class="oc-block-features-grid">
@@ -23,14 +23,14 @@
           {{ $slot }}
       @else
     <div class="oc-block-feature-card">
-      <div class="oc-block-feature-icon">&#9889;</div>
-      <h3>Fast by default</h3>
-      <p>Optimized CSS output with PostCSS and cssnano.</p>
+      <div class="oc-block-feature-icon"><iconify-icon icon="mdi:application-cog-outline" aria-hidden="true"></iconify-icon></div>
+      <h3>Business apps</h3>
+      <p>Software built around how your company works.</p>
     </div>
     <div class="oc-block-feature-card">
-      <div class="oc-block-feature-icon">&#127912;</div>
-      <h3>Themeable</h3>
-      <p>CSS variables for every token. Swap colors, spacing and radii in one place.</p>
+      <div class="oc-block-feature-icon"><iconify-icon icon="mdi:web" aria-hidden="true"></iconify-icon></div>
+      <h3>Websites</h3>
+      <p>Fast sites that you edit yourself, without a developer.</p>
     </div>
     <!-- ... more cards ... -->
       @endif

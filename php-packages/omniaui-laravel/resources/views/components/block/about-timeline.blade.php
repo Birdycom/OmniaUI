@@ -29,14 +29,14 @@
           @if (isset($title) && trim((string) $title) !== '')
               {{ $title }}
           @else
-          Software for everyone. <span class="oc-text-gradient">Since 2012.</span>
+          Software for everyone. Since 2012.
           @endif
       </h2>
       <p>
           @if (isset($text) && trim((string) $text) !== '')
               {{ $text }}
           @else
-          Acme started as an IT partner for local businesses. That practical experience is in every line of code we write today.
+          Company 1 started as an IT partner for local businesses. That practical experience is in every line of code we write today.
           @endif
       </p>
       <p>You talk directly to the people who build your software. No layers in between.</p>
@@ -44,7 +44,7 @@
           @if (! $slot->isEmpty())
               {{ $slot }}
           @else
-        <li class="oc-timeline__item"><span class="oc-timeline__date">2012</span><p class="oc-timeline__text">Acme is founded by two developers.</p></li>
+        <li class="oc-timeline__item"><span class="oc-timeline__date">2012</span><p class="oc-timeline__text">Company 1 is founded by two developers.</p></li>
         <li class="oc-timeline__item"><span class="oc-timeline__date">2019</span><p class="oc-timeline__text">New office and a first own product.</p></li>
         <li class="oc-timeline__item oc-timeline__item--current"><span class="oc-timeline__date">Today</span><p class="oc-timeline__text">Own products and custom work, from web apps to desktop tools.</p></li>
           @endif

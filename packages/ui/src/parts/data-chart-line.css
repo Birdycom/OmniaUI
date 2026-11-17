@@ -42,7 +42,8 @@
   position: relative;
   block-size: var(--oc-chart-line-height);
   border-block-end: 1px solid var(--oc-chart-axis, var(--oc-border));
-  background: repeating-linear-gradient(to top, transparent 0 calc(100% / var(--oc-chart-line-rows) - 1px), var(--oc-chart-grid, var(--oc-border)) calc(100% / var(--oc-chart-line-rows) - 1px) calc(100% / var(--oc-chart-line-rows)));
+  /* one 1px line at the top of each row tile (a repeating gradient with calc(% - px) stops renders as solid bands in Firefox) */
+  background: linear-gradient(to bottom, var(--oc-chart-grid, var(--oc-border)) 1px, transparent 1px) 0 0 / 100% calc(100% / var(--oc-chart-line-rows)) repeat-y;
 }
 .oc-chart-line__svg { position: absolute; inset: 0; display: block; inline-size: 100%; block-size: 100%; overflow: visible; }
 
@@ -65,7 +66,9 @@
 .oc-chart-line__path--dashed { stroke-dasharray: 5 4; }
 
 /* ---- Hover columns: one per x value; the column is the hit area, the dots and tip live inside ---- */
-.oc-chart-line__cols { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+/* The first and last hit columns reach half a column past the plot; clip them sideways (keeping room for the edge
+   dots) so a chart at full width never makes its parent scroll. */
+.oc-chart-line__cols { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; overflow-x: clip; overflow-clip-margin: 0.5rem; }
 .oc-chart-line__col {
   position: absolute;
   inset-block: 0;

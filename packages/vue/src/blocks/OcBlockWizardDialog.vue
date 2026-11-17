@@ -17,10 +17,12 @@ const props = withDefaults(
     nextLabel?: string
     finishLabel?: string
     stepsLabel?: string
+    /** Accessible name of the × button in the corner */
+    closeLabel?: string
     /** Text for "Step 2 of 3"; receives the 1-based index and the count */
     stepText?: (index: number, total: number) => string
   }>(),
-  { backLabel: 'Back', nextLabel: 'Next', finishLabel: 'Finish', stepsLabel: 'Setup steps' },
+  { backLabel: 'Back', nextLabel: 'Next', finishLabel: 'Finish', stepsLabel: 'Setup steps', closeLabel: 'Close' },
 )
 const emit = defineEmits<{ finish: [] }>()
 const open = defineModel<boolean>('open', { default: false })
@@ -44,6 +46,7 @@ function next() {
 <template>
   <dialog ref="el" class="oc-modal" closedby="closerequest" :aria-labelledby="titleId" @close="onClose">
     <div class="oc-modal-content oc-modal-content--xl">
+      <button class="oc-modal-close" type="button" :aria-label="closeLabel" @click="open = false">×</button>
       <div class="oc-block-wizard">
         <div class="oc-block-wizard-rail">
           <OcStepper v-model="step" :steps="steps" :label="stepsLabel" />

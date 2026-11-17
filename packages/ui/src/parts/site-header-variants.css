@@ -16,7 +16,9 @@
 
 /* Dark: a solid dark bar with light text. */
 .oc-site-header--dark {
+  --oc-header-glass: 0;
   animation: none;
+  backdrop-filter: none;
   color: var(--color-white-50);
   background: var(--oc-dark-band, var(--color-duskblue-95));
 }
@@ -24,7 +26,8 @@
 .oc-site-header--dark .oc-site-header__nav a:not(.oc-btn) { color: oklch(from var(--color-white-50) l c h / 0.72); }
 
 /* Floating: the bar as a rounded card with room around it. */
-.oc-site-header:is(.oc-site-header--floating, .oc-site-header--glass) { animation: none; padding: 0.75rem; }
+/* No backdrop-filter on the bar itself: it would cut the backdrop of the glass inside it. */
+.oc-site-header:is(.oc-site-header--floating, .oc-site-header--glass) { --oc-header-glass: 0; animation: none; backdrop-filter: none; padding: 0.75rem; }
 .oc-site-header--floating .oc-site-header__inner {
   block-size: 4rem;
   padding-inline: 1rem 0.75rem;
@@ -62,6 +65,8 @@
 /* Dark: light text on a dark band, the same deep blue in light and dark mode (--oc-dark-band), no top border. */
 .oc-site-footer--dark { border-block-start: 0; color: oklch(from var(--color-white-50) l c h / 0.7); background: var(--oc-dark-band, var(--color-duskblue-95)); }
 .oc-site-footer--dark :is(.oc-site-footer__title, .oc-site-header__brand, a:hover) { color: var(--color-white-50); }
+/* Text and links take the light footer color, also when the page gives p / li a grey of its own. */
+.oc-site-footer--dark :is(p, li) { color: inherit; }
 .oc-site-footer--dark :is(.oc-site-footer__bottom, .oc-site-footer__social a) { border-color: oklch(from var(--color-white-50) l c h / 0.16); }
 
 /* Newsletter: a sign-up field in the brand column. */

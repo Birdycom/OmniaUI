@@ -5,7 +5,7 @@
  * `form` = message above the form); `sent` shows the result, `busy` sets aria-busy and disables the button.
  * Slots: fields (own fields instead of name, e-mail, phone, subject, message), note, success, card-icon ({ card }).
  * Emits submit (the native event; call preventDefault for Inertia) and again (back to the form).
- * Classes: .oc-block-contact-form, -layout, -title, -intro, -cards; .oc-panel--glow, .oc-form--filled, .oc-result
+ * Classes: .oc-block-contact-form, -layout, -title, -intro, -cards; .oc-panel, .oc-form--filled, .oc-result
  */
 import { computed } from 'vue'
 import { useUid } from '../composables/useUid'
@@ -68,7 +68,7 @@ const alertText = computed(() => props.errors.form ?? (Object.keys(props.errors)
 <template>
   <section class="oc-block-contact-form" aria-label="Contact">
     <div class="oc-block-contact-form-layout">
-      <div :id="uid" class="oc-panel oc-panel--glow">
+      <div :id="uid" class="oc-panel">
         <div v-if="sent" class="oc-result" role="status" tabindex="-1">
           <slot name="success">
             <span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><iconify-icon icon="mdi:check" /></span>

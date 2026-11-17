@@ -59,9 +59,9 @@
           @else
         <div class="oc-code-window__bar"><i></i><i></i><i></i><span class="oc-code-window__title">products.php</span></div>
 <pre class="oc-code-window__body">return [
-  'erp'    => AcmeDesk::class,
-  'shop'   => AcmeShop::class,
-  'design' => AcmeDesign::class,
+  'erp'    => Product 1::class,
+  'shop'   => Product 2::class,
+  'design' => Product 3::class,
   'next'   => YourProject::class,
 ];</pre>
           @endif

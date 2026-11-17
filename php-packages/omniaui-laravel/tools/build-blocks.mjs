@@ -112,6 +112,46 @@ const CONFIG = external?.CONFIG ?? {
       { name: "actions", match: '<div class="oc-block-modulehead-actions"', inner: true },
     ],
   },
+  "type-picker": {
+    slots: [
+      { name: "title", match: '<h2 class="oc-block-type-picker-title"', inner: true },
+      { name: "text", match: '<p class="oc-block-type-picker-text"', inner: true },
+      { name: "footer", match: '<div class="oc-block-type-picker-foot"', inner: true },
+    ],
+    default: '<fieldset class="oc-block-type-picker-grid"',
+  },
+  "content-blocks": {
+    slots: [
+      { name: "title", match: '<h2 class="oc-block-content-blocks-title"', inner: true },
+      { name: "meta", match: '<p class="oc-block-content-blocks-meta"', inner: true },
+      { name: "actions", match: '<div class="oc-block-content-blocks-actions"', inner: true },
+    ],
+    default: '<ol class="oc-block-content-blocks-list"',
+  },
+  "route-steps": {
+    slots: [
+      { name: "title", match: '<h2 class="oc-block-route-steps-title"', inner: true },
+      { name: "count", match: '<span class="oc-block-route-steps-count"', inner: true },
+      { name: "footer", match: '<div class="oc-block-route-steps-foot"', inner: true },
+    ],
+    default: '<ol class="oc-block-route-steps-list"',
+  },
+  "route-progress": {
+    slots: [
+      { name: "title", match: '<h2 class="oc-block-route-progress-title"', inner: true },
+      { name: "meta", match: '<p class="oc-block-route-progress-meta"', inner: true },
+      { name: "next", match: '<button class="oc-block-route-progress-next"' },
+    ],
+    default: '<ol class="oc-block-route-progress-list"',
+  },
+  "step-view": {
+    slots: [
+      { name: "title", match: '<h2 class="oc-block-step-view-title"', inner: true },
+      { name: "blocks", match: '<div class="oc-block-step-view-blocks"', inner: true },
+      { name: "question", match: '<div class="oc-block-step-view-question"', inner: true },
+    ],
+    default: '<div class="oc-block-step-view-text"',
+  },
   "page-hero": {
     slots: [
       { name: "eyebrow", match: '<span class="oc-hero-eyebrow"', inner: true },

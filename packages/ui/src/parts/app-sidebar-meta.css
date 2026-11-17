@@ -1,0 +1,40 @@
+/* File: packages/ui/src/parts/app-sidebar-meta.css
+   Map: meta line (brand, version, copyright) -> collapsed sidebar (only the version, the full line as a tooltip)
+   Sidebar meta: a ready-made small line at the foot of an app sidebar: "App 1 2.4.0 · (c) 2026 Company 1". The brand
+   never shortens, the copyright part ends in an ellipsis when the sidebar is narrow. In a collapsed sidebar
+   (.oc-sidebar--collapsed) only the version stays, and the whole line shows as a tooltip (data-tooltip) on hover and on
+   keyboard focus (tabindex="0" on the line). Markup:
+   <div class="oc-sidebar-meta oc-tooltip oc-tooltip--right" data-tooltip="App 1 2.4.0 · © 2026 Company 1" tabindex="0">
+     <span class="oc-sidebar-meta__brand">App 1</span> <span class="oc-sidebar-meta__version">2.4.0</span>
+     <span class="oc-sidebar-meta__copy">© 2026 Company 1</span></div> */
+
+.oc-sidebar-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-inline-size: 0;
+  padding-inline: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--oc-muted-foreground);
+  white-space: nowrap;
+  border-radius: calc(var(--oc-radius) - 2px);
+}
+.oc-sidebar-meta__brand { flex: none; font-weight: 600; color: var(--oc-foreground); }
+.oc-sidebar-meta__version { flex: none; font-variant-numeric: tabular-nums; }
+.oc-sidebar-meta__copy { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+.oc-sidebar-meta__copy::before { content: "\00b7"; margin-inline-end: 0.35rem; }
+.oc-sidebar-meta:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+/* Open sidebar: the whole line is visible, so no tooltip. */
+.oc-sidebar:not(.oc-sidebar--collapsed) .oc-sidebar-meta.oc-tooltip::after { content: none; }
+
+/* Collapsed: only the version, centred. */
+.oc-sidebar--collapsed .oc-sidebar-meta { justify-content: center; padding-inline: 0; }
+.oc-sidebar--collapsed .oc-sidebar-meta :is(.oc-sidebar-meta__brand, .oc-sidebar-meta__copy) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

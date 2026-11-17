@@ -2,7 +2,7 @@
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-dropdown-menu.oc-context-menu[popover]: the menu (role="menu"); position from --oc-context-x / --oc-context-y
        .oc-context-area: dashed right-click target (demo styling)
-       Script: contextmenu -> preventDefault, set the two variables, showPopover()
+       Script: contextmenu -> preventDefault, set the two variables, showPopover() (after pointerup while a button is down: Firefox)
 -->
 <div class="oc-context-area" id="oc-ctx-area" tabindex="0">Right-click (or press the menu key) here</div>
 <div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover role="menu" aria-label="Actions">
@@ -19,7 +19,10 @@
     e.preventDefault();
     menu.style.setProperty('--oc-context-x', Math.min(e.clientX, innerWidth - 220) + 'px');
     menu.style.setProperty('--oc-context-y', Math.min(e.clientY, innerHeight - 220) + 'px');
-    menu.showPopover();
+    // Firefox fires contextmenu while the right button is still down: open after the release,
+    // or that release would close the menu again right away.
+    if (e.buttons) window.addEventListener('pointerup', function () { setTimeout(function () { menu.showPopover(); }); }, { once: true });
+    else menu.showPopover();
   });
 })();
 </script>

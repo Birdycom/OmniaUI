@@ -1,7 +1,7 @@
 /* File: packages/blocks/src/parts/site-contact-form.css
    Map: section -> layout (form panel | card column) -> panel title + intro -> cards (tile, title, lines) -> narrow
-   Contact form block: the form in a panel with a glow (.oc-panel--glow + .oc-form--filled) next to a column of contact
-   cards (.oc-block-contact-card from the contact-grid block). Script: contact-form.js (optional). */
+   Contact form block: the form in a flat panel (.oc-panel + .oc-form--filled) next to a list of contact
+   details (.oc-block-contact-card from the contact-grid block). Script: contact-form.js (optional). */
 
 .oc-block-contact-form {
   max-inline-size: var(--oc-block-max-width, 1200px);
@@ -30,21 +30,51 @@
 }
 .oc-block-contact-form .oc-alert { margin: 0 0 1.25rem; }
 
+/* The form panel is flat: no glow, also when older markup still carries .oc-panel--glow. */
+.oc-block-contact-form .oc-panel { background: var(--oc-card); }
+
+/* The contact details: one quiet list next to the form. Each .oc-block-contact-card is a row (icon, title, lines)
+   with a thin line between rows, not a card of its own. */
 .oc-block-contact-form-cards {
   display: grid;
-  gap: 1.25rem;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius-lg, 1.25rem);
+  background: var(--oc-card);
 }
-.oc-block-contact-form-cards .oc-block-contact-card > .oc-icon-tile { margin-block-end: 0.75rem; }
-/* Lines stay muted; a link turns to the foreground color on hover. */
-.oc-block-contact-form-cards a.oc-block-contact-line {
+.oc-block-contact-form-cards .oc-block-contact-card {
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 0.875rem;
+  row-gap: 0.15rem;
+  padding: 1.1rem 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.oc-block-contact-form-cards .oc-block-contact-card + .oc-block-contact-card { border-block-start: 1px solid var(--oc-border); }
+.oc-block-contact-form-cards .oc-block-contact-card > * { grid-column: 2; }
+/* The icon: a plain glyph in the text color, no tile around it. */
+.oc-block-contact-form-cards .oc-block-contact-card > :is(.oc-icon-tile, .oc-product-mark) {
+  grid-column: 1;
+  grid-row: 1 / span 9;
+  align-self: start;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
   color: var(--oc-muted-foreground);
-  font-weight: 400;
+  font-size: 1.25rem;
 }
-.oc-block-contact-form-cards a.oc-block-contact-line:hover { color: var(--oc-foreground); }
+.oc-block-contact-form-cards .oc-block-contact-title { margin: 0; font-size: 0.95rem; font-weight: 600; }
+/* Lines stay muted; a link is in the text color and underlines on hover. */
+.oc-block-contact-form-cards a.oc-block-contact-line { color: var(--oc-foreground); font-weight: 500; }
+.oc-block-contact-form-cards a.oc-block-contact-line:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-/* When the block is narrower than 52rem (about a 960px screen) the cards move under the form, side by side as far as
-   they fit. A container query, so it also works in a sidebar layout or a narrow column. */
+/* When the block is narrower than 52rem (about a 960px screen) the contact details move under the form. A container query, so it also works in a sidebar layout or a narrow column. */
 @container (max-width: 52rem) {
   .oc-block-contact-form-layout { grid-template-columns: 1fr; }
-  .oc-block-contact-form-cards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
 }

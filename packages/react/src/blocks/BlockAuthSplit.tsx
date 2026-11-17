@@ -65,7 +65,7 @@ export const BlockAuthSplit = forwardRef<HTMLDivElement, BlockAuthSplitProps>(fu
           <div className="oc-block-authsplit-fields">
             <div className="oc-field">
               <label className="oc-field-label" htmlFor={`${id}-email`}>E-mail</label>
-              <input className="oc-input" id={`${id}-email`} name="email" type="email" autoComplete="username" placeholder="name@company.com" required />
+              <input className="oc-input" id={`${id}-email`} name="email" type="email" autoComplete="username" placeholder="name@company1.example" required />
             </div>
             <div className="oc-field">
               <label className="oc-field-label" htmlFor={`${id}-password`}>Password</label>

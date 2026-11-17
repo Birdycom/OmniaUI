@@ -108,6 +108,20 @@
 @supports not (backdrop-filter: blur(1px)) {
   .oc-glass--liquid, .oc-glass-bar { --oc-liquid-tint: light-dark(oklch(100% 0 0deg / 0.85), oklch(25% 0.02 260deg / 0.9)); }
 }
+/* Firefox (no backdrop root): the lens filter moves from ::after to the sheet itself, see media-glass.css. */
+@supports (-moz-appearance: none) {
+  .oc-glass.oc-glass--liquid,
+  .oc-glass--liquid,
+  .oc-glass-bar,
+  .oc-site-header--glass .oc-site-header__inner { backdrop-filter: blur(var(--oc-liquid-blur)) saturate(1.9) brightness(1.1) contrast(1.05); }
+  .oc-glass.oc-glass--liquid::after,
+  .oc-glass--liquid::after,
+  .oc-glass-bar::after,
+  .oc-site-header--glass .oc-site-header__inner::after { backdrop-filter: none; }
+  @media (prefers-reduced-transparency: reduce) {
+    .oc-glass.oc-glass--liquid, .oc-glass--liquid, .oc-glass-bar, .oc-site-header--glass .oc-site-header__inner { backdrop-filter: none; }
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .oc-glass-bar__item { transition: none; }
 }

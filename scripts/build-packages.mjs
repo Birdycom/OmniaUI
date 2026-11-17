@@ -96,7 +96,10 @@ async function main() {
   await fs.copyFile(r("packages/ui/src/fly.js"), r("public/js/oc-fly.js"));
   await fs.copyFile(r("packages/ui/src/particles.js"), r("public/js/oc-particles.js"));
   await fs.copyFile(r("packages/ui/src/toc.js"), r("public/js/oc-toc.js"));
+  await fs.copyFile(r("packages/ui/src/theme.js"), r("public/js/oc-theme.js"));
   await fs.copyFile(r("packages/ui/src/language-select.js"), r("public/js/oc-language-select.js"));
+  await fs.copyFile(r("packages/ui/src/combobox.js"), r("public/js/oc-combobox.js"));
+  await fs.copyFile(r("packages/ui/src/logo.js"), r("public/js/oc-logo.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
 

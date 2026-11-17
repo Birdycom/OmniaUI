@@ -1,6 +1,6 @@
 <script setup lang="ts">
-/** Card-style details/summary section. v-model:open. Slots: icon, title, default (content). Classes: --dense */
-defineProps<{ title?: string; dense?: boolean }>()
+/** Card-style details/summary section. v-model:open. Slots: icon, title, default (content). Classes: --dense, --plain (no card) */
+defineProps<{ title?: string; dense?: boolean; plain?: boolean }>()
 const open = defineModel<boolean>('open', { default: false })
 
 function onToggle(e: Event) {
@@ -9,7 +9,7 @@ function onToggle(e: Event) {
 </script>
 
 <template>
-  <details :class="['oc-collapsible', dense && 'oc-collapsible--dense']" :open="open" @toggle="onToggle">
+  <details :class="['oc-collapsible', dense && 'oc-collapsible--dense', plain && 'oc-collapsible--plain']" :open="open" @toggle="onToggle">
     <summary>
       <slot name="icon" />
       <span class="oc-collapsible-title"><slot name="title">{{ title }}</slot></span>

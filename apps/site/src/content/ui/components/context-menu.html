@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/context-menu.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <p class="oc-section-content__desc">Right-click the dashed area (or Tab to it and press the menu key or Shift+F10): the menu opens at the pointer. Escape or a click outside closes it. Opening it at the pointer needs the few lines of script in the HTML tab.</p>
           <oc-demo title="Context menu" size="tall">
 <div class="oc-context-area" id="oc-ctx-area" tabindex="0">Right-click (or press the menu key) here</div>
 <div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover="" role="menu" aria-label="Actions">
@@ -24,7 +25,10 @@
     e.preventDefault();
     menu.style.setProperty('--oc-context-x', Math.min(e.clientX, innerWidth - 220) + 'px');
     menu.style.setProperty('--oc-context-y', Math.min(e.clientY, innerHeight - 220) + 'px');
-    menu.showPopover();
+    // Firefox fires contextmenu while the right button is still down: open after the release,
+    // or that release would close the menu again right away.
+    if (e.buttons) window.addEventListener('pointerup', function () { setTimeout(function () { menu.showPopover(); }); }, { once: true });
+    else menu.showPopover();
   });
 })();
 </script>

@@ -1,0 +1,111 @@
+<!-- OmniaUI block: type-picker - Gallery of content types to add (text, image, question, note, link, countdown, tip, video, code to scan), each card with a small real preview, picked by click or arrow keys. Needs @birdycom/omniaui-blocks + @birdycom/omniaui CSS.
+     File: packages/blocks/blocks/type-picker.html | Map: head -> tools (search + category chips) -> fieldset of type cards -> empty line -> foot -> optional filter script
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-block-type-picker: Frame (container query: tools side by side from 40rem)
+       .oc-block-type-picker-head / -title / -text: Heading and one line of help
+       .oc-block-type-picker-tools: Search field (.oc-input-group--affix with .oc-block-type-picker-search) and category chips (.oc-chip-filter.oc-block-type-picker-cats, radios)
+       .oc-block-type-picker-grid: fieldset (radiogroup) with the cards; equal heights in every row
+       .oc-block-type-picker-item[data-category]: label around one radio (.oc-block-type-picker-input). States: :checked (primary frame + check mark), :focus-visible, :disabled (faded), [hidden] (filtered out)
+       .oc-block-type-picker-preview: Small real preview (aria-hidden), parts .oc-block-type-picker-art-* (img, option, option--on, note, btn, time, bar, row, video, code)
+       .oc-block-type-picker-name / -hint: Name and one short line
+       .oc-block-type-picker-empty: Shown by the script when nothing matches
+       .oc-block-type-picker-foot: Cancel / Add buttons
+     Picking works without JavaScript (native radios). The script at the end only filters by search text and category; leave it out when your framework filters.
+-->
+<section class="oc-block-type-picker" aria-labelledby="oc-picker-title">
+  <div class="oc-block-type-picker-head">
+    <h2 class="oc-block-type-picker-title" id="oc-picker-title">Add a block</h2>
+    <p class="oc-block-type-picker-text">Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.</p>
+  </div>
+  <div class="oc-block-type-picker-tools">
+    <div class="oc-input-group oc-input-group--affix">
+      <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify"></iconify-icon></span>
+      <input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks">
+    </div>
+    <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category">
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="all" checked> All</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="content"> Content</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="question"> Questions</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="media"> Media</label>
+    </fieldset>
+  </div>
+  <fieldset class="oc-block-type-picker-grid">
+    <legend class="oc-visually-hidden">Block type</legend>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="text" checked>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><b>Welcome</b><p>Walk to the old gate and look up at the clock.</p></span>
+      <span class="oc-block-type-picker-name">Text</span>
+      <span class="oc-block-type-picker-hint">Paragraphs with headings and links</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="media">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="image">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><rect width="160" height="100" class="oc-block-art-sky"/><circle cx="122" cy="28" r="12" class="oc-block-art-sun"/><path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/></svg></span>
+      <span class="oc-block-type-picker-name">Image</span>
+      <span class="oc-block-type-picker-hint">A photo with an optional caption</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="question">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="question" disabled>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><b>Which year?</b><span class="oc-block-type-picker-art-option">1890</span><span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on">1910</span></span>
+      <span class="oc-block-type-picker-name">Question</span>
+      <span class="oc-block-type-picker-hint">One per step: this step has one</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="note">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-note"><b>Mind the traffic</b><p>Cross at the lights.</p></span></span>
+      <span class="oc-block-type-picker-name">Note</span>
+      <span class="oc-block-type-picker-hint">Info, warning or success in a frame</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="link">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>More about this place</p><span class="oc-block-type-picker-art-btn">Open page <iconify-icon icon="mdi:open-in-new"></iconify-icon></span></span>
+      <span class="oc-block-type-picker-name">Link</span>
+      <span class="oc-block-type-picker-hint">A button to another page</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="countdown">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>Time left</p><span class="oc-block-type-picker-art-time">1:30</span><span class="oc-block-type-picker-art-bar"></span></span>
+      <span class="oc-block-type-picker-name">Countdown</span>
+      <span class="oc-block-type-picker-hint">A timer that starts when the step opens</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="tip">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-row">Show a tip <iconify-icon icon="mdi:chevron-down"></iconify-icon></span><p>Opens when the reader asks for it.</p></span>
+      <span class="oc-block-type-picker-name">Tip</span>
+      <span class="oc-block-type-picker-hint">Hidden until the reader opens it</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="media">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="video">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-video"><iconify-icon icon="mdi:play-circle"></iconify-icon></span></span>
+      <span class="oc-block-type-picker-name">Video</span>
+      <span class="oc-block-type-picker-hint">A clip from a link or an upload</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="question">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="scan">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"><path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"/></svg></span>
+      <span class="oc-block-type-picker-name">Code to scan</span>
+      <span class="oc-block-type-picker-hint">Opens the step after a scan on site</span>
+    </label>
+    <p class="oc-block-type-picker-empty" hidden>No block matches your search.</p>
+  </fieldset>
+  <div class="oc-block-type-picker-foot">
+    <button class="oc-btn oc-btn--outline" type="button">Cancel</button>
+    <button class="oc-btn" type="button">Add block</button>
+  </div>
+</section>
+<script>
+  // Optional: filter the cards of every .oc-block-type-picker by search text and category. Without it all cards stay visible.
+  document.querySelectorAll(".oc-block-type-picker").forEach((picker) => {
+    const filter = () => {
+      const q = (picker.querySelector(".oc-block-type-picker-search")?.value || "").trim().toLowerCase();
+      const cat = picker.querySelector(".oc-block-type-picker-cats input:checked")?.value || "all";
+      let shown = 0;
+      picker.querySelectorAll(".oc-block-type-picker-item").forEach((item) => {
+        item.hidden = !((cat === "all" || item.dataset.category === cat) && item.textContent.toLowerCase().includes(q));
+        if (!item.hidden) shown++;
+      });
+      const empty = picker.querySelector(".oc-block-type-picker-empty");
+      if (empty) empty.hidden = shown > 0;
+    };
+    picker.addEventListener("input", (e) => { if (e.target.closest(".oc-block-type-picker-tools")) filter(); });
+  });
+</script>

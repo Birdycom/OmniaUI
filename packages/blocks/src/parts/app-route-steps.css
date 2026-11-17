@@ -1,0 +1,171 @@
+/* File: packages/blocks/src/parts/app-route-steps.css
+   Map: frame -> head -> tools (search + kind chips) -> list (counter) -> row (grip, main button with thumb + name + tags,
+        status, menu) -> thumb kinds (number, icon, image) -> selected / drag / filtered states -> foot -> container sizes
+   Route steps: the ordered list of the steps (stops, stations, lessons, tasks) of a route or course in an editor.
+   The order numbers are a CSS counter, so they follow the order after a move by themselves; steps without a number
+   (intro, finish) show an icon and do not count. Moving and the menu actions need the small optional script. */
+
+.oc-block-route-steps {
+  container: oc-route-steps / inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+}
+
+.oc-block-route-steps-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  padding: 1rem 1rem 0.5rem;
+}
+.oc-block-route-steps-title { margin: 0; font-size: 1.0625rem; font-weight: 650; }
+.oc-block-route-steps-count { color: var(--oc-muted-foreground); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+
+.oc-block-route-steps-tools { display: grid; gap: 0.6rem; grid-template-columns: minmax(0, 1fr); padding: 0.25rem 1rem 0.75rem; }
+.oc-block-route-steps-tools > .oc-input-group { min-inline-size: 0; }
+.oc-block-route-steps-tools .oc-chip-filter { margin: 0; }
+
+.oc-block-route-steps-list {
+  margin: 0;
+  padding: 0.5rem;
+  border-block: 1px solid var(--oc-border);
+  list-style: none;
+  counter-reset: oc-route-step;
+}
+
+/* Row: grip | main (thumb + text) | status | menu. */
+.oc-block-route-steps-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "grip main status menu";
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  min-block-size: 3.75rem;
+  margin-block-end: 0.25rem;
+  padding: 0.35rem 0.4rem 0.35rem 0.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--oc-radius);
+  transition: background-color var(--oc-transition-fast), border-color var(--oc-transition-fast), opacity var(--oc-transition-fast);
+}
+.oc-block-route-steps-item:last-child { margin-block-end: 0; }
+.oc-block-route-steps-item:hover { background: var(--oc-hover, var(--oc-muted)); }
+.oc-block-route-steps-item > .oc-sortable-row-grip { grid-area: grip; }
+.oc-block-route-steps-item:has(.oc-block-route-steps-thumb--num) { counter-increment: oc-route-step; }
+
+/* The main part is one button: click (or Enter) opens the step in the editor. */
+.oc-block-route-steps-main {
+  grid-area: main;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-inline-size: 0;
+  padding: 0.15rem;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.oc-block-route-steps-main:focus-visible { outline: var(--oc-focus-width, 2px) solid var(--oc-ring); outline-offset: 2px; }
+.oc-block-route-steps-text { display: grid; gap: 0.2rem; min-inline-size: 0; }
+.oc-block-route-steps-name { overflow: hidden; font-size: 0.875rem; font-weight: 600; line-height: 1.3; white-space: nowrap; text-overflow: ellipsis; }
+.oc-block-route-steps-meta { display: flex; flex-wrap: wrap; gap: 0.1rem 0.4rem; color: var(--oc-muted-foreground); font-size: 0.75rem; line-height: 1.3; }
+.oc-block-route-steps-meta > * + *::before { content: "\00B7"; margin-inline-end: 0.4rem; }
+
+/* Selected step (aria-current on the main button). */
+.oc-block-route-steps-item:has(.oc-block-route-steps-main[aria-current="true"]) {
+  border-color: oklch(from var(--oc-primary) l c h / 0.4);
+  background: oklch(from var(--oc-primary) l c h / 0.08);
+}
+
+/* Thumb: the order number by default, an icon for steps that do not count, or a photo. */
+.oc-block-route-steps-thumb {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 2px);
+  background: var(--oc-muted);
+  color: var(--oc-foreground);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.oc-block-route-steps-thumb :is(iconify-icon, svg[data-icon]) {
+  font-size: 1.2rem;
+  /* The tint stays light enough on a dark theme. */
+  color: light-dark(var(--oc-step-color, var(--oc-muted-foreground)), oklch(from var(--oc-step-color, var(--oc-muted-foreground)) max(l, 0.74) c h));
+}
+.oc-block-route-steps-thumb--num {
+  border-color: transparent;
+  background: oklch(from var(--oc-primary) l c h / 0.12);
+  color: light-dark(oklch(from var(--oc-primary) min(l, 0.42) c h), var(--oc-primary));
+  font-family: var(--oc-font-display, inherit);
+}
+.oc-block-route-steps-thumb--num::before { content: counter(oc-route-step); }
+.oc-block-route-steps-thumb :is(img, svg:not([data-icon])) { inline-size: 100%; block-size: 100%; object-fit: cover; }
+/* A photo thumb still shows its number in a small corner tag. */
+.oc-block-route-steps-thumb--num:has(img, svg:not([data-icon])) { position: relative; }
+.oc-block-route-steps-thumb--num:has(img, svg:not([data-icon]))::before {
+  position: absolute;
+  inset-block-end: 0.1rem;
+  inset-inline-end: 0.1rem;
+  min-inline-size: 1rem;
+  padding: 0 0.2rem;
+  border-radius: 0.3rem;
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  font-size: 0.625rem;
+  line-height: 1rem;
+  text-align: center;
+}
+
+.oc-block-route-steps-status { grid-area: status; }
+.oc-block-route-steps-menu { grid-area: menu; }
+
+/* Filtered out (.is-filtered, set by the script): collapsed but still counted, so the numbers stay the real ones.
+   Not the hidden attribute: OmniaCSS makes [hidden] display: none, and a step with display: none is not counted. */
+.oc-block-route-steps-item.is-filtered {
+  visibility: hidden;
+  min-block-size: 0;
+  block-size: 0;
+  margin: 0;
+  padding-block: 0;
+  overflow: hidden;
+  border-width: 0;
+}
+.oc-block-route-steps-empty { margin: 0; padding: 1rem; color: var(--oc-muted-foreground); font-size: 0.875rem; text-align: center; }
+.oc-block-route-steps-empty[hidden] { display: none; }
+
+/* Drag and keyboard states (set by the script). */
+.oc-block-route-steps-item.is-dragging { opacity: 0.4; }
+.oc-block-route-steps-item.is-drop-before { box-shadow: 0 -2px 0 var(--oc-primary); }
+.oc-block-route-steps-item.is-drop-after { box-shadow: 0 2px 0 var(--oc-primary); }
+.oc-block-route-steps-item:has(> .oc-sortable-row-grip[aria-pressed="true"]) { border-color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.08); }
+
+.oc-block-route-steps-foot { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.75rem 1rem 1rem; }
+
+/* Narrow column: the status goes under the name. */
+@container oc-route-steps (max-width: 26rem) {
+  .oc-block-route-steps-item { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "grip main menu" ". status ."; }
+  .oc-block-route-steps-status { justify-self: start; margin-inline-start: 3.4rem; }
+}
+@container oc-route-steps (min-width: 34rem) {
+  .oc-block-route-steps-tools { grid-template-columns: minmax(10rem, 16rem) minmax(0, 1fr); align-items: center; }
+  .oc-block-route-steps-tools .oc-chip-filter { justify-content: flex-end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-block-route-steps-item { transition: none; }
+}

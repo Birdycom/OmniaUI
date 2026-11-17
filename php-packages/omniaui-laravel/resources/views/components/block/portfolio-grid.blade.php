@@ -21,7 +21,7 @@
             @if (isset($title) && trim((string) $title) !== '')
                 {{ $title }}
             @else
-            Selected <span class="oc-text-gradient">projects</span>
+            Selected projects
             @endif
         </h2>
         <p class="oc-block-portfolio-lead">
@@ -45,16 +45,16 @@
             {{ $slot }}
         @else
       <a class="oc-project-card oc-accent--green" href="#p1">
-        <span class="oc-project-card__frame"><span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span><span class="oc-project-card__shot" role="img" aria-label="Northwind Bakery, screenshot"></span></span>
-        <span class="oc-project-card__body"><span class="oc-project-card__type">Website</span><span class="oc-project-card__name">Northwind Bakery</span><span class="oc-project-card__meta">Food &amp; retail &middot; Antwerp</span><span class="oc-project-card__more">View project</span></span>
+        <span class="oc-project-card__frame"><span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span><span class="oc-project-card__shot" role="img" aria-label="Customer 1, screenshot"></span></span>
+        <span class="oc-project-card__body"><span class="oc-project-card__type">Website</span><span class="oc-project-card__name">Customer 1</span><span class="oc-project-card__meta">Food &amp; retail &middot; Antwerp</span><span class="oc-project-card__more">View project</span></span>
       </a>
       <a class="oc-project-card oc-accent--violet" href="#p2">
-        <span class="oc-project-card__frame"><span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span><span class="oc-project-card__shot" role="img" aria-label="Fjord Interiors, screenshot"></span></span>
-        <span class="oc-project-card__body"><span class="oc-project-card__type">Web app</span><span class="oc-project-card__name">Fjord Interiors</span><span class="oc-project-card__meta">Interior design &middot; Ghent</span><span class="oc-project-card__more">View project</span></span>
+        <span class="oc-project-card__frame"><span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span><span class="oc-project-card__shot" role="img" aria-label="Customer 2, screenshot"></span></span>
+        <span class="oc-project-card__body"><span class="oc-project-card__type">Web app</span><span class="oc-project-card__name">Customer 2</span><span class="oc-project-card__meta">Interior design &middot; Ghent</span><span class="oc-project-card__more">View project</span></span>
       </a>
       <a class="oc-project-card oc-accent--orange" href="#p3">
-        <span class="oc-project-card__frame"><span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span><span class="oc-project-card__shot" role="img" aria-label="Harbor Logistics, screenshot"></span></span>
-        <span class="oc-project-card__body"><span class="oc-project-card__type">Desktop tool</span><span class="oc-project-card__name">Harbor Logistics</span><span class="oc-project-card__meta">Transport &middot; Rotterdam</span><span class="oc-project-card__more">View project</span></span>
+        <span class="oc-project-card__frame"><span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span><span class="oc-project-card__shot" role="img" aria-label="Customer 3, screenshot"></span></span>
+        <span class="oc-project-card__body"><span class="oc-project-card__type">Desktop tool</span><span class="oc-project-card__name">Customer 3</span><span class="oc-project-card__meta">Transport &middot; Rotterdam</span><span class="oc-project-card__more">View project</span></span>
       </a>
         @endif
     </div>

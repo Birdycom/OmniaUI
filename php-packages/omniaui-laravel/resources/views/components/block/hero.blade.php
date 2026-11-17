@@ -8,29 +8,29 @@
       @if (isset($badge) && trim((string) $badge) !== '')
           {{ $badge }}
       @else
-      New in v0.1.6
+      New: purchase orders
       @endif
   </span>
   <h1>
       @if (isset($title) && trim((string) $title) !== '')
           {{ $title }}
       @else
-      Build faster with OmniaCSS
+      Quotes, invoices and stock in one app
       @endif
   </h1>
   <p>
       @if (isset($text) && trim((string) $text) !== '')
           {{ $text }}
       @else
-      A utility-first CSS framework with component primitives and pre-composed blocks for modern web apps.
+      Company 1 builds business software for small teams: one web application instead of five separate tools.
       @endif
   </p>
   <div class="oc-block-hero-actions">
       @if (isset($actions) && trim((string) $actions) !== '')
           {{ $actions }}
       @else
-    <button class="oc-btn oc-btn--lg">Get started</button>
-    <button class="oc-btn oc-btn--outline oc-btn--lg">View docs</button>
+    <button class="oc-btn oc-btn--lg">Book a demo</button>
+    <button class="oc-btn oc-btn--outline oc-btn--lg">See the modules</button>
       @endif
   </div>
 </div>

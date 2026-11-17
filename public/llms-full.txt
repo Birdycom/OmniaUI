@@ -1,7 +1,7 @@
 # OmniaUI — full reference for AI assistants
 
-> OmniaUI is the component and block library for OmniaCSS: 182 components and
-> 99 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
+> OmniaUI is the component and block library for OmniaCSS: 186 components and
+> 104 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
 > wrappers for React, Vue, Laravel Blade and Livewire. Behaviour comes from native HTML (dialog, popover, details,
 > :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; 52 advanced
 > blocks and 5 components are part of OmniaUI Pro (paid license).
@@ -66,7 +66,10 @@ Buttons: default, secondary, outline, ghost, destructive and sizes
 Card with header, content, footer
 
 ```html
-<!-- OmniaUI component: card — Card with header, content, footer. Needs @birdycom/omniaui CSS. -->
+<!-- OmniaUI component: card — Card with header, content, footer. Needs @birdycom/omniaui CSS.
+     Accent (0.16.0): .oc-card--accent[data-tone="primary|info|success|warning|destructive|test|live"] (2px border in that
+     color) + .oc-card-band at the top (soft band: a badge, .oc-card-band__title with a <small> line, a status);
+     data-active="false" = a set that is not in use now (dashed). -->
 <div class="oc-card">
   <div class="oc-card-header">
     <h3 class="oc-card-title">Create project</h3>
@@ -383,6 +386,8 @@ Vertical navigation: header, groups, menu items, badges, nested menu, footer, ic
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-sidebar: Root (aside/nav). Modifiers: --collapsed (icon only), --right, --floating. Width via --oc-sidebar-width / --oc-sidebar-width-icon.
        .oc-sidebar-header / -footer: Fixed top / bottom area (logo, workspace switcher / user)
+       .oc-sidebar-meta (0.16.0): brand + version + copyright line in the footer; collapsed: only the version, the line as a
+         tooltip (data-tooltip, oc-tooltip oc-tooltip--right). Parts: __brand, __version, __copy
        .oc-sidebar-content: Scrolling middle area
        .oc-sidebar-group: Group of items; optional .oc-sidebar-group-label heading
        .oc-sidebar-separator: Divider line
@@ -479,6 +484,10 @@ Side panel on <dialog> (right, left, top, bottom) - no JavaScript
        .oc-sheet-body: Scrolling content
        .oc-sheet-footer: Action row
        .oc-sheet-close: Close button (command="close")
+       Options (0.16.0): dialog.oc-sheet--glass (see-through panel over a live view, light scrim without blur; tokens
+         --oc-sheet-bg, --oc-sheet-blur, --oc-sheet-scrim; opaque with prefers-reduced-transparency or without backdrop-filter),
+         dialog.oc-sheet--inset (a strip of the page stays free beside the panel; --oc-sheet-gap),
+         .oc-sheet-footer--panel (the footer is a block of content on its own background, --oc-sheet-footer-bg)
      Slots: header (title, description), body (default), footer, trigger button outside the dialog
 -->
 <button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="oc-sheet-demo">Open sheet</button>
@@ -689,7 +698,7 @@ Label / value rows in a panel (dl)
   <h3 class="oc-dl-title">Company data found</h3>
   <p class="oc-dl-description">Retrieved from the VAT register.</p>
   <dl class="oc-dl">
-    <div class="oc-dl-row"><dt class="oc-dl-term">Name</dt><dd class="oc-dl-detail">Birdy Systems BV</dd></div>
+    <div class="oc-dl-row"><dt class="oc-dl-term">Name</dt><dd class="oc-dl-detail">Company 1 BV</dd></div>
     <div class="oc-dl-row"><dt class="oc-dl-term">Enterprise number</dt><dd class="oc-dl-detail">BE 0123.456.789</dd></div>
     <div class="oc-dl-row"><dt class="oc-dl-term">Address</dt><dd class="oc-dl-detail">Main Street 1, 2000 Antwerp</dd></div>
   </dl>
@@ -704,7 +713,7 @@ Card-style details/summary form section with icon, title and chevron
 ```html
 <!-- OmniaUI component: collapsible - Card-style details/summary form section with icon, title and chevron. Needs @birdycom/omniaui CSS.
      Class API (modifiers are extra classes / attributes on the same element):
-       details.oc-collapsible: Root. Modifier: --dense (compact paddings).
+       details.oc-collapsible: Root. Modifiers: --dense (compact paddings), --plain (no card: for lists inside a panel, a line between neighbours).
        summary: Header row with .oc-collapsible-icon + .oc-collapsible-title; the chevron is CSS
        .oc-collapsible-content: Body with a top border
      Slots: icon, title (summary), content (default)
@@ -717,7 +726,7 @@ Card-style details/summary form section with icon, title and chevron
   <div class="oc-collapsible-content">
     <div class="oc-field">
       <label class="oc-field-label" for="oc-collapsible-name">Name</label>
-      <input class="oc-input" id="oc-collapsible-name" value="Birdy Systems BV">
+      <input class="oc-input" id="oc-collapsible-name" value="Company 1 BV">
     </div>
   </div>
 </details>
@@ -1628,7 +1637,7 @@ Context menu: dropdown menu at the pointer with a minimal documented script
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-dropdown-menu.oc-context-menu[popover]: the menu (role="menu"); position from --oc-context-x / --oc-context-y
        .oc-context-area: dashed right-click target (demo styling)
-       Script: contextmenu -> preventDefault, set the two variables, showPopover()
+       Script: contextmenu -> preventDefault, set the two variables, showPopover() (after pointerup while a button is down: Firefox)
 -->
 <div class="oc-context-area" id="oc-ctx-area" tabindex="0">Right-click (or press the menu key) here</div>
 <div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover role="menu" aria-label="Actions">
@@ -1645,7 +1654,10 @@ Context menu: dropdown menu at the pointer with a minimal documented script
     e.preventDefault();
     menu.style.setProperty('--oc-context-x', Math.min(e.clientX, innerWidth - 220) + 'px');
     menu.style.setProperty('--oc-context-y', Math.min(e.clientY, innerHeight - 220) + 'px');
-    menu.showPopover();
+    // Firefox fires contextmenu while the right button is still down: open after the release,
+    // or that release would close the menu again right away.
+    if (e.buttons) window.addEventListener('pointerup', function () { setTimeout(function () { menu.showPopover(); }); }, { once: true });
+    else menu.showPopover();
   });
 })();
 </script>
@@ -1714,6 +1726,10 @@ Combobox: input + listbox styling (filtering and selection are wrapper responsib
        ul.oc-combobox-list: role="listbox"
        li.oc-combobox-option: role="option" tabindex="-1"; aria-selected="true" shows a check; [data-active] marks the keyboard-active option
        .oc-combobox-group / .oc-combobox-empty: group heading and empty message
+       Icons (0.16.0): span.oc-combobox-option-icon first in an option (svg, iconify-icon or img); span.oc-combobox-icon first in
+         the wrapper shows the icon of the chosen value in the field. Options without an icon line up with the others.
+     Behaviour: data-oc-combobox + oc-combobox.js (npx omniaui copy-js combobox) filters while typing, moves with the arrow keys,
+       chooses with Enter or a click, closes with Escape, copies the icon into the field; event oc-combobox-change { value, label }.
 -->
 <div class="oc-combobox">
   <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework&hellip;" aria-label="Framework">
@@ -1726,6 +1742,21 @@ Combobox: input + listbox styling (filtering and selection are wrapper responsib
     <li class="oc-combobox-option" role="option" tabindex="-1">Vue</li>
   </ul>
 </div>
+
+<!-- With icons in front of the options and of the chosen value (needs oc-combobox.js for typing and the keyboard) -->
+<div class="oc-combobox" data-oc-combobox>
+  <span class="oc-combobox-icon" aria-hidden="true"><iconify-icon icon="mdi:source-branch" aria-hidden="true"></iconify-icon></span>
+  <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-icons" aria-autocomplete="list" placeholder="Choose a source&hellip;" aria-label="Source">
+  <input type="hidden" name="source" value="">
+  <ul class="oc-combobox-list" id="oc-cb-icons" role="listbox" aria-label="Sources">
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="github"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="mdi:github" aria-hidden="true"></iconify-icon></span>GitHub</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="gitlab"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="mdi:gitlab" aria-hidden="true"></iconify-icon></span>GitLab</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="folder"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="mdi:folder-outline" aria-hidden="true"></iconify-icon></span>Local folder</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="other">Other</li>
+    <li class="oc-combobox-empty" role="presentation" hidden>No results</li>
+  </ul>
+</div>
+<script type="module" src="/js/oc-combobox.js"></script>
 ```
 
 ### dropdown-menu
@@ -1738,6 +1769,7 @@ Dropdown extras: sub-menus, checkbox and radio items, shortcuts, destructive/dis
        .oc-dropdown-sub > button.oc-dropdown-item + .oc-dropdown-submenu: nested menu (opens on hover and focus-within, chevron added)
        .oc-dropdown-item[role="menuitemcheckbox"|"menuitemradio"][aria-checked]: check mark / dot indicator
        .oc-dropdown-shortcut: right aligned key hint
+       .oc-dropdown-icon (0.16.0): icon in front of the label; items without one line up with the others
        .oc-dropdown-item--destructive | --inset | [aria-disabled=true]
 -->
 <button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-dd-extras">Open menu</button>
@@ -2367,6 +2399,10 @@ Compact language or currency switcher for a site header
        .oc-language-select: Pill frame around icon and select. Modifiers: --ghost (no frame), --currency (symbol in primary color).
        .oc-language-select-icon: Leading icon (inline SVG) or symbol; aria-hidden="true"
        .oc-language-select-control: The native <select> (give it an aria-label)
+       Menu (0.16.0): button.oc-language-select[popovertarget] + .oc-dropdown-menu.oc-language-menu[popover]: one link per
+         language (hreflang + lang) with .oc-language-flag (flag webicon), the name in that language, .oc-language-menu-code,
+         and a check at aria-current="true". Trigger: .oc-language-flag + .oc-language-select-code ("NL") or the name;
+         --icon = round icon-only trigger (globe or flag) with the name in aria-label and a tooltip (oc-tooltip). No script.
      States: :focus-within (ring), disabled select (dimmed)
      Behaviour: the app listens to "change" (navigate to /nl/..., set a cookie, or submit the form).
 -->
@@ -2397,6 +2433,17 @@ Compact language or currency switcher for a site header
       <option value="de">Deutsch</option>
     </select>
   </label>
+</div>
+
+<!-- Menu with flags: the trigger shows the flag and the code, the list the flag, the name in that language and a check -->
+<button type="button" class="oc-language-select" popovertarget="oc-language-flags" aria-label="Language: Nederlands">
+  <span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:nl-4x3" aria-hidden="true"></iconify-icon></span>
+  <span class="oc-language-select-code">NL</span>
+</button>
+<div class="oc-dropdown-menu oc-language-menu" id="oc-language-flags" popover aria-label="Language">
+  <a class="oc-dropdown-item" href="/en/" hreflang="en" lang="en"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:gb-4x3" aria-hidden="true"></iconify-icon></span><span>English</span><span class="oc-language-menu-code" aria-hidden="true">EN</span></a>
+  <a class="oc-dropdown-item" href="/nl/" hreflang="nl" lang="nl" aria-current="true"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:nl-4x3" aria-hidden="true"></iconify-icon></span><span>Nederlands</span><span class="oc-language-menu-code" aria-hidden="true">NL</span></a>
+  <a class="oc-dropdown-item" href="/fr/" hreflang="fr" lang="fr"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:fr-4x3" aria-hidden="true"></iconify-icon></span><span>Fran&ccedil;ais</span><span class="oc-language-menu-code" aria-hidden="true">FR</span></a>
 </div>
 ```
 
@@ -2648,7 +2695,7 @@ Compact horizontal media item for up-next lists and numbered playlists
 -->
 <a class="oc-next-teaser oc-accent--violet" href="#next">
   <span class="oc-next-teaser__label">Next product</span>
-  <span class="oc-next-teaser__name"><span class="oc-product-mark oc-product-mark--sm oc-accent--violet" aria-hidden="true">&#9673;</span>Acme Design</span>
+  <span class="oc-next-teaser__name"><span class="oc-product-mark oc-product-mark--sm oc-accent--violet" aria-hidden="true">&#9673;</span>Product 1</span>
   <span class="oc-next-teaser__tagline">The design system behind our apps</span>
 </a>
 ```
@@ -2853,9 +2900,9 @@ Portfolio card with a browser-like preview, type badge, name, meta and an arrow 
 <!-- OmniaUI component: project-card - Portfolio card with a browser-like preview, type badge, name, meta and an arrow link. Needs @birdycom/omniaui CSS.
      File: packages/ui/snippets/project-card.html | Map: a.oc-project-card -> __frame (__bar + __shot) -> __body (type, name, meta, more)
      Class API (modifiers are extra classes / attributes on the same element):
-       .oc-project-card: The card (usually an <a>, the whole card is clickable). Modifier: --flat (edge-to-edge preview)
+       .oc-project-card: The card (usually an <a>, the whole card is clickable). Modifiers: --flat (edge-to-edge preview), --glow (shadow under the preview in the accent color)
        .oc-project-card__frame: Preview window. .oc-project-card__bar: title bar with three <i> dots
-       .oc-project-card__shot: Screenshot <img>, or an empty <span> for a gradient placeholder
+       .oc-project-card__shot: Screenshot <img>, or an empty <span> for a tinted placeholder
        .oc-project-card__body: Text column
        .oc-project-card__type / __name / __meta / __more: Badge, title, sector line, "View" link with arrow
        .oc-accent--*: Accent preset for the badge, dot, border and placeholder
@@ -2864,11 +2911,11 @@ Portfolio card with a browser-like preview, type badge, name, meta and an arrow 
 <a class="oc-project-card oc-accent--green" href="#project">
   <span class="oc-project-card__frame">
     <span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span>
-    <span class="oc-project-card__shot" role="img" aria-label="Northwind Bakery website, screenshot"></span>
+    <span class="oc-project-card__shot" role="img" aria-label="Customer 1 website, screenshot"></span>
   </span>
   <span class="oc-project-card__body">
     <span class="oc-project-card__type">Website</span>
-    <span class="oc-project-card__name">Northwind Bakery</span>
+    <span class="oc-project-card__name">Customer 1</span>
     <span class="oc-project-card__meta">Food &amp; retail &middot; Antwerp</span>
     <span class="oc-project-card__more">View project</span>
   </span>
@@ -3138,7 +3185,7 @@ Vertical timeline with dated entries and an accent dot per item
 <ol class="oc-timeline">
   <li class="oc-timeline__item">
     <time class="oc-timeline__date" datetime="2012">2012</time>
-    <h3 class="oc-timeline__title">Acme is founded</h3>
+    <h3 class="oc-timeline__title">Company 1 is founded</h3>
     <p class="oc-timeline__text">Two developers start building websites for local shops.</p>
   </li>
   <li class="oc-timeline__item">
@@ -4278,7 +4325,9 @@ A live page at a virtual size such as 1280x720, scaled down to the frame width w
      Class API (modifiers are extra classes on the same element):
        .oc-live-frame: box with the ratio of the virtual size; its iframe / video / img / .oc-live-frame__content is laid out
          at that size and scaled to the box width (pure CSS: tan(atan2(100cqi, width)))
-       Modifiers: --static (clicks and scrolling pass through: a picture of a page)
+       Modifiers: --static (clicks and scrolling pass through: a picture of a page), --phone / --tv (a device bezel;
+         phone 390 x 844 at most --oc-live-phone-max wide; bezel color --oc-live-bezel)
+       inert on the iframe: only to look at (no focus, no clicks, hidden from screen readers)
        Tokens: --oc-live-w, --oc-live-h (unitless px, default 1280 x 720)
        Also on .oc-browser-frame__view, the view slot of the browser frame.
      Slots: the iframe (or other content). Give the iframe a title; scrolling="no" hides its scrollbar.
@@ -5171,7 +5220,7 @@ Building blocks for the pages of a company site: the header of an inner page, a 
 <section class="oc-section-pad--page" style="inline-size:100%">
   <div class="oc-container">
     <p class="oc-eyebrow">Contact</p>
-    <h1 class="oc-display oc-display--page">Let's <span class="oc-text-gradient">talk</span></h1>
+    <h1 class="oc-display oc-display--page">Let's talk</h1>
     <p class="oc-lead">A new project, a question about one of our apps or help with your IT? We would like to hear from you.</p>
     <p class="oc-meta">Version 2 · 30 October 2026</p>
     <div class="oc-actions">
@@ -5312,7 +5361,7 @@ A grid of screenshots with a caption that open in the lightbox, and a browser fr
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-shot-grid: Auto-fit grid; --oc-shot-min is the minimum column width (18rem).
        .oc-shot: Figure: image (or picture) with object-fit: contain, --oc-shot-ratio (16 / 10), caption under it; a link or button around the image shows a zoom cursor.
-       .oc-browser-frame--glow: Browser frame with a shadow in --oc-accent-from; the screenshot zooms in a little on hover.
+       .oc-browser-frame--glow: Option on .oc-browser-frame: the shadow takes --oc-accent-from and the screenshot zooms in a little on hover.
        .oc-browser-frame__mark: A product mark or tile on the bottom end corner of the frame.
 -->
 <div class="oc-shot-grid" style="inline-size:100%">
@@ -5329,7 +5378,7 @@ A grid of screenshots with a caption that open in the lightbox, and a browser fr
     <figcaption>Product page with stock and documents</figcaption>
   </figure>
 </div>
-<div class="oc-browser-frame oc-browser-frame--glow oc-accent--green" style="inline-size:min(100%, 34rem)">
+<div class="oc-browser-frame oc-accent--green" style="inline-size:min(100%, 34rem)">
   <div class="oc-browser-frame__bar"><i></i><i></i><i></i></div>
   <img class="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard of Product 1" width="640" height="400">
   <span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"><iconify-icon icon="mdi:chart-box-outline"></iconify-icon></span>
@@ -5589,6 +5638,45 @@ Decorative layers behind a page or a section: a line grid, a soft glowing orb an
 </div>
 ```
 
+### paper
+
+An off-white paper surface with a fine grain: tones, writing paper with lines, squares or dots, and paper edges
+
+```html
+<!-- OmniaUI component: paper - An off-white paper surface with a fine grain: tones, writing paper with lines, squares or dots, and paper edges. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/paper.html | Map: sheet of lined paper with a margin -> torn sheet in a lift wrapper -> section with the paper theme
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-paper: Off-white background with a fine grain and a matching ink color. Modifier: --smooth (no grain)
+       .oc-paper--bright / --ivory / --gray / --kraft: Tones. Own tone: --oc-paper-tint, --oc-paper-l, --oc-paper-c. The same color in light and dark mode
+       .oc-paper--sheet: A single sheet with padding (--oc-paper-pad) and a soft shadow
+       .oc-paper-lift: Wrapper that gives a sheet with a cut edge a shadow that follows the edge
+       .oc-paper--lined: Ruled writing paper; --oc-paper-line (1.75rem) is the rule distance and the line height
+       .oc-paper--margin: Red margin line on the start side (--oc-paper-margin-at)
+       .oc-paper--grid / --dots: Squared paper and a dot grid (--oc-paper-grid)
+       .oc-paper--mm: Millimeter paper, lines every 1, 5 and 10 mm (--oc-paper-mm, --oc-paper-mm-color)
+       .oc-paper--torn / --torn-top / --torn-both: Torn edge (--oc-paper-tear, --oc-paper-tear-width)
+       .oc-paper--zigzag: Zigzag cut of a receipt at the bottom (--oc-paper-tooth)
+       .oc-paper--holes: Punched holes on the start side. .oc-paper--fold: folded corner. .oc-paper--stack: two more sheets under it
+       .oc-paper-theme: Sets --oc-background, --oc-card and --oc-popover to off-white for everything inside (on <body> or a section)
+     One cut edge at a time: torn, zigzag and holes each use the CSS mask.
+-->
+<div class="oc-paper oc-paper--sheet oc-paper--lined oc-paper--margin">
+  <h4>Meeting notes</h4>
+  <p>Customer 1 wants the quote before Friday. Ask Company 1 for the delivery time of the screens.</p>
+  <p>Next meeting: Tuesday at 10:00.</p>
+</div>
+
+<div class="oc-paper-lift">
+  <div class="oc-paper oc-paper--sheet oc-paper--torn">
+    <p>A sheet with a torn edge at the bottom.</p>
+  </div>
+</div>
+
+<section class="oc-paper-theme oc-paper">
+  <article class="oc-card"><div class="oc-card-content"><p>A card on an off-white page.</p></div></article>
+</section>
+```
+
 ### particle-field
 
 A background canvas with slowly drifting points and thin lines between points that are close together
@@ -5812,6 +5900,59 @@ Compact numbered list of steps inside a card or a disclosure; the number takes t
 </div>
 ```
 
+### code-plate
+
+A QR code or barcode on its own white plate, with a caption on the plate itself (scans in any theme, the label is on a photo or print too)
+
+```html
+<!-- OmniaUI component: code-plate - A QR code or barcode on its own white plate, with a caption on the plate itself (scans in any theme, the label is on a photo or print too). Needs @birdycom/omniaui CSS.
+     Class API (modifiers are extra classes / attributes on the same element):
+       figure.oc-code-plate: the white plate (always light). Modifier: --sm (for a code of about 72px).
+       Child: the code (img, svg, canvas or .oc-barcode), then figcaption.oc-code-plate__caption.
+       data-mode="test|live|both": the caption in the mode colors; "both" = two spans in the caption.
+-->
+<figure class="oc-code-plate" data-mode="test" style="inline-size: 12rem">
+  <img src="/img/samples/qr-company-1-test.svg" alt="QR code to join the test round of Company 1" width="192" height="192">
+  <figcaption class="oc-code-plate__caption">Test</figcaption>
+</figure>
+```
+
+### logo
+
+A customer logo in its own colors and ratio, never filtered, with a neutral plate only in the theme where it would disappear
+
+```html
+<!-- OmniaUI component: logo - A customer logo in its own colors and ratio, never filtered, with a neutral plate only in the theme where it would disappear. Needs @birdycom/omniaui CSS.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-logo > img: the logo at --oc-logo-h (height), at most --oc-logo-w wide. Modifier: --box (the same box for every logo).
+       data-plate="light" (a white logo: a plate in the light theme) | "dark" (a dark logo: a plate in the dark theme) |
+         "both" (a mid plate in both) | "none" | "auto" (measured once by oc-logo.js: npx omniaui copy-js logo).
+       Tokens: --oc-logo-plate-light, --oc-logo-plate-dark, --oc-logo-plate-both.
+     The image must be same-origin (or send CORS headers) for "auto"; otherwise it stays without a plate.
+-->
+<span class="oc-logo" data-plate="auto"><img src="/uploads/logo-company-1.svg" alt="Company 1"></span>
+<script type="module" src="/js/oc-logo.js"></script>
+```
+
+### mode-badge
+
+Test and live at a glance: a badge in fixed mode colors (also on a photo or print), "both" as two parts side by side
+
+```html
+<!-- OmniaUI component: mode-badge - Test and live at a glance: a badge in fixed mode colors (also on a photo or print), "both" as two parts side by side. Needs @birdycom/omniaui CSS.
+     Class API (modifiers are extra classes / attributes on the same element):
+       .oc-mode-badge[data-mode="test|live|both"]: the badge (test amber, live green, the same in light and dark mode)
+       Modifiers: --sm, --lg. data-mode="both": two child spans (Test, Live), each in its own color.
+       Tokens: --oc-mode-test, --oc-mode-live, --oc-mode-ink (text). Also used by .oc-card--accent[data-tone="test|live"]
+       and .oc-code-plate[data-mode].
+-->
+<span class="oc-mode-badge" data-mode="test">Test</span>
+<span class="oc-mode-badge" data-mode="live">Live</span>
+<span class="oc-mode-badge" data-mode="both"><span>Test</span><span>Live</span></span>
+<span class="oc-mode-badge oc-mode-badge--sm" data-mode="live">Live</span>
+<span class="oc-mode-badge oc-mode-badge--lg" data-mode="test">Test</span>
+```
+
 ## Blocks
 
 - [CMS dashboard (Pro)](https://omniaui.eu/ui/blocks/cms-dashboard): CMS admin home: dark sidebar with sections, top bar with page title and user, flash message, content tiles and recent changes
@@ -5828,6 +5969,7 @@ Compact numbered list of steps inside a card or a disclosure; the number takes t
 - [Chat inbox (Pro)](https://omniaui.eu/ui/blocks/chat-inbox): Split chat inbox: searchable conversation list with unread dots and the selected message thread with a composer
 - [Contact form](https://omniaui.eu/ui/blocks/contact-form): Contact form in a panel next to a column of contact cards, with field errors, a busy state and a thank-you result
 - [Contact grid](https://omniaui.eu/ui/blocks/contact-grid): Contact section with info cards for e-mail, phone, address and opening hours
+- [Content blocks](https://omniaui.eu/ui/blocks/content-blocks): Editor column with the content blocks of a page or step: cards you open and close, move up or down, drag, remove and add
 - [Dashboard 01 (Pro)](https://omniaui.eu/ui/blocks/dashboard-01): Dashboard 01: Sidebar, KPIs, chart and data table. Complete dashboard page: app shell with sidebar, KPI cards, an area chart card and a data table.
 - [Dashboard stats (Pro)](https://omniaui.eu/ui/blocks/dashboard-stats): KPI cards with label, value, trend and note
 - [Data table](https://omniaui.eu/ui/blocks/data-table): Card with title, actions, search toolbar, sortable table, bulk bar and pagination footer
@@ -5863,6 +6005,8 @@ Compact numbered list of steps inside a card or a disclosure; the number takes t
 - [Profile header](https://omniaui.eu/ui/blocks/profile-header): Channel / profile header: banner, overhanging avatar, name, meta, actions and a tab bar
 - [Quote lines (Pro)](https://omniaui.eu/ui/blocks/quote-lines): Quote or order lines you put in order by dragging: page head, a bordered data table with grips, column widths and the column menu, and the totals
 - [Relations list (Pro)](https://omniaui.eu/ui/blocks/relations-list): A complete relations screen: breadcrumb, title, type tabs with colored counts, list toolbar, filters, a data table with avatar names, type badges, counts and row actions per status, cards and footer
+- [Route progress](https://omniaui.eu/ui/blocks/route-progress): What a visitor or team sees on a route or course: progress, the next step with its distance and every step with its state (done, current, to do, locked)
+- [Route steps](https://omniaui.eu/ui/blocks/route-steps): Ordered list of the steps of a route or course in an editor: order numbers that follow the order, drag handle, thumb, tags, status and a menu per step
 - [Services tabs (Pro)](https://omniaui.eu/ui/blocks/services-tabs): Services section: one tab per service with a hero image or video, text, key points and documents (no JavaScript)
 - [Settings page (Pro)](https://omniaui.eu/ui/blocks/settings-page): Section navigation next to stacked settings sections with rows and a danger zone
 - [Shop cart (Pro)](https://omniaui.eu/ui/blocks/shop-cart): Cart page: lines with photo, variant, quantity, remove and line total, and a summary with delivery, included VAT, discount code and checkout
@@ -5878,8 +6022,10 @@ Compact numbered list of steps inside a card or a disclosure; the number takes t
 - [Spotlight cards (Pro)](https://omniaui.eu/ui/blocks/spotlight-cards): Spotlight cards: product cards whose glow and border light follow the mouse
 - [Stats Block](https://omniaui.eu/ui/blocks/stats): Key figures row
 - [Status page (Pro)](https://omniaui.eu/ui/blocks/status-page): Split 404 / 403 / 500 page: big status code panel next to a card with title, text, detail and actions
+- [Step view](https://omniaui.eu/ui/blocks/step-view): One step of a route or course as the visitor sees it: picture with badges, title, place, text, task, the content blocks (tip, note, link, countdown) and a question
 - [Team list](https://omniaui.eu/ui/blocks/team-list): Member rows with avatar, role badge and a row action menu
 - [Two-factor setup](https://omniaui.eu/ui/blocks/two-factor): Authenticator setup: QR, copyable key, OTP code and recovery codes
+- [Type picker](https://omniaui.eu/ui/blocks/type-picker): Gallery of content types to add (text, image, question, note, link, countdown, tip, video, code to scan), each card with a small real preview, picked by click or arrow keys
 - [Watch layout (Pro)](https://omniaui.eu/ui/blocks/watch-layout): Video page: 16:9 player column with title, channel and description, plus an "Up next" list
 - [Wizard dialog](https://omniaui.eu/ui/blocks/wizard-dialog): Modal wizard: stepper rail on the left, step content and navigation footer
 

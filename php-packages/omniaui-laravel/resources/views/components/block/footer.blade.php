@@ -41,7 +41,7 @@
     </div>
   </div>
   <div class="oc-block-footer-bottom">
-    <span>&copy; 2026 Birdycom. All rights reserved.</span>
+    <span>&copy; 2026 Company 1. All rights reserved.</span>
     <span>Built with OmniaCSS</span>
   </div>
     @endif

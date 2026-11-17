@@ -5,7 +5,8 @@
 /* Showcase components — modern site/marketing building blocks, pure CSS (no JavaScript).
    Colors: Omnia palette tokens only (OKLCH), via the theme tokens of components.css.
    Accent per element: --oc-accent-from / --oc-accent-to (or an .oc-accent--* preset).
-   Accent as text color: in dark mode lifted to at least OKLCH L 0.72, so a dark custom accent stays readable. */
+   Accent as text color: in dark mode lifted to at least OKLCH L 0.72, so a dark custom accent stays readable; in light
+   mode capped at L 0.52, so a light custom accent (green, gold, orange) stays readable too. */
 
 :root {
   --oc-accent-from: var(--oc-brand-1);
@@ -49,19 +50,25 @@
 
 /* Buttons: pill shape, gradient fill and glass (combine with .oc-btn) */
 .oc-btn--pill { border-radius: 999px; }
+/* Gradient button: a calm shift inside one color family (from the accent to a slightly deeper tone of it), in the
+   normal button shape. No glow underneath and no lift on hover. Colors: --oc-accent-from / --oc-accent-to of the nearest
+   .oc-accent--* scope (the brand colors by default). The text color follows the fill; --oc-btn-gradient-ink sets it
+   by hand. Add .oc-btn--pill for round ends. */
 .oc-btn--gradient {
-  border-radius: 999px;
+  --oc-btn-gradient-from: var(--oc-accent-from);
+  --oc-btn-gradient-to: color-mix(in oklch, var(--oc-accent-from) 72%, var(--oc-accent-to));
+  border-color: transparent;
   /* border-box: the gradient also runs under the transparent 1px border of .oc-btn; from the padding box it would
      repeat in that border and show a thin stripe of the other end's color on both sides. */
-  background: linear-gradient(100deg, var(--oc-accent-from), var(--oc-accent-to)) border-box;
-  /* --oc-btn-gradient-ink: dark text on a light accent (set it with the accent). */
+  background: linear-gradient(135deg, var(--oc-btn-gradient-from), var(--oc-btn-gradient-to)) border-box;
   color: var(--oc-btn-gradient-ink, var(--color-white-50));
-  box-shadow: 0 10px 30px -10px var(--oc-accent-to);
-  transition: transform 0.2s var(--oc-ease-out), box-shadow 0.2s;
 }
-.oc-btn--gradient:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -10px var(--oc-accent-to); opacity: 1; }
+@supports (color: contrast-color(red)) {
+  .oc-btn--gradient { color: var(--oc-btn-gradient-ink, contrast-color(var(--oc-btn-gradient-from))); }
+}
+.oc-btn--gradient:hover { filter: brightness(0.93); opacity: 1; }
+/* Glass button: the quiet companion of the gradient button, a soft translucent surface with a clear edge. */
 .oc-btn--glass {
-  border-radius: 999px;
   border-color: var(--oc-border-strong);
   background: var(--oc-surface);
   color: var(--oc-foreground);
@@ -121,8 +128,9 @@
 /* Container, section spacing and display headings */
 /* --oc-container is the width, --oc-container-gutter the room on each side on a narrower screen (1.25rem). */
 .oc-container { inline-size: min(100% - 2 * var(--oc-container-gutter, 1.25rem), var(--oc-container, 1200px)); margin-inline: auto; }
-.oc-section-pad { padding-block: clamp(4rem, 9vw, 7rem); }
-.oc-section-pad--tight { padding-block: clamp(2rem, 5vw, 3.5rem); }
+/* --oc-section-space and --oc-section-space-tight set the room between sections for a whole site (on :root or a scope). */
+.oc-section-pad { padding-block: var(--oc-section-space, clamp(4rem, 9vw, 7rem)); }
+.oc-section-pad--tight { padding-block: var(--oc-section-space-tight, clamp(2rem, 5vw, 3.5rem)); }
 /* The hero of a home page: a little less room on top and below than a section. */
 .oc-section-pad--hero { padding-block: clamp(3.5rem, 9vw, 7rem) clamp(3rem, 6vw, 5rem); }
 .oc-display {
@@ -177,18 +185,18 @@
   --oc-syntax-comment: light-dark(var(--color-gray-60), var(--color-purple-2));
   --oc-syntax-string: light-dark(var(--color-green-80), var(--color-green-2));
   --oc-syntax-keyword: light-dark(var(--color-purple-70), var(--color-purple-2));
-  --oc-syntax-variable: light-dark(var(--color-skycyan-90), var(--color-skycyan-30));
-  --oc-syntax-function: light-dark(var(--color-skycyan-90), var(--color-skycyan-60));
+  --oc-syntax-variable: light-dark(var(--color-steelblue-80),var(--color-skycyan-30));
+  --oc-syntax-function: light-dark(var(--color-steelblue-80),var(--color-skycyan-60));
   --oc-syntax-number: light-dark(var(--color-peru-80), var(--color-peru-40));
   --oc-syntax-operator: light-dark(var(--color-red-70), var(--color-red-50));
-  --oc-syntax-constant: light-dark(var(--color-skycyan-90), var(--color-skycyan-70));
+  --oc-syntax-constant: light-dark(var(--color-steelblue-80),var(--color-skycyan-70));
   --oc-syntax-storage: light-dark(var(--color-green-80), var(--color-green-2));
   --oc-syntax-tag: light-dark(var(--color-brown-70), var(--color-brown-10));
-  --oc-syntax-attr: light-dark(var(--color-skycyan-90), var(--color-skycyan-70));
+  --oc-syntax-attr: light-dark(var(--color-steelblue-80),var(--color-skycyan-70));
   --oc-syntax-prop: light-dark(var(--color-green-80), var(--color-green-2));
   --oc-syntax-value: light-dark(var(--color-teal-80), var(--color-teal-10));
   --oc-syntax-cls: light-dark(var(--color-darkgoldenrod-80), var(--color-wheat-70));
-  --oc-syntax-id: light-dark(var(--color-skycyan-90), var(--color-skycyan-70));
+  --oc-syntax-id: light-dark(var(--color-steelblue-80),var(--color-skycyan-70));
   --oc-syntax-unit: light-dark(var(--color-peru-80), var(--color-peru-40));
   --oc-syntax-key: light-dark(var(--color-brown-70), var(--color-brown-10));
   --oc-code-block-line-number-color: light-dark(var(--color-gray-40), oklch(from var(--color-white-2) l c h / 0.25));
@@ -205,14 +213,14 @@
 .oc-code-window .oc-code-block { margin: 0; border: 0; border-radius: 0; }
 .oc-code-window__body { margin: 0; padding: 1.4rem 1.5rem; font-family: var(--oc-font-mono); font-size: clamp(0.75rem, 1.3vw, 0.92rem); line-height: 1.85; color: var(--oc-foreground); overflow-x: auto; }
 
-/* Browser frame around a screenshot */
+/* Browser frame around a screenshot. The shadow is neutral; .oc-browser-frame--glow gives it the accent color. */
 .oc-browser-frame {
   display: block;
   border: 1px solid var(--oc-border-strong);
   border-radius: var(--oc-radius-md);
   background: var(--oc-card);
   overflow: hidden;
-  box-shadow: 0 30px 60px -30px oklch(from var(--oc-accent-to) l c h / 0.55);
+  box-shadow: 0 30px 60px -30px light-dark(oklch(from var(--color-black-50) l c h / 0.22), oklch(from var(--color-black-50) l c h / 0.6));
 }
 .oc-browser-frame__bar { display: flex; gap: 0.4rem; padding: 0.6rem 0.8rem; border-block-end: 1px solid var(--oc-border); background: var(--oc-surface-strong); }
 .oc-browser-frame__bar > i { inline-size: 0.6rem; aspect-ratio: 1; border-radius: 50%; background: var(--oc-border-strong); }
@@ -233,7 +241,7 @@
   background:
     linear-gradient(135deg, oklch(from var(--oc-accent-from) l c h / 0.3), oklch(from var(--oc-accent-to) l c h / 0.18)),
     var(--oc-card);
-  color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
+  color: light-dark(oklch(from var(--oc-accent-from) min(l, 0.52) c h), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
   font-size: calc(var(--oc-tile-size) * 0.45);
   line-height: 1;
 }
@@ -279,7 +287,7 @@
 }
 .oc-product-card__top { display: flex; justify-content: space-between; align-items: flex-start; margin-block-end: 0.75rem; }
 .oc-product-card__name { margin: 0; font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; }
-.oc-product-card__tagline { margin: 0; color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); font-weight: 600; font-size: 0.95rem; }
+.oc-product-card__tagline { margin: 0; color: light-dark(oklch(from var(--oc-accent-from) min(l, 0.52) c h), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); font-weight: 600; font-size: 0.95rem; }
 .oc-product-card__summary { margin: 0; color: var(--oc-muted-foreground); font-size: 0.95rem; flex-grow: 1; }
 .oc-product-card__more { display: inline-flex; align-items: center; gap: 0.4rem; margin-block-start: 0.75rem; font-weight: 600; font-size: 0.92rem; }
 .oc-product-card__more::after { content: "\002192"; transition: translate 0.25s var(--oc-ease-out); }
@@ -301,7 +309,7 @@
 .oc-pill--accent {
   border-color: oklch(from var(--oc-accent-from) l c h / 0.45);
   background: oklch(from var(--oc-accent-from) l c h / 0.14);
-  color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
+  color: light-dark(oklch(from var(--oc-accent-from) min(l, 0.52) c h), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
 }
 /* Live dot in a pill (.oc-pill > .oc-status-dot): the ring starts at --oc-status-dot-pulse-alpha of the accent and grows
    to --oc-status-dot-pulse-size. Scoped to the pill: a plain .oc-status-dot is the status light (parts/app-status-dot.css).
@@ -372,7 +380,7 @@
     var(--oc-card);
 }
 .oc-spotlight__title { display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0 0.5rem; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.1; }
-.oc-spotlight__tagline { color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); font-size: 1.2rem; font-weight: 600; }
+.oc-spotlight__tagline { color: light-dark(oklch(from var(--oc-accent-from) min(l, 0.52) c h), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); font-size: 1.2rem; font-weight: 600; }
 /* --oc-spotlight-cols: your own ratio above 960px (copy | modules); on a smaller screen the spotlight stacks. */
 @media (min-width: 961px) {
   .oc-spotlight { grid-template-columns: var(--oc-spotlight-cols, repeat(auto-fit, minmax(min(100%, 22rem), 1fr))); }
@@ -382,6 +390,8 @@
 
 /* Steps: numbered process with a gradient tick (numbers come from a CSS counter) */
 .oc-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1.25rem; margin: 0; padding: 0; list-style: none; counter-reset: oc-step; }
+/* Four steps: one row of four from about 44rem instead of three and a lone one. */
+.oc-steps:has(> li:nth-child(4):last-child) { grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); }
 .oc-steps > li { position: relative; padding: 1.75rem 1.5rem; border-block-start: 2px solid var(--oc-border-strong); counter-increment: oc-step; }
 .oc-steps > li::before { content: ""; position: absolute; inset-block-start: -2px; inset-inline-start: 0; inline-size: 3rem; block-size: 2px; background: var(--oc-gradient-brand); }
 .oc-steps > li::after { content: counter(oc-step, decimal-leading-zero); position: absolute; inset-block-start: 1.75rem; inset-inline-end: 1.5rem; color: var(--oc-brand-1); font-family: var(--oc-font-mono); font-size: 0.85rem; }
@@ -424,7 +434,16 @@
   position: sticky;
   inset-block-start: 0;
   z-index: 50;
-  border-block-end: 1px solid transparent;
+  /* The glass is written as plain declarations with a factor (0 = clear, 1 = glass). Only the factor is animated, so
+     the colors keep following the theme, also when it changes while the page is scrolled (a theme switch in a scope). */
+  border-block-end: 1px solid color-mix(in oklch, var(--oc-border) calc(var(--oc-header-glass) * 100%), transparent);
+  background-color: oklch(from var(--oc-background) l c h / calc(0.72 * var(--oc-header-glass)));
+  backdrop-filter: blur(calc(16px * var(--oc-header-glass))) saturate(calc(1 + 0.4 * var(--oc-header-glass)));
+}
+@property --oc-header-glass {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
 }
 @supports (animation-timeline: scroll()) {
   .oc-site-header {
@@ -434,11 +453,15 @@
   }
 }
 @keyframes oc-header-glass {
-  to {
-    background: oklch(from var(--oc-background) l c h / 0.72);
-    border-block-end-color: var(--oc-border);
-    backdrop-filter: blur(16px) saturate(1.4);
-  }
+  to { --oc-header-glass: 1; }
+}
+/* No scroll timeline (older browsers) or "reduce motion": the glass is always on, so the sticky bar never sits
+   clear over the text below it. */
+@supports not (animation-timeline: scroll()) {
+  .oc-site-header { --oc-header-glass: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-site-header { --oc-header-glass: 1; }
 }
 .oc-site-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; block-size: 4.5rem; }
 .oc-site-header__brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--oc-foreground); font-size: 1.3rem; font-weight: 700; letter-spacing: -0.03em; text-decoration: none; }
@@ -473,9 +496,32 @@
     background: oklch(from var(--oc-background) l c h / 0.96);
     backdrop-filter: blur(16px);
   }
-  .oc-site-header__nav[popover] a:not(.oc-btn) { padding: 0.75rem 0; font-size: 1.1rem; }
+  /* Not the items of a dropdown in the menu (language select): they keep their own size. */
+  .oc-site-header__nav[popover] a:not(.oc-btn, .oc-dropdown-item) { padding: 0.75rem 0; font-size: 1.1rem; }
   /* The call to action (.oc-site-header__cta, a button) gets room above it in the open menu. */
   .oc-site-header__cta { margin-block-start: 0.75rem; }
+}
+/* --collapse-lg: the menu becomes a popover below 1180px instead of 860px, for a bar with many or long items
+   (theme switch, language select, long words). A media query cannot read a variable, so it is a modifier. */
+@media (min-width: 861px) and (max-width: 1180px) {
+  .oc-site-header--collapse-lg .oc-site-header__toggle { display: block; }
+  .oc-site-header--collapse-lg .oc-site-header__nav[popover]:not(:popover-open) { display: none; }
+  .oc-site-header--collapse-lg .oc-site-header__nav[popover]:popover-open {
+    position: fixed;
+    inset: 4.5rem 0 auto;
+    inline-size: auto;
+    block-size: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem 1.5rem;
+    border-block-end: 1px solid var(--oc-border);
+    background: oklch(from var(--oc-background) l c h / 0.96);
+    backdrop-filter: blur(16px);
+  }
+  .oc-site-header--collapse-lg .oc-site-header__nav[popover] a:not(.oc-btn, .oc-dropdown-item) { padding: 0.75rem 0; font-size: 1.1rem; }
+  .oc-site-header--collapse-lg .oc-site-header__cta { margin-block-start: 0.75rem; }
 }
 
 /* Site footer: brand column + link columns + bottom bar */

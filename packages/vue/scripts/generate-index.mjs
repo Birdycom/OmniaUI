@@ -37,6 +37,9 @@ const snippetAlias = {
   'titlebar-window': 'titlebar',
   'titlebar-button': 'titlebar',
   'titlebar-body': 'titlebar',
+  'card-band': 'card',
+  'sidebar-meta': 'sidebar',
+  'language-menu': 'language-select',
 }
 
 const entries = []

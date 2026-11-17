@@ -52,9 +52,9 @@ class MarketingTest extends TestCase
         $this->assertElement($facts, 'dl', 'oc-fact-list oc-fact-list--stacked');
         $this->assertStringContainsString('<div><dt>Platform</dt><dd>Web</dd></div>', $facts);
 
-        $next = $this->render('<x-oc::next-teaser href="/n" name="Acme Design" tagline="Line" />');
+        $next = $this->render('<x-oc::next-teaser href="/n" name="Product 1" tagline="Line" />');
         $this->assertElement($next, 'span', 'oc-next-teaser__label', [], 'Next product');
-        $this->assertElement($next, 'span', 'oc-next-teaser__name', [], 'Acme Design');
+        $this->assertElement($next, 'span', 'oc-next-teaser__name', [], 'Product 1');
     }
 
     public function test_price_card_toggle_prices_and_features(): void
@@ -163,10 +163,10 @@ class MarketingTest extends TestCase
     public function test_link_row_renders_links_with_noopener_on_external_ones(): void
     {
         $html = $this->render(<<<'BLADE'
-            <x-oc::link-row tone="accent" size="sm" :links="[['href' => '/docs', 'label' => 'Docs'], ['href' => 'https://github.com/acme/app', 'label' => 'Source']]" />
+            <x-oc::link-row tone="accent" size="sm" :links="[['href' => '/docs', 'label' => 'Docs'], ['href' => 'https://github.com/company1/app', 'label' => 'Source']]" />
             BLADE);
         $this->assertStringContainsString('class="oc-link-row oc-link-row--accent oc-link-row--sm"', $html);
         $this->assertMatchesRegularExpression('#<a href="/docs"\s*>Docs</a>#', $html);
-        $this->assertMatchesRegularExpression('#<a href="https://github.com/acme/app"\s+rel="noopener"\s*>Source</a>#', $html);
+        $this->assertMatchesRegularExpression('#<a href="https://github.com/company1/app"\s+rel="noopener"\s*>Source</a>#', $html);
     }
 }

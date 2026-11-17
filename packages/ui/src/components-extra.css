@@ -456,12 +456,15 @@ a.oc-item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px
 .oc-carousel-dot {
   inline-size: 0.5rem;
   block-size: 0.5rem;
-  border-radius: 50%;
+  border-radius: 999px;
   background: var(--oc-border-strong);
-  transition: background var(--oc-transition-fast);
+  transition: background var(--oc-transition-fast), inline-size var(--oc-transition-fast);
 }
 .oc-carousel-dot:hover,
 .oc-carousel-dot:focus-visible { background: var(--oc-primary); }
+.oc-carousel-dot:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+/* the slide in view (set by carousel.js), the same look as the ::scroll-marker dots */
+.oc-carousel-dot[aria-current="true"] { inline-size: 1.25rem; background: var(--oc-primary); }
 @supports (scroll-marker-group: after) {
   .oc-carousel-dots { display: none; }
   .oc-carousel-viewport { scroll-marker-group: after; }
@@ -883,7 +886,8 @@ input.oc-input[type="month"] { inline-size: auto; min-inline-size: 11rem; }
   padding: 0 0 0.25rem;
   list-style: none;
   border-block-end: 1px solid var(--oc-chart-grid);
-  background: repeating-linear-gradient(to top, transparent 0 calc(25% - 1px), var(--oc-chart-grid) calc(25% - 1px) 25%);
+  /* one 1px line at the top of each quarter (a repeating gradient with calc(% - px) stops renders as solid bands in Firefox) */
+  background: linear-gradient(to bottom, var(--oc-chart-grid) 1px, transparent 1px) 0 0 / 100% 25% repeat-y;
 }
 .oc-chart-bars > * {
   --oc-bar: 50%;

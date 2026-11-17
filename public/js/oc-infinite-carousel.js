@@ -1,4 +1,4 @@
-// OmniaUI Pro v0.15.1 - commercial software, NOT open source and NOT under the MIT license.
+// OmniaUI Pro v0.16.0 - commercial software, NOT open source and NOT under the MIT license.
 // Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
 // Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/infinite-carousel.js
@@ -64,6 +64,23 @@ export function bindInfiniteCarousel(root) {
   const onNext = () => go(current() + 1);
   prev?.addEventListener("click", onPrev);
   next?.addEventListener("click", onNext);
+  // Fallback dots (Firefox, Safari: no ::scroll-marker): scroll only the track to the real slide, never the page,
+  // and mark the dot of the slide in view with aria-current.
+  const dots = [...root.querySelectorAll(".oc-carousel-dot[href^='#']")];
+  const dotIndex = dots.map((dot) => real.findIndex((item) => "#" + item.id === decodeURIComponent(dot.getAttribute("href"))));
+  const onDot = (event) => {
+    const i = dotIndex[dots.indexOf(event.currentTarget)];
+    if (i < 0) return;
+    event.preventDefault();
+    go(n + i);
+  };
+  const mark = () => {
+    const i = ((current() % n) + n) % n;
+    dots.forEach((dot, k) => (dotIndex[k] === i ? dot.setAttribute("aria-current", "true") : dot.removeAttribute("aria-current")));
+  };
+  dots.forEach((dot) => dot.addEventListener("click", onDot));
+  viewport.addEventListener("scroll", mark, { passive: true });
+  mark();
   // A new width changes the slide width: stay on the same slide.
   const resize = typeof ResizeObserver === "function" ? new ResizeObserver(() => go(wrapIndex(current(), n), "instant")) : null;
   resize?.observe(viewport);
@@ -73,6 +90,8 @@ export function bindInfiniteCarousel(root) {
     viewport.removeEventListener(scrollEvent, scrollEvent === "scrollend" ? settle : onScroll);
     prev?.removeEventListener("click", onPrev);
     next?.removeEventListener("click", onNext);
+    dots.forEach((dot) => dot.removeEventListener("click", onDot));
+    viewport.removeEventListener("scroll", mark);
     resize?.disconnect();
     viewport.querySelectorAll(":scope > .oc-carousel-clone").forEach((el) => el.remove());
     root.removeAttribute("data-oc-infinite");

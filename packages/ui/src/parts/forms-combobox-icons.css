@@ -1,0 +1,78 @@
+/* File: packages/ui/src/parts/forms-combobox-icons.css
+   Map: combobox option icon -> icon of the chosen value in the field -> same start for options without icon
+        -> dropdown item icon -> same start in a dropdown menu -> forced colors
+   Icons in front of the options of a combobox and of the items of a dropdown menu. Any inline <svg>, <iconify-icon> or
+   <img> (a flag, a logo) in a span. Options and items without an icon line up with the labels of the ones that have one,
+   without a modifier (:has). Theme tokens only; an icon in currentColor follows the hover and active colors. */
+
+/* Combobox: the icon column of an option (1.125rem), then the label, then the check of the chosen option at the end. */
+.oc-combobox {
+  --oc-combobox-icon: 1.125rem;
+}
+.oc-combobox-option-icon,
+.oc-combobox-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--oc-combobox-icon);
+  block-size: var(--oc-combobox-icon);
+  color: var(--oc-muted-foreground);
+  line-height: 1;
+}
+.oc-combobox-option-icon > :is(svg, iconify-icon, img),
+.oc-combobox-icon > :is(svg, iconify-icon, img) {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  font-size: var(--oc-combobox-icon);
+  object-fit: contain;
+}
+.oc-combobox-option:has(> .oc-combobox-option-icon) { justify-content: flex-start; }
+.oc-combobox-option:has(> .oc-combobox-option-icon)[aria-selected="true"]::after { margin-inline-start: auto; }
+/* Hover, keyboard and the chosen option: a currentColor icon takes the text color (multicolor icons keep theirs). */
+.oc-combobox-option:is(:hover, :focus-visible, [data-active], [aria-selected="true"]) > .oc-combobox-option-icon { color: inherit; }
+/* Options without an icon in a list that has icons: their label starts where the other labels start. */
+.oc-combobox-list:has(.oc-combobox-option-icon) > .oc-combobox-option:not(:has(> .oc-combobox-option-icon)),
+.oc-combobox-list:has(.oc-combobox-option-icon) > .oc-combobox-group {
+  padding-inline-start: calc(0.625rem + var(--oc-combobox-icon) + 0.5rem);
+}
+
+/* The icon of the chosen value inside the field, at the same start as the option icons in the list (list border 1px +
+   padding 4px + option padding 0.625rem), and the text of the field at the start of the option labels. */
+.oc-combobox-icon {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(5px + 0.625rem);
+  block-size: auto;
+  pointer-events: none;
+}
+.oc-combobox:has(> .oc-combobox-icon) > .oc-combobox-input {
+  padding-inline-start: calc(4px + 0.625rem + var(--oc-combobox-icon) + 0.5rem);
+}
+
+/* Dropdown menu items with an icon (1rem, muted) in front of the label. */
+.oc-dropdown-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--oc-muted-foreground);
+  line-height: 1;
+}
+.oc-dropdown-icon > :is(svg, iconify-icon, img) { display: block; inline-size: 100%; block-size: 100%; font-size: 1rem; object-fit: contain; }
+.oc-dropdown-item:is(:hover, :focus-visible) > .oc-dropdown-icon,
+.oc-dropdown-item--destructive > .oc-dropdown-icon { color: inherit; }
+/* Plain items without an icon in a menu that has icons: the label starts where the other labels start. */
+.oc-dropdown-menu:has(> .oc-dropdown-item > .oc-dropdown-icon)
+  > .oc-dropdown-item:not(:has(> .oc-dropdown-icon), :has(> .oc-dropdown-check), [role="menuitemcheckbox"], [role="menuitemradio"]) {
+  padding-inline-start: calc(10px + 1rem + 8px);
+}
+
+@media (forced-colors: active) {
+  .oc-combobox-option-icon,
+  .oc-combobox-icon,
+  .oc-dropdown-icon { color: CanvasText; }
+}

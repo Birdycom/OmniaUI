@@ -33,7 +33,7 @@ export const BlockAuth = forwardRef<HTMLDivElement, BlockAuthProps>(function Blo
         {subtitle != null && <p className="oc-block-subtitle">{subtitle}</p>}
         <div className="oc-form-group">
           <label className="oc-label" htmlFor={`${id}-email`}>Email</label>
-          <input className="oc-input" id={`${id}-email`} name="email" type="email" placeholder="name@company.com" />
+          <input className="oc-input" id={`${id}-email`} name="email" type="email" placeholder="name@company1.example" />
         </div>
         <div className="oc-form-group">
           <label className="oc-label" htmlFor={`${id}-password`}>Password</label>

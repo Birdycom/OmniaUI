@@ -1,13 +1,18 @@
 <script setup lang="ts">
 /**
  * Card with header, content and footer.
- * Slots: header (replaces title/description), default (content), footer. Classes: .oc-card--sm
+ * Slots: band (an OcCardBand at the top), header (replaces title/description), default (content), footer. Classes: .oc-card--sm
+ * accent: a 2px border in a tone or mode (.oc-card--accent[data-tone]); inactive: not in use now (dashed border, calm band).
  */
-withDefaults(defineProps<{ title?: string; description?: string; size?: 'sm' | 'md' }>(), { size: 'md' })
+withDefaults(
+  defineProps<{ title?: string; description?: string; size?: 'sm' | 'md'; accent?: 'primary' | 'info' | 'success' | 'warning' | 'destructive' | 'test' | 'live'; inactive?: boolean }>(),
+  { size: 'md' },
+)
 </script>
 
 <template>
-  <div :class="['oc-card', size === 'sm' && 'oc-card--sm']">
+  <div :class="['oc-card', size === 'sm' && 'oc-card--sm', accent && 'oc-card--accent']" :data-tone="accent" :data-active="accent && inactive ? 'false' : undefined">
+    <slot name="band" />
     <div v-if="title || description || $slots.header" class="oc-card-header">
       <slot name="header">
         <h3 v-if="title" class="oc-card-title">{{ title }}</h3>

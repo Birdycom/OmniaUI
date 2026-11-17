@@ -36,3 +36,31 @@
 
 /* A picture of a page, not a page to use: clicks and scrolling pass the frame by. */
 .oc-live-frame--static > :is(iframe, video, img, object, .oc-live-frame__content) { pointer-events: none; }
+/* Only to look at: with the inert attribute on the iframe it also takes no focus and is hidden from screen readers
+   (a preview; give the box an aria-label or a caption so the preview still has a name). */
+.oc-live-frame > [inert] { pointer-events: none; user-select: none; }
+
+/* Device: the page in a phone or a television: a dark bezel with rounded corners around the scaled page. The bezel is
+   the border of a content-box frame, so the page keeps its exact ratio, and overflow: hidden gives the screen its
+   inner corners. Phone: 390 x 844 by default in the wrappers, at most --oc-live-phone-max wide. Color: --oc-live-bezel. */
+.oc-live-frame:is(.oc-live-frame--phone, .oc-live-frame--tv) {
+  --oc-live-bezel: var(--color-duskblue-90);
+  box-sizing: content-box;
+  border: var(--oc-live-bezel-size) solid var(--oc-live-bezel);
+  background: var(--oc-live-bezel);
+  box-shadow: 0 0 0 1px var(--oc-border), 0 8px 24px oklch(from var(--color-black-60) l c h / 0.18);
+}
+.oc-live-frame--phone {
+  --oc-live-bezel-size: 0.5rem;
+  --oc-live-phone-max: 17rem;
+  inline-size: min(calc(100% - 2 * var(--oc-live-bezel-size)), var(--oc-live-phone-max));
+  border-radius: 1.75rem;
+}
+.oc-live-frame--tv {
+  --oc-live-bezel-size: 0.375rem;
+  inline-size: calc(100% - 2 * var(--oc-live-bezel-size));
+  border-radius: 0.625rem;
+}
+@media (forced-colors: active) {
+  .oc-live-frame:is(.oc-live-frame--phone, .oc-live-frame--tv) { border-color: CanvasText; }
+}

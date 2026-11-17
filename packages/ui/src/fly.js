@@ -37,15 +37,26 @@ function num(value, unitS = false) {
   return unitS && /\ds$/.test(v) ? n * 1000 : n;
 }
 
+/** Free space left and right of the card inside its parent (layout position, so a running fly-in does not count). */
+export function sideRoom(card) {
+  const parent = card.parentElement;
+  if (!parent) return { left: 0, right: 0 };
+  const left = card.offsetParent === parent ? card.offsetLeft : card.offsetLeft - parent.offsetLeft;
+  return { left: Math.max(0, left), right: Math.max(0, parent.clientWidth - left - card.offsetWidth) };
+}
+
 /**
  * data-oc-fly-random: a new random delay (0 to the value of the attribute, default 700ms) and a random start offset
- * (left or right, up to two steps or 90px), so the cards of one row do not move together.
+ * (left or right, up to two steps or 90px, never outside the parent), so the cards of one row do not move together.
  */
 function shuffle(card, holder, step) {
   const max = num(holder.getAttribute("data-oc-fly-random")) || 700;
   const reach = Math.max(step * 2, 90);
+  // The hidden card stays inside its parent: no sideways start in a single column, so the page never scrolls sideways.
+  const { left, right } = sideRoom(card);
+  const x = Math.random() < 0.5 ? -Math.random() * Math.min(reach, left) : Math.random() * Math.min(reach, right);
   card.style.setProperty("--oc-fly-delay", `${Math.round(Math.random() * max)}ms`);
-  card.style.setProperty("--oc-fly-x", `${Math.round((Math.random() * 2 - 1) * reach)}px`);
+  card.style.setProperty("--oc-fly-x", `${Math.round(x)}px`);
 }
 
 /** Let every .oc-reveal--fly under scope fly in once it comes into view. Returns a function that stops watching. */

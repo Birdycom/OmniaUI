@@ -27,6 +27,8 @@ export interface BlockWizardDialogProps extends Omit<DialogHTMLAttributes<HTMLDi
   /** Text under the title; defaults to `Step {n} of {total}`. */
   description?: ReactNode;
   stepperLabel?: string;
+  /** Accessible name of the × button in the corner. */
+  closeLabel?: string;
 }
 
 /** `dialog.oc-modal` wizard: stepper rail on the left, step content and Back / Next footer. */
@@ -45,6 +47,7 @@ export const BlockWizardDialog = forwardRef<HTMLDialogElement, BlockWizardDialog
     finishLabel = "Finish",
     description,
     stepperLabel = "Setup steps",
+    closeLabel = "Close",
     className,
     ...rest
   },
@@ -69,6 +72,7 @@ export const BlockWizardDialog = forwardRef<HTMLDialogElement, BlockWizardDialog
     >
       <DialogContext.Provider value={{ close: dlg.close }}>
         <div className="oc-modal-content oc-modal-content--xl">
+          <button className="oc-modal-close" type="button" aria-label={closeLabel} onClick={() => dlg.close()}>×</button>
           <div className="oc-block-wizard">
             <div className="oc-block-wizard-rail">
               <Stepper steps={steps.map((s) => ({ label: s.label }))} current={current} onStepChange={setCurrent} aria-label={stepperLabel} />

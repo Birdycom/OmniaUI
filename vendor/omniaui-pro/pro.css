@@ -1,4 +1,4 @@
-/*! OmniaUI Pro v0.15.1 - commercial software, NOT open source and NOT under the MIT license.
+/*! OmniaUI Pro v0.16.0 - commercial software, NOT open source and NOT under the MIT license.
    Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
    Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro). */
 /* File: packages/pro/src/pro.css
@@ -268,6 +268,45 @@
 
 @media (max-width: 36rem) { .oc-block-cal-side { padding-inline-start: 0; border-inline-start: 0; } }
 
+/* Native checkboxes and radios inside Pro components/blocks: the same drawn look as .oc-checkbox / .oc-radio of
+   @birdycom/omniaui, so they are branded in every browser (Opera ignores accent-color and draws classic controls). */
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio) {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 0;
+  color: var(--oc-primary-foreground, var(--color-white-50, white));
+  background: var(--oc-background);
+  border: 1px solid var(--oc-border-strong, var(--oc-border));
+  border-radius: 4px;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background-color var(--oc-transition-fast), border-color var(--oc-transition-fast);
+}
+:where(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:where([type="checkbox"], [type="radio"]) { inline-size: 16px; block-size: 16px; }
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input[type="radio"]:not(.oc-radio) { border-radius: 50%; }
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio)::before {
+  content: "";
+  inline-size: 12px;
+  block-size: 12px;
+  background: currentColor;
+  scale: 0;
+  transition: scale var(--oc-transition-fast);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.25 6.25l2.5 2.5 5-5.5' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input[type="radio"]:not(.oc-radio)::before { inline-size: 6px; block-size: 6px; border-radius: 50%; mask: none; }
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio):checked { background: var(--oc-primary); border-color: var(--oc-primary); }
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio):checked::before { scale: 1; }
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio):hover:not(:disabled) { border-color: var(--oc-primary); }
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio):focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+:is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio):disabled { opacity: 0.5; cursor: not-allowed; }
+@media (forced-colors: active) {
+  :is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio) { appearance: auto; }
+  :is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio)::before { content: none; }
+}
+
 /* parts/app-barcode-maker.css */
 /* File: packages/pro/src/parts/app-barcode-maker.css | Map: maker grid -> fields -> preview on white -> actions -> download off while invalid */
 /* OmniaUI Pro barcode maker block (barcode-maker.js): type a value, pick a format, download a print-ready SVG. */
@@ -430,7 +469,7 @@
    Map: frame (sidebar + main) -> top bar (title, user, logout) -> body -> flash alert -> content tiles -> recent changes -> narrow container
    CMS dashboard block: the admin home of a small website CMS. A dark sidebar with section titles, a top bar with the page
    title and the signed-in user, a flash message, one tile per content type (count + manage / add) and the latest changes.
-   Built on the sidebar frame (.oc-block-sb). Based on the Verdavita admin. */
+   Built on the sidebar frame (.oc-block-sb). */
 
 .oc-block-cms { --oc-block-sb-height: 44rem; }
 .oc-block-cms .oc-block-sb-main { container-type: inline-size; background: var(--oc-background); }
@@ -451,7 +490,8 @@
 .oc-block-cms-user .oc-user { color: inherit; text-decoration: none; }
 
 /* ---- Body ---- */
-.oc-block-cms-body { display: grid; align-content: start; gap: 1.5rem; padding: 1.5rem; overflow: auto; }
+/* minmax(0, 1fr): a wide table scrolls inside its .oc-table-wrap instead of pushing the tiles past the edge. */
+.oc-block-cms-body { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 1.5rem; padding: 1.5rem; overflow: auto; }
 .oc-block-cms-section-title { margin: 0 0 0.75rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-muted-foreground); }
 
 /* ---- Content tiles ---- */
@@ -622,7 +662,7 @@
    Map: block -> top bar -> layout (canvas left, palette right) -> field card (grip, main, chips, actions, states)
    -> empty state -> palette buttons -> field dialog (options row only for choice types) -> narrow container
    Form builder block (admin): the fields of a form as cards you can reorder, a palette of field types, and a dialog
-   to edit one field. Based on the Verdavita contact form builder. */
+   to edit one field. */
 
 .oc-block-form-builder { container-type: inline-size; display: grid; gap: 1.25rem; inline-size: 100%; }
 .oc-block-form-builder-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; }
@@ -716,7 +756,7 @@
    Map: block -> head -> tabs (count badge) -> panel (dropzone, list) -> file row (grip, thumb, name, meta, actions)
    -> photo grid (select checkbox, CSS counter) -> bulk bar -> narrow container
    Media manager block (admin): the documents, videos and photos of one item (a service, a project), each with an
-   upload zone, a reorderable list and delete actions. Based on the Verdavita service editor. */
+   upload zone, a reorderable list and delete actions. */
 
 .oc-block-media-manager { container-type: inline-size; display: grid; gap: 1rem; inline-size: 100%; }
 .oc-block-media-manager-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
@@ -761,7 +801,7 @@
   font-size: 0.7rem;
   font-weight: 700;
 }
-.oc-block-media-manager-thumb--pdf { background: color-mix(in oklch, var(--color-red-60) 14%, var(--oc-card)); color: var(--color-red-60); }
+.oc-block-media-manager-thumb--pdf { background: color-mix(in oklch, var(--color-red-60) 14%, var(--oc-card)); color: light-dark(var(--color-red-90), var(--color-red-40)); }
 .oc-block-media-manager-thumb--video { background: color-mix(in oklch, var(--color-indigo-50) 14%, var(--oc-card)); color: var(--color-indigo-50); }
 .oc-block-media-manager-thumb > :is(img, .oc-media-art) { inline-size: 100%; block-size: 100%; object-fit: cover; }
 .oc-block-media-manager-name { display: grid; min-inline-size: 0; }
@@ -1194,7 +1234,7 @@
   overflow: hidden;
   background:
     radial-gradient(circle at 50% 45%, oklch(from var(--oc-block-status-color) l c h / 0.18), transparent 60%),
-    repeating-radial-gradient(circle at 50% 45%, transparent 0 3.5rem, oklch(from var(--oc-block-status-color) l c h / 0.08) 3.5rem calc(3.5rem + 1px)),
+    repeating-radial-gradient(circle at 50% 45% in srgb, transparent 0 3.5rem, oklch(from var(--oc-block-status-color) l c h / 0.08) 3.5rem calc(3.5rem + 1px)),
     var(--oc-muted);
   border-inline-end: 1px solid var(--oc-border);
 }
@@ -1231,7 +1271,8 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--oc-block-status-color);
+  /* Mixed toward the text color: the tone stays, and the small label reaches 4.5:1 on its tint in both modes. */
+  color: color-mix(in oklch, var(--oc-block-status-color) 70%, var(--oc-foreground));
   background: oklch(from var(--oc-block-status-color) l c h / 0.12);
   border: 1px solid oklch(from var(--oc-block-status-color) l c h / 0.35);
   border-radius: 999px;
@@ -1323,7 +1364,7 @@
   border-radius: 0 0 1.6cqi 1.6cqi;
   background:
     linear-gradient(90deg, transparent 42%, oklch(from var(--oc-device-ink) l c h / 0.25) 42% 58%, transparent 58%) 0 0 / 100% 22% no-repeat,
-    repeating-linear-gradient(90deg, transparent 0 6.5%, oklch(from var(--oc-device-ink) l c h / 0.22) 6.5% 7.5%) 12% 30% / 76% 46% no-repeat,
+    repeating-linear-gradient(90deg in srgb, transparent 0 6.5%, oklch(from var(--oc-device-ink) l c h / 0.22) 6.5% 7.5%) 12% 30% / 76% 46% no-repeat,
     linear-gradient(var(--oc-device-edge), var(--oc-device-metal) 50%, oklch(from var(--oc-device-metal) calc(l - 0.08) c h));
   box-shadow: 0 14px 22px -10px oklch(from var(--color-black-90) l c h / 0.5);
   transform: perspective(600px) rotateX(58deg);
@@ -1341,8 +1382,10 @@
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -12% -8%;
-  background: radial-gradient(55% 60% at 50% 55%, oklch(from var(--oc-accent-from, var(--oc-primary)) l c h / 0.38), transparent 70%);
+  /* Only 4% past the sides (was 8%): a lone screen near the edge of a phone gave the page a sideways scroll.
+     The ellipse is wider in % so the light keeps the same size; the box edges were transparent anyway. */
+  inset: -12% -4%;
+  background: radial-gradient(59% 60% at 50% 55%, oklch(from var(--oc-accent-from, var(--oc-primary)) l c h / 0.38), transparent 70%);
   filter: blur(18px);
   pointer-events: none;
 }
@@ -1557,7 +1600,7 @@
   justify-content: space-around;
   align-items: flex-end;
   border: 1px solid color-mix(in oklch, var(--oc-scene-metal), white 16%);
-  background: repeating-linear-gradient(60deg, color-mix(in oklch, var(--oc-scene-metal), white 7%) 0 6px, color-mix(in oklch, var(--oc-scene-metal), white 16%) 6px 8px);
+  background: repeating-linear-gradient(60deg in srgb, color-mix(in oklch, var(--oc-scene-metal), white 7%) 0 6px, color-mix(in oklch, var(--oc-scene-metal), white 16%) 6px 8px);
 }
 .oc-block-scene-truss i {
   --a: 0deg;
@@ -1948,7 +1991,7 @@
    -> CSS-only filter (up to 6 categories) -> motion
    Masonry gallery block: photos of different heights packed without gaps, a caption on hover or focus, and each photo
    opens the lightbox component. No layout script: CSS columns, or display: grid-lanes where the browser has it.
-   Based on the Verdavita projects page. */
+   */
 
 .oc-block-masonry {
   container-type: inline-size;
@@ -1961,10 +2004,10 @@
 .oc-block-masonry-lead { margin: 0.5rem 0 0; color: var(--oc-block-text-soft, var(--oc-muted-foreground)); }
 
 /* ---- Masonry: CSS columns everywhere, real masonry rows where supported ---- */
-.oc-block-masonry-grid { --oc-masonry-gap: 1rem; columns: 15rem; column-gap: var(--oc-masonry-gap); }
+.oc-block-masonry-grid { --oc-masonry-gap: 1rem; columns: 13rem; column-gap: var(--oc-masonry-gap); }
 .oc-block-masonry-item { margin-block-end: var(--oc-masonry-gap); break-inside: avoid; }
 @supports (display: grid-lanes) {
-  .oc-block-masonry-grid { display: grid-lanes; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: var(--oc-masonry-gap); }
+  .oc-block-masonry-grid { display: grid-lanes; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: var(--oc-masonry-gap); }
   .oc-block-masonry-item { margin: 0; }
 }
 
@@ -2262,7 +2305,7 @@
 /* File: packages/pro/src/parts/site-services-tabs.css
    Map: section -> head -> tabset (vertical list left, panel right) -> panel (media, body, points, documents) -> narrow container
    Services tabs block: one tab per service with a hero image or video, text, key points and documents (doc-viewer).
-   Uses the radio tabset (no JavaScript, up to 6 services). Based on the Verdavita services page. */
+   Uses the radio tabset (no JavaScript, up to 6 services). */
 
 .oc-block-services {
   container-type: inline-size;
@@ -2274,10 +2317,12 @@
 .oc-block-services-title { margin: 0 0 0.75rem; font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; }
 .oc-block-services-lead { margin: 0; color: var(--oc-block-text-soft, var(--oc-muted-foreground)); font-size: 1.05rem; text-wrap: pretty; }
 
-/* ---- Tabs left, panel right ---- */
-.oc-block-services-tabs { display: grid; grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr); align-items: start; gap: 2rem; }
-.oc-block-services-tabs > .oc-tab-list { grid-column: 1; grid-row: 1; position: sticky; top: 1rem; }
-.oc-block-services-tabs > .oc-tab-panel { grid-column: 2; grid-row: 1; padding: 0; }
+/* ---- Tabs left, panel right ----
+   Prefixed with .oc-block-services .oc-tabset: the vertical tabset rules of the component
+   (.oc-tabset:has(> .oc-tab-list--vertical) …) are more specific than a single block class. */
+.oc-block-services .oc-tabset.oc-block-services-tabs { display: grid; grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr); align-items: start; gap: 2rem; }
+.oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-list { grid-column: 1; grid-row: 1; position: sticky; top: 1rem; }
+.oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-panel { grid-column: 2; grid-row: 1; padding: 0; }
 .oc-block-services-tabs .oc-tab-trigger { display: flex; align-items: center; justify-content: flex-start; gap: 0.6rem; text-align: start; }
 .oc-block-services-tabs > .oc-tab-list--vertical { align-items: stretch; }
 .oc-block-services-icon {
@@ -2312,17 +2357,20 @@
 .oc-block-services-docs-title { margin: 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-muted-foreground); }
 
 /* ---- Narrow: tabs become a scrolling row above the panel ---- */
-@container (width < 48rem) {
-  .oc-block-services-tabs { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
-  .oc-block-services-tabs > .oc-tab-list {
+@container (width < 40rem) {
+  .oc-block-services .oc-tabset.oc-block-services-tabs { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-list {
     position: static;
     flex-direction: row;
     overflow-x: auto;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
+    border-right: none;
+    border-bottom: 1px solid var(--oc-border);
   }
-  .oc-block-services-tabs > .oc-tab-list .oc-tab-trigger { flex: none; scroll-snap-align: start; white-space: nowrap; }
-  .oc-block-services-tabs > .oc-tab-panel { grid-column: 1; grid-row: 2; }
+  .oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-list .oc-tab-trigger { flex: none; scroll-snap-align: start; white-space: nowrap; border-right: none; border-bottom: 2px solid transparent; margin: 0 0 -1px; }
+  .oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-list .oc-tab-trigger:has(input:checked) { border-bottom-color: var(--oc-foreground); }
+  .oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-panel { grid-column: 1; grid-row: 2; }
   .oc-block-services-media { aspect-ratio: 16 / 9; }
 }
 
@@ -2347,7 +2395,12 @@
     radial-gradient(var(--oc-spot-size, 22rem) circle at var(--oc-spot-x, 50%) var(--oc-spot-y, 0%), oklch(from var(--oc-accent-from) l c h / calc(var(--oc-glow, 0) * var(--oc-spot-strength, 2))), transparent 60%),
     var(--oc-surface);
   /* The glow fades in fast, so the light is there as soon as the pointer is. */
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.35s, --oc-glow 0.12s;
+  /* translate: the hover lift of the free card, so the card rises smoothly instead of jumping. */
+  transition:
+    translate var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    --oc-glow 0.12s;
 }
 
 /* The border under the pointer lights up too: a ring as wide as the border, cut out with a mask. It sits inside the
@@ -2480,10 +2533,12 @@
   padding: var(--oc-block-gap, 24px);
 }
 
-/* Two columns from 60rem container width, stacked below. */
+/* Two columns from 44rem container width, stacked below. */
 .oc-block-watch-grid { display: grid; gap: 1.5rem; }
-@container (min-width: 60rem) {
-  .oc-block-watch:not(.oc-block-watch--stacked) .oc-block-watch-grid { grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem); }
+@container (min-width: 44rem) {
+  .oc-block-watch:not(.oc-block-watch--stacked) .oc-block-watch-grid { grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem); }
+  /* In the side column a smaller thumbnail leaves room for the title. */
+  .oc-block-watch:not(.oc-block-watch--stacked) .oc-block-watch-item { grid-template-columns: 7.5rem minmax(0, 1fr); }
 }
 
 /* 16:9 player area. Put a <video> or <iframe> inside, or leave the play-icon placeholder. */
@@ -2528,7 +2583,7 @@
 /* Side list */
 .oc-block-watch-side-title { margin: 0 0 0.75rem; font-size: 1rem; font-weight: 700; }
 .oc-block-watch-list { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
-@container (min-width: 40rem) and (max-width: 59.99rem) {
+@container (min-width: 40rem) and (max-width: 43.99rem) {
   .oc-block-watch-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 .oc-block-watch--stacked .oc-block-watch-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); }

@@ -1,0 +1,189 @@
+/* File: packages/ui/src/parts/site-paper.css
+   Map: paper (color, ink, grain) -> tones -> sheet + lift -> writing paper (lined, margin, grid, dots, millimeter) -> edges (torn, zigzag,
+        holes, fold, stack) -> paper theme (page background)
+   Paper: an off-white surface with a fine grain, for a page, a section or a single sheet. Everything is CSS: the grain
+   and the torn edge are small inline SVGs, the lines are gradients. Paper keeps its color in dark mode: the sheet stays
+   light with dark ink (color-scheme: light), so everything on it stays readable.
+   <section class="oc-paper">...</section>                         a section on off-white paper
+   <div class="oc-paper oc-paper--sheet oc-paper--lined oc-paper--margin">...</div>   a sheet of writing paper
+   <body class="oc-paper-theme oc-paper">                        the whole page, cards included, in off-white
+   One edge modifier at a time (torn, zigzag and holes each use the mask). */
+
+.oc-paper {
+  /* The tint gives the hue; lightness and chroma make the tone. */
+  --oc-paper-tint: var(--color-cornsilk-50);
+  --oc-paper-l: 0.962;
+  --oc-paper-c: 0.013;
+  --oc-paper-color: oklch(from var(--oc-paper-tint) var(--oc-paper-l) var(--oc-paper-c) h);
+  --oc-paper-ink: oklch(from var(--oc-paper-tint) 0.24 0.02 h);
+  --oc-paper-rule: oklch(from var(--color-vividblue-60) 0.62 c h / 0.32);
+  --oc-paper-margin-color: oklch(from var(--color-red-50) l c h / 0.5);
+  --oc-paper-line: 1.75rem;
+  /* Fine grain: dark gray specks. */
+  --oc-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .36 0 0 0 0 .36 .5 0 0 0 -.17'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  position: relative;
+  /* The same paper in light and dark mode; theme tokens used on the sheet take their light value. */
+  color-scheme: light;
+  background-color: var(--oc-paper-color);
+  /* Layers, top to bottom: margin line, rules, grain. Each one is "none" until a modifier sets it. */
+  background-image: var(--oc-paper-layer-margin, none), var(--oc-paper-layer-rule, none), var(--oc-paper-grain);
+  background-size: auto, var(--oc-paper-rule-size, auto), 13.75rem;
+  background-position: 0 0, var(--oc-paper-rule-at, 0 0), 0 0;
+  background-repeat: no-repeat, repeat, repeat;
+  color: var(--oc-paper-ink);
+}
+.oc-paper--smooth { --oc-paper-grain: none; }
+
+/* Tones. The default is off-white. */
+.oc-paper--bright { --oc-paper-l: 0.992; --oc-paper-c: 0.006; }
+.oc-paper--ivory { --oc-paper-tint: var(--color-gold-50); --oc-paper-l: 0.955; --oc-paper-c: 0.03; }
+.oc-paper--gray { --oc-paper-tint: var(--color-vividblue-60); --oc-paper-l: 0.93; --oc-paper-c: 0.004; }
+.oc-paper--kraft { --oc-paper-tint: var(--color-orange-50); --oc-paper-l: 0.76; --oc-paper-c: 0.055; }
+
+/* Sheet: a single piece of paper with room around the text and a soft shadow. */
+.oc-paper--sheet {
+  padding: var(--oc-paper-pad, 1.75rem);
+  border-radius: var(--oc-paper-radius, 2px);
+  box-shadow:
+    0 1px 2px oklch(from var(--color-black-60) l c h / 0.12),
+    0 14px 28px -18px oklch(from var(--color-black-60) l c h / 0.35);
+}
+/* Lift: the shadow for a sheet with a cut edge (a mask also cuts a box-shadow). Put it on a wrapper; the sheet fills
+   the wrapper, so sheets in one row of a grid are equally high. */
+.oc-paper-lift { display: grid; filter: drop-shadow(0 1px 1px oklch(from var(--color-black-60) l c h / 0.14)) drop-shadow(0 10px 14px oklch(from var(--color-black-60) l c h / 0.16)); }
+.oc-paper-lift > .oc-paper--sheet { box-shadow: none; }
+
+/* Writing paper. The text takes the height of a line, so every row of text sits on a rule. */
+.oc-paper--lined {
+  --oc-paper-layer-rule: linear-gradient(to bottom, transparent calc(100% - 1px), var(--oc-paper-rule) calc(100% - 1px));
+  --oc-paper-rule-size: 100% var(--oc-paper-line);
+  --oc-paper-rule-at: 0 var(--oc-paper-shift, -0.5rem);
+  padding-block: var(--oc-paper-line);
+  line-height: var(--oc-paper-line);
+}
+.oc-paper--lined > * { margin-block: 0; line-height: var(--oc-paper-line); }
+.oc-paper--lined > * + * { margin-block-start: var(--oc-paper-line); }
+.oc-paper--lined > :is(h1, h2, h3, h4) { font-size: 1.25rem; }
+/* Margin line of a school notebook, on the start side. */
+.oc-paper--margin {
+  --oc-paper-margin-at: 3.25rem;
+  --oc-paper-layer-margin: linear-gradient(to right, transparent var(--oc-paper-margin-at), var(--oc-paper-margin-color) var(--oc-paper-margin-at) calc(var(--oc-paper-margin-at) + 1.5px), transparent calc(var(--oc-paper-margin-at) + 1.5px));
+  padding-inline-start: calc(var(--oc-paper-margin-at) + 1rem);
+}
+.oc-paper--margin:dir(rtl) {
+  --oc-paper-layer-margin: linear-gradient(to left, transparent var(--oc-paper-margin-at), var(--oc-paper-margin-color) var(--oc-paper-margin-at) calc(var(--oc-paper-margin-at) + 1.5px), transparent calc(var(--oc-paper-margin-at) + 1.5px));
+}
+/* Squared paper and a dot grid. --oc-paper-grid sets the size of a square. */
+.oc-paper--grid {
+  --oc-paper-layer-rule: conic-gradient(from 90deg at 1px 1px, transparent 25%, var(--oc-paper-rule) 0);
+  --oc-paper-rule-size: var(--oc-paper-grid, 1.25rem) var(--oc-paper-grid, 1.25rem);
+}
+.oc-paper--dots {
+  --oc-paper-layer-rule: radial-gradient(circle at center, oklch(from var(--oc-paper-ink) l c h / 0.3) 1px, transparent 1.5px);
+  --oc-paper-rule-size: var(--oc-paper-grid, 1.25rem) var(--oc-paper-grid, 1.25rem);
+}
+
+/* Millimeter paper: a fine line every millimeter, a stronger one every 5 mm and a thick one every 10 mm, in real
+   millimeters (correct on print; on a screen as close as the pixels allow). --oc-paper-mm sets the size of one
+   square (e.g. 4px for sharp lines on a screen), --oc-paper-mm-color the color (orange by default). */
+.oc-paper--mm {
+  --oc-paper-mm: 1mm;
+  --oc-paper-mm-color: oklch(from var(--color-orange-60) 0.62 0.15 h);
+  background-image:
+    conic-gradient(from 90deg at 1px 1px, transparent 25%, oklch(from var(--oc-paper-mm-color) l c h / 0.85) 0),
+    conic-gradient(from 90deg at 1px 1px, transparent 25%, oklch(from var(--oc-paper-mm-color) l c h / 0.42) 0),
+    conic-gradient(from 90deg at 1px 1px, transparent 25%, oklch(from var(--oc-paper-mm-color) l c h / 0.2) 0),
+    var(--oc-paper-grain);
+  background-size:
+    calc(var(--oc-paper-mm) * 10) calc(var(--oc-paper-mm) * 10),
+    calc(var(--oc-paper-mm) * 5) calc(var(--oc-paper-mm) * 5),
+    var(--oc-paper-mm) var(--oc-paper-mm),
+    13.75rem;
+  background-position: 0 0;
+  background-repeat: repeat;
+}
+
+/* Edges. Torn: an irregular tear at the bottom (--torn), the top (--torn-top) or both (--torn-both).
+   --oc-paper-tear is the depth of the tear, --oc-paper-tear-width the length before the shape repeats. */
+.oc-paper--torn,
+.oc-paper--torn-top,
+.oc-paper--torn-both {
+  --oc-paper-tear: 0.7rem;
+  --oc-paper-tear-width: 15rem;
+  --oc-paper-tear-end: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M0 0H200V6L196 7.5 191 5.5 187 8 182 6.5 177 9 171 6 166 7.5 160 5 155 8.5 149 6.5 143 9.5 138 7 132 5.5 127 8 121 6 115 9 110 7 104 5 98 8 93 6.5 87 9.5 81 7 76 5.5 70 8.5 64 6 58 7.5 53 5 47 8 41 9.5 36 6.5 30 8 24 5.5 18 7.5 12 9 6 7 0 6Z'/%3E%3C/svg%3E");
+  --oc-paper-tear-start: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10H200V4L195 2.5 189 4.5 184 1.5 178 3.5 172 1 167 4 161 2.5 156 5 150 1.5 144 3.5 139 0.5 133 3 128 4.5 122 2 116 4 111 1 105 3 99 5 94 2 88 3.5 82 0.5 77 3 71 4.5 65 1.5 60 4 54 2.5 48 5 43 2 37 0.5 31 3.5 26 2 20 4.5 14 2.5 8 1 3 3 0 4Z'/%3E%3C/svg%3E");
+  border-radius: 0;
+}
+.oc-paper--torn {
+  padding-block-end: calc(var(--oc-paper-pad, 1.75rem) + var(--oc-paper-tear));
+  mask:
+    var(--oc-paper-tear-end) bottom / var(--oc-paper-tear-width) var(--oc-paper-tear) repeat-x,
+    linear-gradient(black 0 0) top / 100% calc(100% - var(--oc-paper-tear) + 0.5px) no-repeat;
+}
+.oc-paper--torn-top {
+  padding-block-start: calc(var(--oc-paper-pad, 1.75rem) + var(--oc-paper-tear));
+  mask:
+    var(--oc-paper-tear-start) top / var(--oc-paper-tear-width) var(--oc-paper-tear) repeat-x,
+    linear-gradient(black 0 0) bottom / 100% calc(100% - var(--oc-paper-tear) + 0.5px) no-repeat;
+}
+.oc-paper--torn-both {
+  padding-block: calc(var(--oc-paper-pad, 1.75rem) + var(--oc-paper-tear));
+  mask:
+    var(--oc-paper-tear-start) top / var(--oc-paper-tear-width) var(--oc-paper-tear) repeat-x,
+    var(--oc-paper-tear-end) bottom / var(--oc-paper-tear-width) var(--oc-paper-tear) repeat-x,
+    linear-gradient(black 0 0) center / 100% calc(100% - 2 * var(--oc-paper-tear) + 1px) no-repeat;
+}
+/* Zigzag: the cut of a till receipt at the bottom. --oc-paper-tooth is the width of one tooth. */
+.oc-paper--zigzag {
+  --oc-paper-tooth: 0.75rem;
+  padding-block-end: calc(var(--oc-paper-pad, 1.75rem) + var(--oc-paper-tooth) / 2);
+  border-radius: 0;
+  mask: conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) 50% / var(--oc-paper-tooth) 100%;
+}
+/* Holes: the punched holes of a ring binder on the start side. */
+.oc-paper--holes {
+  --oc-paper-hole: 0.36rem;
+  --oc-paper-margin-at: 3.25rem;
+  padding-inline-start: calc(var(--oc-paper-margin-at) + 1rem);
+  mask: radial-gradient(circle at 1.5rem 50%, transparent var(--oc-paper-hole), black calc(var(--oc-paper-hole) + 0.5px)) 0 0 / 100% var(--oc-paper-hole-gap, 3.5rem);
+}
+.oc-paper--holes:dir(rtl) {
+  mask: radial-gradient(circle at calc(100% - 1.5rem) 50%, transparent var(--oc-paper-hole), black calc(var(--oc-paper-hole) + 0.5px)) 0 0 / 100% var(--oc-paper-hole-gap, 3.5rem);
+}
+/* Fold: a folded corner at the top end. */
+.oc-paper--fold {
+  --oc-paper-fold: 1.75rem;
+  clip-path: polygon(0 0, calc(100% - var(--oc-paper-fold)) 0, 100% var(--oc-paper-fold), 100% 100%, 0 100%);
+}
+.oc-paper--fold::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: var(--oc-paper-fold);
+  block-size: var(--oc-paper-fold);
+  background: linear-gradient(to top right, oklch(from var(--oc-paper-color) calc(l - 0.07) c h) 50%, transparent 50%);
+  filter: drop-shadow(-1px 1px 1px oklch(from var(--color-black-60) l c h / 0.25));
+}
+.oc-paper--fold:dir(rtl) { clip-path: polygon(var(--oc-paper-fold) 0, 100% 0, 100% 100%, 0 100%, 0 var(--oc-paper-fold)); }
+.oc-paper--fold:dir(rtl)::after { background: linear-gradient(to top left, oklch(from var(--oc-paper-color) calc(l - 0.07) c h) 50%, transparent 50%); }
+/* Stack: two more sheets under this one. */
+.oc-paper--stack {
+  --oc-paper-edge: oklch(from var(--color-black-60) l c h / 0.22);
+  box-shadow:
+    0 1px 1px var(--oc-paper-edge),
+    0 5px 0 -2px oklch(from var(--oc-paper-color) calc(l - 0.02) c h),
+    0 6px 1px -2px var(--oc-paper-edge),
+    0 10px 0 -4px oklch(from var(--oc-paper-color) calc(l - 0.04) c h),
+    0 11px 1px -4px var(--oc-paper-edge);
+}
+
+/* Paper theme: the page and its cards in off-white instead of pure white. On its own it follows dark mode (a warm
+   dark); together with .oc-paper it is paper, so it stays off-white. Put it on <body> or on a section. */
+.oc-paper-theme {
+  --oc-background: light-dark(oklch(from var(--oc-paper-tint, var(--color-cornsilk-50)) 0.962 0.013 h), oklch(from var(--oc-paper-tint, var(--color-cornsilk-50)) 0.19 0.01 h));
+  --oc-card: light-dark(oklch(from var(--oc-paper-tint, var(--color-cornsilk-50)) 0.992 0.007 h), oklch(from var(--oc-paper-tint, var(--color-cornsilk-50)) 0.24 0.012 h));
+  --oc-popover: var(--oc-card);
+  background-color: var(--oc-background);
+}
+.oc-paper-theme.oc-paper { --oc-paper-color: var(--oc-background); color: var(--oc-foreground); }

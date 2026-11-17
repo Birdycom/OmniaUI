@@ -1,0 +1,137 @@
+/* File: packages/blocks/src/parts/app-step-view.css
+   Map: frame -> top row (back, distance) -> picture (photo or empty with a large number, badges on top) -> title,
+        place, text -> task line -> content blocks (tip, note, link, countdown) -> question (kicker, text, answers,
+        send, hint) -> container sizes -> reduced motion
+   Step view: one step of a route, tour or course as the visitor sees it, with the content blocks a writer added
+   (tip, note, link, countdown) and a question. Uses the free collapsible, alert, button and radio components; no
+   JavaScript (your app runs the countdown and sends the answer). */
+
+.oc-block-step-view {
+  container: oc-step-view / inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  /* A reading column: wide enough for a tablet, never a full desktop row (--oc-step-view-max). */
+  max-inline-size: var(--oc-step-view-max, 40rem);
+  margin-inline: auto;
+  padding: 1rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+}
+.oc-block-step-view > * { margin: 0; }
+
+.oc-block-step-view-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+
+/* Picture: a photo, or a flat surface with the step number when there is none. Badges sit on it, solid. */
+.oc-block-step-view-picture {
+  position: relative;
+  display: grid;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--oc-radius);
+  background: var(--oc-muted);
+}
+.oc-block-step-view-picture > :is(img, svg:not([data-icon])) { grid-area: 1 / 1; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.oc-block-step-view-picture--empty::before {
+  content: attr(data-number);
+  grid-area: 1 / 1;
+  place-self: center;
+  color: oklch(from var(--oc-foreground) l c h / 0.14);
+  font-family: var(--oc-font-display, inherit);
+  font-size: clamp(4rem, 30cqi, 9rem);
+  font-weight: 700;
+  line-height: 1;
+}
+.oc-block-step-view-badges {
+  grid-area: 1 / 1;
+  align-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.6rem;
+}
+.oc-block-step-view-badges .oc-badge { box-shadow: var(--oc-shadow-sm); }
+/* On a photo the tinted badges get a solid card behind them, so they stay readable on any picture. */
+.oc-block-step-view-badges .oc-badge--info { background: color-mix(in oklab, var(--oc-primary) 12%, var(--oc-card)); }
+.oc-block-step-view-badges .oc-badge--success { background: color-mix(in oklab, var(--oc-success) 16%, var(--oc-card)); }
+.oc-block-step-view-badges .oc-badge--warning { background: color-mix(in oklab, var(--oc-warning) 16%, var(--oc-card)); }
+.oc-block-step-view-badges .oc-badge--outline { background: var(--oc-card); }
+
+.oc-block-step-view-title { font-size: 1.375rem; font-weight: 650; line-height: 1.25; text-wrap: balance; }
+.oc-block-step-view-place { display: flex; align-items: center; gap: 0.35rem; margin-block-start: -0.5rem; color: var(--oc-muted-foreground); font-size: 0.875rem; }
+.oc-block-step-view-place :is(iconify-icon, svg[data-icon]) { flex: none; font-size: 1.05rem; }
+.oc-block-step-view-text { font-size: 0.9375rem; line-height: 1.6; }
+.oc-block-step-view-text > * { margin: 0; }
+.oc-block-step-view-text > * + * { margin-block-start: 0.6rem; }
+
+/* Task: what to do at this step, on a line with an accent bar. */
+.oc-block-step-view-task {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border-inline-start: 4px solid var(--oc-primary);
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: oklch(from var(--oc-primary) l c h / 0.08);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.oc-block-step-view-task :is(iconify-icon, svg[data-icon]) { flex: none; margin-block-start: 0.1rem; font-size: 1.15rem; color: light-dark(oklch(from var(--oc-primary) min(l, 0.42) c h), var(--oc-primary)); }
+
+/* Content blocks of the step, one under the other. */
+.oc-block-step-view-blocks { display: grid; gap: 0.75rem; }
+.oc-block-step-view-blocks > .oc-btn { justify-self: start; }
+.oc-block-step-view-blocks > .oc-alert { margin: 0; }
+
+/* Countdown: label left, time right, a bar along the bottom that shrinks (--oc-step-view-left, set by your app). */
+.oc-block-step-view-countdown {
+  --oc-countdown-tone: var(--oc-primary);
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 1rem 0.9rem;
+  overflow: hidden;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+}
+.oc-block-step-view-countdown::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: 0;
+  inline-size: var(--oc-step-view-left, 100%);
+  block-size: 0.25rem;
+  background: var(--oc-countdown-tone);
+  transition: inline-size 0.25s linear;
+}
+.oc-block-step-view-countdown-label { color: var(--oc-muted-foreground); font-size: 0.875rem; font-weight: 600; }
+.oc-block-step-view-countdown-time { font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1; }
+.oc-block-step-view-countdown--low { --oc-countdown-tone: var(--oc-warning); }
+.oc-block-step-view-countdown--low .oc-block-step-view-countdown-time { color: light-dark(oklch(from var(--oc-warning) min(l, 0.46) c h), var(--oc-warning)); }
+.oc-block-step-view-countdown--done { --oc-countdown-tone: var(--oc-destructive); }
+.oc-block-step-view-countdown--done .oc-block-step-view-countdown-time { color: light-dark(oklch(from var(--oc-destructive) min(l, 0.5) c h), oklch(from var(--oc-destructive) max(l, 0.72) c h)); font-size: 1.25rem; }
+
+/* Question. */
+.oc-block-step-view-question { display: grid; gap: 0.75rem; padding-block-start: 1rem; border-block-start: 1px solid var(--oc-border); }
+.oc-block-step-view-question > * { margin: 0; }
+.oc-block-step-view-kicker { color: var(--oc-muted-foreground); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.oc-block-step-view-ask { font-size: 1.0625rem; font-weight: 600; line-height: 1.4; }
+.oc-block-step-view-answers { display: grid; gap: 0.5rem; grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; margin: 0; padding: 0; border: 0; }
+.oc-block-step-view-answers .oc-radio-item--card { min-block-size: 3rem; }
+.oc-block-step-view-send { justify-self: stretch; }
+.oc-block-step-view-hint { color: var(--oc-muted-foreground); font-size: 0.8125rem; text-align: center; }
+
+@container oc-step-view (min-width: 34rem) {
+  .oc-block-step-view { padding: 1.25rem; gap: 1.1rem; }
+  .oc-block-step-view-answers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .oc-block-step-view-send { justify-self: start; min-inline-size: 12rem; }
+  .oc-block-step-view-hint { text-align: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-block-step-view-countdown::after { transition: none; }
+}
