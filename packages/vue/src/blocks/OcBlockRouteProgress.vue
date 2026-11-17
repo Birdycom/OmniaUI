@@ -7,6 +7,7 @@
  */
 import { computed } from 'vue'
 import { useUid } from '../composables/useUid'
+import OcWebicon from '../components/OcWebicon.vue'
 
 export type RouteProgressState = 'todo' | 'done' | 'wrong' | 'current' | 'locked'
 export interface RouteProgressStep {
@@ -57,7 +58,7 @@ const itemClass = (st: RouteProgressState = 'todo') => [
       <div class="oc-progress" role="progressbar" aria-label="Steps done" :aria-valuenow="done" aria-valuemin="0" :aria-valuemax="total"><div class="oc-progress-bar" :style="{ width: `${pct}%` }"></div></div>
     </div>
     <button v-if="next" type="button" :class="['oc-block-route-progress-next', next.tone && next.tone !== 'default' && `oc-block-route-progress-next--${next.tone}`]" @click="emit('next')">
-      <span class="oc-block-route-progress-next-icon" aria-hidden="true"><iconify-icon :icon="next.icon ?? 'mdi:walk'" /></span>
+      <span class="oc-block-route-progress-next-icon" aria-hidden="true"><OcWebicon :name="next.icon ?? 'mdi:walk'" bare fallback="iconify" /></span>
       <span class="oc-block-route-progress-next-text">
         <span class="oc-block-route-progress-next-label">{{ next.label ?? 'Now' }}</span>
         <span class="oc-block-route-progress-next-title">{{ next.title }}</span>
@@ -68,7 +69,7 @@ const itemClass = (st: RouteProgressState = 'todo') => [
     <ol class="oc-block-route-progress-list" aria-label="Steps">
       <li v-for="(s, i) in steps" :key="i" :class="itemClass(s.state)">
         <button class="oc-block-route-progress-link" type="button" :aria-current="s.state === 'current' ? 'step' : undefined" @click="emit('step', i)">
-          <span class="oc-block-route-progress-marker"><iconify-icon v-if="isIcon(s.marker)" :icon="String(s.marker)" :aria-label="s.markerLabel" /><template v-else>{{ s.marker ?? i + 1 }}</template></span>
+          <span class="oc-block-route-progress-marker"><OcWebicon v-if="isIcon(s.marker)" :name="String(s.marker)" :label="s.markerLabel" bare fallback="iconify" /><template v-else>{{ s.marker ?? i + 1 }}</template></span>
           <span class="oc-block-route-progress-text">
             <span class="oc-block-route-progress-name">{{ s.name }}</span>
             <span v-if="s.sub" class="oc-block-route-progress-sub">{{ s.sub }}</span>

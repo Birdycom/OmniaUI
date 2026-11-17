@@ -1,11 +1,15 @@
-{{-- OmniaCSS modal on <dialog>. Props: id (required), title, description, size (sm|lg|xl|full), closedby.
+{{-- OmniaCSS modal on <dialog>. Props: id (required), title, description, size (sm|lg|xl|full), closedby, close-button (a ×
+     in the corner; also shown with close-round or close-class), close (its aria-label), close-round, close-class.
      Slots: default = body, footer (buttons), trigger (rendered before the dialog). Buttons use command="show-modal|close" commandfor="{id}". --}}
-@props(['id', 'title' => null, 'description' => null, 'size' => null, 'closedby' => 'any'])
+@props(['id', 'title' => null, 'description' => null, 'size' => null, 'closedby' => 'any', 'closeButton' => false, 'close' => 'Close', 'closeRound' => false, 'closeClass' => null])
 @if (isset($trigger) && trim((string) $trigger) !== '')
     {{ $trigger }}
 @endif
 <dialog {{ $attributes->class(['oc-modal'])->merge(['id' => $id, 'closedby' => $closedby, 'aria-labelledby' => $id.'-title']) }}>
     <div @class(['oc-modal-content', 'oc-modal-content--'.$size => $size])>
+        @if ($closeButton || $closeRound || $closeClass)
+            <button @class(['oc-modal-close', 'oc-close--round' => $closeRound, $closeClass => $closeClass]) type="button" command="close" commandfor="{{ $id }}" aria-label="{{ $close }}">&times;</button>
+        @endif
         @if ($title || $description)
             <div class="oc-modal-header">
                 @if ($title)

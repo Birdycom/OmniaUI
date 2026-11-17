@@ -19,6 +19,10 @@ export interface SheetProps extends Omit<DialogHTMLAttributes<HTMLDialogElement>
   footer?: ReactNode;
   /** Accessible name of the close button. */
   closeLabel?: string;
+  /** Round close button (`oc-close--round`). */
+  closeRound?: boolean;
+  /** Extra class on the close button. */
+  closeClassName?: string;
   /** Glass panel over a live view: see-through (blurred) panel, light scrim without blur (`oc-sheet--glass`). */
   glass?: boolean;
   /** A strip of the page stays free beside the panel on a narrow screen (`oc-sheet--inset`). */
@@ -29,7 +33,7 @@ export interface SheetProps extends Omit<DialogHTMLAttributes<HTMLDialogElement>
 
 /** Side panel on `<dialog class="oc-sheet">`. */
 export const Sheet = forwardRef<HTMLDialogElement, SheetProps>(function Sheet(
-  { open, defaultOpen, onOpenChange, side = "right", wide, title, description, footer, closeLabel = "Close", glass, inset, footerPanel, className, children, ...rest },
+  { open, defaultOpen, onOpenChange, side = "right", wide, title, description, footer, closeLabel = "Close", closeRound, closeClassName, glass, inset, footerPanel, className, children, ...rest },
   forwardedRef,
 ) {
   const inner = useRef<HTMLDialogElement>(null);
@@ -52,7 +56,7 @@ export const Sheet = forwardRef<HTMLDialogElement, SheetProps>(function Sheet(
     >
       <DialogContext.Provider value={{ close: dlg.close }}>
         <div className={cx("oc-sheet-content", wide && "oc-sheet-content--wide")}>
-          <button className="oc-sheet-close" type="button" aria-label={closeLabel} onClick={dlg.close}>&times;</button>
+          <button className={cx("oc-sheet-close", closeRound && "oc-close--round", closeClassName)} type="button" aria-label={closeLabel} onClick={dlg.close}>&times;</button>
           {(title != null || description != null) && (
             <div className="oc-sheet-header">
               {title != null && <h2 className="oc-sheet-title" id={titleId}>{title}</h2>}

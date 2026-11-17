@@ -188,6 +188,7 @@ import OcUpgradeBanner from './components/OcUpgradeBanner.vue'
 import OcUser from './components/OcUser.vue'
 import OcVersionBanner from './components/OcVersionBanner.vue'
 import OcWatermark from './components/OcWatermark.vue'
+import OcWebicon from './components/OcWebicon.vue'
 import OcBlockAboutTimeline from './blocks/OcBlockAboutTimeline.vue'
 import OcBlockAppHeader from './blocks/OcBlockAppHeader.vue'
 import OcBlockAppShell from './blocks/OcBlockAppShell.vue'
@@ -415,6 +416,7 @@ export {
   OcUser,
   OcVersionBanner,
   OcWatermark,
+  OcWebicon,
   OcBlockAboutTimeline,
   OcBlockAppHeader,
   OcBlockAppShell,
@@ -492,6 +494,7 @@ export type { TableCompactColumn } from './components/OcTableCompact.vue'
 export type { TabItem } from './components/OcTabs.vue'
 export type { TimelineEntry } from './components/OcTimeline.vue'
 export type { OcTreeItem } from './components/OcTree.vue'
+export type { WebiconSize } from './components/OcWebicon.vue'
 export type { ContactFormLine, ContactFormCard, ContactFormSubject } from './blocks/OcBlockContactForm.vue'
 export type { ContactGridLine, ContactGridCard } from './blocks/OcBlockContactGrid.vue'
 export type { ContentBlockItem } from './blocks/OcBlockContentBlocks.vue'
@@ -519,6 +522,8 @@ export type { TypePickerOption, TypePickerCategory } from './blocks/OcBlockTypeP
 export { useToast } from './composables/useToast'
 export type { ToastItem, ToastOptions, ToastVariant } from './composables/useToast'
 export { useUid } from './composables/useUid'
+export { addWebicons, getWebicon, hasWebicon, registerWebicons } from './webicons'
+export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './webicons'
 
 /** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */
 export const components: Record<string, Component> = {
@@ -709,6 +714,7 @@ export const components: Record<string, Component> = {
   OcUser,
   OcVersionBanner,
   OcWatermark,
+  OcWebicon,
   OcBlockAboutTimeline,
   OcBlockAppHeader,
   OcBlockAppShell,

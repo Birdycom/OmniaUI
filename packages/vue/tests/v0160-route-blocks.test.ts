@@ -75,7 +75,7 @@ describe('v0.16.0 route progress', () => {
     expect(w.find('.oc-progress-bar').attributes('style')).toContain('50%')
     expect(w.find('.oc-block-route-progress-next--over').exists()).toBe(true)
     expect(w.findAll('.oc-block-route-progress-item')[1].find('button').attributes('aria-current')).toBe('step')
-    expect(w.find('.oc-block-route-progress-item--locked iconify-icon').exists()).toBe(true)
+    expect(w.find('.oc-block-route-progress-item--locked svg[data-webicon="mdi:flag-checkered"]').exists()).toBe(true)
     await w.find('.oc-block-route-progress-next').trigger('click')
     expect(w.emitted('next')).toHaveLength(1)
   })

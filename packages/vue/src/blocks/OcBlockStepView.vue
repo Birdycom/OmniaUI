@@ -7,6 +7,7 @@
  * Classes: .oc-block-step-view, -top, -picture (--empty + data-number), -badges, -title, -place, -text, -task, -blocks, -countdown, -question, -kicker, -ask, -answers, -send, -hint
  */
 import { useUid } from '../composables/useUid'
+import OcWebicon from '../components/OcWebicon.vue'
 
 export interface StepViewQuestion {
   kicker?: string
@@ -29,9 +30,9 @@ const titleId = useUid('oc-stepview')
       <figcaption v-if="$slots.badges" class="oc-block-step-view-badges"><slot name="badges" /></figcaption>
     </figure>
     <h2 :id="titleId" class="oc-block-step-view-title">{{ title }}</h2>
-    <p v-if="place" class="oc-block-step-view-place"><iconify-icon icon="mdi:map-marker-outline" aria-hidden="true" /> {{ place }}</p>
+    <p v-if="place" class="oc-block-step-view-place"><OcWebicon name="mdi:map-marker-outline" bare fallback="iconify" /> {{ place }}</p>
     <div v-if="$slots.default" class="oc-block-step-view-text"><slot /></div>
-    <p v-if="task" class="oc-block-step-view-task"><iconify-icon icon="mdi:target" aria-hidden="true" /> {{ task }}</p>
+    <p v-if="task" class="oc-block-step-view-task"><OcWebicon name="mdi:target" bare fallback="iconify" /> {{ task }}</p>
     <div v-if="$slots.blocks" class="oc-block-step-view-blocks"><slot name="blocks" /></div>
     <div v-if="question" class="oc-block-step-view-question">
       <span v-if="question.kicker" class="oc-block-step-view-kicker">{{ question.kicker }}</span>

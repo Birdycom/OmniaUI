@@ -1,9 +1,10 @@
 "use client";
 
-import { createElement, forwardRef, useId } from "react";
+import { forwardRef, useId } from "react";
 import type { HTMLAttributes } from "react";
 import { cx } from "../utils";
 import { useControllable } from "../hooks";
+import { Webicon } from "./Webicon";
 
 export type ThemeMode = "system" | "light" | "dark";
 
@@ -20,7 +21,7 @@ export interface ThemeSwitchProps extends Omit<HTMLAttributes<HTMLElement>, "onC
   name?: string;
   /** Render a `div role="radiogroup"` (compact app bars) instead of a `fieldset`. */
   as?: "fieldset" | "div";
-  /** Monitor / sun / moon webicons (`<iconify-icon>`): `true` shows only the icons (`--icons`, text for screen readers
+  /** Monitor / sun / moon webicons (inline SVG, built in): `true` shows only the icons (`--icons`, text for screen readers
    *  and as tooltip), `"text"` shows icon and text. */
   icons?: boolean | "text";
 }
@@ -40,7 +41,7 @@ export const ThemeSwitch = forwardRef<HTMLElement, ThemeSwitchProps>(function Th
   const items = modes.map((m) => (
     <label key={m} title={iconOnly ? LABELS[m] : undefined}>
       <input type="radio" name={group} value={m} checked={current === m} onChange={() => setCurrent(m)} />
-      {icons ? createElement("iconify-icon", { icon: ICONS[m], "aria-hidden": "true" }) : null}
+      {icons ? <Webicon name={ICONS[m]} bare fallback="iconify" /> : null}
       {iconOnly ? <span className="oc-theme-switch__text">{LABELS[m]}</span> : <> {LABELS[m]}</>}
     </label>
   ));

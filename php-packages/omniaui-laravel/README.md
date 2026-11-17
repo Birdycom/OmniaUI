@@ -180,7 +180,7 @@ Published files are used as `<x-oc.button>` and `<x-oc.block.app-shell>`; the pa
 php artisan vendor:publish --tag=omniacss-config
 ```
 
-`config/omniacss.php`: `source`, `packages` (`core`, `components`, `blocks`), `version` (CDN), `cdn.base`, `public.path`, `vite.entries`, `prefix`.
+`config/omniacss.php`: `source`, `packages` (`core`, `components`, `blocks`), `version` (CDN), `cdn.base`, `public.path`, `vite.entries`, `prefix`, `webicons` (`files`: subset files made with `npx omniaui webicons --scan resources --out resources/webicons.json`; `path`: the folder with the `@iconify-json` sets, default `node_modules/@iconify-json`) for `<x-oc::webicon name="mdi:home" />`.
 
 ## Tests
 

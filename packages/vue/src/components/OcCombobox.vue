@@ -8,6 +8,7 @@
  */
 import { computed, ref } from 'vue'
 import { useUid } from '../composables/useUid'
+import OcWebicon from './OcWebicon.vue'
 
 export interface ComboboxItem {
   value: string
@@ -82,7 +83,7 @@ function onBlur() {
 <template>
   <div class="oc-combobox" :data-open="open ? '' : 'false'">
     <span v-if="withIcons" class="oc-combobox-icon" aria-hidden="true">
-      <iconify-icon v-if="fieldIcon" :icon="fieldIcon" aria-hidden="true" />
+      <OcWebicon v-if="fieldIcon" :name="fieldIcon" bare fallback="iconify" />
     </span>
     <input
       class="oc-input oc-combobox-input"
@@ -117,7 +118,7 @@ function onBlur() {
         @mousedown.prevent
         @click="choose(o)"
       >
-        <span v-if="o.icon" class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon :icon="o.icon" aria-hidden="true" /></span>
+        <span v-if="o.icon" class="oc-combobox-option-icon" aria-hidden="true"><OcWebicon :name="o.icon" bare fallback="iconify" /></span>
         <slot name="option" :option="o">{{ o.label }}</slot>
       </li>
       <li v-if="!shown.length" class="oc-combobox-empty" role="presentation">{{ emptyText }}</li>

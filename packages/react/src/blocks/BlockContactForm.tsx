@@ -3,6 +3,7 @@ import { forwardRef, useId } from "react";
 import type { FormHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 import { Icon } from "../components/Icon";
 import { cx } from "../utils";
+import { webiconNode } from "../components/Webicon";
 
 /** mdi:check */
 const CHECK = "M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z";
@@ -16,7 +17,7 @@ export interface ContactFormLine {
 export interface ContactFormCard {
   title: ReactNode;
   lines: ContactFormLine[];
-  /** Icon in the tile: an <iconify-icon icon="mdi:…" />, an <Icon> or any node. */
+  /** Icon in the tile: a webicon name ("mdi:email-outline", drawn as inline SVG), an <Icon> or any node. */
   icon?: ReactNode;
 }
 
@@ -154,7 +155,7 @@ export const BlockContactForm = forwardRef<HTMLElement, BlockContactFormProps>(f
           <div className="oc-block-contact-form-cards">
             {cards.map((card, i) => (
               <article className="oc-block-contact-card" key={i}>
-                {card.icon != null && <span className="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">{card.icon}</span>}
+                {card.icon != null && <span className="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">{webiconNode(card.icon)}</span>}
                 <h3 className="oc-block-contact-title">{card.title}</h3>
                 {card.lines.map((line, j) =>
                   line.href ? (

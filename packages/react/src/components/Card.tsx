@@ -20,14 +20,16 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   accent?: CardTone;
   /** With `accent`: a set that is not in use now (dashed border, calm band). */
   inactive?: boolean;
+  /** As high as its grid or flex cell, content grows, footer at the bottom (`oc-card--fill`): equal cards in a row. */
+  fill?: boolean;
 }
 
 /** `.oc-card` (with `accent`: `.oc-card--accent[data-tone]`) */
-export const Card = forwardRef<HTMLDivElement, CardProps>(function Card({ accent, inactive, className, ...rest }, ref) {
+export const Card = forwardRef<HTMLDivElement, CardProps>(function Card({ accent, inactive, fill, className, ...rest }, ref) {
   return (
     <div
       ref={ref}
-      className={cx("oc-card", accent && "oc-card--accent", className)}
+      className={cx("oc-card", accent && "oc-card--accent", fill && "oc-card--fill", className)}
       data-tone={accent}
       data-active={accent && inactive ? "false" : undefined}
       {...rest}

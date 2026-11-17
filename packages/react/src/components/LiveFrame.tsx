@@ -17,8 +17,9 @@ export interface LiveFrameProps extends HTMLAttributes<HTMLDivElement> {
   inBrowserFrame?: boolean;
   /** Only to look at: the iframe gets `inert` (no focus, no clicks, hidden from screen readers). */
   inert?: boolean;
-  /** A phone or television bezel around the page. Phone defaults to 390 x 844, tv to 1280 x 720. */
-  device?: "phone" | "tv";
+  /** A phone, television or laptop bezel around the page (the laptop with a base). Phone defaults to 390 x 844, tv to
+   *  1280 x 720, laptop to 1440 x 900. */
+  device?: "phone" | "tv" | "laptop";
   /** Ref to the iframe (for postMessage). */
   frameRef?: Ref<HTMLIFrameElement>;
   /** The iframe has loaded. */
@@ -31,8 +32,8 @@ export const LiveFrame = forwardRef<HTMLDivElement, LiveFrameProps>(function Liv
   { src, title = "", width, height, static: isStatic = false, inBrowserFrame = false, inert = false, device, frameRef, onFrameLoad, className, style, children, ...rest },
   ref,
 ) {
-  const w = width ?? (device === "phone" ? 390 : 1280);
-  const h = height ?? (device === "phone" ? 844 : 720);
+  const w = width ?? (device === "phone" ? 390 : device === "laptop" ? 1440 : 1280);
+  const h = height ?? (device === "phone" ? 844 : device === "laptop" ? 900 : 720);
   const size = { "--oc-live-w": w, "--oc-live-h": h } as CSSProperties;
   return (
     <div

@@ -20,6 +20,14 @@ export interface ModalProps extends Omit<DialogHTMLAttributes<HTMLDialogElement>
   size?: ModalSize;
   /** Close when the backdrop is clicked (native `closedby="any"`). Default true. */
   closeOnBackdrop?: boolean;
+  /** A close button (×) in the corner; on by itself when `closeRound` or `closeClassName` is set. */
+  closeButton?: boolean;
+  /** Accessible name of the close button (default "Close"). */
+  closeLabel?: string;
+  /** Round close button (`oc-close--round`). */
+  closeRound?: boolean;
+  /** Extra class on the close button. */
+  closeClassName?: string;
 }
 
 /**
@@ -27,7 +35,7 @@ export interface ModalProps extends Omit<DialogHTMLAttributes<HTMLDialogElement>
  * Escape and backdrop clicks are reported through `onOpenChange(false)`.
  */
 export const Modal = forwardRef<HTMLDialogElement, ModalProps>(function Modal(
-  { open, defaultOpen, onOpenChange, title, description, footer, size = "md", closeOnBackdrop = true, className, children, ...rest },
+  { open, defaultOpen, onOpenChange, title, description, footer, size = "md", closeOnBackdrop = true, closeButton, closeLabel = "Close", closeRound, closeClassName, className, children, ...rest },
   forwardedRef,
 ) {
   const inner = useRef<HTMLDialogElement>(null);
@@ -50,6 +58,9 @@ export const Modal = forwardRef<HTMLDialogElement, ModalProps>(function Modal(
     >
       <DialogContext.Provider value={{ close: dlg.close }}>
         <div className={cx("oc-modal-content", size !== "md" && `oc-modal-content--${size}`)}>
+          {(closeButton ?? (closeRound || closeClassName != null)) && (
+            <button className={cx("oc-modal-close", closeRound && "oc-close--round", closeClassName)} type="button" aria-label={closeLabel} onClick={dlg.close}>&times;</button>
+          )}
           {(title != null || description != null) && (
             <div className="oc-modal-header">
               {title != null && <h2 className="oc-modal-title" id={titleId}>{title}</h2>}

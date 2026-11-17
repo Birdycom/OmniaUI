@@ -29,6 +29,10 @@ export interface ConfirmDialogProps extends Omit<DialogHTMLAttributes<HTMLDialog
   /** Label above the typed field; defaults to "Type WORD to confirm". */
   confirmWordLabel?: ReactNode;
   closeLabel?: string;
+  /** Round close button (`oc-close--round`). */
+  closeRound?: boolean;
+  /** Extra class on the close button. */
+  closeClassName?: string;
   onConfirm?: () => void;
   onDiscard?: () => void;
 }
@@ -38,7 +42,7 @@ export const ConfirmDialog = forwardRef<HTMLDialogElement, ConfirmDialogProps>(f
   {
     open, defaultOpen, onOpenChange, type = "error", icon, title, message, children,
     confirmLabel = "Confirm", cancelLabel = "Cancel", discardLabel, confirmWord, confirmWordLabel,
-    closeLabel = "Close", onConfirm, onDiscard, className, ...rest
+    closeLabel = "Close", closeRound, closeClassName, onConfirm, onDiscard, className, ...rest
   },
   forwardedRef,
 ) {
@@ -66,7 +70,7 @@ export const ConfirmDialog = forwardRef<HTMLDialogElement, ConfirmDialogProps>(f
       onClose={dlg.onClose}
     >
       <div className={`oc-modal-content oc-alert-dialog oc-alert-dialog--${type} oc-alert-dialog--confirm`}>
-        <button className="oc-alert-dialog-close" type="button" aria-label={closeLabel} onClick={dlg.close}>×</button>
+        <button className={cx("oc-alert-dialog-close", closeRound && "oc-close--round", closeClassName)} type="button" aria-label={closeLabel} onClick={dlg.close}>×</button>
         <span className="oc-alert-dialog-icon" aria-hidden="true">{icon ?? GLYPHS[type]}</span>
         <h2 className="oc-modal-title" id={`${id}-title`}>{title}</h2>
         <form className="oc-alert-dialog-form" onSubmit={submit}>

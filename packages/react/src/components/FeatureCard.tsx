@@ -2,10 +2,11 @@
 import { forwardRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "./Webicon";
 
 export interface FeatureCardProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   title: ReactNode;
-  /** Icon in the tile: an <iconify-icon>, an <Icon> or any node. */
+  /** Icon in the tile: a webicon name ("mdi:rocket-launch-outline", drawn as inline SVG), an <Icon> or any node. */
   icon?: ReactNode;
   /** Accent preset of the tile (green, violet …). */
   accent?: string;
@@ -21,7 +22,7 @@ export const FeatureCard = forwardRef<HTMLElement, FeatureCardProps>(function Fe
   const H = `h${headingLevel}` as "h3";
   return (
     <article ref={ref} className={cx("oc-feature-card", className)} {...rest}>
-      {icon != null && <span className={cx("oc-icon-tile oc-icon-tile--sm", accent && `oc-accent--${accent}`)} aria-hidden="true">{icon}</span>}
+      {icon != null && <span className={cx("oc-icon-tile oc-icon-tile--sm", accent && `oc-accent--${accent}`)} aria-hidden="true">{webiconNode(icon)}</span>}
       <H className="oc-feature-card__title">{title}</H>
       {children != null && <p className="oc-feature-card__text">{children}</p>}
     </article>

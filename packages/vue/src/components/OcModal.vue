@@ -3,7 +3,7 @@
  * Modal on a native <dialog> opened with showModal(). v-model:open controls it; Esc / backdrop /
  * close() update the model. Slots: header (replaces title + description), default (body),
  * footer (scoped: { close }). Classes: .oc-modal, .oc-modal-content(--sm/--lg/--xl/--full), -header, -title,
- * -description, -body, -footer.
+ * -description, -body, -footer, -close. close-button / close-round / close-class: the × in the corner (round, own class).
  */
 import { ref } from 'vue'
 import { useDialog } from '../composables/useDialog'
@@ -15,8 +15,15 @@ withDefaults(
     description?: string
     size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
     closedby?: 'any' | 'closerequest' | 'none'
+    /** A close button (×) in the corner; also shown when closeRound or close-class is set. */
+    closeButton?: boolean
+    closeLabel?: string
+    /** Round close button (.oc-close--round). */
+    closeRound?: boolean
+    /** Extra class on the close button. */
+    closeClass?: string
   }>(),
-  { size: 'md', closedby: 'any' },
+  { size: 'md', closedby: 'any', closeLabel: 'Close' },
 )
 const open = defineModel<boolean>('open', { default: false })
 const el = ref<HTMLDialogElement | null>(null)
@@ -29,6 +36,7 @@ defineExpose({ close })
 <template>
   <dialog ref="el" class="oc-modal" :closedby="closedby" :aria-labelledby="title ? titleId : undefined" @close="onClose">
     <div :class="['oc-modal-content', size !== 'md' && `oc-modal-content--${size}`]">
+      <button v-if="closeButton || closeRound || closeClass" :class="['oc-modal-close', closeRound && 'oc-close--round', closeClass]" type="button" :aria-label="closeLabel" @click="close">&times;</button>
       <div v-if="title || description || $slots.header" class="oc-modal-header">
         <slot name="header">
           <h2 v-if="title" :id="titleId" class="oc-modal-title">{{ title }}</h2>

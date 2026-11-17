@@ -1,8 +1,9 @@
-import { createElement, forwardRef, useId } from "react";
+import { forwardRef, useId } from "react";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes, MouseEvent, ReactNode } from "react";
 import { attrs, cx } from "../utils";
 import { Button } from "./Button";
 import type { ButtonProps } from "./Button";
+import { webiconNode } from "./Webicon";
 
 export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
   /** Content of the trigger button. */
@@ -71,7 +72,7 @@ export function DropdownItem({ className, checked, hint, icon, keepOpen, childre
   const content = (
     <>
       {check && <span className="oc-dropdown-check" aria-hidden="true" />}
-      {icon != null && <span className="oc-dropdown-icon" aria-hidden="true">{typeof icon === "string" && icon.includes(":") ? createElement("iconify-icon", { icon, "aria-hidden": "true" }) : icon}</span>}
+      {icon != null && <span className="oc-dropdown-icon" aria-hidden="true">{webiconNode(icon)}</span>}
       {children}
       {hint != null && <span className="oc-dropdown-hint">{hint}</span>}
     </>

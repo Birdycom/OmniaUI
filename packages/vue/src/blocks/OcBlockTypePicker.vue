@@ -7,6 +7,7 @@
  */
 import { computed, ref } from 'vue'
 import { useUid } from '../composables/useUid'
+import OcWebicon from '../components/OcWebicon.vue'
 
 export interface TypePickerOption {
   value: string
@@ -58,7 +59,7 @@ const shown = computed(() => {
     </div>
     <div v-if="search || categories.length" class="oc-block-type-picker-tools">
       <div v-if="search" class="oc-input-group oc-input-group--affix">
-        <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify" /></span>
+        <span class="oc-input-addon" aria-hidden="true"><OcWebicon name="mdi:magnify" bare fallback="iconify" /></span>
         <input v-model="query" class="oc-input oc-block-type-picker-search" type="search" :placeholder="searchLabel" :aria-label="searchLabel">
       </div>
       <fieldset v-if="categories.length" class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" :aria-label="categoryLabel">

@@ -1,6 +1,6 @@
 <?php
 
-// File: config/omniacss.php | Map: source -> cdn -> public -> vite -> packages
+// File: config/omniacss.php | Map: source -> cdn -> public -> vite -> packages -> blade prefix -> webicons
 
 return [
 
@@ -63,5 +63,22 @@ return [
     |
     */
     'prefix' => 'oc',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Webicons (<x-oc::webicon name="mdi:home" />)
+    |--------------------------------------------------------------------------
+    |
+    | Inline SVG from files on disk, never fetched. Looked up in this order:
+    | files - subset files made with "npx omniaui webicons --scan resources --out resources/webicons.json"
+    |         (fast: only the icons you use), or whole Iconify JSON sets
+    | path  - the folder with the Iconify sets, <path>/<set>/icons.json (default: node_modules/@iconify-json)
+    | then the small built-in set of OmniaUI (check, chevrons, close, theme icons, a few flags).
+    |
+    */
+    'webicons' => [
+        'files' => [],
+        'path' => env('OMNIACSS_WEBICONS_PATH'),
+    ],
 
 ];

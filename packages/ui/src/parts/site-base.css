@@ -21,13 +21,20 @@
 }
 .oc-skip-link:focus { translate: none; }
 
-/* Inline icon: 1.25em (1.1em in a button), never squeezed in a flex row. */
+/* Inline icon: 1.25em (1.1em in a button), never squeezed in a flex row. Sizes --xs … --xl are fixed (0.875, 1, 1.25,
+   1.5, 2rem). --oc-icon-ratio (width / height, set by Webicon for a 4:3 flag) keeps a wide icon in its own ratio. */
 .oc-icon {
-  inline-size: 1.25em;
-  block-size: 1.25em;
+  --oc-icon-size: 1.25em;
+  inline-size: calc(var(--oc-icon-size) * var(--oc-icon-ratio, 1));
+  block-size: var(--oc-icon-size);
   flex-shrink: 0;
 }
-.oc-btn > .oc-icon {
-  inline-size: 1.1em;
-  block-size: 1.1em;
-}
+:where(.oc-btn) > .oc-icon { --oc-icon-size: 1.1em; }
+.oc-icon--xs { --oc-icon-size: 0.875rem; }
+.oc-icon--sm { --oc-icon-size: 1rem; }
+.oc-icon--md { --oc-icon-size: 1.25rem; }
+.oc-icon--lg { --oc-icon-size: 1.5rem; }
+.oc-icon--xl { --oc-icon-size: 2rem; }
+/* A webicon drawn as inline SVG (Webicon / OcWebicon / <x-oc::webicon>: svg[data-webicon]) sits in a line of text like
+   the Iconify element did, also where a reset makes every svg a block. Any component rule still wins (no specificity). */
+:where(svg[data-webicon]) { display: inline-block; vertical-align: -0.125em; }

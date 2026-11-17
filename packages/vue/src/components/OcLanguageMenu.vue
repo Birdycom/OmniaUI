@@ -7,6 +7,7 @@
  */
 import { computed } from 'vue'
 import { useUid } from '../composables/useUid'
+import OcWebicon from './OcWebicon.vue'
 
 export interface LanguageMenuItem {
   value: string
@@ -42,11 +43,11 @@ function pick(o: LanguageMenuItem, event: MouseEvent) {
     :popovertarget="menuId"
   >
     <template v-if="compact">
-      <span v-if="cur?.flag" class="oc-language-flag" aria-hidden="true"><iconify-icon :icon="cur.flag" aria-hidden="true" /></span>
-      <span v-else class="oc-language-select-icon" aria-hidden="true"><iconify-icon icon="mdi:web" aria-hidden="true" /></span>
+      <span v-if="cur?.flag" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="cur.flag" bare fallback="iconify" /></span>
+      <span v-else class="oc-language-select-icon" aria-hidden="true"><OcWebicon name="mdi:web" bare fallback="iconify" /></span>
     </template>
     <template v-else>
-      <span v-if="cur?.flag" class="oc-language-flag" aria-hidden="true"><iconify-icon :icon="cur.flag" aria-hidden="true" /></span>
+      <span v-if="cur?.flag" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="cur.flag" bare fallback="iconify" /></span>
       <span v-if="show === 'name'" :lang="cur?.value">{{ cur?.label }}</span>
       <span v-else class="oc-language-select-code">{{ cur && codeOf(cur) }}</span>
     </template>
@@ -64,7 +65,7 @@ function pick(o: LanguageMenuItem, event: MouseEvent) {
       :aria-current="o.value === cur?.value ? 'true' : undefined"
       @click="pick(o, $event)"
     >
-      <span v-if="o.flag" class="oc-language-flag" aria-hidden="true"><iconify-icon :icon="o.flag" aria-hidden="true" /></span>
+      <span v-if="o.flag" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="o.flag" bare fallback="iconify" /></span>
       <span>{{ o.label }}</span>
       <span class="oc-language-menu-code" aria-hidden="true">{{ codeOf(o) }}</span>
     </component>

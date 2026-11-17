@@ -9,6 +9,7 @@
  */
 import { computed } from 'vue'
 import { useUid } from '../composables/useUid'
+import OcWebicon from '../components/OcWebicon.vue'
 
 export interface ContactFormLine {
   text: string
@@ -17,7 +18,7 @@ export interface ContactFormLine {
 export interface ContactFormCard {
   title: string
   lines: ContactFormLine[]
-  /** Webicon name (mdi:email-outline …), drawn with <iconify-icon>. */
+  /** Webicon name (mdi:email-outline …), drawn as inline SVG (OcWebicon). */
   icon?: string
 }
 export interface ContactFormSubject {
@@ -71,7 +72,7 @@ const alertText = computed(() => props.errors.form ?? (Object.keys(props.errors)
       <div :id="uid" class="oc-panel">
         <div v-if="sent" class="oc-result" role="status" tabindex="-1">
           <slot name="success">
-            <span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><iconify-icon icon="mdi:check" /></span>
+            <span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><OcWebicon name="mdi:check" bare fallback="iconify" /></span>
             <h2 class="oc-result__title">{{ successTitle }}</h2>
             <p v-if="successText" class="oc-result__text">{{ successText }}</p>
             <div class="oc-result__actions">
@@ -132,7 +133,7 @@ const alertText = computed(() => props.errors.form ?? (Object.keys(props.errors)
       <div v-if="cards.length" class="oc-block-contact-form-cards">
         <article v-for="(card, i) in cards" :key="i" class="oc-block-contact-card">
           <span v-if="card.icon || $slots['card-icon']" class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">
-            <slot name="card-icon" :card="card"><iconify-icon :icon="card.icon" /></slot>
+            <slot name="card-icon" :card="card"><OcWebicon v-if="card.icon" :name="card.icon" bare fallback="iconify" /></slot>
           </span>
           <h3 class="oc-block-contact-title">{{ card.title }}</h3>
           <template v-for="(line, j) in card.lines" :key="j">

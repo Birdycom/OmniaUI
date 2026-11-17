@@ -10,7 +10,7 @@ describe("0.15.0 theme switch with icons", () => {
     const { container } = render(<ThemeSwitch icons />);
     const root = container.querySelector(".oc-theme-switch")!;
     expect(root.classList.contains("oc-theme-switch--icons")).toBe(true);
-    expect([...root.querySelectorAll("iconify-icon")].map((i) => i.getAttribute("icon"))).toEqual(["mdi:monitor", "mdi:white-balance-sunny", "mdi:weather-night"]);
+    expect([...root.querySelectorAll("svg[data-webicon]")].map((i) => i.getAttribute("data-webicon"))).toEqual(["mdi:monitor", "mdi:white-balance-sunny", "mdi:weather-night"]);
     expect([...root.querySelectorAll(".oc-theme-switch__text")].map((s) => s.textContent)).toEqual(["System", "Light", "Dark"]);
     expect(root.querySelector("label")!.getAttribute("title")).toBe("System");
   });
@@ -18,8 +18,8 @@ describe("0.15.0 theme switch with icons", () => {
   it("icon + text without the modifier; no icons by default", () => {
     const withText = render(<ThemeSwitch icons="text" />).container;
     expect(withText.querySelector(".oc-theme-switch--icons")).toBeNull();
-    expect(withText.querySelectorAll("iconify-icon")).toHaveLength(3);
+    expect(withText.querySelectorAll("svg[data-webicon]")).toHaveLength(3);
     expect(withText.querySelector("label")!.textContent).toContain("System");
-    expect(render(<ThemeSwitch />).container.querySelector("iconify-icon")).toBeNull();
+    expect(render(<ThemeSwitch />).container.querySelector("svg[data-webicon]")).toBeNull();
   });
 });

@@ -6,10 +6,11 @@
  * Listen on the root for oc-datatable-bulk, oc-datatable-reorder, oc-datatable-search, oc-datatable-import.
  * Slots: cell-<key> ({ row }) for a rich cell (an OcDataTableName, a badge …), actions ({ row }) for the row buttons
  * (default: one soft edit button), page-actions for the toolbar (New customer …).
- * Icons of tabs and filters are webicon names (mdi:account-outline …), drawn with <iconify-icon>.
+ * Icons of tabs and filters are webicon names (mdi:account-outline …), drawn as inline SVG (OcWebicon).
  */
 import { onMounted, useTemplateRef } from 'vue'
 import { bindDataTable } from '../../../ui/src/data-table.js'
+import OcWebicon from './OcWebicon.vue'
 
 export interface DataTableColumn {
   key: string
@@ -99,7 +100,7 @@ onMounted(() => {
         :data-oc-col-filter="tabs.column"
         :data-oc-value="tab.value"
         :aria-selected="i === 0 ? 'true' : 'false'"
-      ><iconify-icon v-if="tab.icon" :icon="tab.icon" aria-hidden="true" />{{ tab.label }}<span v-if="tab.count != null" :class="['oc-data-table-tab-count', tab.tone && `oc-data-table-tab-count--${tab.tone}`]">{{ tab.count }}</span></button>
+      ><OcWebicon v-if="tab.icon" :name="tab.icon" bare fallback="iconify" />{{ tab.label }}<span v-if="tab.count != null" :class="['oc-data-table-tab-count', tab.tone && `oc-data-table-tab-count--${tab.tone}`]">{{ tab.count }}</span></button>
     </div>
     <div class="oc-data-table-toolbar">
       <div class="oc-data-table-heading">
@@ -134,7 +135,7 @@ onMounted(() => {
     </div>
     <div v-if="columnFilters?.length" :id="`${id}-filters`" class="oc-data-table-filters">
       <label v-for="f in columnFilters" :key="f.column" class="oc-data-table-filter">
-        <iconify-icon v-if="f.icon" :icon="f.icon" aria-hidden="true" />
+        <OcWebicon v-if="f.icon" :name="f.icon" bare fallback="iconify" />
         <template v-else><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 19.88c.04.3-.06.62-.29.83a.996.996 0 0 1-1.41 0L9.29 16.7a.99.99 0 0 1-.29-.83v-5.12L4.21 4.62a1 1 0 0 1 .17-1.4c.19-.14.4-.22.62-.22h14c.22 0 .43.08.62.22a1 1 0 0 1 .17 1.4L15 10.75zM7.04 5L11 10.06v5.52l2 2v-7.53L16.96 5z" /></svg></template>
         <select class="oc-select" :data-oc-col-filter="f.column" :aria-label="f.label">
           <option v-for="o in f.options" :key="o.value" :value="o.value" :selected="o.value === ''">{{ o.label }}</option>

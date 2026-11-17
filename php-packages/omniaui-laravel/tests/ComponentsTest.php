@@ -215,8 +215,9 @@ class ComponentsTest extends TestCase
                 continue;
             }
             $key = str_replace(['/', '\\'], '.', substr(substr($file->getPathname(), strlen($root) + 1), 0, -10));
-            // Components that need slot/prop context are covered by dedicated tests above.
-            if (in_array($key, ['table.sort', 'table.empty', 'sidebar.item'], true)) {
+            // Components that need slot/prop context are covered by dedicated tests above (webicon: needs a known
+            // icon name and renders nothing for an unknown one, see V0161Test).
+            if (in_array($key, ['table.sort', 'table.empty', 'sidebar.item', 'webicon'], true)) {
                 continue;
             }
             $out[$key] = ["x-oc::{$key}"];

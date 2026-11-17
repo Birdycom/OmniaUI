@@ -2,10 +2,11 @@
 import { forwardRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "./Webicon";
 
 export interface ResultProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   title: ReactNode;
-  /** Icon in the tile: an <iconify-icon>, an <Icon> or any node. */
+  /** Icon in the tile: a webicon name ("mdi:check", drawn as inline SVG), an <Icon> or any node. */
   icon?: ReactNode;
   /** Accent preset of the tile (green, orange, red …). */
   accent?: string;
@@ -21,7 +22,7 @@ export const Result = forwardRef<HTMLDivElement, ResultProps>(function Result(
 ) {
   return (
     <div ref={ref} className={cx("oc-result", center && "oc-result--center", className)} role="status" tabIndex={-1} {...rest}>
-      {icon != null && <span className={cx("oc-icon-tile oc-icon-tile--sm", accent && `oc-accent--${accent}`)} aria-hidden="true">{icon}</span>}
+      {icon != null && <span className={cx("oc-icon-tile oc-icon-tile--sm", accent && `oc-accent--${accent}`)} aria-hidden="true">{webiconNode(icon)}</span>}
       <h2 className="oc-result__title">{title}</h2>
       {children != null && <p className="oc-result__text">{children}</p>}
       {actions != null && <div className="oc-result__actions">{actions}</div>}

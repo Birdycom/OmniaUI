@@ -21,6 +21,10 @@ const props = withDefaults(
     discardLabel?: string
     confirmWord?: string
     closeLabel?: string
+    /** Round close button (.oc-close--round). */
+    closeRound?: boolean
+    /** Extra class on the close button. */
+    closeClass?: string
   }>(),
   { type: 'error', confirmLabel: 'Confirm', cancelLabel: 'Cancel', closeLabel: 'Close' },
 )
@@ -45,7 +49,7 @@ const destructive = () => props.type === 'error'
 <template>
   <dialog ref="el" class="oc-modal" closedby="any" :aria-labelledby="titleId" :aria-describedby="textId" @close="onClose">
     <div :class="['oc-modal-content', 'oc-alert-dialog', `oc-alert-dialog--${type}`, 'oc-alert-dialog--confirm']">
-      <button class="oc-alert-dialog-close" type="button" :aria-label="closeLabel" @click="done('cancel')">×</button>
+      <button :class="['oc-alert-dialog-close', closeRound && 'oc-close--round', closeClass]" type="button" :aria-label="closeLabel" @click="done('cancel')">×</button>
       <span class="oc-alert-dialog-icon" aria-hidden="true"><slot name="icon">{{ glyphs[type] }}</slot></span>
       <h2 :id="titleId" class="oc-modal-title"><slot name="title">{{ title }}</slot></h2>
       <form class="oc-alert-dialog-form" @submit.prevent="done('confirm')">
