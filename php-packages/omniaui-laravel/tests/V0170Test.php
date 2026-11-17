@@ -1,7 +1,7 @@
 <?php
 
 // File: tests/V0170Test.php
-// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG -> data table labels, view, pagination, bulk -> alert alarm -> countdown -> save status
+// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG -> data table labels, view, pagination, bulk -> alert alarm -> countdown -> save status -> header settings
 // Components and options of 0.17.0: Blade renders the same classes as the HTML snippets.
 
 declare(strict_types=1);
@@ -95,6 +95,17 @@ class V0170Test extends TestCase
         $html = $this->render('<x-oc::countdown :seconds="90" :total="300" variant="pill" bar label="Round ends in" />');
         $this->assertElement($html, 'div', 'oc-countdown oc-countdown--pill oc-countdown--bar', ['role' => 'timer', 'aria-label' => 'Round ends in', 'data-oc-countdown-seconds' => '90', 'data-oc-countdown-total' => '300']);
         $this->assertElement($html, 'b', 'oc-countdown-time', [], '1:30');
+    }
+
+    public function test_header_settings(): void
+    {
+        $html = $this->render(<<<'BLADE'
+            <x-oc::header-settings language="nl" :languages="['nl' => ['label' => 'Nederlands', 'href' => '/nl/'], 'en' => ['label' => 'English', 'href' => '/en/']]" />
+            BLADE);
+        $this->assertElement($html, 'div', 'oc-header-settings', ['role' => 'group', 'aria-label' => 'Settings']);
+        $this->assertStringContainsString('oc-language-select--icon', $html);
+        $this->assertStringContainsString('data-webicon="flag:nl-4x3"', $html);
+        $this->assertStringContainsString('data-oc-theme-toggle', $html);
     }
 
     public function test_save_status(): void

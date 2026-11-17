@@ -73,6 +73,7 @@ import OcGlassBar from './components/OcGlassBar.vue'
 import OcGlassPanel from './components/OcGlassPanel.vue'
 import OcGreeting from './components/OcGreeting.vue'
 import OcGroup from './components/OcGroup.vue'
+import OcHeaderSettings from './components/OcHeaderSettings.vue'
 import OcHeading from './components/OcHeading.vue'
 import OcHoverCard from './components/OcHoverCard.vue'
 import OcImageZoom from './components/OcImageZoom.vue'
@@ -171,6 +172,7 @@ import OcTagInput from './components/OcTagInput.vue'
 import OcTerminalLog from './components/OcTerminalLog.vue'
 import OcTextarea from './components/OcTextarea.vue'
 import OcThemeSwitch from './components/OcThemeSwitch.vue'
+import OcThemeToggle from './components/OcThemeToggle.vue'
 import OcTimeInput from './components/OcTimeInput.vue'
 import OcTimeline from './components/OcTimeline.vue'
 import OcTintCard from './components/OcTintCard.vue'
@@ -303,6 +305,7 @@ export {
   OcGlassPanel,
   OcGreeting,
   OcGroup,
+  OcHeaderSettings,
   OcHeading,
   OcHoverCard,
   OcImageZoom,
@@ -401,6 +404,7 @@ export {
   OcTerminalLog,
   OcTextarea,
   OcThemeSwitch,
+  OcThemeToggle,
   OcTimeInput,
   OcTimeline,
   OcTintCard,
@@ -604,6 +608,7 @@ export const components: Record<string, Component> = {
   OcGlassPanel,
   OcGreeting,
   OcGroup,
+  OcHeaderSettings,
   OcHeading,
   OcHoverCard,
   OcImageZoom,
@@ -702,6 +707,7 @@ export const components: Record<string, Component> = {
   OcTerminalLog,
   OcTextarea,
   OcThemeSwitch,
+  OcThemeToggle,
   OcTimeInput,
   OcTimeline,
   OcTintCard,

@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state -> hint
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state -> hint -> header settings
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -24,6 +24,7 @@ import { BlockStepView } from "../src/blocks/BlockStepView";
 import { SaveStatus } from "../src/components/StatusDot";
 import { EmptyState } from "../src/components/EmptyState";
 import { Collapsible } from "../src/components/Collapsible";
+import { HeaderSettings, ThemeToggle } from "../src/components/HeaderSettings";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -371,5 +372,24 @@ describe("0.17.0 hint", () => {
     d.open = false; fireEvent(d, new Event("toggle"));
     expect(d.open).toBe(true);
     expect(onOpenChange).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("0.17.0 header settings", () => {
+  it("theme toggle flips light and dark, pressed in dark", () => {
+    const onChange = vi.fn();
+    const { container } = render(<ThemeToggle value="light" onChange={onChange} />);
+    const b = container.querySelector("button")!;
+    expect(b.getAttribute("aria-pressed")).toBe("false");
+    expect(b.getAttribute("data-tooltip")).toBe("Dark theme");
+    fireEvent.click(b);
+    expect(onChange).toHaveBeenCalledWith("dark");
+  });
+  it("groups a compact language menu with auto flags and the theme toggle", () => {
+    const { container } = render(<HeaderSettings languages={[{ value: "nl", label: "Nederlands" }, { value: "en", label: "English" }]} language="nl" theme="dark" />);
+    const g = container.querySelector(".oc-header-settings")!;
+    expect(g.getAttribute("role")).toBe("group");
+    expect(g.querySelector(".oc-language-select--icon .oc-language-flag svg")!.getAttribute("data-webicon")).toBe("flag:nl-4x3");
+    expect(g.querySelector("[aria-pressed=\"true\"]")!.getAttribute("data-tooltip")).toBe("Light theme");
   });
 });

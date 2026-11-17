@@ -59,6 +59,7 @@ export * from "./components/Glass";
 export * from "./components/GlassBar";
 export * from "./components/Greeting";
 export * from "./components/Group";
+export * from "./components/HeaderSettings";
 export * from "./components/Heading";
 export * from "./components/Icon";
 export * from "./components/ImageZoom";
