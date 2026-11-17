@@ -6874,6 +6874,18 @@ input.oc-input[type="month"] { inline-size: auto; min-inline-size: 11rem; }
 .oc-card--accent[data-active="false"] { border-style: dashed; }
 .oc-card--accent[data-active="false"] .oc-card-band { background: var(--oc-surface); }
 
+/* .oc-card-grid--bands (0.17.0): the cards in the grid share their rows (subgrid). The bands of cards side by side are
+   as high as the highest band, with a longer translation or larger text too, so the content below starts on one line;
+   no height to guess with --oc-card-band-min-h. Works for every card with a band, content and an optional footer. */
+.oc-card-grid--bands > .oc-card {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  row-gap: 0; /* the gap of the grid stays between the cards, not between band and content */
+}
+.oc-card-grid--bands > .oc-card:has(> .oc-card-footer) { grid-row: span 3; }
+.oc-card-grid--bands > .oc-card > .oc-card-band { --oc-card-band-min-h: 0; }
+
 /* Code plate: a QR code or barcode on its own white plate, always light (scans in any theme and on paper), with an
    optional caption ON the plate, so the label is on a photo or a print too. data-mode / data-tone colors the caption. */
 .oc-code-plate {
