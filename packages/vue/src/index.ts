@@ -524,6 +524,7 @@ export type { ToastItem, ToastOptions, ToastVariant } from './composables/useToa
 export { useUid } from './composables/useUid'
 export { addWebicons, getWebicon, hasWebicon, languageFlag, registerWebicons } from './webicons'
 export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './webicons'
+export { contrastRatio, luminance, pickOnColor, toRgb } from './color'
 
 /** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */
 export const components: Record<string, Component> = {

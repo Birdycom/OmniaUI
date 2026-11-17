@@ -1,8 +1,9 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 import OcLanguageMenu from '../src/components/OcLanguageMenu.vue'
 import OcDropdownItem from '../src/components/OcDropdownItem.vue'
 import OcSidebarMeta from '../src/components/OcSidebarMeta.vue'
@@ -13,7 +14,8 @@ import OcBlockTypePicker from '../src/blocks/OcBlockTypePicker.vue'
 import OcBlockRouteSteps from '../src/blocks/OcBlockRouteSteps.vue'
 import OcBlockContentBlocks from '../src/blocks/OcBlockContentBlocks.vue'
 import OcDataTable from '../src/components/OcDataTable.vue'
-import { languageFlag } from '../src/index'
+import OcColorField from '../src/components/OcColorField.vue'
+import { contrastRatio, languageFlag, pickOnColor } from '../src/index'
 
 describe('0.17.0 language menu', () => {
   it('languageFlag: region wins, else the usual country', () => {
@@ -127,5 +129,15 @@ describe('0.17.0 data table', () => {
     expect(w.find('.oc-data-table-view').exists()).toBe(false)
     expect(w.find('.oc-data-table-pager').exists()).toBe(false)
     expect(w.find('.oc-data-table-bulk').exists()).toBe(false)
+  })
+})
+
+describe('0.17.0 color field contrast', () => {
+  it('helpers and the report', async () => {
+    expect(contrastRatio('#fff', '#000')!.toFixed(0)).toBe('21')
+    expect(pickOnColor('#003366')).toBe('#ffffff')
+    const w = mount(OcColorField, { props: { modelValue: '#ffeb3b', contrastAgainst: [{ name: 'the light page', color: '#ffffff' }] } })
+    await nextTick()
+    expect(w.findAll('.oc-color-field-check').map((li) => li.attributes('data-ok'))).toEqual(['true', 'false'])
   })
 })

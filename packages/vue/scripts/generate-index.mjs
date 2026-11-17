@@ -94,6 +94,7 @@ lines.push("export { useUid } from './composables/useUid'")
 // Webicons: icons by name as inline SVG (OcWebicon), from icons the app registers (no network).
 lines.push("export { addWebicons, getWebicon, hasWebicon, languageFlag, registerWebicons } from './webicons'")
 lines.push("export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './webicons'")
+lines.push("export { contrastRatio, luminance, pickOnColor, toRgb } from './color'")
 lines.push('')
 lines.push('/** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */')
 lines.push('export const components: Record<string, Component> = {')

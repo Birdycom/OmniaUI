@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -16,6 +16,7 @@ import { BlockContentBlocks, pinnedKept } from "../src/blocks/BlockContentBlocks
 import { DataTable } from "../src/components/DataTable";
 import { Table, TableActions } from "../src/components/Table";
 import { TableActionIcon } from "../src/components/TableActions";
+import { ColorField, contrastRatio, pickOnColor } from "../src/components/ColorField";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -248,5 +249,23 @@ describe("0.17.0 table", () => {
     const btn = container.querySelector(".oc-table-actions-icon")!;
     expect(btn.getAttribute("title")).toBe("Edit");
     expect(btn.querySelector(".oc-table-action-label")!.textContent).toBe("Edit");
+  });
+});
+
+describe("0.17.0 color field contrast", () => {
+  it("contrastRatio and pickOnColor", () => {
+    expect(contrastRatio("#ffffff", "#000000")!.toFixed(0)).toBe("21");
+    expect(contrastRatio("#777", "#777")).toBe(1);
+    expect(pickOnColor("#ffeb3b")).toBe("#0b1020");
+    expect(pickOnColor("#003366")).toBe("#ffffff");
+  });
+  it("shows the text line and one line per background, with a word for the result", async () => {
+    const { container } = render(<ColorField defaultValue="#ffeb3b" contrastAgainst={[{ name: "the light page", color: "#ffffff" }, { name: "the dark page", color: "#0b1020" }]} />);
+    await act(async () => {});
+    const items = [...container.querySelectorAll(".oc-color-field-check")];
+    expect(items.map((li) => li.getAttribute("data-ok"))).toEqual(["true", "false", "true"]);
+    expect(items[1].textContent).toContain("On the light page");
+    expect(items[1].textContent).toContain("Too low");
+    expect(items[0].querySelector<HTMLElement>(".oc-color-field-sample")!.style.color).toBe("rgb(11, 16, 32)");
   });
 });
