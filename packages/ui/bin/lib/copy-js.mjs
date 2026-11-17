@@ -17,6 +17,7 @@ const SCRIPTS = [
   ["@birdycom/omniaui", "dist/fly.js", "oc-fly.js", "cards that fly in from the middle of their row on scroll (.oc-reveal--fly)"],
   ["@birdycom/omniaui", "dist/particles.js", "oc-particles.js", "particle field: drifting points with lines on a background canvas (canvas.oc-particles)"],
   ["@birdycom/omniaui", "dist/language-select.js", "oc-language-select.js", "language select: go to the chosen language's page, keeping the #hash ([data-oc-language-select])"],
+  ["@birdycom/omniaui", "dist/calendar.js", "oc-calendar.js", "calendar: pick a day or a range with a click or Enter, arrow keys between the days ([data-oc-calendar])"],
   ["@birdycom/omniaui", "dist/combobox.js", "oc-combobox.js", "combobox: filter while typing, arrow keys, choose with Enter or a click ([data-oc-combobox])"],
   ["@birdycom/omniaui", "dist/logo.js", "oc-logo.js", "logo: a neutral plate only in the theme where the logo would disappear (.oc-logo[data-plate=auto])"],
   ["@birdycom/omniaui", "dist/theme.js","oc-theme.js", "theme: remember the choice of a .oc-theme-switch, data-theme on <html>, a light/dark toggle button"],

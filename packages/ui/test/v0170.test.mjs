@@ -61,3 +61,14 @@ test("table: --auto, data-hide-below only with a size reference, action labels",
   const actions = await read("parts/app-table-actions.css");
   assert.ok(actions.includes(".oc-table-actions--compact .oc-table-action-label {"));
 });
+
+test("calendar.js: shift dates and the state of a day in a range", async () => {
+  const { shiftDate, dayState } = await import("../src/calendar.js");
+  assert.equal(shiftDate("2026-10-31", 1), "2026-11-01");
+  assert.equal(shiftDate("2026-03-29", -7), "2026-03-22");
+  assert.deepEqual(dayState("2026-10-20", "2026-10-20"), { selected: true, cls: [] });
+  assert.deepEqual(dayState("2026-10-28", "2026-10-28", "2026-11-03"), { selected: true, cls: ["oc-calendar-day--range-start"] });
+  assert.deepEqual(dayState("2026-10-30", "2026-10-28", "2026-11-03"), { selected: false, cls: ["oc-calendar-day--range-middle"] });
+  assert.deepEqual(dayState("2026-11-03", "2026-10-28", "2026-11-03"), { selected: true, cls: ["oc-calendar-day--range-end"] });
+  assert.deepEqual(dayState("2026-11-04", "2026-10-28", "2026-11-03"), { selected: false, cls: [] });
+});

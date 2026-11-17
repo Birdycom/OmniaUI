@@ -99,6 +99,7 @@ async function main() {
   await fs.copyFile(r("packages/ui/src/theme.js"), r("public/js/oc-theme.js"));
   await fs.copyFile(r("packages/ui/src/language-select.js"), r("public/js/oc-language-select.js"));
   await fs.copyFile(r("packages/ui/src/combobox.js"), r("public/js/oc-combobox.js"));
+  await fs.copyFile(r("packages/ui/src/calendar.js"), r("public/js/oc-calendar.js"));
   await fs.copyFile(r("packages/ui/src/logo.js"), r("public/js/oc-logo.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
