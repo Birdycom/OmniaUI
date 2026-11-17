@@ -85,11 +85,13 @@ export interface SidebarMenuButtonProps extends AnchorHTMLAttributes<HTMLAnchorE
   size?: "md" | "lg";
   /** Wrap the children in `oc-sidebar-menu-label` (hidden when collapsed). Default true. */
   label?: boolean;
+  /** Tooltip in the collapsed sidebar (default: the label when it is text; false: none). */
+  tooltip?: string | false;
 }
 
 /** `.oc-sidebar-menu-button`: a link (or button when no `href`). */
 export const SidebarMenuButton = forwardRef<HTMLAnchorElement, SidebarMenuButtonProps>(function SidebarMenuButton(
-  { icon, badge, current, disabled, size = "md", label = true, className, children, href, ...rest },
+  { icon, badge, current, disabled, size = "md", label = true, tooltip, className, children, href, ...rest },
   ref,
 ) {
   const content = (
@@ -99,8 +101,10 @@ export const SidebarMenuButton = forwardRef<HTMLAnchorElement, SidebarMenuButton
       {badge != null && <span className="oc-sidebar-menu-badge">{badge}</span>}
     </>
   );
+  const tip = tooltip === false ? undefined : tooltip ?? (typeof children === "string" ? children : undefined);
   const props = {
-    className: cx("oc-sidebar-menu-button", size === "lg" && "oc-sidebar-menu-button--lg", className),
+    className: cx("oc-sidebar-menu-button", size === "lg" && "oc-sidebar-menu-button--lg", tip && "oc-tooltip oc-tooltip--right", className),
+    "data-tooltip": tip,
     "aria-current": current ? ("page" as const) : undefined,
     "aria-disabled": disabled ? true : undefined,
   };

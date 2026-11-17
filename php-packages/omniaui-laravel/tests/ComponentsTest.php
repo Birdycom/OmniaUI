@@ -154,7 +154,8 @@ class ComponentsTest extends TestCase
         $html = $this->render('<x-oc::sidebar><x-oc::sidebar.group label="Platform"><x-oc::sidebar.item href="/a" current badge="3">Home</x-oc::sidebar.item></x-oc::sidebar.group></x-oc::sidebar>');
 
         $this->assertElement($html, 'aside', 'oc-sidebar', ['aria-label' => 'Main navigation']);
-        $this->assertElement($html, 'a', 'oc-sidebar-menu-button', ['href' => '/a', 'aria-current' => 'page']);
+        // 0.17.0: the label is the tooltip of the collapsed sidebar
+        $this->assertElement($html, 'a', 'oc-sidebar-menu-button oc-tooltip oc-tooltip--right', ['href' => '/a', 'aria-current' => 'page', 'data-tooltip' => 'Home']);
         $this->assertStringContainsString('<span class="oc-sidebar-menu-badge">3</span>', $html);
     }
 
