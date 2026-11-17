@@ -44,6 +44,7 @@ import OcCommand from './components/OcCommand.vue'
 import OcConfirmDialog from './components/OcConfirmDialog.vue'
 import OcCookieConsent from './components/OcCookieConsent.vue'
 import OcCopyField from './components/OcCopyField.vue'
+import OcCountdown from './components/OcCountdown.vue'
 import OcCounter from './components/OcCounter.vue'
 import OcDataTable from './components/OcDataTable.vue'
 import OcDataTableName from './components/OcDataTableName.vue'
@@ -272,6 +273,7 @@ export {
   OcConfirmDialog,
   OcCookieConsent,
   OcCopyField,
+  OcCountdown,
   OcCounter,
   OcDataTable,
   OcDataTableName,
@@ -571,6 +573,7 @@ export const components: Record<string, Component> = {
   OcConfirmDialog,
   OcCookieConsent,
   OcCopyField,
+  OcCountdown,
   OcCounter,
   OcDataTable,
   OcDataTableName,

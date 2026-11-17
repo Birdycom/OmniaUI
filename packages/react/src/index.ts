@@ -35,6 +35,7 @@ export * from "./components/Command";
 export * from "./components/ConfirmDialog";
 export * from "./components/CookieConsent";
 export * from "./components/CopyField";
+export * from "./components/Countdown";
 export * from "./components/Counter";
 export * from "./components/DataTable";
 export * from "./components/DateField";

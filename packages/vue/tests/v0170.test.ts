@@ -1,7 +1,7 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import OcLanguageMenu from '../src/components/OcLanguageMenu.vue'
@@ -15,6 +15,7 @@ import OcBlockRouteSteps from '../src/blocks/OcBlockRouteSteps.vue'
 import OcBlockContentBlocks from '../src/blocks/OcBlockContentBlocks.vue'
 import OcDataTable from '../src/components/OcDataTable.vue'
 import OcColorField from '../src/components/OcColorField.vue'
+import OcCountdown from '../src/components/OcCountdown.vue'
 import { contrastRatio, languageFlag, pickOnColor } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -139,5 +140,19 @@ describe('0.17.0 color field contrast', () => {
     const w = mount(OcColorField, { props: { modelValue: '#ffeb3b', contrastAgainst: [{ name: 'the light page', color: '#ffffff' }] } })
     await nextTick()
     expect(w.findAll('.oc-color-field-check').map((li) => li.attributes('data-ok'))).toEqual(['true', 'false'])
+  })
+})
+
+describe('0.17.0 countdown', () => {
+  it('ticks and emits end once', async () => {
+    vi.useFakeTimers()
+    const w = mount(OcCountdown, { props: { seconds: 2, variant: 'display' } })
+    expect(w.classes()).toContain('oc-countdown--display')
+    expect(w.find('.oc-countdown-time').text()).toBe('0:02')
+    vi.advanceTimersByTime(2500)
+    await nextTick()
+    expect(w.find('.oc-countdown-time').text()).toBe('0:00')
+    expect(w.emitted('end')).toHaveLength(1)
+    vi.useRealTimers()
   })
 })

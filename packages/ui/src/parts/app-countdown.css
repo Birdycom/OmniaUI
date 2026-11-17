@@ -1,0 +1,66 @@
+/* File: packages/ui/src/parts/app-countdown.css
+   Map: countdown (label + time) -> --pill -> --display (large digits) -> --bar (shrinking bar) -> states (low, done)
+        -> reduced motion
+   Countdown (0.17.0): the time left for a task, a round or a reservation. role="timer" (a screen reader does not read
+   every second; give it an aria-label). The script or the component writes the time and --oc-countdown-left (1 = full,
+   0 = empty) for the bar, and data-state="low" (little time left, warning tone) or "done" (time is up).
+   <div class="oc-countdown oc-countdown--pill" role="timer" aria-label="Time left" data-state="low">
+     <span class="oc-countdown-label">Time left</span> <b class="oc-countdown-time">0:45</b></div> */
+
+.oc-countdown {
+  --oc-countdown-tone: var(--oc-primary);
+  --oc-countdown-left: 1;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  color: var(--oc-foreground);
+}
+.oc-countdown-label { color: var(--oc-muted-foreground); font-size: 0.875rem; font-weight: 600; }
+.oc-countdown-time { font-size: 1.125rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.oc-countdown[data-state="low"] { --oc-countdown-tone: var(--oc-warning); }
+.oc-countdown[data-state="done"] { --oc-countdown-tone: var(--oc-destructive); }
+.oc-countdown:is([data-state="low"], [data-state="done"]) .oc-countdown-time { color: light-dark(oklch(from var(--oc-countdown-tone) min(l, 0.5) c h), var(--oc-countdown-tone)); }
+
+/* Pill: a small tinted label, for a header or a card. */
+.oc-countdown--pill {
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid color-mix(in oklch, var(--oc-countdown-tone) 40%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--oc-countdown-tone) 10%, var(--oc-background));
+}
+.oc-countdown--pill .oc-countdown-label { font-size: 0.75rem; }
+.oc-countdown--pill .oc-countdown-time { font-size: 0.9375rem; }
+
+/* Display: large digits in the middle, for a screen people look at from a distance. */
+.oc-countdown--display {
+  display: inline-grid;
+  justify-items: center;
+  gap: 0.25rem;
+  text-align: center;
+}
+.oc-countdown--display .oc-countdown-time { font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1; letter-spacing: -0.03em; }
+
+/* Bar: a line under the time that shrinks from full to empty (--oc-countdown-left). */
+.oc-countdown--bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; }
+.oc-countdown--bar.oc-countdown--display { grid-template-columns: minmax(0, 1fr); }
+.oc-countdown--bar::after {
+  content: "";
+  grid-column: 1 / -1;
+  justify-self: stretch;
+  block-size: 0.375rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(var(--oc-countdown-tone), var(--oc-countdown-tone)) no-repeat 0 0 / calc(var(--oc-countdown-left) * 100%) 100%,
+    var(--oc-muted);
+  transition: background-size 0.3s linear;
+}
+.oc-countdown--bar:dir(rtl)::after { background-position: 100% 0, 0 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-countdown--bar::after { transition: none; }
+}
+@media (forced-colors: active) {
+  .oc-countdown--bar::after { background: linear-gradient(CanvasText, CanvasText) no-repeat 0 0 / calc(var(--oc-countdown-left) * 100%) 100%; border: 1px solid CanvasText; }
+}

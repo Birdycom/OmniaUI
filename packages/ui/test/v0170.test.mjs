@@ -72,3 +72,15 @@ test("calendar.js: shift dates and the state of a day in a range", async () => {
   assert.deepEqual(dayState("2026-11-03", "2026-10-28", "2026-11-03"), { selected: true, cls: ["oc-calendar-day--range-end"] });
   assert.deepEqual(dayState("2026-11-04", "2026-10-28", "2026-11-03"), { selected: false, cls: [] });
 });
+
+test("countdown.js: format and state", async () => {
+  const { formatCountdown, countdownState } = await import("../src/countdown.js");
+  assert.equal(formatCountdown(90), "1:30");
+  assert.equal(formatCountdown(3725), "1:02:05");
+  assert.equal(formatCountdown(-4), "0:00");
+  assert.equal(formatCountdown(0.2), "0:01");
+  assert.deepEqual(countdownState(150, 300), { left: 150, fraction: 0.5, state: "" });
+  assert.equal(countdownState(50, 300).state, "low"); // 20% of 300 = 60
+  assert.equal(countdownState(100, 1000, 120).state, "low");
+  assert.equal(countdownState(0, 300).state, "done");
+});

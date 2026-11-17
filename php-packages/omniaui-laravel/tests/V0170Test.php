@@ -1,7 +1,7 @@
 <?php
 
 // File: tests/V0170Test.php
-// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG -> data table labels, view, pagination, bulk -> alert alarm
+// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG -> data table labels, view, pagination, bulk -> alert alarm -> countdown
 // Components and options of 0.17.0: Blade renders the same classes as the HTML snippets.
 
 declare(strict_types=1);

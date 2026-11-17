@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -19,6 +19,7 @@ import { TableActionIcon } from "../src/components/TableActions";
 import { ColorField, contrastRatio, pickOnColor } from "../src/components/ColorField";
 import { SidebarMenuButton } from "../src/components/Sidebar";
 import { Alert } from "../src/components/Alert";
+import { Countdown } from "../src/components/Countdown";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -296,5 +297,24 @@ describe("0.17.0 alert alarm", () => {
     const { container } = render(<Alert title="Saved">Done</Alert>);
     expect(container.querySelector(".oc-alert-body")).toBeNull();
     expect(container.querySelector(".oc-alert")!.getAttribute("role")).toBe("status");
+  });
+});
+
+describe("0.17.0 countdown", () => {
+  it("ticks, turns low, ends once", async () => {
+    vi.useFakeTimers();
+    const onEnd = vi.fn();
+    const { container } = render(<Countdown seconds={3} total={10} low={5} variant="pill" bar onEnd={onEnd} />);
+    const el = container.querySelector(".oc-countdown")!;
+    expect(el.className).toBe("oc-countdown oc-countdown--pill oc-countdown--bar");
+    expect(el.getAttribute("role")).toBe("timer");
+    expect(el.querySelector(".oc-countdown-time")!.textContent).toBe("0:03");
+    expect(el.getAttribute("data-state")).toBe("low");
+    await act(async () => { vi.advanceTimersByTime(3500); });
+    expect(el.querySelector(".oc-countdown-time")!.textContent).toBe("0:00");
+    expect(el.getAttribute("data-state")).toBe("done");
+    await act(async () => { vi.advanceTimersByTime(2000); });
+    expect(onEnd).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
   });
 });
