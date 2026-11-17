@@ -1010,6 +1010,8 @@ select {
 
 /* Background size */
 
+/* Full and empty sizes: transition between them for a fill that grows (bg-size-x-0 hover:bg-size-full transition-all) */
+
 /* ===================================================================
    BORDERS & OUTLINES
    Generated from variable maps (same structure as $bordersizes).
@@ -1728,11 +1730,27 @@ select {
 
 /* Glow: soft colored light around the element (uses the shadow color, default Omnia blue) */
 
+/* Neon: three layers of light in the shadow color (default Omnia sky cyan; change it with .drop-shadow-{color}) */
+
+/* Glow border: a conic gradient runs round the border, a blurred copy of it glows behind the element.
+   Round it with .round-*. Tune: --oc-conic-colors (color list, first = last for a seamless ring), --oc-conic-width (3px),
+   --oc-conic-blur (1.5rem), --oc-conic-opacity (0.75), --oc-conic-speed (4s per turn), --oc-conic-fill (the face, card color).
+   The angle is a registered property, so the gradient itself turns; prefers-reduced-motion stops it. */
+@property --oc-conic-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
 /* Text shadow */
 
 .text-shadow {
   text-shadow: 0 1px 2px oklch(from var(--oc-shadow-color, var(--color-black-50)) l c h/0.35);
 }
+
+/* Neon text: the same three layers of light as .shadow-neon, around the letters */
+
+/* 3D / retro text: seven solid layers, one --oc-3d-step apart (1px; .text-shadow-3d-2 doubles it, also as hover:),
+   plus a soft drop in the shadow color. Layer colors: --oc-3d-c1 … --oc-3d-c5 (orange to purple). */
 
 /* Mix blend mode */
 
@@ -1748,6 +1766,16 @@ select {
 
 /* Backdrop filter utilities */
 
+/* Glass (frosted glass): a translucent tint, a faint edge in the same tint and a blurred, more saturated backdrop.
+   Tune: --oc-glass-tint (white), --oc-glass-alpha (0.12), --oc-glass-backdrop (blur(14px) saturate(1.4)).
+   Needs something colorful behind it; without backdrop-filter support it stays a readable tinted panel. */
+.glass {
+  border: 1px solid oklch(from var(--oc-glass-tint, var(--color-white-50)) l c h/0.35);
+  background-color: oklch(from var(--oc-glass-tint, var(--color-white-50)) l c h/var(--oc-glass-alpha, 0.12));
+  backdrop-filter: var(--oc-glass-backdrop, blur(14px) saturate(1.4));
+  -webkit-backdrop-filter: var(--oc-glass-backdrop, blur(14px) saturate(1.4));
+}
+
 /* Transition property — with a default duration and easing as longhands, so .duration-*, .ease-* and .delay-* (below) override them */
 
 /* Transition duration */
@@ -1762,6 +1790,16 @@ select {
 
 /* Animation */
 
+/* Showcase presets. .animate-wave and .animate-beat are written as longhands, so they combine with
+   .animate-delay-stagger (one delay per child from sibling-index()) and with .animate-duration-* / .animate-ease-*. */
+/* Float: drift to --oc-float-x / -y and grow to --oc-float-scale, then back (--oc-float-duration, 6s) */
+
+/* Typing: one step per character, then deletes again; the end border is the blinking caret. Set --oc-typing-chars
+   to the number of characters and use a monospace font (the width is counted in ch). */
+
+/* Wave: a short jump that lights up in --oc-wave-color, then rests; put it on every letter with .animate-delay-stagger */
+
+/* Beat: grow and fade in, shrink and fade out (loader dots; with .animate-delay-stagger they beat one after another) */
 /* Transform core */
 /* Rotate, scale and translate use the individual transform properties (rotate / scale / translate),
    so every class works on its own and they combine freely. Skew has no own property: it uses transform. */
@@ -1833,6 +1871,8 @@ select {
 /* Default look of the generated dots (Omnia colors); the active one follows the scroll position. */
 
 /* Scroll buttons — CSS-only previous/next arrows on a scroll container (::scroll-button()) */
+
+/* Outside: the arrows sit next to the scroll container instead of on it. Give the parent about 3rem of room on each side. */
 
 /* Overflow anchor — scroll anchoring */
 
@@ -1944,6 +1984,8 @@ select {
 /* Contain intrinsic size — placeholder size for content-visibility: auto */
 /* Clip path — basic shapes */
 
+/* Circle reveal: from nothing to a circle that covers the whole box (corners included); animate with .transition-clip */
+
 /* Clip path — polygons */
 
 /* Clip path — shape() function (CSS Shapes Level 2, responsive curves) */
@@ -2045,6 +2087,8 @@ select {
     animation: none !important;
   }
 }
+/* Presets — before the longhands below, so .timeline-* and .animate-range-* can retarget a preset
+   (class="animate-scroll-progress timeline-scroll": progress of the nearest scroll box instead of the page) */
 /* Animation timeline */
 
 /* Animation range */
@@ -2052,8 +2096,6 @@ select {
 /* Named scroll and view timelines */
 
 /* Timeline scope — expose a named timeline to siblings/descendants */
-
-/* Presets */
 /* Linear gradients — direction */
 
 /* Linear gradient in a perceptual color space (smoother mid tones) */
@@ -2140,6 +2182,8 @@ select {
 
 /* Easing functions — transitions: spring/bounce via linear(), stepped */
 
+/* Overshoot: shoots a little past the end and settles back (flip cards, switches) */
+
 /* Motion path — move an element along a path */
 
 /* Follow the path from 0% to 100% */
@@ -2224,6 +2268,8 @@ select {
 /* Edge fades (.mask-fade-b, -r and -x live in _layout_extras.scss) */
 
 /* Composable gradient masks */
+
+/* Ring: only an outer band of --oc-mask-ring (0.75rem) stays visible (spinners, progress rings, avatar rings) */
 
 /* Mask position */
 

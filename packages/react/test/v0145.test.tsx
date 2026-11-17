@@ -1,11 +1,12 @@
 // File: packages/react/test/v0145.test.tsx
 // Map: DropdownItem closes its popover menu after a click -> keepOpen / check item / preventDefault keep it open
 
+import type { ReactElement } from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Dropdown, DropdownItem } from "../src/components/Dropdown";
 
-function setup(item: JSX.Element) {
+function setup(item: ReactElement) {
   const { container } = render(<Dropdown trigger="Export">{item}</Dropdown>);
   const menu = container.querySelector<HTMLElement>(".oc-dropdown-menu")!;
   const hide = vi.fn();

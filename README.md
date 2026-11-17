@@ -12,7 +12,7 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 [![(Packagist) Laravel](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/split-php.yml?label=%28Packagist%29%20Laravel&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/split-php.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Version:** `0.15.1` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.16.0` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
@@ -126,6 +126,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.16.0` | 2026-11-17 | Nieuw: paper, combobox met iconen, language menu, logo, mode badge, code plate, kaart met accentband, sheet-opties (glass, inset, footer), sidebar meta, theme.js en de blocks type-picker, content-blocks, route-steps, route-progress en step-view; sheet-animatie, sluitknoppen, checkbox/radio in Opera, Firefox-fixes; call-to-action, contactformulier en gradient-knop rustiger |
 | `0.15.1` | 2026-11-10 | OmniaCSS 0.15.1: geen verwijzing meer naar niet-meegeleverde lettertypebestanden |
 | `0.15.0` | 2026-11-10 | Thema-schakelaar met iconen; juridische pagina's naar birdycom.be; fly-in met willekeurige timing en scroll-voortgangsbalk; dropdown sluit na een klik; tooltip in glas; React/Vue-klassen automatisch gescand (OmniaCSS-plugin) |
 | `0.14.4` | 2026-11-06 | Pijlen en vinkjes uit CSS tonen weer goed (escapes, ook na minify); Pro-kopieën in de repo duidelijk niet onder MIT |

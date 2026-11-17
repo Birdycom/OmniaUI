@@ -3,7 +3,7 @@
 //      (inert, device, frame-load, exposed frame) -> logo -> mode badge -> code plate -> card accent + band -> sidebar meta
 
 import { describe, expect, it } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { mount, type VueWrapper } from '@vue/test-utils'
 import { h } from 'vue'
 import OcCombobox from '../src/components/OcCombobox.vue'
 import OcDropdownItem from '../src/components/OcDropdownItem.vue'
@@ -35,7 +35,7 @@ describe('v0.16.0 combobox with icons', () => {
   })
 
   it('filters, moves over disabled options and chooses with Enter', async () => {
-    const w = mount(OcCombobox, { props: { options: methods, name: 'payment', 'onUpdate:modelValue': (v: string) => w.setProps({ modelValue: v }) } })
+    const w: VueWrapper = mount(OcCombobox, { props: { options: methods, name: 'payment', 'onUpdate:modelValue': (v?: string): Promise<void> => w.setProps({ modelValue: v }) } })
     const input = w.find('.oc-combobox-input')
     await input.trigger('focus')
     await input.setValue('card')
