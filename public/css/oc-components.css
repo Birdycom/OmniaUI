@@ -9566,6 +9566,36 @@ td[data-numeric] > .oc-price .oc-price__main, .oc-price--end .oc-price__main { j
   background: oklch(from var(--oc-destructive) l c h / 0.1);
 }
 
+/* Set by the app (0.17.0): data-issue="error" | "warning" marks the section (also while closed) when your own checks
+   found something, not only the browser's validity. .oc-form-section__count is the number in the header. The same
+   data-issue edge works on .oc-card. */
+.oc-form-section[data-issue="error"],
+.oc-card[data-issue="error"] { border-color: var(--oc-destructive); }
+.oc-form-section[data-issue="warning"],
+.oc-card[data-issue="warning"] { border-color: var(--oc-warning); }
+.oc-form-section[data-issue] .oc-form-section__icon {
+  color: var(--oc-form-section-issue);
+  background: oklch(from var(--oc-form-section-issue) l c h / 0.1);
+}
+.oc-form-section[data-issue="error"] { --oc-form-section-issue: var(--oc-destructive); }
+.oc-form-section[data-issue="warning"] { --oc-form-section-issue: var(--oc-warning); }
+.oc-form-section__status:has(> .oc-form-section__count) { display: inline-flex; align-items: center; gap: 0.5rem; }
+.oc-form-section__count {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 1.25rem;
+  block-size: 1.25rem;
+  padding-inline: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--oc-destructive-foreground);
+  background: var(--oc-form-section-issue, var(--oc-destructive));
+  border-radius: 999px;
+}
+.oc-form-section[data-issue="warning"] .oc-form-section__count { color: var(--oc-warning-foreground); }
+
 @media (prefers-reduced-motion: reduce) {
   .oc-form-section__summary::after { transition: none; }
 }

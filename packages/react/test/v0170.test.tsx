@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count
 
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
@@ -7,6 +7,7 @@ import { languageFlag } from "../src/components/Webicon";
 import { LanguageMenu } from "../src/components/LanguageMenu";
 import { DropdownItem } from "../src/components/Dropdown";
 import { SidebarMeta } from "../src/components/SidebarMeta";
+import { FormSection } from "../src/components/FormSection";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -51,5 +52,24 @@ describe("0.17.0 sidebar meta", () => {
     const [a, b] = container.querySelectorAll(".oc-sidebar-meta");
     expect(a.className).toBe("oc-sidebar-meta oc-tooltip oc-tooltip--right oc-sidebar-meta--wrap");
     expect(b.className).toBe("oc-sidebar-meta oc-tooltip oc-tooltip--right oc-sidebar-meta--collapsed");
+  });
+});
+
+describe("0.17.0 form section", () => {
+  it("invalid sets data-issue, issues shows a labelled count", () => {
+    const { container } = render(<FormSection title="Location" invalid="error" issues={2} status="Check">x</FormSection>);
+    const d = container.querySelector("details")!;
+    expect(d.getAttribute("data-issue")).toBe("error");
+    const count = d.querySelector(".oc-form-section__count")!;
+    expect(count.textContent).toBe("2");
+    expect(count.getAttribute("aria-label")).toBe("2 errors");
+    expect(d.querySelector(".oc-form-section__status")!.textContent).toBe("2Check");
+  });
+  it("one warning; no count without invalid", () => {
+    const { container } = render(<><FormSection title="A" invalid="warning" issues={1}>x</FormSection><FormSection title="B" issues={3}>x</FormSection></>);
+    const [a, b] = container.querySelectorAll("details");
+    expect(a.querySelector(".oc-form-section__count")!.getAttribute("aria-label")).toBe("1 warning");
+    expect(b.hasAttribute("data-issue")).toBe(false);
+    expect(b.querySelector(".oc-form-section__count")).toBeNull();
   });
 });

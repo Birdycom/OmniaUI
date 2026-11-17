@@ -1,11 +1,12 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import OcLanguageMenu from '../src/components/OcLanguageMenu.vue'
 import OcDropdownItem from '../src/components/OcDropdownItem.vue'
 import OcSidebarMeta from '../src/components/OcSidebarMeta.vue'
+import OcFormSection from '../src/components/OcFormSection.vue'
 import { languageFlag } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -37,5 +38,13 @@ describe('0.17.0 sidebar meta', () => {
   it('wrap and collapsed add their modifiers', () => {
     expect(mount(OcSidebarMeta, { props: { wrap: true, version: '1' } }).classes()).toContain('oc-sidebar-meta--wrap')
     expect(mount(OcSidebarMeta, { props: { collapsed: true, version: '1' } }).classes()).toContain('oc-sidebar-meta--collapsed')
+  })
+})
+
+describe('0.17.0 form section', () => {
+  it('invalid sets data-issue, issues shows a labelled count', () => {
+    const w = mount(OcFormSection, { props: { title: 'Location', invalid: 'warning', issues: 3 } })
+    expect(w.attributes('data-issue')).toBe('warning')
+    expect(w.find('.oc-form-section__count').attributes('aria-label')).toBe('3 warnings')
   })
 })

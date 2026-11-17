@@ -1,7 +1,7 @@
 <?php
 
 // File: tests/V0170Test.php
-// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed
+// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count
 // Components and options of 0.17.0: Blade renders the same classes as the HTML snippets.
 
 declare(strict_types=1);
@@ -26,5 +26,15 @@ class V0170Test extends TestCase
         $this->assertElement($html, 'div', 'oc-sidebar-meta oc-tooltip oc-tooltip--right oc-sidebar-meta--wrap');
         $collapsed = $this->render('<x-oc::sidebar.meta collapsed version="2.4.0" />');
         $this->assertElement($collapsed, 'div', 'oc-sidebar-meta oc-tooltip oc-tooltip--right oc-sidebar-meta--collapsed');
+    }
+
+    public function test_form_section_invalid_and_count(): void
+    {
+        $html = $this->render('<x-oc::form-section title="Location" invalid="error" :issues="2" icon="mdi:map-marker-outline">Fields</x-oc::form-section>');
+        $this->assertElement($html, 'details', 'oc-form-section', ['data-issue' => 'error']);
+        $this->assertElement($html, 'span', 'oc-form-section__count', ['aria-label' => '2 errors'], '2');
+        $plain = $this->render('<x-oc::form-section title="Name" :issues="2">Fields</x-oc::form-section>');
+        $this->assertStringNotContainsString('data-issue', $plain);
+        $this->assertStringNotContainsString('oc-form-section__count', $plain);
     }
 }
