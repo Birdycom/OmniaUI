@@ -2004,6 +2004,19 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 .oc-table-wrap > .oc-table > :first-child > tr:first-child > * { border-block-start: 0; }
 .oc-table-wrap > .oc-table > :last-child > tr:last-child > * { border-block-end: 0; }
 
+/* 0.17.0: .oc-table--auto sizes the columns by their content (the action column stays narrow, a name gets the room).
+   data-hide-below="sm | md | lg" on a th and its tds hides that column when the table area is narrower than 24, 32 or
+   48rem; the wrap becomes the size reference only when a table uses it (so a table in a flex row keeps its width), and
+   such a table drops the 32rem minimum width of the wrap: it gets narrower instead of scrolling.
+   .oc-table-action-label: the text next to an action icon, hidden (still read out) in a narrow table or in
+   .oc-table-actions--compact; the button keeps its title as tooltip. */
+.oc-table.oc-table--auto { table-layout: auto; }
+.oc-table-wrap:has([data-hide-below], .oc-table-action-label) { container: oc-table / inline-size; }
+.oc-table-wrap:has([data-hide-below]) > .oc-table { min-inline-size: 0; }
+@container oc-table (max-width: 48rem) { .oc-table :is(th, td)[data-hide-below~="lg"] { display: none; } }
+@container oc-table (max-width: 32rem) { .oc-table :is(th, td)[data-hide-below~="md"] { display: none; } }
+@container oc-table (max-width: 24rem) { .oc-table :is(th, td)[data-hide-below~="sm"] { display: none; } }
+
 /* ===================================================================
    Shared docs utility table styles (dark theme)
    Ensures ref-tables are always dark-themed in docs pages.
@@ -7585,6 +7598,22 @@ button.oc-stat-card:focus-visible { outline: 2px solid var(--oc-ring); outline-o
 .oc-table-actions-icon:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
 .oc-table-actions-icon:disabled,
 .oc-table-actions-icon[aria-disabled="true"] { opacity: 0.45; pointer-events: none; }
+
+
+/* An icon action with its text (0.17.0, showLabel): wide tables show both, narrow ones (or --compact) only the icon. */
+.oc-table-actions-icon:has(> .oc-table-action-label) {
+  grid-auto-flow: column;
+  gap: 0.35rem;
+  inline-size: auto;
+  padding-inline: 0.5rem;
+}
+.oc-table-action-label { font-size: 0.8125rem; }
+.oc-table-actions--compact .oc-table-action-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.oc-table-actions--compact .oc-table-actions-icon:has(> .oc-table-action-label) { inline-size: 1.75rem; padding-inline: 0; }
+@container oc-table (max-width: 32rem) {
+  .oc-table-action-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .oc-table-actions-icon:has(> .oc-table-action-label) { inline-size: 1.75rem; padding-inline: 0; }
+}
 
 /* Tone modifiers: the hover tint shows what the action does. */
 .oc-table-actions-icon--primary:hover { color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.1); }

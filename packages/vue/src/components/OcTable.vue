@@ -13,6 +13,8 @@ export interface TableColumn {
   sortable?: boolean
   numeric?: boolean
   width?: string
+  /** Hide this column when the table is narrower than sm (24rem), md (32rem) or lg (48rem). */
+  hideBelow?: 'sm' | 'md' | 'lg'
 }
 export interface TableSort {
   key: string
@@ -32,6 +34,8 @@ const props = withDefaults(
     selectable?: boolean
     actionsLabel?: string
     selectAllLabel?: string
+    /** 'auto': columns sized by their content. */
+    layout?: 'fixed' | 'auto'
   }>(),
   { rowKey: 'id', actionsLabel: 'Actions', selectAllLabel: 'Select all' },
 )
@@ -65,7 +69,7 @@ function rowLabel(row: Record<string, any>) {
 <template>
   <div class="oc-table-wrap">
     <table
-      :class="['oc-table', striped && 'oc-table--striped', compact && 'oc-table--compact', borderless && 'oc-table--borderless', sticky && 'oc-table--sticky']"
+      :class="['oc-table', striped && 'oc-table--striped', compact && 'oc-table--compact', borderless && 'oc-table--borderless', sticky && 'oc-table--sticky', layout === 'auto' && 'oc-table--auto']"
     >
       <caption v-if="caption">{{ caption }}</caption>
       <thead>
@@ -78,6 +82,7 @@ function rowLabel(row: Record<string, any>) {
             :key="col.key"
             :aria-sort="ariaSort(col.key)"
             :data-numeric="col.numeric ? '' : undefined"
+            :data-hide-below="col.hideBelow"
             :style="col.width ? { width: col.width } : undefined"
           >
             <a v-if="col.sortable" class="oc-table-sort" :href="`?sort=${col.key}`" @click="toggleSort($event, col.key)">{{ col.label }}</a>
@@ -101,7 +106,7 @@ function rowLabel(row: Record<string, any>) {
               @change="toggleRow(row[rowKey], ($event.target as HTMLInputElement).checked)"
             />
           </td>
-          <td v-for="col in columns" :key="col.key" :data-numeric="col.numeric ? '' : undefined">
+          <td v-for="col in columns" :key="col.key" :data-numeric="col.numeric ? '' : undefined" :data-hide-below="col.hideBelow">
             <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">{{ row[col.key] }}</slot>
           </td>
           <td v-if="hasActions" class="oc-table-actions"><slot name="actions" :row="row" /></td>

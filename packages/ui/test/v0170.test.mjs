@@ -1,6 +1,6 @@
 // File: packages/ui/test/v0170.test.mjs
 // Map: CSS of 0.17.0 -> dropdown description + tone -> sidebar meta wrap/collapsed -> form section issue -> otp fit/group
-//      -> copy field display -> card grid bands
+//      -> copy field display -> card grid bands -> table auto + hide below
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -50,4 +50,14 @@ test("card grid --bands: cards share their rows (subgrid)", async () => {
   const css = await read("parts/app-mode-badge.css");
   assert.match(css, /\.oc-card-grid--bands > \.oc-card \{\s*display: grid;\s*grid-row: span 2;\s*grid-template-rows: subgrid;/);
   assert.match(css, /\.oc-card-grid--bands > \.oc-card:has\(> \.oc-card-footer\) \{ grid-row: span 3; \}/);
+});
+
+test("table: --auto, data-hide-below only with a size reference, action labels", async () => {
+  const css = await read("components.css");
+  assert.ok(css.includes(".oc-table.oc-table--auto { table-layout: auto; }"));
+  assert.ok(css.includes(".oc-table-wrap:has([data-hide-below], .oc-table-action-label) { container: oc-table / inline-size; }"));
+  assert.ok(css.includes(".oc-table-wrap:has([data-hide-below]) > .oc-table { min-inline-size: 0; }"));
+  assert.ok(css.includes('@container oc-table (max-width: 32rem) { .oc-table :is(th, td)[data-hide-below~="md"] { display: none; } }'));
+  const actions = await read("parts/app-table-actions.css");
+  assert.ok(actions.includes(".oc-table-actions--compact .oc-table-action-label {"));
 });

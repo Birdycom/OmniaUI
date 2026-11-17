@@ -1932,6 +1932,19 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 .oc-table-wrap > .oc-table > :first-child > tr:first-child > * { border-block-start: 0; }
 .oc-table-wrap > .oc-table > :last-child > tr:last-child > * { border-block-end: 0; }
 
+/* 0.17.0: .oc-table--auto sizes the columns by their content (the action column stays narrow, a name gets the room).
+   data-hide-below="sm | md | lg" on a th and its tds hides that column when the table area is narrower than 24, 32 or
+   48rem; the wrap becomes the size reference only when a table uses it (so a table in a flex row keeps its width), and
+   such a table drops the 32rem minimum width of the wrap: it gets narrower instead of scrolling.
+   .oc-table-action-label: the text next to an action icon, hidden (still read out) in a narrow table or in
+   .oc-table-actions--compact; the button keeps its title as tooltip. */
+.oc-table.oc-table--auto { table-layout: auto; }
+.oc-table-wrap:has([data-hide-below], .oc-table-action-label) { container: oc-table / inline-size; }
+.oc-table-wrap:has([data-hide-below]) > .oc-table { min-inline-size: 0; }
+@container oc-table (max-width: 48rem) { .oc-table :is(th, td)[data-hide-below~="lg"] { display: none; } }
+@container oc-table (max-width: 32rem) { .oc-table :is(th, td)[data-hide-below~="md"] { display: none; } }
+@container oc-table (max-width: 24rem) { .oc-table :is(th, td)[data-hide-below~="sm"] { display: none; } }
+
 /* ===================================================================
    Shared docs utility table styles (dark theme)
    Ensures ref-tables are always dark-themed in docs pages.

@@ -12,6 +12,8 @@ type IconActionProps = {
   /** Accessible name; also used as the hover title. */
   label: string;
   tone?: TableActionTone;
+  /** Show the label next to the icon; a narrow table (or a compact cell) shows the icon only. */
+  showLabel?: boolean;
   children: ReactNode;
 } & (
   | (Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children"> & { href: string })
@@ -19,7 +21,8 @@ type IconActionProps = {
 );
 
 /** `.oc-table-actions-icon`: a link (with `href`) or a button showing only an icon. */
-export function TableActionIcon({ label, tone = "default", className, children, ...props }: IconActionProps) {
+export function TableActionIcon({ label, tone = "default", showLabel, className, children: icon, ...props }: IconActionProps) {
+  const children = showLabel ? <>{icon}<span className="oc-table-action-label">{label}</span></> : icon;
   const cls = cx("oc-table-actions-icon", tone !== "default" && `oc-table-actions-icon--${tone}`, className);
   // aria-label gives the name to screen readers; title shows it on hover.
   const common = { className: cls, "aria-label": label, title: label };

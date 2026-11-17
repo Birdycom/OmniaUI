@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -14,6 +14,8 @@ import { BlockTypePicker } from "../src/blocks/BlockTypePicker";
 import { BlockRouteSteps } from "../src/blocks/BlockRouteSteps";
 import { BlockContentBlocks, pinnedKept } from "../src/blocks/BlockContentBlocks";
 import { DataTable } from "../src/components/DataTable";
+import { Table, TableActions } from "../src/components/Table";
+import { TableActionIcon } from "../src/components/TableActions";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -235,5 +237,16 @@ describe("0.17.0 data table", () => {
     expect(container.querySelector(".oc-data-table-bulk")).toBeNull();
     expect(container.querySelector("[data-oc-bulk]")).toBeNull();
     expect(container.querySelectorAll("tbody tr:not([hidden])")).toHaveLength(12);
+  });
+});
+
+describe("0.17.0 table", () => {
+  it("layout auto, compact actions and an icon action with its label", () => {
+    const { container } = render(<Table layout="auto"><tbody><tr><TableActions compact><TableActionIcon label="Edit" showLabel>i</TableActionIcon></TableActions></tr></tbody></Table>);
+    expect(container.querySelector("table")!.className).toBe("oc-table oc-table--auto");
+    expect(container.querySelector("td")!.className).toBe("oc-table-actions oc-table-actions--compact");
+    const btn = container.querySelector(".oc-table-actions-icon")!;
+    expect(btn.getAttribute("title")).toBe("Edit");
+    expect(btn.querySelector(".oc-table-action-label")!.textContent).toBe("Edit");
   });
 });
