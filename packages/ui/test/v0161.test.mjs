@@ -49,6 +49,8 @@ test("tooltip: shown on hover and keyboard focus, not left on after a mouse clic
   assert.doesNotMatch(css, /\.oc-tooltip:focus-within/);
   assert.match(css, /\.oc-tooltip:has\(:focus-visible\)::after/);
   assert.match(css, /\.oc-tooltip:has\(:focus-visible\) > \.oc-tooltip__content/);
+  // a menu opened from inside the tooltip hides the bubble
+  assert.match(css, /\.oc-tooltip:has\(:popover-open, \[aria-expanded="true"\], details\[open\], dialog\[open\]\)::after/);
 });
 
 test("css: .oc-icon sizes xs to xl and the ratio of a wide icon", async () => {
