@@ -1568,11 +1568,14 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 /* Rich content only: no empty ::after bubble. */
 .oc-tooltip:not([data-tooltip])::after { content: none; }
 
-/* Also on keyboard focus of the element inside (Tab), not only on mouse hover. */
+/* Also on keyboard focus of the element inside (Tab), not only on mouse hover. :focus-visible, not :focus-within:
+   after a mouse click the button keeps focus, and the tooltip must not stay on once the pointer has left. */
 .oc-tooltip:hover::after,
-.oc-tooltip:focus-within::after,
+.oc-tooltip:focus-visible::after,
+.oc-tooltip:has(:focus-visible)::after,
 .oc-tooltip:hover > .oc-tooltip__content,
-.oc-tooltip:focus-within > .oc-tooltip__content {
+.oc-tooltip:focus-visible > .oc-tooltip__content,
+.oc-tooltip:has(:focus-visible) > .oc-tooltip__content {
   opacity: 1;
   scale: 1;
 }

@@ -9,6 +9,9 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { cwd } from "./project.mjs";
 
+/** The icons OmniaUI ships built in (scripts/build-webicons.mjs): used when their set is not installed in the app. */
+const BUILTIN = JSON.parse(await fs.readFile(new URL("./webicons-builtin.json", import.meta.url), "utf8"));
+
 /** The webicon sets (Iconify prefixes). */
 export const WEBICON_SETS = ["mdi", "mdi-light", "material-symbols", "svg-spinners", "flag", "vscode-icons"];
 const NAME = new RegExp(`(?<![\\w-])(${WEBICON_SETS.join("|")}):([a-z0-9]+(?:-[a-z0-9]+)*)`, "g");
@@ -86,6 +89,7 @@ export async function buildSubset(names, from = cwd) {
       }
     }
     const set = sets.get(prefix);
+    if (!set && BUILTIN[full]) { icons[full] = BUILTIN[full]; continue; }
     if (!set) { noSet.add(prefix); missing.push(full); continue; }
     const icon = resolveIcon(set, full.slice(i + 1));
     if (icon) icons[full] = icon;

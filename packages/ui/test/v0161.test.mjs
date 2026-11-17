@@ -36,6 +36,21 @@ test("webicons: --scan finds the names used in the source", async () => {
   assert.deepEqual(Object.keys(json).sort(), ["flag:be-4x3", "material-symbols:home-outline-rounded", "mdi:account-outline"]);
 });
 
+test("webicons: built-in icons come from OmniaUI when their set is not installed (no 'not installed' message)", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "omniaui-webicons-"));
+  const out = execFileSync(process.execPath, [bin, "webicons", "flag:nl-4x3", "mdi:check", "flag:es-4x3"], { cwd: dir, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  const json = JSON.parse(out);
+  assert.deepEqual(Object.keys(json).sort(), ["flag:nl-4x3", "mdi:check"]);
+  assert.equal(json["flag:nl-4x3"].width, 640);
+});
+
+test("tooltip: shown on hover and keyboard focus, not left on after a mouse click (:focus-within)", async () => {
+  const css = await fs.readFile(path.resolve(here, "../src/components.css"), "utf8");
+  assert.doesNotMatch(css, /\.oc-tooltip:focus-within/);
+  assert.match(css, /\.oc-tooltip:has\(:focus-visible\)::after/);
+  assert.match(css, /\.oc-tooltip:has\(:focus-visible\) > \.oc-tooltip__content/);
+});
+
 test("css: .oc-icon sizes xs to xl and the ratio of a wide icon", async () => {
   const css = await fs.readFile(path.resolve(here, "../src/parts/site-base.css"), "utf8");
   for (const [size, rem] of [["xs", "0.875rem"], ["sm", "1rem"], ["md", "1.25rem"], ["lg", "1.5rem"], ["xl", "2rem"]]) {

@@ -3,7 +3,7 @@
 // the local @iconify-json packages into the React and Vue packages and the Laravel package. No network.
 // Map: list -> read sets (node_modules/@iconify-json/<set>/icons.json) -> resolve aliases -> write
 //      packages/react/src/webicons-builtin.ts, packages/vue/src/webicons-builtin.ts,
-//      php-packages/omniaui-laravel/resources/webicons/builtin.json
+//      php-packages/omniaui-laravel/resources/webicons/builtin.json, packages/ui/bin/lib/webicons-builtin.json (CLI)
 // Run: node scripts/build-webicons.mjs (only when the list below changes; the output is committed).
 
 import fs from "node:fs";
@@ -77,4 +77,6 @@ for (const pkg of ["react", "vue"]) {
 const phpDir = path.join(root, "php-packages/omniaui-laravel/resources/webicons");
 fs.mkdirSync(phpDir, { recursive: true });
 fs.writeFileSync(path.join(phpDir, "builtin.json"), JSON.stringify(out, null, 1) + "\n");
+// The CLI (omniaui webicons) takes a built-in icon from here when its set is not installed in the app.
+fs.writeFileSync(path.join(root, "packages/ui/bin/lib/webicons-builtin.json"), JSON.stringify(out) + "\n");
 console.log(`[webicons] ${BUILTIN.length} built-in icons, ${json.length} bytes`);
