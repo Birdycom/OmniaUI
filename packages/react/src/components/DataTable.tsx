@@ -97,7 +97,44 @@ export interface DataTableProps {
   /** Page actions on the right of the toolbar (New article, …). */
   actions?: ReactNode;
   onBulk?: (action: string, keys: string[]) => void;
+  /** Texts in another language (any subset; the rest stays English). */
+  labels?: Partial<DataTableLabels>;
+  /** false: no table / cards switch, the table only. */
+  view?: boolean;
+  /** false: every row on one page, no pager and no rows-per-page (a report to print). */
+  pagination?: boolean;
+  /** The selection bar and the selection items of the list menu (default: as `filters`). */
+  bulk?: boolean;
 }
+
+/** Every text of the DataTable, for another language (0.17.0). The script texts (pager, "3 selected", sort line,
+ *  summary) go to data-oc-labels on the root. {from} {to} {total} {n} {label} {dir} {name} are filled in. */
+export interface DataTableLabels {
+  listActions: string; exportCsv: string; importCsv: string; duplicateSelection: string; trashSelection: string;
+  comfortable: string; compact: string; search: string; trashFilter: string; activeOnly: string; includingTrash: string;
+  trashOnly: string; archiveOnly: string; view: string; table: string; cards: string; columns: string; resetWidths: string;
+  selected: string; exportSelection: string; duplicate: string; moveToTrash: string; restore: string; deletePermanently: string;
+  clear: string; selectAll: string; select: string; order: string; move: string; resize: string; actions: string;
+  noResults: string; summary: string; rowsPerPage: string; pagination: string; firstPage: string; previousPage: string;
+  nextPage: string; lastPage: string; sortedBy: string; ascending: string; descending: string; edit: string;
+}
+
+export const DATA_TABLE_EN: DataTableLabels = {
+  listActions: "List actions", exportCsv: "Export CSV", importCsv: "Import CSV", duplicateSelection: "Duplicate selection",
+  trashSelection: "Move selection to trash", comfortable: "Comfortable rows", compact: "Compact rows", search: "Search {name}",
+  trashFilter: "Trash filter", activeOnly: "Active only", includingTrash: "Including trash", trashOnly: "Trash only",
+  archiveOnly: "Archive only", view: "View", table: "Table", cards: "Cards", columns: "Columns", resetWidths: "Reset column widths",
+  selected: "{n} selected", exportSelection: "Export selection", duplicate: "Duplicate", moveToTrash: "Move to trash",
+  restore: "Restore", deletePermanently: "Delete permanently", clear: "Clear", selectAll: "Select all", select: "Select {name}",
+  order: "Order", move: "Move {name}", resize: "Resize {name}", actions: "Actions", noResults: "No results",
+  summary: "Showing {from}–{to} of {total}", rowsPerPage: "Rows per page", pagination: "Pagination", firstPage: "First page",
+  previousPage: "Previous page", nextPage: "Next page", lastPage: "Last page", sortedBy: "Sorted by {label}, {dir}",
+  ascending: "ascending", descending: "descending", edit: "Edit {name}",
+};
+const fill = (s: string, name: unknown) => s.replace("{name}", String(name));
+/** The keys the script reads from data-oc-labels. */
+const SCRIPT_KEYS = ["selected", "summary", "firstPage", "previousPage", "nextPage", "lastPage", "sortedBy", "ascending", "descending"] as const;
+
 
 const PAGE_SIZES = [10, 15, 20, 50, 100];
 
@@ -127,8 +164,8 @@ export function DataTableName({ name, initials, avatar, badge, sub }: DataTableN
   );
 }
 
-const defaultActions = (row: DataTableRow) => (
-  <button className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" type="button" aria-label={`Edit ${row.values?.name ?? row.key}`} title="Edit">
+const defaultActions = (row: DataTableRow, edit = DATA_TABLE_EN.edit) => (
+  <button className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" type="button" aria-label={fill(edit, row.values?.name ?? row.key)} title={fill(edit, "").trim()}>
     <Icon d={MDI.pencil_outline} />
   </button>
 );
@@ -149,7 +186,7 @@ export function DataTable({
   archive = true,
   tabs,
   columnFilters,
-  rowActions = defaultActions,
+  rowActions,
   summary,
   importable = false,
   variant = "default",
@@ -157,7 +194,13 @@ export function DataTable({
   live = false,
   actions,
   onBulk,
+  labels,
+  view = true,
+  pagination = true,
+  bulk = filters,
 }: DataTableProps) {
+  const L = { ...DATA_TABLE_EN, ...labels };
+  const scriptLabels = labels ? JSON.stringify(Object.fromEntries(SCRIPT_KEYS.filter((k) => labels[k] != null).map((k) => [k, labels[k]]))) : undefined;
   const autoId = useId().replace(/:/g, "");
   const tableId = id || `oc-dt-${autoId}`;
   const rootRef = useRef<HTMLDivElement>(null);
@@ -185,8 +228,10 @@ export function DataTable({
       ref={rootRef}
       className={["oc-data-table", variant === "bordered" && "oc-data-table--bordered", !striped && "oc-data-table--plain", columnMenu && "oc-column-menu-scope"].filter(Boolean).join(" ")}
       id={tableId}
-      data-page-size={pageSize}
+      data-page-size={pagination ? pageSize : 0}
       data-oc-live={live ? "true" : undefined}
+      data-oc-labels={scriptLabels && scriptLabels !== "{}" ? scriptLabels : undefined}
+      data-oc-no-grid={view ? undefined : ""}
     >
       {tabs && (
         <div className="oc-tab-list oc-data-table-tabs" role="tablist" aria-label={tabs.label ?? "Filter"}>
@@ -209,41 +254,41 @@ export function DataTable({
       <div className="oc-data-table-toolbar">
         <div className="oc-data-table-heading">
           <span className="oc-data-table-title">{title}</span>
-          <button className="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" popoverTarget={`${tableId}-menu`} aria-label="List actions" title="List actions">
+          <button className="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" popoverTarget={`${tableId}-menu`} aria-label={L.listActions} title={L.listActions}>
             <Icon d={MDI.tune_variant} />
           </button>
           <div className="oc-dropdown-menu" id={`${tableId}-menu`} popover="auto">
-            <button className="oc-dropdown-item" type="button" data-oc-export="">Export CSV</button>
+            <button className="oc-dropdown-item" type="button" data-oc-export="">{L.exportCsv}</button>
             {importable && (
               <>
-                <button className="oc-dropdown-item" type="button" data-oc-import="">Import CSV</button>
+                <button className="oc-dropdown-item" type="button" data-oc-import="">{L.importCsv}</button>
                 <input className="oc-data-table-file" type="file" accept=".csv,text/csv" data-oc-file="" />
               </>
             )}
-            <button className="oc-dropdown-item" type="button" data-oc-bulk="duplicate">Duplicate selection</button>
-            <button className="oc-dropdown-item" type="button" data-oc-bulk="archive">Move selection to trash</button>
+            {bulk && <button className="oc-dropdown-item" type="button" data-oc-bulk="duplicate">{L.duplicateSelection}</button>}
+            {bulk && <button className="oc-dropdown-item" type="button" data-oc-bulk="archive">{L.trashSelection}</button>}
             <div className="oc-dropdown-separator" />
-            <button className="oc-dropdown-item" type="button" data-oc-density="comfortable">Comfortable rows</button>
-            <button className="oc-dropdown-item" type="button" data-oc-density="compact">Compact rows</button>
+            <button className="oc-dropdown-item" type="button" data-oc-density="comfortable">{L.comfortable}</button>
+            <button className="oc-dropdown-item" type="button" data-oc-density="compact">{L.compact}</button>
           </div>
         </div>
-        <input className="oc-input oc-data-table-search" type="search" placeholder={searchPlaceholder} aria-label={`Search ${title}`} />
+        <input className="oc-input oc-data-table-search" type="search" placeholder={searchPlaceholder} aria-label={fill(L.search, title)} />
         {filters && (
-          <div className="oc-filter-pills" role="group" aria-label="Trash filter">
-            <button className="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true">Active only</button>
-            <button className="oc-filter-pill" type="button" data-oc-filter="all">Including trash</button>
-            <button className="oc-filter-pill" type="button" data-oc-filter="deleted">Trash only</button>
-            {archive && <button className="oc-filter-pill" type="button" data-oc-filter="archived">Archive only</button>}
+          <div className="oc-filter-pills" role="group" aria-label={L.trashFilter}>
+            <button className="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true">{L.activeOnly}</button>
+            <button className="oc-filter-pill" type="button" data-oc-filter="all">{L.includingTrash}</button>
+            <button className="oc-filter-pill" type="button" data-oc-filter="deleted">{L.trashOnly}</button>
+            {archive && <button className="oc-filter-pill" type="button" data-oc-filter="archived">{L.archiveOnly}</button>}
           </div>
         )}
-        <div className="oc-data-table-view" role="group" aria-label="View">
-          <button className="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" data-oc-view="table" aria-pressed="true" aria-label="Table">
+        {view && <div className="oc-data-table-view" role="group" aria-label={L.view}>
+          <button className="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" data-oc-view="table" aria-pressed="true" aria-label={L.table}>
             <Icon d={MDI.format_list_bulleted} />
           </button>
-          <button className="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" data-oc-view="grid" aria-label="Cards">
+          <button className="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" data-oc-view="grid" aria-label={L.cards}>
             <Icon d={MDI.view_grid_outline} />
           </button>
-        </div>
+        </div>}
         {actions && <div className="oc-data-table-actions">{actions}</div>}
         <p className="oc-data-table-sort-summary" data-oc-sort-summary="" role="status" />
       </div>
@@ -260,8 +305,8 @@ export function DataTable({
         </div>
       ) : null}
       {columnMenu && (<div className="oc-column-menu" id={`${tableId}-columns`} popover="auto">
-        <p className="oc-column-menu-title">Columns</p>
-        {resizable && <button className="oc-dropdown-item" type="button" data-oc-reset-widths="">Reset column widths</button>}
+        <p className="oc-column-menu-title">{L.columns}</p>
+        {resizable && <button className="oc-dropdown-item" type="button" data-oc-reset-widths="">{L.resetWidths}</button>}
         {resizable && <div className="oc-dropdown-separator" />}
         <form className="oc-column-menu-list">
           {columns.map((col, index) => col.hideable === false ? null : (
@@ -271,35 +316,35 @@ export function DataTable({
           ))}
         </form>
       </div>)}
-      <div className="oc-data-table-bulk" hidden>
-        <span data-oc-selected-count="">0 selected</span>
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">Export selection</button>
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">Duplicate</button>
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">Move to trash</button>
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">Restore</button>
-        <button className="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">Delete permanently</button>
-        <button className="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">Clear</button>
-      </div>
+      {bulk && <div className="oc-data-table-bulk" hidden>
+        <span data-oc-selected-count="">{L.selected.replace("{n}", "0")}</span>
+        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">{L.exportSelection}</button>
+        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">{L.duplicate}</button>
+        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">{L.moveToTrash}</button>
+        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">{L.restore}</button>
+        <button className="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">{L.deletePermanently}</button>
+        <button className="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">{L.clear}</button>
+      </div>}
       <div className="oc-data-table-frame">
         <div className="oc-data-table-scroll">
           <table className="oc-table oc-data-table-table">
             <thead>
               <tr>
-                {selectable && <th data-oc-col="select"><input className="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label="Select all" /></th>}
-                {draggable && <th data-oc-col="order"><span className="oc-visually-hidden">Order</span></th>}
+                {selectable && <th data-oc-col="select"><input className="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label={L.selectAll} /></th>}
+                {draggable && <th data-oc-col="order"><span className="oc-visually-hidden">{L.order}</span></th>}
                 {columns.map((col) => (
                   <th key={col.key} data-oc-col={col.key} data-oc-sort={col.numeric ? "numeric" : "text"} data-numeric={col.numeric ? "" : undefined} aria-sort={col.defaultSort}>
                     <span className="oc-data-table-th">
                       {col.sortable === false ? col.header : <button className="oc-table-sort" type="button">{col.header}</button>}
-                      {resizable && <span className="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label={`Resize ${col.header}`} />}
+                      {resizable && <span className="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label={fill(L.resize, col.header)} />}
                     </span>
                   </th>
                 ))}
                 <th data-oc-col="actions">
                   <span className="oc-data-table-th">
-                    Actions
+                    {L.actions}
                     {columnMenu && (
-                      <button className="oc-btn oc-btn--plain oc-data-table-columns-btn" type="button" popoverTarget={`${tableId}-columns`} aria-label="Columns" title="Columns">
+                      <button className="oc-btn oc-btn--plain oc-data-table-columns-btn" type="button" popoverTarget={`${tableId}-columns`} aria-label={L.columns} title={L.columns}>
                         <Icon d={MDI.view_column_outline} />
                       </button>
                     )}
@@ -311,11 +356,11 @@ export function DataTable({
               {rows.map((row) => (
                 <tr key={row.key} data-oc-row="" data-oc-key={row.key} data-oc-status={row.status || "active"} data-oc-href={row.href}>
                   {selectable && (
-                    <td data-oc-col="select"><input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label={`Select ${label(row)}`} /></td>
+                    <td data-oc-col="select"><input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label={fill(L.select, label(row))} /></td>
                   )}
                   {draggable && (
                     <td data-oc-col="order" className="oc-sortable-row-grip-cell">
-                      <button className="oc-sortable-row-grip" type="button" aria-label={`Move ${label(row)}`} />
+                      <button className="oc-sortable-row-grip" type="button" aria-label={fill(L.move, label(row))} />
                     </td>
                   )}
                   {columns.map((col) => {
@@ -328,22 +373,22 @@ export function DataTable({
                       </td>
                     );
                   })}
-                  <td data-oc-col="actions"><div style={{ display: "flex", gap: "0.375rem", justifyContent: "flex-end" }}>{rowActions(row)}</div></td>
+                  <td data-oc-col="actions"><div style={{ display: "flex", gap: "0.375rem", justifyContent: "flex-end" }}>{rowActions ? rowActions(row) : defaultActions(row, L.edit)}</div></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="oc-data-table-empty" hidden>No results</p>
+        <p className="oc-data-table-empty" hidden>{L.noResults}</p>
       </div>
       <div className="oc-data-table-footer">
-        <p className="oc-data-table-summary" data-oc-summary={summary ?? ""} />
-        <label className="oc-data-table-per-page">Rows per page
-          <select className="oc-select" data-oc-page-size="" aria-label="Rows per page" defaultValue={String(pageSize)}>
+        <p className="oc-data-table-summary" data-oc-summary={summary ?? labels?.summary ?? ""} />
+        {pagination && <label className="oc-data-table-per-page">{L.rowsPerPage}
+          <select className="oc-select" data-oc-page-size="" aria-label={L.rowsPerPage} defaultValue={String(pageSize)}>
             {sizes.map((n) => <option key={n} value={n}>{n}</option>)}
           </select>
-        </label>
-        <nav className="oc-data-table-pager" data-oc-pager="" aria-label="Pagination" />
+        </label>}
+        {pagination && <nav className="oc-data-table-pager" data-oc-pager="" aria-label={L.pagination} />}
       </div>
     </div>
   );

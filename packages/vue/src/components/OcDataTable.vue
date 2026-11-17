@@ -8,7 +8,7 @@
  * (default: one soft edit button), page-actions for the toolbar (New customer …).
  * Icons of tabs and filters are webicon names (mdi:account-outline …), drawn as inline SVG (OcWebicon).
  */
-import { onMounted, useTemplateRef } from 'vue'
+import { computed, onMounted, useTemplateRef } from 'vue'
 import { bindDataTable } from '../../../ui/src/data-table.js'
 import OcWebicon from './OcWebicon.vue'
 
@@ -73,10 +73,41 @@ const props = withDefaults(
     /** Striped rows (default true). */
     striped?: boolean
     live?: boolean
+    /** Texts in another language (any subset; the rest stays English). See DataTableLabels. */
+    labels?: Record<string, string>
+    /** false: no table / cards switch. */
+    view?: boolean
+    /** false: every row on one page, no pager (a report to print). */
+    pagination?: boolean
+    /** The selection bar and the selection items of the list menu (default: as filters). */
+    bulk?: boolean
   }>(),
-  { title: 'List', pageSize: 15, searchPlaceholder: 'Search...', selectable: true, draggable: false, resizable: false, columnMenu: false, filters: true, archive: true, summary: '', importable: false, variant: 'default', striped: true, live: false },
+  { title: 'List', pageSize: 15, searchPlaceholder: 'Search...', selectable: true, draggable: false, resizable: false, columnMenu: false, filters: true, archive: true, summary: '', importable: false, variant: 'default', striped: true, live: false, view: true, pagination: true, bulk: undefined },
 )
+const L = computed(() => ({ ...DATA_TABLE_EN, ...props.labels }) as typeof DATA_TABLE_EN)
+const fill = (s: string, name: unknown) => s.replace('{name}', String(name))
+const showBulk = computed(() => props.bulk ?? props.filters)
+const SCRIPT_KEYS = ['selected', 'summary', 'firstPage', 'previousPage', 'nextPage', 'lastPage', 'sortedBy', 'ascending', 'descending'] as const
+const scriptLabels = computed(() => {
+  const l = props.labels
+  if (!l) return undefined
+  const picked = Object.fromEntries(SCRIPT_KEYS.filter((k) => l[k] != null).map((k) => [k, l[k]]))
+  return Object.keys(picked).length ? JSON.stringify(picked) : undefined
+})
 
+/** Every text of the table in English; pass `labels` with any subset in another language (0.17.0). */
+const DATA_TABLE_EN = {
+  listActions: 'List actions', exportCsv: 'Export CSV', importCsv: 'Import CSV', duplicateSelection: 'Duplicate selection',
+  trashSelection: 'Move selection to trash', comfortable: 'Comfortable rows', compact: 'Compact rows', search: 'Search {name}',
+  trashFilter: 'Trash filter', activeOnly: 'Active only', includingTrash: 'Including trash', trashOnly: 'Trash only',
+  archiveOnly: 'Archive only', view: 'View', table: 'Table', cards: 'Cards', columns: 'Columns', resetWidths: 'Reset column widths',
+  selected: '{n} selected', exportSelection: 'Export selection', duplicate: 'Duplicate', moveToTrash: 'Move to trash',
+  restore: 'Restore', deletePermanently: 'Delete permanently', clear: 'Clear', selectAll: 'Select all', select: 'Select {name}',
+  order: 'Order', move: 'Move {name}', resize: 'Resize {name}', actions: 'Actions', noResults: 'No results',
+  summary: 'Showing {from}–{to} of {total}', rowsPerPage: 'Rows per page', pagination: 'Pagination', firstPage: 'First page',
+  previousPage: 'Previous page', nextPage: 'Next page', lastPage: 'Last page', sortedBy: 'Sorted by {label}, {dir}',
+  ascending: 'ascending', descending: 'descending', edit: 'Edit {name}',
+}
 const root = useTemplateRef<HTMLElement>('root')
 const sizes = [...new Set([10, 15, 20, 50, 100, props.pageSize])].sort((a, b) => a - b)
 const lead = (props.selectable ? 1 : 0) + (props.draggable ? 1 : 0)
@@ -89,7 +120,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="root" :class="['oc-data-table', variant === 'bordered' && 'oc-data-table--bordered', !striped && 'oc-data-table--plain', columnMenu && 'oc-column-menu-scope']" :id="id" :data-page-size="pageSize" :data-oc-live="live ? 'true' : undefined">
+  <div ref="root" :class="['oc-data-table', variant === 'bordered' && 'oc-data-table--bordered', !striped && 'oc-data-table--plain', columnMenu && 'oc-column-menu-scope']" :id="id" :data-page-size="pagination ? pageSize : 0" :data-oc-live="live ? 'true' : undefined" :data-oc-labels="scriptLabels" :data-oc-no-grid="view ? undefined : ''">
     <div v-if="tabs" class="oc-tab-list oc-data-table-tabs" role="tablist" :aria-label="tabs.label ?? 'Filter'">
       <button
         v-for="(tab, i) in tabs.items"
@@ -105,30 +136,30 @@ onMounted(() => {
     <div class="oc-data-table-toolbar">
       <div class="oc-data-table-heading">
         <span class="oc-data-table-title">{{ title }}</span>
-        <button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" :popovertarget="`${id}-menu`" aria-label="List actions" title="List actions"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 13c-1.86 0-3.41 1.28-3.86 3H2v2h2.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22v-2H11.86c-.45-1.72-2-3-3.86-3m0 6c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2M19.86 6c-.45-1.72-2-3-3.86-3s-3.41 1.28-3.86 3H2v2h10.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22V6zM16 9c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2" /></svg></button>
+        <button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" :popovertarget="`${id}-menu`" :aria-label="L.listActions" :title="L.listActions"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 13c-1.86 0-3.41 1.28-3.86 3H2v2h2.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22v-2H11.86c-.45-1.72-2-3-3.86-3m0 6c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2M19.86 6c-.45-1.72-2-3-3.86-3s-3.41 1.28-3.86 3H2v2h10.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H22V6zM16 9c-1.1 0-2-.9-2-2s.9-2 2-2s2 .9 2 2s-.9 2-2 2" /></svg></button>
         <div class="oc-dropdown-menu" :id="`${id}-menu`" popover>
-          <button class="oc-dropdown-item" type="button" data-oc-export>Export CSV</button>
+          <button class="oc-dropdown-item" type="button" data-oc-export>{{ L.exportCsv }}</button>
           <template v-if="importable">
-            <button class="oc-dropdown-item" type="button" data-oc-import>Import CSV</button>
+            <button class="oc-dropdown-item" type="button" data-oc-import>{{ L.importCsv }}</button>
             <input class="oc-data-table-file" type="file" accept=".csv,text/csv" data-oc-file>
           </template>
-          <button class="oc-dropdown-item" type="button" data-oc-bulk="duplicate">Duplicate selection</button>
-          <button class="oc-dropdown-item" type="button" data-oc-bulk="archive">Move selection to trash</button>
+          <button v-if="showBulk" class="oc-dropdown-item" type="button" data-oc-bulk="duplicate">{{ L.duplicateSelection }}</button>
+          <button v-if="showBulk" class="oc-dropdown-item" type="button" data-oc-bulk="archive">{{ L.trashSelection }}</button>
           <div class="oc-dropdown-separator"></div>
-          <button class="oc-dropdown-item" type="button" data-oc-density="comfortable">Comfortable rows</button>
-          <button class="oc-dropdown-item" type="button" data-oc-density="compact">Compact rows</button>
+          <button class="oc-dropdown-item" type="button" data-oc-density="comfortable">{{ L.comfortable }}</button>
+          <button class="oc-dropdown-item" type="button" data-oc-density="compact">{{ L.compact }}</button>
         </div>
       </div>
-      <input class="oc-input oc-data-table-search" type="search" :placeholder="searchPlaceholder" :aria-label="`Search ${title}`">
-      <div v-if="filters" class="oc-filter-pills" role="group" aria-label="Trash filter">
-        <button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true">Active only</button>
-        <button class="oc-filter-pill" type="button" data-oc-filter="all">Including trash</button>
-        <button class="oc-filter-pill" type="button" data-oc-filter="deleted">Trash only</button>
-        <button v-if="archive" class="oc-filter-pill" type="button" data-oc-filter="archived">Archive only</button>
+      <input class="oc-input oc-data-table-search" type="search" :placeholder="searchPlaceholder" :aria-label="fill(L.search, title)">
+      <div v-if="filters" class="oc-filter-pills" role="group" :aria-label="L.trashFilter">
+        <button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true">{{ L.activeOnly }}</button>
+        <button class="oc-filter-pill" type="button" data-oc-filter="all">{{ L.includingTrash }}</button>
+        <button class="oc-filter-pill" type="button" data-oc-filter="deleted">{{ L.trashOnly }}</button>
+        <button v-if="archive" class="oc-filter-pill" type="button" data-oc-filter="archived">{{ L.archiveOnly }}</button>
       </div>
-      <div class="oc-data-table-view" role="group" aria-label="View">
-        <button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" data-oc-view="table" aria-pressed="true" aria-label="Table"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6A1.5 1.5 0 0 1 4 7.5A1.5 1.5 0 0 1 2.5 6A1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12A1.5 1.5 0 0 1 4 13.5A1.5 1.5 0 0 1 2.5 12A1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18A1.5 1.5 0 0 1 4 19.5A1.5 1.5 0 0 1 2.5 18A1.5 1.5 0 0 1 4 16.5" /></svg></button>
-        <button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" data-oc-view="grid" aria-label="Cards"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 11h8V3H3m2 2h4v4H5m8 12h8v-8h-8m2 2h4v4h-4M3 21h8v-8H3m2 2h4v4H5m8-16v8h8V3m-2 6h-4V5h4Z" /></svg></button>
+      <div v-if="view" class="oc-data-table-view" role="group" :aria-label="L.view">
+        <button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" data-oc-view="table" aria-pressed="true" :aria-label="L.table"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6A1.5 1.5 0 0 1 4 7.5A1.5 1.5 0 0 1 2.5 6A1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12A1.5 1.5 0 0 1 4 13.5A1.5 1.5 0 0 1 2.5 12A1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18A1.5 1.5 0 0 1 4 19.5A1.5 1.5 0 0 1 2.5 18A1.5 1.5 0 0 1 4 16.5" /></svg></button>
+        <button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" data-oc-view="grid" :aria-label="L.cards"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 11h8V3H3m2 2h4v4H5m8 12h8v-8h-8m2 2h4v4h-4M3 21h8v-8H3m2 2h4v4H5m8-16v8h8V3m-2 6h-4V5h4Z" /></svg></button>
       </div>
       <div v-if="$slots['page-actions']" class="oc-data-table-actions"><slot name="page-actions" /></div>
       <p class="oc-data-table-sort-summary" data-oc-sort-summary role="status"></p>
@@ -143,9 +174,9 @@ onMounted(() => {
       </label>
     </div>
     <div v-if="columnMenu" class="oc-column-menu" :id="`${id}-columns`" popover>
-      <p class="oc-column-menu-title">Columns</p>
+      <p class="oc-column-menu-title">{{ L.columns }}</p>
       <template v-if="resizable">
-        <button class="oc-dropdown-item" type="button" data-oc-reset-widths>Reset column widths</button>
+        <button class="oc-dropdown-item" type="button" data-oc-reset-widths>{{ L.resetWidths }}</button>
         <div class="oc-dropdown-separator"></div>
       </template>
       <form class="oc-column-menu-list">
@@ -156,38 +187,38 @@ onMounted(() => {
         </template>
       </form>
     </div>
-    <div class="oc-data-table-bulk" hidden>
-      <span data-oc-selected-count>0 selected</span>
-      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">Export selection</button>
-      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">Duplicate</button>
-      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">Move to trash</button>
-      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">Restore</button>
-      <button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">Delete permanently</button>
-      <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">Clear</button>
+    <div v-if="showBulk" class="oc-data-table-bulk" hidden>
+      <span data-oc-selected-count>{{ L.selected.replace('{n}', '0') }}</span>
+      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">{{ L.exportSelection }}</button>
+      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">{{ L.duplicate }}</button>
+      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">{{ L.moveToTrash }}</button>
+      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">{{ L.restore }}</button>
+      <button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">{{ L.deletePermanently }}</button>
+      <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">{{ L.clear }}</button>
     </div>
     <div class="oc-data-table-frame">
       <div class="oc-data-table-scroll">
         <table class="oc-table oc-data-table-table">
           <thead>
             <tr>
-              <th v-if="selectable" data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select-all aria-label="Select all"></th>
-              <th v-if="draggable" data-oc-col="order"><span class="oc-visually-hidden">Order</span></th>
+              <th v-if="selectable" data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select-all :aria-label="L.selectAll"></th>
+              <th v-if="draggable" data-oc-col="order"><span class="oc-visually-hidden">{{ L.order }}</span></th>
               <th v-for="col in columns" :key="col.key" :data-oc-col="col.key" :data-oc-sort="col.numeric ? 'numeric' : 'text'" :data-numeric="col.numeric ? '' : undefined" :aria-sort="col.defaultSort">
                 <span class="oc-data-table-th">
                   <button v-if="col.sortable !== false" class="oc-table-sort" type="button">{{ col.header }}</button>
                   <template v-else>{{ col.header }}</template>
-                  <span v-if="resizable" class="oc-data-table-resize" role="separator" aria-orientation="vertical" :aria-label="`Resize ${col.header}`"></span>
+                  <span v-if="resizable" class="oc-data-table-resize" role="separator" aria-orientation="vertical" :aria-label="fill(L.resize, col.header)"></span>
                 </span>
               </th>
               <th data-oc-col="actions">
-                <span class="oc-data-table-th">Actions<button v-if="columnMenu" class="oc-btn oc-btn--plain oc-data-table-columns-btn" type="button" :popovertarget="`${id}-columns`" aria-label="Columns" title="Columns"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5v13h17V5zm10 2v9h-3V7zM6 7h3v9H6zm13 9h-3V7h3z" /></svg></button></span>
+                <span class="oc-data-table-th">{{ L.actions }}<button v-if="columnMenu" class="oc-btn oc-btn--plain oc-data-table-columns-btn" type="button" :popovertarget="`${id}-columns`" :aria-label="L.columns" :title="L.columns"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5v13h17V5zm10 2v9h-3V7zM6 7h3v9H6zm13 9h-3V7h3z" /></svg></button></span>
               </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in rows" :key="row.key" data-oc-row :data-oc-key="row.key" :data-oc-status="row.status || 'active'" :data-oc-href="row.href">
-              <td v-if="selectable" data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select :aria-label="`Select ${label(row)}`"></td>
-              <td v-if="draggable" data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" :aria-label="`Move ${label(row)}`"></button></td>
+              <td v-if="selectable" data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select :aria-label="fill(L.select, label(row))"></td>
+              <td v-if="draggable" data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" :aria-label="fill(L.move, label(row))"></button></td>
               <td v-for="col in columns" :key="col.key" :data-oc-col="col.key" :data-numeric="col.numeric ? '' : undefined" :data-oc-value="row.values?.[col.key]">
                 <slot :name="`cell-${col.key}`" :row="row">
                   <span v-if="col.truncate" class="oc-data-table-truncate" :style="{ '--oc-data-table-truncate': col.truncate }" :title="row.cells[col.key]">{{ row.cells[col.key] ?? '' }}</span>
@@ -197,7 +228,7 @@ onMounted(() => {
               <td data-oc-col="actions">
                 <div style="display: flex; gap: 0.375rem; justify-content: flex-end">
                   <slot name="actions" :row="row">
-                    <button class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" type="button" :aria-label="`Edit ${label(row)}`" title="Edit"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /></svg></button>
+                    <button class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" type="button" :aria-label="fill(L.edit, label(row))" :title="fill(L.edit, '').trim()"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /></svg></button>
                   </slot>
                 </div>
               </td>
@@ -205,16 +236,16 @@ onMounted(() => {
           </tbody>
         </table>
       </div>
-      <p class="oc-data-table-empty" hidden>No results</p>
+      <p class="oc-data-table-empty" hidden>{{ L.noResults }}</p>
     </div>
     <div class="oc-data-table-footer">
-      <p class="oc-data-table-summary" :data-oc-summary="summary"></p>
-      <label class="oc-data-table-per-page">Rows per page
-        <select class="oc-select" data-oc-page-size aria-label="Rows per page">
+      <p class="oc-data-table-summary" :data-oc-summary="summary || labels?.summary || ''"></p>
+      <label v-if="pagination" class="oc-data-table-per-page">{{ L.rowsPerPage }}
+        <select class="oc-select" data-oc-page-size :aria-label="L.rowsPerPage">
           <option v-for="n in sizes" :key="n" :value="n" :selected="n === pageSize">{{ n }}</option>
         </select>
       </label>
-      <nav class="oc-data-table-pager" data-oc-pager aria-label="Pagination"></nav>
+      <nav v-if="pagination" class="oc-data-table-pager" data-oc-pager :aria-label="L.pagination"></nav>
     </div>
   </div>
 </template>

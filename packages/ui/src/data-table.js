@@ -107,6 +107,13 @@ export function bindDataTable(root) {
   const sortSummary = root.querySelector("[data-oc-sort-summary]");
   const frame = root.querySelector(".oc-data-table-frame") || table.parentElement;
   const live = root.dataset.ocLive === "true";
+  // Texts the script writes itself (pager, selection count, sort line), translated with data-oc-labels on the root:
+  // data-oc-labels='{"nextPage":"Volgende pagina","selected":"{n} geselecteerd"}' (0.17.0). Missing keys stay English.
+  let T = {};
+  try { T = JSON.parse(root.dataset.ocLabels || "{}"); } catch { T = {}; }
+  const t = (key, fallback, vars = {}) => String(T[key] ?? fallback).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+  // data-oc-no-grid: no card view (the table only), also not from a stored choice.
+  const noGrid = root.hasAttribute("data-oc-no-grid");
 
   let query = "";
   let filter = root.querySelector("[data-oc-filter][aria-current='true']")?.dataset.ocFilter
@@ -131,7 +138,7 @@ export function bindDataTable(root) {
     pageSize = Number(savedSize);
   }
   if (readStore(id, "density") === "compact") root.classList.add("oc-data-table--compact");
-  if (readStore(id, "view") === "grid") root.classList.add("oc-data-table--grid");
+  if (!noGrid && readStore(id, "view") === "grid") root.classList.add("oc-data-table--grid");
   const savedCols = readStore(id, "cols") || {};
   root.querySelectorAll("[data-col]").forEach((box) => {
     if (!box.disabled && savedCols[box.dataset.col] != null) box.checked = savedCols[box.dataset.col];
@@ -180,7 +187,7 @@ export function bindDataTable(root) {
       selectAll.checked = keys.length > 0 && picked === keys.length;
       selectAll.indeterminate = picked > 0 && picked < keys.length;
     }
-    if (count) count.textContent = selected.size === 1 ? "1 selected" : `${selected.size} selected`;
+    if (count) count.textContent = t("selected", "{n} selected", { n: selected.size });
     if (bulk) bulk.hidden = selected.size === 0;
   }
 
@@ -199,8 +206,8 @@ export function bindDataTable(root) {
       if (extra?.label) button.setAttribute("aria-label", extra.label);
       pager.append(button);
     };
-    add("«", 1, { disabled: current === 1, label: "First page" });
-    add("‹", current - 1, { disabled: current === 1, label: "Previous page" });
+    add("«", 1, { disabled: current === 1, label: t("firstPage", "First page") });
+    add("‹", current - 1, { disabled: current === 1, label: t("previousPage", "Previous page") });
     for (const item of pageItems(current, last)) {
       if (item === "…") {
         const span = document.createElement("span");
@@ -209,11 +216,12 @@ export function bindDataTable(root) {
         pager.append(span);
       } else add(String(item), item, { current: item === current });
     }
-    add("›", current + 1, { disabled: current === last, label: "Next page" });
-    add("»", last, { disabled: current === last, label: "Last page" });
+    add("›", current + 1, { disabled: current === last, label: t("nextPage", "Next page") });
+    add("»", last, { disabled: current === last, label: t("lastPage", "Last page") });
   }
 
   function syncGrid(list) {
+    if (noGrid) return;
     let grid = root.querySelector(".oc-data-table-grid");
     if (!grid && frame) {
       grid = document.createElement("div");
@@ -294,13 +302,13 @@ export function bindDataTable(root) {
     if (empty) empty.hidden = list.length !== 0;
     if (summary) {
       // data-oc-summary="Toont {from} t/m {to} van {total} resultaten" translates the line; empty = English.
-      const template = summary.dataset.ocSummary || "Showing {from}–{to} of {total}";
+      const template = summary.dataset.ocSummary || t("summary", "Showing {from}–{to} of {total}");
       const values = { from: list.length ? start + 1 : 0, to: start + visible.size, total: list.length };
       summary.textContent = template.replace(/\{(from|to|total)\}/g, (_, key) => String(values[key]));
     }
     if (sortSummary) {
       const label = sortKey ? table.querySelector(`th[data-oc-col="${sortKey}"] .oc-table-sort`)?.textContent?.trim() : "";
-      sortSummary.textContent = label ? `Sorted by ${label}, ${sortDir === "asc" ? "ascending" : "descending"}` : "";
+      sortSummary.textContent = label ? t("sortedBy", "Sorted by {label}, {dir}", { label, dir: sortDir === "asc" ? t("ascending", "ascending") : t("descending", "descending") }) : "";
     }
     renderPager(page + 1, list.length === 0 ? 1 : last);
     syncGrid([...visible]);

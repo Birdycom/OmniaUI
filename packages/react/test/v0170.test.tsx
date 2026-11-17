@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -13,6 +13,7 @@ import { CopyField, groupCode } from "../src/components/CopyField";
 import { BlockTypePicker } from "../src/blocks/BlockTypePicker";
 import { BlockRouteSteps } from "../src/blocks/BlockRouteSteps";
 import { BlockContentBlocks, pinnedKept } from "../src/blocks/BlockContentBlocks";
+import { DataTable } from "../src/components/DataTable";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -207,5 +208,32 @@ describe("0.17.0 content blocks", () => {
     expect(row.className).toContain("is-drop-before");
     fireEvent.drop(row, { dataTransfer });
     expect(onDropNew).toHaveBeenCalledWith("quiz", 2);
+  });
+});
+
+describe("0.17.0 data table", () => {
+  const columns = [{ key: "name", header: "Naam" }];
+  const rows = Array.from({ length: 12 }, (_, i) => ({ key: String(i), cells: { name: `Game ${i + 1}` } }));
+  it("labels translate the texts, also the ones the script writes", () => {
+    const { container, getByText } = render(
+      <DataTable title="Spellen" columns={columns} rows={rows} pageSize={10}
+        labels={{ exportCsv: "CSV exporteren", search: "{name} zoeken", rowsPerPage: "Rijen per pagina", summary: "{from} tot {to} van {total}", nextPage: "Volgende pagina", actions: "Acties" }} />,
+    );
+    expect(getByText("CSV exporteren")).toBeTruthy();
+    expect(container.querySelector(".oc-data-table-search")!.getAttribute("aria-label")).toBe("Spellen zoeken");
+    expect(getByText("1 tot 10 van 12")).toBeTruthy();
+    expect(container.querySelector("[aria-label=\"Volgende pagina\"]")).toBeTruthy();
+    expect(JSON.parse(container.querySelector(".oc-data-table")!.getAttribute("data-oc-labels")!)).toEqual({ summary: "{from} tot {to} van {total}", nextPage: "Volgende pagina" });
+  });
+  it("view, pagination, filters and bulk can be switched off", () => {
+    const { container } = render(<DataTable title="Report" columns={columns} rows={rows} view={false} pagination={false} filters={false} />);
+    const root = container.querySelector(".oc-data-table")!;
+    expect(root.hasAttribute("data-oc-no-grid")).toBe(true);
+    expect(root.getAttribute("data-page-size")).toBe("0");
+    expect(container.querySelector(".oc-data-table-view")).toBeNull();
+    expect(container.querySelector(".oc-data-table-pager")).toBeNull();
+    expect(container.querySelector(".oc-data-table-bulk")).toBeNull();
+    expect(container.querySelector("[data-oc-bulk]")).toBeNull();
+    expect(container.querySelectorAll("tbody tr:not([hidden])")).toHaveLength(12);
   });
 });

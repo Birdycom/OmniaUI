@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -12,6 +12,7 @@ import OcCopyField from '../src/components/OcCopyField.vue'
 import OcBlockTypePicker from '../src/blocks/OcBlockTypePicker.vue'
 import OcBlockRouteSteps from '../src/blocks/OcBlockRouteSteps.vue'
 import OcBlockContentBlocks from '../src/blocks/OcBlockContentBlocks.vue'
+import OcDataTable from '../src/components/OcDataTable.vue'
 import { languageFlag } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -111,5 +112,20 @@ describe('0.17.0 content blocks', () => {
     expect(rows[1].find('.oc-block-content-blocks-count').attributes('aria-label')).toBe('1 warning')
     await rows[1].find('[aria-label="Move Text down"]').trigger('click')
     expect(w.emitted('move')![0]).toEqual(['text', 2])
+  })
+})
+
+describe('0.17.0 data table', () => {
+  const columns = [{ key: 'name', header: 'Naam' }]
+  const rows = Array.from({ length: 12 }, (_, i) => ({ key: String(i), cells: { name: `Game ${i + 1}` } }))
+  it('labels translate the texts; view, pagination and bulk can be switched off', () => {
+    const w = mount(OcDataTable, { props: { title: 'Spellen', columns, rows, labels: { exportCsv: 'CSV exporteren', nextPage: 'Volgende pagina' }, view: false, pagination: false, filters: false } })
+    expect(w.text()).toContain('CSV exporteren')
+    expect(w.attributes('data-oc-labels')).toBe('{"nextPage":"Volgende pagina"}')
+    expect(w.attributes('data-oc-no-grid')).toBe('')
+    expect(w.attributes('data-page-size')).toBe('0')
+    expect(w.find('.oc-data-table-view').exists()).toBe(false)
+    expect(w.find('.oc-data-table-pager').exists()).toBe(false)
+    expect(w.find('.oc-data-table-bulk').exists()).toBe(false)
   })
 })
