@@ -71,6 +71,43 @@
   padding-inline-start: calc(10px + 1rem + 8px);
 }
 
+/* Two-line item (0.17.0): the label with a muted description under it (.oc-dropdown-text > .oc-dropdown-desc), for a
+   menu that explains each choice ("New stop": the kind and what it does). The description may wrap. */
+.oc-dropdown-text {
+  display: grid;
+  flex: 1 1 auto;
+  gap: 1px;
+  min-inline-size: 0;
+  text-align: start;
+}
+.oc-dropdown-desc {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--oc-muted-foreground);
+  white-space: normal;
+}
+.oc-dropdown-menu:has(.oc-dropdown-desc) { max-inline-size: min(22rem, calc(100vw - 2rem)); }
+.oc-dropdown-item:has(> .oc-dropdown-text > .oc-dropdown-desc) { padding-block: 7px; }
+/* Icon in a soft tinted square (iconTone): one quiet color per kind of item, no gradient and no glow. */
+.oc-dropdown-icon:is(.oc-dropdown-icon--primary, .oc-dropdown-icon--success, .oc-dropdown-icon--warning, .oc-dropdown-icon--destructive, .oc-dropdown-icon--muted) {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0.375rem;
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: color-mix(in oklch, var(--oc-dropdown-tone, var(--oc-muted-foreground)) 14%, transparent);
+  color: var(--oc-dropdown-tone, var(--oc-muted-foreground));
+}
+.oc-dropdown-icon--primary { --oc-dropdown-tone: var(--oc-primary); }
+.oc-dropdown-icon--success { --oc-dropdown-tone: var(--oc-success); }
+.oc-dropdown-icon--warning { --oc-dropdown-tone: var(--oc-warning); }
+.oc-dropdown-icon--destructive { --oc-dropdown-tone: var(--oc-destructive); }
+.oc-dropdown-item:is(:hover, :focus-visible) > .oc-dropdown-icon:is(.oc-dropdown-icon--primary, .oc-dropdown-icon--success, .oc-dropdown-icon--warning, .oc-dropdown-icon--destructive, .oc-dropdown-icon--muted) { color: var(--oc-dropdown-tone, var(--oc-muted-foreground)); }
+/* Plain items in a menu with tinted icons: the label starts where the other labels start. */
+.oc-dropdown-menu:has(> .oc-dropdown-item > [class*="oc-dropdown-icon--"])
+  > .oc-dropdown-item:not(:has(> .oc-dropdown-icon), :has(> .oc-dropdown-check), [role="menuitemcheckbox"], [role="menuitemradio"]) {
+  padding-inline-start: calc(10px + 1.75rem + 8px);
+}
+
 @media (forced-colors: active) {
   .oc-combobox-option-icon,
   .oc-combobox-icon,

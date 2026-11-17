@@ -9,7 +9,7 @@ import type { CSSProperties, ReactNode, SVGProps } from "react";
 import { cx } from "../utils";
 import { getWebicon, hasIconifyRuntime, subscribeWebicons, warnOnce, webiconSvg, webiconsVersion } from "../webicons";
 
-export { addWebicons, getWebicon, hasWebicon, registerWebicons } from "../webicons";
+export { addWebicons, getWebicon, hasWebicon, languageFlag, registerWebicons } from "../webicons";
 export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from "../webicons";
 
 export type WebiconSize = "xs" | "sm" | "md" | "lg" | "xl";

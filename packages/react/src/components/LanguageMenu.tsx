@@ -12,6 +12,7 @@ import { attrs, cx } from "../utils";
 import { useControllable } from "../hooks";
 import { closeMenu } from "./Dropdown";
 import { webiconNode } from "./Webicon";
+import { languageFlag } from "../webicons";
 
 export interface LanguageMenuOption {
   /** Language code ("nl", "en-GB"); also the lang/hreflang of the item. */
@@ -41,6 +42,10 @@ export interface LanguageMenuProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
   label?: string;
   /** Class for the menu. */
   menuClassName?: string;
+  /** "auto": a flag from the language code when an option has none (en -> gb, nl-BE -> be; see languageFlag). */
+  flags?: "auto";
+  /** Your own flag per language code (a webicon name or a node); undefined falls back to flags="auto" or no flag. */
+  flagFor?: (value: string) => ReactNode;
 }
 
 const flagNode = (flag: ReactNode) => webiconNode(flag);
@@ -53,7 +58,7 @@ const Globe = () => (
 
 /** `button.oc-language-select` + `.oc-dropdown-menu.oc-language-menu`: a language menu with flags, native names and a check. */
 export const LanguageMenu = forwardRef<HTMLButtonElement, LanguageMenuProps>(function LanguageMenu(
-  { options, value, defaultValue, onChange, show = "code", compact, ghost, label = "Language", menuClassName, className, id, ...rest },
+  { options, value, defaultValue, onChange, show = "code", compact, ghost, label = "Language", menuClassName, flags, flagFor, className, id, ...rest },
   ref,
 ) {
   const auto = useId().replace(/:/g, "");
@@ -61,6 +66,9 @@ export const LanguageMenu = forwardRef<HTMLButtonElement, LanguageMenuProps>(fun
   const [current, setCurrent] = useControllable<string>(value, defaultValue ?? options[0]?.value ?? "", onChange);
   const cur = options.find((o) => o.value === current) ?? options[0];
   const name = `${label}: ${cur?.label ?? ""}`;
+  const flagOf = (o: LanguageMenuOption | undefined): ReactNode =>
+    o && (o.flag ?? flagFor?.(o.value) ?? (flags === "auto" ? languageFlag(o.value) : undefined));
+  const curFlag = flagOf(cur);
   const pick = (o: LanguageMenuOption) => (e: MouseEvent<HTMLElement>) => { setCurrent(o.value); closeMenu(e); };
 
   return (
@@ -76,19 +84,20 @@ export const LanguageMenu = forwardRef<HTMLButtonElement, LanguageMenuProps>(fun
         {...rest}
       >
         {compact ? (
-          cur?.flag != null ? <span className="oc-language-flag" aria-hidden="true">{flagNode(cur.flag)}</span> : <span className="oc-language-select-icon" aria-hidden="true"><Globe /></span>
+          curFlag != null ? <span className="oc-language-flag" aria-hidden="true">{flagNode(curFlag)}</span> : <span className="oc-language-select-icon" aria-hidden="true"><Globe /></span>
         ) : (
           <>
-            {cur?.flag != null && <span className="oc-language-flag" aria-hidden="true">{flagNode(cur.flag)}</span>}
+            {curFlag != null && <span className="oc-language-flag" aria-hidden="true">{flagNode(curFlag)}</span>}
             {show === "name" ? <span lang={cur?.value}>{cur?.label}</span> : <span className="oc-language-select-code">{cur && codeOf(cur)}</span>}
           </>
         )}
       </button>
       <div className={cx("oc-dropdown-menu oc-language-menu", menuClassName)} id={menuId} aria-label={label} {...attrs({ popover: "" })}>
         {options.map((o) => {
+          const flag = flagOf(o);
           const inner = (
             <>
-              {o.flag != null && <span className="oc-language-flag" aria-hidden="true">{flagNode(o.flag)}</span>}
+              {flag != null && <span className="oc-language-flag" aria-hidden="true">{flagNode(flag)}</span>}
               <span>{o.label}</span>
               <span className="oc-language-menu-code" aria-hidden="true">{codeOf(o)}</span>
             </>

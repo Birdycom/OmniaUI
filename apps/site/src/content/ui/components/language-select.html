@@ -108,7 +108,7 @@
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="menu-flags">Menu with flags <span class="oc-badge-version">v0.16.0</span></h3>
-          <p class="oc-section-content__desc">The language menu of an app header: the button shows the flag and the code of the current language, the list shows each language with its flag, its name in that language (<code>lang="…"</code>, so screen readers read it right), its code, and a check at the current one (<code>aria-current="true"</code>). It is a popover (<code>popovertarget</code>), so it opens, closes with <kbd>Esc</kbd> or a click outside, and works with the keyboard without any script. On your site each item is a link to the page in that language (<code>hreflang</code>); in this demo the items only close the menu. React <code>LanguageMenu</code> and Vue <code>OcLanguageMenu</code> draw the flags as inline SVG (see <a href="webicon.html">Webicon</a>), without the Iconify script: <code>flag:nl-4x3</code>, <code>be</code>, <code>fr</code>, <code>de</code>, <code>gb</code>, <code>it</code> and <code>us</code> are built in, any other flag you register once with <code>addWebicons</code>.</p>
+          <p class="oc-section-content__desc">The language menu of an app header: the button shows the flag and the code of the current language, the list shows each language with its flag, its name in that language (<code>lang="…"</code>, so screen readers read it right), its code, and a check at the current one (<code>aria-current="true"</code>). It is a popover (<code>popovertarget</code>), so it opens, closes with <kbd>Esc</kbd> or a click outside, and works with the keyboard without any script. On your site each item is a link to the page in that language (<code>hreflang</code>); in this demo the items only close the menu. React <code>LanguageMenu</code>, Vue <code>OcLanguageMenu</code> and Blade <code>React <code>LanguageMenu</code> and Vue <code>OcLanguageMenu</code> draw the flags as inline SVGlt;x-oc::language-menuReact <code>LanguageMenu</code> and Vue <code>OcLanguageMenu</code> draw the flags as inline SVGgt;</code> (since v0.17.0) draw the flags as inline SVG (see <a href="webicon.html">Webicon</a>), without the Iconify script: <code>flag:nl-4x3</code>, <code>be</code>, <code>fr</code>, <code>de</code>, <code>gb</code>, <code>it</code> and <code>us</code> are built in, any other flag you register once with <code>addWebicons</code>.</p>
           <oc-demo title="Language select - menu with flags" size="tall">
 <div class="flex justify-between gap-1 w-full" style="align-items: center; padding: 0.5rem 0.75rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius)">
   <strong>Company 1</strong>
@@ -155,6 +155,54 @@
     'en' =&gt; ['label' =&gt; 'English', 'flag' =&gt; 'flag:gb-4x3', 'href' =&gt; '/en/'],
     'nl' =&gt; ['label' =&gt; 'Nederlands', 'flag' =&gt; 'flag:nl-4x3', 'href' =&gt; '/nl/'],
     'fr' =&gt; ['label' =&gt; 'Français', 'flag' =&gt; 'flag:fr-4x3', 'href' =&gt; '/fr/'],
+]" /&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="menu-auto-flags">Flags from the language code <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">With <code>flags="auto"</code> you leave <code>flag</code> out of the options: the menu takes the flag from the language code. A region in the code wins (<code>nl-BE</code> shows Belgium, <code>en-US</code> the United States), otherwise the usual country of the language (<code>en</code> gb, <code>da</code> dk, <code>nl</code> nl). A <code>flag</code> on an option still wins, and <code>flagFor(code)</code> sets your own choice per language. The same rule is exported as <code>languageFlag(code)</code> (React, Vue) and <code>Webicons::languageFlag()</code> (Laravel). Flags other than the built-in seven you add with <code>npx omniaui webicons flag:es-4x3</code>.</p>
+          <oc-demo title="Language select - flags from the language code" size="tall">
+<div class="flex justify-between gap-1 w-full" style="align-items: center; padding: 0.5rem 0.75rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius)">
+  <strong>Company 1</strong>
+  <button type="button" class="oc-language-select oc-language-select--ghost" popovertarget="oc-lang-auto" aria-label="Language: Nederlands (België)">
+    <span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:be-4x3" aria-hidden="true"></iconify-icon></span>
+    <span class="oc-language-select-code">NL</span>
+  </button>
+  <div class="oc-dropdown-menu oc-language-menu" id="oc-lang-auto" popover aria-label="Language">
+    <button type="button" class="oc-dropdown-item" lang="en" popovertarget="oc-lang-auto" popovertargetaction="hide"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:gb-4x3" aria-hidden="true"></iconify-icon></span><span>English</span><span class="oc-language-menu-code" aria-hidden="true">EN</span></button>
+    <button type="button" class="oc-dropdown-item" lang="nl-BE" popovertarget="oc-lang-auto" popovertargetaction="hide" aria-current="true"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:be-4x3" aria-hidden="true"></iconify-icon></span><span>Nederlands</span><span class="oc-language-menu-code" aria-hidden="true">NL</span></button>
+    <button type="button" class="oc-dropdown-item" lang="fr-BE" popovertarget="oc-lang-auto" popovertargetaction="hide"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:be-4x3" aria-hidden="true"></iconify-icon></span><span>Français</span><span class="oc-language-menu-code" aria-hidden="true">FR</span></button>
+    <button type="button" class="oc-dropdown-item" lang="de" popovertarget="oc-lang-auto" popovertargetaction="hide"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:de-4x3" aria-hidden="true"></iconify-icon></span><span>Deutsch</span><span class="oc-language-menu-code" aria-hidden="true">DE</span></button>
+  </div>
+</div>
+<oc-code lang="html">&lt;div class="flex justify-between gap-1 w-full" style="align-items: center; padding: 0.5rem 0.75rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius)"&gt;
+  &lt;strong&gt;Company 1&lt;/strong&gt;
+  &lt;button type="button" class="oc-language-select oc-language-select--ghost" popovertarget="oc-lang-auto" aria-label="Language: Nederlands (België)"&gt;
+    &lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:be-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+    &lt;span class="oc-language-select-code"&gt;NL&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="oc-dropdown-menu oc-language-menu" id="oc-lang-auto" popover aria-label="Language"&gt;
+    &lt;button type="button" class="oc-dropdown-item" lang="en" popovertarget="oc-lang-auto" popovertargetaction="hide"&gt;&lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:gb-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span&gt;English&lt;/span&gt;&lt;span class="oc-language-menu-code" aria-hidden="true"&gt;EN&lt;/span&gt;&lt;/button&gt;
+    &lt;button type="button" class="oc-dropdown-item" lang="nl-BE" popovertarget="oc-lang-auto" popovertargetaction="hide" aria-current="true"&gt;&lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:be-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span&gt;Nederlands&lt;/span&gt;&lt;span class="oc-language-menu-code" aria-hidden="true"&gt;NL&lt;/span&gt;&lt;/button&gt;
+    &lt;button type="button" class="oc-dropdown-item" lang="fr-BE" popovertarget="oc-lang-auto" popovertargetaction="hide"&gt;&lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:be-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span&gt;Français&lt;/span&gt;&lt;span class="oc-language-menu-code" aria-hidden="true"&gt;FR&lt;/span&gt;&lt;/button&gt;
+    &lt;button type="button" class="oc-dropdown-item" lang="de" popovertarget="oc-lang-auto" popovertargetaction="hide"&gt;&lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:de-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span&gt;Deutsch&lt;/span&gt;&lt;span class="oc-language-menu-code" aria-hidden="true"&gt;DE&lt;/span&gt;&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">const languages = [
+  { value: "en", label: "English" },              // gb
+  { value: "nl-BE", label: "Nederlands", code: "NL" }, // be
+  { value: "fr-BE", label: "Français", code: "FR" },   // be
+  { value: "de", label: "Deutsch" },              // de
+];
+
+&lt;LanguageMenu options={languages} value={lang} onChange={setLang} flags="auto" ghost /&gt;
+// Your own choice for one language:
+&lt;LanguageMenu options={languages} flags="auto" flagFor={(code) =&gt; (code === "en" ? "flag:us-4x3" : undefined)} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcLanguageMenu v-model="lang" :options="languages" flags="auto" ghost /&gt;
+&lt;!-- languages: [{ value: 'nl-BE', label: 'Nederlands', code: 'NL' }, …] --&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::language-menu flags="auto" ghost :value="app()-&gt;getLocale()" :options="[
+    'en' =&gt; ['label' =&gt; 'English'],
+    'nl-BE' =&gt; ['label' =&gt; 'Nederlands', 'code' =&gt; 'NL'],
+    'fr-BE' =&gt; ['label' =&gt; 'Français', 'code' =&gt; 'FR'],
 ]" /&gt;</oc-code>
           </oc-demo>
 

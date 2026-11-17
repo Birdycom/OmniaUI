@@ -51,7 +51,13 @@ interface ItemExtras {
   icon?: ReactNode;
   /** Keep the menu open after a click. Default: a check item stays open, every other item closes the menu. */
   keepOpen?: boolean;
+  /** Muted second line under the label (may wrap): what the choice does. */
+  description?: ReactNode;
+  /** The icon in a soft tinted square of this color. */
+  iconTone?: DropdownIconTone;
 }
+
+export type DropdownIconTone = "primary" | "success" | "warning" | "destructive" | "muted";
 type ItemProps = ItemExtras & ((AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) | (ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined }));
 
 /** Closes the popover menu around the clicked item (unless the click handler called preventDefault). */
@@ -62,7 +68,7 @@ export function closeMenu(event: MouseEvent<HTMLElement>) {
 }
 
 /** `.oc-dropdown-item`: an anchor when `href` is set, otherwise a button. A click closes the menu (`keepOpen` to stop that). */
-export function DropdownItem({ className, checked, hint, icon, keepOpen, children, ...props }: ItemProps) {
+export function DropdownItem({ className, checked, hint, icon, keepOpen, description, iconTone, children, ...props }: ItemProps) {
   const check = checked !== undefined;
   const userClick = props.onClick as ((e: MouseEvent<HTMLElement>) => void) | undefined;
   const onClick = (e: MouseEvent<HTMLElement>) => {
@@ -72,8 +78,8 @@ export function DropdownItem({ className, checked, hint, icon, keepOpen, childre
   const content = (
     <>
       {check && <span className="oc-dropdown-check" aria-hidden="true" />}
-      {icon != null && <span className="oc-dropdown-icon" aria-hidden="true">{webiconNode(icon)}</span>}
-      {children}
+      {icon != null && <span className={cx("oc-dropdown-icon", iconTone && `oc-dropdown-icon--${iconTone}`)} aria-hidden="true">{webiconNode(icon)}</span>}
+      {description != null ? <span className="oc-dropdown-text"><span>{children}</span><span className="oc-dropdown-desc">{description}</span></span> : children}
       {hint != null && <span className="oc-dropdown-hint">{hint}</span>}
     </>
   );

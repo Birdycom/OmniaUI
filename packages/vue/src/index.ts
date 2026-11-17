@@ -522,7 +522,7 @@ export type { TypePickerOption, TypePickerCategory } from './blocks/OcBlockTypeP
 export { useToast } from './composables/useToast'
 export type { ToastItem, ToastOptions, ToastVariant } from './composables/useToast'
 export { useUid } from './composables/useUid'
-export { addWebicons, getWebicon, hasWebicon, registerWebicons } from './webicons'
+export { addWebicons, getWebicon, hasWebicon, languageFlag, registerWebicons } from './webicons'
 export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './webicons'
 
 /** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */
