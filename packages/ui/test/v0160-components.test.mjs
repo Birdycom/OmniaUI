@@ -104,8 +104,9 @@ test("mode badge, accent card, code plate: fixed mode colors, two parts for both
 
 test("sidebar meta: tooltip only when collapsed, brand and copyright hidden there", () => {
   const css = parts[5][1];
-  assert.match(css, /\.oc-sidebar:not\(\.oc-sidebar--collapsed\) \.oc-sidebar-meta\.oc-tooltip::after \{ content: none; \}/);
-  assert.match(css, /\.oc-sidebar--collapsed \.oc-sidebar-meta :is\(\.oc-sidebar-meta__brand, \.oc-sidebar-meta__copy\) \{[^}]*clip-path: inset\(50%\);/);
+  // 0.17.0: an explicitly collapsed line (--collapsed) keeps its tooltip inside an open sidebar
+  assert.match(css, /\.oc-sidebar:not\(\.oc-sidebar--collapsed\) \.oc-sidebar-meta\.oc-tooltip:not\(\.oc-sidebar-meta--collapsed\)::after \{ content: none; \}/);
+  assert.match(css, /\.oc-sidebar--collapsed \.oc-sidebar-meta :is\(\.oc-sidebar-meta__brand, \.oc-sidebar-meta__copy\),\s*\.oc-sidebar-meta--collapsed :is\(\.oc-sidebar-meta__brand, \.oc-sidebar-meta__copy\) \{[^}]*clip-path: inset\(50%\);/);
   assert.match(css, /\.oc-sidebar-meta__copy \{[^}]*text-overflow: ellipsis;/);
 });
 
