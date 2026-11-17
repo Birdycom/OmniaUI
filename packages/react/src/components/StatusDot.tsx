@@ -49,3 +49,31 @@ export const Status = forwardRef<HTMLParagraphElement, StatusProps>(function Sta
     </p>
   );
 });
+
+export type SaveState = "saving" | "saved" | "dirty" | "error" | "offline";
+const SAVE_TONE: Record<SaveState, StatusTone> = { saving: "working", saved: "done", dirty: "waiting", error: "error", offline: "idle" };
+const SAVE_EN: Record<SaveState, string> = { saving: "Saving…", saved: "Saved", dirty: "Unsaved changes", error: "Not saved", offline: "Offline: changes are kept on this device" };
+
+export interface SaveStatusProps extends Omit<StatusProps, "tone" | "children"> {
+  /** saving (pulsing dot) | saved | dirty (changes not saved yet) | error | offline. */
+  state: SaveState;
+  /** Texts in another language (any subset). */
+  labels?: Partial<Record<SaveState, string>>;
+  /** Time of the last save, shown on the right as "12:04" (when there is no `meta`). */
+  savedAt?: Date | string | number;
+}
+
+/** `.oc-status` for an editor (0.17.0): the save state in words with its dot, announced politely to a screen reader. */
+export const SaveStatus = forwardRef<HTMLParagraphElement, SaveStatusProps>(function SaveStatus(
+  { state, labels, savedAt, meta, ...rest },
+  ref,
+) {
+  const time = savedAt != null && meta == null
+    ? new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(new Date(savedAt))
+    : meta;
+  return (
+    <Status ref={ref} tone={SAVE_TONE[state]} role="status" aria-live="polite" data-state={state} meta={time} {...rest}>
+      {labels?.[state] ?? SAVE_EN[state]}
+    </Status>
+  );
+});

@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown -> answer tiles
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown -> answer tiles -> save status
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -17,6 +17,7 @@ import OcDataTable from '../src/components/OcDataTable.vue'
 import OcColorField from '../src/components/OcColorField.vue'
 import OcCountdown from '../src/components/OcCountdown.vue'
 import OcBlockStepView from '../src/blocks/OcBlockStepView.vue'
+import OcSaveStatus from '../src/components/OcSaveStatus.vue'
 import { contrastRatio, languageFlag, pickOnColor } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -164,5 +165,14 @@ describe('0.17.0 answer tiles', () => {
     expect(w.findAll('.oc-radio-item--card').map((c) => c.attributes('data-result'))).toEqual([undefined, 'correct', 'wrong'])
     expect(w.find('.fb').exists()).toBe(true)
     expect(w.find('.oc-block-step-view-send').exists()).toBe(false)
+  })
+})
+
+describe('0.17.0 save status', () => {
+  it('maps the state to a dot and words', () => {
+    const w = mount(OcSaveStatus, { props: { state: 'dirty' } })
+    expect(w.attributes('aria-live')).toBe('polite')
+    expect(w.find('.oc-status-dot').classes()).toContain('oc-status-dot--waiting')
+    expect(w.text()).toBe('Unsaved changes')
   })
 })

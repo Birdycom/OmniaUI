@@ -1,7 +1,7 @@
 <?php
 
 // File: tests/V0170Test.php
-// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG -> data table labels, view, pagination, bulk -> alert alarm -> countdown
+// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG -> data table labels, view, pagination, bulk -> alert alarm -> countdown -> save status
 // Components and options of 0.17.0: Blade renders the same classes as the HTML snippets.
 
 declare(strict_types=1);
@@ -88,5 +88,21 @@ class V0170Test extends TestCase
         $this->assertStringContainsString('<div class="oc-alert-actions"><button type="button">Seen</button></div>', $html);
         $plain = $this->render('<x-oc::alert title="Saved">Done</x-oc::alert>');
         $this->assertStringNotContainsString('oc-alert-body', $plain);
+    }
+
+    public function test_countdown(): void
+    {
+        $html = $this->render('<x-oc::countdown :seconds="90" :total="300" variant="pill" bar label="Round ends in" />');
+        $this->assertElement($html, 'div', 'oc-countdown oc-countdown--pill oc-countdown--bar', ['role' => 'timer', 'aria-label' => 'Round ends in', 'data-oc-countdown-seconds' => '90', 'data-oc-countdown-total' => '300']);
+        $this->assertElement($html, 'b', 'oc-countdown-time', [], '1:30');
+    }
+
+    public function test_save_status(): void
+    {
+        $html = $this->render('<x-oc::save-status state="saved" saved-at="2026-11-17 12:04:00" />');
+        $this->assertElement($html, 'p', 'oc-status', ['role' => 'status', 'aria-live' => 'polite', 'data-state' => 'saved']);
+        $this->assertStringContainsString('oc-status-dot--done', $html);
+        $this->assertElement($html, 'span', 'oc-status__meta', [], '12:04');
+        $this->assertElement($html, 'span', 'oc-status__text', [], 'Saved');
     }
 }

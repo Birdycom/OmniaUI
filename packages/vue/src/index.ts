@@ -135,6 +135,7 @@ import OcReading from './components/OcReading.vue'
 import OcRecoveryCodes from './components/OcRecoveryCodes.vue'
 import OcResult from './components/OcResult.vue'
 import OcRibbon from './components/OcRibbon.vue'
+import OcSaveStatus from './components/OcSaveStatus.vue'
 import OcScrollArea from './components/OcScrollArea.vue'
 import OcSegmented from './components/OcSegmented.vue'
 import OcSelect from './components/OcSelect.vue'
@@ -364,6 +365,7 @@ export {
   OcRecoveryCodes,
   OcResult,
   OcRibbon,
+  OcSaveStatus,
   OcScrollArea,
   OcSegmented,
   OcSelect,
@@ -664,6 +666,7 @@ export const components: Record<string, Component> = {
   OcRecoveryCodes,
   OcResult,
   OcRibbon,
+  OcSaveStatus,
   OcScrollArea,
   OcSegmented,
   OcSelect,

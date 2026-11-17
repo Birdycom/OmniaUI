@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -21,6 +21,7 @@ import { SidebarMenuButton } from "../src/components/Sidebar";
 import { Alert } from "../src/components/Alert";
 import { Countdown } from "../src/components/Countdown";
 import { BlockStepView } from "../src/blocks/BlockStepView";
+import { SaveStatus } from "../src/components/StatusDot";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -330,5 +331,17 @@ describe("0.17.0 answer tiles", () => {
     expect(cards[1].textContent).toContain("Correct");
     expect(container.querySelector(".fb")!.textContent).toBe("Not quite");
     expect(container.querySelector(".oc-block-step-view-send")).toBeNull();
+  });
+});
+
+describe("0.17.0 save status", () => {
+  it("maps the state to a dot and words, polite live region, own labels", () => {
+    const { container } = render(<><SaveStatus state="saving" /><SaveStatus state="error" labels={{ error: "Niet bewaard" }} /></>);
+    const [a, b] = container.querySelectorAll(".oc-status");
+    expect(a.getAttribute("aria-live")).toBe("polite");
+    expect(a.querySelector(".oc-status-dot")!.className).toContain("oc-status-dot--working");
+    expect(a.textContent).toBe("Saving…");
+    expect(b.querySelector(".oc-status-dot")!.className).toContain("oc-status-dot--error");
+    expect(b.textContent).toBe("Niet bewaard");
   });
 });
