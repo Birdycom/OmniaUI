@@ -1,4 +1,4 @@
-/*! OmniaUI Pro v0.16.1 - commercial software, NOT open source and NOT under the MIT license.
+/*! OmniaUI Pro v0.16.2 - commercial software, NOT open source and NOT under the MIT license.
    Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
    Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro). */
 /* File: packages/pro/src/pro.css
@@ -2109,14 +2109,18 @@
 .oc-mega-trigger:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 
 .oc-mega {
+  /* Under the header, centred on it, and never past the edge of the window: with position-area the panel gets the room
+     between the header and the window edge (max-block-size: 100%), and it opens above the header when there is more
+     room there (a header low on the page). */
   position-anchor: --oc-mega-header;
+  position-area: bottom;
+  position-try-fallbacks: flip-block;
+  position-try-order: most-block-size;
+  justify-self: anchor-center;
   inset: auto;
-  inset-block-start: anchor(bottom);
-  inset-inline-start: anchor(center);
-  translate: -50% 0.5rem;
   inline-size: min(58rem, calc(100vw - 1.5rem));
-  max-block-size: calc(100dvh - 6rem);
-  margin: 0;
+  max-block-size: calc(100% - 1rem);
+  margin: 0.5rem 0;
   padding: 1.25rem;
   overflow: auto;
   color: var(--oc-foreground);
@@ -2126,7 +2130,7 @@
   box-shadow: 0 30px 60px -30px oklch(from var(--color-black-60) l c h / 0.45);
 }
 @supports not (anchor-name: --oc-a) {
-  .oc-mega { position: fixed; inset-block-start: 4.75rem; inset-inline-start: 50%; }
+  .oc-mega { position: fixed; inset-block-start: 4.75rem; inset-inline-start: 50%; translate: -50% 0; max-block-size: calc(100dvh - 6rem); }
 }
 .oc-mega:popover-open { display: grid; grid-template-columns: minmax(0, 1fr) minmax(13rem, 17rem); gap: 1.25rem; }
 
