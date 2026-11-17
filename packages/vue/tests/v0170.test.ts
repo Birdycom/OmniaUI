@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -11,6 +11,7 @@ import OcOtpInput from '../src/components/OcOtpInput.vue'
 import OcCopyField from '../src/components/OcCopyField.vue'
 import OcBlockTypePicker from '../src/blocks/OcBlockTypePicker.vue'
 import OcBlockRouteSteps from '../src/blocks/OcBlockRouteSteps.vue'
+import OcBlockContentBlocks from '../src/blocks/OcBlockContentBlocks.vue'
 import { languageFlag } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -95,5 +96,20 @@ describe('0.17.0 route steps', () => {
     expect(w.classes()).toContain('oc-block-route-steps--locked')
     expect(w.find('.oc-sortable-row-grip').attributes('disabled')).toBeDefined()
     expect(w.text()).not.toContain('Move up')
+  })
+})
+
+describe('0.17.0 content blocks', () => {
+  it('pinned items show a pin and no move buttons; issues show a count', async () => {
+    const items = [{ id: 'intro', type: 'Intro', pinned: true }, { id: 'text', type: 'Text', issue: 'warning' as const, issues: 1 }, { id: 'photo', type: 'Photo' }]
+    const w = mount(OcBlockContentBlocks, { props: { title: 'Step 1', items } })
+    const rows = w.findAll('.oc-block-content-blocks-item')
+    expect(rows[0].find('.oc-block-content-blocks-pin').exists()).toBe(true)
+    expect(rows[0].find('.oc-sortable-row-grip').exists()).toBe(false)
+    expect(rows[1].find('[aria-label="Move Text up"]').attributes('disabled')).toBeDefined()
+    expect(rows[1].attributes('data-issue')).toBe('warning')
+    expect(rows[1].find('.oc-block-content-blocks-count').attributes('aria-label')).toBe('1 warning')
+    await rows[1].find('[aria-label="Move Text down"]').trigger('click')
+    expect(w.emitted('move')![0]).toEqual(['text', 2])
   })
 })

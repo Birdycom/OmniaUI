@@ -1382,6 +1382,51 @@
 
 /* ---- Drag and keyboard states (set by the script) ---- */
 .oc-block-content-blocks-item.is-dragging { opacity: 0.4; }
+/* 0.17.0: a block with a fixed place (pinned: an intro that stays first, a finish that stays last) shows a pin where
+   the grip is and has no move buttons; data-issue="error" | "warning" colors the card edge (also while closed) and
+   .oc-block-content-blocks-count shows the number of problems in the head. */
+.oc-block-content-blocks-pin {
+  position: absolute;
+  inset-block-start: 0.65rem;
+  inset-inline-start: 0.55rem;
+  z-index: 1;
+  inline-size: 1.5rem;
+  block-size: 1.75rem;
+  color: var(--oc-muted-foreground);
+}
+.oc-block-content-blocks-pin::before {
+  content: "";
+  position: absolute;
+  inset: 0.4rem 0.3rem;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.oc-block-content-blocks-item[data-issue="error"] > .oc-block-content-blocks-card { border-color: var(--oc-destructive); }
+.oc-block-content-blocks-item[data-issue="warning"] > .oc-block-content-blocks-card { border-color: var(--oc-warning); }
+.oc-block-content-blocks-count {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-inline-size: 1.25rem;
+  block-size: 1.25rem;
+  padding-inline: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--oc-destructive-foreground);
+  background: var(--oc-destructive);
+  border-radius: 999px;
+}
+.oc-block-content-blocks-item[data-issue="warning"] .oc-block-content-blocks-count { color: var(--oc-warning-foreground); background: var(--oc-warning); }
+/* A new block dragged in from a drawer (acceptDrop): the same drop line; an empty list shows a dashed drop area. */
+.oc-block-content-blocks-list.is-drop-target:not(:has(> .oc-block-content-blocks-item)) {
+  min-block-size: 4rem;
+  outline: 2px dashed var(--oc-primary);
+  outline-offset: -0.5rem;
+  border-radius: var(--oc-radius);
+}
 .oc-block-content-blocks-item.is-drop-before::before,
 .oc-block-content-blocks-item.is-drop-after::after {
   content: "";

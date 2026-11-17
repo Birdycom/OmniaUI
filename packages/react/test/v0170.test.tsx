@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -12,6 +12,7 @@ import { OtpInput } from "../src/components/OtpInput";
 import { CopyField, groupCode } from "../src/components/CopyField";
 import { BlockTypePicker } from "../src/blocks/BlockTypePicker";
 import { BlockRouteSteps } from "../src/blocks/BlockRouteSteps";
+import { BlockContentBlocks, pinnedKept } from "../src/blocks/BlockContentBlocks";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -164,5 +165,47 @@ describe("0.17.0 route steps", () => {
     expect([...container.querySelectorAll<HTMLButtonElement>(".oc-sortable-row-grip")].every((g) => g.disabled)).toBe(true);
     expect(container.textContent).not.toContain("Move up");
     expect(container.textContent).toContain("Delete");
+  });
+});
+
+describe("0.17.0 content blocks", () => {
+  const items = [
+    { id: "intro", type: "Intro", content: "x", pinned: true },
+    { id: "text", type: "Text", content: "x", issue: "error" as const, issues: 2 },
+    { id: "photo", type: "Photo", content: "x" },
+    { id: "end", type: "Finish", content: "x", pinned: true },
+  ];
+  it("pinnedKept: leading and trailing pinned items keep their place", () => {
+    const ids = (a: string[]) => a.map((id) => ({ id }));
+    expect(pinnedKept(items, ids(["intro", "photo", "text", "end"]))).toBe(true);
+    expect(pinnedKept(items, ids(["photo", "intro", "text", "end"]))).toBe(false);
+    expect(pinnedKept(items, ids(["intro", "text", "photo", "new", "end"]))).toBe(true);
+    expect(pinnedKept(items, ids(["intro", "text", "photo", "end", "new"]))).toBe(false);
+  });
+  it("pinned: a pin, no move buttons; neighbours cannot pass it; issue count in the head", () => {
+    const onMove = vi.fn();
+    const { container } = render(<BlockContentBlocks title="Step 1" items={items} onMove={onMove} />);
+    const rows = container.querySelectorAll(".oc-block-content-blocks-item");
+    expect(rows[0].querySelector(".oc-block-content-blocks-pin")!.getAttribute("aria-label")).toBe("Intro stays in its place");
+    expect(rows[0].querySelector("[aria-label^=\"Move Intro\"]")).toBeNull();
+    const up = rows[1].querySelector<HTMLButtonElement>("[aria-label=\"Move Text up\"]")!;
+    expect(up.disabled).toBe(true);
+    const down = rows[2].querySelector<HTMLButtonElement>("[aria-label=\"Move Photo down\"]")!;
+    expect(down.disabled).toBe(true);
+    fireEvent.click(rows[1].querySelector<HTMLButtonElement>("[aria-label=\"Move Text down\"]")!);
+    expect(onMove).toHaveBeenCalledWith("text", 2);
+    expect(rows[1].getAttribute("data-issue")).toBe("error");
+    expect(rows[1].querySelector(".oc-block-content-blocks-count")!.getAttribute("aria-label")).toBe("2 errors");
+  });
+  it("a block dragged in from a drawer is dropped at the line", () => {
+    const onDropNew = vi.fn();
+    const { container } = render(<BlockContentBlocks title="Step 1" items={items} acceptDrop="application/x-block" onDropNew={onDropNew} />);
+    const row = container.querySelectorAll<HTMLElement>(".oc-block-content-blocks-item")[2];
+    row.getBoundingClientRect = () => ({ top: 0, height: 40, bottom: 40, left: 0, right: 100, width: 100, x: 0, y: 0, toJSON: () => ({}) });
+    const dataTransfer = { types: ["application/x-block"], getData: () => "quiz", dropEffect: "copy" };
+    fireEvent.dragOver(row, { dataTransfer, clientY: 5 });
+    expect(row.className).toContain("is-drop-before");
+    fireEvent.drop(row, { dataTransfer });
+    expect(onDropNew).toHaveBeenCalledWith("quiz", 2);
   });
 });
