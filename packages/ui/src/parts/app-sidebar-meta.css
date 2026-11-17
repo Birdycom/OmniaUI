@@ -1,5 +1,6 @@
 /* File: packages/ui/src/parts/app-sidebar-meta.css
    Map: meta line (brand, version, copyright) -> collapsed sidebar (only the version, the full line as a tooltip)
+        -> --wrap (copyright on its own line) -> --collapsed (the collapsed look outside .oc-sidebar)
    Sidebar meta: a ready-made small line at the foot of an app sidebar: "App 1 2.4.0 · (c) 2026 Company 1". The brand
    never shortens, the copyright part ends in an ellipsis when the sidebar is narrow. In a collapsed sidebar
    (.oc-sidebar--collapsed) only the version stays, and the whole line shows as a tooltip (data-tooltip) on hover and on
@@ -26,11 +27,14 @@
 .oc-sidebar-meta__copy::before { content: "\00b7"; margin-inline-end: 0.35rem; }
 .oc-sidebar-meta:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 /* Open sidebar: the whole line is visible, so no tooltip. */
-.oc-sidebar:not(.oc-sidebar--collapsed) .oc-sidebar-meta.oc-tooltip::after { content: none; }
+.oc-sidebar:not(.oc-sidebar--collapsed) .oc-sidebar-meta.oc-tooltip:not(.oc-sidebar-meta--collapsed)::after { content: none; }
 
 /* Collapsed: only the version, centred. */
-.oc-sidebar--collapsed .oc-sidebar-meta { justify-content: center; padding-inline: 0; }
-.oc-sidebar--collapsed .oc-sidebar-meta :is(.oc-sidebar-meta__brand, .oc-sidebar-meta__copy) {
+/* --collapsed (0.17.0): the same look for a rail that is not an .oc-sidebar (set it from your own state). */
+.oc-sidebar--collapsed .oc-sidebar-meta,
+.oc-sidebar-meta.oc-sidebar-meta--collapsed { justify-content: center; padding-inline: 0; }
+.oc-sidebar--collapsed .oc-sidebar-meta :is(.oc-sidebar-meta__brand, .oc-sidebar-meta__copy),
+.oc-sidebar-meta--collapsed :is(.oc-sidebar-meta__brand, .oc-sidebar-meta__copy) {
   position: absolute;
   inline-size: 1px;
   block-size: 1px;
@@ -38,3 +42,10 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* --wrap (0.17.0): for a narrow rail. Brand and version on the first line, the copyright on its own second line, whole
+   (no dot, no ellipsis). Everything is visible, so no tooltip unless the line is collapsed. */
+.oc-sidebar-meta--wrap { flex-wrap: wrap; row-gap: 0; }
+.oc-sidebar-meta--wrap .oc-sidebar-meta__copy { flex-basis: 100%; overflow: visible; white-space: normal; }
+.oc-sidebar-meta--wrap .oc-sidebar-meta__copy::before { content: none; }
+.oc-sidebar-meta--wrap.oc-tooltip:not(.oc-sidebar-meta--collapsed, .oc-sidebar--collapsed *)::after { content: none; }

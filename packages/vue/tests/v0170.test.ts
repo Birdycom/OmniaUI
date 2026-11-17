@@ -1,10 +1,11 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import OcLanguageMenu from '../src/components/OcLanguageMenu.vue'
 import OcDropdownItem from '../src/components/OcDropdownItem.vue'
+import OcSidebarMeta from '../src/components/OcSidebarMeta.vue'
 import { languageFlag } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -29,5 +30,12 @@ describe('0.17.0 dropdown item', () => {
     expect(w.find('.oc-dropdown-text > span').text()).toBe('Label')
     expect(w.find('.oc-dropdown-desc').text()).toBe('Second line')
     expect(mount(OcDropdownItem, { slots: { default: 'Edit' } }).find('.oc-dropdown-text').exists()).toBe(false)
+  })
+})
+
+describe('0.17.0 sidebar meta', () => {
+  it('wrap and collapsed add their modifiers', () => {
+    expect(mount(OcSidebarMeta, { props: { wrap: true, version: '1' } }).classes()).toContain('oc-sidebar-meta--wrap')
+    expect(mount(OcSidebarMeta, { props: { collapsed: true, version: '1' } }).classes()).toContain('oc-sidebar-meta--collapsed')
   })
 })

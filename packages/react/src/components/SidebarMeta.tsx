@@ -12,16 +12,20 @@ export interface SidebarMetaProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   version?: string;
   /** Copyright text, e.g. "© 2026 Company 1". */
   copyright?: string;
+  /** Two lines: brand + version, then the copyright (for a narrow rail). */
+  wrap?: boolean;
+  /** The collapsed look (only the version, the line as a tooltip) outside a collapsed `.oc-sidebar`. */
+  collapsed?: boolean;
 }
 
 /** `.oc-sidebar-meta` in `<Sidebar footer={…}>`. */
 export const SidebarMeta = forwardRef<HTMLDivElement, SidebarMetaProps>(function SidebarMeta(
-  { brand, version, copyright, className, ...rest },
+  { brand, version, copyright, wrap, collapsed, className, ...rest },
   ref,
 ) {
   const line = [[brand, version].filter(Boolean).join(" "), copyright].filter(Boolean).join(" · ");
   return (
-    <div ref={ref} className={cx("oc-sidebar-meta oc-tooltip oc-tooltip--right", className)} data-tooltip={line} tabIndex={0} {...rest}>
+    <div ref={ref} className={cx("oc-sidebar-meta oc-tooltip oc-tooltip--right", wrap && "oc-sidebar-meta--wrap", collapsed && "oc-sidebar-meta--collapsed", className)} data-tooltip={line} tabIndex={0} {...rest}>
       {brand && <span className="oc-sidebar-meta__brand">{brand}</span>}
       {version && <span className="oc-sidebar-meta__version">{version}</span>}
       {copyright && <span className="oc-sidebar-meta__copy">{copyright}</span>}

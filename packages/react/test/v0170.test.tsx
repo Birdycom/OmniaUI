@@ -1,11 +1,12 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed
 
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { languageFlag } from "../src/components/Webicon";
 import { LanguageMenu } from "../src/components/LanguageMenu";
 import { DropdownItem } from "../src/components/Dropdown";
+import { SidebarMeta } from "../src/components/SidebarMeta";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -41,5 +42,14 @@ describe("0.17.0 dropdown item", () => {
   it("without description the label stays a plain text node", () => {
     const { container } = render(<DropdownItem>Edit</DropdownItem>);
     expect(container.querySelector(".oc-dropdown-text")).toBeNull();
+  });
+});
+
+describe("0.17.0 sidebar meta", () => {
+  it("wrap and collapsed add their modifiers", () => {
+    const { container } = render(<><SidebarMeta wrap brand="App 1" version="2.4.0" copyright="© 2026 Company 1" /><SidebarMeta collapsed version="2.4.0" /></>);
+    const [a, b] = container.querySelectorAll(".oc-sidebar-meta");
+    expect(a.className).toBe("oc-sidebar-meta oc-tooltip oc-tooltip--right oc-sidebar-meta--wrap");
+    expect(b.className).toBe("oc-sidebar-meta oc-tooltip oc-tooltip--right oc-sidebar-meta--collapsed");
   });
 });
