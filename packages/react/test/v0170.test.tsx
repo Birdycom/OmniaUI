@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -11,6 +11,7 @@ import { FormSection } from "../src/components/FormSection";
 import { OtpInput } from "../src/components/OtpInput";
 import { CopyField, groupCode } from "../src/components/CopyField";
 import { BlockTypePicker } from "../src/blocks/BlockTypePicker";
+import { BlockRouteSteps } from "../src/blocks/BlockRouteSteps";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -140,5 +141,28 @@ describe("0.17.0 type picker action mode", () => {
     fireEvent.keyDown(items[2], { key: "ArrowRight" });
     expect(document.activeElement).toBe(items[0]);
     expect(onPick).not.toHaveBeenCalled();
+  });
+});
+
+describe("0.17.0 route steps", () => {
+  const steps = [
+    { id: "a", name: "Gate", status: "2 problems", statusTone: "destructive" as const, statusTooltip: "No location. No photo.", badges: [<span key="c" className="oc-badge">Counts</span>, <span key="t" className="oc-badge">Team</span>] },
+    { id: "b", name: "Clock", status: "Ready", statusTone: "success" as const },
+  ];
+  it("status with tooltip, red tone and badges", () => {
+    const { container } = render(<BlockRouteSteps title="Steps" steps={steps} search={false} onMove={() => {}} />);
+    const tip = container.querySelector(".oc-block-route-steps-status.oc-tooltip")!;
+    expect(tip.getAttribute("data-tooltip")).toBe("No location. No photo.");
+    expect(tip.getAttribute("tabindex")).toBe("0");
+    expect(tip.querySelector(".oc-badge--destructive")!.textContent).toBe("2 problems");
+    expect(container.querySelectorAll(".oc-block-route-steps-badges .oc-badge")).toHaveLength(2);
+  });
+  it("locked: grips disabled, no move items, a lock line", () => {
+    const { container } = render(<BlockRouteSteps title="Steps" steps={steps} search={false} locked onMove={() => {}} onRemove={() => {}} />);
+    expect(container.querySelector(".oc-block-route-steps")!.className).toContain("oc-block-route-steps--locked");
+    expect(container.querySelector(".oc-block-route-steps-lock")!.textContent).toBe("Order locked");
+    expect([...container.querySelectorAll<HTMLButtonElement>(".oc-sortable-row-grip")].every((g) => g.disabled)).toBe(true);
+    expect(container.textContent).not.toContain("Move up");
+    expect(container.textContent).toContain("Delete");
   });
 });

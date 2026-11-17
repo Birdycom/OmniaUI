@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -10,6 +10,7 @@ import OcFormSection from '../src/components/OcFormSection.vue'
 import OcOtpInput from '../src/components/OcOtpInput.vue'
 import OcCopyField from '../src/components/OcCopyField.vue'
 import OcBlockTypePicker from '../src/blocks/OcBlockTypePicker.vue'
+import OcBlockRouteSteps from '../src/blocks/OcBlockRouteSteps.vue'
 import { languageFlag } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -82,5 +83,17 @@ describe('0.17.0 type picker action mode', () => {
     expect(photo.attributes('aria-disabled')).toBe('true')
     expect(photo.find('.oc-block-type-picker-reason').text()).toBe('One photo per step')
     expect(text.attributes('draggable')).toBe('true')
+  })
+})
+
+describe('0.17.0 route steps', () => {
+  it('status tooltip, badges and locked', () => {
+    const steps = [{ id: 'a', name: 'Gate', status: '2 problems', statusTone: 'destructive' as const, statusTooltip: 'No location', badges: [{ label: 'Counts' }, { label: 'Team', tone: 'info' as const }] }]
+    const w = mount(OcBlockRouteSteps, { props: { title: 'Steps', steps, search: false, locked: true } })
+    expect(w.find('.oc-block-route-steps-status.oc-tooltip').attributes('data-tooltip')).toBe('No location')
+    expect(w.findAll('.oc-block-route-steps-badges .oc-badge')).toHaveLength(2)
+    expect(w.classes()).toContain('oc-block-route-steps--locked')
+    expect(w.find('.oc-sortable-row-grip').attributes('disabled')).toBeDefined()
+    expect(w.text()).not.toContain('Move up')
   })
 })

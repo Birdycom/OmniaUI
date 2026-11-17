@@ -18,15 +18,23 @@ export interface RouteStep {
   icon?: string
   color?: string
   status?: string
-  statusTone?: 'success' | 'warning' | 'outline' | 'secondary' | 'info'
+  statusTone?: 'success' | 'warning' | 'destructive' | 'outline' | 'secondary' | 'info'
+  /** Tooltip on the status (the messages behind it); the status becomes focusable. */
+  statusTooltip?: string
+  /** Small badges under the name. */
+  badges?: { label: string; tone?: 'success' | 'warning' | 'destructive' | 'outline' | 'secondary' | 'info' }[]
 }
 export interface RouteStepsKind {
   value: string
   label: string
 }
 const props = withDefaults(
-  defineProps<{ title: string; count?: string; steps: RouteStep[]; selected?: string; search?: boolean; kinds?: RouteStepsKind[]; actions?: boolean; searchLabel?: string; emptyText?: string }>(),
-  { search: true, kinds: () => [], actions: true, searchLabel: 'Search steps', emptyText: 'No step matches your search.' },
+  defineProps<{
+    title: string; count?: string; steps: RouteStep[]; selected?: string; search?: boolean; kinds?: RouteStepsKind[]; actions?: boolean; searchLabel?: string; emptyText?: string
+    /** The order cannot change now: no grips, no dragging, no move items; a lock line in the head. */
+    locked?: boolean; lockedLabel?: string
+  }>(),
+  { search: true, kinds: () => [], actions: true, searchLabel: 'Search steps', emptyText: 'No step matches your search.', lockedLabel: 'Order locked' },
 )
 const emit = defineEmits<{ select: [id: string]; move: [id: string, toIndex: number]; duplicate: [id: string]; remove: [id: string] }>()
 const titleId = useUid('oc-rsteps')
@@ -94,10 +102,11 @@ function hideMenu(e: MouseEvent) {
 </script>
 
 <template>
-  <section class="oc-block-route-steps" :aria-labelledby="titleId">
+  <section :class="['oc-block-route-steps', locked && 'oc-block-route-steps--locked']" :aria-labelledby="titleId">
     <div class="oc-block-route-steps-head">
       <h2 :id="titleId" class="oc-block-route-steps-title">{{ title }}</h2>
       <span v-if="count" class="oc-block-route-steps-count">{{ count }}</span>
+      <span v-if="locked" class="oc-block-route-steps-lock">{{ lockedLabel }}</span>
     </div>
     <div v-if="search || kinds.length" class="oc-block-route-steps-tools">
       <div v-if="search" class="oc-input-group oc-input-group--affix">
@@ -111,12 +120,12 @@ function hideMenu(e: MouseEvent) {
     <ol ref="list" class="oc-block-route-steps-list" aria-label="Steps in route order" @drop="onDrop">
       <li
         v-for="(s, i) in steps" :key="s.id" :data-id="s.id" :data-kind="s.kind"
-        :class="['oc-block-route-steps-item', !visible(s) && 'is-filtered', rowClass(s.id)]" :draggable="grabbed === s.id"
+        :class="['oc-block-route-steps-item', !visible(s) && 'is-filtered', rowClass(s.id)]" :draggable="!locked && grabbed === s.id"
         @dragstart="(e: DragEvent) => { e.dataTransfer?.setData('text/plain', s.id); drag = { id: s.id } }"
         @dragover="(e: DragEvent) => onDragOver(e, s)" @dragend="grabbed = null; drag = null" @pointerup="() => { if (!drag) grabbed = null }"
       >
         <button
-          class="oc-sortable-row-grip" type="button" :aria-label="`Move ${s.name}`" :aria-pressed="picked === s.id"
+          class="oc-sortable-row-grip" type="button" :aria-label="`Move ${s.name}`" :aria-pressed="picked === s.id" :disabled="locked"
           @pointerdown="grabbed = s.id" @click="picked = picked === s.id ? null : s.id"
           @keydown="(e: KeyboardEvent) => onGripKey(e, s, i)" @blur="onBlur(s.id)"
         ></button>
@@ -126,14 +135,16 @@ function hideMenu(e: MouseEvent) {
           <span class="oc-block-route-steps-text">
             <span class="oc-block-route-steps-name">{{ s.name }}</span>
             <span v-if="s.meta?.length" class="oc-block-route-steps-meta"><span v-for="m in s.meta" :key="m">{{ m }}</span></span>
+            <span v-if="s.badges?.length" class="oc-block-route-steps-badges"><span v-for="b in s.badges" :key="b.label" :class="['oc-badge', b.tone && `oc-badge--${b.tone}`]">{{ b.label }}</span></span>
           </span>
         </button>
-        <span v-if="s.status" :class="['oc-badge', s.statusTone && `oc-badge--${s.statusTone}`, 'oc-block-route-steps-status']">{{ s.status }}</span>
+        <span v-if="s.status && s.statusTooltip" class="oc-block-route-steps-status oc-tooltip oc-tooltip--left" :data-tooltip="s.statusTooltip" tabindex="0"><span :class="['oc-badge', s.statusTone && `oc-badge--${s.statusTone}`]">{{ s.status }}</span></span>
+        <span v-else-if="s.status" :class="['oc-badge', s.statusTone && `oc-badge--${s.statusTone}`, 'oc-block-route-steps-status']">{{ s.status }}</span>
         <template v-if="actions">
           <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" :popovertarget="`${titleId}-menu-${i}`" :aria-label="`Actions for ${s.name}`"><OcWebicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
           <div :id="`${titleId}-menu-${i}`" class="oc-dropdown-menu" popover>
-            <button class="oc-dropdown-item" type="button" :disabled="i === 0" @click="(e) => { hideMenu(e); move(s.id, i - 1) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
-            <button class="oc-dropdown-item" type="button" :disabled="i === steps.length - 1" @click="(e) => { hideMenu(e); move(s.id, i + 1) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+            <button v-if="!locked" class="oc-dropdown-item" type="button" :disabled="i === 0" @click="(e) => { hideMenu(e); move(s.id, i - 1) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+            <button v-if="!locked" class="oc-dropdown-item" type="button" :disabled="i === steps.length - 1" @click="(e) => { hideMenu(e); move(s.id, i + 1) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
             <button class="oc-dropdown-item" type="button" @click="(e) => { hideMenu(e); emit('duplicate', s.id) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
             <div class="oc-dropdown-separator"></div>
             <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" @click="(e) => { hideMenu(e); emit('remove', s.id) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
