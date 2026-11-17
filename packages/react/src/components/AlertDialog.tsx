@@ -26,11 +26,19 @@ export interface AlertDialogProps extends Omit<DialogHTMLAttributes<HTMLDialogEl
   message?: ReactNode;
   /** Secondary + primary buttons (`oc-modal-footer`), e.g. `<ModalClose>`s. */
   footer?: ReactNode;
+  /** A close button (×) in the corner; on by itself when `closeRound` or `closeClassName` is set. */
+  closeButton?: boolean;
+  /** Accessible name of the close button (default "Close"). */
+  closeLabel?: string;
+  /** Round close button (`oc-close--round`). */
+  closeRound?: boolean;
+  /** Extra class on the close button. */
+  closeClassName?: string;
 }
 
 /** Confirmation `<dialog class="oc-modal">` with a status icon. */
 export const AlertDialog = forwardRef<HTMLDialogElement, AlertDialogProps>(function AlertDialog(
-  { open, defaultOpen, onOpenChange, type = "warning", icon, title, message, footer, className, children, ...rest },
+  { open, defaultOpen, onOpenChange, type = "warning", icon, title, message, footer, closeButton, closeLabel = "Close", closeRound, closeClassName, className, children, ...rest },
   forwardedRef,
 ) {
   const inner = useRef<HTMLDialogElement>(null);
@@ -49,6 +57,9 @@ export const AlertDialog = forwardRef<HTMLDialogElement, AlertDialogProps>(funct
     >
       <DialogContext.Provider value={{ close: dlg.close }}>
         <div className={`oc-modal-content oc-modal-content--sm oc-alert-dialog oc-alert-dialog--${type}`}>
+          {(closeButton ?? (closeRound || closeClassName != null)) && (
+            <button className={cx("oc-alert-dialog-close", closeRound && "oc-close--round", closeClassName)} type="button" aria-label={closeLabel} onClick={dlg.close}>&times;</button>
+          )}
           <span className="oc-alert-dialog-icon" aria-hidden="true">{icon ?? GLYPHS[type]}</span>
           <h2 className="oc-modal-title" id={`${id}-title`}>{title}</h2>
           <div className="oc-modal-body" id={`${id}-text`}>{message ?? children}</div>

@@ -147,6 +147,7 @@ export * from "./components/UpgradeBanner";
 export * from "./components/User";
 export * from "./components/VersionBanner";
 export * from "./components/Watermark";
+export * from "./components/Webicon";
 export * from "./blocks/BlockAboutTimeline";
 export * from "./blocks/BlockAppHeader";
 export * from "./blocks/BlockAppShell";

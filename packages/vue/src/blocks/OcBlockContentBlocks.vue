@@ -7,6 +7,7 @@
  */
 import { ref } from 'vue'
 import { useUid } from '../composables/useUid'
+import OcWebicon from '../components/OcWebicon.vue'
 
 export interface ContentBlockItem {
   id: string
@@ -101,15 +102,15 @@ function dropClass(id: string) {
         ></button>
         <details class="oc-block-content-blocks-card" :open="item.open">
           <summary class="oc-block-content-blocks-head">
-            <span class="oc-block-content-blocks-type" :style="item.color ? { '--oc-block-type-color': item.color } : undefined"><iconify-icon v-if="item.icon" :icon="item.icon" aria-hidden="true" />{{ item.type }}</span>
+            <span class="oc-block-content-blocks-type" :style="item.color ? { '--oc-block-type-color': item.color } : undefined"><OcWebicon v-if="item.icon" :name="item.icon" bare fallback="iconify" />{{ item.type }}</span>
             <span v-if="item.peek" class="oc-block-content-blocks-peek">{{ item.peek }}</span>
           </summary>
           <div class="oc-block-content-blocks-body"><slot name="block" :item="item" /></div>
         </details>
         <div class="oc-block-content-blocks-tools">
-          <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" :aria-label="`Move ${item.type} up`" :disabled="i === 0" @click="move(item.id, i - 1)"><iconify-icon icon="mdi:arrow-up" aria-hidden="true" /></button>
-          <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" :aria-label="`Move ${item.type} down`" :disabled="i === items.length - 1" @click="move(item.id, i + 1)"><iconify-icon icon="mdi:arrow-down" aria-hidden="true" /></button>
-          <button v-if="!item.locked" class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="remove" :aria-label="`Remove ${item.type}`" @click="emit('remove', item.id)"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true" /></button>
+          <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" :aria-label="`Move ${item.type} up`" :disabled="i === 0" @click="move(item.id, i - 1)"><OcWebicon name="mdi:arrow-up" bare fallback="iconify" /></button>
+          <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" :aria-label="`Move ${item.type} down`" :disabled="i === items.length - 1" @click="move(item.id, i + 1)"><OcWebicon name="mdi:arrow-down" bare fallback="iconify" /></button>
+          <button v-if="!item.locked" class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="remove" :aria-label="`Remove ${item.type}`" @click="emit('remove', item.id)"><OcWebicon name="mdi:trash-can-outline" bare fallback="iconify" /></button>
         </div>
       </li>
     </ol>

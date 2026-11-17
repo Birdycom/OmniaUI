@@ -1,7 +1,8 @@
 // Same markup as packages/ui/snippets/tint-card.html.
-import { createElement, forwardRef } from "react";
+import { forwardRef } from "react";
 import type { AnchorHTMLAttributes, ReactNode, Ref } from "react";
 import { cx } from "../utils";
+import { Webicon } from "./Webicon";
 
 export type TintCardTone = "primary" | "success" | "warning" | "destructive" | "info" | "muted";
 
@@ -24,7 +25,7 @@ export interface TintCardProps extends Omit<AnchorHTMLAttributes<HTMLElement>, "
 }
 
 const webicon = (icon: ReactNode, className?: string) =>
-  typeof icon === "string" ? createElement("iconify-icon", { icon, className, "aria-hidden": "true" }) : icon;
+  typeof icon === "string" ? <Webicon name={icon} bare fallback="iconify" className={className} /> : icon;
 
 /** Link card tinted in one color, with a large drifting webicon in the corner (`.oc-tint-card`); children = the text.
  *  With `href` the card is an `<a>`, without it an `<article>`. */

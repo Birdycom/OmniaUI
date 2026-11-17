@@ -18,7 +18,7 @@ describe("0.14.1 components", () => {
     expect(card).toHaveAttribute("href", "/delivery");
     expect(card.querySelector("iconify-icon.oc-tint-card__art")).toHaveAttribute("icon", "mdi-light:truck");
     expect(card.querySelector("h3.oc-tint-card__title")).toHaveTextContent("Delivery");
-    expect(card.querySelector(".oc-tint-card__go iconify-icon")).toBeTruthy();
+    expect(card.querySelector(".oc-tint-card__go svg[data-webicon]")).toBeTruthy();
     expect(card.querySelector(".oc-tint-card__text")).toHaveTextContent("Routes on the phone");
     expect(card.querySelector(".oc-tint-card__meta")).toHaveTextContent("12 modules");
   });

@@ -66,7 +66,10 @@ test("sheet options: glass tokens, scrim without blur, fallbacks, inset gap, foo
 test("live frame: inert frames take no pointer, phone and tv bezels keep the ratio", () => {
   const css = read("../src/parts/media-live-frame.css");
   assert.match(css, /\.oc-live-frame > \[inert\] \{ pointer-events: none;/);
-  assert.match(css, /\.oc-live-frame:is\(\.oc-live-frame--phone, \.oc-live-frame--tv\) \{[^}]*box-sizing: content-box;/);
+  assert.match(css, /\.oc-live-frame:is\(\.oc-live-frame--phone, \.oc-live-frame--tv, \.oc-live-frame--laptop\) \{[^}]*box-sizing: content-box;/);
+  // 0.16.1 laptop: a base under the screen (::after) and room for it, so the frame never overflows its column
+  assert.match(css, /\.oc-live-frame--laptop \{[^}]*overflow: visible;/);
+  assert.match(css, /\.oc-live-frame--laptop::after \{[^}]*inset-block-start: calc\(100% \+ var\(--oc-live-bezel-size\)\);/);
   assert.match(css, /\.oc-live-frame--phone \{[^}]*inline-size: min\(calc\(100% - 2 \* var\(--oc-live-bezel-size\)\), var\(--oc-live-phone-max\)\);/);
 });
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // File: packages/ui/bin/omniaui.mjs
 // OmniaUI CLI — copy components and blocks into your project (css | vue | react | blade), list the registry.
-// Map: args -> commands (add | list | copy-js | help | version) -> lib/add.mjs (lib/catalog.mjs, lib/project.mjs), lib/copy-js.mjs
+// Map: args -> commands (add | list | copy-js | webicons | help | version) -> lib/add.mjs (lib/catalog.mjs, lib/project.mjs),
+//      lib/copy-js.mjs, lib/webicons.mjs
 // Author: Serge Cools | Framework: OmniaUI (on OmniaCSS)
 //
 // These commands used to be "omniacss add/list" (moved here in October 2026). The CSS build stays in
@@ -10,6 +11,7 @@
 import { parseArgs } from "node:util";
 import { cmdAdd, cmdList } from "./lib/add.mjs";
 import { cmdCopyJs } from "./lib/copy-js.mjs";
+import { cmdWebicons } from "./lib/webicons.mjs";
 import { readJson } from "./lib/project.mjs";
 
 const HELP = `
@@ -21,6 +23,10 @@ OmniaUI CLI
   omniaui list [blocks|components] [-f vue]  show what can be added in a flavour
   omniaui copy-js [name...] [--to public/js]  copy the scripts (data table, carousel, barcode; Pro: spotlight, ecosystem map,
                                         infinite carousel, barcode maker …) as oc-<name>.js, which start on their own from a script tag
+  omniaui webicons [name...] [--scan src] [--out src/webicons.json]
+                                        a small JSON file with only the webicons you use (mdi:, mdi-light:, material-symbols:,
+                                        svg-spinners:, flag:, vscode-icons:), read from @iconify-json/<set> in node_modules;
+                                        no network. React/Vue: addWebicons(json). Blade: config omniacss.webicons.files
 
 Options:
   -f, --framework <fw>   css | vue | react | blade (default: "framework" in omnia.config.json, else detected
@@ -44,6 +50,8 @@ async function main() {
     allowPositionals: true,
     options: {
       to: { type: "string" },
+      out: { type: "string", short: "o" },
+      scan: { type: "string" },
       dir: { type: "string" },
       framework: { type: "string", short: "f" },
       kind: { type: "string", short: "k" },
@@ -64,6 +72,7 @@ async function main() {
     case "add": return cmdAdd(rest, values);
     case "list": return cmdList(rest[0], values);
     case "copy-js": return cmdCopyJs(rest, values);
+    case "webicons": return cmdWebicons(rest, values);
     default: console.log(HELP);
   }
 }

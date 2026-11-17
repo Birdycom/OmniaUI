@@ -1,7 +1,8 @@
 // File: packages/react/src/blocks/BlockContentBlocks.tsx | Map: types -> BlockContentBlocks (bar -> ol of cards: grip, details head + body, tools -> add row -> live status)
-import { createElement, forwardRef, useId, useRef, useState } from "react";
+import { forwardRef, useId, useRef, useState } from "react";
 import type { CSSProperties, DragEvent, HTMLAttributes, KeyboardEvent, ReactNode } from "react";
 import { cx, textOf } from "../utils";
+import { webiconNode } from "../components/Webicon";
 
 export interface ContentBlockItem {
   id: string;
@@ -57,7 +58,7 @@ export interface BlockContentBlocksProps extends Omit<HTMLAttributes<HTMLElement
   labels?: Partial<ContentBlocksLabels>;
 }
 
-const node = (i: ReactNode) => (typeof i === "string" && i.includes(":") ? createElement("iconify-icon", { icon: i, "aria-hidden": "true" }) : i);
+const node = (i: ReactNode) => webiconNode(i);
 
 /** `.oc-block-content-blocks`: editor column of content blocks you open, move, drag and remove. */
 export const BlockContentBlocks = forwardRef<HTMLElement, BlockContentBlocksProps>(function BlockContentBlocks(

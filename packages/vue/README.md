@@ -34,6 +34,7 @@ const toast = useToast()
 - Props map to modifiers: `variant`, `size` (sm / md / lg), booleans for flags. Slots map to the snippet slots.
 - `v-model` on input, select, switch, checkbox, segmented, tabs, tag input, OTP, color field, dropzone; `v-model:open` on modal, alert dialog, sheet, collapsible, wizard.
 - Dialogs use `<dialog>` + `showModal()`, menus and popovers the `popover` attribute, accordions `<details name>`.
+- Icons by name: `<OcWebicon name="mdi:home" size="md" />` draws the OmniaCSS webicons (MDI, MDI Light, Material Symbols, SVG Spinners, Flags, VSCode Icons) as inline SVG, without a network call. Register the icons you use once: `npx omniaui webicons --scan src --out src/webicons.json`, then `addWebicons(icons)` (or `registerWebicons(set)` with an `@iconify-json/<set>` file).
 - Full prop reference: the Vue page in the documentation site (`ui/frameworks-vue.html`).
 
 ## Own the code

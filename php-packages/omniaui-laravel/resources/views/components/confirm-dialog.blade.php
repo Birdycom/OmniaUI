@@ -3,7 +3,8 @@
      command="show-modal" commandfor="{id}". The confirm button submits; with method="dialog" it just closes,
      with action + method="post" it posts the form (CSRF added).
      Props: id (required), type (success|error|warning|info|question, default error), title, icon, cancel, confirm, discard (labels),
-            word (typed confirmation, e.g. DELETE), action, method (dialog|post|get), name (confirm button value name).
+            word (typed confirmation, e.g. DELETE), action, method (dialog|post|get), name (confirm button value name),
+            close-round (round close button), close-class (extra class on it).
      Slot: default = message. --}}
 @props([
     'id',
@@ -16,6 +17,8 @@
     'word' => null,
     'action' => null,
     'method' => 'dialog',
+    'closeRound' => false,
+    'closeClass' => null,
 ])
 @php
     $glyph = $icon ?? match ($type) { 'success' => '✓', 'error' => '×', 'question' => '?', 'info' => 'i', default => '!' };
@@ -23,7 +26,7 @@
 @endphp
 <dialog {{ $attributes->class(['oc-modal'])->merge(['id' => $id, 'closedby' => 'any', 'aria-labelledby' => $id.'-title', 'aria-describedby' => $id.'-text']) }}>
     <div class="oc-modal-content oc-alert-dialog oc-alert-dialog--{{ $type }} oc-alert-dialog--confirm">
-        <button class="oc-alert-dialog-close" type="button" command="close" commandfor="{{ $id }}" aria-label="Close">&times;</button>
+        <button @class(['oc-alert-dialog-close', 'oc-close--round' => $closeRound, $closeClass => $closeClass]) type="button" command="close" commandfor="{{ $id }}" aria-label="Close">&times;</button>
         <span class="oc-alert-dialog-icon" aria-hidden="true">{{ $glyph }}</span>
         <h2 class="oc-modal-title" id="{{ $id }}-title">{{ $title }}</h2>
         <form class="oc-alert-dialog-form" method="{{ $method }}" @if ($action) action="{{ $action }}" @endif>

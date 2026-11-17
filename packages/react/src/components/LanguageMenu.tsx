@@ -6,11 +6,12 @@
 // item is a button and onChange gets the value.
 "use client";
 
-import { createElement, forwardRef, useId } from "react";
+import { forwardRef, useId } from "react";
 import type { ButtonHTMLAttributes, MouseEvent, ReactNode } from "react";
 import { attrs, cx } from "../utils";
 import { useControllable } from "../hooks";
 import { closeMenu } from "./Dropdown";
+import { webiconNode } from "./Webicon";
 
 export interface LanguageMenuOption {
   /** Language code ("nl", "en-GB"); also the lang/hreflang of the item. */
@@ -19,7 +20,7 @@ export interface LanguageMenuOption {
   label: string;
   /** Short code shown in the trigger and at the end of the item (default: the value, upper case). */
   code?: string;
-  /** Flag: a webicon name ("flag:nl-4x3") or any node. */
+  /** Flag: a webicon name ("flag:nl-4x3", drawn as inline SVG; nl, be, fr, de, gb, it and us are built in) or any node. */
   flag?: ReactNode;
   /** Address of the page in this language: the item becomes a link with hreflang. */
   href?: string;
@@ -42,7 +43,7 @@ export interface LanguageMenuProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
   menuClassName?: string;
 }
 
-const flagNode = (flag: ReactNode) => (typeof flag === "string" && flag.includes(":") ? createElement("iconify-icon", { icon: flag, "aria-hidden": "true" }) : flag);
+const flagNode = (flag: ReactNode) => webiconNode(flag);
 const codeOf = (o: LanguageMenuOption) => o.code ?? o.value.toUpperCase();
 
 /** Small globe in currentColor (mdi:web). */

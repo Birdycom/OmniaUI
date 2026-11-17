@@ -16,6 +16,7 @@ import { Button, Modal, ModalClose, ToastProvider, useToast } from "@birdycom/om
 - `ref` is forwarded, rest props are spread, `className` is merged.
 - Dialogs (`Modal`, `AlertDialog`, `Sheet`, `BlockWizardDialog`) sync an `open` prop with the native `<dialog>`; dropdowns and popovers use the native `popover` attribute.
 - Wrapper logic lives in the components: `Command` filtering, `PasswordInput` reveal, `CopyField`, toast queue (`ToastProvider` + `useToast`).
+- Icons by name: `<Webicon name="mdi:home" size="md" />` draws the OmniaCSS webicons (MDI, MDI Light, Material Symbols, SVG Spinners, Flags, VSCode Icons) as inline SVG, without a network call. Register the icons you use once: `npx omniaui webicons --scan src --out src/webicons.json`, then `addWebicons(icons)` (or `registerWebicons(set)` with an `@iconify-json/<set>` file). Components with an icon or flag prop draw it the same way.
 - `src/` is published too: copy a file into your project to own the code. `manifest.json` lists `{ name, kind, file, snippet }` for every item.
 
 MIT

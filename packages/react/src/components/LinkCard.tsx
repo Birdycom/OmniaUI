@@ -2,6 +2,7 @@
 import { forwardRef } from "react";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "./Webicon";
 
 export interface LinkCardProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "title"> {
   title: ReactNode;
@@ -19,7 +20,7 @@ export const LinkCard = forwardRef<HTMLAnchorElement, LinkCardProps>(function Li
 ) {
   return (
     <a ref={ref} className={cx("oc-link-card", accent && `oc-accent--${accent}`, className)} {...rest}>
-      {icon != null && <span className="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">{icon}</span>}
+      {icon != null && <span className="oc-icon-tile oc-icon-tile--sm" aria-hidden="true">{webiconNode(icon)}</span>}
       <span className="oc-link-card__title">{title}</span>
       {children != null && <span className="oc-link-card__text">{children}</span>}
       {more != null && <span className="oc-link-card__more">{more}</span>}

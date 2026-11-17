@@ -1,8 +1,9 @@
 // File: packages/react/src/blocks/BlockTypePicker.tsx | Map: types -> BlockTypePicker (head -> tools: search + category chips -> radio cards -> empty -> foot)
-import { createElement, forwardRef, useId, useState } from "react";
+import { forwardRef, useId, useState } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
 import { textOf } from "../utils";
+import { Webicon } from "../components/Webicon";
 
 export interface TypePickerOption {
   value: string;
@@ -43,7 +44,7 @@ export interface BlockTypePickerProps extends Omit<HTMLAttributes<HTMLElement>, 
   name?: string;
 }
 
-const icon = (name: string) => createElement("iconify-icon", { icon: name });
+const icon = (name: string) => <Webicon name={name} bare fallback="iconify" />;
 
 /** `.oc-block-type-picker`: gallery of content types with a small preview each, picked like radios (click or arrow keys). */
 export const BlockTypePicker = forwardRef<HTMLElement, BlockTypePickerProps>(function BlockTypePicker(

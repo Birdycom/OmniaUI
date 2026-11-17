@@ -3,10 +3,11 @@
 import { forwardRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "./Webicon";
 
 export interface GlassBarItem {
   label: string;
-  /** An <Icon>, an <iconify-icon> or an inline SVG. */
+  /** A webicon name ("mdi:home-outline", drawn as inline SVG), an <Icon> or any node. */
   icon?: ReactNode;
   href?: string;
   current?: boolean;
@@ -29,7 +30,7 @@ export const GlassBar = forwardRef<HTMLElement, GlassBarProps>(function GlassBar
   return (
     <nav ref={ref} className={cx("oc-glass-bar", icons && "oc-glass-bar--icons", className)} aria-label={label} {...rest}>
       {items.map((item, i) => {
-        const content = <>{item.icon}{!icons && <span>{item.label}</span>}</>;
+        const content = <>{webiconNode(item.icon)}{!icons && <span>{item.label}</span>}</>;
         const common = { className: "oc-glass-bar__item", "aria-label": icons ? item.label : undefined };
         return item.href != null ? (
           <a key={i} {...common} href={item.href} aria-current={item.current ? "page" : undefined} onClick={item.onClick}>{content}</a>

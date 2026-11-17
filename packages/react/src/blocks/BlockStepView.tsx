@@ -1,7 +1,8 @@
 // File: packages/react/src/blocks/BlockStepView.tsx | Map: types -> BlockStepView (top -> picture + badges -> title, place, text -> task -> blocks -> question) -> StepViewCountdown
-import { createElement, forwardRef, useId } from "react";
+import { forwardRef, useId } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { Webicon } from "../components/Webicon";
 
 export interface StepViewQuestion {
   kicker?: ReactNode;
@@ -38,7 +39,7 @@ export interface BlockStepViewProps extends Omit<HTMLAttributes<HTMLElement>, "t
   children?: ReactNode;
 }
 
-const icon = (name: string) => createElement("iconify-icon", { icon: name, "aria-hidden": "true" });
+const icon = (name: string) => <Webicon name={name} bare fallback="iconify" />;
 
 /** `.oc-block-step-view`: one step as the visitor sees it, with its content blocks and a question. */
 export const BlockStepView = forwardRef<HTMLElement, BlockStepViewProps>(function BlockStepView(

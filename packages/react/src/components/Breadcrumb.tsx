@@ -1,12 +1,13 @@
 import { forwardRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "./Webicon";
 
 export interface BreadcrumbItemData {
   label: ReactNode;
   /** Omit (or put last) to mark the current page. */
   href?: string;
-  /** Shown before the label: an `<iconify-icon icon="mdi:…" />`, an `<Icon d=… />` or any node. */
+  /** Shown before the label: a webicon name (`"mdi:home-outline"`, drawn as inline SVG), an `<Icon d=… />` or any node. */
   icon?: ReactNode;
 }
 
@@ -25,9 +26,9 @@ export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Brea
     <nav ref={ref} className={cx("oc-breadcrumb", separator === "chevron" && "oc-breadcrumb--chevron", className)} aria-label={ariaLabel} {...rest}>
       {items?.map((item, i) =>
         item.href && i < items.length - 1 ? (
-          <a key={i} className="oc-breadcrumb-item" href={item.href}>{item.icon}{item.label}</a>
+          <a key={i} className="oc-breadcrumb-item" href={item.href}>{webiconNode(item.icon)}{item.label}</a>
         ) : (
-          <span key={i} className="oc-breadcrumb-item" aria-current="page">{item.icon}{item.label}</span>
+          <span key={i} className="oc-breadcrumb-item" aria-current="page">{webiconNode(item.icon)}{item.label}</span>
         ),
       )}
       {children}

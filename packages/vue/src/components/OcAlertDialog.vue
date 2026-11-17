@@ -17,8 +17,15 @@ const props = withDefaults(
     cancelLabel?: string
     /** Variant of the confirm button; defaults to destructive for warning/error. */
     confirmVariant?: 'default' | 'destructive' | 'success'
+    /** A close button (×) in the corner; also shown when closeRound or close-class is set. */
+    closeButton?: boolean
+    closeLabel?: string
+    /** Round close button (.oc-close--round). */
+    closeRound?: boolean
+    /** Extra class on the close button. */
+    closeClass?: string
   }>(),
-  { type: 'warning', confirmLabel: 'Confirm', cancelLabel: 'Cancel' },
+  { type: 'warning', confirmLabel: 'Confirm', cancelLabel: 'Cancel', closeLabel: 'Close' },
 )
 const emit = defineEmits<{ confirm: []; cancel: [] }>()
 const open = defineModel<boolean>('open', { default: false })
@@ -52,6 +59,7 @@ function cancel() {
     @close="onClose"
   >
     <div :class="['oc-modal-content', 'oc-modal-content--sm', 'oc-alert-dialog', `oc-alert-dialog--${type}`]">
+      <button v-if="closeButton || closeRound || closeClass" :class="['oc-alert-dialog-close', closeRound && 'oc-close--round', closeClass]" type="button" :aria-label="closeLabel" @click="cancel">&times;</button>
       <span class="oc-alert-dialog-icon" aria-hidden="true"><slot name="icon">{{ glyphs[type] }}</slot></span>
       <h2 :id="titleId" class="oc-modal-title"><slot name="title">{{ title }}</slot></h2>
       <div :id="textId" class="oc-modal-body"><slot>{{ message }}</slot></div>

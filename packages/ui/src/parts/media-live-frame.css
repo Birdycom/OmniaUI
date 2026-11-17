@@ -40,10 +40,11 @@
    (a preview; give the box an aria-label or a caption so the preview still has a name). */
 .oc-live-frame > [inert] { pointer-events: none; user-select: none; }
 
-/* Device: the page in a phone or a television: a dark bezel with rounded corners around the scaled page. The bezel is
-   the border of a content-box frame, so the page keeps its exact ratio, and overflow: hidden gives the screen its
-   inner corners. Phone: 390 x 844 by default in the wrappers, at most --oc-live-phone-max wide. Color: --oc-live-bezel. */
-.oc-live-frame:is(.oc-live-frame--phone, .oc-live-frame--tv) {
+/* Device: the page in a phone, a television or a laptop: a dark bezel with rounded corners around the scaled page. The
+   bezel is the border of a content-box frame, so the page keeps its exact ratio, and overflow: hidden gives the screen
+   its inner corners. Phone: 390 x 844 by default in the wrappers, at most --oc-live-phone-max wide. Laptop: 1440 x 900
+   by default, see below. Color: --oc-live-bezel. */
+.oc-live-frame:is(.oc-live-frame--phone, .oc-live-frame--tv, .oc-live-frame--laptop) {
   --oc-live-bezel: var(--color-duskblue-90);
   box-sizing: content-box;
   border: var(--oc-live-bezel-size) solid var(--oc-live-bezel);
@@ -61,6 +62,35 @@
   inline-size: calc(100% - 2 * var(--oc-live-bezel-size));
   border-radius: 0.625rem;
 }
+/* Laptop: a thin bezel, square inner corners, and a base under the screen that is a little wider than it (with the notch
+   to open the lid). The base is the ::after of the frame, drawn below it, so this frame does not clip (overflow:
+   visible); the page clips itself. The frame leaves room at both sides and under it for the base, so it never overflows
+   its column. Tokens: --oc-live-base (color), --oc-live-base-h (height), --oc-live-base-over (how far it sticks out). */
+.oc-live-frame--laptop {
+  --oc-live-bezel-size: 0.375rem;
+  --oc-live-base: var(--color-gray-30);
+  --oc-live-base-h: 0.75rem;
+  --oc-live-base-over: 4%;
+  inline-size: calc(100% - 2 * var(--oc-live-bezel-size) - 2 * var(--oc-live-base-over));
+  margin-inline: auto;
+  margin-block-end: var(--oc-live-base-h);
+  overflow: visible;
+  border-radius: var(--oc-live-bezel-size) var(--oc-live-bezel-size) 0 0;
+}
+.oc-live-frame--laptop > :is(iframe, video, img, object, .oc-live-frame__content) { overflow: hidden; }
+.oc-live-frame--laptop::after {
+  content: "";
+  position: absolute;
+  inset-inline: calc(-1 * (var(--oc-live-bezel-size) + var(--oc-live-base-over)));
+  inset-block-start: calc(100% + var(--oc-live-bezel-size));
+  block-size: var(--oc-live-base-h);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  background:
+    linear-gradient(to right, transparent 42%, oklch(from var(--oc-live-base) calc(l - 0.14) c h) 42% 58%, transparent 58%) top / 100% 40% no-repeat,
+    linear-gradient(oklch(from var(--oc-live-base) calc(l + 0.08) c h), oklch(from var(--oc-live-base) calc(l - 0.12) c h));
+  box-shadow: 0 6px 14px -4px oklch(from var(--color-black-60) l c h / 0.3);
+}
 @media (forced-colors: active) {
-  .oc-live-frame:is(.oc-live-frame--phone, .oc-live-frame--tv) { border-color: CanvasText; }
+  .oc-live-frame:is(.oc-live-frame--phone, .oc-live-frame--tv, .oc-live-frame--laptop) { border-color: CanvasText; }
+  .oc-live-frame--laptop::after { background: CanvasText; }
 }

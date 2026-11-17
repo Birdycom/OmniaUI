@@ -1,7 +1,8 @@
 // File: packages/react/src/blocks/BlockRouteProgress.tsx | Map: types -> BlockRouteProgress (head -> progress -> next-step button -> ol of steps)
-import { createElement, forwardRef, useId } from "react";
+import { forwardRef, useId } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "../components/Webicon";
 
 export type RouteProgressState = "todo" | "done" | "wrong" | "current" | "locked";
 
@@ -46,7 +47,7 @@ export interface BlockRouteProgressProps extends Omit<HTMLAttributes<HTMLElement
 }
 
 const node = (i: ReactNode, label?: string) =>
-  typeof i === "string" && i.includes(":") ? createElement("iconify-icon", label ? { icon: i, "aria-label": label } : { icon: i, "aria-hidden": "true" }) : i;
+  webiconNode(i, label);
 
 /** `.oc-block-route-progress`: progress, the next step and every step of a route with its state. */
 export const BlockRouteProgress = forwardRef<HTMLElement, BlockRouteProgressProps>(function BlockRouteProgress(

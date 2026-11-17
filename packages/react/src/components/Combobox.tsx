@@ -5,10 +5,11 @@
 // chosen value in the field; options without an icon line up with the others (CSS).
 "use client";
 
-import { createElement, forwardRef, useId, useMemo, useState } from "react";
+import { forwardRef, useId, useMemo, useState } from "react";
 import type { InputHTMLAttributes, KeyboardEvent, ReactNode } from "react";
 import { cx } from "../utils";
 import { useControllable } from "../hooks";
+import { webiconNode } from "./Webicon";
 
 export interface ComboboxOption {
   value: string;
@@ -33,9 +34,9 @@ export interface ComboboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   wrapperClassName?: string;
 }
 
-/** A webicon name becomes an <iconify-icon>; anything else is drawn as it is. */
+/** A webicon name becomes an inline SVG (<Webicon>; <iconify-icon> for a name only the Iconify runtime knows); anything else is drawn as it is. */
 export function renderIcon(icon: ReactNode): ReactNode {
-  return typeof icon === "string" && icon.includes(":") ? createElement("iconify-icon", { icon, "aria-hidden": "true" }) : icon;
+  return webiconNode(icon);
 }
 
 const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();

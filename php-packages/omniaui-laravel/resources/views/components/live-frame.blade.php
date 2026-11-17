@@ -2,10 +2,10 @@
      OmniaUI live frame: a live page at a virtual size, scaled down to the frame width in pure CSS.
      Props: src (iframe page), title, width (1280), height (720), static (clicks pass through), in-browser-frame (adds
      .oc-browser-frame__view), inert (only to look at: no focus, no clicks, hidden from screen readers), device (phone: 390 x 844
-     unless width/height are given | tv). Slot: content instead of an iframe (<img>, <video> or .oc-live-frame__content). --}}
+     unless width/height are given | tv | laptop: 1440 x 900, with a base). Slot: content instead of an iframe (<img>, <video> or .oc-live-frame__content). --}}
 @props(['src' => null, 'title' => '', 'width' => null, 'height' => null, 'static' => false, 'inBrowserFrame' => false, 'inert' => false, 'device' => null])
-@php($width = $width ?? ($device === 'phone' ? 390 : 1280))
-@php($height = $height ?? ($device === 'phone' ? 844 : 720))
+@php($width = $width ?? ($device === 'phone' ? 390 : ($device === 'laptop' ? 1440 : 1280)))
+@php($height = $height ?? ($device === 'phone' ? 844 : ($device === 'laptop' ? 900 : 720)))
 <div {{ $attributes->class([
     'oc-browser-frame__view' => (bool) $inBrowserFrame,
     'oc-live-frame',

@@ -7,6 +7,7 @@
  */
 import { computed, ref } from 'vue'
 import { useUid } from '../composables/useUid'
+import OcWebicon from '../components/OcWebicon.vue'
 
 export interface RouteStep {
   id: string
@@ -100,7 +101,7 @@ function hideMenu(e: MouseEvent) {
     </div>
     <div v-if="search || kinds.length" class="oc-block-route-steps-tools">
       <div v-if="search" class="oc-input-group oc-input-group--affix">
-        <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify" /></span>
+        <span class="oc-input-addon" aria-hidden="true"><OcWebicon name="mdi:magnify" bare fallback="iconify" /></span>
         <input v-model="query" class="oc-input oc-block-route-steps-search" type="search" :placeholder="searchLabel" :aria-label="searchLabel">
       </div>
       <fieldset v-if="kinds.length" class="oc-chip-filter oc-chip-filter--sm oc-block-route-steps-kinds" aria-label="Kind">
@@ -121,7 +122,7 @@ function hideMenu(e: MouseEvent) {
         ></button>
         <button class="oc-block-route-steps-main" type="button" :aria-current="selected === s.id ? 'true' : undefined" @click="emit('select', s.id)">
           <span v-if="s.numbered !== false" class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"><slot name="thumb" :step="s" /></span>
-          <span v-else class="oc-block-route-steps-thumb" :style="s.color ? { '--oc-step-color': s.color } : undefined"><slot name="thumb" :step="s"><iconify-icon v-if="s.icon" :icon="s.icon" aria-hidden="true" /></slot></span>
+          <span v-else class="oc-block-route-steps-thumb" :style="s.color ? { '--oc-step-color': s.color } : undefined"><slot name="thumb" :step="s"><OcWebicon v-if="s.icon" :name="s.icon" bare fallback="iconify" /></slot></span>
           <span class="oc-block-route-steps-text">
             <span class="oc-block-route-steps-name">{{ s.name }}</span>
             <span v-if="s.meta?.length" class="oc-block-route-steps-meta"><span v-for="m in s.meta" :key="m">{{ m }}</span></span>
@@ -129,13 +130,13 @@ function hideMenu(e: MouseEvent) {
         </button>
         <span v-if="s.status" :class="['oc-badge', s.statusTone && `oc-badge--${s.statusTone}`, 'oc-block-route-steps-status']">{{ s.status }}</span>
         <template v-if="actions">
-          <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" :popovertarget="`${titleId}-menu-${i}`" :aria-label="`Actions for ${s.name}`"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true" /></button>
+          <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" :popovertarget="`${titleId}-menu-${i}`" :aria-label="`Actions for ${s.name}`"><OcWebicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
           <div :id="`${titleId}-menu-${i}`" class="oc-dropdown-menu" popover>
-            <button class="oc-dropdown-item" type="button" :disabled="i === 0" @click="(e) => { hideMenu(e); move(s.id, i - 1) }"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" /></span>Move up</button>
-            <button class="oc-dropdown-item" type="button" :disabled="i === steps.length - 1" @click="(e) => { hideMenu(e); move(s.id, i + 1) }"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" /></span>Move down</button>
-            <button class="oc-dropdown-item" type="button" @click="(e) => { hideMenu(e); emit('duplicate', s.id) }"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" /></span>Duplicate</button>
+            <button class="oc-dropdown-item" type="button" :disabled="i === 0" @click="(e) => { hideMenu(e); move(s.id, i - 1) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+            <button class="oc-dropdown-item" type="button" :disabled="i === steps.length - 1" @click="(e) => { hideMenu(e); move(s.id, i + 1) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+            <button class="oc-dropdown-item" type="button" @click="(e) => { hideMenu(e); emit('duplicate', s.id) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
             <div class="oc-dropdown-separator"></div>
-            <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" @click="(e) => { hideMenu(e); emit('remove', s.id) }"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" /></span>Delete</button>
+            <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" @click="(e) => { hideMenu(e); emit('remove', s.id) }"><span class="oc-dropdown-icon" aria-hidden="true"><OcWebicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
           </div>
         </template>
       </li>

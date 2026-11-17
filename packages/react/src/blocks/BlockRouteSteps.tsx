@@ -1,8 +1,9 @@
 // File: packages/react/src/blocks/BlockRouteSteps.tsx | Map: types -> BlockRouteSteps (head -> tools: search + kind chips -> ol of steps: grip, main, status, menu -> empty -> foot -> live status)
-import { createElement, forwardRef, useId, useRef, useState } from "react";
+import { forwardRef, useId, useRef, useState } from "react";
 import type { CSSProperties, DragEvent, HTMLAttributes, KeyboardEvent, ReactNode } from "react";
 import { attrs, cx, textOf } from "../utils";
 import { DropdownItem, DropdownSeparator } from "../components/Dropdown";
+import { webiconNode } from "../components/Webicon";
 
 export interface RouteStep {
   id: string;
@@ -80,7 +81,7 @@ export interface BlockRouteStepsProps extends Omit<HTMLAttributes<HTMLElement>, 
   labels?: Partial<RouteStepsLabels>;
 }
 
-const node = (i: ReactNode) => (typeof i === "string" && i.includes(":") ? createElement("iconify-icon", { icon: i, "aria-hidden": "true" }) : i);
+const node = (i: ReactNode) => webiconNode(i);
 
 /** `.oc-block-route-steps`: the ordered steps of a route or course in an editor, numbered by a CSS counter. */
 export const BlockRouteSteps = forwardRef<HTMLElement, BlockRouteStepsProps>(function BlockRouteSteps(

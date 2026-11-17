@@ -91,6 +91,9 @@ lines.push("export { useToast } from './composables/useToast'")
 lines.push("export type { ToastItem, ToastOptions, ToastVariant } from './composables/useToast'")
 // Used by the OmniaUI Pro blocks (@birdycom/omniaui-pro-vue) for their id wiring.
 lines.push("export { useUid } from './composables/useUid'")
+// Webicons: icons by name as inline SVG (OcWebicon), from icons the app registers (no network).
+lines.push("export { addWebicons, getWebicon, hasWebicon, registerWebicons } from './webicons'")
+lines.push("export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './webicons'")
 lines.push('')
 lines.push('/** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */')
 lines.push('export const components: Record<string, Component> = {')

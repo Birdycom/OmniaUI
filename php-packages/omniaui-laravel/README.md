@@ -10,7 +10,7 @@ OmniaUI for Laravel: every component and block of [OmniaUI](https://omniaui.eu) 
 
 The markup and classes are exactly those of the OmniaUI snippets. Props become modifiers (`variant`, `size`, boolean flags), slots become `$slot` and named slots, and `$attributes` are merged (`class`, `wire:*`, `x-*`, `data-*`). Dark mode works through `light-dark()` and `color-scheme` in the CSS; there are no colors in PHP.
 
-- Version: `0.16.0` (same version as OmniaCSS and OmniaUI)
+- Version: `0.16.1` (same version as OmniaCSS and OmniaUI)
 - Site: https://omniaui.eu · Source: https://github.com/Birdycom/OmniaUI (`php-packages/omniaui-laravel`)
 - Livewire 3 extras: [`birdycom/omniaui-livewire`](https://packagist.org/packages/birdycom/omniaui-livewire)
 
@@ -180,7 +180,7 @@ Published files are used as `<x-oc.button>` and `<x-oc.block.app-shell>`; the pa
 php artisan vendor:publish --tag=omniacss-config
 ```
 
-`config/omniacss.php`: `source`, `packages` (`core`, `components`, `blocks`), `version` (CDN), `cdn.base`, `public.path`, `vite.entries`, `prefix`.
+`config/omniacss.php`: `source`, `packages` (`core`, `components`, `blocks`), `version` (CDN), `cdn.base`, `public.path`, `vite.entries`, `prefix`, `webicons` (`files`: subset files made with `npx omniaui webicons --scan resources --out resources/webicons.json`; `path`: the folder with the `@iconify-json` sets, default `node_modules/@iconify-json`) for `<x-oc::webicon name="mdi:home" />`.
 
 ## Tests
 

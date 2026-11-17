@@ -88,7 +88,7 @@ describe("0.16.0 language menu", () => {
     expect(btn.getAttribute("popovertarget")).toBe(menu.id);
     expect(btn.getAttribute("aria-label")).toBe("Language: Nederlands");
     expect(btn.querySelector(".oc-language-select-code")!.textContent).toBe("NL");
-    expect(btn.querySelector(".oc-language-flag iconify-icon")!.getAttribute("icon")).toBe("flag:nl-4x3");
+    expect(btn.querySelector(".oc-language-flag svg")!.getAttribute("data-webicon")).toBe("flag:nl-4x3");
     expect(menu.hasAttribute("popover")).toBe(true);
     const items = [...menu.querySelectorAll(".oc-dropdown-item")];
     expect(items.map((i) => i.getAttribute("lang"))).toEqual(["en", "nl", "fr"]);

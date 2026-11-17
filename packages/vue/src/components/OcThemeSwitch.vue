@@ -2,9 +2,10 @@
 /**
  * System / light / dark switch (CSS only: color-scheme + :has()). v-model: 'system' | 'light' | 'dark'.
  * `options` limits the choices; `as="div"` renders a role="radiogroup" div instead of a fieldset.
- * `icons`: monitor / sun / moon webicons (<iconify-icon>); `true` = icons only (text for screen readers), `'text'` = icon + text.
+ * `icons`: monitor / sun / moon webicons (inline SVG, built in); `true` = icons only (text for screen readers), `'text'` = icon + text.
  */
 import { useUid } from '../composables/useUid'
+import OcWebicon from './OcWebicon.vue'
 
 type Theme = 'system' | 'light' | 'dark'
 const labels: Record<Theme, string> = { system: 'System', light: 'Light', dark: 'Dark' }
@@ -28,7 +29,7 @@ const uid = useUid('oc-theme')
   <component :is="as" :class="['oc-theme-switch', { 'oc-theme-switch--icons': icons === true }]" :role="as === 'div' ? 'radiogroup' : undefined" :aria-label="label">
     <label v-for="o in options" :key="o" :title="icons === true ? labels[o] : undefined">
       <input v-model="model" type="radio" :name="name ?? uid" :value="o" />
-      <iconify-icon v-if="icons" :icon="iconNames[o]" aria-hidden="true" />
+      <OcWebicon v-if="icons" :name="iconNames[o]" bare fallback="iconify" />
       <span v-if="icons === true" class="oc-theme-switch__text">{{ labels[o] }}</span>
       <template v-else>{{ labels[o] }}</template>
     </label>

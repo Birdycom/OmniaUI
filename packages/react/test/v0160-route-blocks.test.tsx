@@ -117,7 +117,7 @@ describe("0.16.0 route progress", () => {
     expect(items[1].className).toContain("--wrong");
     expect(items[1].className).toContain("--done");
     expect(items[2].querySelector("button")!.getAttribute("aria-current")).toBe("step");
-    expect(items[3].querySelector("iconify-icon")!.getAttribute("aria-label")).toBe("Finish");
+    expect(items[3].querySelector("svg[data-webicon=\"mdi:flag-checkered\"]")!.getAttribute("aria-label")).toBe("Finish");
     expect(items[0].querySelector(".oc-block-route-progress-marker")!.textContent).toBe("1");
   });
 });

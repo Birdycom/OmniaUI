@@ -2,21 +2,22 @@
 <script setup lang="ts">
 /**
  * A live page at a virtual size (default 1280x720), scaled down to the frame width in pure CSS. Without src the slot
- * goes in (an <img>, <video> or .oc-live-frame__content). Classes: .oc-live-frame, --static, --phone, --tv,
+ * goes in (an <img>, <video> or .oc-live-frame__content). Classes: .oc-live-frame, --static, --phone, --tv, --laptop,
  * .oc-browser-frame__view. inert: only to look at (no focus, no clicks, hidden from screen readers).
- * device: "phone" (390 x 844 unless width/height are set) or "tv". Event frame-load; exposed ref `frame` (postMessage).
+ * device: "phone" (390 x 844 unless width/height are set), "tv" or "laptop" (1440 x 900, with a base). Event frame-load;
+ * exposed ref `frame` (postMessage).
  */
 import { computed, ref } from 'vue'
 
 const props = withDefaults(
-  defineProps<{ src?: string; title?: string; width?: number; height?: number; static?: boolean; inert?: boolean; device?: 'phone' | 'tv'; inBrowserFrame?: boolean }>(),
+  defineProps<{ src?: string; title?: string; width?: number; height?: number; static?: boolean; inert?: boolean; device?: 'phone' | 'tv' | 'laptop'; inBrowserFrame?: boolean }>(),
   { title: '', static: false, inert: false, inBrowserFrame: false },
 )
 defineEmits<{ 'frame-load': [event: Event] }>()
 const frame = ref<HTMLIFrameElement | null>(null)
 defineExpose({ frame })
-const w = computed(() => props.width ?? (props.device === 'phone' ? 390 : 1280))
-const h = computed(() => props.height ?? (props.device === 'phone' ? 844 : 720))
+const w = computed(() => props.width ?? (props.device === 'phone' ? 390 : props.device === 'laptop' ? 1440 : 1280))
+const h = computed(() => props.height ?? (props.device === 'phone' ? 844 : props.device === 'laptop' ? 900 : 720))
 </script>
 
 <template>

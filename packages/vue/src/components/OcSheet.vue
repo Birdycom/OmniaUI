@@ -17,6 +17,10 @@ withDefaults(
     title?: string
     description?: string
     closeLabel?: string
+    /** Round close button (.oc-close--round). */
+    closeRound?: boolean
+    /** Extra class on the close button. */
+    closeClass?: string
     glass?: boolean
     inset?: boolean
     footerPanel?: boolean
@@ -40,7 +44,7 @@ defineExpose({ close })
     @close="onClose"
   >
     <div :class="['oc-sheet-content', wide && 'oc-sheet-content--wide']">
-      <button class="oc-sheet-close" type="button" :aria-label="closeLabel" @click="close">&times;</button>
+      <button :class="['oc-sheet-close', closeRound && 'oc-close--round', closeClass]" type="button" :aria-label="closeLabel" @click="close">&times;</button>
       <div v-if="title || description || $slots.header" class="oc-sheet-header">
         <slot name="header">
           <h2 v-if="title" :id="titleId" class="oc-sheet-title">{{ title }}</h2>
