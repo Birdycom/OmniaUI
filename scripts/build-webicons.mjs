@@ -18,7 +18,7 @@ export const BUILTIN = [
   "mdi:chevron-down", "mdi:chevron-up", "mdi:chevron-left", "mdi:chevron-right",
   "mdi:arrow-up", "mdi:arrow-down", "mdi:arrow-left", "mdi:arrow-right", "mdi:trash-can-outline",
   "mdi:walk", "mdi:flag-checkered", "mdi:map-marker-outline", "mdi:target", "mdi:text",
-  "mdi:web", "mdi:monitor", "mdi:white-balance-sunny", "mdi:weather-night",
+  "mdi:web", "mdi:monitor", "mdi:white-balance-sunny", "mdi:weather-night", "mdi:lock-outline",
   "material-symbols:arrow-outward-rounded",
   "flag:nl-4x3", "flag:be-4x3", "flag:fr-4x3", "flag:de-4x3", "flag:gb-4x3", "flag:it-4x3", "flag:us-4x3",
 ];

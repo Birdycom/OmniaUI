@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -22,6 +22,7 @@ import { Alert } from "../src/components/Alert";
 import { Countdown } from "../src/components/Countdown";
 import { BlockStepView } from "../src/blocks/BlockStepView";
 import { SaveStatus } from "../src/components/StatusDot";
+import { EmptyState } from "../src/components/EmptyState";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -343,5 +344,15 @@ describe("0.17.0 save status", () => {
     expect(a.textContent).toBe("Saving…");
     expect(b.querySelector(".oc-status-dot")!.className).toContain("oc-status-dot--error");
     expect(b.textContent).toBe("Niet bewaard");
+  });
+});
+
+describe("0.17.0 locked state", () => {
+  it("locked adds the modifier, a lock icon and the meta pill", () => {
+    const { container } = render(<EmptyState locked title="Walk into the zone" description="Step 3 opens near the old gate." meta="120 m to go" />);
+    const el = container.querySelector(".oc-empty")!;
+    expect(el.className).toBe("oc-empty oc-empty--locked");
+    expect(el.querySelector(".oc-empty-icon svg")!.getAttribute("data-webicon")).toBe("mdi:lock-outline");
+    expect(el.querySelector(".oc-empty-meta")!.textContent).toBe("120 m to go");
   });
 });
