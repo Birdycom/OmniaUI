@@ -3590,7 +3590,8 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
 
 /* ===================================================================
    OTP — one-time code: ONE real <input> drawn as separate cells (paste, autofill and password managers work).
-   Cells: set --oc-otp-length (default 6) to the input's maxlength.
+   Cells: set --oc-otp-length (default 6) to the input's maxlength. --fit: cells shrink with the parent; --group: a
+   divider after every --oc-otp-group cells (0.17.0).
    =================================================================== */
 .oc-otp {
   --oc-otp-length: 6;
@@ -3619,6 +3620,31 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
 .oc-otp:focus { box-shadow: 0 0 0 2px oklch(from var(--oc-ring) l c h / 0.35); }
 .oc-otp[aria-invalid="true"] { border-block-color: var(--oc-destructive); }
 .oc-otp:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* --fit (0.17.0): the cells shrink with the room the parent gives (a phone with an 8-character code). The parent
+   becomes the size reference (container-type: inline-size), at most the normal 1.5rem. */
+:where(*:has(> .oc-otp--fit)) { container-type: inline-size; }
+.oc-otp.oc-otp--fit { font-size: min(1.5rem, calc(100cqi / (var(--oc-otp-length) * 1.75))); }
+/* --group (0.17.0): a darker divider after every --oc-otp-group cells (default 4: "ABCD EFGH"), so a long code reads
+   in parts. Still one input: paste, autofill and the caret work as before. */
+.oc-otp.oc-otp--group {
+  --oc-otp-group: 4;
+  background-image:
+    repeating-linear-gradient(
+      90deg in srgb,
+      transparent 0 calc(var(--oc-otp-group) * var(--oc-otp-cell) - 2px),
+      var(--oc-muted-foreground) calc(var(--oc-otp-group) * var(--oc-otp-cell) - 2px) calc(var(--oc-otp-group) * var(--oc-otp-cell))
+    ),
+    repeating-linear-gradient(
+      90deg in srgb,
+      var(--oc-input) 0 1px,
+      transparent 1px calc(var(--oc-otp-cell) - 1px),
+      var(--oc-input) calc(var(--oc-otp-cell) - 1px) var(--oc-otp-cell)
+    );
+  /* the divider layer stops half a cell before the end: no heavy line on the right edge */
+  background-size: calc((var(--oc-otp-length) - 0.5) * var(--oc-otp-cell)) 100%, auto;
+  background-repeat: no-repeat, repeat;
+}
 
 /* ===================================================================
    REVEAL — password field with a show/hide button. A script flips input.type (see snippet).

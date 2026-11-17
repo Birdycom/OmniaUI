@@ -1,7 +1,7 @@
 <?php
 
 // File: tests/V0170Test.php
-// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count
+// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group
 // Components and options of 0.17.0: Blade renders the same classes as the HTML snippets.
 
 declare(strict_types=1);
@@ -36,5 +36,12 @@ class V0170Test extends TestCase
         $plain = $this->render('<x-oc::form-section title="Name" :issues="2">Fields</x-oc::form-section>');
         $this->assertStringNotContainsString('data-issue', $plain);
         $this->assertStringNotContainsString('oc-form-section__count', $plain);
+    }
+
+    public function test_otp_fit_and_group(): void
+    {
+        $html = $this->render('<x-oc::otp-input :length="8" fit :group="4" alphanumeric />');
+        $this->assertElement($html, 'input', 'oc-otp oc-otp--fit oc-otp--group', ['maxlength' => '8', 'inputmode' => 'text', 'style' => '--oc-otp-length: 8; --oc-otp-group: 4']);
+        $this->assertStringNotContainsString('pattern=', $html);
     }
 }

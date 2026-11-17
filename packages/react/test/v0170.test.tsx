@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group
 
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
@@ -8,6 +8,7 @@ import { LanguageMenu } from "../src/components/LanguageMenu";
 import { DropdownItem } from "../src/components/Dropdown";
 import { SidebarMeta } from "../src/components/SidebarMeta";
 import { FormSection } from "../src/components/FormSection";
+import { OtpInput } from "../src/components/OtpInput";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -71,5 +72,15 @@ describe("0.17.0 form section", () => {
     expect(a.querySelector(".oc-form-section__count")!.getAttribute("aria-label")).toBe("1 warning");
     expect(b.hasAttribute("data-issue")).toBe(false);
     expect(b.querySelector(".oc-form-section__count")).toBeNull();
+  });
+});
+
+describe("0.17.0 otp input", () => {
+  it("fit and group add their classes and the group size", () => {
+    const { container } = render(<OtpInput length={8} fit group={4} alphanumeric />);
+    const input = container.querySelector("input")!;
+    expect(input.className).toBe("oc-otp oc-otp--fit oc-otp--group");
+    expect(input.style.getPropertyValue("--oc-otp-group")).toBe("4");
+    expect(input.maxLength).toBe(8);
   });
 });
