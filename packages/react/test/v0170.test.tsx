@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -10,6 +10,7 @@ import { SidebarMeta } from "../src/components/SidebarMeta";
 import { FormSection } from "../src/components/FormSection";
 import { OtpInput } from "../src/components/OtpInput";
 import { CopyField, groupCode } from "../src/components/CopyField";
+import { BlockTypePicker } from "../src/blocks/BlockTypePicker";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -102,5 +103,42 @@ describe("0.17.0 copy field display", () => {
     expect(root.querySelector(".oc-copy-field-caption")!.textContent).toBe("Type it in the app");
     await act(async () => { fireEvent.click(root.querySelector("button")!); });
     expect(writeText).toHaveBeenCalledWith("K7QM2XPA");
+  });
+});
+
+describe("0.17.0 type picker action mode", () => {
+  const options = [
+    { value: "text", label: "Text" },
+    { value: "photo", label: "Photo", disabledReason: "One photo per step" },
+    { value: "quiz", label: "Question" },
+  ];
+  it("cards are buttons; a click picks, a card with a reason does not", () => {
+    const onPick = vi.fn();
+    const { container } = render(<BlockTypePicker mode="action" options={options} onPick={onPick} draggable search={false} />);
+    expect(container.querySelector(".oc-block-type-picker")!.className).toContain("oc-block-type-picker--action");
+    expect(container.querySelector("input[type=radio]")).toBeNull();
+    const [text, photo] = container.querySelectorAll<HTMLButtonElement>("button.oc-block-type-picker-item");
+    fireEvent.click(text);
+    fireEvent.click(photo);
+    expect(onPick).toHaveBeenCalledTimes(1);
+    expect(onPick.mock.calls[0][0]).toBe("text");
+    expect(photo.getAttribute("aria-disabled")).toBe("true");
+    expect(photo.hasAttribute("disabled")).toBe(false);
+    expect(document.getElementById(photo.getAttribute("aria-describedby")!)!.textContent).toBe("One photo per step");
+    expect(text.getAttribute("draggable")).toBe("true");
+    expect(photo.hasAttribute("draggable")).toBe(false);
+  });
+  it("arrow keys move the focus only", () => {
+    const onPick = vi.fn();
+    const { container } = render(<BlockTypePicker mode="action" options={options} onPick={onPick} search={false} />);
+    const items = container.querySelectorAll<HTMLButtonElement>("button.oc-block-type-picker-item");
+    items[0].focus();
+    fireEvent.keyDown(items[0], { key: "ArrowRight" });
+    expect(document.activeElement).toBe(items[1]);
+    fireEvent.keyDown(items[1], { key: "End" });
+    expect(document.activeElement).toBe(items[2]);
+    fireEvent.keyDown(items[2], { key: "ArrowRight" });
+    expect(document.activeElement).toBe(items[0]);
+    expect(onPick).not.toHaveBeenCalled();
   });
 });

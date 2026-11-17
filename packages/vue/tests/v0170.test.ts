@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -9,6 +9,7 @@ import OcSidebarMeta from '../src/components/OcSidebarMeta.vue'
 import OcFormSection from '../src/components/OcFormSection.vue'
 import OcOtpInput from '../src/components/OcOtpInput.vue'
 import OcCopyField from '../src/components/OcCopyField.vue'
+import OcBlockTypePicker from '../src/blocks/OcBlockTypePicker.vue'
 import { languageFlag } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -66,5 +67,20 @@ describe('0.17.0 copy field display', () => {
     expect((w.find('input').element as HTMLInputElement).value).toBe('K7QM 2XPA')
     expect(w.find('button').attributes('data-copy')).toBe('K7QM2XPA')
     expect(w.find('.oc-copy-field-caption').text()).toBe('Type it in the app')
+  })
+})
+
+describe('0.17.0 type picker action mode', () => {
+  it('cards are buttons; a click emits pick, a card with a reason does not', async () => {
+    const options = [{ value: 'text', label: 'Text' }, { value: 'photo', label: 'Photo', disabledReason: 'One photo per step' }]
+    const w = mount(OcBlockTypePicker, { props: { mode: 'action', options, search: false, draggable: true } })
+    const [text, photo] = w.findAll('button.oc-block-type-picker-item')
+    await text.trigger('click')
+    await photo.trigger('click')
+    expect(w.emitted('pick')).toHaveLength(1)
+    expect(w.emitted('pick')![0][0]).toBe('text')
+    expect(photo.attributes('aria-disabled')).toBe('true')
+    expect(photo.find('.oc-block-type-picker-reason').text()).toBe('One photo per step')
+    expect(text.attributes('draggable')).toBe('true')
   })
 })
