@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -18,6 +18,7 @@ import { Table, TableActions } from "../src/components/Table";
 import { TableActionIcon } from "../src/components/TableActions";
 import { ColorField, contrastRatio, pickOnColor } from "../src/components/ColorField";
 import { SidebarMenuButton } from "../src/components/Sidebar";
+import { Alert } from "../src/components/Alert";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -278,5 +279,22 @@ describe("0.17.0 sidebar tooltips", () => {
     expect(a.className).toBe("oc-sidebar-menu-button oc-tooltip oc-tooltip--right");
     expect(a.getAttribute("data-tooltip")).toBe("Customers");
     expect(b.className).toBe("oc-sidebar-menu-button");
+  });
+});
+
+describe("0.17.0 alert alarm", () => {
+  it("a new alarm is role alert in the danger tone, with icon, body and actions", () => {
+    const { container } = render(<Alert alarm="new" title="Team 3 needs help" icon="mdi:lifebuoy" actions={<button type="button">Seen</button>}>Near the old gate</Alert>);
+    const el = container.querySelector(".oc-alert")!;
+    expect(el.className).toBe("oc-alert oc-alert--danger oc-alert--alarm");
+    expect(el.getAttribute("role")).toBe("alert");
+    expect(el.getAttribute("data-state")).toBe("new");
+    expect(el.querySelector(".oc-alert-body .oc-alert-title")!.textContent).toBe("Team 3 needs help");
+    expect(el.querySelector(".oc-alert-actions button")!.textContent).toBe("Seen");
+  });
+  it("a plain alert keeps its old markup", () => {
+    const { container } = render(<Alert title="Saved">Done</Alert>);
+    expect(container.querySelector(".oc-alert-body")).toBeNull();
+    expect(container.querySelector(".oc-alert")!.getAttribute("role")).toBe("status");
   });
 });

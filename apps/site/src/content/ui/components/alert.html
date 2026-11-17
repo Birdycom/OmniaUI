@@ -71,6 +71,67 @@
   <div class="oc-alert oc-alert--inline oc-alert--danger" id="alert-inline-error" role="alert"><p class="oc-alert-description">Enter an amount of 0 or more.</p></div>
 </form>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="alarm">Alarm: must be seen <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">For a message that someone has to see now, such as a team asking for help or a payment that failed. With <code>data-state="new"</code> it gets a thick edge in its tone and a slow pulsing ring, until someone presses Seen. Your app then sets <code>data-state="seen"</code>: the alarm stays, but calm, until it is closed. Give a new alarm <code>role="alert"</code>, so screen readers say it at once. <code>.oc-alert-icon</code> puts an icon in a soft circle on the left, and <code>.oc-alert-actions</code> puts the buttons on the right (under the text when there is no room). Press Seen on the first alarm. With reduced motion the ring stays still. Sound is up to your app: browsers only play it after the user has clicked something on the page.</p>
+          <oc-demo title="Alert - alarm">
+<div style="display:grid;gap:0.75rem;inline-size:100%">
+  <div class="oc-alert oc-alert--danger oc-alert--alarm" data-state="new" role="alert">
+    <span class="oc-alert-icon" aria-hidden="true"><iconify-icon icon="mdi:lifebuoy"></iconify-icon></span>
+    <div class="oc-alert-body">
+      <h4 class="oc-alert-title">Team 3 asks for help</h4>
+      <p class="oc-alert-description">Near the old gate · 2 minutes ago</p>
+    </div>
+    <div class="oc-alert-actions">
+      <button type="button" class="oc-btn oc-btn--sm" onclick="const a = this.closest('.oc-alert'); a.dataset.state = 'seen'; a.setAttribute('role', 'status'); this.textContent = 'Close';">Seen</button>
+    </div>
+  </div>
+  <div class="oc-alert oc-alert--danger oc-alert--alarm" data-state="seen" role="status">
+    <span class="oc-alert-icon" aria-hidden="true"><iconify-icon icon="mdi:battery-alert"></iconify-icon></span>
+    <div class="oc-alert-body">
+      <h4 class="oc-alert-title">Team 5: phone battery low</h4>
+      <p class="oc-alert-description">Seen by Desk 1 · 9 minutes ago</p>
+    </div>
+    <div class="oc-alert-actions"><button type="button" class="oc-btn oc-btn--outline oc-btn--sm">Close</button></div>
+  </div>
+</div>
+<oc-code lang="html">&lt;div style="display:grid;gap:0.75rem;inline-size:100%"&gt;
+  &lt;div class="oc-alert oc-alert--danger oc-alert--alarm" data-state="new" role="alert"&gt;
+    &lt;span class="oc-alert-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:lifebuoy"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+    &lt;div class="oc-alert-body"&gt;
+      &lt;h4 class="oc-alert-title"&gt;Team 3 asks for help&lt;/h4&gt;
+      &lt;p class="oc-alert-description"&gt;Near the old gate · 2 minutes ago&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-alert-actions"&gt;
+      &lt;button type="button" class="oc-btn oc-btn--sm"&gt;Seen&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-alert oc-alert--danger oc-alert--alarm" data-state="seen" role="status"&gt;
+    &lt;span class="oc-alert-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:battery-alert"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+    &lt;div class="oc-alert-body"&gt;
+      &lt;h4 class="oc-alert-title"&gt;Team 5: phone battery low&lt;/h4&gt;
+      &lt;p class="oc-alert-description"&gt;Seen by Desk 1 · 9 minutes ago&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-alert-actions"&gt;&lt;button type="button" class="oc-btn oc-btn--outline oc-btn--sm"&gt;Close&lt;/button&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;Alert
+  alarm={help.seen ? "seen" : "new"}
+  icon="mdi:lifebuoy"
+  title="Team 3 asks for help"
+  actions={help.seen ? &lt;Button size="sm" variant="outline" onClick={close}&gt;Close&lt;/Button&gt; : &lt;Button size="sm" onClick={markSeen}&gt;Seen&lt;/Button&gt;}
+&gt;
+  Near the old gate · 2 minutes ago
+&lt;/Alert&gt;</oc-code>
+<oc-code lang="vue">&lt;OcAlert :alarm="help.seen ? 'seen' : 'new'" icon="mdi:lifebuoy" title="Team 3 asks for help"&gt;
+  Near the old gate · 2 minutes ago
+  &lt;template #actions&gt;&lt;OcButton size="sm" @click="markSeen"&gt;Seen&lt;/OcButton&gt;&lt;/template&gt;
+&lt;/OcAlert&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::alert :alarm="$help-&gt;seen ? 'seen' : 'new'" icon="mdi:lifebuoy" title="Team 3 asks for help"&gt;
+    Near the old gate · 2 minutes ago
+    &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" wire:click="markSeen"&gt;Seen&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+&lt;/x-oc::alert&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -83,6 +144,8 @@
           <table class="oc-table-ref">
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
+              <tr><td><code>.oc-alert--alarm[data-state=new|seen]</code></td><td>Urgent message: new = thick edge and a pulsing ring (role alert), seen = calm. React / Vue / Blade <code>alarm</code></td></tr>
+              <tr><td><code>.oc-alert-icon / .oc-alert-body / .oc-alert-actions</code></td><td>Icon in a soft circle on the left, the text, buttons on the right. Prop <code>icon</code>, <code>actions</code></td></tr>
               <tr><td><code>.oc-alert</code></td><td>The box. Modifiers: <code>--info</code>, <code>--success</code>, <code>--warning</code>, <code>--danger</code>.</td></tr>
               <tr><td><code>--inline</code></td><td>Compact message under a field or form (smaller text and padding). Link it with <code>aria-describedby</code>.</td></tr>
               <tr><td><code>.oc-alert-title</code></td><td>Bold first line (any heading level that fits the page).</td></tr>

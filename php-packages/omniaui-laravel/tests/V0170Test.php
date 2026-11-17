@@ -1,7 +1,7 @@
 <?php
 
 // File: tests/V0170Test.php
-// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG -> data table labels, view, pagination, bulk
+// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> icon props as inline SVG -> data table labels, view, pagination, bulk -> alert alarm
 // Components and options of 0.17.0: Blade renders the same classes as the HTML snippets.
 
 declare(strict_types=1);
@@ -77,5 +77,16 @@ class V0170Test extends TestCase
         $this->assertStringNotContainsString('oc-data-table-view', $html);
         $this->assertStringNotContainsString('oc-data-table-pager', $html);
         $this->assertStringNotContainsString('oc-data-table-bulk', $html);
+    }
+
+    public function test_alert_alarm(): void
+    {
+        $html = $this->render(<<<'BLADE'
+            <x-oc::alert alarm="new" title="Team 3 needs help" icon="mdi:check">Near the old gate<x-slot:actions><button type="button">Seen</button></x-slot:actions></x-oc::alert>
+            BLADE);
+        $this->assertElement($html, 'div', 'oc-alert oc-alert--danger oc-alert--alarm', ['role' => 'alert', 'data-state' => 'new']);
+        $this->assertStringContainsString('<div class="oc-alert-actions"><button type="button">Seen</button></div>', $html);
+        $plain = $this->render('<x-oc::alert title="Saved">Done</x-oc::alert>');
+        $this->assertStringNotContainsString('oc-alert-body', $plain);
     }
 }
