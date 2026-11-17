@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -8,6 +8,7 @@ import OcDropdownItem from '../src/components/OcDropdownItem.vue'
 import OcSidebarMeta from '../src/components/OcSidebarMeta.vue'
 import OcFormSection from '../src/components/OcFormSection.vue'
 import OcOtpInput from '../src/components/OcOtpInput.vue'
+import OcCopyField from '../src/components/OcCopyField.vue'
 import { languageFlag } from '../src/index'
 
 describe('0.17.0 language menu', () => {
@@ -55,5 +56,15 @@ describe('0.17.0 otp input', () => {
     const w = mount(OcOtpInput, { props: { length: 8, fit: true, group: 4 } })
     expect(w.classes()).toEqual(['oc-otp', 'oc-otp--fit', 'oc-otp--group'])
     expect(w.attributes('style')).toContain('--oc-otp-group: 4')
+  })
+})
+
+describe('0.17.0 copy field display', () => {
+  it('display shows the grouped code with a caption; data-copy holds the raw value', () => {
+    const w = mount(OcCopyField, { props: { value: 'K7QM2XPA', display: true, group: 4, caption: 'Type it in the app' } })
+    expect(w.classes()).toEqual(['oc-copy-field', 'oc-copy-field--display'])
+    expect((w.find('input').element as HTMLInputElement).value).toBe('K7QM 2XPA')
+    expect(w.find('button').attributes('data-copy')).toBe('K7QM2XPA')
+    expect(w.find('.oc-copy-field-caption').text()).toBe('Type it in the app')
   })
 })

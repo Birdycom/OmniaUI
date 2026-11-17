@@ -15,6 +15,37 @@
   <button class="oc-copy-field-button" type="button" onclick="const b = this; navigator.clipboard.writeText(b.previousElementSibling.value); b.classList.add('is-copied'); b.textContent = 'Copied'; setTimeout(function () { b.classList.remove('is-copied'); b.textContent = 'Copy'; }, 1500)">Copy</button>
 </div>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="display">Large code to read and type over <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc"><code>.oc-copy-field--display</code> shows a code people read from a screen or a printout and type in elsewhere (a join code under a QR, a voucher): large, centred, spaced monospace, with an optional caption under it. Show the code in groups for reading and put the raw code in <code>data-copy</code> on the button: that is what gets copied. <code>--oc-copy-chars</code> (the number of characters shown) lets the code shrink to fit a narrow field; the components set it. <code>--lg</code> for a code read from a distance. On paper the button is left out.</p>
+          <oc-demo title="Copy field - display">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1rem;inline-size:100%">
+  <div class="oc-copy-field oc-copy-field--display" style="--oc-copy-chars: 9">
+    <input class="oc-copy-field-value" type="text" readonly value="K7QM 2XPA" aria-label="Join code">
+    <button class="oc-copy-field-button" type="button" data-copy="K7QM2XPA" onclick="const b = this; navigator.clipboard.writeText(b.dataset.copy); b.classList.add('is-copied'); b.textContent = 'Copied'; setTimeout(function () { b.classList.remove('is-copied'); b.textContent = 'Copy'; }, 1500)">Copy</button>
+    <p class="oc-copy-field-caption">Type this code in the app to join.</p>
+  </div>
+  <div class="oc-copy-field oc-copy-field--display oc-copy-field--lg" style="--oc-copy-chars: 9">
+    <input class="oc-copy-field-value" type="text" readonly value="4821 0937" aria-label="Voucher">
+    <button class="oc-copy-field-button" type="button" data-copy="48210937" onclick="const b = this; navigator.clipboard.writeText(b.dataset.copy); b.classList.add('is-copied'); b.textContent = 'Copied'; setTimeout(function () { b.classList.remove('is-copied'); b.textContent = 'Copy'; }, 1500)">Copy</button>
+    <p class="oc-copy-field-caption">Valid until 31 December.</p>
+  </div>
+</div>
+<oc-code lang="html">&lt;div class="oc-copy-field oc-copy-field--display" style="--oc-copy-chars: 9"&gt;
+  &lt;input class="oc-copy-field-value" type="text" readonly value="K7QM 2XPA" aria-label="Join code"&gt;
+  &lt;button class="oc-copy-field-button" type="button" data-copy="K7QM2XPA"&gt;Copy&lt;/button&gt;
+  &lt;p class="oc-copy-field-caption"&gt;Type this code in the app to join.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="oc-copy-field oc-copy-field--display oc-copy-field--lg" style="--oc-copy-chars: 9"&gt;
+  &lt;input class="oc-copy-field-value" type="text" readonly value="4821 0937" aria-label="Voucher"&gt;
+  &lt;button class="oc-copy-field-button" type="button" data-copy="48210937"&gt;Copy&lt;/button&gt;
+  &lt;p class="oc-copy-field-caption"&gt;Valid until 31 December.&lt;/p&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;CopyField display group={4} value="K7QM2XPA" label="Join code" caption="Type this code in the app to join." /&gt;
+&lt;CopyField display="lg" group={4} value="48210937" label="Voucher" caption="Valid until 31 December." /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcCopyField display :group="4" value="K7QM2XPA" label="Join code" caption="Type this code in the app to join." /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::copy-field display :group="4" value="K7QM2XPA" label="Join code" caption="Type this code in the app to join." /&gt;</oc-code>
+          </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
@@ -27,7 +58,9 @@
             <tbody>
               <tr><td><code>.oc-copy-field</code></td><td>Wrapper</td></tr>
               <tr><td><code>.oc-copy-field-value</code></td><td>Read-only <code>&lt;input readonly&gt;</code> (or <code>&lt;output&gt;</code>)</td></tr>
-              <tr><td><code>.oc-copy-field-button</code></td><td>Copy button; add <code>.is-copied</code> for 2s feedback</td></tr>
+              <tr><td><code>.oc-copy-field-button</code></td><td>Copy button; add <code>.is-copied</code> for 2s feedback. <code>data-copy="…"</code> is copied instead of the value.</td></tr>
+              <tr><td><code>.oc-copy-field--display</code> (+ <code>--lg</code>)</td><td>Large centred code to read and type over. Prop <code>display</code> (<code>true</code> or <code>"lg"</code>), <code>group</code> (groups of n; the raw value is copied).</td></tr>
+              <tr><td><code>.oc-copy-field-caption</code></td><td>A short line under the code, inside the frame. Prop <code>caption</code>.</td></tr>
             </tbody>
           </table>
         <h3 id="script" class="oc-section-content__title mt-2">Optional script</h3><p class="oc-section-content__desc">The only behaviour that needs JavaScript. Drop it in once per page, or implement the same in your framework wrapper.</p>
@@ -35,7 +68,7 @@
   document.addEventListener('click', async (e) =&gt; {
     const btn = e.target.closest('.oc-copy-field-button');
     if (!btn) return;
-    await navigator.clipboard.writeText(btn.parentElement.querySelector('.oc-copy-field-value').value);
+    await navigator.clipboard.writeText(btn.dataset.copy ?? btn.parentElement.querySelector('.oc-copy-field-value').value);
     btn.classList.add('is-copied');
     setTimeout(() =&gt; btn.classList.remove('is-copied'), 2000);
   });

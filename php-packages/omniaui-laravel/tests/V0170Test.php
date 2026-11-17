@@ -1,7 +1,7 @@
 <?php
 
 // File: tests/V0170Test.php
-// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group
+// Map: dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display
 // Components and options of 0.17.0: Blade renders the same classes as the HTML snippets.
 
 declare(strict_types=1);
@@ -43,5 +43,14 @@ class V0170Test extends TestCase
         $html = $this->render('<x-oc::otp-input :length="8" fit :group="4" alphanumeric />');
         $this->assertElement($html, 'input', 'oc-otp oc-otp--fit oc-otp--group', ['maxlength' => '8', 'inputmode' => 'text', 'style' => '--oc-otp-length: 8; --oc-otp-group: 4']);
         $this->assertStringNotContainsString('pattern=', $html);
+    }
+
+    public function test_copy_field_display(): void
+    {
+        $html = $this->render('<x-oc::copy-field display="lg" :group="4" value="K7QM2XPA" label="Join code" caption="Type it in the app" />');
+        $this->assertElement($html, 'div', 'oc-copy-field oc-copy-field--display oc-copy-field--lg');
+        $this->assertElement($html, 'input', 'oc-copy-field-value', ['value' => 'K7QM 2XPA']);
+        $this->assertElement($html, 'button', 'oc-copy-field-button', ['data-copy' => 'K7QM2XPA']);
+        $this->assertElement($html, 'p', 'oc-copy-field-caption', [], 'Type it in the app');
     }
 }

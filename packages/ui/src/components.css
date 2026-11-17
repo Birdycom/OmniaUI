@@ -3643,6 +3643,35 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
 /* Keyboard focus on the value (to select it by hand): ring around the whole field. */
 .oc-copy-field:has(.oc-copy-field-value:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 
+/* --display (0.17.0): a code people read and type over (a join code under a QR, a voucher): large, centred, spaced
+   monospace. Show it in groups ("K7QM 2XPA") and put the raw code in data-copy on the button: that is what gets copied.
+   .oc-copy-field-caption is a short explanation in the frame under the code (also on paper; the button is not printed).
+   --lg for a code that is read from a distance. The size shrinks to fit a narrow field: set --oc-copy-chars to the
+   number of characters shown (the components do). */
+.oc-copy-field--display { container-type: inline-size; flex-wrap: wrap; background: var(--oc-card); }
+.oc-copy-field--display .oc-copy-field-value {
+  padding: 0.75rem 1rem;
+  font-size: min(1.5rem, calc((100cqi - 6rem) / (var(--oc-copy-chars, 9) * 0.75)));
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-overflow: clip;
+}
+.oc-copy-field--display.oc-copy-field--lg .oc-copy-field-value { padding-block: 1rem; font-size: min(2.25rem, calc((100cqi - 6rem) / (var(--oc-copy-chars, 9) * 0.75))); }
+.oc-copy-field--display .oc-copy-field-button { padding-inline: 1rem; font-size: 0.8125rem; }
+.oc-copy-field-caption {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  text-align: center;
+  color: var(--oc-muted-foreground);
+  border-block-start: 1px solid var(--oc-border);
+}
+@media print {
+  .oc-copy-field--display .oc-copy-field-button { display: none; }
+}
+
 /* ===================================================================
    COLOR FIELD — native <input type="color"> next to a text value
    =================================================================== */

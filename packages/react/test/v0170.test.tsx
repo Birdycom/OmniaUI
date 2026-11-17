@@ -1,14 +1,15 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display
 
-import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { act, fireEvent, render } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { languageFlag } from "../src/components/Webicon";
 import { LanguageMenu } from "../src/components/LanguageMenu";
 import { DropdownItem } from "../src/components/Dropdown";
 import { SidebarMeta } from "../src/components/SidebarMeta";
 import { FormSection } from "../src/components/FormSection";
 import { OtpInput } from "../src/components/OtpInput";
+import { CopyField, groupCode } from "../src/components/CopyField";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -82,5 +83,24 @@ describe("0.17.0 otp input", () => {
     expect(input.className).toBe("oc-otp oc-otp--fit oc-otp--group");
     expect(input.style.getPropertyValue("--oc-otp-group")).toBe("4");
     expect(input.maxLength).toBe(8);
+  });
+});
+
+describe("0.17.0 copy field display", () => {
+  it("groupCode splits in groups", () => {
+    expect(groupCode("K7QM2XPA", 4)).toBe("K7QM 2XPA");
+    expect(groupCode("K7QM2", 4)).toBe("K7QM 2");
+    expect(groupCode("K7QM2XPA")).toBe("K7QM2XPA");
+  });
+  it("display shows the grouped code with a caption and copies the raw value", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    const { container } = render(<CopyField display="lg" group={4} value="K7QM2XPA" label="Join code" caption="Type it in the app" />);
+    const root = container.querySelector(".oc-copy-field")!;
+    expect(root.className).toBe("oc-copy-field oc-copy-field--display oc-copy-field--lg");
+    expect((root.querySelector("input") as HTMLInputElement).value).toBe("K7QM 2XPA");
+    expect(root.querySelector(".oc-copy-field-caption")!.textContent).toBe("Type it in the app");
+    await act(async () => { fireEvent.click(root.querySelector("button")!); });
+    expect(writeText).toHaveBeenCalledWith("K7QM2XPA");
   });
 });

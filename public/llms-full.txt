@@ -885,7 +885,8 @@ Read-only monospace value with a copy button
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-copy-field: Wrapper
        .oc-copy-field-value: Read-only <input readonly> (or <output>)
-       .oc-copy-field-button: Copy button; add .is-copied for 2s feedback
+       .oc-copy-field-button: Copy button; add .is-copied for 2s feedback; data-copy="…" copies that instead of the value
+       .oc-copy-field--display (+ --lg) (0.17.0): large centred code; .oc-copy-field-caption: a line under it
 -->
 <div class="oc-copy-field">
   <input class="oc-copy-field-value" type="text" readonly value="JBSWY3DPEHPK3PXP" aria-label="Setup key">
@@ -895,7 +896,8 @@ Read-only monospace value with a copy button
   document.addEventListener('click', async (e) => {
     const btn = e.target.closest('.oc-copy-field-button');
     if (!btn) return;
-    await navigator.clipboard.writeText(btn.parentElement.querySelector('.oc-copy-field-value').value);
+    // data-copy: the raw code when the field shows it in groups ("K7QM 2XPA" -> "K7QM2XPA")
+    await navigator.clipboard.writeText(btn.dataset.copy ?? btn.parentElement.querySelector('.oc-copy-field-value').value);
     btn.classList.add('is-copied');
     setTimeout(() => btn.classList.remove('is-copied'), 2000);
   });
