@@ -79,3 +79,11 @@
   }
   .oc-glass::after { backdrop-filter: none; }
 }
+/* Firefox has no "backdrop root" yet: the filter on the ::after lens only sees the inside of the isolated sheet, so
+   nothing would be blurred. There the filter sits on the sheet itself (a position: fixed child is then placed
+   relative to the sheet; popovers, dialogs and anchored tooltips in the top layer are not affected). */
+@supports (-moz-appearance: none) {
+  .oc-glass { backdrop-filter: blur(var(--oc-glass-blur)) saturate(1.5); }
+  .oc-glass::after { backdrop-filter: none; }
+  @media (prefers-reduced-transparency: reduce) { .oc-glass { backdrop-filter: none; } }
+}

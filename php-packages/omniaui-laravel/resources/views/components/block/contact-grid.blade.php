@@ -49,7 +49,7 @@
     <address class="oc-block-contact-card">
       <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--orange" aria-hidden="true">&#9873;</span>
       <span class="oc-block-contact-title">Office</span>
-      <span class="oc-block-contact-line">Acme Software</span>
+      <span class="oc-block-contact-line">Company 1</span>
       <span class="oc-block-contact-line">Main Street 1, 2000 Antwerp</span>
     </address>
     <article class="oc-block-contact-card">

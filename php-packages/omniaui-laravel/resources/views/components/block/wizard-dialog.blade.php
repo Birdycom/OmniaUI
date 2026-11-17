@@ -2,7 +2,7 @@
      Class API: dialog.oc-modal > .oc-modal-content.oc-modal-content--xl > .oc-block-wizard (.oc-block-wizard-rail with ol.oc-stepper, .oc-block-wizard-main with
      .oc-modal-header, .oc-block-wizard-step and .oc-modal-footer).
      Blade: <x-oc::block.wizard-dialog id="setup" :steps="['Company', 'Invoicing', 'Team']" :current="2" trigger="Open setup wizard">
-     Props: id, title, description, steps (list of labels), current (1-based), trigger (label of the opening button), label, back, next, closedby.
+     Props: id, title, description, steps (list of labels), current (1-based), trigger (label of the opening button), label, back, next, close (accessible name of the × button), closedby.
      Slots: rail (replaces the generated stepper), default (step content), footer (replaces Back/Next). Attributes merge onto the dialog. --}}
 @props([
     'id' => 'oc-wizard',
@@ -14,6 +14,7 @@
     'label' => 'Setup steps',
     'back' => 'Back',
     'next' => 'Next',
+    'close' => 'Close',
     'closedby' => 'closerequest',
 ])
 @if ($trigger)
@@ -21,6 +22,7 @@
 @endif
 <dialog {{ $attributes->class(['oc-modal'])->merge(['id' => $id, 'closedby' => $closedby, 'aria-labelledby' => $id.'-title']) }}>
     <div class="oc-modal-content oc-modal-content--xl">
+        <button class="oc-modal-close" type="button" command="close" commandfor="{{ $id }}" aria-label="{{ $close }}">×</button>
         <div class="oc-block-wizard">
             <div class="oc-block-wizard-rail">
                 @if (isset($rail) && trim((string) $rail) !== '')

@@ -1,13 +1,14 @@
 <!--oc-page {"title": "OmniaUI - Combobox", "category": "Forms", "description": "Input + listbox styling (filtering and selection are wrapper responsibility).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Combobox</h1>
-        <p class="oc-hero-text">An input with a listbox of suggestions. The CSS draws the field, the chevron and the list, and opens the list while the wrapper has focus. Filtering, keyboard selection and the ARIA bookkeeping belong to the wrapper component (Vue, React, Blade) or about 40 lines of your own script. <a href="../components.html">All components</a>.</p>
+        <p class="oc-hero-text">An input with a listbox of suggestions, with or without an icon in front of each option. The CSS draws the field, the chevron and the list, and opens the list while the wrapper has focus. Filtering, keyboard selection and the ARIA bookkeeping come from the React, Vue or Blade component, or from the small script <code>oc-combobox.js</code>. <a href="../components.html">All components</a>.</p>
       </section><section class="oc-docs-section" id="demo">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Demo</h2>
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/combobox.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <p class="oc-section-content__desc">Click the field: the list opens while the field has focus, with Laravel marked as chosen and Svelte disabled. Hover the options. Typing does not filter here: filtering and choosing need the wrapper component or your own script.</p>
           <oc-demo title="Combobox" size="tall">
 <div class="oc-combobox">
   <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework…" aria-label="Framework">
@@ -20,6 +21,101 @@
     <li class="oc-combobox-option" role="option" tabindex="-1">Vue</li>
   </ul>
 </div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="icons">With icons <span class="oc-badge-version">v0.16.0</span></h3>
+          <p class="oc-section-content__desc">An icon in front of every option (<code>.oc-combobox-option-icon</code>: a webicon, a flag, a small logo) and in front of the chosen value in the field (<code>.oc-combobox-icon</code>). "Other" has no icon and still starts where the other labels start. Type <kbd>car</kbd> to filter, move with <kbd>↓</kbd> <kbd>↑</kbd>, choose with <kbd>Enter</kbd> or a click: the icon of the choice moves into the field. This demo needs the small script <code>oc-combobox.js</code> (<code>npx omniaui copy-js combobox</code>) for typing and the keyboard, because a list that filters while you type cannot be built in CSS; the React, Vue and Blade components do the same.</p>
+          <oc-demo title="Combobox - with icons" size="tall">
+<div class="flex flex-wrap gap-2 w-full">
+<div class="oc-combobox" data-oc-combobox>
+  <span class="oc-combobox-icon" aria-hidden="true"><iconify-icon icon="mdi:wallet-outline" aria-hidden="true"></iconify-icon></span>
+  <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-pay" aria-autocomplete="list" placeholder="Payment method" aria-label="Payment method">
+  <input type="hidden" name="payment" value="">
+  <ul class="oc-combobox-list" id="oc-cb-pay" role="listbox" aria-label="Payment methods">
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="transfer"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="mdi:bank-outline" aria-hidden="true"></iconify-icon></span>Bank transfer</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="card"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="mdi:credit-card-outline" aria-hidden="true"></iconify-icon></span>Credit card</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="invoice"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="mdi:file-document-outline" aria-hidden="true"></iconify-icon></span>Invoice</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="cash"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="mdi:cash" aria-hidden="true"></iconify-icon></span>Cash</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="voucher" aria-disabled="true"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="mdi:ticket-percent-outline" aria-hidden="true"></iconify-icon></span>Voucher (soon)</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="other">Other</li>
+    <li class="oc-combobox-empty" role="presentation" hidden>No results</li>
+  </ul>
+</div>
+<div class="oc-combobox" data-oc-combobox>
+  <span class="oc-combobox-icon" aria-hidden="true"><iconify-icon icon="flag:be-4x3" aria-hidden="true"></iconify-icon></span>
+  <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-country" aria-autocomplete="list" aria-label="Country" value="Belgium">
+  <input type="hidden" name="country" value="be">
+  <ul class="oc-combobox-list" id="oc-cb-country" role="listbox" aria-label="Countries">
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="be" aria-selected="true"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="flag:be-4x3" aria-hidden="true"></iconify-icon></span>Belgium</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="fr"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="flag:fr-4x3" aria-hidden="true"></iconify-icon></span>France</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="de"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="flag:de-4x3" aria-hidden="true"></iconify-icon></span>Germany</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="it"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="flag:it-4x3" aria-hidden="true"></iconify-icon></span>Italy</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="nl"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="flag:nl-4x3" aria-hidden="true"></iconify-icon></span>Netherlands</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="es"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="flag:es-4x3" aria-hidden="true"></iconify-icon></span>Spain</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="gb"><span class="oc-combobox-option-icon" aria-hidden="true"><iconify-icon icon="flag:gb-4x3" aria-hidden="true"></iconify-icon></span>United Kingdom</li>
+    <li class="oc-combobox-empty" role="presentation" hidden>No results</li>
+  </ul>
+</div>
+</div>
+<oc-code lang="html">&lt;div class="flex flex-wrap gap-2 w-full"&gt;
+&lt;div class="oc-combobox" data-oc-combobox&gt;
+  &lt;span class="oc-combobox-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:wallet-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+  &lt;input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-pay" aria-autocomplete="list" placeholder="Payment method" aria-label="Payment method"&gt;
+  &lt;input type="hidden" name="payment" value=""&gt;
+  &lt;ul class="oc-combobox-list" id="oc-cb-pay" role="listbox" aria-label="Payment methods"&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="transfer"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:bank-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Bank transfer&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="card"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:credit-card-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Credit card&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="invoice"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:file-document-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Invoice&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="cash"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:cash" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Cash&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="voucher" aria-disabled="true"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:ticket-percent-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Voucher (soon)&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="other"&gt;Other&lt;/li&gt;
+    &lt;li class="oc-combobox-empty" role="presentation" hidden&gt;No results&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="oc-combobox" data-oc-combobox&gt;
+  &lt;span class="oc-combobox-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:be-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+  &lt;input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-country" aria-autocomplete="list" aria-label="Country" value="Belgium"&gt;
+  &lt;input type="hidden" name="country" value="be"&gt;
+  &lt;ul class="oc-combobox-list" id="oc-cb-country" role="listbox" aria-label="Countries"&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="be" aria-selected="true"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:be-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Belgium&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="fr"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:fr-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;France&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="de"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:de-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Germany&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="it"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:it-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Italy&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="nl"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:nl-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Netherlands&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="es"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:es-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Spain&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="gb"&gt;&lt;span class="oc-combobox-option-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:gb-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;United Kingdom&lt;/li&gt;
+    &lt;li class="oc-combobox-empty" role="presentation" hidden&gt;No results&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-combobox.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">const methods = [
+  { value: "transfer", label: "Bank transfer", icon: "mdi:bank-outline" },
+  { value: "card", label: "Credit card", icon: "mdi:credit-card-outline" },
+  { value: "invoice", label: "Invoice", icon: "mdi:file-document-outline" },
+  { value: "cash", label: "Cash", icon: "mdi:cash" },
+  { value: "voucher", label: "Voucher (soon)", icon: "mdi:ticket-percent-outline", disabled: true },
+  { value: "other", label: "Other" },
+];
+const [payment, setPayment] = useState("");
+const [country, setCountry] = useState("be");
+
+&lt;Combobox options={methods} value={payment} onChange={setPayment} label="Payment method" placeholder="Payment method" icon="mdi:wallet-outline" name="payment" /&gt;
+&lt;Combobox options={[{ value: "be", label: "Belgium", icon: "flag:be-4x3" }, { value: "fr", label: "France", icon: "flag:fr-4x3" } /* … */]}
+  value={country} onChange={setCountry} label="Country" name="country" /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcCombobox v-model="payment" :options="methods" label="Payment method" placeholder="Payment method" icon="mdi:wallet-outline" name="payment" /&gt;
+&lt;OcCombobox v-model="country" :options="countries" label="Country" name="country" /&gt;
+&lt;!-- methods / countries: [{ value, label, icon?: 'mdi:bank-outline' | 'flag:be-4x3', disabled? }] --&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::combobox name="payment" label="Payment method" placeholder="Payment method" icon="mdi:wallet-outline" :options="[
+    'transfer' =&gt; ['label' =&gt; 'Bank transfer', 'icon' =&gt; 'mdi:bank-outline'],
+    'card' =&gt; ['label' =&gt; 'Credit card', 'icon' =&gt; 'mdi:credit-card-outline'],
+    'invoice' =&gt; ['label' =&gt; 'Invoice', 'icon' =&gt; 'mdi:file-document-outline'],
+    'cash' =&gt; ['label' =&gt; 'Cash', 'icon' =&gt; 'mdi:cash'],
+    'voucher' =&gt; ['label' =&gt; 'Voucher (soon)', 'icon' =&gt; 'mdi:ticket-percent-outline', 'disabled' =&gt; true],
+    'other' =&gt; 'Other',
+]" /&gt;
+&lt;x-oc::combobox name="country" label="Country" value="be" :options="['be' =&gt; ['label' =&gt; 'Belgium', 'icon' =&gt; 'flag:be-4x3'], 'fr' =&gt; ['label' =&gt; 'France', 'icon' =&gt; 'flag:fr-4x3']]" /&gt;
+&lt;script type="module" src="/js/oc-combobox.js"&gt;&lt;/script&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -36,6 +132,9 @@
               <tr><td><code>.oc-combobox-list</code></td><td>Listbox panel</td></tr>
               <tr><td><code>.oc-combobox-option</code></td><td>Option; [aria-selected], [data-active]</td></tr>
               <tr><td><code>.oc-combobox-group / -empty</code></td><td>Heading and empty state</td></tr>
+              <tr><td><code>.oc-combobox-option-icon</code></td><td>Icon in front of an option (svg, <code>iconify-icon</code> or img, 1.125rem: <code>--oc-combobox-icon</code>). Options without one line up with the others</td></tr>
+              <tr><td><code>.oc-combobox-icon</code></td><td>First child of the wrapper: the icon of the chosen value in the field, at the same start as the option icons</td></tr>
+              <tr><td><code>[data-oc-combobox]</code></td><td>Turns on <code>oc-combobox.js</code>: filter while typing, arrow keys, <kbd>Enter</kbd>, <kbd>Esc</kbd>; <code>data-value</code> per option, a hidden input gets the value; event <code>oc-combobox-change</code> <code>{ value, label }</code></td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>
@@ -44,6 +143,7 @@
             <tbody>
               <tr><td><code>visibility</code></td><td>Hides the list while keeping the fade transition</td></tr>
               <tr><td><code>translate</code></td><td>Slide-in of the list</td></tr>
+              <tr><td><code>:has()</code></td><td>Options without an icon line up with the labels of options with one; the field makes room for the icon</td></tr>
             </tbody>
           </table>
         <h3 id="anatomy" class="oc-section-content__title mt-2">Anatomy</h3>
@@ -61,7 +161,29 @@
 </ul>
 <h3 class="oc-section-content__title mt-2">Keyboard</h3>
 <ul>
-<li><kbd>↓</kbd>/<kbd>↑</kbd> move the active option, <kbd>Enter</kbd> selects, <kbd>Esc</kbd> closes, <kbd>Home</kbd>/<kbd>End</kbd> jump (all implemented by the wrapper).</li>
+<li><kbd>↓</kbd>/<kbd>↑</kbd> move the active option, <kbd>Enter</kbd> selects, <kbd>Esc</kbd> closes, <kbd>Home</kbd>/<kbd>End</kbd> jump (implemented by the wrappers and <code>oc-combobox.js</code>).</li>
 </ul>
         </div>
+      </section><section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Framework wrappers</h2>
+          <p class="oc-section-header__desc">The wrappers filter, move with the keyboard and set <code>aria-selected</code>, <code>aria-activedescendant</code> and <code>aria-expanded</code> themselves. <code>options</code> is a list of <code>{ value, label, icon?, disabled? }</code>; <code>icon</code> is a webicon name (<code>mdi:…</code>, <code>flag:…</code>) or, in React, any node. <code>name</code> adds a hidden input for forms.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;Combobox options={options} value={value} onChange={setValue} label="Framework" placeholder="Select framework…" /&gt;
+&lt;!-- Vue --&gt;
+&lt;OcCombobox v-model="value" :options="options" label="Framework" placeholder="Select framework…" /&gt;
+&lt;!-- Laravel Blade (+ /js/oc-combobox.js) --&gt;
+&lt;x-oc::combobox name="framework" label="Framework" :options="['astro' =&gt; 'Astro', 'laravel' =&gt; 'Laravel']" value="laravel" /&gt;</oc-code>
+        </div>
       </section>
+<section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-compat features="css.selectors.focus-within css.selectors.has css.properties.translate"></oc-compat>
+        </div>
+      </section>
+<script type="module" src="/js/oc-combobox.js"></script>

@@ -19,11 +19,17 @@ export interface SheetProps extends Omit<DialogHTMLAttributes<HTMLDialogElement>
   footer?: ReactNode;
   /** Accessible name of the close button. */
   closeLabel?: string;
+  /** Glass panel over a live view: see-through (blurred) panel, light scrim without blur (`oc-sheet--glass`). */
+  glass?: boolean;
+  /** A strip of the page stays free beside the panel on a narrow screen (`oc-sheet--inset`). */
+  inset?: boolean;
+  /** The footer is a block of content on its own background, not a row of buttons (`oc-sheet-footer--panel`). */
+  footerPanel?: boolean;
 }
 
 /** Side panel on `<dialog class="oc-sheet">`. */
 export const Sheet = forwardRef<HTMLDialogElement, SheetProps>(function Sheet(
-  { open, defaultOpen, onOpenChange, side = "right", wide, title, description, footer, closeLabel = "Close", className, children, ...rest },
+  { open, defaultOpen, onOpenChange, side = "right", wide, title, description, footer, closeLabel = "Close", glass, inset, footerPanel, className, children, ...rest },
   forwardedRef,
 ) {
   const inner = useRef<HTMLDialogElement>(null);
@@ -37,7 +43,7 @@ export const Sheet = forwardRef<HTMLDialogElement, SheetProps>(function Sheet(
   return (
     <dialog
       ref={ref}
-      className={cx("oc-sheet", side !== "right" && `oc-sheet--${side}`, className)}
+      className={cx("oc-sheet", side !== "right" && `oc-sheet--${side}`, glass && "oc-sheet--glass", inset && "oc-sheet--inset", className)}
       aria-labelledby={title != null ? titleId : undefined}
       {...attrs({ closedby: "any" })}
       {...rest}
@@ -54,7 +60,7 @@ export const Sheet = forwardRef<HTMLDialogElement, SheetProps>(function Sheet(
             </div>
           )}
           <div className="oc-sheet-body">{children}</div>
-          {footer != null && <div className="oc-sheet-footer">{footer}</div>}
+          {footer != null && <div className={cx("oc-sheet-footer", footerPanel && "oc-sheet-footer--panel")}>{footer}</div>}
         </div>
       </DialogContext.Provider>
     </dialog>

@@ -15,7 +15,7 @@ class BlocksTest extends TestCase
 
         $this->assertStringContainsString('class="oc-block-hero my-hero"', $html);
         $this->assertStringContainsString('class="oc-block-hero-badge"', $html);
-        $this->assertStringContainsString('Build faster with OmniaCSS', $html);
+        $this->assertStringContainsString('Quotes, invoices and stock in one app', $html);
     }
 
     public function test_hero_named_slots_override_defaults(): void
@@ -23,11 +23,11 @@ class BlocksTest extends TestCase
         $html = $this->render('<x-oc::block.hero><x-slot:title>Custom title</x-slot:title><x-slot:actions><a class="oc-btn" href="/x">Go</a></x-slot:actions></x-oc::block.hero>');
 
         $this->assertStringContainsString('Custom title', $html);
-        $this->assertStringNotContainsString('Build faster with OmniaCSS', $html);
+        $this->assertStringNotContainsString('Quotes, invoices and stock in one app', $html);
         $this->assertStringContainsString('<a class="oc-btn" href="/x">Go</a>', $html);
-        $this->assertStringNotContainsString('View docs', $html);
+        $this->assertStringNotContainsString('See the modules', $html);
         // untouched slots keep the snippet content
-        $this->assertStringContainsString('New in v0.1.6', $html);
+        $this->assertStringContainsString('New: purchase orders', $html);
     }
 
     public function test_app_shell_uses_height_prop_and_default_slot(): void
@@ -75,6 +75,23 @@ class BlocksTest extends TestCase
         $this->assertStringContainsString('class="oc-modal-content oc-modal-content--xl"', $html);
         $this->assertStringContainsString('oc-stepper-item oc-stepper-item--active', $html);
         $this->assertStringContainsString('<div class="oc-block-wizard-step">Step</div>', $html);
+    }
+
+    public function test_route_blocks_take_their_rows_in_the_default_slot(): void
+    {
+        $steps = $this->render('<x-oc::block.route-steps><x-slot:title>Steps of Route 2</x-slot:title><li class="oc-block-route-steps-item" data-id="x">Mine</li></x-oc::block.route-steps>');
+        $this->assertMatchesRegularExpression('/>\s*Steps of Route 2\s*</', $steps);
+        $this->assertStringContainsString('data-id="x">Mine</li>', $steps);
+        $this->assertStringNotContainsString('Old gate', $steps);
+        $this->assertSame(1, substr_count($steps, '<script>'));
+
+        $blocks = $this->render('<x-oc::block.content-blocks><li class="oc-block-content-blocks-item" data-id="b9">Block</li></x-oc::block.content-blocks>');
+        $this->assertStringContainsString('data-id="b9">Block</li>', $blocks);
+        $this->assertStringContainsString('Step 3 · Old gate', $blocks);
+
+        $view = $this->render('<x-oc::block.step-view><p>Own text</p></x-oc::block.step-view>');
+        $this->assertStringContainsString('<p>Own text</p>', $view);
+        $this->assertStringContainsString('class="oc-block-step-view-question"', $view);
     }
 
     #[DataProvider('allBlocks')]

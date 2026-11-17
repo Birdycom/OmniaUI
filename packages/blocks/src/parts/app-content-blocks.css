@@ -1,0 +1,235 @@
+/* File: packages/blocks/src/parts/app-content-blocks.css
+   Map: frame -> top bar (prev/next, title, actions) -> list -> block card (details: head with grip, type, peek,
+        chevron; tools up/down/remove) -> body (fields, answer rows) -> add row -> drag and keyboard states
+        -> container sizes -> reduced motion
+   Content blocks: the editor column of a page, step or lesson. Every block is a card you can open and close
+   (native <details>), move up or down and remove. The up/down/remove buttons and dragging need the small optional
+   script of the snippet (or your framework's state); opening and closing work without it. */
+
+.oc-block-content-blocks {
+  container: oc-content-blocks / inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: color-mix(in oklab, var(--oc-muted) 45%, var(--oc-card));
+  color: var(--oc-foreground);
+  overflow: clip;
+}
+
+/* ---- Top bar ---- */
+.oc-block-content-blocks-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  border-block-end: 1px solid var(--oc-border);
+  background: var(--oc-card);
+}
+.oc-block-content-blocks-nav { display: inline-flex; gap: 0.25rem; flex: none; }
+.oc-block-content-blocks-heading { display: grid; gap: 0.1rem; flex: 1 1 12rem; min-inline-size: 0; line-height: 1.25; }
+.oc-block-content-blocks-title { margin: 0; font-size: 1.0625rem; font-weight: 650; overflow-wrap: anywhere; }
+.oc-block-content-blocks-meta { margin: 0; color: var(--oc-muted-foreground); font-size: 0.8125rem; }
+.oc-block-content-blocks-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+/* ---- List of blocks ---- */
+.oc-block-content-blocks-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1rem;
+  list-style: none;
+  counter-reset: none;
+}
+.oc-block-content-blocks-item { position: relative; transition: opacity var(--oc-transition-fast); }
+
+.oc-block-content-blocks-card {
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-card);
+  box-shadow: var(--oc-shadow-sm);
+}
+
+/* Head: room on the left for the grip and on the right for the tools (both sit outside the summary, so a click on
+   them never opens or closes the card). The chevron is the last thing on the right. */
+.oc-block-content-blocks-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-block-size: 3rem;
+  padding: 0.4rem 9.5rem 0.4rem 2.6rem;
+  border-radius: var(--oc-radius);
+  cursor: pointer;
+  list-style: none;
+}
+.oc-block-content-blocks-head::-webkit-details-marker { display: none; }
+.oc-block-content-blocks-head:focus-visible { outline: var(--oc-focus-width, 2px) solid var(--oc-ring); outline-offset: 2px; }
+/* Chevron, turned when open. */
+.oc-block-content-blocks-head::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(50% - 0.3rem);
+  inset-inline-end: 1.1rem;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-inline-end: 2px solid var(--oc-muted-foreground);
+  border-block-end: 2px solid var(--oc-muted-foreground);
+  rotate: 45deg;
+  translate: 0 -0.1rem;
+  transition: rotate var(--oc-transition-fast), translate var(--oc-transition-fast);
+}
+.oc-block-content-blocks-card[open] > .oc-block-content-blocks-head::after { rotate: 225deg; translate: 0 0.1rem; }
+.oc-block-content-blocks-card[open] > .oc-block-content-blocks-head { border-end-start-radius: 0; border-end-end-radius: 0; }
+
+/* Type label: icon + name, the same look for every block type. */
+.oc-block-content-blocks-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: none;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: var(--oc-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.oc-block-content-blocks-type :is(iconify-icon, svg[data-icon]) { font-size: 0.95rem; color: light-dark(var(--oc-block-type-color, var(--oc-primary)), oklch(from var(--oc-block-type-color, var(--oc-primary)) max(l, 0.74) c h)); }
+
+/* One line of the content, only while the card is closed. */
+.oc-block-content-blocks-peek {
+  min-inline-size: 0;
+  overflow: hidden;
+  color: var(--oc-muted-foreground);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.oc-block-content-blocks-card[open] .oc-block-content-blocks-peek { display: none; }
+
+/* Grip (the free .oc-sortable-row-grip) on the left, tools on the right, both on the head line. */
+.oc-block-content-blocks-item > .oc-sortable-row-grip {
+  position: absolute;
+  inset-block-start: 0.6rem;
+  inset-inline-start: 0.55rem;
+  z-index: 1;
+}
+.oc-block-content-blocks-tools {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-end: 2.6rem;
+  z-index: 1;
+  display: inline-flex;
+  gap: 0.1rem;
+}
+.oc-block-content-blocks-tools .oc-btn:disabled { opacity: 0.35; }
+.oc-block-content-blocks-tools [data-action="remove"]:hover { color: var(--oc-destructive); }
+
+.oc-block-content-blocks-body {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem 1rem;
+  border-block-start: 1px solid var(--oc-border);
+}
+.oc-block-content-blocks-body > * { margin: 0; }
+.oc-block-content-blocks-row { display: grid; gap: 0.75rem; grid-template-columns: minmax(0, 1fr); }
+
+/* Answer rows of a question block: letter (marks the right answer), text field, remove. */
+.oc-block-content-blocks-answers { display: grid; gap: 0.4rem; margin: 0; padding: 0; border: 0; }
+.oc-block-content-blocks-answers > legend { float: inline-start; inline-size: 100%; margin-block-end: 0.4rem; padding: 0; }
+.oc-block-content-blocks-answer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: var(--oc-card);
+}
+.oc-block-content-blocks-answer .oc-input { border-color: transparent; box-shadow: none; background: transparent; }
+.oc-block-content-blocks-answer:focus-within { border-color: var(--oc-border-strong); }
+.oc-block-content-blocks-letter {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: var(--oc-muted);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.oc-block-content-blocks-letter input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: inherit; }
+.oc-block-content-blocks-letter:has(input:focus-visible) { outline: var(--oc-focus-width, 2px) solid var(--oc-ring); outline-offset: 2px; }
+.oc-block-content-blocks-answer:has(.oc-block-content-blocks-letter input:checked) {
+  border-color: oklch(from var(--oc-success) l c h / 0.6);
+  background: oklch(from var(--oc-success) l c h / 0.08);
+}
+.oc-block-content-blocks-answer:has(.oc-block-content-blocks-letter input:checked) .oc-block-content-blocks-letter {
+  border-color: transparent;
+  background: oklch(from var(--oc-success) min(l, 0.5) c h);
+  color: var(--color-white-50);
+}
+.oc-block-content-blocks-hint { color: var(--oc-muted-foreground); font-size: 0.8125rem; line-height: 1.45; }
+
+/* Add row under the list: a dashed button that opens the menu of block types. */
+.oc-block-content-blocks-foot { padding: 0 1rem 1rem; }
+.oc-block-content-blocks-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  inline-size: 100%;
+  min-block-size: 3rem;
+  border: 1px dashed var(--oc-border-strong);
+  border-radius: var(--oc-radius);
+  background: transparent;
+  color: var(--oc-foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.oc-block-content-blocks-add:hover { border-color: var(--oc-primary); background: oklch(from var(--oc-primary) l c h / 0.06); }
+.oc-block-content-blocks-add:focus-visible { outline: var(--oc-focus-width, 2px) solid var(--oc-ring); outline-offset: 2px; }
+
+/* ---- Drag and keyboard states (set by the script) ---- */
+.oc-block-content-blocks-item.is-dragging { opacity: 0.4; }
+.oc-block-content-blocks-item.is-drop-before::before,
+.oc-block-content-blocks-item.is-drop-after::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  block-size: 3px;
+  border-radius: 3px;
+  background: var(--oc-primary);
+}
+.oc-block-content-blocks-item.is-drop-before::before { inset-block-start: -0.45rem; }
+.oc-block-content-blocks-item.is-drop-after::after { inset-block-end: -0.45rem; }
+.oc-block-content-blocks-item:has(> .oc-sortable-row-grip[aria-pressed="true"]) .oc-block-content-blocks-card {
+  border-color: var(--oc-primary);
+  box-shadow: 0 0 0 1px var(--oc-primary), var(--oc-shadow-md);
+}
+
+/* Narrow column: no peek text next to the type, smaller side room. */
+@container oc-content-blocks (max-width: 30rem) {
+  .oc-block-content-blocks-list { padding: 0.75rem; }
+  .oc-block-content-blocks-foot { padding: 0 0.75rem 0.75rem; }
+  .oc-block-content-blocks-peek { display: none; }
+  .oc-block-content-blocks-bar { padding-inline: 0.75rem; }
+}
+@container oc-content-blocks (min-width: 36rem) {
+  .oc-block-content-blocks-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .oc-block-content-blocks-list { padding: 1.25rem; }
+  .oc-block-content-blocks-foot { padding: 0 1.25rem 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-block-content-blocks-item, .oc-block-content-blocks-head::after { transition: none; }
+}

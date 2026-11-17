@@ -1,8 +1,8 @@
 <!-- File: packages/vue/src/components/OcProjectCard.vue | Map: props -> a.oc-project-card -> frame (bar + shot) -> body -->
 <script setup lang="ts">
 /**
- * Portfolio card with a browser-like preview. Without `image` the preview is an accent gradient.
- * Slots: type, name, meta, more. Classes: .oc-project-card (--flat), __frame, __bar, __shot, __body, __type, __name, __meta, __more
+ * Portfolio card with a browser-like preview. Without `image` the preview is a soft tint of the accent color.
+ * Slots: type, name, meta, more. Classes: .oc-project-card (--flat, --glow), __frame, __bar, __shot, __body, __type, __name, __meta, __more
  */
 withDefaults(
   defineProps<{
@@ -14,13 +14,14 @@ withDefaults(
     image?: string
     imageAlt?: string
     flat?: boolean
+    glow?: boolean
   }>(),
   { more: 'View project', imageAlt: '' },
 )
 </script>
 
 <template>
-  <a :class="['oc-project-card', flat && 'oc-project-card--flat']" :href="href">
+  <a :class="['oc-project-card', flat && 'oc-project-card--flat', glow && 'oc-project-card--glow']" :href="href">
     <span class="oc-project-card__frame">
       <span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span>
       <img v-if="image" class="oc-project-card__shot" :src="image" :alt="imageAlt" loading="lazy" />

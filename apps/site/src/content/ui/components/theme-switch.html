@@ -48,12 +48,44 @@
           </oc-demo>
           <p class="oc-section-content__desc">React <code>&lt;ThemeSwitch icons /&gt;</code>, Vue <code>&lt;OcThemeSwitch icons /&gt;</code>, Blade <code>&lt;x-oc::theme-switch :icons="true" /&gt;</code>. Load the <a href="../webicons.html">webicons</a> script for <code>&lt;iconify-icon&gt;</code>.</p>
 
-          <h3 class="oc-section-content__title mt-2">Remembering the choice</h3>
-          <p class="oc-section-content__desc">Switching is CSS only, but CSS cannot remember a choice between page loads. Persistence is an optional enhancement: a few lines store the value in <code>localStorage</code> and restore it as <code>data-theme</code> on load. Without them the page starts in "System" (the OS preference). These docs use exactly this script.</p>
-          <oc-code lang="html">&lt;script&gt; /* optional: persistence only, the switch itself needs no JS */
-  try { const t = localStorage.getItem("oc-theme"); if (t &amp;&amp; t !== "system") document.documentElement.dataset.theme = t; } catch {}
-  addEventListener("change", (e) =&gt; { if (e.target.name === "oc-theme") try { localStorage.setItem("oc-theme", e.target.value); } catch {} });
-&lt;/script&gt;</oc-code>
+          <h3 class="oc-section-content__title mt-2" id="toggle">One button <span class="oc-badge-version">v0.16.0</span></h3>
+          <p class="oc-section-content__desc">For a narrow header there is no room for three choices. Put <code>data-oc-theme-toggle</code> on one button: each click switches between light and dark. <strong>Try it:</strong> click a button below and the whole page changes; click again to go back. The button shows where a click takes you: a moon while the page is light, a sun while it is dark. That works with two icons, one with <code>.oc-theme-img--light</code> and one with <code>.oc-theme-img--dark</code>; only the one for the current theme is shown. The same two classes work on text, as in the second button. The button needs the script below.</p>
+          <oc-demo title="Theme switch - one button">
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:1.5rem">
+  <!-- Icon only, for a header. The aria-label tells screen readers what it does. -->
+  <button class="oc-btn oc-btn--outline oc-btn--icon" type="button" data-oc-theme-toggle aria-label="Switch between light and dark">
+    <iconify-icon class="oc-theme-img--light" icon="mdi:weather-night" aria-hidden="true"></iconify-icon>
+    <iconify-icon class="oc-theme-img--dark" icon="mdi:white-balance-sunny" aria-hidden="true"></iconify-icon>
+  </button>
+
+  <!-- With text: the label names the theme you get. -->
+  <button class="oc-btn oc-btn--outline" type="button" data-oc-theme-toggle>
+    <iconify-icon class="oc-theme-img--light" icon="mdi:weather-night" aria-hidden="true"></iconify-icon>
+    <iconify-icon class="oc-theme-img--dark" icon="mdi:white-balance-sunny" aria-hidden="true"></iconify-icon>
+    <span class="oc-theme-img--light">Dark theme</span>
+    <span class="oc-theme-img--dark">Light theme</span>
+  </button>
+</div>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="cards">Cards for a settings page <span class="oc-badge-version">v0.16.0</span></h3>
+          <p class="oc-section-content__desc">On a settings page there is room to show all three choices large: add <code>.oc-theme-switch--cards</code>. Click a card to switch; "System" follows the setting of the device. No script is needed for the switching itself.</p>
+          <oc-demo title="Theme switch - cards">
+<fieldset class="oc-theme-switch oc-theme-switch--cards" aria-label="Color theme" style="inline-size:min(100%, 30rem)">
+  <label><input type="radio" name="oc-theme" value="system" checked><iconify-icon icon="mdi:monitor" aria-hidden="true"></iconify-icon> System</label>
+  <label><input type="radio" name="oc-theme" value="light"><iconify-icon icon="mdi:white-balance-sunny" aria-hidden="true"></iconify-icon> Light</label>
+  <label><input type="radio" name="oc-theme" value="dark"><iconify-icon icon="mdi:weather-night" aria-hidden="true"></iconify-icon> Dark</label>
+</fieldset>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="remember">Remembering the choice <span class="oc-badge-version">v0.16.0</span></h3>
+          <p class="oc-section-content__desc">Switching is CSS only, but CSS cannot remember a choice between page loads. <code>theme.js</code> does that: it stores the choice in <code>localStorage</code>, puts it on <code>&lt;html&gt;</code> as <code>data-theme="light|dark"</code> (and the class <code>.dark</code>), checks the matching radio of every switch and keeps other tabs in step. With <em>System</em> the attribute is removed and the page follows the operating system. Your own CSS and scripts then have one place to look: <code>html[data-theme="dark"]</code>.</p>
+          <oc-code lang="html">&lt;!-- 1. In &lt;head&gt;, before the stylesheets: no flash of the wrong theme on load --&gt;
+&lt;script&gt;(function(){try{var t=localStorage.getItem("oc-theme"),d=document.documentElement;if(t==="light"||t==="dark"){d.setAttribute("data-theme",t);if(t==="dark")d.classList.add("dark")}}catch(e){}})();&lt;/script&gt;
+
+&lt;!-- 2. The script: npx omniaui copy-js theme  puts oc-theme.js in public/js --&gt;
+&lt;script type="module" src="/js/oc-theme.js"&gt;&lt;/script&gt;</oc-code>
+          <p class="oc-section-content__desc mt-1">In a bundler: <code>import { initTheme } from "@birdycom/omniaui/theme.js"</code> and call <code>initTheme(document, { storageKey: "oc-theme", darkClass: true })</code>. It returns <code>get()</code>, <code>set("dark")</code> and <code>stop()</code>, and fires <code>oc-theme-change</code> on <code>&lt;html&gt;</code> with <code>detail.choice</code> and <code>detail.theme</code>. A button with <code>data-oc-theme-set="light"</code> sets one value.</p>
         </div>
       </section>
 
@@ -71,8 +103,15 @@
               <tr><td><code>.oc-theme-switch--icons</code></td><td>Icons only: smaller labels, the text in <code>.oc-theme-switch__text</code> is hidden on screen but read aloud.</td></tr>
               <tr><td><code>.oc-theme-switch__text</code></td><td>The label text next to a webicon (needed with <code>--icons</code>, so screen readers still say System, Light or Dark).</td></tr>
               <tr><td><code>.oc-theme-scope</code></td><td>On any element: a switch inside it themes only that element (previews, embedded widgets).</td></tr>
+              <tr><td><code>.oc-theme-img--light / --dark</code></td><td>On two images (or any two elements): only the one for the chosen theme is shown. Follows the operating system, <code>data-theme</code>, <code>.dark</code> and a switch on the page.</td></tr>
+              <tr><td><code>.oc-theme-scope</code> with own brand colors</td><td>A scope that sets <code>--oc-brand-1</code> / <code>--oc-brand-2</code> gets matching accents (<code>--oc-accent-from</code> / <code>-to</code>) without declaring them again.</td></tr>
+              <tr><td><code>.oc-theme-switch--cards</code></td><td>Three large choice cards with the icon above the label, for a settings page; the chosen card has a border in the primary color.</td></tr>
+              <tr><td><code>data-oc-theme-toggle</code></td><td>On a button: light and dark in one click (needs <code>theme.js</code>); <code>aria-pressed</code> is true in dark.</td></tr>
+              <tr><td><code>data-oc-theme-set="system|light|dark"</code></td><td>On a button: sets that value (needs <code>theme.js</code>).</td></tr>
+              <tr><td><code>theme.js</code></td><td>Remembers the choice, sets <code>data-theme</code> and <code>.dark</code> on <code>&lt;html&gt;</code>, keeps every switch, button and tab in step.</td></tr>
               <tr><td><code>&lt;html data-theme="light|dark"&gt;</code></td><td>A fixed theme without a switch, or the value restored by the optional script.</td></tr>
             </tbody>
           </table>
         </div>
       </section>
+<script type="module" src="/js/oc-theme.js"></script>

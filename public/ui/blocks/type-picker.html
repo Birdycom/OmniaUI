@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en" class="scrollbar-omnia" data-section="blocks" data-sister-site="https://omniacss.test">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Gallery of content types to add, each with a small real preview, picked by click or arrow keys.">
+  <meta name="generator" content="OmniaUI 0.16.0">
+  <title>OmniaUI - Type picker Block</title>
+  <!-- Favicon: SVG for modern browsers, ICO/PNG as fallback (Safari, Google, /favicon.ico). "icon": "pro" in the
+       page meta shows the OmniaUI Pro star instead of the OmniaUI puzzle piece. -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  
+  <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/omnia-site.css?v=ddc7bd218f"><link rel="stylesheet" href="/css/oc-components.css?v=434e88c567"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=667f0292e8"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=b08a864c8c"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=2df0c61c2f"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
+  <script>
+    // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
+    try { const u = new URL(location.href), q = u.searchParams.get("oc-theme"); if (q) { localStorage.setItem("oc-theme", q); u.searchParams.delete("oc-theme"); history.replaceState(history.state, "", u); } const t = q || localStorage.getItem("oc-theme"); if (t && t !== "system") document.documentElement.dataset.theme = t; } catch {}
+    const carryTheme = (e) => { const a = e.target.closest && e.target.closest("a[href]"); const sister = document.documentElement.dataset.sisterSite; if (!a || !sister || a.origin !== new URL(sister).origin) return; try { const t = localStorage.getItem("oc-theme"); if (!t) return; const u = new URL(a.href); u.searchParams.set("oc-theme", t); a.href = u.href; } catch {} };
+    addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
+    addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
+    // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
+    // a click in a demo still themes only that demo (.oc-theme-scope).
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
+    addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
+  </script>
+  <script src="/js/oc-docs-v2.js?v=504c13ff81" defer></script>
+  
+</head>
+<body>
+  <header class="oc-topbar oc-topbar--fixed">
+    <input type="checkbox" id="ocd-nav-toggle" class="ocd-nav-toggle" aria-label="Show the menu">
+    <label class="ocd-nav-button" for="ocd-nav-toggle" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></label>
+    <a class="oc-topbar-brand" href="/">OmniaUI<span class="oc-badge-version ml-1">v0.16.0</span></a>
+    <nav class="oc-topbar-nav" aria-label="Main">
+      <ul class="oc-navmenu oc-navmenu--site">
+        <li><a class="oc-navmenu-link" href="https://omniacss.test/">OmniaCSS</a></li><li><a class="oc-navmenu-link" href="https://omniacss.test/docs/">Docs</a></li><li><a class="oc-navmenu-link" href="/ui/components">Components</a></li><li><a class="oc-navmenu-link" href="/ui/blocks" aria-current="page">Blocks</a></li><li><a class="oc-navmenu-link" href="/ui/starter-kits">Starter kits</a></li><li><a class="oc-navmenu-link" href="/ui/webicons">Webicons</a></li>
+        <li><a class="oc-navmenu-link" href="https://github.com/Birdycom/OmniaUI" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="oc-navmenu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"></path></svg></a></li>
+      </ul>
+    </nav>
+    <div class="ocd-topbar-actions">
+      <a class="oc-btn oc-btn--sm" href="/ui/pro#pricing">Pro</a>
+      <button type="button" class="ocd-search-trigger" data-ocd-search aria-label="Search components and blocks (Ctrl K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span>Search OmniaUI…</span><kbd>Ctrl K</kbd></button>
+      <fieldset class="oc-theme-switch ocm-theme" aria-label="Color theme">
+        <label><input type="radio" name="oc-theme" value="system" checked> System</label>
+        <label><input type="radio" name="oc-theme" value="light"> Light</label>
+        <label><input type="radio" name="oc-theme" value="dark"> Dark</label>
+      </fieldset>
+    </div>
+  </header>
+
+  <dialog class="ocd-search-dialog" id="ocd-search" aria-label="Search">
+    <div class="ocd-search-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input type="search" placeholder="Search components, blocks and classes" aria-label="Search" role="combobox" aria-controls="ocd-search-results" aria-expanded="true" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div>
+    <ul class="ocd-search-results" id="ocd-search-results" role="listbox" aria-label="Results"></ul>
+    <p class="ocd-search-empty" hidden>No results. Try a component such as <code>dialog</code>, a block such as <code>pricing</code> or a class such as <code>oc-btn</code>.</p>
+    <p class="ocd-search-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> to move</span><span><kbd>Enter</kbd> to open</span><span><kbd>Esc</kbd> to close</span></p>
+  </dialog>
+
+  <div class="ocd-shell">
+      <aside class="ocd-sidebar-left"><nav class="oc-sidebar oc-sidebar--docs" aria-label="OmniaUI Blocks"><h2 class="oc-sidebar-title">OmniaUI Blocks</h2><p class="oc-sidebar-group-label">Overview</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks">All blocks</a></li><li><a class="oc-sidebar-menu-button" href="/ui/pro">OmniaUI Pro</a></li><li><a class="oc-sidebar-menu-button" href="/ui/security">Security notices</a></li></ul><p class="oc-sidebar-group-label">App UX</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/app-header">App header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/app-shell">App shell</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/barcode-maker">Barcode maker<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/calendars">Calendars<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/charts">Charts gallery<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/chat-inbox">Chat inbox<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/cms-dashboard">CMS dashboard<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/content-blocks">Content blocks<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/dashboard-01">Dashboard 01<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/dashboard-stats">Dashboard stats<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/data-table">Data table</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/form-builder">Form builder<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/form-page">Form page</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hub-launcher">Hub launcher<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/media-manager">Media manager<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/module-header">Module header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/onboarding-checklist">Onboarding checklist<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-detail">Product detail<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-editor">Product editor<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-picker">Product picker<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-list">Products list<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/quote-lines">Quote lines<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/relations-list">Relations list<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/route-progress">Route progress<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/route-steps">Route steps<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/settings-page">Settings page<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-cart">Shop cart<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-catalog">Shop catalog<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-checkout">Shop checkout<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/shop-product">Shop product<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/sidebars">Sidebars<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/status-page">Status page<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/step-view">Step view<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/type-picker" aria-current="page" data-ocd-active="true">Type picker<span class="oc-sidebar-menu-badge ocd-nav-new" title="New in v0.16.0">New</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/wizard-dialog">Wizard dialog</a></li></ul><p class="oc-sidebar-group-label">Authentication</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/auth-split">Auth split</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/auth">Authentication</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/password-reset">Forgot and reset password</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/login">Login<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/otp">OTP verification<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/signup">Signup<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/two-factor">Two-factor setup</a></li></ul><p class="oc-sidebar-group-label">Marketing</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/about-timeline">About timeline</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/cta">Call to Action</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/contact-form">Contact form</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/contact-grid">Contact grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/device-mockups">Device mockups<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/ecosystem-map">Ecosystem map<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/event-scene">Event scene<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/faq">FAQ</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/features">Features</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/footer">Footer</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/glass-nav">Glass navigation<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero">Hero</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero-orbit">Hero orbit</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/hero-code">Hero with code window</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/portfolio-grid">Portfolio grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/pricing">Pricing</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/pricing-plans">Pricing plans<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/process">Process &amp; marquee</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/product-grid">Product grid</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/profile-header">Profile header</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/services-tabs">Services tabs<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/showcase">Showcase (portfolio)</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/site-footer">Site footer</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/site-header">Site header<span class="oc-sidebar-menu-badge ocd-nav-pro">Free + Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/spotlight">Spotlight</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/spotlight-cards">Spotlight cards<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/stats">Stats</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/team-list">Team list</a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/watch-layout">Watch layout<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li></ul><p class="oc-sidebar-group-label">Media</p><ul class="oc-sidebar-menu"><li><a class="oc-sidebar-menu-button" href="/ui/blocks/infinite-carousel">Infinite carousel<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li><li><a class="oc-sidebar-menu-button" href="/ui/blocks/masonry-gallery">Masonry gallery<span class="oc-sidebar-menu-badge ocd-nav-pro">Pro</span></a></li></ul></nav></aside>
+      <script>(() => { const nav = document.currentScript.previousElementSibling; const key = "oc-nav-scroll"; try { const y = sessionStorage.getItem(key); if (y !== null) nav.scrollTop = +y; } catch {} const act = [...nav.querySelectorAll('[data-ocd-active="true"]')].pop(); if (act) { const a = act.getBoundingClientRect(), n = nav.getBoundingClientRect(); if (a.top < n.top || a.bottom > n.bottom) nav.scrollTop += a.top - n.top - n.height / 3; } addEventListener("pagehide", () => { try { sessionStorage.setItem(key, nav.scrollTop); } catch {} }); })();</script><main class="ocd-content"><!-- File: apps/site/src/content/ui/blocks/type-picker.html | Map: hero -> demos -> reference -> frameworks -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Type picker</h1>
+        <p class="oc-hero-text">A gallery of the content types a user can add to a page, a step or a lesson. Every card is a label around a radio, so picking works with a click, a tap or the arrow keys without JavaScript, and each card shows a small real example of the block instead of grey bars. Install with <code>npx omniaui add type-picker</code>. <a href="../blocks">All blocks</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 id="demo-3" class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">blocks/type-picker.html</span><span class="oc-section-header__badge-support oc-badge-support oc-badge-support--baseline oc-tooltip oc-tooltip--multiline" data-tooltip="Works in Chrome, Firefox and Safari, on desktop and mobile">Baseline</span>
+          <p class="oc-section-header__desc">Native radios in cards; the search field and the category chips use a few optional lines of script.</p>
+        </div>
+        <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Type picker <span class="oc-badge-version">v0.16.0</span></h3>
+          <p class="oc-section-content__desc">Click a card, or press Tab to reach the cards and use the arrow keys: the picked card gets a blue frame and a check mark. Question is greyed out because this step already has one. Type <em>time</em> in the search field or click a category to filter the cards; the 15 lines of script at the end of the code do that, the picking itself needs no script.</p>
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Type picker</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-4"><span>Blade</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-1-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-1-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-1-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope oc-demo__preview--tall">
+<section class="oc-block-type-picker" aria-labelledby="oc-picker-title">
+  <div class="oc-block-type-picker-head">
+    <h2 class="oc-block-type-picker-title" id="oc-picker-title">Add a block</h2>
+    <p class="oc-block-type-picker-text">Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.</p>
+  </div>
+  <div class="oc-block-type-picker-tools">
+    <div class="oc-input-group oc-input-group--affix">
+      <span class="oc-input-addon" aria-hidden="true"><svg data-icon="mdi:magnify" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5l-1.5 1.5l-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5" /></svg></span>
+      <input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks">
+    </div>
+    <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category">
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="all" checked> All</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="content"> Content</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="question"> Questions</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="media"> Media</label>
+    </fieldset>
+  </div>
+  <fieldset class="oc-block-type-picker-grid">
+    <legend class="oc-visually-hidden">Block type</legend>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="text" checked>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><b>Welcome</b><p>Walk to the old gate and look up at the clock.</p></span>
+      <span class="oc-block-type-picker-name">Text</span>
+      <span class="oc-block-type-picker-hint">Paragraphs with headings and links</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="media">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="image">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><rect width="160" height="100" class="oc-block-art-sky" /><circle cx="122" cy="28" r="12" class="oc-block-art-sun" /><path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land" /></svg></span>
+      <span class="oc-block-type-picker-name">Image</span>
+      <span class="oc-block-type-picker-hint">A photo with an optional caption</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="question">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="question" disabled>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><b>Which year?</b><span class="oc-block-type-picker-art-option">1890</span><span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on">1910</span></span>
+      <span class="oc-block-type-picker-name">Question</span>
+      <span class="oc-block-type-picker-hint">One per step: this step has one</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="note">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-note"><b>Mind the traffic</b><p>Cross at the lights.</p></span></span>
+      <span class="oc-block-type-picker-name">Note</span>
+      <span class="oc-block-type-picker-hint">Info, warning or success in a frame</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="link">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>More about this place</p><span class="oc-block-type-picker-art-btn">Open page <svg data-icon="mdi:open-in-new" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M14 3v2h3.59l-9.83 9.83l1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z" /></svg></span></span>
+      <span class="oc-block-type-picker-name">Link</span>
+      <span class="oc-block-type-picker-hint">A button to another page</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="countdown">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>Time left</p><span class="oc-block-type-picker-art-time">1:30</span><span class="oc-block-type-picker-art-bar"></span></span>
+      <span class="oc-block-type-picker-name">Countdown</span>
+      <span class="oc-block-type-picker-hint">A timer that starts when the step opens</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="tip">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-row">Show a tip <svg data-icon="mdi:chevron-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6l-6-6z" /></svg></span><p>Opens when the reader asks for it.</p></span>
+      <span class="oc-block-type-picker-name">Tip</span>
+      <span class="oc-block-type-picker-hint">Hidden until the reader opens it</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="media">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="video">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-video"><svg data-icon="mdi:play-circle" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M10 16.5v-9l6 4.5M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2" /></svg></span></span>
+      <span class="oc-block-type-picker-name">Video</span>
+      <span class="oc-block-type-picker-hint">A clip from a link or an upload</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="question">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="scan">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"><path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z" /></svg></span>
+      <span class="oc-block-type-picker-name">Code to scan</span>
+      <span class="oc-block-type-picker-hint">Opens the step after a scan on site</span>
+    </label>
+    <p class="oc-block-type-picker-empty" hidden>No block matches your search.</p>
+  </fieldset>
+  <div class="oc-block-type-picker-foot">
+    <button class="oc-btn oc-btn--outline" type="button">Cancel</button>
+    <button class="oc-btn" type="button">Add block</button>
+  </div>
+</section>
+<script>
+  // Optional: filter the cards of every .oc-block-type-picker by search text and category. Without it all cards stay visible.
+  document.querySelectorAll(".oc-block-type-picker").forEach((picker) => {
+    const filter = () => {
+      const q = (picker.querySelector(".oc-block-type-picker-search")?.value || "").trim().toLowerCase();
+      const cat = picker.querySelector(".oc-block-type-picker-cats input:checked")?.value || "all";
+      let shown = 0;
+      picker.querySelectorAll(".oc-block-type-picker-item").forEach((item) => {
+        item.hidden = !((cat === "all" || item.dataset.category === cat) && item.textContent.toLowerCase().includes(q));
+        if (!item.hidden) shown++;
+      });
+      const empty = picker.querySelector(".oc-block-type-picker-empty");
+      if (empty) empty.hidden = shown > 0;
+    };
+    picker.addEventListener("input", (e) => { if (e.target.closest(".oc-block-type-picker-tools")) filter(); });
+  });
+</script>
+
+
+
+
+          </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97</pre><pre class="code-preview"><code><span class="hl-tag">&lt;section</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker"</span> <span class="hl-attr">aria-labelledby</span>=<span class="hl-string">"oc-picker-title"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-head"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;h2</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-title"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-picker-title"</span><span class="hl-tag">&gt;</span>Add a block<span class="hl-tag">&lt;/h2</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-text"</span><span class="hl-tag">&gt;</span>Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-tools"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input-group oc-input-group--affix"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input-addon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:magnify"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input oc-block-type-picker-search"</span> <span class="hl-attr">type</span>=<span class="hl-string">"search"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Search blocks"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Search blocks"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;fieldset</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Category"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-cat"</span> <span class="hl-attr">value</span>=<span class="hl-string">"all"</span> <span class="hl-attr">checked</span><span class="hl-tag">&gt;</span> All<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-cat"</span> <span class="hl-attr">value</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span> Content<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-cat"</span> <span class="hl-attr">value</span>=<span class="hl-string">"question"</span><span class="hl-tag">&gt;</span> Questions<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-cat"</span> <span class="hl-attr">value</span>=<span class="hl-string">"media"</span><span class="hl-tag">&gt;</span> Media<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/fieldset</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;fieldset</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-grid"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;legend</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-visually-hidden"</span><span class="hl-tag">&gt;</span>Block type<span class="hl-tag">&lt;/legend</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"text"</span> <span class="hl-attr">checked</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;b</span><span class="hl-tag">&gt;</span>Welcome<span class="hl-tag">&lt;/b</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Walk to the old gate and look up at the clock.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Text<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>Paragraphs with headings and links<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"media"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"image"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;svg</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-img"</span> <span class="hl-attr">viewBox</span>=<span class="hl-string">"0 0 160 100"</span> <span class="hl-attr">preserveAspectRatio</span>=<span class="hl-string">"xMidYMid slice"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;rect</span> <span class="hl-attr">width</span>=<span class="hl-string">"160"</span> <span class="hl-attr">height</span>=<span class="hl-string">"100"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-sky"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;circle</span> <span class="hl-attr">cx</span>=<span class="hl-string">"122"</span> <span class="hl-attr">cy</span>=<span class="hl-string">"28"</span> <span class="hl-attr">r</span>=<span class="hl-string">"12"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-sun"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;path</span> <span class="hl-attr">d</span>=<span class="hl-string">"M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-land"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/svg</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Image<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>A photo with an optional caption<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"question"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"question"</span> <span class="hl-attr">disabled</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;b</span><span class="hl-tag">&gt;</span>Which year?<span class="hl-tag">&lt;/b</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-option"</span><span class="hl-tag">&gt;</span>1890<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-option oc-block-type-picker-art-option--on"</span><span class="hl-tag">&gt;</span>1910<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Question<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>One per step: this step has one<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"note"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-note"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;b</span><span class="hl-tag">&gt;</span>Mind the traffic<span class="hl-tag">&lt;/b</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Cross at the lights.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Note<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>Info, warning or success in a frame<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"link"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>More about this place<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-btn"</span><span class="hl-tag">&gt;</span>Open page <span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:open-in-new"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Link<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>A button to another page<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"countdown"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Time left<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-time"</span><span class="hl-tag">&gt;</span>1:30<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-bar"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Countdown<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>A timer that starts when the step opens<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"tip"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-row"</span><span class="hl-tag">&gt;</span>Show a tip <span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:chevron-down"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Opens when the reader asks for it.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Tip<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>Hidden until the reader opens it<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"media"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"video"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-video"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:play-circle"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Video<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>A clip from a link or an upload<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"question"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type"</span> <span class="hl-attr">value</span>=<span class="hl-string">"scan"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;svg</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-code"</span> <span class="hl-attr">viewBox</span>=<span class="hl-string">"0 0 21 21"</span> <span class="hl-attr">shape-rendering</span>=<span class="hl-string">"crispEdges"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;path</span> <span class="hl-attr">fill</span>=<span class="hl-string">"currentColor"</span> <span class="hl-attr">d</span>=<span class="hl-string">"M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/svg</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Code to scan<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>Opens the step after a scan on site<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-empty"</span> <span class="hl-attr">hidden</span><span class="hl-tag">&gt;</span>No block matches your search.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/fieldset</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-foot"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Cancel<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Add block<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/section</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;script</span><span class="hl-tag">&gt;</span>
+  // Optional: filter the cards of every .oc-block-type-picker by search text and category. Without it all cards stay visible.
+  document.querySelectorAll(".oc-block-type-picker").forEach((picker) =&gt; {
+    const filter = () =&gt; {
+      const q = (picker.querySelector(".oc-block-type-picker-search")?.value || "").trim().toLowerCase();
+      const cat = picker.querySelector(".oc-block-type-picker-cats input:checked")?.value || "all";
+      let shown = 0;
+      picker.querySelectorAll(".oc-block-type-picker-item").forEach((item) =&gt; {
+        item.hidden = !((cat === "all" || item.dataset.category === cat) &amp;&amp; item.textContent.toLowerCase().includes(q));
+        if (!item.hidden) shown++;
+      });
+      const empty = picker.querySelector(".oc-block-type-picker-empty");
+      if (empty) empty.hidden = shown &gt; 0;
+    };
+    picker.addEventListener("input", (e) =&gt; { if (e.target.closest(".oc-block-type-picker-tools")) filter(); });
+  });
+<span class="hl-tag">&lt;/script</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16</pre><pre class="code-preview"><code>import { BlockTypePicker, Button } from "@birdycom/omniaui-react";
+
+&lt;BlockTypePicker
+  title="Add a block"
+  text="Pick what to add to Step 1 of Route 1."
+  categories={[{ value: "content", label: "Content" }, { value: "question", label: "Questions" }, { value: "media", label: "Media" }]}
+  options={[
+    { value: "text", label: "Text", hint: "Paragraphs with headings and links", category: "content", preview: &lt;&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate.&lt;/p&gt;&lt;/&gt; },
+    { value: "question", label: "Question", hint: "One per step: this step has one", category: "question", disabled: true },
+    { value: "countdown", label: "Countdown", hint: "A timer that starts when the step opens", category: "content",
+      preview: &lt;&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span className="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span className="oc-block-type-picker-art-bar" /&gt;&lt;/&gt; },
+  ]}
+  value={type}
+  onValueChange={setType}
+  footer={&lt;&gt;&lt;Button variant="outline"&gt;Cancel&lt;/Button&gt;&lt;Button onClick={() =&gt; add(type)}&gt;Add block&lt;/Button&gt;&lt;/&gt;}
+/&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17</pre><pre class="code-preview"><code>&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcBlockTypePicker } from '@birdycom/omniaui-vue'
+const type = ref('text')
+const options = [
+  { value: 'text', label: 'Text', hint: 'Paragraphs with headings and links', category: 'content' },
+  { value: 'question', label: 'Question', hint: 'One per step: this step has one', category: 'question', disabled: true },
+  { value: 'countdown', label: 'Countdown', hint: 'A timer that starts when the step opens', category: 'content' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockTypePicker v-model="type" title="Add a block" :options="options" :categories="[{ value: 'content', label: 'Content' }, { value: 'question', label: 'Questions' }]"&gt;
+    &lt;template #preview="{ option }"&gt;&lt;b&gt;{{ option.label }}&lt;/b&gt;&lt;/template&gt;
+    &lt;template #footer&gt;&lt;button class="oc-btn oc-btn--outline" type="button"&gt;Cancel&lt;/button&gt;&lt;button class="oc-btn" type="button"&gt;Add block&lt;/button&gt;&lt;/template&gt;
+  &lt;/OcBlockTypePicker&gt;
+&lt;/template&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14</pre><pre class="code-preview"><code>{{-- The whole snippet, with your own cards in the default slot: --}}
+&lt;x-oc::block.type-picker&gt;
+  &lt;x-slot:title&gt;Add a block&lt;/x-slot:title&gt;
+  &lt;x-slot:text&gt;Pick what to add to {{ $step-&gt;name }}.&lt;/x-slot:text&gt;
+  &lt;legend class="oc-visually-hidden"&gt;Block type&lt;/legend&gt;
+  @foreach ($types as $type)
+    &lt;label class="oc-block-type-picker-item" data-category="{{ $type-&gt;category }}"&gt;
+      &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="{{ $type-&gt;key }}" @checked($loop-&gt;first) @disabled($type-&gt;disabled)&gt;
+      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;@include('blocks.previews.'.$type-&gt;key)&lt;/span&gt;
+      &lt;span class="oc-block-type-picker-name"&gt;{{ $type-&gt;label }}&lt;/span&gt;
+      &lt;span class="oc-block-type-picker-hint"&gt;{{ $type-&gt;hint }}&lt;/span&gt;
+    &lt;/label&gt;
+  @endforeach
+&lt;/x-oc::block.type-picker&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+
+          <h3 class="oc-section-content__title mt-2" id="demo-2">In a narrow side panel <span class="oc-badge-version">v0.16.0</span></h3>
+          <p class="oc-section-content__desc">The same picker in a 22rem panel, as in the side panel of an editor. The container query puts the search above the chips and the cards in two columns; the cards stay the same height in every row. Make the window narrow or use the phone width button: nothing scrolls sideways.</p>
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">In a narrow side panel</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-2-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-2-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-2-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope oc-demo__preview--tall">
+<section class="oc-block-type-picker" style="max-inline-size: 22rem" aria-labelledby="oc-picker-title-panel">
+  <div class="oc-block-type-picker-head">
+    <h2 class="oc-block-type-picker-title" id="oc-picker-title-panel">Add a block</h2>
+    <p class="oc-block-type-picker-text">Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.</p>
+  </div>
+  <div class="oc-block-type-picker-tools">
+    <div class="oc-input-group oc-input-group--affix">
+      <span class="oc-input-addon" aria-hidden="true"><svg data-icon="mdi:magnify" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5l-1.5 1.5l-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5" /></svg></span>
+      <input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks">
+    </div>
+    <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category">
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat-panel" value="all" checked> All</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat-panel" value="content"> Content</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat-panel" value="question"> Questions</label>
+      <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat-panel" value="media"> Media</label>
+    </fieldset>
+  </div>
+  <fieldset class="oc-block-type-picker-grid">
+    <legend class="oc-visually-hidden">Block type</legend>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="text" checked>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><b>Welcome</b><p>Walk to the old gate and look up at the clock.</p></span>
+      <span class="oc-block-type-picker-name">Text</span>
+      <span class="oc-block-type-picker-hint">Paragraphs with headings and links</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="media">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="image">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><rect width="160" height="100" class="oc-block-art-sky" /><circle cx="122" cy="28" r="12" class="oc-block-art-sun" /><path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land" /></svg></span>
+      <span class="oc-block-type-picker-name">Image</span>
+      <span class="oc-block-type-picker-hint">A photo with an optional caption</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="question">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="question" disabled>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><b>Which year?</b><span class="oc-block-type-picker-art-option">1890</span><span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on">1910</span></span>
+      <span class="oc-block-type-picker-name">Question</span>
+      <span class="oc-block-type-picker-hint">One per step: this step has one</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="note">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-note"><b>Mind the traffic</b><p>Cross at the lights.</p></span></span>
+      <span class="oc-block-type-picker-name">Note</span>
+      <span class="oc-block-type-picker-hint">Info, warning or success in a frame</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="link">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>More about this place</p><span class="oc-block-type-picker-art-btn">Open page <svg data-icon="mdi:open-in-new" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M14 3v2h3.59l-9.83 9.83l1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z" /></svg></span></span>
+      <span class="oc-block-type-picker-name">Link</span>
+      <span class="oc-block-type-picker-hint">A button to another page</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="countdown">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>Time left</p><span class="oc-block-type-picker-art-time">1:30</span><span class="oc-block-type-picker-art-bar"></span></span>
+      <span class="oc-block-type-picker-name">Countdown</span>
+      <span class="oc-block-type-picker-hint">A timer that starts when the step opens</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="content">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="tip">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-row">Show a tip <svg data-icon="mdi:chevron-down" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6l-6-6z" /></svg></span><p>Opens when the reader asks for it.</p></span>
+      <span class="oc-block-type-picker-name">Tip</span>
+      <span class="oc-block-type-picker-hint">Hidden until the reader opens it</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="media">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="video">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-video"><svg data-icon="mdi:play-circle" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"><path fill="currentColor" d="M10 16.5v-9l6 4.5M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2" /></svg></span></span>
+      <span class="oc-block-type-picker-name">Video</span>
+      <span class="oc-block-type-picker-hint">A clip from a link or an upload</span>
+    </label>
+    <label class="oc-block-type-picker-item" data-category="question">
+      <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="scan">
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"><path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z" /></svg></span>
+      <span class="oc-block-type-picker-name">Code to scan</span>
+      <span class="oc-block-type-picker-hint">Opens the step after a scan on site</span>
+    </label>
+    <p class="oc-block-type-picker-empty" hidden>No block matches your search.</p>
+  </fieldset>
+  <div class="oc-block-type-picker-foot">
+    <button class="oc-btn oc-btn--outline" type="button">Cancel</button>
+    <button class="oc-btn" type="button">Add block</button>
+  </div>
+</section>
+<script>
+  // Optional: filter the cards of every .oc-block-type-picker by search text and category. Without it all cards stay visible.
+  document.querySelectorAll(".oc-block-type-picker").forEach((picker) => {
+    const filter = () => {
+      const q = (picker.querySelector(".oc-block-type-picker-search")?.value || "").trim().toLowerCase();
+      const cat = picker.querySelector(".oc-block-type-picker-cats input:checked")?.value || "all";
+      let shown = 0;
+      picker.querySelectorAll(".oc-block-type-picker-item").forEach((item) => {
+        item.hidden = !((cat === "all" || item.dataset.category === cat) && item.textContent.toLowerCase().includes(q));
+        if (!item.hidden) shown++;
+      });
+      const empty = picker.querySelector(".oc-block-type-picker-empty");
+      if (empty) empty.hidden = shown > 0;
+    };
+    picker.addEventListener("input", (e) => { if (e.target.closest(".oc-block-type-picker-tools")) filter(); });
+  });
+</script>
+
+          </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81</pre><pre class="code-preview"><code><span class="hl-tag">&lt;section</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker"</span> <span class="hl-attr">style</span>=<span class="hl-string">"max-inline-size: 22rem"</span> <span class="hl-attr">aria-labelledby</span>=<span class="hl-string">"oc-picker-title-panel"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-head"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;h2</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-title"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-picker-title-panel"</span><span class="hl-tag">&gt;</span>Add a block<span class="hl-tag">&lt;/h2</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-text"</span><span class="hl-tag">&gt;</span>Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-tools"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input-group oc-input-group--affix"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input-addon"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:magnify"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input oc-block-type-picker-search"</span> <span class="hl-attr">type</span>=<span class="hl-string">"search"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Search blocks"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Search blocks"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;fieldset</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Category"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-cat-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"all"</span> <span class="hl-attr">checked</span><span class="hl-tag">&gt;</span> All<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-cat-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span> Content<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-cat-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"question"</span><span class="hl-tag">&gt;</span> Questions<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-chip-filter-item"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-cat-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"media"</span><span class="hl-tag">&gt;</span> Media<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/fieldset</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;fieldset</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-grid"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;legend</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-visually-hidden"</span><span class="hl-tag">&gt;</span>Block type<span class="hl-tag">&lt;/legend</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"text"</span> <span class="hl-attr">checked</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;b</span><span class="hl-tag">&gt;</span>Welcome<span class="hl-tag">&lt;/b</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Walk to the old gate and look up at the clock.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Text<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>Paragraphs with headings and links<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"media"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"image"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;svg</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-img"</span> <span class="hl-attr">viewBox</span>=<span class="hl-string">"0 0 160 100"</span> <span class="hl-attr">preserveAspectRatio</span>=<span class="hl-string">"xMidYMid slice"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;rect</span> <span class="hl-attr">width</span>=<span class="hl-string">"160"</span> <span class="hl-attr">height</span>=<span class="hl-string">"100"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-sky"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;circle</span> <span class="hl-attr">cx</span>=<span class="hl-string">"122"</span> <span class="hl-attr">cy</span>=<span class="hl-string">"28"</span> <span class="hl-attr">r</span>=<span class="hl-string">"12"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-sun"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;path</span> <span class="hl-attr">d</span>=<span class="hl-string">"M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-art-land"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/svg</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Image<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>A photo with an optional caption<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"question"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"question"</span> <span class="hl-attr">disabled</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;b</span><span class="hl-tag">&gt;</span>Which year?<span class="hl-tag">&lt;/b</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-option"</span><span class="hl-tag">&gt;</span>1890<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-option oc-block-type-picker-art-option--on"</span><span class="hl-tag">&gt;</span>1910<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Question<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>One per step: this step has one<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"note"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-note"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;b</span><span class="hl-tag">&gt;</span>Mind the traffic<span class="hl-tag">&lt;/b</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Cross at the lights.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Note<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>Info, warning or success in a frame<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"link"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>More about this place<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-btn"</span><span class="hl-tag">&gt;</span>Open page <span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:open-in-new"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Link<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>A button to another page<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"countdown"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Time left<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-time"</span><span class="hl-tag">&gt;</span>1:30<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-bar"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Countdown<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>A timer that starts when the step opens<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"content"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"tip"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-row"</span><span class="hl-tag">&gt;</span>Show a tip <span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:chevron-down"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Opens when the reader asks for it.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Tip<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>Hidden until the reader opens it<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"media"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"video"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-video"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:play-circle"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Video<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>A clip from a link or an upload<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-item"</span> <span class="hl-attr">data-category</span>=<span class="hl-string">"question"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-input"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"oc-picker-type-panel"</span> <span class="hl-attr">value</span>=<span class="hl-string">"scan"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-preview"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;svg</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-art-code"</span> <span class="hl-attr">viewBox</span>=<span class="hl-string">"0 0 21 21"</span> <span class="hl-attr">shape-rendering</span>=<span class="hl-string">"crispEdges"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;path</span> <span class="hl-attr">fill</span>=<span class="hl-string">"currentColor"</span> <span class="hl-attr">d</span>=<span class="hl-string">"M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"</span><span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/svg</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-name"</span><span class="hl-tag">&gt;</span>Code to scan<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-hint"</span><span class="hl-tag">&gt;</span>Opens the step after a scan on site<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-empty"</span> <span class="hl-attr">hidden</span><span class="hl-tag">&gt;</span>No block matches your search.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/fieldset</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-block-type-picker-foot"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Cancel<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Add block<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/section</span><span class="hl-tag">&gt;</span>
+<span class="hl-comment">&lt;!-- + the same optional script as above --&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 id="reference-2" class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/blocks/src/parts/app-type-picker.css</code>. Colors are theme tokens, so light and dark mode work without extra classes. The card grid uses <code>grid-auto-rows: 1fr</code>: every card in the picker is as high as the highest.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-block-type-picker</code></td><td>Frame. Container query: search and chips side by side from 40rem</td></tr>
+              <tr><td><code>.oc-block-type-picker-head / -title / -text</code></td><td>Heading and one line of help</td></tr>
+              <tr><td><code>.oc-block-type-picker-tools</code></td><td>Search (<code>.oc-block-type-picker-search</code> in an <code>.oc-input-group--affix</code>) and the category chips (<code>.oc-chip-filter.oc-block-type-picker-cats</code>, radios)</td></tr>
+              <tr><td><code>fieldset.oc-block-type-picker-grid</code></td><td>The cards (a radio group with a hidden legend); equal heights in every row</td></tr>
+              <tr><td><code>label.oc-block-type-picker-item[data-category]</code></td><td>One card. States: picked (frame + check mark), keyboard focus (ring), disabled (faded), <code>[hidden]</code> (filtered out)</td></tr>
+              <tr><td><code>input.oc-block-type-picker-input</code></td><td>The radio over the whole card; it takes the focus and the arrow keys</td></tr>
+              <tr><td><code>.oc-block-type-picker-preview</code></td><td>The small real preview (<code>aria-hidden</code>). Parts: <code>-art-img</code>, <code>-art-option</code> (<code>--on</code>), <code>-art-note</code>, <code>-art-btn</code>, <code>-art-time</code>, <code>-art-bar</code>, <code>-art-row</code>, <code>-art-video</code>, <code>-art-code</code></td></tr>
+              <tr><td><code>.oc-block-art-sky / -sun / -land / -wall / -roof</code></td><td>Theme colors for the shapes of a sample picture in an inline SVG (shared with the route blocks)</td></tr>
+              <tr><td><code>.oc-block-type-picker-name / -hint</code></td><td>Name and one short line</td></tr>
+              <tr><td><code>.oc-block-type-picker-empty</code></td><td>Shown by the script when no card matches</td></tr>
+              <tr><td><code>.oc-block-type-picker-foot</code></td><td>Cancel and Add buttons</td></tr>
+            </tbody>
+          </table>
+
+        </div>
+      </section><section class="oc-docs-section" id="frameworks"><div class="oc-section-header"><h2 id="framework-wrappers" class="oc-section-header__title">Framework wrappers</h2><p class="oc-section-header__desc">The same markup and classes as React, Vue and Blade components. Their props follow the class modifiers on this page; see the source files below.</p></div><div class="oc-section-content"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8</pre><pre class="code-preview"><code><span class="hl-comment">&lt;!-- React --&gt;</span>
+import { BlockTypePicker } from "@birdycom/omniaui-react";
+<span class="hl-tag">&lt;BlockTypePicker</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">&lt;!-- Vue --&gt;</span>
+import { OcBlockTypePicker } from "@birdycom/omniaui-vue";
+<span class="hl-tag">&lt;OcBlockTypePicker</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">&lt;!-- Laravel Blade --&gt;</span>
+&lt;x-oc::block.type-picker /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></section><section id="support" class="oc-docs-section"><div class="oc-section-header"><h2 id="browser-support" class="oc-section-header__title">Browser support</h2></div><div class="oc-section-content"><div class="oc-compat"><div class="oc-compat__scroll"><table class="oc-compat__table"><thead><tr><th scope="col" rowspan="2" class="oc-compat__feature-head">Feature</th><th scope="colgroup" colspan="5" class="oc-compat__group">Desktop</th><th scope="colgroup" colspan="5" class="oc-compat__group oc-compat__group--mobile">Mobile</th></tr><tr><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/chrome.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Chrome</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/edge.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Edge</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/firefox.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Firefox</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/safari.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Safari</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/opera.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Opera</span></th><th scope="col" class="oc-compat__browser oc-compat__first-mobile"><img class="oc-compat__logo" src="/img/browsers/chrome.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Chrome Android</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/firefox.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Firefox Android</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/safari.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Safari iOS</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/samsung.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Samsung Internet</span></th><th scope="col" class="oc-compat__browser"><img class="oc-compat__logo" src="/img/browsers/opera.svg" alt="" width="20" height="20" decoding="async"><span class="oc-compat__browser-name">Opera Android</span></th></tr></thead><tbody><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/color_value/light-dark" target="_blank" rel="noopener"><code>light-dark()</code></a></th><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Chrome: Supported since 123</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Edge: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Edge: Supported since 123</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox: Supported since 120"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">120</span><span class="sr-only">Firefox: Supported since 120</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari: Supported since 17.5"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">17.5</span><span class="sr-only">Safari: Supported since 17.5</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera: Supported since 109"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">109</span><span class="sr-only">Opera: Supported since 109</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome Android: Supported since 123"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">123</span><span class="sr-only">Chrome Android: Supported since 123</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox Android: Supported since 120"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">120</span><span class="sr-only">Firefox Android: Supported since 120</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari iOS: Supported since 17.5"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">17.5</span><span class="sr-only">Safari iOS: Supported since 17.5</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Samsung Internet: Supported since 27.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">27.0</span><span class="sr-only">Samsung Internet: Supported since 27.0</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera Android: Supported since 82"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">82</span><span class="sr-only">Opera Android: Supported since 82</span></td></tr><tr><th scope="row" class="oc-compat__feature"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/color_value/color-mix" target="_blank" rel="noopener"><code>color-mix()</code></a></th><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Chrome: Supported since 111</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Edge: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Edge: Supported since 111</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox: Supported since 113"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">113</span><span class="sr-only">Firefox: Supported since 113</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari: Supported since 16.2"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16.2</span><span class="sr-only">Safari: Supported since 16.2</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera: Supported since 97"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">97</span><span class="sr-only">Opera: Supported since 97</span></td><td class="oc-compat__first-mobile oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Chrome Android: Supported since 111"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">111</span><span class="sr-only">Chrome Android: Supported since 111</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Firefox Android: Supported since 113"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">113</span><span class="sr-only">Firefox Android: Supported since 113</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Safari iOS: Supported since 16.2"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">16.2</span><span class="sr-only">Safari iOS: Supported since 16.2</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Samsung Internet: Supported since 22.0"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">22.0</span><span class="sr-only">Samsung Internet: Supported since 22.0</span></td><td class="oc-compat__cell is-yes oc-tooltip oc-tooltip--multiline" data-tooltip="Opera Android: Supported since 75"><span class="oc-compat__icon" aria-hidden="true">✓</span><span class="oc-compat__version">75</span><span class="sr-only">Opera Android: Supported since 75</span></td></tr></tbody></table></div><ul class="oc-compat__legend"><li class="is-yes"><span aria-hidden="true">✓</span> Supported</li><li class="is-partial"><span aria-hidden="true">◐</span> Partial support</li><li class="is-preview"><span aria-hidden="true">◷</span> Coming: in preview / beta</li><li class="is-flag"><span aria-hidden="true">⚑</span> Behind a flag</li><li class="is-no"><span aria-hidden="true">✕</span> Not supported</li></ul><p class="oc-compat__source">Version = first release with support. Hover a cell for notes. Data: <a href="https://github.com/mdn/browser-compat-data" target="_blank" rel="noopener">MDN browser-compat-data</a> 8.1.5 (2026-10-08).</p></div></div></section><section id="source" class="oc-docs-section"><div class="oc-section-header"><h2 id="source-and-further-reading" class="oc-section-header__title">Source &amp; Further Reading</h2></div><div class="oc-section-content"><h3 class="oc-section-content__title">Source files</h3><table class="oc-table-ref"><thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead><tbody><tr><td><code>packages/blocks/src/parts/app-type-picker.css</code></td><td>Styles</td></tr><tr><td><code>packages/blocks/blocks/type-picker.html</code></td><td>Copy-paste markup</td></tr><tr><td><code>packages/react/src/blocks/BlockTypePicker.tsx</code> / <code>packages/vue/src/blocks/OcBlockTypePicker.vue</code></td><td>Wrappers</td></tr><tr><td><code>resources/views/components/block/type-picker.blade.php</code></td><td>Laravel: <code>&lt;x-oc::block.type-picker&gt;</code></td></tr></tbody></table></div></section>
+</main>
+      <aside class="ocd-sidebar-right"><nav class="oc-toc" aria-label="On this page"><p class="oc-toc-title">On This Page</p><ul class="oc-toc-list"><li><a class="oc-toc-link" href="#demo-3">Demo</a></li><li class="oc-toc-item--sub"><a class="oc-toc-link" href="#demo-1">Type picker v0.16.0</a></li><li class="oc-toc-item--sub"><a class="oc-toc-link" href="#demo-2">In a narrow side panel v0.16.0</a></li><li><a class="oc-toc-link" href="#reference-2">Reference</a></li><li><a class="oc-toc-link" href="#framework-wrappers">Framework wrappers</a></li><li><a class="oc-toc-link" href="#browser-support">Browser support</a></li><li><a class="oc-toc-link" href="#source-and-further-reading">Source &amp; Further Reading</a></li></ul></nav></aside>
+      <script>(() => { if (CSS.supports("selector(:target-current)")) return; const links = [...document.querySelectorAll(".oc-toc a[href^='#']")]; const root = document.querySelector(".oc-docs-content, .ocd-content"); if (!links.length || !root) return; const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))); let raf = 0; const update = () => { raf = 0; const top = root.getBoundingClientRect().top + 80; let cur = 0; heads.forEach((h, i) => { if (h && h.getBoundingClientRect().top <= top) cur = i; }); if (root.scrollTop + root.clientHeight >= root.scrollHeight - 4) cur = links.length - 1; links.forEach((a, i) => a.classList.toggle("is-active", i === cur)); }; root.addEventListener("scroll", () => { raf ||= requestAnimationFrame(update); }, { passive: true }); update(); })();</script>
+    </div>
+
+  <footer class="oc-footerbar oc-footerbar--fixed">OmniaUI v0.16.0 — CSS-first components and blocks on OmniaCSS · <a href="https://omniacss.test/docs/">OmniaCSS docs</a> · <a href="https://github.com/Birdycom/OmniaUI">GitHub</a> · <a href="/legal/terms#license">License</a> · <a href="https://birdycom.be/en/terms/omniaui-pro">Terms</a> · <a href="https://birdycom.be/en/privacy">Privacy</a> · <a href="https://birdycom.be/en/cookies">Cookies</a></footer>
+</body>
+</html>

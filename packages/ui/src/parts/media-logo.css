@@ -1,0 +1,48 @@
+/* File: packages/ui/src/parts/media-logo.css
+   Map: logo box (height, max width) -> image (own ratio, never filtered) -> box fit -> plates per theme -> forced colors
+   Logo: a customer or partner logo as it was uploaded: its own colors and ratio, never tinted, filtered or masked. Only in
+   the theme where it would disappear does it get a calm neutral plate: data-plate="light" (a white logo: a plate in the
+   light theme), "dark" (a dark logo: a plate in the dark theme), "both" (white and dark parts: a mid plate in both),
+   "none". data-plate="auto" lets oc-logo.js (or the React, Vue and Blade components) measure it once.
+   Size: --oc-logo-h (height) and --oc-logo-w (maximum width). Plate colors: --oc-logo-plate-light / -dark / -both. */
+
+.oc-logo {
+  --oc-logo-h: 2.25rem;
+  --oc-logo-w: 14rem;
+  --oc-logo-plate-light: var(--color-slategray-70);
+  --oc-logo-plate-dark: var(--color-frostblue-10);
+  --oc-logo-plate-both: var(--color-gray-10);
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--oc-radius);
+  background: transparent;
+  vertical-align: middle;
+}
+.oc-logo > img {
+  display: block;
+  inline-size: auto;
+  max-inline-size: min(100%, var(--oc-logo-w));
+  block-size: var(--oc-logo-h);
+  object-fit: contain;
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+/* Box: every logo in the same box (a row or wall of logos), centred and as large as fits. */
+.oc-logo.oc-logo--box { inline-size: var(--oc-logo-w); block-size: calc(var(--oc-logo-h) + 0.5rem); }
+.oc-logo--box > img { inline-size: 100%; max-inline-size: 100%; block-size: 100%; }
+
+/* Plates: light-dark() follows the color-scheme of the page (and of an .oc-theme-scope). */
+.oc-logo[data-plate="light"] { background: light-dark(var(--oc-logo-plate-light), transparent); }
+.oc-logo[data-plate="dark"] { background: light-dark(transparent, var(--oc-logo-plate-dark)); }
+.oc-logo[data-plate="both"] { background: var(--oc-logo-plate-both); }
+
+@media (forced-colors: active) {
+  .oc-logo[data-plate]:not([data-plate="none"], [data-plate="auto"]) { forced-color-adjust: none; }
+}

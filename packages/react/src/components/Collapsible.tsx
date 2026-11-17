@@ -12,6 +12,8 @@ export interface CollapsibleProps extends Omit<DetailsHTMLAttributes<HTMLDetails
   icon?: ReactNode;
   /** Compact paddings. */
   dense?: boolean;
+  /** No card: for a list of sections inside a panel (`oc-collapsible--plain`). */
+  plain?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -19,14 +21,14 @@ export interface CollapsibleProps extends Omit<DetailsHTMLAttributes<HTMLDetails
 
 /** `<details class="oc-collapsible">` card-style section. */
 export const Collapsible = forwardRef<HTMLDetailsElement, CollapsibleProps>(function Collapsible(
-  { title, icon, dense, open, defaultOpen, onOpenChange, className, children, ...rest },
+  { title, icon, dense, plain, open, defaultOpen, onOpenChange, className, children, ...rest },
   ref,
 ) {
   const [isOpen, setOpen] = useControllable<boolean>(open, defaultOpen ?? false, onOpenChange);
   return (
     <details
       ref={ref}
-      className={cx("oc-collapsible", dense && "oc-collapsible--dense", className)}
+      className={cx("oc-collapsible", dense && "oc-collapsible--dense", plain && "oc-collapsible--plain", className)}
       open={isOpen}
       onToggle={(e: SyntheticEvent<HTMLDetailsElement>) => {
         if (e.currentTarget.open !== isOpen) setOpen(e.currentTarget.open);

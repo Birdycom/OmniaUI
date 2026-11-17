@@ -1,5 +1,5 @@
 {{-- OmniaCSS block: contact-form - Contact form in a panel next to a column of contact cards, with field errors, a busy state and a thank-you result. Needs @birdycom/omniaui-blocks + @birdycom/omniaui CSS.
-     Class API: .oc-block-contact-form > .oc-block-contact-form-layout > .oc-panel.oc-panel--glow (.oc-result | title, intro, .oc-alert, form.oc-form.oc-form--filled)
+     Class API: .oc-block-contact-form > .oc-block-contact-form-layout > .oc-panel (.oc-result | title, intro, .oc-alert, form.oc-form.oc-form--filled)
      + .oc-block-contact-form-cards (.oc-block-contact-card).
      Blade: <x-oc::block.contact-form :action="route('contact.send')" :subjects="['project' => 'A new project', 'support' => 'Support']" :cards="$cards" :sent="session('sent')" />
      Props: action, title, intro, subjects (value => label; empty = no subject field), cards (list of ['title', 'icon' (webicon), 'lines' => [[text, href|null]]]),
@@ -30,7 +30,7 @@
 @endphp
 <section {{ $attributes->merge(['class' => 'oc-block-contact-form', 'aria-label' => 'Contact']) }}>
     <div class="oc-block-contact-form-layout" data-contact-root>
-        <div class="oc-panel oc-panel--glow" id="contact-form">
+        <div class="oc-panel" id="contact-form">
             <div class="oc-result" role="status" tabindex="-1" data-contact-success @if (! $sent) hidden @endif>
                 @if (isset($success) && trim((string) $success) !== '')
                     {{ $success }}

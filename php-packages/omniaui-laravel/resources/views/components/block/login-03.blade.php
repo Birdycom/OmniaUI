@@ -35,7 +35,7 @@
     <div class="oc-block-authcard-fields">
       <div class="oc-field">
         <label class="oc-field-label" for="oc-login03-email">E-mail</label>
-        <input class="oc-input" id="oc-login03-email" name="email" type="email" autocomplete="username" required placeholder="name@company.com">
+        <input class="oc-input" id="oc-login03-email" name="email" type="email" autocomplete="username" required placeholder="name@company1.example">
       </div>
       <div class="oc-field">
         <label class="oc-field-label" for="oc-login03-password">Password</label>

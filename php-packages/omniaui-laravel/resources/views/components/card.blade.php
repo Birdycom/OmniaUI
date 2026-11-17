@@ -1,6 +1,11 @@
-{{-- OmniaCSS card. Props: title, description, size (sm). Slots: default = content, header (replaces title/description), footer. --}}
-@props(['title' => null, 'description' => null, 'size' => null])
-<div {{ $attributes->class(['oc-card', 'oc-card--'.$size => $size]) }}>
+{{-- OmniaCSS card. Props: title, description, size (sm), accent (primary|info|success|warning|destructive|test|live: a 2px border
+     in that tone), inactive (with accent: a set not in use now, dashed). Slots: default = content, band (<x-oc::card-band>
+     at the top), header (replaces title/description), footer. --}}
+@props(['title' => null, 'description' => null, 'size' => null, 'accent' => null, 'inactive' => false])
+<div {{ $attributes->class(['oc-card', 'oc-card--'.$size => $size, 'oc-card--accent' => $accent])->merge(array_filter(['data-tone' => $accent, 'data-active' => $accent && $inactive ? 'false' : null])) }}>
+    @isset($band)
+        {{ $band }}
+    @endisset
     @if (isset($header) && trim((string) $header) !== '')
         <div class="oc-card-header">{{ $header }}</div>
     @elseif ($title || $description)

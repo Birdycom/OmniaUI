@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /**
- * Menu item: <a> with `href`, otherwise <button>. checked (true/false) adds a check column, hint a muted text on the right.
+ * Menu item: <a> with `href`, otherwise <button>. checked (true/false) adds a check column, hint a muted text on the right,
+ * icon a webicon name ("mdi:pencil") in front of the label (slot `icon` for any other icon).
  * A click closes the popover menu around it; `keep-open` stops that (a check item stays open by default).
  */
-const props = withDefaults(defineProps<{ href?: string; checked?: boolean; hint?: string; keepOpen?: boolean }>(), { checked: undefined, keepOpen: undefined })
+const props = withDefaults(defineProps<{ href?: string; checked?: boolean; hint?: string; icon?: string; keepOpen?: boolean }>(), { checked: undefined, keepOpen: undefined })
 const emit = defineEmits<{ click: [event: MouseEvent] }>()
 
 function onClick(event: MouseEvent) {
@@ -24,6 +25,7 @@ function onClick(event: MouseEvent) {
     @click="onClick"
   >
     <span v-if="checked !== undefined" class="oc-dropdown-check" aria-hidden="true"></span>
+    <span v-if="icon || $slots.icon" class="oc-dropdown-icon" aria-hidden="true"><slot name="icon"><iconify-icon :icon="icon" aria-hidden="true" /></slot></span>
     <slot />
     <span v-if="hint" class="oc-dropdown-hint">{{ hint }}</span>
   </component>

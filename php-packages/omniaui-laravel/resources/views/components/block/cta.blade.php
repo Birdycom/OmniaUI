@@ -8,21 +8,21 @@
       @if (isset($title) && trim((string) $title) !== '')
           {{ $title }}
       @else
-      Ready to start building?
+      Want to see it with your own data?
       @endif
   </h2>
   <p>
       @if (isset($text) && trim((string) $text) !== '')
           {{ $text }}
       @else
-      Get OmniaCSS and ship your next project faster.
+      Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour.
       @endif
   </p>
   <div class="oc-block-hero-actions">
       @if (isset($actions) && trim((string) $actions) !== '')
           {{ $actions }}
       @else
-    <button class="oc-btn oc-btn--lg">Get started free</button>
+    <button class="oc-btn oc-btn--lg">Plan a demo</button>
       @endif
   </div>
 </div>

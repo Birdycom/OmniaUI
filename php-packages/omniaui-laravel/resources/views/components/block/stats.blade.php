@@ -7,20 +7,20 @@
         {{ $slot }}
     @else
   <div class="oc-block-stat">
-    <div class="oc-block-stat-value">100K+</div>
-    <div class="oc-block-stat-label">CSS utility classes</div>
+    <div class="oc-block-stat-value">12</div>
+    <div class="oc-block-stat-label">Years in business</div>
   </div>
   <div class="oc-block-stat">
-    <div class="oc-block-stat-value">14</div>
-    <div class="oc-block-stat-label">Component primitives</div>
+    <div class="oc-block-stat-value">140</div>
+    <div class="oc-block-stat-label">Customers</div>
   </div>
   <div class="oc-block-stat">
-    <div class="oc-block-stat-value">8</div>
-    <div class="oc-block-stat-label">Block compositions</div>
+    <div class="oc-block-stat-value">35</div>
+    <div class="oc-block-stat-label">Apps in production</div>
   </div>
   <div class="oc-block-stat">
-    <div class="oc-block-stat-value">3</div>
-    <div class="oc-block-stat-label">Color palettes</div>
+    <div class="oc-block-stat-value">4 h</div>
+    <div class="oc-block-stat-label">Average response time</div>
   </div>
     @endif
 </div>

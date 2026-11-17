@@ -1,0 +1,141 @@
+/* File: packages/ui/src/parts/app-0160-apps.css
+   Map: card tone (accent border + bar) -> card footer (divider, end) + card fill -> status badge -> status list
+        -> light / dark image -> card grid that scrolls sideways on a phone -> theme scope accents
+   Small additions asked for by the apps that use OmniaUI (0.16.0). Theme tokens only. */
+
+/* Card tone: a card that asks for attention, with a border in the tone and a bar on the start side.
+   <article class="oc-card" data-tone="primary | info | success | warning | destructive">. */
+.oc-card[data-tone] {
+  --oc-card-tone: var(--oc-primary);
+  border-color: color-mix(in oklch, var(--oc-card-tone) 45%, var(--oc-card-border, var(--oc-border)));
+  box-shadow: inset 3px 0 0 var(--oc-card-tone);
+}
+.oc-card[data-tone]:dir(rtl) { box-shadow: inset -3px 0 0 var(--oc-card-tone); }
+.oc-card[data-tone="info"] { --oc-card-tone: var(--oc-info, var(--oc-primary)); }
+.oc-card[data-tone="success"] { --oc-card-tone: var(--oc-success); }
+.oc-card[data-tone="warning"] { --oc-card-tone: var(--oc-warning); }
+.oc-card[data-tone="destructive"] { --oc-card-tone: var(--oc-destructive); }
+
+/* Card footer: a line above it (--divider) and the actions on the end side (--end).
+   Card fill: the card takes the full height of its grid or flex cell and the footer stays at the bottom. */
+.oc-card-footer--divider { border-block-start: 1px solid var(--oc-card-border, var(--oc-border)); }
+.oc-card-footer--end { justify-content: flex-end; }
+.oc-card--fill { display: flex; flex-direction: column; block-size: 100%; }
+.oc-card--fill > .oc-card-content { flex-grow: 1; }
+.oc-card--fill > .oc-card-footer { margin-block-start: auto; }
+
+/* Status badge: a badge in the color of the status dot with the same name.
+   <span class="oc-badge oc-badge--status" data-status="working | waiting | done | error | idle">Working</span> */
+.oc-badge--status {
+  --oc-badge-status: var(--oc-muted-foreground);
+  gap: 0.4rem;
+  border-color: oklch(from var(--oc-badge-status) l c h / 0.4);
+  background: oklch(from var(--oc-badge-status) l c h / 0.14);
+  color: color-mix(in oklch, var(--oc-badge-status) 65%, var(--oc-foreground));
+}
+.oc-badge--status[data-status="working"] { --oc-badge-status: var(--oc-info, var(--oc-primary)); }
+.oc-badge--status[data-status="waiting"] { --oc-badge-status: var(--oc-warning); }
+.oc-badge--status[data-status="done"] { --oc-badge-status: var(--oc-success); }
+.oc-badge--status[data-status="error"] { --oc-badge-status: var(--oc-destructive); }
+.oc-badge--status[data-status="idle"] { border-color: var(--oc-border); background: transparent; }
+
+/* Status list: one quiet line per item (dot, name, muted meta that cuts off), with a small heading above it.
+   <section class="oc-status-list"><h3 class="oc-status-list__head">2 idle</h3>
+     <ul><li class="oc-status-list__item"><span class="oc-status-dot oc-status-dot--idle"></span>
+       <span class="oc-status-list__name">Name</span><span class="oc-status-list__meta">meta</span></li></ul></section> */
+.oc-status-list { display: grid; gap: 0.35rem; min-inline-size: 0; }
+.oc-status-list > :is(ul, ol) { display: grid; gap: 0.15rem; margin: 0; padding: 0; list-style: none; }
+.oc-status-list__head {
+  margin: 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.oc-status-list__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  padding-block: 0.2rem;
+  font-size: 0.8125rem;
+  line-height: 1.3;
+}
+.oc-status-list__name { flex: none; max-inline-size: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-status-list__meta { flex: 1 1 0; min-inline-size: 0; overflow: hidden; color: var(--oc-muted-foreground); text-overflow: ellipsis; white-space: nowrap; }
+.oc-status-list--dim .oc-status-list__item { opacity: 0.75; }
+
+/* Light / dark image: two images, the one for the chosen theme is shown.
+   <img class="oc-theme-img--light" …><img class="oc-theme-img--dark" …> (also on <picture> or any element).
+   Follows the operating system, <html data-theme>, .dark and a .oc-theme-switch on the page. */
+.oc-theme-img--dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  .oc-theme-img--light { display: none; }
+  .oc-theme-img--dark { display: revert; }
+}
+:is([data-theme="light"], :root:has(.oc-theme-switch input[value="light"]:checked:not(.oc-theme-scope *))) .oc-theme-img--light { display: revert; }
+:is([data-theme="light"], :root:has(.oc-theme-switch input[value="light"]:checked:not(.oc-theme-scope *))) .oc-theme-img--dark { display: none; }
+:is([data-theme="dark"], .dark, :root:has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *))) .oc-theme-img--light { display: none; }
+:is([data-theme="dark"], .dark, :root:has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *))) .oc-theme-img--dark { display: revert; }
+
+/* Card grid that scrolls sideways on a phone instead of stacking every card: one row with scroll snap.
+   <div class="oc-card-grid oc-card-grid--scroll">. --oc-card-scroll-width is the width of a card (80%). */
+@media (max-width: 40rem) {
+  .oc-card-grid--scroll {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--oc-card-scroll-width, 80%);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: inline mandatory;
+    scroll-padding-inline: var(--oc-card-scroll-pad, 0px);
+    /* Room for the hover lift and the focus ring, which the scroll box would cut. */
+    padding-block: 0.5rem;
+    scrollbar-width: thin;
+  }
+  .oc-card-grid--scroll > * { scroll-snap-align: start; }
+}
+
+/* A theme scope that sets its own brand colors: the accents follow them (the :root values were computed from the
+   brand colors of the page). :where() keeps an .oc-accent--* preset on the same element in charge. */
+:where(.oc-theme-scope) {
+  --oc-accent-from: var(--oc-brand-1);
+  --oc-accent-to: var(--oc-brand-2);
+}
+
+/* Theme switch as cards (a settings page): three large choices with the icon above the label; the chosen card has a
+   border in the primary color. <fieldset class="oc-theme-switch oc-theme-switch--cards">, same radios as the switch. */
+.oc-theme-switch--cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.oc-theme-switch--cards label {
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.1rem 0.75rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--oc-card);
+  color: var(--oc-muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: border-color var(--oc-transition-fast, 0.15s), color var(--oc-transition-fast, 0.15s);
+}
+.oc-theme-switch--cards label:hover { border-color: var(--oc-border-strong, var(--oc-border)); color: var(--oc-foreground); }
+.oc-theme-switch--cards label:has(input:checked) {
+  border-color: var(--oc-primary);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+  box-shadow: 0 0 0 1px var(--oc-primary);
+}
+.oc-theme-switch--cards label > :is(iconify-icon, svg) { inline-size: 1.75rem; block-size: 1.75rem; font-size: 1.75rem; }
+@media (prefers-reduced-motion: reduce) {
+  .oc-theme-switch--cards label { transition: none; }
+}

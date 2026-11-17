@@ -119,7 +119,7 @@ export const BlockContactForm = forwardRef<HTMLElement, BlockContactFormProps>(f
   return (
     <section ref={ref} className={cx("oc-block-contact-form", className)} aria-label="Contact" {...rest}>
       <div className="oc-block-contact-form-layout">
-        <div className="oc-panel oc-panel--glow" id={`oc-contact-${id}`}>
+        <div className="oc-panel" id={`oc-contact-${id}`}>
           {sent ? (
             <div className="oc-result" role="status" tabIndex={-1}>
               <span className="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><Icon d={CHECK} /></span>

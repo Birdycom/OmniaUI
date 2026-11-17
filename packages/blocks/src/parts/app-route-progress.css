@@ -1,0 +1,155 @@
+/* File: packages/blocks/src/parts/app-route-progress.css
+   Map: frame -> head (title, meta, score) -> progress line -> next-step card (+ finish / over tones) -> list of steps
+        (marker on a route line, name, sub line, distance or points) -> states (done, wrong, current, locked)
+        -> container sizes
+   Route progress: what a visitor or a team sees while walking a route, a tour or a course: how far they are, the next
+   step and every step with its state. No JavaScript: your app sets the states and the numbers. */
+
+.oc-block-route-progress {
+  container: oc-route-progress / inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--oc-card);
+  color: var(--oc-foreground);
+}
+
+.oc-block-route-progress-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.oc-block-route-progress-title { margin: 0; font-size: 1.125rem; font-weight: 650; line-height: 1.3; }
+.oc-block-route-progress-meta { margin: 0.15rem 0 0; color: var(--oc-muted-foreground); font-size: 0.8125rem; }
+.oc-block-route-progress-score { display: grid; justify-items: end; flex: none; line-height: 1.1; }
+.oc-block-route-progress-score b { font-family: var(--oc-font-display, inherit); font-size: 1.75rem; font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.oc-block-route-progress-score span { color: var(--oc-muted-foreground); font-size: 0.75rem; }
+
+.oc-block-route-progress-bar { display: grid; gap: 0.4rem; }
+.oc-block-route-progress-bar-label { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.oc-block-route-progress-bar-label span:last-child { color: var(--oc-muted-foreground); font-weight: 500; }
+
+/* ---- Next step: one calm card with a tinted icon, the text and the distance on the right. ---- */
+.oc-block-route-progress-next {
+  --oc-next-tone: var(--oc-primary);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  inline-size: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid oklch(from var(--oc-next-tone) l c h / 0.45);
+  border-inline-start-width: 4px;
+  border-radius: var(--oc-radius);
+  background: oklch(from var(--oc-next-tone) l c h / 0.07);
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.oc-block-route-progress-next:hover { background: oklch(from var(--oc-next-tone) l c h / 0.12); }
+.oc-block-route-progress-next:focus-visible { outline: var(--oc-focus-width, 2px) solid var(--oc-ring); outline-offset: 2px; }
+.oc-block-route-progress-next--finish { --oc-next-tone: var(--oc-success); }
+.oc-block-route-progress-next--over { --oc-next-tone: var(--oc-destructive); }
+.oc-block-route-progress-next-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: 50%;
+  background: oklch(from var(--oc-next-tone) min(l, 0.5) c h);
+  color: var(--color-white-50);
+  font-size: 1.3rem;
+}
+.oc-block-route-progress-next-text { display: grid; gap: 0.1rem; min-inline-size: 0; }
+.oc-block-route-progress-next-label { color: light-dark(oklch(from var(--oc-next-tone) min(l, 0.42) c h), oklch(from var(--oc-next-tone) max(l, 0.75) c h)); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.oc-block-route-progress-next-title { font-size: 0.9375rem; font-weight: 650; line-height: 1.3; }
+.oc-block-route-progress-next-sub { color: var(--oc-muted-foreground); font-size: 0.8125rem; }
+.oc-block-route-progress-next-meta { font-size: 1.125rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---- Steps: markers on one route line, a thin line between the rows. ---- */
+.oc-block-route-progress-list { margin: 0; padding: 0; list-style: none; }
+.oc-block-route-progress-item { position: relative; }
+.oc-block-route-progress-item + .oc-block-route-progress-item { border-block-start: 1px solid var(--oc-border); }
+/* The route line: through the marker column, from the first marker to the last. */
+.oc-block-route-progress-item::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(0.5rem + 0.9375rem - 1px);
+  inline-size: 2px;
+  background: var(--oc-border);
+}
+.oc-block-route-progress-item:first-child::before { inset-block-start: 50%; }
+.oc-block-route-progress-item:last-child::before { inset-block-end: 50%; }
+.oc-block-route-progress-item--done::before { background: oklch(from var(--oc-success) l c h / 0.55); }
+
+.oc-block-route-progress-link {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  inline-size: 100%;
+  min-block-size: 3.5rem;
+  padding: 0.5rem;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 2px);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.oc-block-route-progress-link:hover { background: var(--oc-hover, var(--oc-muted)); }
+.oc-block-route-progress-link:focus-visible { outline: var(--oc-focus-width, 2px) solid var(--oc-ring); outline-offset: 1px; }
+
+.oc-block-route-progress-marker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: 1.875rem;
+  block-size: 1.875rem;
+  border: 2px solid var(--oc-border-strong);
+  border-radius: 50%;
+  background: var(--oc-card);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.oc-block-route-progress-marker :is(iconify-icon, svg[data-icon]) { font-size: 1rem; }
+.oc-block-route-progress-text { display: grid; gap: 0.1rem; min-inline-size: 0; }
+.oc-block-route-progress-name { overflow: hidden; font-size: 0.875rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+.oc-block-route-progress-sub { color: var(--oc-muted-foreground); font-size: 0.8125rem; }
+.oc-block-route-progress-value { color: var(--oc-muted-foreground); font-size: 0.875rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Done: filled marker; points in the success color. --wrong: done but without points. */
+.oc-block-route-progress-item--done .oc-block-route-progress-marker {
+  border-color: transparent;
+  background: oklch(from var(--oc-success) min(l, 0.5) c h);
+  color: var(--color-white-50);
+}
+.oc-block-route-progress-item--done .oc-block-route-progress-value { color: light-dark(oklch(from var(--oc-success) min(l, 0.42) c h), var(--oc-success)); }
+.oc-block-route-progress-item--wrong .oc-block-route-progress-marker { background: light-dark(var(--oc-muted-foreground), oklch(from var(--oc-muted-foreground) 0.45 c h)); }
+.oc-block-route-progress-item--wrong .oc-block-route-progress-value { color: var(--oc-muted-foreground); }
+
+/* Current: the step to go to now. */
+.oc-block-route-progress-item--current .oc-block-route-progress-link { background: oklch(from var(--oc-primary) l c h / 0.08); }
+.oc-block-route-progress-item--current .oc-block-route-progress-marker {
+  border-color: var(--oc-primary);
+  color: light-dark(oklch(from var(--oc-primary) min(l, 0.42) c h), var(--oc-primary));
+  box-shadow: 0 0 0 4px oklch(from var(--oc-primary) l c h / 0.18);
+}
+.oc-block-route-progress-item--current .oc-block-route-progress-value { color: var(--oc-foreground); }
+
+/* Locked: not open yet (a finish that opens after N steps). Text stays readable; the marker is dashed. */
+.oc-block-route-progress-item--locked .oc-block-route-progress-marker { border-style: dashed; color: var(--oc-muted-foreground); }
+
+@container oc-route-progress (max-width: 24rem) {
+  .oc-block-route-progress { padding: 1rem; }
+  .oc-block-route-progress-next { grid-template-columns: auto minmax(0, 1fr); }
+  .oc-block-route-progress-next-meta { grid-column: 2; font-size: 0.9375rem; }
+}
+@container oc-route-progress (min-width: 40rem) {
+  .oc-block-route-progress { padding: 1.5rem; }
+}

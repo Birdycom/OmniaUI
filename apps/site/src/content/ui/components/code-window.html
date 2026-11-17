@@ -8,12 +8,13 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/code-window.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <p class="oc-section-content__desc">Press Copy: the code goes to your clipboard and the button says Copied for a moment. This one example needs the few lines of script in the HTML tab for the copy button.</p>
           <oc-demo title="Code window">
 <div class="oc-code-window">
   <div class="oc-code-window__bar">
     <i></i><i></i><i></i>
     <span class="oc-code-window__title">index.html</span>
-    <button type="button" class="oc-code-copy" data-oc-copy="#oc-sample-code .code-preview">Copy</button>
+    <button type="button" class="oc-code-copy" data-copy-target="#oc-sample-code .code-preview">Copy</button>
   </div>
   <div id="oc-sample-code"><oc-code lang="html">&lt;link rel="stylesheet" href="omnia.css"&gt;
 &lt;!-- A primary button with a webicon --&gt;
@@ -24,8 +25,8 @@
 </div>
 <script>
 document.addEventListener("click", async (e) => {
-  const b = e.target.closest("[data-oc-copy]"); if (!b) return;
-  await navigator.clipboard.writeText(document.querySelector(b.dataset.ocCopy).textContent);
+  const b = e.target.closest("[data-copy-target]"); if (!b) return;
+  await navigator.clipboard.writeText(document.querySelector(b.dataset.copyTarget).textContent);
   b.classList.add("is-copied"); b.textContent = "Copied"; setTimeout(() => { b.classList.remove("is-copied"); b.textContent = "Copy"; }, 1500);
 });
 </script>
@@ -33,11 +34,21 @@ document.addEventListener("click", async (e) => {
   &lt;div class="oc-code-window__bar"&gt;
     &lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;
     &lt;span class="oc-code-window__title"&gt;index.html&lt;/span&gt;
-    &lt;button type="button" class="oc-code-copy" data-oc-copy="#sample"&gt;Copy&lt;/button&gt;
+    &lt;button type="button" class="oc-code-copy" data-copy-target="#sample .code-preview"&gt;Copy&lt;/button&gt;
   &lt;/div&gt;
   &lt;!-- Highlighted code: an .oc-code-block (or pre.code-preview) with .hl-tag, .hl-attr, .hl-string … spans --&gt;
   &lt;div class="oc-code-block" id="sample"&gt;…&lt;/div&gt;
-&lt;/div&gt;</oc-code>
+&lt;/div&gt;
+
+&lt;script&gt;
+  // Copy button: copy the text of the element named in data-copy-target, then say "Copied" for 1.5 s.
+  document.addEventListener("click", async (e) =&gt; {
+    const b = e.target.closest("[data-copy-target]"); if (!b) return;
+    await navigator.clipboard.writeText(document.querySelector(b.dataset.copyTarget).textContent);
+    b.classList.add("is-copied"); b.textContent = "Copied";
+    setTimeout(() =&gt; { b.classList.remove("is-copied"); b.textContent = "Copy"; }, 1500);
+  });
+&lt;/script&gt;</oc-code>
           </oc-demo>
 
         <h3 id="dark" class="oc-section-content__title mt-2">Always dark <span class="oc-badge-version">v0.12.6</span></h3>
@@ -51,7 +62,21 @@ document.addEventListener("click", async (e) => {
   "theme": { "primary": "vividblue" }
 }</oc-code>
 </div>
-<oc-code lang="html">&lt;div class="oc-code-window oc-code-window--dark"&gt;…&lt;/div&gt;</oc-code>
+<oc-code lang="html">&lt;div class="oc-code-window oc-code-window--dark"&gt;
+  &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;omnia.config.json&lt;/span&gt;&lt;/div&gt;
+  &lt;div class="oc-code-block"&gt;
+    &lt;pre class="oc-code-block__gutter" aria-hidden="true"&gt;1
+2
+3
+4
+5&lt;/pre&gt;
+    &lt;pre class="code-preview"&gt;&lt;code&gt;{
+  &lt;span class="hl-string"&gt;"content"&lt;/span&gt;: [&lt;span class="hl-string"&gt;"resources/**/*.blade.php"&lt;/span&gt;, &lt;span class="hl-string"&gt;"resources/js/**/*.vue"&lt;/span&gt;],
+  &lt;span class="hl-string"&gt;"pro"&lt;/span&gt;: &lt;span class="hl-keyword"&gt;true&lt;/span&gt;,
+  &lt;span class="hl-string"&gt;"theme"&lt;/span&gt;: { &lt;span class="hl-string"&gt;"primary"&lt;/span&gt;: &lt;span class="hl-string"&gt;"vividblue"&lt;/span&gt; }
+}&lt;/code&gt;&lt;/pre&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -79,7 +104,7 @@ document.addEventListener("click", async (e) => {
 <li><code>.oc-code-window__body</code> for plain code, or an <code>.oc-code-block</code> for line numbers and syntax colors. The window follows the page theme (light syntax colors in light mode); <code>.oc-code-window--dark</code> keeps it dark.</li>
 </ul>
         <h3 id="copy" class="oc-section-content__title mt-2">Copy button: the one piece that needs JavaScript</h3>
-<p>Writing to the clipboard is a script-only capability, so the button carries a <code>data-oc-copy</code> attribute with the selector of the code element and one small event handler (shown in the snippet) does the rest. The button is a real <code>&lt;button type="button"&gt;</code>: focusable, <kbd>Enter</kbd>/<kbd>Space</kbd> activate it. After copying it gets <code>.is-copied</code> (success color) for 1.5 seconds. Without JavaScript the button is simply inert; hide it with <code>.no-js .oc-code-copy { display: none }</code> if that matters to you.</p>
+<p>Writing to the clipboard is a script-only capability, so the button carries a <code>data-copy-target</code> attribute with the selector of the code element and one small event handler (shown in the snippet) does the rest. The button is a real <code>&lt;button type="button"&gt;</code>: focusable, <kbd>Enter</kbd>/<kbd>Space</kbd> activate it. After copying it gets <code>.is-copied</code> (success color) for 1.5 seconds. Without JavaScript the button is simply inert; hide it with <code>.no-js .oc-code-copy { display: none }</code> if that matters to you.</p>
         <h3 id="a11y" class="oc-section-content__title mt-2">Accessibility and responsive behaviour</h3>
 <ul>
 <li>The dots are decorative; the title is plain text. Long lines scroll horizontally inside the window (<code>overflow-x: auto</code>) so the frame never grows wider than its container.</li>

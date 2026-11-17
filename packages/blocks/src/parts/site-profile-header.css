@@ -1,7 +1,7 @@
 /* File: packages/blocks/src/parts/site-profile-header.css
    Map: section -> banner -> bar (overhanging avatar, info, actions) -> tab bar -> compact variant
    Profile header block: banner, an avatar that overlaps the banner edge, name + meta, actions and link tabs.
-   Banner image: style="--oc-profile-banner: url(...)" (default: an accent gradient). */
+   Banner image: style="--oc-profile-banner: url(...)" (default: a soft tint of the accent color). */
 
 .oc-block-profile {
   container-type: inline-size;
@@ -10,12 +10,13 @@
 }
 
 .oc-block-profile-banner {
-  aspect-ratio: 6 / 1;
-  min-block-size: 7rem;
+  /* 6:1 of the block width, at least 7rem. Not aspect-ratio + min-block-size: Chrome then widens the banner
+     to 6 x 7rem (672px) and it leaves the screen on a phone. */
+  block-size: max(7rem, 100cqi / 6);
   border-radius: var(--oc-block-radius, 16px);
   background:
-    var(--oc-profile-banner, radial-gradient(circle at 85% 30%, color-mix(in oklch, var(--color-white-50) 25%, transparent), transparent 40%)),
-    linear-gradient(120deg, var(--oc-accent-from), var(--oc-accent-to));
+    var(--oc-profile-banner, repeating-linear-gradient(135deg in srgb, oklch(from var(--oc-accent-from) l c h / 0.12) 0 1px, transparent 1px 14px)),
+    color-mix(in oklch, var(--oc-accent-from) 18%, var(--oc-muted));
   background-size: cover;
   background-position: center;
 }
@@ -82,10 +83,10 @@ label.oc-block-profile-tab { position: relative; cursor: pointer; }
 .oc-block-profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
 .oc-block-profile-grid > li { display: grid; gap: 0.4rem; font-size: 0.875rem; }
 .oc-block-profile-grid small { color: var(--oc-muted-foreground); }
-.oc-block-profile-thumb { aspect-ratio: 16 / 9; border-radius: var(--oc-radius); background: linear-gradient(135deg, var(--oc-accent-from, var(--oc-primary)), var(--oc-accent-to, var(--oc-primary))); opacity: 0.85; }
+.oc-block-profile-thumb { aspect-ratio: 16 / 9; border-radius: var(--oc-radius); background: repeating-linear-gradient(135deg in srgb, oklch(from var(--oc-accent-from, var(--oc-primary)) l c h / 0.12) 0 1px, transparent 1px 14px), color-mix(in oklch, var(--oc-accent-from, var(--oc-primary)) 18%, var(--oc-muted)); opacity: 0.85; }
 
 /* Compact: low banner and a smaller avatar. */
-.oc-block-profile--compact .oc-block-profile-banner { aspect-ratio: 10 / 1; min-block-size: 4.5rem; }
+.oc-block-profile--compact .oc-block-profile-banner { block-size: max(4.5rem, 100cqi / 10); }
 .oc-block-profile--compact .oc-block-profile-avatar.oc-avatar { width: 4.5rem; height: 4.5rem; margin-block-start: -2.25rem; font-size: 1.4rem; }
 
 /* Narrow: the actions go below the info, full width. */

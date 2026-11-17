@@ -1,0 +1,149 @@
+<!--oc-page {"title":"OmniaUI - Logo","category":"Media","description":"A customer logo in its own colors and ratio, with a neutral plate only in the theme where it would disappear.","nav":"Logo","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
+<!-- File: apps/site/src/content/ui/components/logo.html | Map: hero -> demos (plate per theme, same box) -> reference -> how the plate is chosen -> frameworks -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Logo</h1>
+        <p class="oc-hero-text">Shows an uploaded logo exactly as it is: its own colors and ratio, never tinted, filtered or masked. A white logo would vanish on a light page and a dark one on a dark page, so only there it gets a calm neutral plate. The choice is made once per image by a small script, or set by hand. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <span class="oc-section-header__badge-file oc-badge-source-file">snippets/logo.html</span>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.16.0</span>
+          <p class="oc-section-header__desc">Plain HTML and CSS (plus <code>oc-logo.js</code> where a demo says so). The markup is also available as the snippet <code>packages/ui/snippets/logo.html</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <p class="oc-section-content__desc">The same four logos in a light and a dark panel. Each logo keeps its own colors and ratio; only where it would disappear does it get a calm neutral plate. Company 3 has enough contrast on both, Company 4 brings its own background. <code>data-plate="auto"</code> lets the small script <code>oc-logo.js</code> look at the pixels of each image once (a canvas of 64px wide) and write <code>light</code>, <code>dark</code>, <code>both</code> or <code>none</code>; the CSS does the rest. This demo needs that script because the colors of an uploaded image cannot be read in CSS. Switch the theme of this page: the plates follow.</p>
+          <oc-demo title="Logo - a plate only where it would disappear">
+<div class="oc-eg w-full">
+  <div class="oc-eg__panels" style="--eg-min: 15rem">
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">light theme</code>
+      <div class="oc-eg__note">The white logo of Company 2 gets a dark plate; the others need none.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain grid gap-1" style="--eg-h: 15rem; color-scheme: light; background: var(--oc-card); justify-items: start; align-content: center; padding: 1rem">
+        <span class="oc-logo" data-plate="auto"><img src="/img/samples/logo-company-1.svg" alt="Company 1"></span>
+        <span class="oc-logo" data-plate="auto"><img src="/img/samples/logo-company-2.svg" alt="Company 2"></span>
+        <span class="oc-logo" data-plate="auto"><img src="/img/samples/logo-company-3.svg" alt="Company 3"></span>
+        <span class="oc-logo" data-plate="auto"><img src="/img/samples/logo-company-4.svg" alt="Company 4"></span>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">dark theme</code>
+      <div class="oc-eg__note">The dark text of Company 1 gets a light plate; Company 2 now reads by itself.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain grid gap-1" style="--eg-h: 15rem; color-scheme: dark; background: var(--oc-card); justify-items: start; align-content: center; padding: 1rem">
+        <span class="oc-logo" data-plate="auto"><img src="/img/samples/logo-company-1.svg" alt="Company 1"></span>
+        <span class="oc-logo" data-plate="auto"><img src="/img/samples/logo-company-2.svg" alt="Company 2"></span>
+        <span class="oc-logo" data-plate="auto"><img src="/img/samples/logo-company-3.svg" alt="Company 3"></span>
+        <span class="oc-logo" data-plate="auto"><img src="/img/samples/logo-company-4.svg" alt="Company 4"></span>
+      </div>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;span class="oc-logo" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-1.svg" alt="Company 1"&gt;&lt;/span&gt;
+&lt;span class="oc-logo" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-2.svg" alt="Company 2"&gt;&lt;/span&gt;
+&lt;span class="oc-logo" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-3.svg" alt="Company 3"&gt;&lt;/span&gt;
+&lt;span class="oc-logo" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-4.svg" alt="Company 4"&gt;&lt;/span&gt;
+&lt;script type="module" src="/js/oc-logo.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">&lt;Logo src="/uploads/logo-company-1.svg" alt="Company 1" /&gt;
+&lt;Logo src="/uploads/logo-company-2.svg" alt="Company 2" height="2.5rem" /&gt;
+&lt;Logo src={customer.logo} alt={customer.name} plate="light" /&gt; {/* known: skip the measuring */}</oc-code>
+<oc-code lang="vue">&lt;OcLogo src="/uploads/logo-company-1.svg" alt="Company 1" /&gt;
+&lt;OcLogo :src="customer.logo" :alt="customer.name" height="2.5rem" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::logo src="/uploads/logo-company-1.svg" alt="Company 1" /&gt;
+&lt;x-oc::logo :src="$customer-&gt;logo_url" :alt="$customer-&gt;name" plate="auto" /&gt;
+&lt;script type="module" src="/js/oc-logo.js"&gt;&lt;/script&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="box">The same box for every logo</h3>
+          <p class="oc-section-content__desc"><code>--box</code> gives every logo the same box (<code>--oc-logo-w</code> by <code>--oc-logo-h</code>), centred and as large as fits, for a row or a wall of customer logos that line up. Narrow the demo with the width buttons: the boxes wrap and stay equal.</p>
+          <oc-demo title="Logo - same box">
+<div class="grid gap-1 w-full" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); justify-items: center">
+<span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"><img src="/img/samples/logo-company-1.svg" alt="Company 1"></span>
+<span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"><img src="/img/samples/logo-company-2.svg" alt="Company 2"></span>
+<span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"><img src="/img/samples/logo-company-3.svg" alt="Company 3"></span>
+<span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"><img src="/img/samples/logo-company-4.svg" alt="Company 4"></span>
+</div>
+<oc-code lang="html">&lt;div class="grid gap-1 w-full" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); justify-items: center"&gt;
+&lt;span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-1.svg" alt="Company 1"&gt;&lt;/span&gt;
+&lt;span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-2.svg" alt="Company 2"&gt;&lt;/span&gt;
+&lt;span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-3.svg" alt="Company 3"&gt;&lt;/span&gt;
+&lt;span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-4.svg" alt="Company 4"&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-logo.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">&lt;Logo src={logo} alt="Company 1" fit="box" maxWidth="10rem" height="2rem" /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcLogo :src="logo" alt="Company 1" fit="box" max-width="10rem" height="2rem" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::logo :src="$logo" alt="Company 1" fit="box" max-width="10rem" height="2rem" /&gt;</oc-code>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/media-logo.css</code>. Plate colors are palette tokens: <code>--oc-logo-plate-light</code> (the dark plate in the light theme), <code>--oc-logo-plate-dark</code> (the light plate in the dark theme) and <code>--oc-logo-plate-both</code>. <code>light-dark()</code> follows the color scheme of the page or of a themed area.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-logo &gt; img</code></td><td>The logo at <code>--oc-logo-h</code> (2.25rem) high and at most <code>--oc-logo-w</code> (14rem) wide, <code>object-fit: contain</code>, no filter</td></tr>
+              <tr><td><code>--box</code></td><td>Every logo in the same box (<code>--oc-logo-w</code> by <code>--oc-logo-h</code>)</td></tr>
+              <tr><td><code>data-plate="light"</code></td><td>A white logo: a dark plate in the light theme, nothing in the dark theme</td></tr>
+              <tr><td><code>data-plate="dark"</code></td><td>A dark logo: a light plate in the dark theme, nothing in the light theme</td></tr>
+              <tr><td><code>data-plate="both"</code> / <code>"none"</code></td><td>White and dark parts: a mid gray plate in both / no plate</td></tr>
+              <tr><td><code>data-plate="auto"</code></td><td>Measured once by <code>oc-logo.js</code> (<code>npx omniaui copy-js logo</code>), the React and Vue components or <code>measureLogo(src)</code>; the image must be same-origin or send CORS headers, otherwise it stays without a plate</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2" id="how">How the plate is chosen</h3>
+          <ul>
+            <li>The image is drawn once on a canvas 64px wide; transparent pixels are skipped.</li>
+            <li>A pixel with less than 1.35:1 contrast against white disappears in the light theme; one with less than 2.5:1 against a dark page disappears in the dark theme.</li>
+            <li>More than half of the visible pixels white: <code>light</code>. More than a quarter too dark: <code>dark</code>. Both above a fifth: <code>both</code>. A logo that covers 90% of its box with opaque pixels has its own background: <code>none</code>.</li>
+            <li>The result is cached per address, so the same logo on many places is measured once.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Framework wrappers</h2>
+          <p class="oc-section-header__desc"><code>src</code>, <code>alt</code>, <code>fit</code> (<code>contain</code> or <code>box</code>), <code>plate</code> (<code>auto</code> by default, or set it), <code>height</code> and <code>maxWidth</code> / <code>max-width</code> as CSS lengths. React and Vue measure by themselves; Blade needs <code>oc-logo.js</code> for <code>auto</code>.</p>
+        </div>
+        <div class="oc-section-content">
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;Logo src={customer.logo} alt={customer.name} /&gt;
+&lt;!-- Vue --&gt;
+&lt;OcLogo :src="customer.logo" :alt="customer.name" fit="box" /&gt;
+&lt;!-- Laravel Blade (+ /js/oc-logo.js) --&gt;
+&lt;x-oc::logo :src="$customer-&gt;logo_url" :alt="$customer-&gt;name" /&gt;</oc-code>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-compat features="css.types.color.light-dark css.properties.object-fit api.CanvasRenderingContext2D.getImageData"></oc-compat>
+        </div>
+        <div class="oc-section-footer">
+          <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+          <p class="oc-section-footer__desc">See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark" target="_blank" rel="noopener">MDN: light-dark()</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/How_to/CORS_enabled_image" target="_blank" rel="noopener">MDN: CORS enabled images</a>.</p>
+          <div class="oc-section-content">
+            <h3 class="oc-section-content__title">Source files</h3>
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+              <tbody>
+                <tr><td><code>packages/ui/src/parts/media-logo.css</code></td><td>Styles</td></tr>
+                <tr><td><code>packages/ui/src/logo.js</code></td><td>Measuring (<code>measureLogo</code>, <code>initLogos</code>)</td></tr>
+                <tr><td><code>packages/ui/snippets/logo.html</code></td><td>Copy-paste markup</td></tr>
+                <tr><td><code>packages/react/src/components/Logo.tsx / packages/vue/src/components/OcLogo.vue</code></td><td>Wrappers</td></tr>
+                <tr><td><code>resources/views/components/logo.blade.php</code></td><td>Laravel: <code>&lt;x-oc::logo&gt;</code></td></tr>
+              </tbody>
+            </table>
+            <h3 class="oc-section-content__title">Related pages</h3>
+            <p class="oc-section-content__desc"><a class="source-link" href="avatar.html">Avatar</a> · <a class="source-link" href="theme-switch.html">Theme switch</a> · <a class="source-link" href="media-card.html">Media card</a></p>
+          </div>
+        </div>
+      </section>
+<script type="module" src="/js/oc-logo.js"></script>

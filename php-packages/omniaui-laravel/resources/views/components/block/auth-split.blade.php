@@ -53,7 +53,7 @@
           @else
         <div class="oc-field">
           <label class="oc-field-label" for="oc-authsplit-email">E-mail</label>
-          <input class="oc-input" id="oc-authsplit-email" name="email" type="email" autocomplete="username" placeholder="name@company.com" required>
+          <input class="oc-input" id="oc-authsplit-email" name="email" type="email" autocomplete="username" placeholder="name@company1.example" required>
         </div>
         <div class="oc-field">
           <label class="oc-field-label" for="oc-authsplit-password">Password</label>

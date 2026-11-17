@@ -34,7 +34,7 @@
       </div>
       <div class="oc-field">
         <label class="oc-field-label" for="oc-signup01-email">E-mail</label>
-        <input class="oc-input" id="oc-signup01-email" name="email" type="email" autocomplete="email" required placeholder="name@company.com">
+        <input class="oc-input" id="oc-signup01-email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example">
       </div>
       <div class="oc-field">
         <label class="oc-field-label" for="oc-signup01-password">Password</label>

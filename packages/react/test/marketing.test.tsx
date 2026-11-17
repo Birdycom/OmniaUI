@@ -32,9 +32,9 @@ describe("marketing components", () => {
   });
 
   it("ProjectCard renders the frame, placeholder and body", () => {
-    render(<ProjectCard href="/p" name="Northwind" type="Website" meta="Retail" flat />);
+    render(<ProjectCard href="/p" name="Customer 1" type="Website" meta="Retail" flat glow />);
     const link = screen.getByRole("link");
-    expect(link).toHaveClass("oc-project-card", "oc-project-card--flat");
+    expect(link).toHaveClass("oc-project-card", "oc-project-card--flat", "oc-project-card--glow");
     expect(link.querySelector(".oc-project-card__bar i")).not.toBeNull();
     expect(link.querySelector("span.oc-project-card__shot")).not.toBeNull();
     expect(link.querySelector(".oc-project-card__more")).toHaveTextContent("View project");
@@ -59,7 +59,7 @@ describe("marketing components", () => {
   });
 
   it("NextTeaser renders label, name and tagline", () => {
-    render(<NextTeaser href="/n" name="Acme Design" tagline="Design system" prev />);
+    render(<NextTeaser href="/n" name="Product 1" tagline="Design system" prev />);
     const link = screen.getByRole("link");
     expect(link).toHaveClass("oc-next-teaser", "oc-next-teaser--prev");
     expect(link.querySelector(".oc-next-teaser__label")).toHaveTextContent("Next product");
@@ -168,7 +168,7 @@ describe("marketing blocks", () => {
   });
 
   it("BlockProfileHeader marks the current tab", () => {
-    render(<BlockProfileHeader name="Acme" avatar="AS" tabs={[{ label: "Home", href: "#h", current: true }, { label: "About", href: "#a" }]} />);
+    render(<BlockProfileHeader name="Company 1" avatar="AS" tabs={[{ label: "Home", href: "#h", current: true }, { label: "About", href: "#a" }]} />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveClass("oc-block-profile-name");
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "About" })).not.toHaveAttribute("aria-current");
@@ -192,7 +192,7 @@ describe("marketing blocks", () => {
 
 describe("LinkRow", () => {
   it("renders the links with rel=noopener on external ones, tone and size", () => {
-    render(<LinkRow tone="muted" size="sm" links={[{ href: "/docs", label: "Docs" }, { href: "https://github.com/acme/app", label: "Source" }]} />);
+    render(<LinkRow tone="muted" size="sm" links={[{ href: "/docs", label: "Docs" }, { href: "https://github.com/company1/app", label: "Source" }]} />);
     expect(screen.getByRole("list")).toHaveClass("oc-link-row", "oc-link-row--muted", "oc-link-row--sm");
     expect(screen.getByRole("link", { name: "Docs" })).not.toHaveAttribute("rel");
     expect(screen.getByRole("link", { name: "Source" })).toHaveAttribute("rel", "noopener");

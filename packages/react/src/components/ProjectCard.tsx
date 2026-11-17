@@ -12,21 +12,23 @@ export interface ProjectCardProps extends Omit<AnchorHTMLAttributes<HTMLAnchorEl
   meta?: ReactNode;
   /** Text of the arrow link (default "View project"). */
   more?: ReactNode;
-  /** Screenshot URL; without it the preview is an accent gradient. */
+  /** Screenshot URL; without it the preview is a soft tint of the accent color. */
   image?: string;
   /** Accessible description of the screenshot. */
   imageAlt?: string;
   /** Edge-to-edge preview. */
   flat?: boolean;
+  /** Shadow under the preview in the accent color (default: neutral). */
+  glow?: boolean;
 }
 
 /** `<a class="oc-project-card">`: portfolio card with a browser-like preview. */
 export const ProjectCard = forwardRef<HTMLAnchorElement, ProjectCardProps>(function ProjectCard(
-  { name, type, meta, more = "View project", image, imageAlt = "", flat = false, className, ...rest },
+  { name, type, meta, more = "View project", image, imageAlt = "", flat = false, glow = false, className, ...rest },
   ref,
 ) {
   return (
-    <a ref={ref} className={cx("oc-project-card", flat && "oc-project-card--flat", className)} {...rest}>
+    <a ref={ref} className={cx("oc-project-card", flat && "oc-project-card--flat", glow && "oc-project-card--glow", className)} {...rest}>
       <span className="oc-project-card__frame">
         <span className="oc-project-card__bar" aria-hidden="true"><i /><i /><i /></span>
         {image ? (

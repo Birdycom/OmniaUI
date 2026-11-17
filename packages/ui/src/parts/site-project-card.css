@@ -1,5 +1,5 @@
 /* File: packages/ui/src/parts/site-project-card.css
-   Map: card -> preview frame (bar + dots + shot) -> body (type / name / meta / more) -> hover -> reduced motion
+   Map: card -> preview frame (bar + dots + shot) -> body (type / name / meta / more) -> hover -> flat -> glow -> reduced motion
    Project card: portfolio item with a browser-like preview. Self-contained: it does not use other frame classes.
    Accent: --oc-accent-from / --oc-accent-to, or an .oc-accent--* preset on the card. */
 
@@ -15,7 +15,7 @@
   transition: transform 0.35s var(--oc-ease-out), border-color 0.35s;
 }
 
-/* Preview: a small window with a title bar and a screenshot (or a gradient placeholder). */
+/* Preview: a small window with a title bar and a screenshot (or a tinted placeholder). */
 .oc-project-card__frame {
   display: block;
   margin: 1rem 1rem 0;
@@ -23,7 +23,7 @@
   border-radius: var(--oc-radius-md);
   background: var(--oc-card);
   overflow: hidden;
-  box-shadow: 0 24px 48px -28px color-mix(in oklch, var(--oc-accent-to) 60%, transparent);
+  box-shadow: 0 24px 48px -28px light-dark(oklch(from var(--color-black-50) l c h / 0.22), oklch(from var(--color-black-50) l c h / 0.6));
 }
 .oc-project-card__bar {
   display: flex;
@@ -40,7 +40,7 @@
 }
 .oc-project-card__bar > i:first-child { background: var(--oc-accent-from); }
 
-/* Screenshot area. Without an <img> it shows an accent gradient placeholder. */
+/* Screenshot area. Without an <img> it shows a quiet placeholder: a soft tint of the accent color with a faint weave. */
 .oc-project-card__shot {
   display: block;
   inline-size: 100%;
@@ -48,8 +48,8 @@
   object-fit: cover;
   object-position: top;
   background:
-    radial-gradient(circle at 80% 20%, color-mix(in oklch, var(--color-white-50) 30%, transparent), transparent 45%),
-    linear-gradient(135deg, var(--oc-accent-from), var(--oc-accent-to));
+    repeating-linear-gradient(135deg in srgb, oklch(from var(--oc-accent-from) l c h / 0.12) 0 1px, transparent 1px 14px),
+    color-mix(in oklch, var(--oc-accent-from) 18%, var(--oc-muted));
   /* The hover zoom grows down and sideways (clipped by the frame), never up over the title bar. */
   transform-origin: 50% 0;
   transition: scale 0.5s var(--oc-ease-out);
@@ -68,7 +68,7 @@
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   background: color-mix(in oklch, var(--oc-accent-from) 14%, transparent);
-  color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
+  color: light-dark(oklch(from var(--oc-accent-from) min(l, 0.43) c h), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); /* 0.43: red reaches 4.5:1 on its tint too */
   font-size: 0.75rem;
   font-weight: 600;
 }
@@ -89,7 +89,7 @@
   gap: 0.4rem;
   margin-block-start: auto;
   padding-block-start: 0.6rem;
-  color: light-dark(var(--oc-accent-from), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
+  color: light-dark(oklch(from var(--oc-accent-from) min(l, 0.52) c h), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -106,6 +106,11 @@
 
 /* Flat: no frame margin, the preview runs edge to edge. */
 .oc-project-card--flat .oc-project-card__frame { margin: 0; border: 0; border-radius: 0; box-shadow: none; }
+
+/* Glow (option): the shadow under the preview takes the accent color. */
+.oc-project-card--glow:not(.oc-project-card--flat) .oc-project-card__frame {
+  box-shadow: 0 24px 48px -28px color-mix(in oklch, var(--oc-accent-to) 60%, transparent);
+}
 
 @media (prefers-reduced-motion: reduce) {
   .oc-project-card,

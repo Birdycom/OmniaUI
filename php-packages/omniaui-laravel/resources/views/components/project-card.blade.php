@@ -1,8 +1,8 @@
 {{-- File: resources/views/components/project-card.blade.php | Map: props -> a.oc-project-card -> frame (bar + shot) -> body
-     OmniaUI project card. Props: href, name, type, meta, more (default "View project"), image, imageAlt, flat.
-     Without image the preview is an accent gradient (add class="oc-accent--green" etc.). --}}
-@props(['href' => '#', 'name' => null, 'type' => null, 'meta' => null, 'more' => 'View project', 'image' => null, 'imageAlt' => '', 'flat' => false])
-<a {{ $attributes->class(['oc-project-card', 'oc-project-card--flat' => $flat])->merge(['href' => $href]) }}>
+     OmniaUI project card. Props: href, name, type, meta, more (default "View project"), image, imageAlt, flat, glow.
+     Without image the preview is a soft tint of the accent color (add class="oc-accent--green" etc.). --}}
+@props(['href' => '#', 'name' => null, 'type' => null, 'meta' => null, 'more' => 'View project', 'image' => null, 'imageAlt' => '', 'flat' => false, 'glow' => false])
+<a {{ $attributes->class(['oc-project-card', 'oc-project-card--flat' => $flat, 'oc-project-card--glow' => $glow])->merge(['href' => $href]) }}>
     <span class="oc-project-card__frame">
         <span class="oc-project-card__bar" aria-hidden="true"><i></i><i></i><i></i></span>
         @if ($image)

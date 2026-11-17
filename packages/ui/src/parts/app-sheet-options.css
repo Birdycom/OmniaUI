@@ -1,0 +1,70 @@
+/* File: packages/ui/src/parts/app-sheet-options.css
+   Map: tokens (panel, scrim) -> glass sheet (blur, light scrim without blur, fallbacks) -> inset (a strip of the page
+        stays free) -> footer panel (own background, safe area) -> plain collapsible -> reduced motion / transparency
+   Options of the sheet for panels over a live view (a map, a game, a dashboard), plus the plain collapsible for lists
+   inside such a panel. Theme tokens only; the glass is a calm see-through surface, no gradients. */
+
+/* Tokens of every sheet: the panel color and the scrim behind it. The defaults are the existing look. */
+.oc-sheet-content { background: var(--oc-sheet-bg, var(--oc-background)); }
+dialog.oc-sheet::backdrop { background: var(--oc-sheet-scrim, oklch(from var(--color-black-60) l c h / 0.5)); }
+
+/* Glass: the panel lets the page show through (blurred), the scrim is light and not blurred, so the rest of the page
+   stays visible. --oc-sheet-bg (panel), --oc-sheet-blur (blur radius), --oc-sheet-scrim (scrim). */
+dialog.oc-sheet--glass {
+  --oc-sheet-bg: color-mix(in oklab, var(--oc-background) 84%, transparent);
+  --oc-sheet-blur: 16px;
+  --oc-sheet-scrim: color-mix(in oklab, var(--oc-foreground) 16%, transparent);
+  --oc-sheet-line: color-mix(in oklab, var(--oc-border) 70%, transparent);
+}
+dialog.oc-sheet--glass::backdrop {
+  background: var(--oc-sheet-scrim, oklch(from var(--color-black-60) l c h / 0.16));
+  backdrop-filter: none;
+}
+dialog.oc-sheet--glass .oc-sheet-content {
+  -webkit-backdrop-filter: blur(var(--oc-sheet-blur)) saturate(1.2);
+  backdrop-filter: blur(var(--oc-sheet-blur)) saturate(1.2);
+  border-color: var(--oc-sheet-line);
+}
+dialog.oc-sheet--glass .oc-sheet-footer { border-color: var(--oc-sheet-line); }
+dialog.oc-sheet--glass .oc-sheet-close:hover { background: color-mix(in oklab, var(--oc-card) 70%, transparent); }
+/* Without backdrop-filter the page would be sharp behind the text: nearly opaque instead. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  dialog.oc-sheet--glass { --oc-sheet-bg: color-mix(in oklab, var(--oc-background) 96%, transparent); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  dialog.oc-sheet--glass { --oc-sheet-bg: var(--oc-background); }
+  dialog.oc-sheet--glass .oc-sheet-content { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* Inset: on a narrow screen a strip of the page stays free next to the panel (or above a bottom sheet), so the reader
+   still sees where they are and can tap beside the panel to close it (closedby="any"). Size: --oc-sheet-gap. */
+dialog.oc-sheet--inset { --oc-sheet-gap: 3.25rem; inline-size: min(24rem, calc(100% - var(--oc-sheet-gap))); }
+dialog.oc-sheet--inset:has(> .oc-sheet-content--wide) { inline-size: min(40rem, calc(100% - var(--oc-sheet-gap))); }
+dialog.oc-sheet--inset:is(.oc-sheet--top, .oc-sheet--bottom) { inline-size: 100%; max-block-size: calc(100dvh - var(--oc-sheet-gap)); }
+dialog.oc-sheet--inset:is(.oc-sheet--top, .oc-sheet--bottom) .oc-sheet-content { max-block-size: calc(100dvh - var(--oc-sheet-gap)); }
+
+/* Footer panel: the footer is a block of content (a brand line, a version, a note) on its own background, not a row of
+   buttons. It stays at the bottom while the body scrolls, and keeps clear of the home bar of a phone. */
+.oc-sheet-footer.oc-sheet-footer--panel {
+  display: block;
+  padding-block-end: max(1rem, env(safe-area-inset-bottom));
+  background: var(--oc-sheet-footer-bg, var(--oc-surface));
+  font-size: 0.875rem;
+}
+dialog.oc-sheet--glass .oc-sheet-footer--panel { --oc-sheet-footer-bg: color-mix(in oklab, var(--oc-card) 50%, transparent); }
+@media (prefers-reduced-transparency: reduce) {
+  dialog.oc-sheet--glass .oc-sheet-footer--panel { --oc-sheet-footer-bg: var(--oc-card); }
+}
+
+/* Plain collapsible: no card (no background, border or shadow), for a list of sections inside a panel or a block.
+   Large rows, a thin line between neighbours, the content without its own border. */
+details.oc-collapsible.oc-collapsible--plain { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+details.oc-collapsible--plain > summary { min-block-size: 2.75rem; padding: 0.75rem 0.5rem; border-radius: var(--oc-radius); }
+details.oc-collapsible--plain > summary:hover { background: var(--oc-surface); }
+details.oc-collapsible--plain + details.oc-collapsible--plain { border-block-start: 1px solid var(--oc-border); }
+details.oc-collapsible--plain .oc-collapsible-title { font-size: 0.9375rem; font-weight: 600; }
+details.oc-collapsible--plain .oc-collapsible-content { padding: 0.25rem 0.5rem 1rem; border-block-start: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  dialog.oc-sheet--glass .oc-sheet-content { transition: none; }
+}

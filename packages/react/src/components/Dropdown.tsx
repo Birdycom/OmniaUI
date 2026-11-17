@@ -1,4 +1,4 @@
-import { forwardRef, useId } from "react";
+import { createElement, forwardRef, useId } from "react";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes, MouseEvent, ReactNode } from "react";
 import { attrs, cx } from "../utils";
 import { Button } from "./Button";
@@ -46,6 +46,8 @@ interface ItemExtras {
   checked?: boolean;
   /** Muted text on the right ("Ctrl+Q", "2 h"). */
   hint?: ReactNode;
+  /** Icon in front of the label: a webicon name ("mdi:pencil") or any node. Items without one line up with the others. */
+  icon?: ReactNode;
   /** Keep the menu open after a click. Default: a check item stays open, every other item closes the menu. */
   keepOpen?: boolean;
 }
@@ -59,7 +61,7 @@ export function closeMenu(event: MouseEvent<HTMLElement>) {
 }
 
 /** `.oc-dropdown-item`: an anchor when `href` is set, otherwise a button. A click closes the menu (`keepOpen` to stop that). */
-export function DropdownItem({ className, checked, hint, keepOpen, children, ...props }: ItemProps) {
+export function DropdownItem({ className, checked, hint, icon, keepOpen, children, ...props }: ItemProps) {
   const check = checked !== undefined;
   const userClick = props.onClick as ((e: MouseEvent<HTMLElement>) => void) | undefined;
   const onClick = (e: MouseEvent<HTMLElement>) => {
@@ -69,6 +71,7 @@ export function DropdownItem({ className, checked, hint, keepOpen, children, ...
   const content = (
     <>
       {check && <span className="oc-dropdown-check" aria-hidden="true" />}
+      {icon != null && <span className="oc-dropdown-icon" aria-hidden="true">{typeof icon === "string" && icon.includes(":") ? createElement("iconify-icon", { icon, "aria-hidden": "true" }) : icon}</span>}
       {children}
       {hint != null && <span className="oc-dropdown-hint">{hint}</span>}
     </>

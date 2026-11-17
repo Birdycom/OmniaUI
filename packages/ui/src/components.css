@@ -89,7 +89,7 @@
   --oc-badge-source-file-border-color-active: oklch(from var(--oc-badge-source-file-color) l c h / 0.8);
 
   /* scss source badge */
-  --oc-badge-source-scss-background: oklch(from var(--oc-badge-source-scss-color) l c h / 0.2);
+  --oc-badge-source-scss-background: oklch(from var(--oc-badge-source-scss-color) l c h / 0.1);
   --oc-badge-source-scss-border: oklch(from var(--oc-badge-source-scss-color) l c h / 0.5);
   --oc-badge-source-scss-color: light-dark(var(--color-red-95), var(--color-orange-60));
   --oc-badge-source-scss-font-size: 0.72rem;
@@ -136,23 +136,23 @@
   /* Section header */
   --oc-section-header-title-font-size: clamp(1.28rem, 2vw, 1.5rem); /* 24px .font-clamp-1.5*/
   --oc-section-header-desc-font-size: clamp(0.85rem, 1.33vw, 1rem); /* 16px .font-clamp-1*/
-  --oc-section-header-title-margin: 0 0 0.5rem 0;
-  --oc-section-header-desc-margin: 0 0 1rem 0.5rem;
+  --oc-section-header-title-margin: 0;
+  --oc-section-header-desc-margin: 0.25rem 0 0;
 
   /* Section content */
   --oc-section-content-title-font-size: clamp(1.06rem, 1.67vw, 1.25rem); /* 20px .font-clamp-1.2*/
   --oc-section-content-desc-font-size: clamp(0.85rem, 1.33vw, 1rem); /* 14px .font-clamp-1*/
   --oc-section-content-title-margin: 0 0 0.5rem 0;
   --oc-section-content-desc-margin: 0 0 1rem 0.5rem;
-  --oc-section-content-padding: 1rem 4rem;
+  --oc-section-content-padding: 1rem; /* same inline padding as header and footer, so the three parts line up */
   --oc-section-content-background: light-dark(var(--color-white-50), var(--color-duskblue-100));
   --oc-section-content-border-radius: calc(var(--oc-radius) + 2px);
 
   /* Section footer */
   --oc-section-footer-title-font-size: clamp(1.28rem, 2vw, 1.5rem); /* 24px .font-clamp-1.5*/
   --oc-section-footer-desc-font-size: clamp(0.85rem, 1.33vw, 1rem); /* 16px .font-clamp-1*/
-  --oc-section-footer-title-margin: 0 0 0.5rem 0;
-  --oc-section-footer-desc-margin: 0 0 1rem 0.5rem;
+  --oc-section-footer-title-margin: 0 0 0.25rem 0;
+  --oc-section-footer-desc-margin: 0;
   --oc-section-footer-padding: 1rem;
   --oc-section-footer-border-top: 1px solid var(--oc-border);
 }
@@ -270,6 +270,10 @@ flex-direction: column;
    Sizes: xs, sm, md (default), lg, icon
    =================================================================== */
 
+/* Zero specificity, so duration-*, ease-* and transition-* utilities on a button win whatever the load order */
+:where(.oc-btn) {
+  transition: all var(--oc-transition-fast);
+}
 .oc-btn {
   display: inline-flex;
   align-items: center;
@@ -286,7 +290,6 @@ flex-direction: column;
   background: var(--oc-primary);
   color: var(--oc-primary-foreground);
   cursor: pointer;
-  transition: all var(--oc-transition-fast);
   text-decoration: none;
   white-space: nowrap;
   user-select: none;
@@ -384,7 +387,8 @@ flex-direction: column;
 
 /* Destructive */
 .oc-btn--destructive {
-  background: var(--oc-destructive);
+  /* Never lighter than red-70, so white text stays at 4.5:1 in dark mode too. */
+  background: oklch(from var(--oc-destructive) min(l, 0.55) c h);
   color: var(--oc-destructive-foreground);
 }
 
@@ -437,7 +441,8 @@ flex-direction: column;
    --soft-primary | --soft-success | --soft-warning | --soft-destructive | --soft-info */
 .oc-btn[class*="oc-btn--soft-"] {
   background: light-dark(oklch(from var(--oc-btn-tone) l c h / 0.12), oklch(from var(--oc-btn-tone) l c h / 0.22));
-  color: var(--oc-btn-tone);
+  /* Light mode: never lighter than L 0.45, so the label reads at 4.5:1 on its own tint (warning, success). */
+  color: light-dark(oklch(from var(--oc-btn-tone) min(l, 0.45) c h), var(--oc-btn-tone));
   border-color: transparent;
 }
 .oc-btn[class*="oc-btn--soft-"]:hover {
@@ -472,7 +477,10 @@ flex-direction: column;
   border-radius: 50%;
   animation: oc-btn-spin 0.7s linear infinite;
 }
-.oc-btn[aria-busy="true"] > :is(svg, iconify-icon):first-child { display: none; }
+/* A spinner already in the markup (.oc-spinner) is not shown twice; the busy label stays readable when the button
+   is also disabled (it tells the user what is happening). */
+.oc-btn[aria-busy="true"] > :is(svg, iconify-icon, .oc-spinner):first-child { display: none; }
+.oc-btn[aria-busy="true"]:is(:disabled, [aria-disabled="true"]) { opacity: 0.85; }
 @keyframes oc-btn-spin { to { rotate: 360deg; } }
 
 /* Button group */
@@ -643,8 +651,8 @@ flex-direction: column;
 .oc-field-error {
   margin: 0;
   font-size: 0.8rem;
-  /* In dark mode lifted to at least OKLCH L 0.78, so the message stays readable on a dark card. */
-  color: light-dark(var(--oc-destructive), oklch(from var(--oc-destructive) max(l, 0.78) c h));
+  /* Light mode at most OKLCH L 0.55, dark mode at least 0.78: the small message passes 4.5:1 on a card. */
+  color: light-dark(oklch(from var(--oc-destructive) min(l, 0.55) c h), oklch(from var(--oc-destructive) max(l, 0.78) c h));
 }
 
 /* Field group — wraps multiple fields with consistent spacing */
@@ -782,7 +790,8 @@ textarea.oc-input,
   padding: 0.4rem 0.5rem;
 }
 
-/* Checkbox & Radio */
+/* Checkbox & Radio: drawn by OmniaUI (appearance: none), so they look the same in Chrome, Firefox, Safari and Opera
+   (Opera draws its own classic controls and ignores accent-color; accent-color stays as a harmless extra). */
 .oc-checkbox,
 .oc-radio {
   width: 16px;
@@ -790,6 +799,56 @@ textarea.oc-input,
   accent-color: var(--oc-primary);
   cursor: pointer;
   vertical-align: middle;
+}
+input.oc-checkbox,
+input.oc-radio {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 0;
+  color: var(--oc-primary-foreground, var(--color-white-50, white));
+  background: var(--oc-background);
+  border: 1px solid var(--oc-border-strong, var(--oc-border));
+  border-radius: 4px;
+  transition: background-color var(--oc-transition-fast), border-color var(--oc-transition-fast);
+}
+input.oc-radio { border-radius: 50%; }
+input.oc-checkbox::before,
+input.oc-radio::before {
+  content: "";
+  inline-size: 12px;
+  block-size: 12px;
+  background: currentColor;
+  scale: 0;
+  transition: scale var(--oc-transition-fast);
+}
+input.oc-checkbox::before {
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.25 6.25l2.5 2.5 5-5.5' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+input.oc-checkbox:indeterminate::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6h7' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+input.oc-radio::before { inline-size: 6px; block-size: 6px; border-radius: 50%; }
+input.oc-checkbox:is(:checked, :indeterminate),
+input.oc-radio:checked { background: var(--oc-primary); border-color: var(--oc-primary); }
+input.oc-checkbox:is(:checked, :indeterminate)::before,
+input.oc-radio:checked::before { scale: 1; }
+input.oc-checkbox:hover:not(:disabled),
+input.oc-radio:hover:not(:disabled) { border-color: var(--oc-primary); }
+input.oc-checkbox:focus-visible,
+input.oc-radio:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+input.oc-checkbox:is([aria-invalid="true"], :user-invalid),
+input.oc-radio:is([aria-invalid="true"], :user-invalid) { border-color: var(--oc-destructive); }
+input.oc-checkbox:disabled,
+input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) {
+  input.oc-checkbox, input.oc-radio, input.oc-checkbox::before, input.oc-radio::before { transition: none; }
+}
+@media (forced-colors: active) {
+  input.oc-checkbox, input.oc-radio { appearance: auto; }
+  input.oc-checkbox::before, input.oc-radio::before { content: none; }
 }
 
 /* Label (legacy compat — prefer oc-field-label) */
@@ -899,16 +958,18 @@ textarea.oc-input,
 
 .oc-badge--success {
   background: oklch(from var(--oc-success) l c h / 0.16);
-  color: var(--oc-success);
+  /* Darker text in light mode so it reads at 4.5:1 on its own tint. */
+  color: light-dark(oklch(from var(--oc-success) min(l, 0.42) c h), var(--oc-success));
   border-color: oklch(from var(--oc-success) l c h / 0.4);
 }
 .oc-badge--warning {
   background: oklch(from var(--oc-warning) l c h / 0.16);
-  color: var(--oc-warning);
+  color: light-dark(oklch(from var(--oc-warning) min(l, 0.46) c h), var(--oc-warning));
   border-color: oklch(from var(--oc-warning) l c h / 0.4);
 }
 .oc-badge--destructive {
-  background: var(--oc-destructive);
+  /* Never lighter than red-70, so white text stays at 4.5:1 in dark mode too. */
+  background: oklch(from var(--oc-destructive) min(l, 0.55) c h);
   color: var(--oc-destructive-foreground);
 }
 
@@ -1011,12 +1072,15 @@ textarea.oc-input,
   align-items: center;
   padding: 1rem;
   gap: 0 8px;
-  border-bottom: 1px solid var(--oc-border); 
+  border-bottom: 1px solid var(--oc-border);
 }
+/* A header without content below it closes the card: no second line on top of the card border. */
+.oc-section-header:last-child { border-bottom: 0; }
 
 /* Section header */
 .oc-section-header__title {
   grid-area: title;
+  min-inline-size: 0;
   margin: var(--oc-section-header-title-margin);
   font-size: var(--oc-section-header-title-font-size);
 }
@@ -1044,6 +1108,14 @@ textarea.oc-input,
   grid-area: desc;
   margin: var(--oc-section-header-desc-margin);
   font-size: var(--oc-section-header-desc-font-size);
+}
+
+/* Phone: the title and the badges no longer fit on one row, so the row wraps (title first, badges below it in
+   source order, description last) instead of pushing the card wider than the screen. */
+@media (max-width: 40rem) {
+  .oc-section-header { display: flex; flex-wrap: wrap; gap: 0.375rem 0.5rem; }
+  .oc-section-header__title { flex: 1 0 100%; }
+  .oc-section-header__desc { flex: 1 0 100%; }
 }
 
 /* Section content */
@@ -1130,7 +1202,7 @@ textarea.oc-input,
   font-size: 0.8125rem;
   line-height: 1.45;
 }
-.oc-alert--inline.oc-alert--danger { color: light-dark(var(--oc-destructive), oklch(from var(--oc-destructive) max(l, 0.75) c h)); }
+.oc-alert--inline.oc-alert--danger { color: light-dark(oklch(from var(--oc-destructive) min(l, 0.5) c h), oklch(from var(--oc-destructive) max(l, 0.75) c h)); }
 .oc-alert--inline .oc-alert-title { margin: 0; font-size: inherit; }
 .oc-alert--inline .oc-alert-title + .oc-alert-description { margin-block-start: 2px; }
 .oc-alert--inline .oc-alert-description { color: inherit; }
@@ -1895,8 +1967,13 @@ textarea.oc-input,
 .oc-expandable-table:has(.oc-expandable-table__toggle:checked) .oc-expandable-table__row-dimmed {
   opacity: 1;
 }
+/* The label is the containing block, so the hidden checkbox stays inside it and cannot stretch the page */
+.oc-expandable-table__trigger:has(.oc-expandable-table__toggle) {
+  position: relative;
+}
 .oc-expandable-table__toggle {
   position: absolute;
+  inset: 0;
   opacity: 0;
   pointer-events: none;
 }
@@ -1916,6 +1993,10 @@ textarea.oc-input,
   display: table-row;
 }
 .oc-expandable-table.is-expanded .oc-expandable-table__row-dimmed {
+  opacity: 1;
+}
+/* Nothing hidden below it: the row is simply the last one, so it is not dimmed */
+.oc-expandable-table:not(:has(.oc-expandable-table__row-more)) .oc-expandable-table__row-dimmed {
   opacity: 1;
 }
 /* Hide trigger when there are no hidden rows */
@@ -2103,6 +2184,7 @@ a.oc-breadcrumb-item:hover {
 
 .oc-pagination {
   display: flex;
+  flex-wrap: wrap; /* many pages on a phone: the row wraps instead of running out of its container */
   align-items: center;
   gap: 4px;
   list-style: none;
@@ -2629,7 +2711,7 @@ details.oc-accordion-item[open]::details-content {
 /* ---- Badge: info ---- */
 .oc-badge--info {
   background: oklch(from var(--oc-primary) l c h / 0.12);
-  color: var(--oc-primary);
+  color: light-dark(oklch(from var(--oc-primary) min(l, 0.42) c h), var(--oc-primary));
   border-color: oklch(from var(--oc-primary) l c h / 0.35);
 }
 
@@ -2820,23 +2902,40 @@ details.oc-sidebar-collapsible[open] > summary::after { transform: rotate(225deg
    SHEET — side panel on <dialog>. Open: <button command="show-modal" commandfor="id">.
    Side: .oc-sheet--right (default) · --left · --top · --bottom
    =================================================================== */
+/* Open AND close animate: the panel slides, the backdrop fades. The dialog keeps display/overlay during the exit
+   (transition-behavior: allow-discrete), so the layout below sits on the closed state too, not only on [open].
+   overflow: clip on the dialog: the browser can no longer scroll it when focus moves in (that made the panel
+   jerk on open); long content scrolls inside .oc-sheet-body. Duration: --oc-sheet-duration. */
 dialog.oc-sheet {
+  --oc-sheet-duration: 0.3s;
+  --oc-sheet-from: 100% 0;
   display: none;
-  inline-size: 100%;
+  justify-content: flex-end;
+  align-items: stretch;
+  /* The dialog box is only as big as the panel and sits at its edge, so a click beside the panel lands on the
+     ::backdrop and closedby="any" closes the sheet (a full-screen dialog box swallowed those clicks). */
+  inline-size: min(24rem, 100%);
   block-size: 100%;
   max-inline-size: none;
   max-block-size: none;
   margin: 0;
+  margin-inline-start: auto;
   padding: 0;
   border: 0;
+  overflow: clip;
   background: transparent;
   color: var(--oc-foreground);
+  transition: display var(--oc-sheet-duration) allow-discrete, overlay var(--oc-sheet-duration) allow-discrete;
 }
-dialog.oc-sheet[open] { display: flex; justify-content: flex-end; align-items: stretch; }
+dialog.oc-sheet[open] { display: flex; }
 dialog.oc-sheet::backdrop {
   background: oklch(from var(--color-black-60) l c h / 0.5);
   backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity var(--oc-sheet-duration) ease, display var(--oc-sheet-duration) allow-discrete, overlay var(--oc-sheet-duration) allow-discrete;
 }
+dialog.oc-sheet[open]::backdrop { opacity: 1; }
+@starting-style { dialog.oc-sheet[open]::backdrop { opacity: 0; } }
 .oc-sheet-content {
   position: relative;
   display: flex;
@@ -2846,22 +2945,23 @@ dialog.oc-sheet::backdrop {
   background: var(--oc-background);
   border-inline-start: 1px solid var(--oc-border);
   box-shadow: 0 16px 48px oklch(from var(--color-black-60) l c h / 0.2);
+  translate: var(--oc-sheet-from);
+  transition: translate var(--oc-sheet-duration, 0.3s) cubic-bezier(0.32, 0.72, 0, 1);
 }
-dialog.oc-sheet[open] .oc-sheet-content {
-  transition: translate var(--oc-transition-normal), opacity var(--oc-transition-normal);
-  @starting-style { translate: 100% 0; opacity: 0; }
-}
-dialog.oc-sheet--left[open] { justify-content: flex-start; }
+dialog.oc-sheet[open] .oc-sheet-content { translate: 0 0; }
+@starting-style { dialog.oc-sheet[open] .oc-sheet-content { translate: var(--oc-sheet-from); } }
+dialog.oc-sheet:has(> .oc-sheet-content--wide) { inline-size: min(40rem, 100%); }
+dialog.oc-sheet--left { --oc-sheet-from: -100% 0; justify-content: flex-start; margin-inline: 0 auto; }
+dialog.oc-sheet:is(.oc-sheet--top, .oc-sheet--bottom) { inline-size: 100%; block-size: fit-content; max-block-size: 85dvh; margin-inline: 0; }
+dialog.oc-sheet--top { margin-block: 0 auto; }
+dialog.oc-sheet--bottom { margin-block: auto 0; }
 dialog.oc-sheet--left .oc-sheet-content { border-inline-start: 0; border-inline-end: 1px solid var(--oc-border); }
-dialog.oc-sheet--left[open] .oc-sheet-content { @starting-style { translate: -100% 0; opacity: 0; } }
-dialog.oc-sheet--top[open] { flex-direction: column; justify-content: flex-start; }
-dialog.oc-sheet--bottom[open] { flex-direction: column; justify-content: flex-end; }
+dialog.oc-sheet--top { --oc-sheet-from: 0 -100%; flex-direction: column; justify-content: flex-start; }
+dialog.oc-sheet--bottom { --oc-sheet-from: 0 100%; flex-direction: column; justify-content: flex-end; }
 dialog.oc-sheet--top .oc-sheet-content,
 dialog.oc-sheet--bottom .oc-sheet-content { inline-size: 100%; block-size: auto; max-block-size: 85dvh; border-inline: 0; }
 dialog.oc-sheet--top .oc-sheet-content { border-block-end: 1px solid var(--oc-border); }
 dialog.oc-sheet--bottom .oc-sheet-content { border-block-start: 1px solid var(--oc-border); }
-dialog.oc-sheet--top[open] .oc-sheet-content { @starting-style { translate: 0 -100%; opacity: 0; } }
-dialog.oc-sheet--bottom[open] .oc-sheet-content { @starting-style { translate: 0 100%; opacity: 0; } }
 .oc-sheet-content--wide { inline-size: min(40rem, 100%); }
 .oc-sheet-header { display: flex; flex-direction: column; gap: 0.25rem; padding: 1.25rem 1.5rem 0; flex-shrink: 0; }
 .oc-sheet-title { margin: 0; padding-inline-end: 2rem; font-size: 1.05rem; font-weight: 600; color: var(--oc-foreground); }
@@ -2875,21 +2975,52 @@ dialog.oc-sheet--bottom[open] .oc-sheet-content { @starting-style { translate: 0
   border-block-start: 1px solid var(--oc-border);
   flex-shrink: 0;
 }
-.oc-sheet-close {
+/* Close button (sheet, modal, alert/confirm dialog): a square with the cross (webicon mdi:close as a CSS mask) exactly in
+   the middle. A literal "×" in the markup is hidden (it stays as the accessible fallback text); an <svg> or
+   <iconify-icon> inside replaces the mask. Tokens: --oc-close-size (button), --oc-close-icon (cross).
+   .oc-close--round makes it a circle. */
+.oc-sheet-close,
+.oc-modal-close,
+.oc-alert-dialog-close {
+  --oc-close-size: 2rem;
+  --oc-close-icon: 1.125rem;
   position: absolute;
   inset-block-start: 1rem;
   inset-inline-end: 1rem;
-  padding: 0.25rem 0.4rem;
-  font-size: 1.1rem;
-  line-height: 1;
+  display: grid;
+  place-items: center;
+  inline-size: var(--oc-close-size);
+  block-size: var(--oc-close-size);
+  padding: 0;
+  font-size: 0;
+  line-height: 0;
   color: var(--oc-muted-foreground);
   background: none;
   border: 0;
   border-radius: var(--oc-radius);
   cursor: pointer;
 }
+.oc-sheet-close:not(:has(svg, iconify-icon))::before,
+.oc-modal-close:not(:has(svg, iconify-icon))::before,
+.oc-alert-dialog-close:not(:has(svg, iconify-icon))::before {
+  content: "";
+  position: absolute; /* centred on the button itself, so a hidden "×" text in the markup cannot push it up */
+  inset: 0;
+  margin: auto;
+  inline-size: var(--oc-close-icon);
+  block-size: var(--oc-close-icon);
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.oc-sheet-close :is(svg, iconify-icon),
+.oc-modal-close :is(svg, iconify-icon),
+.oc-alert-dialog-close :is(svg, iconify-icon) { display: block; inline-size: var(--oc-close-icon); block-size: var(--oc-close-icon); font-size: var(--oc-close-icon); }
+.oc-sheet-close.oc-close--round,
+.oc-modal-close.oc-close--round,
+.oc-alert-dialog-close.oc-close--round { border-radius: 50%; }
 .oc-sheet-close:hover { color: var(--oc-foreground); background: var(--oc-accent); }
-.oc-sheet-close:focus-visible { outline: 2px solid var(--oc-ring); }
+.oc-sheet-close:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
 
 /* ===================================================================
    ALERT DIALOG — modal with a status icon (success · error · warning · info · question)
@@ -2974,6 +3105,8 @@ dialog.oc-sheet--bottom[open] .oc-sheet-content { @starting-style { translate: 0
   outline: none;
 }
 .oc-command-input::placeholder { color: var(--oc-muted-foreground); }
+/* Keyboard focus: a ring on the inner edge of the field (the frame clips anything outside). */
+.oc-command-input:focus-visible { box-shadow: inset 0 0 0 2px var(--oc-ring); }
 .oc-command-list { max-block-size: 20rem; margin: 0; padding: 0.25rem; overflow-y: auto; list-style: none; }
 .oc-command-group-label { padding: 0.5rem 0.625rem 0.25rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--oc-muted-foreground); }
 .oc-command-item {
@@ -3390,7 +3523,7 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
   color: var(--oc-foreground);
   background-color: var(--oc-background);
   background-image: repeating-linear-gradient(
-    90deg,
+    90deg in srgb,
     var(--oc-input) 0 1px,
     transparent 1px calc(var(--oc-otp-cell) - 1px),
     var(--oc-input) calc(var(--oc-otp-cell) - 1px) var(--oc-otp-cell)
@@ -3471,6 +3604,8 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
 .oc-copy-field-button:hover { background: var(--oc-accent); }
 .oc-copy-field-button:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
 .oc-copy-field-button.is-copied { color: var(--oc-success); }
+/* Keyboard focus on the value (to select it by hand): ring around the whole field. */
+.oc-copy-field:has(.oc-copy-field-value:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 
 /* ===================================================================
    COLOR FIELD — native <input type="color"> next to a text value
@@ -3702,7 +3837,9 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
   .oc-sidebar,
   .oc-toast,
   .oc-launcher,
-  dialog.oc-sheet[open] .oc-sheet-content,
+  dialog.oc-sheet,
+  dialog.oc-sheet::backdrop,
+  dialog.oc-sheet .oc-sheet-content,
   .oc-popover[popover],
   details.oc-collapsible::details-content,
   details.oc-collapsible > summary::after { transition: none; animation: none; }
