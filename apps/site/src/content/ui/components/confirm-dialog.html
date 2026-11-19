@@ -52,6 +52,43 @@
     action="{{ route('projects.destroy', $project) }}" method="post"&gt;
     This removes the project, its quotes and all files. This cannot be undone.
 &lt;/x-oc::confirm-dialog&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ConfirmDialogTypedConfirmation extends Component
+{
+    public function render()
+    {
+        return view('livewire.confirm-dialog-typed-confirmation');
+    }
+}
+
+{{-- resources/views/livewire/confirm-dialog-typed-confirmation.blade.php --}}
+&lt;div&gt;
+    &lt;button class="oc-btn oc-btn--destructive" type="button" command="show-modal" commandfor="oc-confirm-dialog-docs"&gt;Delete project&lt;/button&gt;
+
+    &lt;dialog class="oc-modal" id="oc-confirm-dialog-docs" closedby="any" aria-labelledby="oc-confirm-dialog-docs-title" aria-describedby="oc-confirm-dialog-docs-text"&gt;
+      &lt;div class="oc-modal-content oc-alert-dialog oc-alert-dialog--error oc-alert-dialog--confirm"&gt;
+        &lt;button class="oc-alert-dialog-close" type="button" command="close" commandfor="oc-confirm-dialog-docs" aria-label="Close"&gt;×&lt;/button&gt;
+        &lt;span class="oc-alert-dialog-icon" aria-hidden="true"&gt;×&lt;/span&gt;
+        &lt;h2 class="oc-modal-title" id="oc-confirm-dialog-docs-title"&gt;Delete "Kitchen renovation"?&lt;/h2&gt;
+        &lt;form class="oc-alert-dialog-form" method="dialog"&gt;
+          &lt;div class="oc-modal-body" id="oc-confirm-dialog-docs-text"&gt;This removes the project, its quotes and all files. This cannot be undone.&lt;/div&gt;
+          &lt;label class="oc-alert-dialog-typed"&gt;
+            &lt;span&gt;Type &lt;code&gt;DELETE&lt;/code&gt; to confirm&lt;/span&gt;
+            &lt;input class="oc-input" name="confirm" pattern="DELETE" required autocomplete="off"&gt;
+          &lt;/label&gt;
+          &lt;div class="oc-modal-footer"&gt;
+            &lt;button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="oc-confirm-dialog-docs"&gt;Cancel&lt;/button&gt;
+            &lt;button class="oc-btn oc-btn--destructive oc-alert-dialog-confirm" type="submit" value="confirm"&gt;Delete project&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &lt;/dialog&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="discard">Three buttons: discard, cancel, save</h3>
@@ -95,6 +132,28 @@
     You changed the quote. Leaving now loses those changes.
 &lt;/x-oc::confirm-dialog&gt;
 {{-- method="dialog": read dialog.returnValue (save, cancel or discard) after the close event --}}</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ConfirmDialogUnsavedChanges extends Component
+{
+    public function render()
+    {
+        return view('livewire.confirm-dialog-unsaved-changes');
+    }
+}
+
+{{-- resources/views/livewire/confirm-dialog-unsaved-changes.blade.php --}}
+&lt;div&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="unsaved"&gt;Leave page&lt;/button&gt;
+    &lt;x-oc::confirm-dialog id="unsaved" type="question" title="Save your changes?" confirm="Save" discard="Don't save"&gt;
+        You changed the quote. Leaving now loses those changes.
+    &lt;/x-oc::confirm-dialog&gt;
+    {{-- method="dialog": read dialog.returnValue (save, cancel or discard) after the close event --}}
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

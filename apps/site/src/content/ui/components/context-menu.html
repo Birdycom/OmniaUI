@@ -32,6 +32,91 @@
   });
 })();
 </script>
+<oc-code lang="tsx">export function Example() {
+  return (
+    &lt;&gt;
+      &lt;div className="oc-context-area" id="oc-ctx-area" tabIndex={0}&gt;Right-click (or press the menu key) here&lt;/div&gt;
+      &lt;div className="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover="" role="menu" aria-label="Actions"&gt;
+        &lt;button className="oc-dropdown-item" type="button" role="menuitem"&gt;Back &lt;span className="oc-dropdown-shortcut"&gt;Alt ←&lt;/span&gt;&lt;/button&gt;
+        &lt;button className="oc-dropdown-item" type="button" role="menuitem"&gt;Reload &lt;span className="oc-dropdown-shortcut"&gt;Ctrl R&lt;/span&gt;&lt;/button&gt;
+        &lt;div className="oc-dropdown-separator" role="separator" /&gt;
+        &lt;button className="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true"&gt;Show bookmarks&lt;/button&gt;
+        &lt;button className="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem"&gt;Delete&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;template&gt;
+  &lt;div class="oc-context-area" id="oc-ctx-area" tabindex="0"&gt;Right-click (or press the menu key) here&lt;/div&gt;
+  &lt;div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover="" role="menu" aria-label="Actions"&gt;
+    &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Back &lt;span class="oc-dropdown-shortcut"&gt;Alt ←&lt;/span&gt;&lt;/button&gt;
+    &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Reload &lt;span class="oc-dropdown-shortcut"&gt;Ctrl R&lt;/span&gt;&lt;/button&gt;
+    &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
+    &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true"&gt;Show bookmarks&lt;/button&gt;
+    &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem"&gt;Delete&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-context-area" id="oc-ctx-area" tabindex="0"&gt;Right-click (or press the menu key) here&lt;/div&gt;
+&lt;div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover="" role="menu" aria-label="Actions"&gt;
+  &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Back &lt;span class="oc-dropdown-shortcut"&gt;Alt ←&lt;/span&gt;&lt;/button&gt;
+  &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Reload &lt;span class="oc-dropdown-shortcut"&gt;Ctrl R&lt;/span&gt;&lt;/button&gt;
+  &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
+  &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true"&gt;Show bookmarks&lt;/button&gt;
+  &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem"&gt;Delete&lt;/button&gt;
+&lt;/div&gt;
+&lt;script&gt;
+(function () {
+  var area = document.getElementById('oc-ctx-area'), menu = document.getElementById('oc-ctx-menu');
+  area.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    menu.style.setProperty('--oc-context-x', Math.min(e.clientX, innerWidth - 220) + 'px');
+    menu.style.setProperty('--oc-context-y', Math.min(e.clientY, innerHeight - 220) + 'px');
+    // Firefox fires contextmenu while the right button is still down: open after the release,
+    // or that release would close the menu again right away.
+    if (e.buttons) window.addEventListener('pointerup', function () { setTimeout(function () { menu.showPopover(); }); }, { once: true });
+    else menu.showPopover();
+  });
+})();
+&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ContextMenu extends Component
+{
+    public function render()
+    {
+        return view('livewire.context-menu');
+    }
+}
+
+{{-- resources/views/livewire/context-menu.blade.php --}}
+&lt;div&gt;
+    &lt;div class="oc-context-area" id="oc-ctx-area" tabindex="0"&gt;Right-click (or press the menu key) here&lt;/div&gt;
+    &lt;div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover="" role="menu" aria-label="Actions"&gt;
+      &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Back &lt;span class="oc-dropdown-shortcut"&gt;Alt ←&lt;/span&gt;&lt;/button&gt;
+      &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Reload &lt;span class="oc-dropdown-shortcut"&gt;Ctrl R&lt;/span&gt;&lt;/button&gt;
+      &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
+      &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true"&gt;Show bookmarks&lt;/button&gt;
+      &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem"&gt;Delete&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;script&gt;
+    (function () {
+      var area = document.getElementById('oc-ctx-area'), menu = document.getElementById('oc-ctx-menu');
+      area.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        menu.style.setProperty('--oc-context-x', Math.min(e.clientX, innerWidth - 220) + 'px');
+        menu.style.setProperty('--oc-context-y', Math.min(e.clientY, innerHeight - 220) + 'px');
+        // Firefox fires contextmenu while the right button is still down: open after the release,
+        // or that release would close the menu again right away.
+        if (e.buttons) window.addEventListener('pointerup', function () { setTimeout(function () { menu.showPopover(); }); }, { once: true });
+        else menu.showPopover();
+      });
+    })();
+    &lt;/script&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
