@@ -17,6 +17,40 @@
   <input class="oc-otp" id="oc-otp-demo" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" style="--oc-otp-length: 6" value="123">
   <p class="oc-field-description">Enter the 6-digit code from your authenticator app.</p>
 </div>
+<oc-code lang="tsx">&lt;FormField label="Authentication code" description="Enter the 6-digit code from your authenticator app."&gt;
+  &lt;OtpInput name="code" value={code} onChange={setCode} onComplete={verify} /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Authentication code" description="Enter the 6-digit code from your authenticator app." v-slot="f"&gt;
+  &lt;OcOtpInput :id="f.id" v-model="code" name="code" :aria-describedby="f.describedBy" @complete="verify" /&gt;
+&lt;/OcFormField&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::otp-input label="Authentication code" name="code" description="Enter the 6-digit code from your authenticator app." /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class VerifyCode extends Component
+{
+    public string $code = '';
+
+    public function verify(): void
+    {
+        $this-&gt;validate(['code' =&gt; 'required|digits:6']);
+        // check the code, then redirect
+    }
+
+    public function render()
+    {
+        return view('livewire.verify-code');
+    }
+}
+
+{{-- resources/views/livewire/verify-code.blade.php --}}
+&lt;div&gt;
+    {{-- complete="verify" calls verify() as soon as six digits are in --}}
+    &lt;x-oc::wire.otp model="code" complete="verify" label="Authentication code" description="Enter the 6-digit code from your authenticator app." /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="fit-group">Long codes: fit and group <span class="oc-badge-version">v0.17.0</span></h3>
@@ -35,6 +69,32 @@
 <oc-code lang="tsx">&lt;OtpInput length={8} alphanumeric fit group={4} value={code} onChange={setCode} /&gt;</oc-code>
 <oc-code lang="vue">&lt;OcOtpInput v-model="code" :length="8" :numeric="false" fit :group="4" /&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::otp-input label="Join code" name="join" :length="8" alphanumeric fit :group="4" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class JoinGame extends Component
+{
+    public string $join = '';
+
+    public function join(): void
+    {
+        $this-&gt;validate(['join' =&gt; 'required|alpha_num|size:8']);
+    }
+
+    public function render()
+    {
+        return view('livewire.join-game');
+    }
+}
+
+{{-- resources/views/livewire/join-game.blade.php --}}
+&lt;div style="inline-size:min(100%,20rem)"&gt;
+    &lt;x-oc::wire.otp model="join" :length="8" complete="join" label="Join code" description="The 8 characters on the poster, letters and digits."
+        class="oc-otp--fit oc-otp--group" style="--oc-otp-group: 4" inputmode="text" pattern="[A-Za-z0-9]*" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

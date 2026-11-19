@@ -23,6 +23,60 @@
     <input class="oc-input" id="form-password" type="password" placeholder="••••••••">
   </div>
 </div>
+<oc-code lang="tsx">&lt;FormField label="Email" description="We'll never share your email."&gt;
+  &lt;Input type="email" placeholder="name@example.com" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;
+&lt;/FormField&gt;
+&lt;FormField label="Password"&gt;
+  &lt;Input type="password" value={password} onChange={(e) =&gt; setPassword(e.target.value)} /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Email" description="We'll never share your email." v-slot="f"&gt;
+  &lt;OcInput :id="f.id" v-model="email" type="email" placeholder="name@example.com" :aria-describedby="f.describedBy" /&gt;
+&lt;/OcFormField&gt;
+&lt;OcFormField label="Password" v-slot="f"&gt;
+  &lt;OcInput :id="f.id" v-model="password" type="password" /&gt;
+&lt;/OcFormField&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Email" for="email" name="email" description="We'll never share your email."&gt;
+    &lt;x-oc::input id="email" name="email" type="email" placeholder="name@example.com" aria-describedby="email-help" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;x-oc::form-field label="Password" for="password" name="password"&gt;
+    &lt;x-oc::input id="password" name="password" type="password" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class SignIn extends Component
+{
+    #[Validate('required|email')]
+    public string $email = '';
+
+    #[Validate('required|min:8')]
+    public string $password = '';
+
+    public function signIn(): void
+    {
+        $this-&gt;validate();
+        // Auth::attempt(...) and redirect
+    }
+
+    public function render()
+    {
+        return view('livewire.sign-in');
+    }
+}
+
+{{-- resources/views/livewire/sign-in.blade.php --}}
+&lt;form wire:submit="signIn"&gt;
+    &lt;x-oc::form-field label="Email" for="email" name="email" description="We'll never share your email."&gt;
+        &lt;x-oc::wire.input id="email" model="email" blur type="email" placeholder="name@example.com" aria-describedby="email-help" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Password" for="password" name="password"&gt;
+        &lt;x-oc::wire.input id="password" model="password" type="password" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="error-state">Error state</h3>
@@ -33,6 +87,47 @@
   <input class="oc-input" id="form-username" aria-invalid="true" aria-describedby="form-username-error" value="anna">
   <span class="oc-field-error" id="form-username-error">This username is already taken.</span>
 </div>
+<oc-code lang="tsx">&lt;FormField label="Username" error={taken ? "This username is already taken." : undefined}&gt;
+  &lt;Input value={username} onChange={(e) =&gt; setUsername(e.target.value)} /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Username" :error="taken ? 'This username is already taken.' : undefined" v-slot="f"&gt;
+  &lt;OcInput :id="f.id" v-model="username" :error="f.invalid" :aria-describedby="f.describedBy" /&gt;
+&lt;/OcFormField&gt;</oc-code>
+<oc-code lang="blade">{{-- The error comes from the validator: $errors-&gt;first('username') --}}
+&lt;x-oc::form-field label="Username" for="username" name="username"&gt;
+    &lt;x-oc::input id="username" name="username" value="anna" aria-describedby="username-error" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Account extends Component
+{
+    public string $username = 'anna';
+
+    public function updatedUsername(): void
+    {
+        $this-&gt;validate(
+            ['username' =&gt; 'required|unique:users,username'],
+            ['username.unique' =&gt; 'This username is already taken.'],
+        );
+    }
+
+    public function render()
+    {
+        return view('livewire.account');
+    }
+}
+
+{{-- resources/views/livewire/account.blade.php --}}
+&lt;div&gt;
+    {{-- wire.input sets aria-invalid, form-field shows the message --}}
+    &lt;x-oc::form-field label="Username" for="username" name="username"&gt;
+        &lt;x-oc::wire.input id="username" model="username" blur aria-describedby="username-error" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="input-group">Input group</h3>
@@ -42,6 +137,34 @@
   <span class="oc-input-addon">https://</span>
   <input class="oc-input" placeholder="example.com" aria-label="Website">
 </div>
+<oc-code lang="tsx">&lt;InputGroup prefix="https://"&gt;
+  &lt;Input placeholder="example.com" aria-label="Website" value={website} onChange={(e) =&gt; setWebsite(e.target.value)} /&gt;
+&lt;/InputGroup&gt;</oc-code>
+<oc-code lang="vue">&lt;OcInputGroup prefix="https://"&gt;
+  &lt;OcInput v-model="website" placeholder="example.com" aria-label="Website" /&gt;
+&lt;/OcInputGroup&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::input-group prefix="https://" name="website" placeholder="example.com" aria-label="Website" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Website extends Component
+{
+    public string $website = '';
+
+    public function render()
+    {
+        return view('livewire.website');
+    }
+}
+
+{{-- resources/views/livewire/website.blade.php --}}
+&lt;div&gt;
+    {{-- input-group passes its attributes, wire:model too, to the input --}}
+    &lt;x-oc::input-group prefix="https://" wire:model.blur="website" placeholder="example.com" aria-label="Website" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="inputs">Select, textarea, checkbox, radio and switch</h3>
@@ -63,6 +186,73 @@
     <label class="oc-switch"><input type="checkbox" checked aria-label="Notifications"><span class="oc-switch-track"></span></label>
   </div>
 </div>
+<oc-code lang="tsx">&lt;FormField label="Country"&gt;
+  &lt;Select options={["Belgium", "Netherlands", "Germany"]} value={country} onChange={(e) =&gt; setCountry(e.target.value)} /&gt;
+&lt;/FormField&gt;
+&lt;FormField label="Message"&gt;
+  &lt;Textarea rows={3} placeholder="Type here…" value={message} onChange={(e) =&gt; setMessage(e.target.value)} /&gt;
+&lt;/FormField&gt;
+&lt;Checkbox label="Remember me" checked={remember} onChange={(e) =&gt; setRemember(e.target.checked)} /&gt;
+&lt;label&gt;&lt;input className="oc-radio" type="radio" name="plan" checked={plan === "free"} onChange={() =&gt; setPlan("free")} /&gt; Free&lt;/label&gt;
+&lt;label&gt;&lt;input className="oc-radio" type="radio" name="plan" checked={plan === "pro"} onChange={() =&gt; setPlan("pro")} /&gt; Pro&lt;/label&gt;
+&lt;Switch aria-label="Notifications" checked={notify} onChange={(e) =&gt; setNotify(e.target.checked)} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Country" v-slot="f"&gt;
+  &lt;OcSelect :id="f.id" v-model="country" :options="['Belgium', 'Netherlands', 'Germany']" /&gt;
+&lt;/OcFormField&gt;
+&lt;OcFormField label="Message" v-slot="f"&gt;
+  &lt;OcTextarea :id="f.id" v-model="message" rows="3" placeholder="Type here…" /&gt;
+&lt;/OcFormField&gt;
+&lt;OcCheckbox v-model="remember" label="Remember me" /&gt;
+&lt;OcCheckbox v-model="plan" type="radio" name="plan" value="free" label="Free" /&gt;
+&lt;OcCheckbox v-model="plan" type="radio" name="plan" value="pro" label="Pro" /&gt;
+&lt;OcSwitch v-model="notify" aria-label="Notifications" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Country" for="country" name="country"&gt;
+    &lt;x-oc::select id="country" name="country" value="be" :options="['be' =&gt; 'Belgium', 'nl' =&gt; 'Netherlands', 'de' =&gt; 'Germany']" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;x-oc::form-field label="Message" for="message" name="message"&gt;
+    &lt;x-oc::textarea id="message" name="message" rows="3" placeholder="Type here…" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;x-oc::checkbox name="remember" value="1" label="Remember me" /&gt;
+&lt;x-oc::checkbox radio name="plan" value="free" label="Free" checked /&gt;
+&lt;x-oc::checkbox radio name="plan" value="pro" label="Pro" /&gt;
+&lt;x-oc::switch name="notifications" value="1" checked aria-label="Notifications" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Preferences extends Component
+{
+    public string $country = 'be';
+
+    public string $message = '';
+
+    public bool $remember = false;
+
+    public string $plan = 'free';
+
+    public bool $notifications = true;
+
+    public function render()
+    {
+        return view('livewire.preferences');
+    }
+}
+
+{{-- resources/views/livewire/preferences.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::form-field label="Country" for="country" name="country"&gt;
+        &lt;x-oc::wire.select id="country" model="country" :options="['be' =&gt; 'Belgium', 'nl' =&gt; 'Netherlands', 'de' =&gt; 'Germany']" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Message" for="message" name="message"&gt;
+        &lt;x-oc::wire.textarea id="message" model="message" rows="3" placeholder="Type here…" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::wire.checkbox model="remember" label="Remember me" /&gt;
+    &lt;x-oc::wire.checkbox radio model="plan" value="free" label="Free" /&gt;
+    &lt;x-oc::wire.checkbox radio model="plan" value="pro" label="Pro" /&gt;
+    &lt;x-oc::wire.switch model="notifications" live aria-label="Notifications" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="horizontal-field">Horizontal field</h3>
@@ -72,6 +262,37 @@
   <label class="oc-field-label" for="form-key">API key</label>
   <input class="oc-input" id="form-key" value="sk-abc123…" readonly>
 </div>
+<oc-code lang="tsx">&lt;FormField label="API key" horizontal&gt;
+  &lt;Input value={apiKey} readOnly /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="API key" horizontal v-slot="f"&gt;
+  &lt;OcInput :id="f.id" :model-value="apiKey" readonly /&gt;
+&lt;/OcFormField&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field class="oc-field--horizontal" label="API key" for="api-key"&gt;
+    &lt;x-oc::input id="api-key" value="sk-abc123…" readonly /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ApiKey extends Component
+{
+    public string $apiKey = 'sk-abc123…';
+
+    public function render()
+    {
+        return view('livewire.api-key');
+    }
+}
+
+{{-- resources/views/livewire/api-key.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::form-field class="oc-field--horizontal" label="API key" for="api-key"&gt;
+        &lt;x-oc::wire.input id="api-key" model="apiKey" readonly /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="filled-form">Filled form <span class="oc-badge-version">v0.13.0</span></h3>
@@ -116,6 +337,142 @@
     <p class="oc-form-note">We only use your details to answer you. See the <a href="#privacy">privacy statement</a>.</p>
   </div>
 </form>
+<oc-code lang="tsx">&lt;form className="oc-form oc-form--filled" onSubmit={send} noValidate&gt;
+  &lt;FieldGroup row&gt;
+    &lt;FormField label="Name"&gt;&lt;Input name="name" autoComplete="name" value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;&lt;/FormField&gt;
+    &lt;FormField label="E-mail" error={errors.email}&gt;&lt;Input type="email" name="email" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;&lt;/FormField&gt;
+  &lt;/FieldGroup&gt;
+  &lt;FieldGroup row&gt;
+    &lt;FormField label={&lt;&gt;Phone &lt;span className="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/&gt;}&gt;&lt;Input type="tel" name="phone" autoComplete="tel" /&gt;&lt;/FormField&gt;
+    &lt;FormField label="What is it about?"&gt;
+      &lt;Select name="subject" options={[{ value: "", label: "Choose a subject" }, "A new project", "Support"]} /&gt;
+    &lt;/FormField&gt;
+  &lt;/FieldGroup&gt;
+  &lt;FormField label="Your message"&gt;&lt;Textarea className="oc-textarea" name="message" rows={5} /&gt;&lt;/FormField&gt;
+  &lt;div className="oc-form-actions"&gt;
+    &lt;Button size="lg" type="submit"&gt;Send message&lt;/Button&gt;
+    &lt;p className="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="vue">&lt;form class="oc-form oc-form--filled" novalidate @submit.prevent="send"&gt;
+  &lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;OcFormField label="Name" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="form.name" autocomplete="name" /&gt;&lt;/OcFormField&gt;
+    &lt;OcFormField label="E-mail" :error="errors.email" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="form.email" type="email" :error="f.invalid" :aria-describedby="f.describedBy" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;OcFormField&gt;
+      &lt;template #label&gt;Phone &lt;span class="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/template&gt;
+      &lt;template #default="f"&gt;&lt;OcInput :id="f.id" v-model="form.phone" type="tel" autocomplete="tel" /&gt;&lt;/template&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="What is it about?" v-slot="f"&gt;
+      &lt;OcSelect :id="f.id" v-model="form.subject" :options="[{ value: '', label: 'Choose a subject' }, 'A new project', 'Support']" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+  &lt;OcFormField label="Your message" v-slot="f"&gt;&lt;OcTextarea :id="f.id" v-model="form.message" class="oc-textarea" rows="5" /&gt;&lt;/OcFormField&gt;
+  &lt;div class="oc-form-actions"&gt;
+    &lt;OcButton size="lg" type="submit"&gt;Send message&lt;/OcButton&gt;
+    &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="blade">&lt;form class="oc-form oc-form--filled" method="post" action="{{ route('contact.send') }}" novalidate&gt;
+    @csrf
+    &lt;div class="oc-honeypot" aria-hidden="true"&gt;
+        &lt;label for="website"&gt;Leave this field empty&lt;/label&gt;
+        &lt;input type="text" id="website" name="website" tabindex="-1" autocomplete="off"&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-field-group oc-field-group--row"&gt;
+        &lt;x-oc::form-field label="Name" for="name" name="name"&gt;
+            &lt;x-oc::input id="name" name="name" autocomplete="name" :value="old('name')" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;
+            &lt;x-oc::input id="email" name="email" type="email" :value="old('email')" aria-describedby="email-error" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-field-group oc-field-group--row"&gt;
+        &lt;x-oc::form-field label="Phone (optional)" for="phone" name="phone"&gt;
+            &lt;x-oc::input id="phone" name="phone" type="tel" autocomplete="tel" :value="old('phone')" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="What is it about?" for="subject" name="subject"&gt;
+            &lt;x-oc::select id="subject" name="subject" placeholder="Choose a subject" :value="old('subject')" :options="['project' =&gt; 'A new project', 'support' =&gt; 'Support']" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;x-oc::form-field label="Your message" for="message" name="message"&gt;
+        &lt;x-oc::textarea id="message" name="message" class="oc-textarea" rows="5"&gt;{{ old('message') }}&lt;/x-oc::textarea&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div class="oc-form-actions"&gt;
+        &lt;x-oc::button size="lg" type="submit"&gt;Send message&lt;/x-oc::button&gt;
+        &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+use Omniacss\Livewire\WithOcToast;
+
+class ContactForm extends Component
+{
+    use WithOcToast;
+
+    #[Validate('required')]
+    public string $name = '';
+
+    #[Validate('required|email')]
+    public string $email = '';
+
+    public string $phone = '';
+
+    #[Validate('required')]
+    public string $subject = '';
+
+    #[Validate('required|min:10')]
+    public string $message = '';
+
+    public function send(): void
+    {
+        $this-&gt;validate();
+        // Mail::to('info@company1.example')-&gt;send(new ContactMessage(...));
+        $this-&gt;reset();
+        $this-&gt;ocToast('success', 'Message sent', 'We will answer you soon.');
+    }
+
+    public function render()
+    {
+        return view('livewire.contact-form');
+    }
+}
+
+{{-- resources/views/livewire/contact-form.blade.php --}}
+{{-- &lt;x-oc::toast-stack /&gt; sits once in the layout --}}
+&lt;form class="oc-form oc-form--filled" wire:submit="send" novalidate&gt;
+    &lt;div class="oc-field-group oc-field-group--row"&gt;
+        &lt;x-oc::form-field label="Name" for="name" name="name"&gt;
+            &lt;x-oc::wire.input id="name" model="name" autocomplete="name" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;
+            &lt;x-oc::wire.input id="email" model="email" blur type="email" aria-describedby="email-error" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-field-group oc-field-group--row"&gt;
+        &lt;x-oc::form-field label="Phone (optional)" for="phone"&gt;
+            &lt;x-oc::wire.input id="phone" model="phone" type="tel" autocomplete="tel" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="What is it about?" for="subject" name="subject"&gt;
+            &lt;x-oc::wire.select id="subject" model="subject" placeholder="Choose a subject" :options="['project' =&gt; 'A new project', 'support' =&gt; 'Support']" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;x-oc::form-field label="Your message" for="message" name="message"&gt;
+        &lt;x-oc::wire.textarea id="message" model="message" class="oc-textarea" rows="5" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div class="oc-form-actions"&gt;
+        &lt;x-oc::button size="lg" type="submit"&gt;Send message&lt;/x-oc::button&gt;
+        &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="busy-form">While it sends <span class="oc-badge-version">v0.13.0</span></h3>
@@ -130,6 +487,70 @@
     <button class="oc-btn oc-btn--lg" type="submit" disabled>Sending…</button>
   </div>
 </form>
+<oc-code lang="tsx">&lt;form className="oc-form oc-form--filled" aria-busy={sending} onSubmit={send}&gt;
+  &lt;FormField label="E-mail"&gt;
+    &lt;Input type="email" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;
+  &lt;/FormField&gt;
+  &lt;div className="oc-form-actions"&gt;
+    &lt;Button size="lg" type="submit" loading={sending} disabled={sending}&gt;{sending ? "Sending…" : "Send"}&lt;/Button&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="vue">&lt;form class="oc-form oc-form--filled" :aria-busy="sending" @submit.prevent="send"&gt;
+  &lt;OcFormField label="E-mail" v-slot="f"&gt;
+    &lt;OcInput :id="f.id" v-model="email" type="email" /&gt;
+  &lt;/OcFormField&gt;
+  &lt;div class="oc-form-actions"&gt;
+    &lt;OcButton size="lg" type="submit" :loading="sending" :disabled="sending"&gt;{{ sending ? 'Sending…' : 'Send' }}&lt;/OcButton&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="blade">{{-- A plain form marks itself busy and disables the button while the browser posts it --}}
+&lt;form class="oc-form oc-form--filled" method="post" action="{{ route('newsletter.subscribe') }}"
+      onsubmit="this.setAttribute('aria-busy', 'true'); this.querySelector('[type=submit]').disabled = true"&gt;
+    @csrf
+    &lt;x-oc::form-field label="E-mail" for="busy-email" name="email"&gt;
+        &lt;x-oc::input id="busy-email" name="email" type="email" :value="old('email')" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div class="oc-form-actions"&gt;
+        &lt;x-oc::button size="lg" type="submit"&gt;Send&lt;/x-oc::button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class Newsletter extends Component
+{
+    #[Validate('required|email')]
+    public string $email = 'info@company1.example';
+
+    public function subscribe(): void
+    {
+        $this-&gt;validate();
+        // add the address to the list
+    }
+
+    public function render()
+    {
+        return view('livewire.newsletter');
+    }
+}
+
+{{-- resources/views/livewire/newsletter.blade.php --}}
+{{-- wire:loading sets aria-busy on the form and disables the button while the request runs --}}
+&lt;form class="oc-form oc-form--filled" wire:submit="subscribe" wire:loading.attr="aria-busy"&gt;
+    &lt;x-oc::form-field label="E-mail" for="busy-email" name="email"&gt;
+        &lt;x-oc::wire.input id="busy-email" model="email" type="email" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div class="oc-form-actions"&gt;
+        &lt;x-oc::button size="lg" type="submit" wire:loading.attr="disabled"&gt;
+            &lt;span wire:loading.remove&gt;Send&lt;/span&gt;
+            &lt;span wire:loading&gt;Sending…&lt;/span&gt;
+        &lt;/x-oc::button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

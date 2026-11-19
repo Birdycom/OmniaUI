@@ -19,6 +19,36 @@
   <button type="button">supplier</button>
   <button type="button">partner</button>
 </div>
+<oc-code lang="tsx">&lt;TagInput value={tags} onChange={setTags} suggestions={["customer", "supplier", "partner"]} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcTagInput v-model="tags" :suggestions="['customer', 'supplier', 'partner']" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tag-input name="tags" :tags="['design', 'internal']" :suggestions="['customer', 'supplier', 'partner']" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ContactTags extends Component
+{
+    /** @var list&lt;string&gt; */
+    public array $tags = ['design', 'internal'];
+
+    public function save(): void
+    {
+        $this-&gt;validate(['tags' =&gt; 'array|max:10', 'tags.*' =&gt; 'string|max:30']);
+    }
+
+    public function render()
+    {
+        return view('livewire.contact-tags');
+    }
+}
+
+{{-- resources/views/livewire/contact-tags.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::wire.tag-input model="tags" :suggestions="['customer', 'supplier', 'partner']" /&gt;
+    &lt;button class="oc-btn oc-btn--sm" type="button" wire:click="save"&gt;Save tags&lt;/button&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

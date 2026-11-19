@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=2e795385ff"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -25,8 +25,9 @@
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -144,27 +145,27 @@
 6
 7
 8
-9</pre><pre class="code-preview"><code>&lt;CodePlate mode="test" caption="Test" style={{ inlineSize: "11rem" }}&gt;
-  &lt;img src={qrTest} alt="QR code to join the test round of Company 1" /&gt;
-&lt;/CodePlate&gt;
-&lt;CodePlate mode="both" labels={{ test: "Test", live: "Live" }} style={{ inlineSize: "11rem" }}&gt;
-  &lt;img src={qrShared} alt="QR code to join Company 1, test and live round" /&gt;
-&lt;/CodePlate&gt;
-&lt;CodePlate mode="live" caption="Live" size="sm" style={{ inlineSize: "5.5rem" }}&gt;
-  &lt;img src={qrLive} alt="Small QR code for the live round" /&gt;
-&lt;/CodePlate&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+9</pre><pre class="code-preview"><code><span class="hl-tag">&lt;CodePlate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">caption</span>=<span class="hl-string">"Test"</span> <span class="hl-attr">style</span>={{ inlineSize: <span class="hl-string">"11rem"</span> }}<span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;img</span> <span class="hl-attr">src</span>={qrTest} <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join the test round of Company 1"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/CodePlate</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;CodePlate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">labels</span>={{ test: <span class="hl-string">"Test"</span>, live: <span class="hl-string">"Live"</span> }} <span class="hl-attr">style</span>={{ inlineSize: <span class="hl-string">"11rem"</span> }}<span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;img</span> <span class="hl-attr">src</span>={qrShared} <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join Company 1, test and live round"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/CodePlate</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;CodePlate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-attr">caption</span>=<span class="hl-string">"Live"</span> <span class="hl-attr">size</span>=<span class="hl-string">"sm"</span> <span class="hl-attr">style</span>={{ inlineSize: <span class="hl-string">"5.5rem"</span> }}<span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;img</span> <span class="hl-attr">src</span>={qrLive} <span class="hl-attr">alt</span>=<span class="hl-string">"Small QR code for the live round"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/CodePlate</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
-4</pre><pre class="code-preview"><code>&lt;OcCodePlate mode="test" caption="Test" style="inline-size: 11rem"&gt;
-  &lt;img :src="qrTest" alt="QR code to join the test round of Company 1" /&gt;
-&lt;/OcCodePlate&gt;
-&lt;OcCodePlate mode="both" style="inline-size: 11rem"&gt;&lt;img :src="qrShared" alt="QR code to join Company 1" /&gt;&lt;/OcCodePlate&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcCodePlate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">caption</span>=<span class="hl-string">"Test"</span> <span class="hl-attr">style</span>=<span class="hl-string">"inline-size: 11rem"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;img</span> <span class="hl-attr">:src</span>=<span class="hl-string">"qrTest"</span> <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join the test round of Company 1"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/OcCodePlate</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;OcCodePlate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">style</span>=<span class="hl-string">"inline-size: 11rem"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;img</span> <span class="hl-attr">:src</span>=<span class="hl-string">"qrShared"</span> <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join Company 1"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/OcCodePlate</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
-4</pre><pre class="code-preview"><code>&lt;x-oc::code-plate mode="test" caption="Test" style="inline-size: 11rem"&gt;
-    &lt;img src="{{ $qrTest }}" alt="QR code to join the test round of Company 1"&gt;
-&lt;/x-oc::code-plate&gt;
-&lt;x-oc::code-plate mode="both" style="inline-size: 11rem"&gt;&lt;img src="{{ $qrShared }}" alt="QR code to join Company 1"&gt;&lt;/x-oc::code-plate&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::code-plate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">caption</span>=<span class="hl-string">"Test"</span> <span class="hl-attr">style</span>=<span class="hl-string">"inline-size: 11rem"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;img</span> <span class="hl-attr">src</span>=<span class="hl-string">"{{ $qrTest }}"</span> <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join the test round of Company 1"</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/x-oc::code-plate</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;x-oc::code-plate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">style</span>=<span class="hl-string">"inline-size: 11rem"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;img</span> <span class="hl-attr">src</span>=<span class="hl-string">"{{ $qrShared }}"</span> <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join Company 1"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/x-oc::code-plate</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="in-card">In an accent card</h3>
           <p class="oc-section-content__desc">The codes of one round together in an <a href="card#accent">accent card</a>: the band names the round, the plate repeats it on the code. The live set is not in use yet (dashed). Both cards are equally high.</p>
@@ -257,24 +258,24 @@
 3
 4
 5
-6</pre><pre class="code-preview"><code>&lt;Card accent="test" className="oc-card--fill"&gt;
-  &lt;CardBand start={&lt;ModeBadge mode="test" size="lg" /&gt;} title="Test round" description="Scan to try the route."&gt;&lt;Badge variant="outline"&gt;Now active&lt;/Badge&gt;&lt;/CardBand&gt;
-  &lt;CardContent className="grid" style={{ justifyItems: "center" }}&gt;
-    &lt;CodePlate mode="test" caption="Test" style={{ inlineSize: "11rem" }}&gt;&lt;img src={qrTest} alt="QR code to join the test round of Company 1" /&gt;&lt;/CodePlate&gt;
-  &lt;/CardContent&gt;
-&lt;/Card&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+6</pre><pre class="code-preview"><code><span class="hl-tag">&lt;Card</span> <span class="hl-attr">accent</span>=<span class="hl-string">"test"</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-card--fill"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;CardBand</span> <span class="hl-attr">start</span>={<span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-tag">/&gt;</span>} <span class="hl-attr">title</span>=<span class="hl-string">"Test round"</span> <span class="hl-attr">description</span>=<span class="hl-string">"Scan to try the route."</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;Badge</span> <span class="hl-attr">variant</span>=<span class="hl-string">"outline"</span><span class="hl-tag">&gt;</span>Now active<span class="hl-tag">&lt;/Badge</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/CardBand</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;CardContent</span> <span class="hl-attr">className</span>=<span class="hl-string">"grid"</span> <span class="hl-attr">style</span>={{ justifyItems: <span class="hl-string">"center"</span> }}<span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;CodePlate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">caption</span>=<span class="hl-string">"Test"</span> <span class="hl-attr">style</span>={{ inlineSize: <span class="hl-string">"11rem"</span> }}<span class="hl-tag">&gt;</span><span class="hl-tag">&lt;img</span> <span class="hl-attr">src</span>={qrTest} <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join the test round of Company 1"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/CodePlate</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/CardContent</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/Card</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
-4</pre><pre class="code-preview"><code>&lt;OcCard accent="test" class="oc-card--fill"&gt;
-  &lt;template #band&gt;&lt;OcCardBand title="Test round" description="Scan to try the route."&gt;&lt;template #start&gt;&lt;OcModeBadge mode="test" size="lg" /&gt;&lt;/template&gt;&lt;/OcCardBand&gt;&lt;/template&gt;
-  &lt;OcCodePlate mode="test" caption="Test" style="inline-size: 11rem"&gt;&lt;img :src="qrTest" alt="QR code to join the test round of Company 1" /&gt;&lt;/OcCodePlate&gt;
-&lt;/OcCard&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcCard</span> <span class="hl-attr">accent</span>=<span class="hl-string">"test"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-card--fill"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;template</span> <span class="hl-attr">#band</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;OcCardBand</span> <span class="hl-attr">title</span>=<span class="hl-string">"Test round"</span> <span class="hl-attr">description</span>=<span class="hl-string">"Scan to try the route."</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;template</span> <span class="hl-attr">#start</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/template</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/OcCardBand</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/template</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcCodePlate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">caption</span>=<span class="hl-string">"Test"</span> <span class="hl-attr">style</span>=<span class="hl-string">"inline-size: 11rem"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;img</span> <span class="hl-attr">:src</span>=<span class="hl-string">"qrTest"</span> <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join the test round of Company 1"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/OcCodePlate</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/OcCard</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
-4</pre><pre class="code-preview"><code>&lt;x-oc::card accent="test" class="oc-card--fill"&gt;
-    &lt;x-slot:band&gt;&lt;x-oc::card-band title="Test round" description="Scan to try the route."&gt;&lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="test" size="lg" /&gt;&lt;/x-slot:start&gt;&lt;/x-oc::card-band&gt;&lt;/x-slot:band&gt;
-    &lt;x-oc::code-plate mode="test" caption="Test" style="inline-size: 11rem"&gt;&lt;img src="{{ $qrTest }}" alt="QR code to join the test round of Company 1"&gt;&lt;/x-oc::code-plate&gt;
-&lt;/x-oc::card&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::card</span> <span class="hl-attr">accent</span>=<span class="hl-string">"test"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-card--fill"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-slot:band</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;x-oc::card-band</span> <span class="hl-attr">title</span>=<span class="hl-string">"Test round"</span> <span class="hl-attr">description</span>=<span class="hl-string">"Scan to try the route."</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;x-slot:start</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/x-slot:start</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/x-oc::card-band</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/x-slot:band</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::code-plate</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">caption</span>=<span class="hl-string">"Test"</span> <span class="hl-attr">style</span>=<span class="hl-string">"inline-size: 11rem"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;img</span> <span class="hl-attr">src</span>=<span class="hl-string">"{{ $qrTest }}"</span> <span class="hl-attr">alt</span>=<span class="hl-string">"QR code to join the test round of Company 1"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/x-oc::code-plate</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/x-oc::card</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
         </div>
       </section>
 

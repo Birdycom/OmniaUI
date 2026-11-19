@@ -16,6 +16,40 @@
   <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-plan" value="pro"> Pro</label>
   <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-plan" value="team" disabled> Team (soon)</label>
 </fieldset>
+<oc-code lang="tsx">&lt;fieldset className="oc-radio-group"&gt;
+  &lt;legend className="oc-label"&gt;Plan&lt;/legend&gt;
+  {[["free", "Free"], ["pro", "Pro"], ["team", "Team (soon)"]].map(([value, label]) =&gt; (
+    &lt;label className="oc-radio-item" key={value}&gt;
+      &lt;input className="oc-radio" type="radio" name="plan" value={value} checked={plan === value} disabled={value === "team"} onChange={() =&gt; setPlan(value)} /&gt; {label}
+    &lt;/label&gt;
+  ))}
+&lt;/fieldset&gt;</oc-code>
+<oc-code lang="vue">&lt;OcRadioGroup v-model="plan" legend="Plan" name="plan"
+  :options="[{ value: 'free', label: 'Free' }, { value: 'pro', label: 'Pro' }, { value: 'team', label: 'Team (soon)', disabled: true }]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::radio name="plan" legend="Plan" value="free" :options="['free' =&gt; 'Free', 'pro' =&gt; 'Pro', 'team' =&gt; ['label' =&gt; 'Team (soon)', 'disabled' =&gt; true]]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ChoosePlan extends Component
+{
+    public string $plan = 'free';
+
+    public function render()
+    {
+        return view('livewire.choose-plan');
+    }
+}
+
+{{-- resources/views/livewire/choose-plan.blade.php --}}
+&lt;fieldset class="oc-radio-group"&gt;
+    &lt;legend class="oc-label"&gt;Plan&lt;/legend&gt;
+    &lt;x-oc::wire.checkbox radio model="plan" value="free" label="Free" class="oc-radio-item" /&gt;
+    &lt;x-oc::wire.checkbox radio model="plan" value="pro" label="Pro" class="oc-radio-item" /&gt;
+    &lt;x-oc::wire.checkbox radio model="plan" value="team" label="Team (soon)" class="oc-radio-item" disabled /&gt;
+&lt;/fieldset&gt;</oc-code>
           </oc-demo>
         <h3 id="cards" class="oc-section-content__title mt-2">Descriptions and card style</h3><p class="oc-section-content__desc">Put a <code>&lt;small&gt;</code> in the label for a description; <code>--card</code> turns each option into a selectable card.</p>
           <oc-demo title="Descriptions and card style">
@@ -23,6 +57,43 @@
   <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-bill" value="month" checked><span>Monthly<small>Billed every month, cancel anytime.</small></span></label>
   <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-bill" value="year"><span>Yearly<small>Two months free.</small></span></label>
 </div>
+<oc-code lang="tsx">&lt;div className="oc-radio-group"&gt;
+  &lt;label className="oc-radio-item oc-radio-item--card"&gt;
+    &lt;input className="oc-radio" type="radio" name="billing" checked={billing === "month"} onChange={() =&gt; setBilling("month")} /&gt;
+    &lt;span&gt;Monthly&lt;small&gt;Billed every month, cancel anytime.&lt;/small&gt;&lt;/span&gt;
+  &lt;/label&gt;
+  &lt;label className="oc-radio-item oc-radio-item--card"&gt;
+    &lt;input className="oc-radio" type="radio" name="billing" checked={billing === "year"} onChange={() =&gt; setBilling("year")} /&gt;
+    &lt;span&gt;Yearly&lt;small&gt;Two months free.&lt;/small&gt;&lt;/span&gt;
+  &lt;/label&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;OcRadioGroup v-model="billing" card
+  :options="[{ value: 'month', label: 'Monthly', description: 'Billed every month, cancel anytime.' }, { value: 'year', label: 'Yearly', description: 'Two months free.' }]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::radio name="billing" card value="month" :options="[
+    'month' =&gt; ['label' =&gt; 'Monthly', 'description' =&gt; 'Billed every month, cancel anytime.'],
+    'year' =&gt; ['label' =&gt; 'Yearly', 'description' =&gt; 'Two months free.'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Billing extends Component
+{
+    public string $billing = 'month';
+
+    public function render()
+    {
+        return view('livewire.billing');
+    }
+}
+
+{{-- resources/views/livewire/billing.blade.php --}}
+&lt;div class="oc-radio-group"&gt;
+    &lt;x-oc::wire.checkbox radio model="billing" value="month" class="oc-radio-item oc-radio-item--card"&gt;&lt;span&gt;Monthly&lt;small&gt;Billed every month, cancel anytime.&lt;/small&gt;&lt;/span&gt;&lt;/x-oc::wire.checkbox&gt;
+    &lt;x-oc::wire.checkbox radio model="billing" value="year" class="oc-radio-item oc-radio-item--card"&gt;&lt;span&gt;Yearly&lt;small&gt;Two months free.&lt;/small&gt;&lt;/span&gt;&lt;/x-oc::wire.checkbox&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

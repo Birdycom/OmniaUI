@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=2e795385ff"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -25,8 +25,9 @@
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -177,15 +178,15 @@
 6
 7
 8
-9</pre><pre class="code-preview"><code>&lt;Dropdown trigger="Actions"&gt;
-  &lt;DropdownLabel&gt;Invoice 1&lt;/DropdownLabel&gt;
-  &lt;DropdownItem icon="mdi:pencil-outline" hint="E"&gt;Edit&lt;/DropdownItem&gt;
-  &lt;DropdownItem icon="mdi:content-copy"&gt;Duplicate&lt;/DropdownItem&gt;
-  &lt;DropdownItem icon="mdi:email-outline"&gt;Send to Customer 1&lt;/DropdownItem&gt;
-  &lt;DropdownItem&gt;Mark as paid&lt;/DropdownItem&gt;
-  &lt;DropdownSeparator /&gt;
-  &lt;DropdownItem icon="mdi:delete-outline" className="oc-dropdown-item--destructive"&gt;Delete&lt;/DropdownItem&gt;
-&lt;/Dropdown&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+9</pre><pre class="code-preview"><code><span class="hl-tag">&lt;Dropdown</span> <span class="hl-attr">trigger</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownLabel</span><span class="hl-tag">&gt;</span>Invoice 1<span class="hl-tag">&lt;/DropdownLabel</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:pencil-outline"</span> <span class="hl-attr">hint</span>=<span class="hl-string">"E"</span><span class="hl-tag">&gt;</span>Edit<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:email-outline"</span><span class="hl-tag">&gt;</span>Send to Customer 1<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span><span class="hl-tag">&gt;</span>Mark as paid<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownSeparator</span> <span class="hl-tag">/&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:delete-outline"</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-dropdown-item--destructive"</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/Dropdown</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4
@@ -193,27 +194,27 @@
 6
 7
 8
-9</pre><pre class="code-preview"><code>&lt;OcDropdown label="Actions"&gt;
-  &lt;OcDropdownLabel&gt;Invoice 1&lt;/OcDropdownLabel&gt;
-  &lt;OcDropdownItem icon="mdi:pencil-outline" hint="E"&gt;Edit&lt;/OcDropdownItem&gt;
-  &lt;OcDropdownItem icon="mdi:content-copy"&gt;Duplicate&lt;/OcDropdownItem&gt;
-  &lt;OcDropdownItem icon="mdi:email-outline"&gt;Send to Customer 1&lt;/OcDropdownItem&gt;
-  &lt;OcDropdownItem&gt;Mark as paid&lt;/OcDropdownItem&gt;
-  &lt;OcDropdownSeparator /&gt;
-  &lt;OcDropdownItem icon="mdi:delete-outline" class="oc-dropdown-item--destructive"&gt;Delete&lt;/OcDropdownItem&gt;
-&lt;/OcDropdown&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+9</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcDropdown</span> <span class="hl-attr">label</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownLabel</span><span class="hl-tag">&gt;</span>Invoice 1<span class="hl-tag">&lt;/OcDropdownLabel</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:pencil-outline"</span> <span class="hl-attr">hint</span>=<span class="hl-string">"E"</span><span class="hl-tag">&gt;</span>Edit<span class="hl-tag">&lt;/OcDropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-copy"</span><span class="hl-tag">&gt;</span>Duplicate<span class="hl-tag">&lt;/OcDropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:email-outline"</span><span class="hl-tag">&gt;</span>Send to Customer 1<span class="hl-tag">&lt;/OcDropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownItem</span><span class="hl-tag">&gt;</span>Mark as paid<span class="hl-tag">&lt;/OcDropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownSeparator</span> <span class="hl-tag">/&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:delete-outline"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item--destructive"</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/OcDropdownItem</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/OcDropdown</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4
 5
 6
-7</pre><pre class="code-preview"><code>&lt;x-oc::dropdown label="Actions" :items="[
+7</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::dropdown</span> <span class="hl-attr">label</span>=<span class="hl-string">"Actions"</span> <span class="hl-attr">:items</span>=<span class="hl-string">"[
     ['group' =&gt; 'Invoice 1'],
     ['label' =&gt; 'Edit', 'href' =&gt; '/invoices/1/edit', 'icon' =&gt; 'mdi:pencil-outline'],
     ['label' =&gt; 'Duplicate', 'href' =&gt; '/invoices/1/copy', 'icon' =&gt; 'mdi:content-copy'],
     ['label' =&gt; 'Send to Customer 1', 'href' =&gt; '/invoices/1/send', 'icon' =&gt; 'mdi:email-outline'],
     ['label' =&gt; 'Mark as paid', 'href' =&gt; '/invoices/1/paid'],
-]" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+]"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
           <h3 class="oc-section-content__title mt-2" id="descriptions">With a description and a tinted icon <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">For a menu where each choice needs a word of explanation: wrap the label in <code>.oc-dropdown-text</code> and add a <code>.oc-dropdown-desc</code> under it, a muted second line that may wrap (the menu stays at most 22rem wide). <code>.oc-dropdown-icon--primary</code>, <code>--success</code>, <code>--warning</code>, <code>--destructive</code> or <code>--muted</code> put the icon in a soft tinted square of that color, so the kinds are easy to tell apart. React and Vue: <code>description</code> and <code>iconTone</code> on the item; Blade: <code>'description'</code> and <code>'tone'</code>.</p>
           <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Dropdown menu - with a description</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-4"><span>Blade</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-3-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-3-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-3-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope oc-demo__preview--tall">
@@ -245,24 +246,24 @@
 3
 4
 5
-6</pre><pre class="code-preview"><code>&lt;Dropdown trigger="New step"&gt;
-  &lt;DropdownItem icon="mdi:map-marker-outline" iconTone="primary" description="Reached when the visitor is near the spot"&gt;Location&lt;/DropdownItem&gt;
-  &lt;DropdownItem icon="mdi:qrcode" iconTone="success" description="Unlocked by scanning a printed code"&gt;Scan&lt;/DropdownItem&gt;
-  &lt;DropdownItem icon="mdi:help-circle-outline" iconTone="warning" description="A question with one or more right answers"&gt;Question&lt;/DropdownItem&gt;
-  &lt;DropdownItem icon="mdi:text" iconTone="muted" description="Information without a task"&gt;Text only&lt;/DropdownItem&gt;
-&lt;/Dropdown&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+6</pre><pre class="code-preview"><code><span class="hl-tag">&lt;Dropdown</span> <span class="hl-attr">trigger</span>=<span class="hl-string">"New step"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:map-marker-outline"</span> <span class="hl-attr">iconTone</span>=<span class="hl-string">"primary"</span> <span class="hl-attr">description</span>=<span class="hl-string">"Reached when the visitor is near the spot"</span><span class="hl-tag">&gt;</span>Location<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:qrcode"</span> <span class="hl-attr">iconTone</span>=<span class="hl-string">"success"</span> <span class="hl-attr">description</span>=<span class="hl-string">"Unlocked by scanning a printed code"</span><span class="hl-tag">&gt;</span>Scan<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:help-circle-outline"</span> <span class="hl-attr">iconTone</span>=<span class="hl-string">"warning"</span> <span class="hl-attr">description</span>=<span class="hl-string">"A question with one or more right answers"</span><span class="hl-tag">&gt;</span>Question<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;DropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:text"</span> <span class="hl-attr">iconTone</span>=<span class="hl-string">"muted"</span> <span class="hl-attr">description</span>=<span class="hl-string">"Information without a task"</span><span class="hl-tag">&gt;</span>Text only<span class="hl-tag">&lt;/DropdownItem</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/Dropdown</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
-4</pre><pre class="code-preview"><code>&lt;OcDropdown label="New step"&gt;
-  &lt;OcDropdownItem icon="mdi:map-marker-outline" icon-tone="primary" description="Reached when the visitor is near the spot"&gt;Location&lt;/OcDropdownItem&gt;
-  &lt;OcDropdownItem icon="mdi:qrcode" icon-tone="success" description="Unlocked by scanning a printed code"&gt;Scan&lt;/OcDropdownItem&gt;
-&lt;/OcDropdown&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcDropdown</span> <span class="hl-attr">label</span>=<span class="hl-string">"New step"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:map-marker-outline"</span> <span class="hl-attr">icon-tone</span>=<span class="hl-string">"primary"</span> <span class="hl-attr">description</span>=<span class="hl-string">"Reached when the visitor is near the spot"</span><span class="hl-tag">&gt;</span>Location<span class="hl-tag">&lt;/OcDropdownItem</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcDropdownItem</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:qrcode"</span> <span class="hl-attr">icon-tone</span>=<span class="hl-string">"success"</span> <span class="hl-attr">description</span>=<span class="hl-string">"Unlocked by scanning a printed code"</span><span class="hl-tag">&gt;</span>Scan<span class="hl-tag">&lt;/OcDropdownItem</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/OcDropdown</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
-4</pre><pre class="code-preview"><code>&lt;x-oc::dropdown label="New step" :items="[
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::dropdown</span> <span class="hl-attr">label</span>=<span class="hl-string">"New step"</span> <span class="hl-attr">:items</span>=<span class="hl-string">"[
     ['label' =&gt; 'Location', 'href' =&gt; '/steps/new/location', 'icon' =&gt; 'mdi:map-marker-outline', 'tone' =&gt; 'primary', 'description' =&gt; 'Reached when the visitor is near the spot'],
     ['label' =&gt; 'Scan', 'href' =&gt; '/steps/new/scan', 'icon' =&gt; 'mdi:qrcode', 'tone' =&gt; 'success', 'description' =&gt; 'Unlocked by scanning a printed code'],
-]" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+]"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">

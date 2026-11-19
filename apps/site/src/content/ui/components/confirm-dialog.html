@@ -32,6 +32,26 @@
     </form>
   </div>
 </dialog>
+<oc-code lang="tsx">&lt;Button variant="destructive" onClick={() =&gt; setOpen(true)}&gt;Delete project&lt;/Button&gt;
+&lt;ConfirmDialog
+  open={open}
+  onOpenChange={setOpen}
+  type="error"
+  title='Delete "Kitchen renovation"?'
+  message="This removes the project, its quotes and all files. This cannot be undone."
+  confirmWord="DELETE"
+  confirmLabel="Delete project"
+  onConfirm={removeProject}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton variant="destructive" @click="open = true"&gt;Delete project&lt;/OcButton&gt;
+&lt;OcConfirmDialog v-model:open="open" type="error" title='Delete "Kitchen renovation"?'
+  message="This removes the project, its quotes and all files. This cannot be undone."
+  confirm-word="DELETE" confirm-label="Delete project" @confirm="removeProject" /&gt;</oc-code>
+<oc-code lang="blade">&lt;button class="oc-btn oc-btn--destructive" type="button" command="show-modal" commandfor="delete-project"&gt;Delete project&lt;/button&gt;
+&lt;x-oc::confirm-dialog id="delete-project" type="error" title='Delete "Kitchen renovation"?' word="DELETE" confirm="Delete project"
+    action="{{ route('projects.destroy', $project) }}" method="post"&gt;
+    This removes the project, its quotes and all files. This cannot be undone.
+&lt;/x-oc::confirm-dialog&gt;</oc-code>
           </oc-demo>
 
           <h3 id="discard">Three buttons: discard, cancel, save</h3>
@@ -54,6 +74,27 @@
     </form>
   </div>
 </dialog>
+<oc-code lang="tsx">&lt;Button variant="outline" onClick={() =&gt; setOpen(true)}&gt;Leave page&lt;/Button&gt;
+&lt;ConfirmDialog
+  open={open}
+  onOpenChange={setOpen}
+  type="question"
+  title="Save your changes?"
+  message="You changed the quote. Leaving now loses those changes."
+  confirmLabel="Save"
+  discardLabel="Don't save"
+  onConfirm={save}
+  onDiscard={leave}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton variant="outline" @click="open = true"&gt;Leave page&lt;/OcButton&gt;
+&lt;OcConfirmDialog v-model:open="open" type="question" title="Save your changes?"
+  message="You changed the quote. Leaving now loses those changes."
+  confirm-label="Save" discard-label="Don't save" @confirm="save" @discard="leave" /&gt;</oc-code>
+<oc-code lang="blade">&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="unsaved"&gt;Leave page&lt;/button&gt;
+&lt;x-oc::confirm-dialog id="unsaved" type="question" title="Save your changes?" confirm="Save" discard="Don't save"&gt;
+    You changed the quote. Leaving now loses those changes.
+&lt;/x-oc::confirm-dialog&gt;
+{{-- method="dialog": read dialog.returnValue (save, cancel or discard) after the close event --}}</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

@@ -1,5 +1,5 @@
 // File: packages/vue/tests/v0170.test.ts
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown -> answer tiles -> save status -> calendar
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned + issues -> data table labels, view, pagination, bulk -> color field contrast -> countdown -> answer tiles -> save status -> calendar -> site header container
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -13,6 +13,7 @@ import OcCopyField from '../src/components/OcCopyField.vue'
 import OcBlockTypePicker from '../src/blocks/OcBlockTypePicker.vue'
 import OcBlockRouteSteps from '../src/blocks/OcBlockRouteSteps.vue'
 import OcBlockContentBlocks from '../src/blocks/OcBlockContentBlocks.vue'
+import OcBlockSiteHeader from '../src/blocks/OcBlockSiteHeader.vue'
 import OcDataTable from '../src/components/OcDataTable.vue'
 import OcColorField from '../src/components/OcColorField.vue'
 import OcCountdown from '../src/components/OcCountdown.vue'
@@ -187,5 +188,13 @@ describe('0.17.0 calendar', () => {
     const r = mount(OcCalendar, { props: { mode: 'range', month: '2026-10', today: '2026-10-14', locale: 'en', range: { start: '2026-10-28' } } })
     await r.find('[data-date="2026-10-30"]').trigger('click')
     expect(r.emitted('update:range')![0]).toEqual([{ start: '2026-10-28', end: '2026-10-30' }])
+  })
+})
+
+describe('0.17.0 site header container', () => {
+  it('container adds .oc-site-header--container; without it the header is unchanged', () => {
+    const items = [{ label: 'Home', href: '/' }]
+    expect(mount(OcBlockSiteHeader, { props: { items, container: true } }).find('header').classes()).toEqual(['oc-site-header', 'oc-site-header--container'])
+    expect(mount(OcBlockSiteHeader, { props: { items } }).find('header').classes()).toEqual(['oc-site-header'])
   })
 })

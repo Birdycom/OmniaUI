@@ -17,16 +17,18 @@ export interface BlockSiteHeaderProps extends HTMLAttributes<HTMLElement> {
   cta?: ReactNode;
   /** Accessible name of the mobile menu button. */
   menuLabel?: string;
+  /** Fold the menu at the width of the header itself, not of the window (`.oc-site-header--container`, 0.17.0). */
+  container?: boolean;
 }
 
 /** `.oc-site-header`: sticky header, mobile menu on a native popover (no JavaScript). */
 export const BlockSiteHeader = forwardRef<HTMLElement, BlockSiteHeaderProps>(function BlockSiteHeader(
-  { brand, brandHref = "/", links, cta, menuLabel = "Menu", className, ...rest },
+  { brand, brandHref = "/", links, cta, menuLabel = "Menu", container, className, ...rest },
   ref,
 ) {
   const navId = `oc-site-nav-${useId().replace(/:/g, "")}`;
   return (
-    <header ref={ref} className={cx("oc-site-header", className)} {...rest}>
+    <header ref={ref} className={cx("oc-site-header", container && "oc-site-header--container", className)} {...rest}>
       <div className="oc-container oc-site-header__inner">
         <a className="oc-site-header__brand" href={brandHref}>{brand}</a>
         <button className="oc-site-header__toggle" type="button" aria-label={menuLabel} popoverTarget={navId}>&#9776;</button>

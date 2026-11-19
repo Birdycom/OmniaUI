@@ -473,15 +473,17 @@
 .oc-site-header__toggle { display: none; padding: 0.5rem 0.7rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius-md); background: var(--oc-surface); color: var(--oc-foreground); cursor: pointer; }
 /* The icon in the menu button is a block, so the button is as tall as a line of text (no inline gap under it). */
 .oc-site-header__toggle :is(svg, img, iconify-icon, .oc-icon) { display: block; }
+/* The media queries below follow the window. A header with .oc-site-header--container follows its own width instead
+   (container queries further down); :where() keeps it out of these rules without adding specificity. */
 @media (min-width: 861px) {
   /* Desktop: the popover nav is always visible in the header bar. */
-  .oc-site-header__nav[popover] { display: flex; }
+  .oc-site-header__nav[popover]:where(:not(.oc-site-header--container *)) { display: flex; }
 }
 @media (max-width: 860px) {
-  .oc-site-header__toggle { display: block; }
+  .oc-site-header__toggle:where(:not(.oc-site-header--container *)) { display: block; }
   /* The author rule display:flex above beats the UA rule that hides a closed popover. */
-  .oc-site-header__nav[popover]:not(:popover-open) { display: none; }
-  .oc-site-header__nav[popover]:popover-open {
+  .oc-site-header__nav[popover]:not(:popover-open):where(:not(.oc-site-header--container *)) { display: none; }
+  .oc-site-header__nav[popover]:popover-open:where(:not(.oc-site-header--container *)) {
     position: fixed;
     inset: 4.5rem 0 auto;
     /* The UA popover style sizes to fit-content; let inset span the full width. */
@@ -497,16 +499,16 @@
     backdrop-filter: blur(16px);
   }
   /* Not the items of a dropdown in the menu (language select): they keep their own size. */
-  .oc-site-header__nav[popover] a:not(.oc-btn, .oc-dropdown-item) { padding: 0.75rem 0; font-size: 1.1rem; }
+  .oc-site-header__nav[popover] a:not(.oc-btn, .oc-dropdown-item):where(:not(.oc-site-header--container *)) { padding: 0.75rem 0; font-size: 1.1rem; }
   /* The call to action (.oc-site-header__cta, a button) gets room above it in the open menu. */
-  .oc-site-header__cta { margin-block-start: 0.75rem; }
+  .oc-site-header__cta:where(:not(.oc-site-header--container *)) { margin-block-start: 0.75rem; }
 }
 /* --collapse-lg: the menu becomes a popover below 1180px instead of 860px, for a bar with many or long items
    (theme switch, language select, long words). A media query cannot read a variable, so it is a modifier. */
 @media (min-width: 861px) and (max-width: 1180px) {
-  .oc-site-header--collapse-lg .oc-site-header__toggle { display: block; }
-  .oc-site-header--collapse-lg .oc-site-header__nav[popover]:not(:popover-open) { display: none; }
-  .oc-site-header--collapse-lg .oc-site-header__nav[popover]:popover-open {
+  .oc-site-header--collapse-lg:where(:not(.oc-site-header--container)) .oc-site-header__toggle { display: block; }
+  .oc-site-header--collapse-lg:where(:not(.oc-site-header--container)) .oc-site-header__nav[popover]:not(:popover-open) { display: none; }
+  .oc-site-header--collapse-lg:where(:not(.oc-site-header--container)) .oc-site-header__nav[popover]:popover-open {
     position: fixed;
     inset: 4.5rem 0 auto;
     inline-size: auto;
@@ -520,8 +522,48 @@
     background: oklch(from var(--oc-background) l c h / 0.96);
     backdrop-filter: blur(16px);
   }
-  .oc-site-header--collapse-lg .oc-site-header__nav[popover] a:not(.oc-btn, .oc-dropdown-item) { padding: 0.75rem 0; font-size: 1.1rem; }
-  .oc-site-header--collapse-lg .oc-site-header__cta { margin-block-start: 0.75rem; }
+  .oc-site-header--collapse-lg:where(:not(.oc-site-header--container)) .oc-site-header__nav[popover] a:not(.oc-btn, .oc-dropdown-item) { padding: 0.75rem 0; font-size: 1.1rem; }
+  .oc-site-header--collapse-lg:where(:not(.oc-site-header--container)) .oc-site-header__cta { margin-block-start: 0.75rem; }
+}
+/* --container (0.17.0): the menu folds into the menu button at the width of the header itself, not of the window.
+   For a header in a narrow column, a card, a preview or a side panel. The open menu is anchored under the header and
+   as wide as the header (anchor positioning); without anchor positioning it opens under the top of the window. */
+.oc-site-header--container { container: oc-site-header / inline-size; }
+/* Every header has its own anchor: the menu of one header never opens under another one. The Pro mega menu names the
+   header --oc-mega-header; both names are kept (the doubled class wins over that single name). */
+.oc-site-header.oc-site-header--container {
+  anchor-name: --oc-site-header, --oc-mega-header;
+  anchor-scope: --oc-site-header, --oc-mega-header;
+}
+@container oc-site-header (min-width: 53.8125rem) {
+  .oc-site-header--container .oc-site-header__nav[popover] { display: flex; }
+}
+@container oc-site-header (max-width: 53.75rem) {
+  .oc-site-header--container .oc-site-header__toggle { display: block; }
+  .oc-site-header--container .oc-site-header__nav[popover]:not(:popover-open) { display: none; }
+  .oc-site-header--container .oc-site-header__nav[popover]:popover-open {
+    position: fixed;
+    inset: 4.5rem 0 auto;
+    inline-size: auto;
+    block-size: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem 1.5rem;
+    border-block-end: 1px solid var(--oc-border);
+    background: oklch(from var(--oc-background) l c h / 0.96);
+    backdrop-filter: blur(16px);
+  }
+  @supports (anchor-name: --a) {
+    .oc-site-header--container .oc-site-header__nav[popover]:popover-open {
+      position-anchor: --oc-site-header;
+      inset: anchor(bottom) anchor(right) auto anchor(left);
+      border-inline: 1px solid var(--oc-border);
+    }
+  }
+  .oc-site-header--container .oc-site-header__nav[popover] a:not(.oc-btn, .oc-dropdown-item) { padding: 0.75rem 0; font-size: 1.1rem; }
+  .oc-site-header--container .oc-site-header__cta { margin-block-start: 0.75rem; }
 }
 
 /* Site footer: brand column + link columns + bottom bar */

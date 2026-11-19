@@ -1,5 +1,5 @@
 // File: packages/react/test/v0170.test.tsx
-// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state -> hint -> header settings -> overlay sidebar -> calendar
+// Map: language menu flags="auto" + languageFlag -> dropdown item description + icon tone -> sidebar meta wrap/collapsed -> form section invalid + count -> otp fit/group -> copy field display -> type picker action mode -> route steps status, badges, locked -> content blocks pinned, issues, drop from a drawer -> data table labels, view, pagination, bulk -> table auto layout + action labels -> color field contrast -> sidebar tooltips -> alert alarm -> countdown -> answer tiles -> save status -> locked empty state -> hint -> header settings -> overlay sidebar -> calendar -> site header container
 
 import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -26,6 +26,7 @@ import { SaveStatus } from "../src/components/StatusDot";
 import { EmptyState } from "../src/components/EmptyState";
 import { Collapsible } from "../src/components/Collapsible";
 import { HeaderSettings, ThemeToggle } from "../src/components/HeaderSettings";
+import { BlockSiteHeader } from "../src/blocks/BlockSiteHeader";
 
 describe("0.17.0 language menu", () => {
   it("languageFlag: region wins, else the usual country, else undefined", () => {
@@ -435,5 +436,18 @@ describe("0.17.0 calendar", () => {
     expect(container.querySelector(".oc-calendar-title")!.textContent).toBe("November 2026");
     fireEvent.click(container.querySelectorAll(".oc-calendar-nav")[0]);
     expect(container.querySelector(".oc-calendar-title")!.textContent).toBe("October 2026");
+  });
+});
+
+describe("0.17.0 site header container", () => {
+  it("container adds .oc-site-header--container; without it the header is unchanged", () => {
+    const links = [{ label: "Home", href: "/" }];
+    const a = render(<BlockSiteHeader brand="Company 1" links={links} container className="x" />);
+    expect(a.container.querySelector("header")!.className).toBe("oc-site-header oc-site-header--container x");
+    const b = render(<BlockSiteHeader brand="Company 1" links={links} />);
+    expect(b.container.querySelector("header")!.className).toBe("oc-site-header");
+    // the theme toggle stays a controlled button
+    const t = render(<ThemeToggle value="dark" />);
+    expect(t.container.querySelector("button")!.getAttribute("aria-pressed")).toBe("true");
   });
 });

@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=2e795385ff"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -25,8 +25,9 @@
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -76,7 +77,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. Connect every label to its control with <code>for</code> and <code>id</code>.</p>
         </div>
         <div class="oc-section-content">
-          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - field</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-1-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-1-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-1-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - field</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-4"><span>Blade</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-5"><span>Livewire</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-1-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-1-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-1-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
 <div style="display:grid;gap:1rem;inline-size:min(100%, 24rem)">
   <div class="oc-field">
     <label class="oc-field-label" for="form-email">Email</label>
@@ -88,6 +89,10 @@
     <input class="oc-input" id="form-password" type="password" placeholder="••••••••">
   </div>
 </div>
+
+
+
+
           </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
@@ -108,16 +113,120 @@
     <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-label"</span> <span class="hl-attr">for</span>=<span class="hl-string">"form-password"</span><span class="hl-tag">&gt;</span>Password<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
     <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input"</span> <span class="hl-attr">id</span>=<span class="hl-string">"form-password"</span> <span class="hl-attr">type</span>=<span class="hl-string">"password"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"••••••••"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6</pre><pre class="code-preview"><code><span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Email"</span> <span class="hl-attr">description</span>=<span class="hl-string">"We'll never share your email."</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;Input</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"name@example.com"</span> <span class="hl-attr">value</span>={email} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setEmail</span>(e.target.value)} <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Password"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;Input</span> <span class="hl-attr">type</span>=<span class="hl-string">"password"</span> <span class="hl-attr">value</span>={password} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setPassword</span>(e.target.value)} <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Email"</span> <span class="hl-attr">description</span>=<span class="hl-string">"We'll never share your email."</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"email"</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"name@example.com"</span> <span class="hl-attr">:aria-describedby</span>=<span class="hl-string">"f.describedBy"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Password"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"password"</span> <span class="hl-attr">type</span>=<span class="hl-string">"password"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Email"</span> <span class="hl-attr">for</span>=<span class="hl-string">"email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span> <span class="hl-attr">description</span>=<span class="hl-string">"We'll never share your email."</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::input</span> <span class="hl-attr">id</span>=<span class="hl-string">"email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"name@example.com"</span> <span class="hl-attr">aria-describedby</span>=<span class="hl-string">"email-help"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Password"</span> <span class="hl-attr">for</span>=<span class="hl-string">"password"</span> <span class="hl-attr">name</span>=<span class="hl-string">"password"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::input</span> <span class="hl-attr">id</span>=<span class="hl-string">"password"</span> <span class="hl-attr">name</span>=<span class="hl-string">"password"</span> <span class="hl-attr">type</span>=<span class="hl-string">"password"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="5"><div class="oc-code-block" data-lang="livewire"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+
+<span class="hl-keyword">namespace</span> App\Livewire;
+
+<span class="hl-keyword">use</span> Livewire\Attributes\Validate;
+<span class="hl-keyword">use</span> Livewire\Component;
+
+<span class="hl-keyword">class</span> SignIn <span class="hl-keyword">extends</span> Component
+{
+    <span class="hl-attr">#[Validate('required|email')]</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$email</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-attr">#[Validate('required|min:8')]</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$password</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">signIn</span>(): <span class="hl-keyword">void</span>
+    {
+        <span class="hl-variable">$this</span>-&gt;<span class="hl-function">validate</span>();
+        <span class="hl-comment">// Auth::attempt(...) and redirect</span>
+    }
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.sign-in'</span>);
+    }
+}
+
+<span class="hl-comment">{{-- resources/views/livewire/sign-in.blade.php --}}</span>
+<span class="hl-tag">&lt;form</span> <span class="hl-prop">wire:submit</span>=<span class="hl-string">"signIn"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Email"</span> <span class="hl-attr">for</span>=<span class="hl-string">"email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span> <span class="hl-attr">description</span>=<span class="hl-string">"We'll never share your email."</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::wire.input</span> <span class="hl-attr">id</span>=<span class="hl-string">"email"</span> <span class="hl-attr">model</span>=<span class="hl-string">"email"</span> <span class="hl-attr">blur</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"name@example.com"</span> <span class="hl-attr">aria-describedby</span>=<span class="hl-string">"email-help"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Password"</span> <span class="hl-attr">for</span>=<span class="hl-string">"password"</span> <span class="hl-attr">name</span>=<span class="hl-string">"password"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::wire.input</span> <span class="hl-attr">id</span>=<span class="hl-string">"password"</span> <span class="hl-attr">model</span>=<span class="hl-string">"password"</span> <span class="hl-attr">type</span>=<span class="hl-string">"password"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="error-state">Error state</h3>
           <p class="oc-section-content__desc"><code>aria-invalid="true"</code> colors the control; <code>.oc-field-error</code> holds the message (link it with <code>aria-describedby</code>).</p>
-          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - error state</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-2-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-2-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-2-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - error state</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="code-4"><span>Blade</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-2" value="code-5"><span>Livewire</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-2-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-2-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-2-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
 <div class="oc-field" style="inline-size:min(100%, 24rem)">
   <label class="oc-field-label" for="form-username">Username</label>
   <input class="oc-input" id="form-username" aria-invalid="true" aria-describedby="form-username-error" value="anna">
   <span class="oc-field-error" id="form-username-error">This username is already taken.</span>
 </div>
+
+
+
+
           </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
@@ -126,26 +235,152 @@
   <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-label"</span> <span class="hl-attr">for</span>=<span class="hl-string">"form-username"</span><span class="hl-tag">&gt;</span>Username<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input"</span> <span class="hl-attr">id</span>=<span class="hl-string">"form-username"</span> <span class="hl-attr">aria-invalid</span>=<span class="hl-string">"true"</span> <span class="hl-attr">aria-describedby</span>=<span class="hl-string">"form-username-error"</span> <span class="hl-attr">value</span>=<span class="hl-string">"anna"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-error"</span> <span class="hl-attr">id</span>=<span class="hl-string">"form-username-error"</span><span class="hl-tag">&gt;</span>This username is already taken.<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Username"</span> <span class="hl-attr">error</span>={taken ? <span class="hl-string">"This username is already taken."</span> : <span class="hl-keyword">undefined</span>}<span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;Input</span> <span class="hl-attr">value</span>={username} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setUsername</span>(e.target.value)} <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Username"</span> <span class="hl-attr">:error</span>=<span class="hl-string">"taken ? 'This username is already taken.' : undefined"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"username"</span> <span class="hl-attr">:error</span>=<span class="hl-string">"f.invalid"</span> <span class="hl-attr">:aria-describedby</span>=<span class="hl-string">"f.describedBy"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4</pre><pre class="code-preview"><code><span class="hl-comment">{{-- The error comes from the validator: $errors-&gt;first('username') --}}</span>
+<span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Username"</span> <span class="hl-attr">for</span>=<span class="hl-string">"username"</span> <span class="hl-attr">name</span>=<span class="hl-string">"username"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::input</span> <span class="hl-attr">id</span>=<span class="hl-string">"username"</span> <span class="hl-attr">name</span>=<span class="hl-string">"username"</span> <span class="hl-attr">value</span>=<span class="hl-string">"anna"</span> <span class="hl-attr">aria-describedby</span>=<span class="hl-string">"username-error"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="5"><div class="oc-code-block" data-lang="livewire"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+
+<span class="hl-keyword">namespace</span> App\Livewire;
+
+<span class="hl-keyword">use</span> Livewire\Component;
+
+<span class="hl-keyword">class</span> Account <span class="hl-keyword">extends</span> Component
+{
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$username</span> = <span class="hl-string">'anna'</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">updatedUsername</span>(): <span class="hl-keyword">void</span>
+    {
+        <span class="hl-variable">$this</span>-&gt;<span class="hl-function">validate</span>(
+            [<span class="hl-string">'username'</span> =&gt; <span class="hl-string">'required|unique:users,username'</span>],
+            [<span class="hl-string">'username.unique'</span> =&gt; <span class="hl-string">'This username is already taken.'</span>],
+        );
+    }
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.account'</span>);
+    }
+}
+
+<span class="hl-comment">{{-- resources/views/livewire/account.blade.php --}}</span>
+<span class="hl-tag">&lt;div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-comment">{{-- wire.input sets aria-invalid, form-field shows the message --}}</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Username"</span> <span class="hl-attr">for</span>=<span class="hl-string">"username"</span> <span class="hl-attr">name</span>=<span class="hl-string">"username"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::wire.input</span> <span class="hl-attr">id</span>=<span class="hl-string">"username"</span> <span class="hl-attr">model</span>=<span class="hl-string">"username"</span> <span class="hl-attr">blur</span> <span class="hl-attr">aria-describedby</span>=<span class="hl-string">"username-error"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="input-group">Input group</h3>
           <p class="oc-section-content__desc"><code>.oc-input-addon</code> before or after the input, inside <code>.oc-input-group</code>.</p>
-          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - input group</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-3-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-3-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-3-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - input group</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-4"><span>Blade</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-3" value="code-5"><span>Livewire</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-3-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-3-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-3-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
 <div class="oc-input-group" style="inline-size:min(100%, 24rem)">
   <span class="oc-input-addon">https://</span>
   <input class="oc-input" placeholder="example.com" aria-label="Website">
 </div>
+
+
+
+
           </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input-group"</span> <span class="hl-attr">style</span>=<span class="hl-string">"inline-size:min(100%, 24rem)"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input-addon"</span><span class="hl-tag">&gt;</span>https://<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"example.com"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Website"</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;InputGroup</span> <span class="hl-attr">prefix</span>=<span class="hl-string">"https://"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;Input</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"example.com"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Website"</span> <span class="hl-attr">value</span>={website} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setWebsite</span>(e.target.value)} <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/InputGroup</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcInputGroup</span> <span class="hl-attr">prefix</span>=<span class="hl-string">"https://"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"website"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"example.com"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Website"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/OcInputGroup</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::input-group</span> <span class="hl-attr">prefix</span>=<span class="hl-string">"https://"</span> <span class="hl-attr">name</span>=<span class="hl-string">"website"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"example.com"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Website"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="5"><div class="oc-code-block" data-lang="livewire"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+
+<span class="hl-keyword">namespace</span> App\Livewire;
+
+<span class="hl-keyword">use</span> Livewire\Component;
+
+<span class="hl-keyword">class</span> Website <span class="hl-keyword">extends</span> Component
+{
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$website</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.website'</span>);
+    }
+}
+
+<span class="hl-comment">{{-- resources/views/livewire/website.blade.php --}}</span>
+<span class="hl-tag">&lt;div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-comment">{{-- input-group passes its attributes, wire:model too, to the input --}}</span>
+    <span class="hl-tag">&lt;x-oc::input-group</span> <span class="hl-attr">prefix</span>=<span class="hl-string">"https://"</span> <span class="hl-prop">wire:model.blur</span>=<span class="hl-string">"website"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"example.com"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Website"</span> <span class="hl-tag">/&gt;</span>
 <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="inputs">Select, textarea, checkbox, radio and switch</h3>
           <p class="oc-section-content__desc">The other controls share the same field wrapper and tokens.</p>
-          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - other controls</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-4-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-4-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-4-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - other controls</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="code-4"><span>Blade</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="code-5"><span>Livewire</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-4-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-4-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-4-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
 <div style="display:grid;gap:1rem;inline-size:min(100%, 24rem)">
   <div class="oc-field">
     <label class="oc-field-label" for="form-country">Country</label>
@@ -162,6 +397,10 @@
     <label class="oc-switch"><input type="checkbox" checked aria-label="Notifications"><span class="oc-switch-track"></span></label>
   </div>
 </div>
+
+
+
+
           </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
@@ -192,26 +431,210 @@
     <span class="hl-tag">&lt;label</span> <span class="hl-attr">style</span>=<span class="hl-string">"display:flex;align-items:center;gap:0.4rem"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"form-plan"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-radio"</span><span class="hl-tag">&gt;</span> Pro<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
     <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-switch"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">checked</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Notifications"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-switch-track"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre><pre class="code-preview"><code><span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Country"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;Select</span> <span class="hl-attr">options</span>={[<span class="hl-string">"Belgium"</span>, <span class="hl-string">"Netherlands"</span>, <span class="hl-string">"Germany"</span>]} <span class="hl-attr">value</span>={country} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setCountry</span>(e.target.value)} <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Message"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;Textarea</span> <span class="hl-attr">rows</span>={<span class="hl-number">3</span>} <span class="hl-attr">placeholder</span>=<span class="hl-string">"Type here…"</span> <span class="hl-attr">value</span>={message} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setMessage</span>(e.target.value)} <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;Checkbox</span> <span class="hl-attr">label</span>=<span class="hl-string">"Remember me"</span> <span class="hl-attr">checked</span>={remember} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setRemember</span>(e.target.checked)} <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;label</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-radio"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">checked</span>={plan === <span class="hl-string">"free"</span>} <span class="hl-attr">onChange</span>={() =&gt; <span class="hl-function">setPlan</span>(<span class="hl-string">"free"</span>)} <span class="hl-tag">/&gt;</span> Free<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;label</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-radio"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">checked</span>={plan === <span class="hl-string">"pro"</span>} <span class="hl-attr">onChange</span>={() =&gt; <span class="hl-function">setPlan</span>(<span class="hl-string">"pro"</span>)} <span class="hl-tag">/&gt;</span> Pro<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;Switch</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Notifications"</span> <span class="hl-attr">checked</span>={notify} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setNotify</span>(e.target.checked)} <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Country"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcSelect</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"country"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"['Belgium', 'Netherlands', 'Germany']"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Message"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcTextarea</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"message"</span> <span class="hl-attr">rows</span>=<span class="hl-string">"3"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Type here…"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;OcCheckbox</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"remember"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Remember me"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;OcCheckbox</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">value</span>=<span class="hl-string">"free"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Free"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;OcCheckbox</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">type</span>=<span class="hl-string">"radio"</span> <span class="hl-attr">name</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">value</span>=<span class="hl-string">"pro"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Pro"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;OcSwitch</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"notify"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Notifications"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Country"</span> <span class="hl-attr">for</span>=<span class="hl-string">"country"</span> <span class="hl-attr">name</span>=<span class="hl-string">"country"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::select</span> <span class="hl-attr">id</span>=<span class="hl-string">"country"</span> <span class="hl-attr">name</span>=<span class="hl-string">"country"</span> <span class="hl-attr">value</span>=<span class="hl-string">"be"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"['be' =&gt; 'Belgium', 'nl' =&gt; 'Netherlands', 'de' =&gt; 'Germany']"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Message"</span> <span class="hl-attr">for</span>=<span class="hl-string">"message"</span> <span class="hl-attr">name</span>=<span class="hl-string">"message"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::textarea</span> <span class="hl-attr">id</span>=<span class="hl-string">"message"</span> <span class="hl-attr">name</span>=<span class="hl-string">"message"</span> <span class="hl-attr">rows</span>=<span class="hl-string">"3"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Type here…"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;x-oc::checkbox</span> <span class="hl-attr">name</span>=<span class="hl-string">"remember"</span> <span class="hl-attr">value</span>=<span class="hl-string">"1"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Remember me"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;x-oc::checkbox</span> <span class="hl-attr">radio</span> <span class="hl-attr">name</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">value</span>=<span class="hl-string">"free"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Free"</span> <span class="hl-attr">checked</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;x-oc::checkbox</span> <span class="hl-attr">radio</span> <span class="hl-attr">name</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">value</span>=<span class="hl-string">"pro"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Pro"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;x-oc::switch</span> <span class="hl-attr">name</span>=<span class="hl-string">"notifications"</span> <span class="hl-attr">value</span>=<span class="hl-string">"1"</span> <span class="hl-attr">checked</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Notifications"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="5"><div class="oc-code-block" data-lang="livewire"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+
+<span class="hl-keyword">namespace</span> App\Livewire;
+
+<span class="hl-keyword">use</span> Livewire\Component;
+
+<span class="hl-keyword">class</span> Preferences <span class="hl-keyword">extends</span> Component
+{
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$country</span> = <span class="hl-string">'be'</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$message</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">bool</span> <span class="hl-variable">$remember</span> = <span class="hl-keyword">false</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$plan</span> = <span class="hl-string">'free'</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">bool</span> <span class="hl-variable">$notifications</span> = <span class="hl-keyword">true</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.preferences'</span>);
+    }
+}
+
+<span class="hl-comment">{{-- resources/views/livewire/preferences.blade.php --}}</span>
+<span class="hl-tag">&lt;div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Country"</span> <span class="hl-attr">for</span>=<span class="hl-string">"country"</span> <span class="hl-attr">name</span>=<span class="hl-string">"country"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::wire.select</span> <span class="hl-attr">id</span>=<span class="hl-string">"country"</span> <span class="hl-attr">model</span>=<span class="hl-string">"country"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"['be' =&gt; 'Belgium', 'nl' =&gt; 'Netherlands', 'de' =&gt; 'Germany']"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Message"</span> <span class="hl-attr">for</span>=<span class="hl-string">"message"</span> <span class="hl-attr">name</span>=<span class="hl-string">"message"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::wire.textarea</span> <span class="hl-attr">id</span>=<span class="hl-string">"message"</span> <span class="hl-attr">model</span>=<span class="hl-string">"message"</span> <span class="hl-attr">rows</span>=<span class="hl-string">"3"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Type here…"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::wire.checkbox</span> <span class="hl-attr">model</span>=<span class="hl-string">"remember"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Remember me"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;x-oc::wire.checkbox</span> <span class="hl-attr">radio</span> <span class="hl-attr">model</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">value</span>=<span class="hl-string">"free"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Free"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;x-oc::wire.checkbox</span> <span class="hl-attr">radio</span> <span class="hl-attr">model</span>=<span class="hl-string">"plan"</span> <span class="hl-attr">value</span>=<span class="hl-string">"pro"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Pro"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;x-oc::wire.switch</span> <span class="hl-attr">model</span>=<span class="hl-string">"notifications"</span> <span class="hl-attr">live</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Notifications"</span> <span class="hl-tag">/&gt;</span>
 <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="horizontal-field">Horizontal field</h3>
           <p class="oc-section-content__desc"><code>.oc-field--horizontal</code> puts the label next to the control.</p>
-          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - horizontal field</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-5" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-5" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-5-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-5-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-5-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - horizontal field</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-5" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-5" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-5" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-5" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-5" value="code-4"><span>Blade</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-5" value="code-5"><span>Livewire</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-5-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-5-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-5-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
 <div class="oc-field oc-field--horizontal" style="inline-size:min(100%, 28rem)">
   <label class="oc-field-label" for="form-key">API key</label>
   <input class="oc-input" id="form-key" value="sk-abc123…" readonly>
 </div>
+
+
+
+
           </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field oc-field--horizontal"</span> <span class="hl-attr">style</span>=<span class="hl-string">"inline-size:min(100%, 28rem)"</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-label"</span> <span class="hl-attr">for</span>=<span class="hl-string">"form-key"</span><span class="hl-tag">&gt;</span>API key<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input"</span> <span class="hl-attr">id</span>=<span class="hl-string">"form-key"</span> <span class="hl-attr">value</span>=<span class="hl-string">"sk-abc123…"</span> <span class="hl-attr">readonly</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"API key"</span> <span class="hl-attr">horizontal</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;Input</span> <span class="hl-attr">value</span>={apiKey} <span class="hl-attr">readOnly</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"API key"</span> <span class="hl-attr">horizontal</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">:model-value</span>=<span class="hl-string">"apiKey"</span> <span class="hl-attr">readonly</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field--horizontal"</span> <span class="hl-attr">label</span>=<span class="hl-string">"API key"</span> <span class="hl-attr">for</span>=<span class="hl-string">"api-key"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::input</span> <span class="hl-attr">id</span>=<span class="hl-string">"api-key"</span> <span class="hl-attr">value</span>=<span class="hl-string">"sk-abc123…"</span> <span class="hl-attr">readonly</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="5"><div class="oc-code-block" data-lang="livewire"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+
+<span class="hl-keyword">namespace</span> App\Livewire;
+
+<span class="hl-keyword">use</span> Livewire\Component;
+
+<span class="hl-keyword">class</span> ApiKey <span class="hl-keyword">extends</span> Component
+{
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$apiKey</span> = <span class="hl-string">'sk-abc123…'</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.api-key'</span>);
+    }
+}
+
+<span class="hl-comment">{{-- resources/views/livewire/api-key.blade.php --}}</span>
+<span class="hl-tag">&lt;div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field--horizontal"</span> <span class="hl-attr">label</span>=<span class="hl-string">"API key"</span> <span class="hl-attr">for</span>=<span class="hl-string">"api-key"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::wire.input</span> <span class="hl-attr">id</span>=<span class="hl-string">"api-key"</span> <span class="hl-attr">model</span>=<span class="hl-string">"apiKey"</span> <span class="hl-attr">readonly</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="filled-form">Filled form <span class="oc-badge-version">v0.13.0</span></h3>
           <p class="oc-section-content__desc"><code>.oc-form</code> lays out the fields with one gap; <code>.oc-form--filled</code> gives the fields a fill (dark in dark mode), the strong border, more room and a wider focus ring, for a form on a card, a photo or a dark band. A hint in a label, a textarea that grows downwards, the submit row with a note, and a honeypot against bots.</p>
-          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - filled form</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-6" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-6" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-6-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-6-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-6-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - filled form</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-6" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-6" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-6" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-6" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-6" value="code-4"><span>Blade</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-6" value="code-5"><span>Livewire</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-6-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-6-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-6-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
 <form class="oc-form oc-form--filled" style="inline-size:min(100%, 34rem)" action="#" onsubmit="return false" novalidate>
   <div class="oc-honeypot" aria-hidden="true">
     <label for="filled-website">Leave this field empty</label>
@@ -251,6 +674,10 @@
     <p class="oc-form-note">We only use your details to answer you. See the <a href="#demo-6-privacy">privacy statement</a>.</p>
   </div>
 </form>
+
+
+
+
           </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
@@ -327,11 +754,275 @@
     <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span><span class="hl-tag">&gt;</span>Send message<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
     <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-note"</span><span class="hl-tag">&gt;</span>We only use your details to answer you. See the <span class="hl-tag">&lt;a</span> <span class="hl-attr">href</span>=<span class="hl-string">"#privacy"</span><span class="hl-tag">&gt;</span>privacy statement<span class="hl-tag">&lt;/a</span><span class="hl-tag">&gt;</span>.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17</pre><pre class="code-preview"><code><span class="hl-tag">&lt;form</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-form oc-form--filled"</span> <span class="hl-attr">onSubmit</span>={send} <span class="hl-attr">noValidate</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;FieldGroup</span> <span class="hl-attr">row</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Name"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;Input</span> <span class="hl-attr">name</span>=<span class="hl-string">"name"</span> <span class="hl-attr">autoComplete</span>=<span class="hl-string">"name"</span> <span class="hl-attr">value</span>={name} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setName</span>(e.target.value)} <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"E-mail"</span> <span class="hl-attr">error</span>={errors.email}<span class="hl-tag">&gt;</span><span class="hl-tag">&lt;Input</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span> <span class="hl-attr">value</span>={email} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setEmail</span>(e.target.value)} <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/FieldGroup</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;FieldGroup</span> <span class="hl-attr">row</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>={<span class="hl-tag">&lt;&gt;</span>Phone <span class="hl-tag">&lt;span</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-field-label__hint"</span><span class="hl-tag">&gt;</span>(optional)<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/&gt;</span>}<span class="hl-tag">&gt;</span><span class="hl-tag">&lt;Input</span> <span class="hl-attr">type</span>=<span class="hl-string">"tel"</span> <span class="hl-attr">name</span>=<span class="hl-string">"phone"</span> <span class="hl-attr">autoComplete</span>=<span class="hl-string">"tel"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"What is it about?"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;Select</span> <span class="hl-attr">name</span>=<span class="hl-string">"subject"</span> <span class="hl-attr">options</span>={[{ value: <span class="hl-string">""</span>, label: <span class="hl-string">"Choose a subject"</span> }, <span class="hl-string">"A new project"</span>, <span class="hl-string">"Support"</span>]} <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/FieldGroup</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Your message"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;Textarea</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-textarea"</span> <span class="hl-attr">name</span>=<span class="hl-string">"message"</span> <span class="hl-attr">rows</span>={<span class="hl-number">5</span>} <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;Button</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span><span class="hl-tag">&gt;</span>Send message<span class="hl-tag">&lt;/Button</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;p</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-form-note"</span><span class="hl-tag">&gt;</span>We only use your details to answer you. See the <span class="hl-tag">&lt;a</span> <span class="hl-attr">href</span>=<span class="hl-string">"/privacy"</span><span class="hl-tag">&gt;</span>privacy statement<span class="hl-tag">&lt;/a</span><span class="hl-tag">&gt;</span>.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre><pre class="code-preview"><code><span class="hl-tag">&lt;form</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form oc-form--filled"</span> <span class="hl-attr">novalidate</span> <span class="hl-attr">@submit.prevent</span>=<span class="hl-string">"send"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-group oc-field-group--row"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Name"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"form.name"</span> <span class="hl-attr">autocomplete</span>=<span class="hl-string">"name"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"E-mail"</span> <span class="hl-attr">:error</span>=<span class="hl-string">"errors.email"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"form.email"</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">:error</span>=<span class="hl-string">"f.invalid"</span> <span class="hl-attr">:aria-describedby</span>=<span class="hl-string">"f.describedBy"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-group oc-field-group--row"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;OcFormField</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;template</span> <span class="hl-attr">#label</span><span class="hl-tag">&gt;</span>Phone <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-label__hint"</span><span class="hl-tag">&gt;</span>(optional)<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/template</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;template</span> <span class="hl-attr">#default</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"form.phone"</span> <span class="hl-attr">type</span>=<span class="hl-string">"tel"</span> <span class="hl-attr">autocomplete</span>=<span class="hl-string">"tel"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/template</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"What is it about?"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;OcSelect</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"form.subject"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"[{ value: '', label: 'Choose a subject' }, 'A new project', 'Support']"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"Your message"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;OcTextarea</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"form.message"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-textarea"</span> <span class="hl-attr">rows</span>=<span class="hl-string">"5"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;OcButton</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span><span class="hl-tag">&gt;</span>Send message<span class="hl-tag">&lt;/OcButton</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-note"</span><span class="hl-tag">&gt;</span>We only use your details to answer you. See the <span class="hl-tag">&lt;a</span> <span class="hl-attr">href</span>=<span class="hl-string">"/privacy"</span><span class="hl-tag">&gt;</span>privacy statement<span class="hl-tag">&lt;/a</span><span class="hl-tag">&gt;</span>.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre><pre class="code-preview"><code><span class="hl-tag">&lt;form</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form oc-form--filled"</span> <span class="hl-attr">method</span>=<span class="hl-string">"post"</span> <span class="hl-attr">action</span>=<span class="hl-string">"{{ route('contact.send') }}"</span> <span class="hl-attr">novalidate</span><span class="hl-tag">&gt;</span>
+    <span class="hl-keyword">@csrf</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-honeypot"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;label</span> <span class="hl-attr">for</span>=<span class="hl-string">"website"</span><span class="hl-tag">&gt;</span>Leave this field empty<span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;input</span> <span class="hl-attr">type</span>=<span class="hl-string">"text"</span> <span class="hl-attr">id</span>=<span class="hl-string">"website"</span> <span class="hl-attr">name</span>=<span class="hl-string">"website"</span> <span class="hl-attr">tabindex</span>=<span class="hl-string">"-1"</span> <span class="hl-attr">autocomplete</span>=<span class="hl-string">"off"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-group oc-field-group--row"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Name"</span> <span class="hl-attr">for</span>=<span class="hl-string">"name"</span> <span class="hl-attr">name</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;x-oc::input</span> <span class="hl-attr">id</span>=<span class="hl-string">"name"</span> <span class="hl-attr">name</span>=<span class="hl-string">"name"</span> <span class="hl-attr">autocomplete</span>=<span class="hl-string">"name"</span> <span class="hl-attr">:value</span>=<span class="hl-string">"old('name')"</span> <span class="hl-tag">/&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"E-mail"</span> <span class="hl-attr">for</span>=<span class="hl-string">"email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;x-oc::input</span> <span class="hl-attr">id</span>=<span class="hl-string">"email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">:value</span>=<span class="hl-string">"old('email')"</span> <span class="hl-attr">aria-describedby</span>=<span class="hl-string">"email-error"</span> <span class="hl-tag">/&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-group oc-field-group--row"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Phone (optional)"</span> <span class="hl-attr">for</span>=<span class="hl-string">"phone"</span> <span class="hl-attr">name</span>=<span class="hl-string">"phone"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;x-oc::input</span> <span class="hl-attr">id</span>=<span class="hl-string">"phone"</span> <span class="hl-attr">name</span>=<span class="hl-string">"phone"</span> <span class="hl-attr">type</span>=<span class="hl-string">"tel"</span> <span class="hl-attr">autocomplete</span>=<span class="hl-string">"tel"</span> <span class="hl-attr">:value</span>=<span class="hl-string">"old('phone')"</span> <span class="hl-tag">/&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"What is it about?"</span> <span class="hl-attr">for</span>=<span class="hl-string">"subject"</span> <span class="hl-attr">name</span>=<span class="hl-string">"subject"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;x-oc::select</span> <span class="hl-attr">id</span>=<span class="hl-string">"subject"</span> <span class="hl-attr">name</span>=<span class="hl-string">"subject"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Choose a subject"</span> <span class="hl-attr">:value</span>=<span class="hl-string">"old('subject')"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"['project' =&gt; 'A new project', 'support' =&gt; 'Support']"</span> <span class="hl-tag">/&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Your message"</span> <span class="hl-attr">for</span>=<span class="hl-string">"message"</span> <span class="hl-attr">name</span>=<span class="hl-string">"message"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::textarea</span> <span class="hl-attr">id</span>=<span class="hl-string">"message"</span> <span class="hl-attr">name</span>=<span class="hl-string">"message"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-textarea"</span> <span class="hl-attr">rows</span>=<span class="hl-string">"5"</span><span class="hl-tag">&gt;</span><span class="hl-keyword">{{</span> <span class="hl-function">old</span>(<span class="hl-string">'message'</span>) <span class="hl-keyword">}}</span><span class="hl-tag">&lt;/x-oc::textarea</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::button</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span><span class="hl-tag">&gt;</span>Send message<span class="hl-tag">&lt;/x-oc::button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-note"</span><span class="hl-tag">&gt;</span>We only use your details to answer you. See the <span class="hl-tag">&lt;a</span> <span class="hl-attr">href</span>=<span class="hl-string">"/privacy"</span><span class="hl-tag">&gt;</span>privacy statement<span class="hl-tag">&lt;/a</span><span class="hl-tag">&gt;</span>.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="5"><div class="oc-code-block" data-lang="livewire"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+
+<span class="hl-keyword">namespace</span> App\Livewire;
+
+<span class="hl-keyword">use</span> Livewire\Attributes\Validate;
+<span class="hl-keyword">use</span> Livewire\Component;
+<span class="hl-keyword">use</span> Omniacss\Livewire\WithOcToast;
+
+<span class="hl-keyword">class</span> ContactForm <span class="hl-keyword">extends</span> Component
+{
+    <span class="hl-keyword">use</span> WithOcToast;
+
+    <span class="hl-attr">#[Validate('required')]</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$name</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-attr">#[Validate('required|email')]</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$email</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$phone</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-attr">#[Validate('required')]</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$subject</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-attr">#[Validate('required|min:10')]</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$message</span> = <span class="hl-string">''</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">send</span>(): <span class="hl-keyword">void</span>
+    {
+        <span class="hl-variable">$this</span>-&gt;<span class="hl-function">validate</span>();
+        <span class="hl-comment">// Mail::to('info@company1.example')-&gt;send(new ContactMessage(...));</span>
+        <span class="hl-variable">$this</span>-&gt;<span class="hl-function">reset</span>();
+        <span class="hl-variable">$this</span>-&gt;<span class="hl-function">ocToast</span>(<span class="hl-string">'success'</span>, <span class="hl-string">'Message sent'</span>, <span class="hl-string">'We will answer you soon.'</span>);
+    }
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.contact-form'</span>);
+    }
+}
+
+<span class="hl-comment">{{-- resources/views/livewire/contact-form.blade.php --}}</span>
+<span class="hl-comment">{{-- &lt;x-oc::toast-stack /&gt; sits once in the layout --}}</span>
+<span class="hl-tag">&lt;form</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form oc-form--filled"</span> <span class="hl-prop">wire:submit</span>=<span class="hl-string">"send"</span> <span class="hl-attr">novalidate</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-group oc-field-group--row"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Name"</span> <span class="hl-attr">for</span>=<span class="hl-string">"name"</span> <span class="hl-attr">name</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;x-oc::wire.input</span> <span class="hl-attr">id</span>=<span class="hl-string">"name"</span> <span class="hl-attr">model</span>=<span class="hl-string">"name"</span> <span class="hl-attr">autocomplete</span>=<span class="hl-string">"name"</span> <span class="hl-tag">/&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"E-mail"</span> <span class="hl-attr">for</span>=<span class="hl-string">"email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;x-oc::wire.input</span> <span class="hl-attr">id</span>=<span class="hl-string">"email"</span> <span class="hl-attr">model</span>=<span class="hl-string">"email"</span> <span class="hl-attr">blur</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">aria-describedby</span>=<span class="hl-string">"email-error"</span> <span class="hl-tag">/&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-field-group oc-field-group--row"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Phone (optional)"</span> <span class="hl-attr">for</span>=<span class="hl-string">"phone"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;x-oc::wire.input</span> <span class="hl-attr">id</span>=<span class="hl-string">"phone"</span> <span class="hl-attr">model</span>=<span class="hl-string">"phone"</span> <span class="hl-attr">type</span>=<span class="hl-string">"tel"</span> <span class="hl-attr">autocomplete</span>=<span class="hl-string">"tel"</span> <span class="hl-tag">/&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"What is it about?"</span> <span class="hl-attr">for</span>=<span class="hl-string">"subject"</span> <span class="hl-attr">name</span>=<span class="hl-string">"subject"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;x-oc::wire.select</span> <span class="hl-attr">id</span>=<span class="hl-string">"subject"</span> <span class="hl-attr">model</span>=<span class="hl-string">"subject"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Choose a subject"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"['project' =&gt; 'A new project', 'support' =&gt; 'Support']"</span> <span class="hl-tag">/&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"Your message"</span> <span class="hl-attr">for</span>=<span class="hl-string">"message"</span> <span class="hl-attr">name</span>=<span class="hl-string">"message"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::wire.textarea</span> <span class="hl-attr">id</span>=<span class="hl-string">"message"</span> <span class="hl-attr">model</span>=<span class="hl-string">"message"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-textarea"</span> <span class="hl-attr">rows</span>=<span class="hl-string">"5"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::button</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span><span class="hl-tag">&gt;</span>Send message<span class="hl-tag">&lt;/x-oc::button</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-note"</span><span class="hl-tag">&gt;</span>We only use your details to answer you. See the <span class="hl-tag">&lt;a</span> <span class="hl-attr">href</span>=<span class="hl-string">"/privacy"</span><span class="hl-tag">&gt;</span>privacy statement<span class="hl-tag">&lt;/a</span><span class="hl-tag">&gt;</span>.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="busy-form">While it sends <span class="oc-badge-version">v0.13.0</span></h3>
           <p class="oc-section-content__desc">Set <code>aria-busy="true"</code> on the <code>.oc-form</code> while it sends: the submit button dims and shows a progress cursor. Disable the button too, so it is not sent twice. <a href="../blocks/contact-form">contact-form.js</a> does both.</p>
-          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - busy form</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-7" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-7" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-7-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-7-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-7-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Forms - busy form</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-7" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-7" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-7" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-7" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-7" value="code-4"><span>Blade</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-7" value="code-5"><span>Livewire</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-7-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-7-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-7-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
 <form class="oc-form oc-form--filled" style="inline-size:min(100%, 34rem)" aria-busy="true" action="#" onsubmit="return false">
   <div class="oc-field">
     <label class="oc-field-label" for="busy-email">E-mail</label>
@@ -341,6 +1032,10 @@
     <button class="oc-btn oc-btn--lg" type="submit" disabled>Sending…</button>
   </div>
 </form>
+
+
+
+
           </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
@@ -357,6 +1052,126 @@
   <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
     <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span> <span class="hl-attr">disabled</span><span class="hl-tag">&gt;</span>Sending…<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8</pre><pre class="code-preview"><code><span class="hl-tag">&lt;form</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-form oc-form--filled"</span> <span class="hl-attr">aria-busy</span>={sending} <span class="hl-attr">onSubmit</span>={send}<span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;FormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"E-mail"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;Input</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">value</span>={email} <span class="hl-attr">onChange</span>={(e) =&gt; <span class="hl-function">setEmail</span>(e.target.value)} <span class="hl-tag">/&gt;</span>
+  <span class="hl-tag">&lt;/FormField</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;Button</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span> <span class="hl-attr">loading</span>={sending} <span class="hl-attr">disabled</span>={sending}<span class="hl-tag">&gt;</span>{sending ? <span class="hl-string">"Sending…"</span> : <span class="hl-string">"Send"</span>}<span class="hl-tag">&lt;/Button</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8</pre><pre class="code-preview"><code><span class="hl-tag">&lt;form</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form oc-form--filled"</span> <span class="hl-attr">:aria-busy</span>=<span class="hl-string">"sending"</span> <span class="hl-attr">@submit.prevent</span>=<span class="hl-string">"send"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcFormField</span> <span class="hl-attr">label</span>=<span class="hl-string">"E-mail"</span> <span class="hl-attr">v-slot</span>=<span class="hl-string">"f"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;OcInput</span> <span class="hl-attr">:id</span>=<span class="hl-string">"f.id"</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"email"</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-tag">/&gt;</span>
+  <span class="hl-tag">&lt;/OcFormField</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;OcButton</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span> <span class="hl-attr">:loading</span>=<span class="hl-string">"sending"</span> <span class="hl-attr">:disabled</span>=<span class="hl-string">"sending"</span><span class="hl-tag">&gt;</span>{{ sending ? 'Sending…' : 'Send' }}<span class="hl-tag">&lt;/OcButton</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre><pre class="code-preview"><code><span class="hl-comment">{{-- A plain form marks itself busy and disables the button while the browser posts it --}}</span>
+<span class="hl-tag">&lt;form</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form oc-form--filled"</span> <span class="hl-attr">method</span>=<span class="hl-string">"post"</span> <span class="hl-attr">action</span>=<span class="hl-string">"{{ route('newsletter.subscribe') }}"</span>
+      <span class="hl-attr">onsubmit</span>=<span class="hl-string">"this.setAttribute('aria-busy', 'true'); this.querySelector('[type=submit]').disabled = true"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-keyword">@csrf</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"E-mail"</span> <span class="hl-attr">for</span>=<span class="hl-string">"busy-email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::input</span> <span class="hl-attr">id</span>=<span class="hl-string">"busy-email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-attr">:value</span>=<span class="hl-string">"old('email')"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::button</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span><span class="hl-tag">&gt;</span>Send<span class="hl-tag">&lt;/x-oc::button</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="5"><div class="oc-code-block" data-lang="livewire"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+
+<span class="hl-keyword">namespace</span> App\Livewire;
+
+<span class="hl-keyword">use</span> Livewire\Attributes\Validate;
+<span class="hl-keyword">use</span> Livewire\Component;
+
+<span class="hl-keyword">class</span> Newsletter <span class="hl-keyword">extends</span> Component
+{
+    <span class="hl-attr">#[Validate('required|email')]</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">string</span> <span class="hl-variable">$email</span> = <span class="hl-string">'info@company1.example'</span>;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">subscribe</span>(): <span class="hl-keyword">void</span>
+    {
+        <span class="hl-variable">$this</span>-&gt;<span class="hl-function">validate</span>();
+        <span class="hl-comment">// add the address to the list</span>
+    }
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.newsletter'</span>);
+    }
+}
+
+<span class="hl-comment">{{-- resources/views/livewire/newsletter.blade.php --}}</span>
+<span class="hl-comment">{{-- wire:loading sets aria-busy on the form and disables the button while the request runs --}}</span>
+<span class="hl-tag">&lt;form</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form oc-form--filled"</span> <span class="hl-prop">wire:submit</span>=<span class="hl-string">"subscribe"</span> <span class="hl-prop">wire:loading.attr</span>=<span class="hl-string">"aria-busy"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::form-field</span> <span class="hl-attr">label</span>=<span class="hl-string">"E-mail"</span> <span class="hl-attr">for</span>=<span class="hl-string">"busy-email"</span> <span class="hl-attr">name</span>=<span class="hl-string">"email"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::wire.input</span> <span class="hl-attr">id</span>=<span class="hl-string">"busy-email"</span> <span class="hl-attr">model</span>=<span class="hl-string">"email"</span> <span class="hl-attr">type</span>=<span class="hl-string">"email"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;/x-oc::form-field</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-form-actions"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::button</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">type</span>=<span class="hl-string">"submit"</span> <span class="hl-prop">wire:loading.attr</span>=<span class="hl-string">"disabled"</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;span</span> <span class="hl-prop">wire:loading.remove</span><span class="hl-tag">&gt;</span>Send<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+            <span class="hl-tag">&lt;span</span> <span class="hl-prop">wire:loading</span><span class="hl-tag">&gt;</span>Sending…<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;/x-oc::button</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/form</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
         </div>
       </section>

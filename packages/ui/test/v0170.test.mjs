@@ -1,6 +1,6 @@
 // File: packages/ui/test/v0170.test.mjs
 // Map: CSS of 0.17.0 -> dropdown description + tone -> sidebar meta wrap/collapsed -> form section issue -> otp fit/group
-//      -> copy field display -> card grid bands -> table auto + hide below
+//      -> copy field display -> card grid bands -> table auto + hide below -> theme.js scope -> site header --container -> theme image in a scope
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -89,4 +89,68 @@ test("sidebar --overlay keeps only the rail width in the layout and darkens the 
   const css = await read("components.css");
   assert.ok(css.includes("margin-inline-end: calc(var(--oc-sidebar-width-icon) - var(--oc-sidebar-width));"));
   assert.ok(css.includes("box-shadow: 0 0 0 100vmax"));
+});
+
+// theme.js: a toggle or set button inside a .oc-theme-scope themes only that scope (a demo box), not <html>.
+test("theme.js: a toggle inside .oc-theme-scope sets data-theme on the scope only", async () => {
+  const { JSDOM } = await import("jsdom");
+  const { initTheme } = await import("../src/theme.js");
+  const dom = new JSDOM(`<!doctype html><html><body>
+    <button id="page" data-oc-theme-toggle></button>
+    <div class="oc-theme-scope" id="scope"><button id="demo" data-oc-theme-toggle></button><button id="set" data-oc-theme-set="light"></button></div>
+  </body></html>`, { url: "https://example.test/" });
+  const { document: doc } = dom.window;
+  dom.window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+  const theme = initTheme(doc);
+  const root = doc.documentElement, scope = doc.getElementById("scope");
+  let scopeEvent = null, rootEvents = 0;
+  scope.addEventListener("oc-theme-change", (e) => { scopeEvent = e.detail; });
+  root.addEventListener("oc-theme-change", () => { rootEvents++; });
+  // the sync of the page leaves the buttons in the scope alone
+  assert.equal(doc.getElementById("page").getAttribute("aria-pressed"), "false");
+  assert.equal(doc.getElementById("demo").hasAttribute("aria-pressed"), false);
+
+  doc.getElementById("demo").click();
+  assert.equal(scope.dataset.theme, "dark");
+  assert.equal(root.hasAttribute("data-theme"), false);
+  assert.equal(dom.window.localStorage.getItem("oc-theme"), null);
+  assert.equal(theme.get(), "system");
+  assert.equal(doc.getElementById("demo").getAttribute("aria-pressed"), "true");
+  assert.equal(doc.getElementById("page").getAttribute("aria-pressed"), "false");
+  assert.deepEqual({ ...scopeEvent }, { choice: "dark", theme: "dark", scope: true });
+  assert.equal(rootEvents, 0);
+
+  doc.getElementById("set").click();
+  assert.equal(scope.dataset.theme, "light");
+  assert.equal(doc.getElementById("set").getAttribute("aria-pressed"), "true");
+
+  // without a scope: the whole page, as before
+  doc.getElementById("page").click();
+  assert.equal(root.getAttribute("data-theme"), "dark");
+  assert.equal(dom.window.localStorage.getItem("oc-theme"), "dark");
+  assert.equal(scope.dataset.theme, "light");
+  theme.stop();
+});
+
+test("site header --container: container query instead of the window", async () => {
+  const css = await read("showcase.css");
+  assert.match(css, /\.oc-site-header--container \{\s*container: oc-site-header \/ inline-size;/);
+  assert.match(css, /anchor-scope: --oc-site-header, --oc-mega-header;/);
+  assert.match(css, /@container oc-site-header \(max-width: 53\.75rem\) \{\s*\.oc-site-header--container \.oc-site-header__toggle \{ display: block; \}/);
+  assert.match(css, /@container oc-site-header \(min-width: 53\.8125rem\)/);
+  assert.match(css, /position-anchor: --oc-site-header;\s*inset: anchor\(bottom\) anchor\(right\) auto anchor\(left\);/);
+  // the window media queries keep their rules (same specificity) but leave a --container header alone
+  assert.match(css, /@media \(max-width: 860px\) \{\s*\.oc-site-header__toggle:where\(:not\(\.oc-site-header--container \*\)\) \{ display: block; \}/);
+  const variants = await read("parts/site-header-variants.css");
+  assert.match(variants, /@container oc-site-header \(min-width: 53\.8125rem\) \{\s*\.oc-site-header--center\.oc-site-header--container \.oc-site-header__inner/);
+});
+
+test("theme image: a .oc-theme-scope with its own theme wins over the page", async () => {
+  const css = await read("parts/app-0160-apps.css");
+  assert.match(css, /\.oc-theme-scope\.oc-theme-scope:is\(\[data-theme="dark"\], :has\(\.oc-theme-switch input\[value="dark"\]:checked\)\) \.oc-theme-img--dark \{ display: revert; \}/);
+});
+
+test("theme scope with its own theme takes the text color of that theme", async () => {
+  const css = await read("components.css");
+  assert.match(css, /\.oc-theme-scope:is\(\[data-theme="light"\], \[data-theme="dark"\], :has\(\.oc-theme-switch input:is\(\[value="light"\], \[value="dark"\]\):checked\)\) \{ color: var\(--oc-foreground\); \}/);
 });

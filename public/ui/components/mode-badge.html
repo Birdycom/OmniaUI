@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=2e795385ff"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -25,8 +25,9 @@
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -121,17 +122,17 @@
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-mode-badge"</span> <span class="hl-attr">data-mode</span>=<span class="hl-string">"both"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Test<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Live<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-mode-badge oc-mode-badge--lg"</span> <span class="hl-attr">data-mode</span>=<span class="hl-string">"both"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Test<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span><span class="hl-tag">&gt;</span>Live<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
-3</pre><pre class="code-preview"><code>&lt;ModeBadge mode="test" size="sm" /&gt;
-&lt;ModeBadge mode="live" /&gt;
-&lt;ModeBadge mode="both" size="lg" labels={{ test: "Test", live: "Live" }} /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">size</span>=<span class="hl-string">"sm"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">labels</span>={{ test: <span class="hl-string">"Test"</span>, live: <span class="hl-string">"Live"</span> }} <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
-3</pre><pre class="code-preview"><code>&lt;OcModeBadge mode="test" size="sm" /&gt;
-&lt;OcModeBadge mode="live" /&gt;
-&lt;OcModeBadge mode="both" size="lg" :labels="{ test: 'Test', live: 'Live' }" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">size</span>=<span class="hl-string">"sm"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">:labels</span>=<span class="hl-string">"{ test: 'Test', live: 'Live' }"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
-3</pre><pre class="code-preview"><code>&lt;x-oc::mode-badge mode="test" size="sm" /&gt;
-&lt;x-oc::mode-badge mode="live" /&gt;
-&lt;x-oc::mode-badge mode="both" size="lg" test="Test" live="Live" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">size</span>=<span class="hl-string">"sm"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-attr">test</span>=<span class="hl-string">"Test"</span> <span class="hl-attr">live</span>=<span class="hl-string">"Live"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="in-text">In a line of text</h3>
           <p class="oc-section-content__desc">The badge sits on the text line, so it can stand next to a status, a code or a link. Its text is a real word (translate it with <code>labels</code>), never only a color.</p>
@@ -161,13 +162,13 @@
   <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
-3</pre><pre class="code-preview"><code>&lt;p&gt;Now running: &lt;ModeBadge mode="test" /&gt; &lt;span className="oc-text-muted"&gt;Round 2, started at 10:00&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Team code T-4821 works in: &lt;ModeBadge mode="test" size="sm" /&gt;&lt;/p&gt;
-&lt;p&gt;Join link works in: &lt;ModeBadge mode="both" size="sm" /&gt;&lt;/p&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
-2</pre><pre class="code-preview"><code>&lt;p&gt;Now running: &lt;OcModeBadge mode="test" /&gt;&lt;/p&gt;
-&lt;p&gt;Join link works in: &lt;OcModeBadge mode="both" size="sm" /&gt;&lt;/p&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
-2</pre><pre class="code-preview"><code>&lt;p&gt;Now running: &lt;x-oc::mode-badge mode="test" /&gt;&lt;/p&gt;
-&lt;p&gt;Join link works in: &lt;x-oc::mode-badge mode="both" size="sm" /&gt;&lt;/p&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Now running: <span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-tag">/&gt;</span> <span class="hl-tag">&lt;span</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-text-muted"</span><span class="hl-tag">&gt;</span>Round 2, started at 10:00<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Team code T-4821 works in: <span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-attr">size</span>=<span class="hl-string">"sm"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Join link works in: <span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">size</span>=<span class="hl-string">"sm"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2</pre><pre class="code-preview"><code><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Now running: <span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Join link works in: <span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">size</span>=<span class="hl-string">"sm"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2</pre><pre class="code-preview"><code><span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Now running: <span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;p</span><span class="hl-tag">&gt;</span>Join link works in: <span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-attr">size</span>=<span class="hl-string">"sm"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="tokens">Your own mode colors <span class="oc-badge-version">v0.16.1</span></h3>
           <p class="oc-section-content__desc">The two mode colors and the text on them are tokens: <code>--oc-mode-test</code>, <code>--oc-mode-live</code> and <code>--oc-mode-ink</code>. Set them on <code>:root</code> for the whole app, or on any parent for one part of it: the badges, the accent cards with <code>data-tone="test"</code> or <code>"live"</code> (border and band) and the caption of a <a href="code-plate">code plate</a> all follow. Here they are pink and cyan for the part inside the frame only. Keep the ink above 4.5:1 on both colors.</p>
@@ -220,37 +221,37 @@
 4
 5
 6
-7</pre><pre class="code-preview"><code>&lt;div style={{ "--oc-mode-test": "var(--color-pink-20)", "--oc-mode-live": "var(--color-skycyan-20)" } as React.CSSProperties}&gt;
-  &lt;ModeBadge mode="test" /&gt; &lt;ModeBadge mode="live" /&gt; &lt;ModeBadge mode="both" /&gt;
-  &lt;Card accent="live"&gt;
-    &lt;CardBand start={&lt;ModeBadge mode="live" size="lg" /&gt;} title="Codes for the live round" description="For the players on the day itself." /&gt;
-    &lt;CardContent&gt;Team codes start with L. Hand them out on the day.&lt;/CardContent&gt;
-  &lt;/Card&gt;
-&lt;/div&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+7</pre><pre class="code-preview"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">style</span>={{ <span class="hl-string">"--oc-mode-test"</span>: <span class="hl-string">"var(--color-pink-20)"</span>, <span class="hl-string">"--oc-mode-live"</span>: <span class="hl-string">"var(--color-skycyan-20)"</span> } <span class="hl-keyword">as</span> React.CSSProperties}<span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-tag">/&gt;</span> <span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-tag">/&gt;</span> <span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-tag">/&gt;</span>
+  <span class="hl-tag">&lt;Card</span> <span class="hl-attr">accent</span>=<span class="hl-string">"live"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;CardBand</span> <span class="hl-attr">start</span>={<span class="hl-tag">&lt;ModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-tag">/&gt;</span>} <span class="hl-attr">title</span>=<span class="hl-string">"Codes for the live round"</span> <span class="hl-attr">description</span>=<span class="hl-string">"For the players on the day itself."</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;CardContent</span><span class="hl-tag">&gt;</span>Team codes start with L. Hand them out on the day.<span class="hl-tag">&lt;/CardContent</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/Card</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4
 5
 6
-7</pre><pre class="code-preview"><code>&lt;div style="--oc-mode-test: var(--color-pink-20); --oc-mode-live: var(--color-skycyan-20)"&gt;
-  &lt;OcModeBadge mode="test" /&gt; &lt;OcModeBadge mode="live" /&gt; &lt;OcModeBadge mode="both" /&gt;
-  &lt;OcCard accent="live"&gt;
-    &lt;template #band&gt;&lt;OcCardBand title="Codes for the live round" description="For the players on the day itself."&gt;&lt;template #start&gt;&lt;OcModeBadge mode="live" size="lg" /&gt;&lt;/template&gt;&lt;/OcCardBand&gt;&lt;/template&gt;
+7</pre><pre class="code-preview"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">style</span>=<span class="hl-string">"--oc-mode-test: var(--color-pink-20); --oc-mode-live: var(--color-skycyan-20)"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-tag">/&gt;</span> <span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-tag">/&gt;</span> <span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-tag">/&gt;</span>
+  <span class="hl-tag">&lt;OcCard</span> <span class="hl-attr">accent</span>=<span class="hl-string">"live"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;template</span> <span class="hl-attr">#band</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;OcCardBand</span> <span class="hl-attr">title</span>=<span class="hl-string">"Codes for the live round"</span> <span class="hl-attr">description</span>=<span class="hl-string">"For the players on the day itself."</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;template</span> <span class="hl-attr">#start</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;OcModeBadge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/template</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/OcCardBand</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/template</span><span class="hl-tag">&gt;</span>
     Team codes start with L. Hand them out on the day.
-  &lt;/OcCard&gt;
-&lt;/div&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+  <span class="hl-tag">&lt;/OcCard</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4
 5
 6
-7</pre><pre class="code-preview"><code>&lt;div style="--oc-mode-test: var(--color-pink-20); --oc-mode-live: var(--color-skycyan-20)"&gt;
-    &lt;x-oc::mode-badge mode="test" /&gt; &lt;x-oc::mode-badge mode="live" /&gt; &lt;x-oc::mode-badge mode="both" /&gt;
-    &lt;x-oc::card accent="live"&gt;
-        &lt;x-slot:band&gt;&lt;x-oc::card-band title="Codes for the live round" description="For the players on the day itself."&gt;&lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="live" size="lg" /&gt;&lt;/x-slot:start&gt;&lt;/x-oc::card-band&gt;&lt;/x-slot:band&gt;
+7</pre><pre class="code-preview"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">style</span>=<span class="hl-string">"--oc-mode-test: var(--color-pink-20); --oc-mode-live: var(--color-skycyan-20)"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"test"</span> <span class="hl-tag">/&gt;</span> <span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-tag">/&gt;</span> <span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"both"</span> <span class="hl-tag">/&gt;</span>
+    <span class="hl-tag">&lt;x-oc::card</span> <span class="hl-attr">accent</span>=<span class="hl-string">"live"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-slot:band</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;x-oc::card-band</span> <span class="hl-attr">title</span>=<span class="hl-string">"Codes for the live round"</span> <span class="hl-attr">description</span>=<span class="hl-string">"For the players on the day itself."</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;x-slot:start</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;x-oc::mode-badge</span> <span class="hl-attr">mode</span>=<span class="hl-string">"live"</span> <span class="hl-attr">size</span>=<span class="hl-string">"lg"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/x-slot:start</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/x-oc::card-band</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/x-slot:band</span><span class="hl-tag">&gt;</span>
         Team codes start with L. Hand them out on the day.
-    &lt;/x-oc::card&gt;
-&lt;/div&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+    <span class="hl-tag">&lt;/x-oc::card</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
         </div>
       </section>
 

@@ -37,6 +37,57 @@
     <div class="oc-toast-body"><p class="oc-toast-title">A new version is available</p></div>
   </div>
 </div>
+<oc-code lang="tsx">&lt;ToastContainer static&gt;
+  &lt;Toast variant="success" title="Contact saved" description="Your changes are stored." onDismiss={() =&gt; hide("saved")} /&gt;
+  &lt;Toast variant="error" title="Could not send invoice" description="The e-mail address is invalid." onDismiss={() =&gt; hide("invoice")} /&gt;
+  &lt;Toast variant="warning" title="License expires in 3 days" /&gt;
+  &lt;Toast variant="info" title="A new version is available" /&gt;
+&lt;/ToastContainer&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="oc-toast-container oc-toast-container--static"&gt;
+  &lt;OcToast variant="success" title="Contact saved" description="Your changes are stored." @dismiss="hide('saved')" /&gt;
+  &lt;OcToast variant="error" title="Could not send invoice" description="The e-mail address is invalid." @dismiss="hide('invoice')" /&gt;
+  &lt;OcToast variant="warning" title="License expires in 3 days" :dismissible="false" /&gt;
+  &lt;OcToast variant="info" title="A new version is available" :dismissible="false" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::toast.container static&gt;
+    &lt;x-oc::toast variant="success" title="Contact saved"&gt;Your changes are stored.&lt;/x-oc::toast&gt;
+    &lt;x-oc::toast variant="error" title="Could not send invoice"&gt;The e-mail address is invalid.&lt;/x-oc::toast&gt;
+    &lt;x-oc::toast variant="warning" title="License expires in 3 days" :dismissible="false" /&gt;
+    &lt;x-oc::toast variant="info" title="A new version is available" :dismissible="false" /&gt;
+&lt;/x-oc::toast.container&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcToast;
+
+class InvoiceActions extends Component
+{
+    use WithOcToast;
+
+    public function save(): void
+    {
+        $this-&gt;ocToast('success', 'Contact saved', 'Your changes are stored.');
+    }
+
+    public function send(): void
+    {
+        $this-&gt;ocToast('error', 'Could not send invoice', 'The e-mail address is invalid.', timeout: 0);
+    }
+
+    public function render()
+    {
+        return view('livewire.invoice-actions');
+    }
+}
+
+{{-- resources/views/livewire/invoice-actions.blade.php --}}
+{{-- once in the layout: &lt;x-oc::toast-stack /&gt; --}}
+&lt;div&gt;
+    &lt;button class="oc-btn" type="button" wire:click="save"&gt;Save contact&lt;/button&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="send"&gt;Send invoice&lt;/button&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Show on the page</h3>
@@ -66,6 +117,64 @@
     stack.append(toast);
   }
 </script>
+<oc-code lang="tsx">// once around the app: &lt;ToastProvider&gt;…&lt;/ToastProvider&gt;
+const { toast } = useToast();
+
+&lt;Button onClick={() =&gt; toast({ variant: "success", title: "Contact saved" })}&gt;Success&lt;/Button&gt;
+&lt;Button variant="destructive" onClick={() =&gt; toast({ variant: "error", title: "Could not send invoice" })}&gt;Error&lt;/Button&gt;
+&lt;Button variant="outline" onClick={() =&gt; toast({ variant: "warning", title: "License expires in 3 days" })}&gt;Warning&lt;/Button&gt;
+&lt;Button variant="outline" onClick={() =&gt; toast({ variant: "info", title: "A new version is available" })}&gt;Info&lt;/Button&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcToastContainer, useToast } from '@birdycom/omniaui-vue'
+
+const { push } = useToast()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton @click="push({ variant: 'success', title: 'Contact saved' })"&gt;Success&lt;/OcButton&gt;
+  &lt;OcButton variant="destructive" @click="push({ variant: 'error', title: 'Could not send invoice' })"&gt;Error&lt;/OcButton&gt;
+  &lt;OcButton variant="outline" @click="push({ variant: 'warning', title: 'License expires in 3 days' })"&gt;Warning&lt;/OcButton&gt;
+  &lt;OcButton variant="outline" @click="push({ variant: 'info', title: 'A new version is available' })"&gt;Info&lt;/OcButton&gt;
+  &lt;!-- once, near the app root --&gt;
+  &lt;OcToastContainer /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- In the layout: a flashed message becomes a toast that fades out by itself (CSS only) --}}
+{{-- return back()-&gt;with('toast', 'Contact saved'); --}}
+&lt;x-oc::toast.container&gt;
+    @if (session('toast'))
+        &lt;x-oc::toast variant="success" :title="session('toast')" auto /&gt;
+    @endif
+&lt;/x-oc::toast.container&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcToast;
+
+class ToastButtons extends Component
+{
+    use WithOcToast;
+
+    public function notify(string $type, string $title): void
+    {
+        $this-&gt;ocToast($type, $title);
+    }
+
+    public function render()
+    {
+        return view('livewire.toast-buttons');
+    }
+}
+
+{{-- resources/views/livewire/toast-buttons.blade.php --}}
+{{-- once in the layout: &lt;x-oc::toast-stack /&gt; --}}
+&lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem"&gt;
+    &lt;button class="oc-btn" type="button" wire:click="notify('success', 'Contact saved')"&gt;Success&lt;/button&gt;
+    &lt;button class="oc-btn oc-btn--destructive" type="button" wire:click="notify('error', 'Could not send invoice')"&gt;Error&lt;/button&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="notify('warning', 'License expires in 3 days')"&gt;Warning&lt;/button&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="notify('info', 'A new version is available')"&gt;Info&lt;/button&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

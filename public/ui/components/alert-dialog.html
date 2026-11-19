@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=2e795385ff"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -25,8 +25,9 @@
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -75,7 +76,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. Below: the markup that builds it, also available as the snippet <code>packages/ui/snippets/alert-dialog.html</code>.</p>
         </div>
         <div class="oc-section-content">
-          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Alert dialog</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-1-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-1-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-1-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
+          <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Alert dialog</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-1"><span>HTML</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-2"><span>React</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-3"><span>Vue</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-4"><span>Blade</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-1" value="code-5"><span>Livewire</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-1-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-1-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-1-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
 <button class="oc-btn oc-btn--destructive" type="button" command="show-modal" commandfor="oc-alert-dialog-demo">Delete contact</button>
 
 <dialog class="oc-modal" id="oc-alert-dialog-demo" closedby="closerequest" aria-labelledby="oc-alert-dialog-title" aria-describedby="oc-alert-dialog-text">
@@ -89,6 +90,10 @@
     </div>
   </div>
 </dialog>
+
+
+
+
           </div><div class="oc-demo__code" data-code="1"><div class="oc-code-block" data-lang="html"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
@@ -113,7 +118,103 @@
       <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">command</span>=<span class="hl-string">"close"</span> <span class="hl-attr">commandfor</span>=<span class="hl-string">"oc-alert-dialog-demo"</span><span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
     <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-<span class="hl-tag">&lt;/dialog</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+<span class="hl-tag">&lt;/dialog</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12</pre><pre class="code-preview"><code><span class="hl-tag">&lt;Button</span> <span class="hl-attr">variant</span>=<span class="hl-string">"destructive"</span> <span class="hl-attr">onClick</span>={() =&gt; <span class="hl-function">setOpen</span>(<span class="hl-keyword">true</span>)}<span class="hl-tag">&gt;</span>Delete contact<span class="hl-tag">&lt;/Button</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;AlertDialog</span>
+  <span class="hl-attr">open</span>={open}
+  <span class="hl-attr">onOpenChange</span>={setOpen}
+  <span class="hl-attr">type</span>=<span class="hl-string">"warning"</span>
+  <span class="hl-attr">title</span>=<span class="hl-string">"Delete this contact?"</span>
+  <span class="hl-attr">message</span>=<span class="hl-string">"All related documents stay, but the link to this contact is removed."</span>
+  <span class="hl-attr">footer</span>={<span class="hl-tag">&lt;&gt;</span>
+    <span class="hl-tag">&lt;ModalClose</span> <span class="hl-attr">variant</span>=<span class="hl-string">"outline"</span><span class="hl-tag">&gt;</span>Cancel<span class="hl-tag">&lt;/ModalClose</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;Button</span> <span class="hl-attr">variant</span>=<span class="hl-string">"destructive"</span> <span class="hl-attr">onClick</span>={() =&gt; { <span class="hl-function">remove</span>(); <span class="hl-function">setOpen</span>(<span class="hl-keyword">false</span>); }}<span class="hl-tag">&gt;</span>Delete<span class="hl-tag">&lt;/Button</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/&gt;</span>}
+<span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcButton</span> <span class="hl-attr">variant</span>=<span class="hl-string">"destructive"</span> <span class="hl-attr">@click</span>=<span class="hl-string">"open = true"</span><span class="hl-tag">&gt;</span>Delete contact<span class="hl-tag">&lt;/OcButton</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;OcAlertDialog</span> <span class="hl-attr">v-model:open</span>=<span class="hl-string">"open"</span> <span class="hl-attr">type</span>=<span class="hl-string">"warning"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Delete this contact?"</span>
+  <span class="hl-attr">message</span>=<span class="hl-string">"All related documents stay, but the link to this contact is removed."</span>
+  <span class="hl-attr">confirm-label</span>=<span class="hl-string">"Delete"</span> <span class="hl-attr">confirm-variant</span>=<span class="hl-string">"destructive"</span> <span class="hl-attr">@confirm</span>=<span class="hl-string">"remove"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">command</span>=<span class="hl-string">"show-modal"</span> <span class="hl-attr">commandfor</span>=<span class="hl-string">"delete-contact"</span><span class="hl-tag">&gt;</span>Delete contact<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;x-oc::alert-dialog</span> <span class="hl-attr">id</span>=<span class="hl-string">"delete-contact"</span> <span class="hl-attr">type</span>=<span class="hl-string">"warning"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Delete this contact?"</span> <span class="hl-attr">confirm</span>=<span class="hl-string">"Delete"</span><span class="hl-tag">&gt;</span>
+    All related documents stay, but the link to this contact is removed.
+<span class="hl-tag">&lt;/x-oc::alert-dialog</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="5"><div class="oc-code-block" data-lang="livewire"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+
+<span class="hl-keyword">namespace</span> App\Livewire;
+
+<span class="hl-keyword">use</span> Livewire\Component;
+<span class="hl-keyword">use</span> Omniacss\Livewire\WithOcModal;
+<span class="hl-keyword">use</span> Omniacss\Livewire\WithOcToast;
+
+<span class="hl-keyword">class</span> ContactActions <span class="hl-keyword">extends</span> Component
+{
+    <span class="hl-keyword">use</span> WithOcModal, WithOcToast;
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">delete</span>(): <span class="hl-keyword">void</span>
+    {
+        <span class="hl-comment">// Contact::findOrFail($this-&gt;contactId)-&gt;delete();</span>
+        <span class="hl-variable">$this</span>-&gt;<span class="hl-function">ocToast</span>(<span class="hl-string">'success'</span>, <span class="hl-string">'Contact deleted'</span>);
+    }
+
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.contact-actions'</span>);
+    }
+}
+
+<span class="hl-comment">{{-- resources/views/livewire/contact-actions.blade.php --}}</span>
+<span class="hl-tag">&lt;div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--destructive"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-prop">wire:click</span>=<span class="hl-string">"openOcModal('deleteContact')"</span><span class="hl-tag">&gt;</span>Delete contact<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+    <span class="hl-comment">{{-- action runs on confirm; both buttons close the dialog --}}</span>
+    <span class="hl-tag">&lt;x-oc::wire.alert-dialog</span> <span class="hl-attr">name</span>=<span class="hl-string">"deleteContact"</span> <span class="hl-attr">type</span>=<span class="hl-string">"warning"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Delete this contact?"</span> <span class="hl-attr">confirm</span>=<span class="hl-string">"Delete"</span> <span class="hl-attr">action</span>=<span class="hl-string">"delete"</span><span class="hl-tag">&gt;</span>
+        All related documents stay, but the link to this contact is removed.
+    <span class="hl-tag">&lt;/x-oc::wire.alert-dialog</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
         </div>
       </section>
 

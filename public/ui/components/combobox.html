@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=2e795385ff"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -25,8 +25,9 @@
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -221,24 +222,24 @@
 11
 12
 13
-14</pre><pre class="code-preview"><code>const methods = [
-  { value: "transfer", label: "Bank transfer", icon: "mdi:bank-outline" },
-  { value: "card", label: "Credit card", icon: "mdi:credit-card-outline" },
-  { value: "invoice", label: "Invoice", icon: "mdi:file-document-outline" },
-  { value: "cash", label: "Cash", icon: "mdi:cash" },
-  { value: "voucher", label: "Voucher (soon)", icon: "mdi:ticket-percent-outline", disabled: true },
-  { value: "other", label: "Other" },
+14</pre><pre class="code-preview"><code><span class="hl-keyword">const</span> methods = [
+  { value: <span class="hl-string">"transfer"</span>, label: <span class="hl-string">"Bank transfer"</span>, icon: <span class="hl-string">"mdi:bank-outline"</span> },
+  { value: <span class="hl-string">"card"</span>, label: <span class="hl-string">"Credit card"</span>, icon: <span class="hl-string">"mdi:credit-card-outline"</span> },
+  { value: <span class="hl-string">"invoice"</span>, label: <span class="hl-string">"Invoice"</span>, icon: <span class="hl-string">"mdi:file-document-outline"</span> },
+  { value: <span class="hl-string">"cash"</span>, label: <span class="hl-string">"Cash"</span>, icon: <span class="hl-string">"mdi:cash"</span> },
+  { value: <span class="hl-string">"voucher"</span>, label: <span class="hl-string">"Voucher (soon)"</span>, icon: <span class="hl-string">"mdi:ticket-percent-outline"</span>, disabled: <span class="hl-keyword">true</span> },
+  { value: <span class="hl-string">"other"</span>, label: <span class="hl-string">"Other"</span> },
 ];
-const [payment, setPayment] = useState("");
-const [country, setCountry] = useState("be");
+<span class="hl-keyword">const</span> [payment, setPayment] = <span class="hl-function">useState</span>(<span class="hl-string">""</span>);
+<span class="hl-keyword">const</span> [country, setCountry] = <span class="hl-function">useState</span>(<span class="hl-string">"be"</span>);
 
-&lt;Combobox options={methods} value={payment} onChange={setPayment} label="Payment method" placeholder="Payment method" icon="mdi:wallet-outline" name="payment" /&gt;
-&lt;Combobox options={[{ value: "be", label: "Belgium", icon: "flag:be-4x3" }, { value: "fr", label: "France", icon: "flag:fr-4x3" } /* … */]}
-  value={country} onChange={setCountry} label="Country" name="country" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+<span class="hl-tag">&lt;Combobox</span> <span class="hl-attr">options</span>={methods} <span class="hl-attr">value</span>={payment} <span class="hl-attr">onChange</span>={setPayment} <span class="hl-attr">label</span>=<span class="hl-string">"Payment method"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Payment method"</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:wallet-outline"</span> <span class="hl-attr">name</span>=<span class="hl-string">"payment"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;Combobox</span> <span class="hl-attr">options</span>={[{ value: <span class="hl-string">"be"</span>, label: <span class="hl-string">"Belgium"</span>, icon: <span class="hl-string">"flag:be-4x3"</span> }, { value: <span class="hl-string">"fr"</span>, label: <span class="hl-string">"France"</span>, icon: <span class="hl-string">"flag:fr-4x3"</span> } <span class="hl-comment">/* … */</span>]}
+  <span class="hl-attr">value</span>={country} <span class="hl-attr">onChange</span>={setCountry} <span class="hl-attr">label</span>=<span class="hl-string">"Country"</span> <span class="hl-attr">name</span>=<span class="hl-string">"country"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
-3</pre><pre class="code-preview"><code>&lt;OcCombobox v-model="payment" :options="methods" label="Payment method" placeholder="Payment method" icon="mdi:wallet-outline" name="payment" /&gt;
-&lt;OcCombobox v-model="country" :options="countries" label="Country" name="country" /&gt;
-&lt;!-- methods / countries: [{ value, label, icon?: 'mdi:bank-outline' | 'flag:be-4x3', disabled? }] --&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+3</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcCombobox</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"payment"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"methods"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Payment method"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Payment method"</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:wallet-outline"</span> <span class="hl-attr">name</span>=<span class="hl-string">"payment"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;OcCombobox</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"country"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"countries"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Country"</span> <span class="hl-attr">name</span>=<span class="hl-string">"country"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">&lt;!-- methods / countries: [{ value, label, icon?: 'mdi:bank-outline' | 'flag:be-4x3', disabled? }] --&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4
@@ -247,16 +248,16 @@ const [country, setCountry] = useState("be");
 7
 8
 9
-10</pre><pre class="code-preview"><code>&lt;x-oc::combobox name="payment" label="Payment method" placeholder="Payment method" icon="mdi:wallet-outline" :options="[
+10</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::combobox</span> <span class="hl-attr">name</span>=<span class="hl-string">"payment"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Payment method"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Payment method"</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:wallet-outline"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"[
     'transfer' =&gt; ['label' =&gt; 'Bank transfer', 'icon' =&gt; 'mdi:bank-outline'],
     'card' =&gt; ['label' =&gt; 'Credit card', 'icon' =&gt; 'mdi:credit-card-outline'],
     'invoice' =&gt; ['label' =&gt; 'Invoice', 'icon' =&gt; 'mdi:file-document-outline'],
     'cash' =&gt; ['label' =&gt; 'Cash', 'icon' =&gt; 'mdi:cash'],
     'voucher' =&gt; ['label' =&gt; 'Voucher (soon)', 'icon' =&gt; 'mdi:ticket-percent-outline', 'disabled' =&gt; true],
     'other' =&gt; 'Other',
-]" /&gt;
-&lt;x-oc::combobox name="country" label="Country" value="be" :options="['be' =&gt; ['label' =&gt; 'Belgium', 'icon' =&gt; 'flag:be-4x3'], 'fr' =&gt; ['label' =&gt; 'France', 'icon' =&gt; 'flag:fr-4x3']]" /&gt;
-&lt;script type="module" src="/js/oc-combobox.js"&gt;&lt;/script&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+]"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;x-oc::combobox</span> <span class="hl-attr">name</span>=<span class="hl-string">"country"</span> <span class="hl-attr">label</span>=<span class="hl-string">"Country"</span> <span class="hl-attr">value</span>=<span class="hl-string">"be"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"['be' =&gt; ['label' =&gt; 'Belgium', 'icon' =&gt; 'flag:be-4x3'], 'fr' =&gt; ['label' =&gt; 'France', 'icon' =&gt; 'flag:fr-4x3']]"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;script</span> <span class="hl-attr">type</span>=<span class="hl-string">"module"</span> <span class="hl-attr">src</span>=<span class="hl-string">"/js/oc-combobox.js"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/script</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">

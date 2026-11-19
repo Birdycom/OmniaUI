@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=2e795385ff"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -25,8 +25,9 @@
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -325,27 +326,27 @@
 8
 9
 10
-11</pre><pre class="code-preview"><code>const languages = [
-  { value: "en", label: "English", flag: "flag:gb-4x3", href: "/en/" },
-  { value: "nl", label: "Nederlands", flag: "flag:nl-4x3", href: "/nl/" },
-  { value: "fr", label: "Français", flag: "flag:fr-4x3", href: "/fr/" },
-  { value: "de", label: "Deutsch", flag: "flag:de-4x3", href: "/de/" },
-  { value: "es", label: "Español", flag: "flag:es-4x3", href: "/es/" },
+11</pre><pre class="code-preview"><code><span class="hl-keyword">const</span> languages = [
+  { value: <span class="hl-string">"en"</span>, label: <span class="hl-string">"English"</span>, flag: <span class="hl-string">"flag:gb-4x3"</span>, href: <span class="hl-string">"/en/"</span> },
+  { value: <span class="hl-string">"nl"</span>, label: <span class="hl-string">"Nederlands"</span>, flag: <span class="hl-string">"flag:nl-4x3"</span>, href: <span class="hl-string">"/nl/"</span> },
+  { value: <span class="hl-string">"fr"</span>, label: <span class="hl-string">"Français"</span>, flag: <span class="hl-string">"flag:fr-4x3"</span>, href: <span class="hl-string">"/fr/"</span> },
+  { value: <span class="hl-string">"de"</span>, label: <span class="hl-string">"Deutsch"</span>, flag: <span class="hl-string">"flag:de-4x3"</span>, href: <span class="hl-string">"/de/"</span> },
+  { value: <span class="hl-string">"es"</span>, label: <span class="hl-string">"Español"</span>, flag: <span class="hl-string">"flag:es-4x3"</span>, href: <span class="hl-string">"/es/"</span> },
 ];
 
-&lt;LanguageMenu options={languages} value="nl" ghost /&gt;
-// Without href every item is a button: onChange gets the value (switch the language in the app).
-&lt;LanguageMenu options={languages.map(({ href, ...l }) =&gt; l)} value={lang} onChange={setLang} ghost /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
-2</pre><pre class="code-preview"><code>&lt;OcLanguageMenu v-model="lang" :options="languages" ghost /&gt;
-&lt;!-- languages: [{ value: 'nl', label: 'Nederlands', flag: 'flag:nl-4x3', href?: '/nl/' }, …] --&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+<span class="hl-tag">&lt;LanguageMenu</span> <span class="hl-attr">options</span>={languages} <span class="hl-attr">value</span>=<span class="hl-string">"nl"</span> <span class="hl-attr">ghost</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">// Without href every item is a button: onChange gets the value (switch the language in the app).</span>
+&lt;LanguageMenu options={languages.<span class="hl-function">map</span>(({ href, ...l }) =&gt; l)} value={lang} onChange={setLang} ghost /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcLanguageMenu</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"lang"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"languages"</span> <span class="hl-attr">ghost</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">&lt;!-- languages: [{ value: 'nl', label: 'Nederlands', flag: 'flag:nl-4x3', href?: '/nl/' }, …] --&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4
-5</pre><pre class="code-preview"><code>&lt;x-oc::language-menu ghost :value="app()-&gt;getLocale()" :options="[
+5</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::language-menu</span> <span class="hl-attr">ghost</span> <span class="hl-attr">:value</span>=<span class="hl-string">"app()-&gt;getLocale()"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"[
     'en' =&gt; ['label' =&gt; 'English', 'flag' =&gt; 'flag:gb-4x3', 'href' =&gt; '/en/'],
     'nl' =&gt; ['label' =&gt; 'Nederlands', 'flag' =&gt; 'flag:nl-4x3', 'href' =&gt; '/nl/'],
     'fr' =&gt; ['label' =&gt; 'Français', 'flag' =&gt; 'flag:fr-4x3', 'href' =&gt; '/fr/'],
-]" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+]"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="menu-auto-flags">Flags from the language code <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">With <code>flags="auto"</code> you leave <code>flag</code> out of the options: the menu takes the flag from the language code. A region in the code wins (<code>nl-BE</code> shows Belgium, <code>en-US</code> the United States), otherwise the usual country of the language (<code>en</code> gb, <code>da</code> dk, <code>nl</code> nl). A <code>flag</code> on an option still wins, and <code>flagFor(code)</code> sets your own choice per language. The same rule is exported as <code>languageFlag(code)</code> (React, Vue) and <code>Webicons::languageFlag()</code> (Laravel). Flags other than the built-in seven you add with <code>npx omniaui webicons flag:es-4x3</code>.</p>
@@ -400,26 +401,26 @@
 7
 8
 9
-10</pre><pre class="code-preview"><code>const languages = [
-  { value: "en", label: "English" },              // gb
-  { value: "nl-BE", label: "Nederlands", code: "NL" }, // be
-  { value: "fr-BE", label: "Français", code: "FR" },   // be
-  { value: "de", label: "Deutsch" },              // de
+10</pre><pre class="code-preview"><code><span class="hl-keyword">const</span> languages = [
+  { value: <span class="hl-string">"en"</span>, label: <span class="hl-string">"English"</span> },              <span class="hl-comment">// gb</span>
+  { value: <span class="hl-string">"nl-BE"</span>, label: <span class="hl-string">"Nederlands"</span>, code: <span class="hl-string">"NL"</span> }, <span class="hl-comment">// be</span>
+  { value: <span class="hl-string">"fr-BE"</span>, label: <span class="hl-string">"Français"</span>, code: <span class="hl-string">"FR"</span> },   <span class="hl-comment">// be</span>
+  { value: <span class="hl-string">"de"</span>, label: <span class="hl-string">"Deutsch"</span> },              <span class="hl-comment">// de</span>
 ];
 
-&lt;LanguageMenu options={languages} value={lang} onChange={setLang} flags="auto" ghost /&gt;
-// Your own choice for one language:
-&lt;LanguageMenu options={languages} flags="auto" flagFor={(code) =&gt; (code === "en" ? "flag:us-4x3" : undefined)} /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
-2</pre><pre class="code-preview"><code>&lt;OcLanguageMenu v-model="lang" :options="languages" flags="auto" ghost /&gt;
-&lt;!-- languages: [{ value: 'nl-BE', label: 'Nederlands', code: 'NL' }, …] --&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+<span class="hl-tag">&lt;LanguageMenu</span> <span class="hl-attr">options</span>={languages} <span class="hl-attr">value</span>={lang} <span class="hl-attr">onChange</span>={setLang} <span class="hl-attr">flags</span>=<span class="hl-string">"auto"</span> <span class="hl-attr">ghost</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">// Your own choice for one language:</span>
+<span class="hl-tag">&lt;LanguageMenu</span> <span class="hl-attr">options</span>={languages} <span class="hl-attr">flags</span>=<span class="hl-string">"auto"</span> <span class="hl-attr">flagFor</span>={(code) =&gt; (code === <span class="hl-string">"en"</span> ? <span class="hl-string">"flag:us-4x3"</span> : <span class="hl-keyword">undefined</span>)} <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcLanguageMenu</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"lang"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"languages"</span> <span class="hl-attr">flags</span>=<span class="hl-string">"auto"</span> <span class="hl-attr">ghost</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-comment">&lt;!-- languages: [{ value: 'nl-BE', label: 'Nederlands', code: 'NL' }, …] --&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4
-5</pre><pre class="code-preview"><code>&lt;x-oc::language-menu flags="auto" ghost :value="app()-&gt;getLocale()" :options="[
+5</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::language-menu</span> <span class="hl-attr">flags</span>=<span class="hl-string">"auto"</span> <span class="hl-attr">ghost</span> <span class="hl-attr">:value</span>=<span class="hl-string">"app()-&gt;getLocale()"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"[
     'en' =&gt; ['label' =&gt; 'English'],
     'nl-BE' =&gt; ['label' =&gt; 'Nederlands', 'code' =&gt; 'NL'],
     'fr-BE' =&gt; ['label' =&gt; 'Français', 'code' =&gt; 'FR'],
-]" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+]"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
           <h3 class="oc-section-content__title mt-2" id="menu-icon">Icon only, for a compact header <span class="oc-badge-version">v0.16.0</span></h3>
           <p class="oc-section-content__desc"><code>--icon</code> makes the trigger a round button with only the current flag, or the globe when you do not use flags. The name goes in <code>aria-label</code> and in a tooltip under the button (<code>oc-tooltip oc-tooltip--bottom</code>), which steps aside while the menu is open. Hover or <kbd>Tab</kbd> to a button to see the tooltip, press <kbd>Enter</kbd> to open the list.</p>
@@ -496,12 +497,12 @@
     <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
   <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="2"><div class="oc-code-block" data-lang="tsx"><pre class="oc-code-block__gutter" aria-hidden="true">1
-2</pre><pre class="code-preview"><code>&lt;LanguageMenu options={languages} value="fr" compact ghost /&gt;
-&lt;LanguageMenu options={[{ value: "en", label: "English" }, { value: "nl", label: "Nederlands" }, { value: "fr", label: "Français" }]} value={lang} onChange={setLang} compact label="Language" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
-2</pre><pre class="code-preview"><code>&lt;OcLanguageMenu v-model="lang" :options="languages" compact ghost /&gt;
-&lt;OcLanguageMenu v-model="lang" :options="[{ value: 'en', label: 'English' }, { value: 'nl', label: 'Nederlands' }]" compact /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
-2</pre><pre class="code-preview"><code>&lt;x-oc::language-menu compact ghost value="fr" :options="['fr' =&gt; ['label' =&gt; 'Français', 'flag' =&gt; 'flag:fr-4x3', 'href' =&gt; '/fr/'], 'en' =&gt; ['label' =&gt; 'English', 'flag' =&gt; 'flag:gb-4x3', 'href' =&gt; '/en/']]" /&gt;
-&lt;x-oc::language-menu compact value="en" :options="['en' =&gt; ['label' =&gt; 'English', 'href' =&gt; '/en/'], 'nl' =&gt; ['label' =&gt; 'Nederlands', 'href' =&gt; '/nl/']]" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+2</pre><pre class="code-preview"><code><span class="hl-tag">&lt;LanguageMenu</span> <span class="hl-attr">options</span>={languages} <span class="hl-attr">value</span>=<span class="hl-string">"fr"</span> <span class="hl-attr">compact</span> <span class="hl-attr">ghost</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;LanguageMenu</span> <span class="hl-attr">options</span>={[{ value: <span class="hl-string">"en"</span>, label: <span class="hl-string">"English"</span> }, { value: <span class="hl-string">"nl"</span>, label: <span class="hl-string">"Nederlands"</span> }, { value: <span class="hl-string">"fr"</span>, label: <span class="hl-string">"Français"</span> }]} <span class="hl-attr">value</span>={lang} <span class="hl-attr">onChange</span>={setLang} <span class="hl-attr">compact</span> <span class="hl-attr">label</span>=<span class="hl-string">"Language"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcLanguageMenu</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"lang"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"languages"</span> <span class="hl-attr">compact</span> <span class="hl-attr">ghost</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;OcLanguageMenu</span> <span class="hl-attr">v-model</span>=<span class="hl-string">"lang"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"[{ value: 'en', label: 'English' }, { value: 'nl', label: 'Nederlands' }]"</span> <span class="hl-attr">compact</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+2</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::language-menu</span> <span class="hl-attr">compact</span> <span class="hl-attr">ghost</span> <span class="hl-attr">value</span>=<span class="hl-string">"fr"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"['fr' =&gt; ['label' =&gt; 'Français', 'flag' =&gt; 'flag:fr-4x3', 'href' =&gt; '/fr/'], 'en' =&gt; ['label' =&gt; 'English', 'flag' =&gt; 'flag:gb-4x3', 'href' =&gt; '/en/']]"</span> <span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;x-oc::language-menu</span> <span class="hl-attr">compact</span> <span class="hl-attr">value</span>=<span class="hl-string">"en"</span> <span class="hl-attr">:options</span>=<span class="hl-string">"['en' =&gt; ['label' =&gt; 'English', 'href' =&gt; '/en/'], 'nl' =&gt; ['label' =&gt; 'Nederlands', 'href' =&gt; '/nl/']]"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
         </div>
       </section>
 

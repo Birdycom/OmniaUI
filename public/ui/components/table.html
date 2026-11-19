@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=2e795385ff"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=424f3a8516">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -25,8 +25,9 @@
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -226,31 +227,31 @@
 8
 9
 10
-11</pre><pre class="code-preview"><code>&lt;Table layout="auto"&gt;
-  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th data-hide-below="md"&gt;Date&lt;/th&gt;&lt;th data-hide-below="sm" data-numeric&gt;Players&lt;/th&gt;&lt;th /&gt;&lt;/tr&gt;&lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Route 1&lt;/td&gt;&lt;td data-hide-below="md"&gt;8 November 2026&lt;/td&gt;&lt;td data-hide-below="sm" data-numeric&gt;42&lt;/td&gt;
-      &lt;TableActions className="oc-table-actions--icons"&gt;
-        &lt;TableActionIcon label="Edit" tone="primary" showLabel&gt;&lt;Webicon name="mdi:pencil-outline" /&gt;&lt;/TableActionIcon&gt;
-      &lt;/TableActions&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/Table&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
+11</pre><pre class="code-preview"><code><span class="hl-tag">&lt;Table</span> <span class="hl-attr">layout</span>=<span class="hl-string">"auto"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;thead</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;tr</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;th</span><span class="hl-tag">&gt;</span>Name<span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;th</span> <span class="hl-attr">data-hide-below</span>=<span class="hl-string">"md"</span><span class="hl-tag">&gt;</span>Date<span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;th</span> <span class="hl-attr">data-hide-below</span>=<span class="hl-string">"sm"</span> <span class="hl-attr">data-numeric</span><span class="hl-tag">&gt;</span>Players<span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;th</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/thead</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;tbody</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;tr</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;td</span><span class="hl-tag">&gt;</span>Route 1<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;td</span> <span class="hl-attr">data-hide-below</span>=<span class="hl-string">"md"</span><span class="hl-tag">&gt;</span>8 November 2026<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;td</span> <span class="hl-attr">data-hide-below</span>=<span class="hl-string">"sm"</span> <span class="hl-attr">data-numeric</span><span class="hl-tag">&gt;</span>42<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;TableActions</span> <span class="hl-attr">className</span>=<span class="hl-string">"oc-table-actions--icons"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;TableActionIcon</span> <span class="hl-attr">label</span>=<span class="hl-string">"Edit"</span> <span class="hl-attr">tone</span>=<span class="hl-string">"primary"</span> <span class="hl-attr">showLabel</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;Webicon</span> <span class="hl-attr">name</span>=<span class="hl-string">"mdi:pencil-outline"</span> <span class="hl-tag">/&gt;</span><span class="hl-tag">&lt;/TableActionIcon</span><span class="hl-tag">&gt;</span>
+      <span class="hl-tag">&lt;/TableActions</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;/tbody</span><span class="hl-tag">&gt;</span>
+<span class="hl-tag">&lt;/Table</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="3"><div class="oc-code-block" data-lang="vue"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
 4
-5</pre><pre class="code-preview"><code>&lt;OcTable layout="auto" :columns="[
+5</pre><pre class="code-preview"><code><span class="hl-tag">&lt;OcTable</span> <span class="hl-attr">layout</span>=<span class="hl-string">"auto"</span> <span class="hl-attr">:columns</span>=<span class="hl-string">"[
   { key: 'name', label: 'Name' },
   { key: 'date', label: 'Date', hideBelow: 'md' },
   { key: 'players', label: 'Players', numeric: true, hideBelow: 'sm' },
-]" :rows="games" /&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
+]"</span> <span class="hl-attr">:rows</span>=<span class="hl-string">"games"</span> <span class="hl-tag">/&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div><div class="oc-demo__code" data-code="4"><div class="oc-code-block" data-lang="blade"><pre class="oc-code-block__gutter" aria-hidden="true">1
 2
 3
-4</pre><pre class="code-preview"><code>&lt;x-oc::table layout="auto"&gt;
-    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th data-hide-below="md"&gt;Date&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+4</pre><pre class="code-preview"><code><span class="hl-tag">&lt;x-oc::table</span> <span class="hl-attr">layout</span>=<span class="hl-string">"auto"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;thead</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;tr</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;th</span><span class="hl-tag">&gt;</span>Name<span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;th</span> <span class="hl-attr">data-hide-below</span>=<span class="hl-string">"md"</span><span class="hl-tag">&gt;</span>Date<span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;th</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/thead</span><span class="hl-tag">&gt;</span>
     …
-&lt;/x-oc::table&gt;</code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
+<span class="hl-tag">&lt;/x-oc::table</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
         <h3 id="expandable-table" class="oc-section-content__title mt-2">Expandable table (CSS only)</h3><p class="oc-section-content__desc">Show the first rows and hide the rest behind a toggle: rows with <code>.oc-expandable-table__row-more</code> stay hidden until the checkbox inside the toggle label is checked (<code>:has()</code>). This is the table used for every class reference in these docs.</p>
           <div class="oc-demo oc-demo--v2"><div class="oc-demo__bar"><h4 class="oc-demo__title">Expandable table</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show"><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="preview" checked><span>Preview</span></label><label class="oc-demo__tab"><input type="radio" name="oc-demo-4" value="code-1"><span>HTML</span></label></div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width"><label class="oc-demo__width oc-tooltip" data-tooltip="Full width"><input type="radio" name="oc-demo-4-width" value="full" aria-label="Full width" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Tablet (48rem)"><input type="radio" name="oc-demo-4-width" value="tablet" aria-label="Tablet (48rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></svg></label><label class="oc-demo__width oc-tooltip" data-tooltip="Phone (24rem)"><input type="radio" name="oc-demo-4-width" value="phone" aria-label="Phone (24rem)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" /></svg></label></div></div><div class="oc-demo__preview oc-theme-scope">
             <div class="oc-expandable-table w-full">

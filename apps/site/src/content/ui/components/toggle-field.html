@@ -30,6 +30,41 @@
     <span class="oc-switch"><input type="checkbox" role="switch" name="weekly" aria-describedby="oc-tf-2"><span class="oc-switch-track"></span></span>
   </label>
 </div>
+<oc-code lang="tsx">&lt;ToggleField label="Email notifications" description="Get a message when a receipt is processed." name="notify_email" checked={email} onChange={(e) =&gt; setEmail(e.target.checked)} /&gt;
+&lt;ToggleField label="Weekly summary" description="A short overview every Monday." name="weekly" checked={weekly} onChange={(e) =&gt; setWeekly(e.target.checked)} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcToggleField v-model="email" label="Email notifications" description="Get a message when a receipt is processed." /&gt;
+&lt;OcToggleField v-model="weekly" label="Weekly summary" description="A short overview every Monday." /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::toggle-field name="notify_email" value="1" label="Email notifications" description="Get a message when a receipt is processed." checked /&gt;
+&lt;x-oc::toggle-field name="weekly" value="1" label="Weekly summary" description="A short overview every Monday." /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class NotificationSettings extends Component
+{
+    public bool $notifyEmail = true;
+
+    public bool $weekly = false;
+
+    public function updated(string $property): void
+    {
+        // store the preference right away
+    }
+
+    public function render()
+    {
+        return view('livewire.notification-settings');
+    }
+}
+
+{{-- resources/views/livewire/notification-settings.blade.php --}}
+&lt;div&gt;
+    {{-- toggle-field passes wire:model to its checkbox --}}
+    &lt;x-oc::toggle-field wire:model.live="notifyEmail" label="Email notifications" description="Get a message when a receipt is processed." /&gt;
+    &lt;x-oc::toggle-field wire:model.live="weekly" label="Weekly summary" description="A short overview every Monday." /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Card, reverse and disabled</h3>
@@ -94,6 +129,39 @@
     &lt;/span&gt;
     &lt;span class="oc-switch"&gt;&lt;input type="checkbox" role="switch" checked disabled&gt;&lt;span class="oc-switch-track"&gt;&lt;/span&gt;&lt;/span&gt;
   &lt;/label&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;ToggleField card label="Auto backup" description="Copy new files to the cloud every night." defaultChecked /&gt;
+&lt;ToggleField card reverse label="Remember me" description="Stay signed in on this device for 30 days." /&gt;
+&lt;ToggleField card label="Two-factor login" description="Managed by your administrator." defaultChecked disabled /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcToggleField v-model="backup" card label="Auto backup" description="Copy new files to the cloud every night." /&gt;
+&lt;OcToggleField v-model="remember" card reverse label="Remember me" description="Stay signed in on this device for 30 days." /&gt;
+&lt;OcToggleField :model-value="true" card label="Two-factor login" description="Managed by your administrator." disabled /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::toggle-field card name="backup" value="1" label="Auto backup" description="Copy new files to the cloud every night." checked /&gt;
+&lt;x-oc::toggle-field card reverse name="remember" value="1" label="Remember me" description="Stay signed in on this device for 30 days." /&gt;
+&lt;x-oc::toggle-field card label="Two-factor login" description="Managed by your administrator." checked disabled /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SecuritySettings extends Component
+{
+    public bool $backup = true;
+
+    public bool $remember = false;
+
+    public function render()
+    {
+        return view('livewire.security-settings');
+    }
+}
+
+{{-- resources/views/livewire/security-settings.blade.php --}}
+&lt;div style="display:grid;gap:0.75rem"&gt;
+    &lt;x-oc::toggle-field card wire:model.live="backup" label="Auto backup" description="Copy new files to the cloud every night." /&gt;
+    &lt;x-oc::toggle-field card reverse wire:model.live="remember" label="Remember me" description="Stay signed in on this device for 30 days." /&gt;
+    &lt;x-oc::toggle-field card label="Two-factor login" description="Managed by your administrator." checked disabled /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

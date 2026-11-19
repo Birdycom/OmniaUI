@@ -135,6 +135,89 @@
   </div>
 </div>
 
+<oc-code lang="tsx">const columns: DataTableColumn[] = [
+  { key: "sku", header: "Article ID", defaultSort: "ascending" },
+  { key: "name", header: "Name" },
+  { key: "price", header: "Price", numeric: true },
+  { key: "supplier", header: "Supplier" },
+  { key: "status", header: "Status" },
+];
+const rows: DataTableRow[] = articles.map((a) =&gt; ({
+  key: a.id,
+  status: a.status, // "active" | "deleted" | "archived"
+  cells: { sku: a.sku, name: a.name, price: a.priceLabel, supplier: a.supplier, status: &lt;Badge variant="success"&gt;Active&lt;/Badge&gt; },
+  values: { price: String(a.price), status: "Active" },
+}));
+
+&lt;DataTable
+  title="Articles"
+  columns={columns}
+  rows={rows}
+  pageSize={3}
+  live
+  archive
+  searchPlaceholder="Search articles..."
+  actions={&lt;Button size="sm"&gt;New article&lt;/Button&gt;}
+  rowActions={(row) =&gt; &lt;Button variant="soft-primary" icon size="sm" aria-label="Edit" onClick={() =&gt; edit(row.key)}&gt;&lt;Webicon name="mdi:pencil-outline" /&gt;&lt;/Button&gt;}
+  onBulk={(action, keys) =&gt; runBulk(action, keys)}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcDataTable title="Articles" :columns="columns" :rows="rows" :page-size="3" live archive search-placeholder="Search articles..."&gt;
+  &lt;template #page-actions&gt;&lt;OcButton size="sm"&gt;New article&lt;/OcButton&gt;&lt;/template&gt;
+  &lt;template #cell-status="{ row }"&gt;&lt;OcBadge variant="success"&gt;{{ row.cells.status }}&lt;/OcBadge&gt;&lt;/template&gt;
+  &lt;template #actions="{ row }"&gt;
+    &lt;OcButton variant="soft-primary" icon size="sm" aria-label="Edit" @click="edit(row.key)"&gt;&lt;OcWebicon name="mdi:pencil-outline" /&gt;&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcDataTable&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::data-table title="Articles" :columns="$columns" :rows="$rows" :page-size="3" live archive search-placeholder="Search articles..."&gt;
+    &lt;x-slot:pageActions&gt;&lt;x-oc::button size="sm"&gt;New article&lt;/x-oc::button&gt;&lt;/x-slot:pageActions&gt;
+&lt;/x-oc::data-table&gt;
+{{-- $columns = [['key' =&gt; 'sku', 'header' =&gt; 'Article ID', 'defaultSort' =&gt; 'ascending'], ['key' =&gt; 'price', 'header' =&gt; 'Price', 'numeric' =&gt; true], …]
+     $rows = [['key' =&gt; 'hinge', 'status' =&gt; 'active', 'cells' =&gt; ['sku' =&gt; 'SET-HINGE-1105', 'name' =&gt; 'Hinge 1105', 'price' =&gt; '5,15', …], 'values' =&gt; ['price' =&gt; '5.15']], …] --}}</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
+use Omniacss\Livewire\DataTable;
+
+// Server-side version: search, sorting and paging run in the database query.
+class ArticlesTable extends DataTable
+{
+    protected function title(): ?string
+    {
+        return 'Articles';
+    }
+
+    protected function searchPlaceholder(): string
+    {
+        return 'Search articles...';
+    }
+
+    protected function columns(): array
+    {
+        return [
+            'sku' =&gt; 'Article ID',
+            'name' =&gt; 'Name',
+            'price' =&gt; ['label' =&gt; 'Price', 'numeric' =&gt; true, 'searchable' =&gt; false],
+            'supplier' =&gt; 'Supplier',
+            'status' =&gt; ['label' =&gt; 'Status', 'sortable' =&gt; false],
+        ];
+    }
+
+    protected function query(): Builder
+    {
+        return DB::table('articles');
+    }
+
+    protected function actions(mixed $row): array
+    {
+        return [['label' =&gt; 'Edit', 'icon' =&gt; 'mdi:pencil-outline', 'href' =&gt; url('/articles/'.$row-&gt;id.'/edit')]];
+    }
+}
+
+{{-- resources/views/articles/index.blade.php --}}
+&lt;livewire:articles-table /&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="bordered">Version 2: bordered <span class="oc-badge-version">v0.12.6</span></h3><p class="oc-section-content__desc">A tighter look with lines between the columns: add <code>.oc-data-table--bordered</code> for a tinted header row, a line between the columns and the sort chevrons always visible; the filter select gets its icon in a zone of its own. Rows are striped in both versions (<code>.oc-data-table--plain</code> turns that off). Same script, same markup otherwise: choose the version per list. Nine columns do not fit next to each other here: drag or scroll the table sideways and the Actions column stays on the right.</p>
@@ -278,6 +361,21 @@
     <nav class="oc-data-table-pager" data-oc-pager="" aria-label="Pagination"></nav>
   </div>
 </div>
+<oc-code lang="tsx">&lt;DataTable
+  variant="bordered"
+  columns={columns}
+  rows={rows}
+  pageSize={10}
+  live
+  searchPlaceholder="Search by name, article ID or description…"
+  rowActions={(row) =&gt; &lt;Button variant="soft-primary" icon size="sm" aria-label="Edit" onClick={() =&gt; edit(row.key)}&gt;&lt;Webicon name="mdi:pencil-outline" /&gt;&lt;/Button&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcDataTable variant="bordered" :columns="columns" :rows="rows" :page-size="10" live search-placeholder="Search by name, article ID or description…"&gt;
+  &lt;template #actions="{ row }"&gt;
+    &lt;OcButton variant="soft-primary" icon size="sm" aria-label="Edit" @click="edit(row.key)"&gt;&lt;OcWebicon name="mdi:pencil-outline" /&gt;&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcDataTable&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::data-table variant="bordered" :columns="$columns" :rows="$rows" :page-size="10" live search-placeholder="Search by name, article ID or description…" /&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-pro">Pro: column widths and row drag <span class="oc-badge-version">v0.14.2</span></h3>
           <p class="oc-section-content__desc">With <a href="../pro.html">OmniaUI Pro</a> (<code>data-table-pro.js</code> next to the free script): drag the edge of a column header to set its width, remembered per table id, and <b>Reset column widths</b> clears it; drag a row by its grip to change the order (the table fires <code>oc-datatable-reorder</code> with the new order of the keys). The column chooser in the actions header is the Pro <a href="column-menu.html">Column menu</a>.</p>
