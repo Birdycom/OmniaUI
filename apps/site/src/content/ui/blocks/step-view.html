@@ -109,12 +109,17 @@
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
 import { ref } from 'vue'
 import { OcBlockStepView } from '@birdycom/omniaui-vue'
+
 const answer = ref&lt;number&gt;()
+const time = ref('0:56')
+const left = ref(62)
+const emit = defineEmits&lt;{ send: [answer: number | undefined] }&gt;()
 &lt;/script&gt;
 
 &lt;template&gt;
   &lt;OcBlockStepView v-model:answer="answer" title="Town hall" place="Market street 1" task="Find the year carved above the door." :number="3"
-    :question="{ kicker: 'Question · 20 points', text: 'In which year was the town hall built?', options: ['1890', '1910', '1930', '1950'] }" @send="send"&gt;
+    :question="{ kicker: 'Question · 20 points', text: 'In which year was the town hall built?', options: ['1890', '1910', '1930', '1950'] }"
+    @send="emit('send', answer)"&gt;
     &lt;template #badges&gt;&lt;span class="oc-badge oc-badge--info"&gt;Step 3&lt;/span&gt;&lt;/template&gt;
     &lt;p&gt;The town hall stands on the north side of the square.&lt;/p&gt;
     &lt;template #blocks&gt;
@@ -138,50 +143,66 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class StepView extends Component
+class StepScreen extends Component
 {
+    public string $title = 'Town hall';
+
+    /** @var list&lt;string&gt; */
+    public array $options = ['1890', '1910', '1930', '1950'];
+
+    public int $correct = 1;
+
+    public ?int $picked = null;
+
+    public bool $answered = false;
+
+    public function send(): void
+    {
+        if ($this-&gt;picked !== null &amp;&amp; ! $this-&gt;answered) {
+            $this-&gt;answered = true;
+        }
+    }
+
     public function render()
     {
-        return view('livewire.step-view');
+        return view('livewire.step-screen');
     }
 }
 
-{{-- resources/views/livewire/step-view.blade.php --}}
-&lt;article class="oc-block-step-view" aria-labelledby="oc-stepview-title"&gt;
-  &lt;div class="oc-block-step-view-top"&gt;
-    &lt;button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"&gt;&lt;iconify-icon icon="mdi:arrow-left" aria-hidden="true"&gt;&lt;/iconify-icon&gt; All steps&lt;/button&gt;
-    &lt;span class="oc-badge oc-badge--outline"&gt;12 m away&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;figure class="oc-block-step-view-picture"&gt;
-    &lt;svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Town hall seen from the square"&gt;&lt;rect width="320" height="180" class="oc-block-art-sky"/&gt;&lt;circle cx="262" cy="42" r="18" class="oc-block-art-sun"/&gt;&lt;rect x="92" y="62" width="136" height="96" class="oc-block-art-wall"/&gt;&lt;path d="M84 66 160 24l76 42z" class="oc-block-art-roof"/&gt;&lt;rect x="150" y="34" width="20" height="30" class="oc-block-art-roof"/&gt;&lt;rect x="110" y="84" width="18" height="24" class="oc-block-art-sky"/&gt;&lt;rect x="151" y="84" width="18" height="24" class="oc-block-art-sky"/&gt;&lt;rect x="192" y="84" width="18" height="24" class="oc-block-art-sky"/&gt;&lt;rect x="146" y="120" width="28" height="38" class="oc-block-art-roof"/&gt;&lt;rect y="158" width="320" height="22" class="oc-block-art-land"/&gt;&lt;/svg&gt;
-    &lt;figcaption class="oc-block-step-view-badges"&gt;&lt;span class="oc-badge oc-badge--info"&gt;Step 3&lt;/span&gt;&lt;span class="oc-badge oc-badge--outline"&gt;20 points&lt;/span&gt;&lt;/figcaption&gt;
-  &lt;/figure&gt;
-  &lt;h2 class="oc-block-step-view-title" id="oc-stepview-title"&gt;Town hall&lt;/h2&gt;
-  &lt;p class="oc-block-step-view-place"&gt;&lt;iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Market street 1&lt;/p&gt;
-  &lt;div class="oc-block-step-view-text"&gt;&lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;&lt;/div&gt;
-  &lt;p class="oc-block-step-view-task"&gt;&lt;iconify-icon icon="mdi:target" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Find the year carved above the door.&lt;/p&gt;
-  &lt;div class="oc-block-step-view-blocks"&gt;
-    &lt;details class="oc-collapsible oc-collapsible--dense"&gt;
-      &lt;summary&gt;&lt;span class="oc-collapsible-title"&gt;Tip&lt;/span&gt;&lt;/summary&gt;
-      &lt;div class="oc-collapsible-content"&gt;The year is written in Roman numerals.&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;div class="oc-alert oc-alert--warning" role="note"&gt;&lt;p class="oc-alert-description"&gt;Mind the traffic when you cross to the door.&lt;/p&gt;&lt;/div&gt;
-    &lt;a class="oc-btn oc-btn--outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;iconify-icon icon="mdi:open-in-new" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/a&gt;
-    &lt;div class="oc-block-step-view-countdown" role="timer" aria-label="Time left" style="--oc-step-view-left: 62%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:56&lt;/b&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-step-view-question"&gt;
-    &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
-    &lt;p class="oc-block-step-view-ask" id="oc-stepview-ask"&gt;In which year was the town hall built?&lt;/p&gt;
-    &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-ask"&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer" value="a"&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer" value="b"&gt;&lt;span&gt;1910&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer" value="c"&gt;&lt;span&gt;1930&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer" value="d"&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
-    &lt;/fieldset&gt;
-    &lt;button class="oc-btn oc-btn--lg oc-block-step-view-send" type="button"&gt;Send answer&lt;/button&gt;
-    &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/article&gt;</oc-code>
+{{-- resources/views/livewire/step-screen.blade.php --}}
+&lt;div&gt;
+    {{-- the block keeps its own top row, picture, place and task; title, text, blocks and question come from here --}}
+    &lt;x-oc::block.step-view&gt;
+        &lt;x-slot:title&gt;{{ $title }}&lt;/x-slot:title&gt;
+        &lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;
+        &lt;x-slot:blocks&gt;
+            &lt;x-oc::collapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/x-oc::collapsible&gt;
+            &lt;x-oc::alert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/x-oc::alert&gt;
+            &lt;x-oc::button variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;x-oc::webicon name="mdi:open-in-new" /&gt;&lt;/x-oc::button&gt;
+            &lt;div class="oc-block-step-view-countdown" role="timer" aria-label="Time left" style="--oc-step-view-left: 62%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:56&lt;/b&gt;&lt;/div&gt;
+        &lt;/x-slot:blocks&gt;
+        &lt;x-slot:question&gt;
+            &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
+            &lt;p class="oc-block-step-view-ask" id="step-ask"&gt;In which year was the town hall built?&lt;/p&gt;
+            &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="step-ask"&gt;
+                @foreach ($options as $i =&gt; $option)
+                    &lt;label class="oc-radio-item oc-radio-item--card" wire:key="option-{{ $i }}" @if ($answered &amp;&amp; $i === $correct) data-result="correct" @elseif ($answered &amp;&amp; $i === $picked) data-result="wrong" @endif&gt;
+                        &lt;input class="oc-radio" type="radio" name="answer" value="{{ $i }}" wire:model="picked" @disabled($answered)&gt;&lt;span&gt;{{ $option }}&lt;/span&gt;
+                    &lt;/label&gt;
+                @endforeach
+            &lt;/fieldset&gt;
+            @if ($answered)
+                &lt;x-oc::alert :variant="$picked === $correct ? 'success' : 'danger'" :icon="$picked === $correct ? 'mdi:check-circle-outline' : 'mdi:close-circle-outline'"
+                    :title="$picked === $correct ? 'Right: it was '.$options[$correct] : 'Not quite: it was '.$options[$correct]"&gt;
+                    {{ $picked === $correct ? '20 points' : '0 points' }} for this step.
+                &lt;/x-oc::alert&gt;
+            @else
+                &lt;x-oc::button size="lg" class="oc-block-step-view-send" wire:click="send" :disabled="$picked === null"&gt;Send answer&lt;/x-oc::button&gt;
+                &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
+            @endif
+        &lt;/x-slot:question&gt;
+    &lt;/x-oc::block.step-view&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="demo-2">No picture, little time left <span class="oc-badge-version">v0.16.0</span></h3>
@@ -255,115 +276,84 @@ class StepView extends Component
     &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
   &lt;/div&gt;
 &lt;/article&gt;</oc-code>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">const [answer, setAnswer] = useState&lt;number | undefined&gt;(1);
 
-export function Example() {
-  return (
-    &lt;article className="oc-block-step-view" aria-labelledby="oc-stepview-title-empty"&gt;
-      &lt;div className="oc-block-step-view-top"&gt;
-        &lt;button className="oc-btn oc-btn--ghost oc-btn--sm" type="button"&gt;&lt;iconify-icon icon="mdi:arrow-left" aria-hidden="true" /&gt; All steps&lt;/button&gt;
-        &lt;span className="oc-badge oc-badge--outline"&gt;12 m away&lt;/span&gt;
-      &lt;/div&gt;
-      &lt;figure className="oc-block-step-view-picture oc-block-step-view-picture--empty" data-number="3"&gt;
-        &lt;figcaption className="oc-block-step-view-badges"&gt;&lt;span className="oc-badge oc-badge--info"&gt;Step 3&lt;/span&gt;&lt;span className="oc-badge oc-badge--outline"&gt;20 points&lt;/span&gt;&lt;/figcaption&gt;
-      &lt;/figure&gt;
-      &lt;h2 className="oc-block-step-view-title" id="oc-stepview-title-empty"&gt;Town hall&lt;/h2&gt;
-      &lt;p className="oc-block-step-view-place"&gt;&lt;iconify-icon icon="mdi:map-marker-outline" aria-hidden="true" /&gt; Market street 1&lt;/p&gt;
-      &lt;div className="oc-block-step-view-text"&gt;&lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;&lt;/div&gt;
-      &lt;p className="oc-block-step-view-task"&gt;&lt;iconify-icon icon="mdi:target" aria-hidden="true" /&gt; Find the year carved above the door.&lt;/p&gt;
-      &lt;div className="oc-block-step-view-blocks"&gt;
-        &lt;details className="oc-collapsible oc-collapsible--dense"&gt;
-          &lt;summary&gt;&lt;span className="oc-collapsible-title"&gt;Tip&lt;/span&gt;&lt;/summary&gt;
-          &lt;div className="oc-collapsible-content"&gt;The year is written in Roman numerals.&lt;/div&gt;
-        &lt;/details&gt;
-        &lt;div className="oc-alert oc-alert--warning" role="note"&gt;&lt;p className="oc-alert-description"&gt;Mind the traffic when you cross to the door.&lt;/p&gt;&lt;/div&gt;
-        &lt;a className="oc-btn oc-btn--outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;iconify-icon icon="mdi:open-in-new" aria-hidden="true" /&gt;&lt;/a&gt;
-        &lt;div className="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style={{ "--oc-step-view-left": "9%" } as CSSProperties}&gt;&lt;span className="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b className="oc-block-step-view-countdown-time"&gt;0:08&lt;/b&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-block-step-view-question"&gt;
-        &lt;span className="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
-        &lt;p className="oc-block-step-view-ask" id="oc-stepview-ask-empty"&gt;In which year was the town hall built?&lt;/p&gt;
-        &lt;fieldset className="oc-block-step-view-answers" aria-labelledby="oc-stepview-ask-empty"&gt;
-          &lt;label className="oc-radio-item oc-radio-item--card"&gt;&lt;input className="oc-radio" type="radio" name="oc-stepview-answer-empty" value="a" /&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
-          &lt;label className="oc-radio-item oc-radio-item--card"&gt;&lt;input className="oc-radio" type="radio" name="oc-stepview-answer-empty" value="b" defaultChecked /&gt;&lt;span&gt;1910&lt;/span&gt;&lt;/label&gt;
-          &lt;label className="oc-radio-item oc-radio-item--card"&gt;&lt;input className="oc-radio" type="radio" name="oc-stepview-answer-empty" value="c" /&gt;&lt;span&gt;1930&lt;/span&gt;&lt;/label&gt;
-          &lt;label className="oc-radio-item oc-radio-item--card"&gt;&lt;input className="oc-radio" type="radio" name="oc-stepview-answer-empty" value="d" /&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
-        &lt;/fieldset&gt;
-        &lt;button className="oc-btn oc-btn--lg oc-block-step-view-send" type="button"&gt;Send answer&lt;/button&gt;
-        &lt;p className="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
-      &lt;/div&gt;
-    &lt;/article&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;article class="oc-block-step-view" aria-labelledby="oc-stepview-title-empty"&gt;
+{/* No picture: leave picture out and pass number; the countdown turns red with tone="low" */}
+&lt;BlockStepView
+  back={&lt;Button variant="ghost" size="sm" onClick={back}&gt;&lt;Webicon name="mdi:arrow-left" /&gt; All steps&lt;/Button&gt;}
+  distance={&lt;Badge variant="outline"&gt;12 m away&lt;/Badge&gt;}
+  number={3}
+  badges={&lt;&gt;&lt;Badge variant="info"&gt;Step 3&lt;/Badge&gt;&lt;Badge variant="outline"&gt;20 points&lt;/Badge&gt;&lt;/&gt;}
+  title="Town hall"
+  place="Market street 1"
+  task="Find the year carved above the door."
+  blocks={&lt;&gt;
+    &lt;Collapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/Collapsible&gt;
+    &lt;Alert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/Alert&gt;
+    &lt;ButtonLink variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;Webicon name="mdi:open-in-new" /&gt;&lt;/ButtonLink&gt;
+    &lt;StepViewCountdown label="Time left" time="0:08" left={9} tone="low" /&gt;
+  &lt;/&gt;}
+  question={{ kicker: "Question · 20 points", text: "In which year was the town hall built?", options: ["1890", "1910", "1930", "1950"],
+    value: answer, onValueChange: setAnswer, onSend: () =&gt; send(answer), hint: "One try: your first answer counts." }}
+&gt;
+  &lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;
+&lt;/BlockStepView&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcAlert, OcBadge, OcBlockStepView, OcButton, OcCollapsible, OcWebicon } from '@birdycom/omniaui-vue'
+
+const answer = ref&lt;number&gt;(1)
+const emit = defineEmits&lt;{ back: []; send: [answer: number] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- No picture: leave the picture slot empty and pass number --&gt;
+  &lt;OcBlockStepView v-model:answer="answer" :number="3" title="Town hall" place="Market street 1" task="Find the year carved above the door."
+    :question="{ kicker: 'Question · 20 points', text: 'In which year was the town hall built?', options: ['1890', '1910', '1930', '1950'], hint: 'One try: your first answer counts.' }"
+    @send="emit('send', answer)"&gt;
+    &lt;template #back&gt;&lt;OcButton variant="ghost" size="sm" @click="emit('back')"&gt;&lt;OcWebicon name="mdi:arrow-left" /&gt; All steps&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;template #distance&gt;&lt;OcBadge variant="outline"&gt;12 m away&lt;/OcBadge&gt;&lt;/template&gt;
+    &lt;template #badges&gt;&lt;OcBadge variant="info"&gt;Step 3&lt;/OcBadge&gt;&lt;OcBadge variant="outline"&gt;20 points&lt;/OcBadge&gt;&lt;/template&gt;
+    &lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;
+    &lt;template #blocks&gt;
+      &lt;OcCollapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/OcCollapsible&gt;
+      &lt;OcAlert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/OcAlert&gt;
+      &lt;OcButton variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;OcWebicon name="mdi:open-in-new" /&gt;&lt;/OcButton&gt;
+      &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:08&lt;/b&gt;&lt;/div&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockStepView&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- x-oc::block.step-view always draws its picture: the "no picture" state is written out with the parts as components --}}
+&lt;article class="oc-block-step-view" aria-labelledby="step-title"&gt;
     &lt;div class="oc-block-step-view-top"&gt;
-      &lt;button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"&gt;&lt;iconify-icon icon="mdi:arrow-left" aria-hidden="true"&gt;&lt;/iconify-icon&gt; All steps&lt;/button&gt;
-      &lt;span class="oc-badge oc-badge--outline"&gt;12 m away&lt;/span&gt;
+        &lt;x-oc::button variant="ghost" size="sm" href="/route"&gt;&lt;x-oc::webicon name="mdi:arrow-left" /&gt; All steps&lt;/x-oc::button&gt;
+        &lt;x-oc::badge variant="outline"&gt;12 m away&lt;/x-oc::badge&gt;
     &lt;/div&gt;
     &lt;figure class="oc-block-step-view-picture oc-block-step-view-picture--empty" data-number="3"&gt;
-      &lt;figcaption class="oc-block-step-view-badges"&gt;&lt;span class="oc-badge oc-badge--info"&gt;Step 3&lt;/span&gt;&lt;span class="oc-badge oc-badge--outline"&gt;20 points&lt;/span&gt;&lt;/figcaption&gt;
+        &lt;figcaption class="oc-block-step-view-badges"&gt;&lt;x-oc::badge variant="info"&gt;Step 3&lt;/x-oc::badge&gt;&lt;x-oc::badge variant="outline"&gt;20 points&lt;/x-oc::badge&gt;&lt;/figcaption&gt;
     &lt;/figure&gt;
-    &lt;h2 class="oc-block-step-view-title" id="oc-stepview-title-empty"&gt;Town hall&lt;/h2&gt;
-    &lt;p class="oc-block-step-view-place"&gt;&lt;iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Market street 1&lt;/p&gt;
+    &lt;h2 class="oc-block-step-view-title" id="step-title"&gt;Town hall&lt;/h2&gt;
+    &lt;p class="oc-block-step-view-place"&gt;&lt;x-oc::webicon name="mdi:map-marker-outline" /&gt; Market street 1&lt;/p&gt;
     &lt;div class="oc-block-step-view-text"&gt;&lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;&lt;/div&gt;
-    &lt;p class="oc-block-step-view-task"&gt;&lt;iconify-icon icon="mdi:target" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Find the year carved above the door.&lt;/p&gt;
+    &lt;p class="oc-block-step-view-task"&gt;&lt;x-oc::webicon name="mdi:target" /&gt; Find the year carved above the door.&lt;/p&gt;
     &lt;div class="oc-block-step-view-blocks"&gt;
-      &lt;details class="oc-collapsible oc-collapsible--dense"&gt;
-        &lt;summary&gt;&lt;span class="oc-collapsible-title"&gt;Tip&lt;/span&gt;&lt;/summary&gt;
-        &lt;div class="oc-collapsible-content"&gt;The year is written in Roman numerals.&lt;/div&gt;
-      &lt;/details&gt;
-      &lt;div class="oc-alert oc-alert--warning" role="note"&gt;&lt;p class="oc-alert-description"&gt;Mind the traffic when you cross to the door.&lt;/p&gt;&lt;/div&gt;
-      &lt;a class="oc-btn oc-btn--outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;iconify-icon icon="mdi:open-in-new" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/a&gt;
-      &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:08&lt;/b&gt;&lt;/div&gt;
+        &lt;x-oc::collapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/x-oc::collapsible&gt;
+        &lt;x-oc::alert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/x-oc::alert&gt;
+        &lt;x-oc::button variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;x-oc::webicon name="mdi:open-in-new" /&gt;&lt;/x-oc::button&gt;
+        &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:08&lt;/b&gt;&lt;/div&gt;
     &lt;/div&gt;
-    &lt;div class="oc-block-step-view-question"&gt;
-      &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
-      &lt;p class="oc-block-step-view-ask" id="oc-stepview-ask-empty"&gt;In which year was the town hall built?&lt;/p&gt;
-      &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-ask-empty"&gt;
-        &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="a" /&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
-        &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="b" checked /&gt;&lt;span&gt;1910&lt;/span&gt;&lt;/label&gt;
-        &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="c" /&gt;&lt;span&gt;1930&lt;/span&gt;&lt;/label&gt;
-        &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="d" /&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
-      &lt;/fieldset&gt;
-      &lt;button class="oc-btn oc-btn--lg oc-block-step-view-send" type="button"&gt;Send answer&lt;/button&gt;
-      &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
-    &lt;/div&gt;
-  &lt;/article&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;article class="oc-block-step-view" aria-labelledby="oc-stepview-title-empty"&gt;
-  &lt;div class="oc-block-step-view-top"&gt;
-    &lt;button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"&gt;&lt;iconify-icon icon="mdi:arrow-left" aria-hidden="true"&gt;&lt;/iconify-icon&gt; All steps&lt;/button&gt;
-    &lt;span class="oc-badge oc-badge--outline"&gt;12 m away&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;figure class="oc-block-step-view-picture oc-block-step-view-picture--empty" data-number="3"&gt;
-    &lt;figcaption class="oc-block-step-view-badges"&gt;&lt;span class="oc-badge oc-badge--info"&gt;Step 3&lt;/span&gt;&lt;span class="oc-badge oc-badge--outline"&gt;20 points&lt;/span&gt;&lt;/figcaption&gt;
-  &lt;/figure&gt;
-  &lt;h2 class="oc-block-step-view-title" id="oc-stepview-title-empty"&gt;Town hall&lt;/h2&gt;
-  &lt;p class="oc-block-step-view-place"&gt;&lt;iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Market street 1&lt;/p&gt;
-  &lt;div class="oc-block-step-view-text"&gt;&lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;&lt;/div&gt;
-  &lt;p class="oc-block-step-view-task"&gt;&lt;iconify-icon icon="mdi:target" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Find the year carved above the door.&lt;/p&gt;
-  &lt;div class="oc-block-step-view-blocks"&gt;
-    &lt;details class="oc-collapsible oc-collapsible--dense"&gt;
-      &lt;summary&gt;&lt;span class="oc-collapsible-title"&gt;Tip&lt;/span&gt;&lt;/summary&gt;
-      &lt;div class="oc-collapsible-content"&gt;The year is written in Roman numerals.&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;div class="oc-alert oc-alert--warning" role="note"&gt;&lt;p class="oc-alert-description"&gt;Mind the traffic when you cross to the door.&lt;/p&gt;&lt;/div&gt;
-    &lt;a class="oc-btn oc-btn--outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;iconify-icon icon="mdi:open-in-new" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/a&gt;
-    &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:08&lt;/b&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-step-view-question"&gt;
-    &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
-    &lt;p class="oc-block-step-view-ask" id="oc-stepview-ask-empty"&gt;In which year was the town hall built?&lt;/p&gt;
-    &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-ask-empty"&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="a"&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="b" checked&gt;&lt;span&gt;1910&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="c"&gt;&lt;span&gt;1930&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="d"&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
-    &lt;/fieldset&gt;
-    &lt;button class="oc-btn oc-btn--lg oc-block-step-view-send" type="button"&gt;Send answer&lt;/button&gt;
-    &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
-  &lt;/div&gt;
+    &lt;form class="oc-block-step-view-question" method="POST" action="/route/steps/3/answer"&gt;
+        @csrf
+        &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
+        &lt;p class="oc-block-step-view-ask" id="step-ask"&gt;In which year was the town hall built?&lt;/p&gt;
+        &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="step-ask"&gt;
+            @foreach (['1890', '1910', '1930', '1950'] as $i =&gt; $option)
+                &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="answer" value="{{ $i }}" @checked(old('answer', 1) == $i)&gt;&lt;span&gt;{{ $option }}&lt;/span&gt;&lt;/label&gt;
+            @endforeach
+        &lt;/fieldset&gt;
+        &lt;x-oc::button type="submit" size="lg" class="oc-block-step-view-send"&gt;Send answer&lt;/x-oc::button&gt;
+        &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
+    &lt;/form&gt;
 &lt;/article&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -371,48 +361,73 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class StepViewNoPictureLittleTimeLeft extends Component
+class StepNoPicture extends Component
 {
+    public int $number = 3;
+
+    public int $secondsLeft = 8;
+
+    /** @var list&lt;string&gt; */
+    public array $options = ['1890', '1910', '1930', '1950'];
+
+    public int $correct = 1;
+
+    public ?int $picked = 1;
+
+    public bool $answered = false;
+
+    public function send(): void
+    {
+        if ($this-&gt;picked !== null &amp;&amp; ! $this-&gt;answered) {
+            $this-&gt;answered = true;
+        }
+    }
+
     public function render()
     {
-        return view('livewire.step-view-no-picture-little-time-left');
+        return view('livewire.step-no-picture');
     }
 }
 
-{{-- resources/views/livewire/step-view-no-picture-little-time-left.blade.php --}}
-&lt;article class="oc-block-step-view" aria-labelledby="oc-stepview-title-empty"&gt;
-  &lt;div class="oc-block-step-view-top"&gt;
-    &lt;button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"&gt;&lt;iconify-icon icon="mdi:arrow-left" aria-hidden="true"&gt;&lt;/iconify-icon&gt; All steps&lt;/button&gt;
-    &lt;span class="oc-badge oc-badge--outline"&gt;12 m away&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;figure class="oc-block-step-view-picture oc-block-step-view-picture--empty" data-number="3"&gt;
-    &lt;figcaption class="oc-block-step-view-badges"&gt;&lt;span class="oc-badge oc-badge--info"&gt;Step 3&lt;/span&gt;&lt;span class="oc-badge oc-badge--outline"&gt;20 points&lt;/span&gt;&lt;/figcaption&gt;
-  &lt;/figure&gt;
-  &lt;h2 class="oc-block-step-view-title" id="oc-stepview-title-empty"&gt;Town hall&lt;/h2&gt;
-  &lt;p class="oc-block-step-view-place"&gt;&lt;iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Market street 1&lt;/p&gt;
-  &lt;div class="oc-block-step-view-text"&gt;&lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;&lt;/div&gt;
-  &lt;p class="oc-block-step-view-task"&gt;&lt;iconify-icon icon="mdi:target" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Find the year carved above the door.&lt;/p&gt;
-  &lt;div class="oc-block-step-view-blocks"&gt;
-    &lt;details class="oc-collapsible oc-collapsible--dense"&gt;
-      &lt;summary&gt;&lt;span class="oc-collapsible-title"&gt;Tip&lt;/span&gt;&lt;/summary&gt;
-      &lt;div class="oc-collapsible-content"&gt;The year is written in Roman numerals.&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;div class="oc-alert oc-alert--warning" role="note"&gt;&lt;p class="oc-alert-description"&gt;Mind the traffic when you cross to the door.&lt;/p&gt;&lt;/div&gt;
-    &lt;a class="oc-btn oc-btn--outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;iconify-icon icon="mdi:open-in-new" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/a&gt;
-    &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:08&lt;/b&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-step-view-question"&gt;
-    &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
-    &lt;p class="oc-block-step-view-ask" id="oc-stepview-ask-empty"&gt;In which year was the town hall built?&lt;/p&gt;
-    &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-ask-empty"&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="a"&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="b" checked&gt;&lt;span&gt;1910&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="c"&gt;&lt;span&gt;1930&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-answer-empty" value="d"&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
-    &lt;/fieldset&gt;
-    &lt;button class="oc-btn oc-btn--lg oc-block-step-view-send" type="button"&gt;Send answer&lt;/button&gt;
-    &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
-  &lt;/div&gt;
+{{-- resources/views/livewire/step-no-picture.blade.php --}}
+&lt;article class="oc-block-step-view" aria-labelledby="step-title"&gt;
+    &lt;div class="oc-block-step-view-top"&gt;
+        &lt;x-oc::button variant="ghost" size="sm" href="/route" wire:navigate&gt;&lt;x-oc::webicon name="mdi:arrow-left" /&gt; All steps&lt;/x-oc::button&gt;
+        &lt;x-oc::badge variant="outline"&gt;12 m away&lt;/x-oc::badge&gt;
+    &lt;/div&gt;
+    &lt;figure class="oc-block-step-view-picture oc-block-step-view-picture--empty" data-number="{{ $number }}"&gt;
+        &lt;figcaption class="oc-block-step-view-badges"&gt;&lt;x-oc::badge variant="info"&gt;Step {{ $number }}&lt;/x-oc::badge&gt;&lt;x-oc::badge variant="outline"&gt;20 points&lt;/x-oc::badge&gt;&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;h2 class="oc-block-step-view-title" id="step-title"&gt;Town hall&lt;/h2&gt;
+    &lt;p class="oc-block-step-view-place"&gt;&lt;x-oc::webicon name="mdi:map-marker-outline" /&gt; Market street 1&lt;/p&gt;
+    &lt;div class="oc-block-step-view-text"&gt;&lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;&lt;/div&gt;
+    &lt;p class="oc-block-step-view-task"&gt;&lt;x-oc::webicon name="mdi:target" /&gt; Find the year carved above the door.&lt;/p&gt;
+    &lt;div class="oc-block-step-view-blocks"&gt;
+        &lt;x-oc::collapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/x-oc::collapsible&gt;
+        &lt;x-oc::alert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/x-oc::alert&gt;
+        &lt;x-oc::button variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;x-oc::webicon name="mdi:open-in-new" /&gt;&lt;/x-oc::button&gt;
+        &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:{{ sprintf('%02d', $secondsLeft) }}&lt;/b&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-block-step-view-question" @if ($answered) data-answered @endif&gt;
+        &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
+        &lt;p class="oc-block-step-view-ask" id="step-ask"&gt;In which year was the town hall built?&lt;/p&gt;
+        &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="step-ask"&gt;
+            @foreach ($options as $i =&gt; $option)
+                &lt;label class="oc-radio-item oc-radio-item--card" wire:key="option-{{ $i }}" @if ($answered &amp;&amp; $i === $correct) data-result="correct" @elseif ($answered &amp;&amp; $i === $picked) data-result="wrong" @endif&gt;
+                    &lt;input class="oc-radio" type="radio" name="answer" value="{{ $i }}" wire:model="picked" @disabled($answered)&gt;&lt;span&gt;{{ $option }}&lt;/span&gt;
+                &lt;/label&gt;
+            @endforeach
+        &lt;/fieldset&gt;
+        @if ($answered)
+            &lt;x-oc::alert :variant="$picked === $correct ? 'success' : 'danger'" :icon="$picked === $correct ? 'mdi:check-circle-outline' : 'mdi:close-circle-outline'"
+                :title="$picked === $correct ? 'Right: it was '.$options[$correct] : 'Not quite: it was '.$options[$correct]"&gt;
+                {{ $picked === $correct ? '20 points' : '0 points' }} for this step.
+            &lt;/x-oc::alert&gt;
+        @else
+            &lt;x-oc::button size="lg" class="oc-block-step-view-send" wire:click="send" :disabled="$picked === null"&gt;Send answer&lt;/x-oc::button&gt;
+            &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
+        @endif
+    &lt;/div&gt;
 &lt;/article&gt;</oc-code>
           </oc-demo>
 
@@ -469,24 +484,22 @@ class StepViewNoPictureLittleTimeLeft extends Component
 <oc-code lang="vue">&lt;OcBlockStepView title="Old gate" :question="{ text: 'In which year …', options: ['1890', '1910', '1930', '1950'], result: { picked: 2, correct: 1 } }"&gt;
   &lt;template #feedback&gt;&lt;OcAlert variant="danger" icon="mdi:close-circle-outline" title="Not quite: it was 1910"&gt;0 points for this step.&lt;/OcAlert&gt;&lt;/template&gt;
 &lt;/OcBlockStepView&gt;</oc-code>
-<oc-code lang="blade">&lt;div style="inline-size:min(100%,28rem)"&gt;
-  &lt;div class="oc-block-step-view-question" data-answered&gt;
-    &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
-    &lt;p class="oc-block-step-view-ask" id="oc-stepview-done-ask"&gt;In which year was the town hall built?&lt;/p&gt;
-    &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-done-ask"&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="a" disabled&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card" data-result="correct"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="b" disabled&gt;&lt;span&gt;1910&lt;/span&gt;&lt;span class="oc-visually-hidden"&gt; Correct&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card" data-result="wrong"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="c" disabled checked&gt;&lt;span&gt;1930&lt;/span&gt;&lt;span class="oc-visually-hidden"&gt; Wrong&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="d" disabled&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
-    &lt;/fieldset&gt;
-    &lt;div class="oc-alert oc-alert--danger" role="status"&gt;
-      &lt;span class="oc-alert-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:close-circle-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-      &lt;div class="oc-alert-body"&gt;
-        &lt;h4 class="oc-alert-title"&gt;Not quite: it was 1910&lt;/h4&gt;
-        &lt;p class="oc-alert-description"&gt;0 points for this step. Walk on to the clock.&lt;/p&gt;
-      &lt;/div&gt;
+<oc-code lang="blade">{{-- after checking: the answers are locked, data-result marks the right and the wrong one --}}
+@php([$options, $picked, $correct] = [['1890', '1910', '1930', '1950'], 2, 1])
+&lt;div style="inline-size:min(100%,28rem)"&gt;
+    &lt;div class="oc-block-step-view-question" data-answered&gt;
+        &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
+        &lt;p class="oc-block-step-view-ask" id="step-done-ask"&gt;In which year was the town hall built?&lt;/p&gt;
+        &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="step-done-ask"&gt;
+            @foreach ($options as $i =&gt; $option)
+                &lt;label class="oc-radio-item oc-radio-item--card" @if ($i === $correct) data-result="correct" @elseif ($i === $picked) data-result="wrong" @endif&gt;
+                    &lt;input class="oc-radio" type="radio" name="step-done" value="{{ $i }}" disabled @checked($i === $picked)&gt;&lt;span&gt;{{ $option }}&lt;/span&gt;
+                    @if ($i === $correct)&lt;span class="oc-visually-hidden"&gt; Correct&lt;/span&gt;@elseif ($i === $picked)&lt;span class="oc-visually-hidden"&gt; Wrong&lt;/span&gt;@endif
+                &lt;/label&gt;
+            @endforeach
+        &lt;/fieldset&gt;
+        &lt;x-oc::alert variant="danger" icon="mdi:close-circle-outline" title="Not quite: it was {{ $options[$correct] }}"&gt;0 points for this step. Walk on to the clock.&lt;/x-oc::alert&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -494,33 +507,52 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class StepViewAfterTheAnswer extends Component
+class StepAnswer extends Component
 {
+    /** @var list&lt;string&gt; */
+    public array $options = ['1890', '1910', '1930', '1950'];
+
+    public int $correct = 1;
+
+    public ?int $picked = 2;
+
+    public bool $answered = true;
+
+    public function send(): void
+    {
+        if ($this-&gt;picked !== null &amp;&amp; ! $this-&gt;answered) {
+            $this-&gt;answered = true;
+        }
+    }
+
     public function render()
     {
-        return view('livewire.step-view-after-the-answer');
+        return view('livewire.step-answer');
     }
 }
 
-{{-- resources/views/livewire/step-view-after-the-answer.blade.php --}}
+{{-- resources/views/livewire/step-answer.blade.php --}}
 &lt;div style="inline-size:min(100%,28rem)"&gt;
-  &lt;div class="oc-block-step-view-question" data-answered&gt;
-    &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
-    &lt;p class="oc-block-step-view-ask" id="oc-stepview-done-ask"&gt;In which year was the town hall built?&lt;/p&gt;
-    &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-done-ask"&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="a" disabled&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card" data-result="correct"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="b" disabled&gt;&lt;span&gt;1910&lt;/span&gt;&lt;span class="oc-visually-hidden"&gt; Correct&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card" data-result="wrong"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="c" disabled checked&gt;&lt;span&gt;1930&lt;/span&gt;&lt;span class="oc-visually-hidden"&gt; Wrong&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="d" disabled&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
-    &lt;/fieldset&gt;
-    &lt;div class="oc-alert oc-alert--danger" role="status"&gt;
-      &lt;span class="oc-alert-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:close-circle-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-      &lt;div class="oc-alert-body"&gt;
-        &lt;h4 class="oc-alert-title"&gt;Not quite: it was 1910&lt;/h4&gt;
-        &lt;p class="oc-alert-description"&gt;0 points for this step. Walk on to the clock.&lt;/p&gt;
-      &lt;/div&gt;
+    &lt;div class="oc-block-step-view-question" @if ($answered) data-answered @endif&gt;
+        &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
+        &lt;p class="oc-block-step-view-ask" id="step-ask"&gt;In which year was the town hall built?&lt;/p&gt;
+        &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="step-ask"&gt;
+            @foreach ($options as $i =&gt; $option)
+                &lt;label class="oc-radio-item oc-radio-item--card" wire:key="option-{{ $i }}" @if ($answered &amp;&amp; $i === $correct) data-result="correct" @elseif ($answered &amp;&amp; $i === $picked) data-result="wrong" @endif&gt;
+                    &lt;input class="oc-radio" type="radio" name="answer" value="{{ $i }}" wire:model="picked" @disabled($answered)&gt;&lt;span&gt;{{ $option }}&lt;/span&gt;
+                &lt;/label&gt;
+            @endforeach
+        &lt;/fieldset&gt;
+        @if ($answered)
+            &lt;x-oc::alert :variant="$picked === $correct ? 'success' : 'danger'" :icon="$picked === $correct ? 'mdi:check-circle-outline' : 'mdi:close-circle-outline'"
+                :title="$picked === $correct ? 'Right: it was '.$options[$correct] : 'Not quite: it was '.$options[$correct]"&gt;
+                {{ $picked === $correct ? '20 points' : '0 points' }} for this step.
+            &lt;/x-oc::alert&gt;
+        @else
+            &lt;x-oc::button size="lg" class="oc-block-step-view-send" wire:click="send" :disabled="$picked === null"&gt;Send answer&lt;/x-oc::button&gt;
+            &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
+        @endif
     &lt;/div&gt;
-  &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

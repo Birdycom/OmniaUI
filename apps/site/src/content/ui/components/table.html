@@ -33,70 +33,66 @@
     &lt;/tbody&gt;
   &lt;/table&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-table-wrap"&gt;
-      &lt;table className="oc-table"&gt;
-        &lt;caption&gt;Team members&lt;/caption&gt;
-        &lt;thead&gt;
-          &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-          &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;span className="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-table-wrap"&gt;
-    &lt;table class="oc-table"&gt;
-      &lt;caption&gt;Team members&lt;/caption&gt;
-      &lt;thead&gt;
-        &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
-      &lt;/thead&gt;
-      &lt;tbody&gt;
-        &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
-      &lt;/tbody&gt;
-    &lt;/table&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-table-wrap"&gt;
-  &lt;table class="oc-table"&gt;
-    &lt;caption&gt;Team members&lt;/caption&gt;
+<oc-code lang="tsx">&lt;Table caption="Team members"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;Badge variant="success"&gt;Active&lt;/Badge&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/Table&gt;</oc-code>
+<oc-code lang="vue">&lt;OcTable caption="Team members" :columns="[
+  { key: 'name', label: 'Name' },
+  { key: 'role', label: 'Role' },
+  { key: 'status', label: 'Status' },
+]" :rows="[{ id: 1, name: 'User 1', role: 'Admin', status: 'Active' }]"&gt;
+  &lt;template #cell-status="{ value }"&gt;&lt;OcBadge variant="success"&gt;{{ value }}&lt;/OcBadge&gt;&lt;/template&gt;
+&lt;/OcTable&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table caption="Team members"&gt;
     &lt;thead&gt;
-      &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
     &lt;/thead&gt;
     &lt;tbody&gt;
-      &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;x-oc::badge variant="success"&gt;Active&lt;/x-oc::badge&gt;&lt;/td&gt;&lt;/tr&gt;
     &lt;/tbody&gt;
-  &lt;/table&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::table&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class TableDataTable extends Component
+class TeamMembers extends Component
 {
+    /** @var list&lt;array{name: string, role: string, active: bool}&gt; */
+    public array $members = [
+        ['name' =&gt; 'User 1', 'role' =&gt; 'Admin', 'active' =&gt; true],
+    ];
+
     public function render()
     {
-        return view('livewire.table-data-table');
+        return view('livewire.team-members');
     }
 }
 
-{{-- resources/views/livewire/table-data-table.blade.php --}}
-&lt;div class="oc-table-wrap"&gt;
-  &lt;table class="oc-table"&gt;
-    &lt;caption&gt;Team members&lt;/caption&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
+{{-- resources/views/livewire/team-members.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::table caption="Team members"&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            @forelse ($members as $member)
+                &lt;tr wire:key="member-{{ $loop-&gt;index }}"&gt;
+                    &lt;td&gt;{{ $member['name'] }}&lt;/td&gt;
+                    &lt;td&gt;{{ $member['role'] }}&lt;/td&gt;
+                    &lt;td&gt;&lt;x-oc::badge :variant="$member['active'] ? 'success' : 'secondary'"&gt;{{ $member['active'] ? 'Active' : 'Inactive' }}&lt;/x-oc::badge&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+            @empty
+                &lt;x-oc::table.empty :colspan="3" title="No team members yet" /&gt;
+            @endforelse
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
 &lt;/div&gt;</oc-code>
 </oc-demo>
 
@@ -115,74 +111,70 @@ class TableDataTable extends Component
                 </tbody>
               </table>
             </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-table-wrap"&gt;
-      &lt;table className="oc-table"&gt;
-        &lt;thead&gt;
-          &lt;tr&gt;&lt;th className="w-6"&gt;#&lt;/th&gt;&lt;th className="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-          &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
-          &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;&lt;td&gt;Editor&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
-          &lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;&lt;td&gt;Viewer&lt;/td&gt;&lt;td&gt;Inactive&lt;/td&gt;&lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-table-wrap"&gt;
-    &lt;table class="oc-table"&gt;
-      &lt;thead&gt;
+<oc-code lang="tsx">&lt;Table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th className="w-6"&gt;#&lt;/th&gt;&lt;th className="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;&lt;td&gt;Editor&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;&lt;td&gt;Viewer&lt;/td&gt;&lt;td&gt;Inactive&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/Table&gt;</oc-code>
+<oc-code lang="vue">&lt;!-- width: a CSS width per column; columns without one share the rest --&gt;
+&lt;OcTable :columns="[
+  { key: 'id', label: '#', width: '1.5rem' },
+  { key: 'name', label: 'Name (1/3)', width: '33.333%' },
+  { key: 'role', label: 'Role (rest)' },
+  { key: 'status', label: 'Status (rest)' },
+]" :rows="[
+  { id: 1, name: 'User 1', role: 'Admin', status: 'Active' },
+  { id: 2, name: 'User 2', role: 'Editor', status: 'Active' },
+  { id: 3, name: 'User 3', role: 'Viewer', status: 'Inactive' },
+]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table&gt;
+    &lt;thead&gt;
         &lt;tr&gt;&lt;th class="w-6"&gt;#&lt;/th&gt;&lt;th class="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
-      &lt;/thead&gt;
-      &lt;tbody&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
         &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
         &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;&lt;td&gt;Editor&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
         &lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;&lt;td&gt;Viewer&lt;/td&gt;&lt;td&gt;Inactive&lt;/td&gt;&lt;/tr&gt;
-      &lt;/tbody&gt;
-    &lt;/table&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-table-wrap"&gt;
-  &lt;table class="oc-table"&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;&lt;th class="w-6"&gt;#&lt;/th&gt;&lt;th class="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
-      &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;&lt;td&gt;Editor&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
-      &lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;&lt;td&gt;Viewer&lt;/td&gt;&lt;td&gt;Inactive&lt;/td&gt;&lt;/tr&gt;
     &lt;/tbody&gt;
-  &lt;/table&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::table&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class TableColumnWidths extends Component
+class UserTable extends Component
 {
+    /** @var list&lt;array{name: string, role: string, status: string}&gt; */
+    public array $users = [
+        ['name' =&gt; 'User 1', 'role' =&gt; 'Admin', 'status' =&gt; 'Active'],
+        ['name' =&gt; 'User 2', 'role' =&gt; 'Editor', 'status' =&gt; 'Active'],
+        ['name' =&gt; 'User 3', 'role' =&gt; 'Viewer', 'status' =&gt; 'Inactive'],
+    ];
+
     public function render()
     {
-        return view('livewire.table-column-widths');
+        return view('livewire.user-table');
     }
 }
 
-{{-- resources/views/livewire/table-column-widths.blade.php --}}
-&lt;div class="oc-table-wrap"&gt;
-  &lt;table class="oc-table"&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;&lt;th class="w-6"&gt;#&lt;/th&gt;&lt;th class="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
-      &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;&lt;td&gt;Editor&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
-      &lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;&lt;td&gt;Viewer&lt;/td&gt;&lt;td&gt;Inactive&lt;/td&gt;&lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
+{{-- resources/views/livewire/user-table.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::table&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;&lt;th class="w-6"&gt;#&lt;/th&gt;&lt;th class="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($users as $user)
+                &lt;tr wire:key="user-{{ $loop-&gt;index }}"&gt;&lt;td&gt;{{ $loop-&gt;iteration }}&lt;/td&gt;&lt;td&gt;{{ $user['name'] }}&lt;/td&gt;&lt;td&gt;{{ $user['role'] }}&lt;/td&gt;&lt;td&gt;{{ $user['status'] }}&lt;/td&gt;&lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -257,19 +249,52 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class TableAutoWidthsAndHiddenColumns extends Component
+class RouteTable extends Component
 {
+    /** @var list&lt;array{id: int, name: string, date: string, players: int}&gt; */
+    public array $routes = [
+        ['id' =&gt; 1, 'name' =&gt; 'Route 1 through the old town', 'date' =&gt; '8 November 2026', 'players' =&gt; 42],
+        ['id' =&gt; 2, 'name' =&gt; 'Route 2', 'date' =&gt; '15 November 2026', 'players' =&gt; 18],
+    ];
+
+    public function edit(int|string $id): void
+    {
+        $this-&gt;redirect('/routes/'.$id.'/edit', navigate: true);
+    }
+
+    public function copy(int|string $id): void
+    {
+        $route = collect($this-&gt;routes)-&gt;firstWhere('id', (int) $id);
+        if ($route) {
+            $this-&gt;routes[] = ['id' =&gt; count($this-&gt;routes) + 1, 'name' =&gt; $route['name'].' (copy)', 'date' =&gt; $route['date'], 'players' =&gt; 0];
+        }
+    }
+
     public function render()
     {
-        return view('livewire.table-auto-widths-and-hidden-columns');
+        return view('livewire.route-table');
     }
 }
 
-{{-- resources/views/livewire/table-auto-widths-and-hidden-columns.blade.php --}}
+{{-- resources/views/livewire/route-table.blade.php --}}
 &lt;div&gt;
     &lt;x-oc::table layout="auto"&gt;
-        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th data-hide-below="md"&gt;Date&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-        …
+        &lt;thead&gt;
+            &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th data-hide-below="md"&gt;Date&lt;/th&gt;&lt;th data-hide-below="sm" data-numeric&gt;Players&lt;/th&gt;&lt;th&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($routes as $route)
+                &lt;tr wire:key="route-{{ $route['id'] }}"&gt;
+                    &lt;td&gt;{{ $route['name'] }}&lt;/td&gt;
+                    &lt;td data-hide-below="md"&gt;{{ $route['date'] }}&lt;/td&gt;
+                    &lt;td data-hide-below="sm" data-numeric&gt;{{ $route['players'] }}&lt;/td&gt;
+                    &lt;x-oc::table-actions&gt;
+                        &lt;button class="oc-table-actions-icon oc-table-actions-icon--primary" type="button" aria-label="Edit" title="Edit" wire:click="edit({{ $route['id'] }})"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;span class="oc-table-action-label"&gt;Edit&lt;/span&gt;&lt;/button&gt;
+                        &lt;button class="oc-table-actions-icon" type="button" aria-label="Copy" title="Copy" wire:click="copy({{ $route['id'] }})"&gt;&lt;x-oc::webicon name="mdi:content-copy" /&gt;&lt;span class="oc-table-action-label"&gt;Copy&lt;/span&gt;&lt;/button&gt;
+                    &lt;/x-oc::table-actions&gt;
+                &lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
     &lt;/x-oc::table&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -306,59 +331,70 @@ class TableAutoWidthsAndHiddenColumns extends Component
     &lt;/label&gt;
   &lt;/div&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-expandable-table"&gt;
-      &lt;table className="oc-table-ref"&gt;
-        &lt;tbody&gt;
-          &lt;tr&gt;…visible…&lt;/tr&gt;
-          &lt;tr className="oc-expandable-table__row-dimmed"&gt;…last visible row, faded…&lt;/tr&gt;
-          &lt;tr className="oc-expandable-table__row-more"&gt;…hidden until "Show more"…&lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-      &lt;div className="oc-expandable-table__wrap oc-expandable-table__wrap--full"&gt;
-        &lt;label className="oc-btn oc-btn--secondary oc-expandable-table__trigger"&gt;
-          &lt;input type="checkbox" className="oc-expandable-table__toggle" /&gt;
-          &lt;span className="oc-expandable-table__more"&gt;Show more&lt;/span&gt;{" "}
-          &lt;span className="oc-expandable-table__less"&gt;Show less&lt;/span&gt;
-        &lt;/label&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-expandable-table"&gt;
+<oc-code lang="tsx">// No wrapper for the expandable table: plain markup; the checkbox in the trigger shows the faded rows (CSS only)
+const rows = [[".p-1", "padding: 1rem"], [".p-2", "padding: 2rem"], [".p-3", "padding: 3rem"], [".p-4", "padding: 4rem"], [".p-5", "padding: 5rem"]];
+const visible = 3;
+
+&lt;div className="oc-expandable-table w-full"&gt;
+  &lt;table className="oc-table-ref"&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th className="w-perc-1/3"&gt;Class&lt;/th&gt;&lt;th&gt;CSS&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      {rows.map(([cls, css], i) =&gt; (
+        &lt;tr key={cls} className={i === visible - 1 ? "oc-expandable-table__row-dimmed" : i &gt;= visible ? "oc-expandable-table__row-more" : undefined}&gt;
+          &lt;td&gt;&lt;code&gt;{cls}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;{css}&lt;/td&gt;
+        &lt;/tr&gt;
+      ))}
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+  &lt;div className="oc-expandable-table__wrap oc-expandable-table__wrap--full"&gt;
+    &lt;label className="oc-btn oc-btn--secondary oc-expandable-table__trigger"&gt;
+      &lt;input type="checkbox" className="oc-expandable-table__toggle" /&gt;
+      &lt;span className="oc-expandable-table__more"&gt;Show more&lt;/span&gt;
+      &lt;span className="oc-expandable-table__less"&gt;Show less&lt;/span&gt;
+    &lt;/label&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+const rows = [['.p-1', 'padding: 1rem'], ['.p-2', 'padding: 2rem'], ['.p-3', 'padding: 3rem'], ['.p-4', 'padding: 4rem'], ['.p-5', 'padding: 5rem']]
+const visible = 3
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-expandable-table w-full"&gt;
     &lt;table class="oc-table-ref"&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th class="w-perc-1/3"&gt;Class&lt;/th&gt;&lt;th&gt;CSS&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
       &lt;tbody&gt;
-        &lt;tr&gt;…visible…&lt;/tr&gt;
-        &lt;tr class="oc-expandable-table__row-dimmed"&gt;…last visible row, faded…&lt;/tr&gt;
-        &lt;tr class="oc-expandable-table__row-more"&gt;…hidden until "Show more"…&lt;/tr&gt;
+        &lt;tr v-for="([cls, css], i) in rows" :key="cls" :class="{ 'oc-expandable-table__row-dimmed': i === visible - 1, 'oc-expandable-table__row-more': i &gt;= visible }"&gt;
+          &lt;td&gt;&lt;code&gt;{{ cls }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;{{ css }}&lt;/td&gt;
+        &lt;/tr&gt;
       &lt;/tbody&gt;
     &lt;/table&gt;
     &lt;div class="oc-expandable-table__wrap oc-expandable-table__wrap--full"&gt;
       &lt;label class="oc-btn oc-btn--secondary oc-expandable-table__trigger"&gt;
-        &lt;input type="checkbox" class="oc-expandable-table__toggle" /&gt;
+        &lt;input type="checkbox" class="oc-expandable-table__toggle"&gt;
         &lt;span class="oc-expandable-table__more"&gt;Show more&lt;/span&gt;
         &lt;span class="oc-expandable-table__less"&gt;Show less&lt;/span&gt;
       &lt;/label&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-expandable-table"&gt;
-  &lt;table class="oc-table-ref"&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;…visible…&lt;/tr&gt;
-      &lt;tr class="oc-expandable-table__row-dimmed"&gt;…last visible row, faded…&lt;/tr&gt;
-      &lt;tr class="oc-expandable-table__row-more"&gt;…hidden until "Show more"…&lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
-  &lt;div class="oc-expandable-table__wrap oc-expandable-table__wrap--full"&gt;
-    &lt;label class="oc-btn oc-btn--secondary oc-expandable-table__trigger"&gt;
-      &lt;input type="checkbox" class="oc-expandable-table__toggle"&gt;
-      &lt;span class="oc-expandable-table__more"&gt;Show more&lt;/span&gt;
-      &lt;span class="oc-expandable-table__less"&gt;Show less&lt;/span&gt;
-    &lt;/label&gt;
-  &lt;/div&gt;
+<oc-code lang="blade">@php($rows = ['.p-1' =&gt; 'padding: 1rem', '.p-2' =&gt; 'padding: 2rem', '.p-3' =&gt; 'padding: 3rem', '.p-4' =&gt; 'padding: 4rem', '.p-5' =&gt; 'padding: 5rem'])
+&lt;div class="oc-expandable-table w-full"&gt;
+    &lt;table class="oc-table-ref"&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th class="w-perc-1/3"&gt;Class&lt;/th&gt;&lt;th&gt;CSS&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($rows as $class =&gt; $css)
+                &lt;tr @class(['oc-expandable-table__row-dimmed' =&gt; $loop-&gt;iteration === 3, 'oc-expandable-table__row-more' =&gt; $loop-&gt;iteration &gt; 3])&gt;&lt;td&gt;&lt;code&gt;{{ $class }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;{{ $css }}&lt;/td&gt;&lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+    &lt;div class="oc-expandable-table__wrap oc-expandable-table__wrap--full"&gt;
+        &lt;label class="oc-btn oc-btn--secondary oc-expandable-table__trigger"&gt;
+            &lt;input type="checkbox" class="oc-expandable-table__toggle"&gt;
+            &lt;span class="oc-expandable-table__more"&gt;Show more&lt;/span&gt;
+            &lt;span class="oc-expandable-table__less"&gt;Show less&lt;/span&gt;
+        &lt;/label&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -366,30 +402,37 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class TableExpandableTable extends Component
+class SpacingReference extends Component
 {
+    /** @var array&lt;string, string&gt; class =&gt; css */
+    public array $rows = ['.p-1' =&gt; 'padding: 1rem', '.p-2' =&gt; 'padding: 2rem', '.p-3' =&gt; 'padding: 3rem', '.p-4' =&gt; 'padding: 4rem', '.p-5' =&gt; 'padding: 5rem'];
+
+    public int $visible = 3;
+
     public function render()
     {
-        return view('livewire.table-expandable-table');
+        return view('livewire.spacing-reference');
     }
 }
 
-{{-- resources/views/livewire/table-expandable-table.blade.php --}}
-&lt;div class="oc-expandable-table"&gt;
-  &lt;table class="oc-table-ref"&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;…visible…&lt;/tr&gt;
-      &lt;tr class="oc-expandable-table__row-dimmed"&gt;…last visible row, faded…&lt;/tr&gt;
-      &lt;tr class="oc-expandable-table__row-more"&gt;…hidden until "Show more"…&lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
-  &lt;div class="oc-expandable-table__wrap oc-expandable-table__wrap--full"&gt;
-    &lt;label class="oc-btn oc-btn--secondary oc-expandable-table__trigger"&gt;
-      &lt;input type="checkbox" class="oc-expandable-table__toggle"&gt;
-      &lt;span class="oc-expandable-table__more"&gt;Show more&lt;/span&gt;
-      &lt;span class="oc-expandable-table__less"&gt;Show less&lt;/span&gt;
-    &lt;/label&gt;
-  &lt;/div&gt;
+{{-- resources/views/livewire/spacing-reference.blade.php --}}
+&lt;div class="oc-expandable-table w-full"&gt;
+    &lt;table class="oc-table-ref"&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th class="w-perc-1/3"&gt;Class&lt;/th&gt;&lt;th&gt;CSS&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($rows as $class =&gt; $css)
+                &lt;tr wire:key="row-{{ $loop-&gt;index }}" @class(['oc-expandable-table__row-dimmed' =&gt; $loop-&gt;iteration === $visible, 'oc-expandable-table__row-more' =&gt; $loop-&gt;iteration &gt; $visible])&gt;&lt;td&gt;&lt;code&gt;{{ $class }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;{{ $css }}&lt;/td&gt;&lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+    &lt;div class="oc-expandable-table__wrap oc-expandable-table__wrap--full"&gt;
+        {{-- CSS only: the checkbox state survives Livewire updates with wire:ignore --}}
+        &lt;label class="oc-btn oc-btn--secondary oc-expandable-table__trigger" wire:ignore&gt;
+            &lt;input type="checkbox" class="oc-expandable-table__toggle"&gt;
+            &lt;span class="oc-expandable-table__more"&gt;Show more&lt;/span&gt;
+            &lt;span class="oc-expandable-table__less"&gt;Show less&lt;/span&gt;
+        &lt;/label&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
 </oc-demo>
         </div>

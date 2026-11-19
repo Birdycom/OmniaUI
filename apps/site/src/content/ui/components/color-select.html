@@ -23,61 +23,80 @@
   <label class="oc-color-select-option" style="--oc-swatch: var(--color-red-70)"><input type="radio" name="color" value="red"><span class="oc-color-select-swatch"></span><span class="oc-color-select-name">Red</span></label>
   <label class="oc-color-select-option" style="--oc-swatch: var(--color-purple-40)" title="Purple, in use"><input type="radio" name="color" value="purple" disabled><span class="oc-color-select-swatch"></span><span class="oc-color-select-name">Purple (in use)</span></label>
 </fieldset>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { useState } from "react";
+import { ColorSelect, type ColorSelectOption } from "@birdycom/omniaui-react";
+
+const colors: ColorSelectOption[] = [
+  { value: "blue", label: "Blue", color: "var(--color-vividblue-95)" },
+  { value: "teal", label: "Teal", color: "var(--color-teal-80)" },
+  { value: "green", label: "Green", color: "var(--color-green-60)" },
+  { value: "orange", label: "Orange", color: "var(--color-orange-95)" },
+  { value: "red", label: "Red", color: "var(--color-red-70)" },
+  { value: "purple", label: "Purple (in use)", color: "var(--color-purple-40)", disabled: true },
+];
 
 export function Example() {
-  return (
-    &lt;fieldset className="oc-color-select" role="radiogroup" aria-label="Label color"&gt;
-      &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-vividblue-95)" } as CSSProperties}&gt;&lt;input type="radio" name="color" value="blue" defaultChecked /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Blue&lt;/span&gt;&lt;/label&gt;
-      &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-teal-80)" } as CSSProperties}&gt;&lt;input type="radio" name="color" value="teal" /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Teal&lt;/span&gt;&lt;/label&gt;
-      &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-green-60)" } as CSSProperties}&gt;&lt;input type="radio" name="color" value="green" /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Green&lt;/span&gt;&lt;/label&gt;
-      &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-orange-95)" } as CSSProperties}&gt;&lt;input type="radio" name="color" value="orange" /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Orange&lt;/span&gt;&lt;/label&gt;
-      &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-red-70)" } as CSSProperties}&gt;&lt;input type="radio" name="color" value="red" /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Red&lt;/span&gt;&lt;/label&gt;
-      &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-purple-40)" } as CSSProperties} title="Purple, in use"&gt;&lt;input type="radio" name="color" value="purple" disabled /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Purple (in use)&lt;/span&gt;&lt;/label&gt;
-    &lt;/fieldset&gt;
-  );
+  const [color, setColor] = useState("blue");
+  return &lt;ColorSelect name="color" aria-label="Label color" options={colors} value={color} onChange={setColor} /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;fieldset class="oc-color-select" role="radiogroup" aria-label="Label color"&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-vividblue-95)"&gt;&lt;input type="radio" name="color" value="blue" checked /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Blue&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-teal-80)"&gt;&lt;input type="radio" name="color" value="teal" /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Teal&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-green-60)"&gt;&lt;input type="radio" name="color" value="green" /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Green&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-orange-95)"&gt;&lt;input type="radio" name="color" value="orange" /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Orange&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-red-70)"&gt;&lt;input type="radio" name="color" value="red" /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Red&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-purple-40)" title="Purple, in use"&gt;&lt;input type="radio" name="color" value="purple" disabled /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Purple (in use)&lt;/span&gt;&lt;/label&gt;
-  &lt;/fieldset&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcColorSelect } from "@birdycom/omniaui-vue";
+
+const colors = [
+  { value: "blue", label: "Blue", color: "var(--color-vividblue-95)" },
+  { value: "teal", label: "Teal", color: "var(--color-teal-80)" },
+  { value: "green", label: "Green", color: "var(--color-green-60)" },
+  { value: "orange", label: "Orange", color: "var(--color-orange-95)" },
+  { value: "red", label: "Red", color: "var(--color-red-70)" },
+  { value: "purple", label: "Purple (in use)", color: "var(--color-purple-40)", disabled: true },
+];
+const color = ref("blue");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcColorSelect v-model="color" name="color" label="Label color" :options="colors" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;fieldset class="oc-color-select" role="radiogroup" aria-label="Label color"&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-vividblue-95)"&gt;&lt;input type="radio" name="color" value="blue" checked&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Blue&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-teal-80)"&gt;&lt;input type="radio" name="color" value="teal"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Teal&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-green-60)"&gt;&lt;input type="radio" name="color" value="green"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Green&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-orange-95)"&gt;&lt;input type="radio" name="color" value="orange"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Orange&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-red-70)"&gt;&lt;input type="radio" name="color" value="red"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Red&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-purple-40)" title="Purple, in use"&gt;&lt;input type="radio" name="color" value="purple" disabled&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Purple (in use)&lt;/span&gt;&lt;/label&gt;
-&lt;/fieldset&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::color-select name="color" label="Label color" :value="old('color', 'blue')" :options="[
+    'blue' =&gt; ['Blue', 'var(--color-vividblue-95)'],
+    'teal' =&gt; ['Teal', 'var(--color-teal-80)'],
+    'green' =&gt; ['Green', 'var(--color-green-60)'],
+    'orange' =&gt; ['Orange', 'var(--color-orange-95)'],
+    'red' =&gt; ['Red', 'var(--color-red-70)'],
+]"&gt;
+    {{-- options have no disabled flag: a color that is taken goes in the slot --}}
+    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-purple-40)" title="Purple, in use"&gt;&lt;input type="radio" name="color" value="purple" disabled&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Purple (in use)&lt;/span&gt;&lt;/label&gt;
+&lt;/x-oc::color-select&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class ColorSelectSwatches extends Component
+class LabelColor extends Component
 {
+    public string $color = 'blue';
+
     public function render()
     {
-        return view('livewire.color-select-swatches');
+        return view('livewire.label-color');
     }
 }
 
-{{-- resources/views/livewire/color-select-swatches.blade.php --}}
-&lt;fieldset class="oc-color-select" role="radiogroup" aria-label="Label color"&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-vividblue-95)"&gt;&lt;input type="radio" name="color" value="blue" checked&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Blue&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-teal-80)"&gt;&lt;input type="radio" name="color" value="teal"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Teal&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-green-60)"&gt;&lt;input type="radio" name="color" value="green"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Green&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-orange-95)"&gt;&lt;input type="radio" name="color" value="orange"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Orange&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-red-70)"&gt;&lt;input type="radio" name="color" value="red"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Red&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-purple-40)" title="Purple, in use"&gt;&lt;input type="radio" name="color" value="purple" disabled&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Purple (in use)&lt;/span&gt;&lt;/label&gt;
-&lt;/fieldset&gt;</oc-code>
+{{-- resources/views/livewire/label-color.blade.php --}}
+&lt;div&gt;
+    {{-- attributes go to the fieldset: the change of a radio bubbles up and sets $color --}}
+    &lt;x-oc::color-select name="color" label="Label color" :value="$color" wire:change="$set('color', $event.target.value)" :options="[
+        'blue' =&gt; ['Blue', 'var(--color-vividblue-95)'],
+        'teal' =&gt; ['Teal', 'var(--color-teal-80)'],
+        'green' =&gt; ['Green', 'var(--color-green-60)'],
+        'orange' =&gt; ['Orange', 'var(--color-orange-95)'],
+        'red' =&gt; ['Red', 'var(--color-red-70)'],
+    ]"&gt;
+        &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-purple-40)" title="Purple, in use"&gt;&lt;input type="radio" name="color" value="purple" disabled&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Purple (in use)&lt;/span&gt;&lt;/label&gt;
+    &lt;/x-oc::color-select&gt;
+    &lt;p class="text-muted"&gt;Chosen: {{ $color }}&lt;/p&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">List with names, in a popover</h3>
@@ -92,43 +111,50 @@ class ColorSelectSwatches extends Component
     <label class="oc-color-select-option" style="--oc-swatch: var(--color-red-70)"><input type="radio" name="cat-color" value="red"><span class="oc-color-select-swatch"></span><span class="oc-color-select-name">Red</span></label>
   </fieldset>
 </div>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { useState } from "react";
+import { ColorSelect, Popover } from "@birdycom/omniaui-react";
+
+const colors = [
+  { value: "blue", label: "Blue", color: "var(--color-vividblue-95)" },
+  { value: "green", label: "Green", color: "var(--color-green-60)" },
+  { value: "orange", label: "Orange", color: "var(--color-orange-95)" },
+  { value: "red", label: "Red", color: "var(--color-red-70)" },
+];
 
 export function Example() {
+  const [color, setColor] = useState("green");
   return (
-    &lt;&gt;
-      &lt;button className="oc-btn oc-btn--outline" type="button" popoverTarget="oc-color-select-pop"&gt;Choose color&lt;/button&gt;
-      &lt;div className="oc-popover" id="oc-color-select-pop" popover=""&gt;
-        &lt;fieldset className="oc-color-select oc-color-select--list" role="radiogroup" aria-label="Category color"&gt;
-          &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-vividblue-95)" } as CSSProperties}&gt;&lt;input type="radio" name="cat-color" value="blue" /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Blue&lt;/span&gt;&lt;/label&gt;
-          &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-green-60)" } as CSSProperties}&gt;&lt;input type="radio" name="cat-color" value="green" defaultChecked /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Green&lt;/span&gt;&lt;/label&gt;
-          &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-orange-95)" } as CSSProperties}&gt;&lt;input type="radio" name="cat-color" value="orange" /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Orange&lt;/span&gt;&lt;/label&gt;
-          &lt;label className="oc-color-select-option" style={{ "--oc-swatch": "var(--color-red-70)" } as CSSProperties}&gt;&lt;input type="radio" name="cat-color" value="red" /&gt;&lt;span className="oc-color-select-swatch" /&gt;&lt;span className="oc-color-select-name"&gt;Red&lt;/span&gt;&lt;/label&gt;
-        &lt;/fieldset&gt;
-      &lt;/div&gt;
-    &lt;/&gt;
+    &lt;Popover id="oc-color-select-pop" trigger="Choose color"&gt;
+      &lt;ColorSelect list name="cat-color" aria-label="Category color" options={colors} value={color} onChange={setColor} /&gt;
+    &lt;/Popover&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-color-select-pop"&gt;Choose color&lt;/button&gt;
-  &lt;div class="oc-popover" id="oc-color-select-pop" popover=""&gt;
-    &lt;fieldset class="oc-color-select oc-color-select--list" role="radiogroup" aria-label="Category color"&gt;
-      &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-vividblue-95)"&gt;&lt;input type="radio" name="cat-color" value="blue" /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Blue&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-green-60)"&gt;&lt;input type="radio" name="cat-color" value="green" checked /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Green&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-orange-95)"&gt;&lt;input type="radio" name="cat-color" value="orange" /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Orange&lt;/span&gt;&lt;/label&gt;
-      &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-red-70)"&gt;&lt;input type="radio" name="cat-color" value="red" /&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Red&lt;/span&gt;&lt;/label&gt;
-    &lt;/fieldset&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcColorSelect, OcPopover } from "@birdycom/omniaui-vue";
+
+const colors = [
+  { value: "blue", label: "Blue", color: "var(--color-vividblue-95)" },
+  { value: "green", label: "Green", color: "var(--color-green-60)" },
+  { value: "orange", label: "Orange", color: "var(--color-orange-95)" },
+  { value: "red", label: "Red", color: "var(--color-red-70)" },
+];
+const color = ref("green");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcPopover label="Choose color"&gt;
+    &lt;OcColorSelect v-model="color" list name="cat-color" label="Category color" :options="colors" /&gt;
+  &lt;/OcPopover&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-color-select-pop"&gt;Choose color&lt;/button&gt;
-&lt;div class="oc-popover" id="oc-color-select-pop" popover&gt;
-  &lt;fieldset class="oc-color-select oc-color-select--list" role="radiogroup" aria-label="Category color"&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-vividblue-95)"&gt;&lt;input type="radio" name="cat-color" value="blue"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Blue&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-green-60)"&gt;&lt;input type="radio" name="cat-color" value="green" checked&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Green&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-orange-95)"&gt;&lt;input type="radio" name="cat-color" value="orange"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Orange&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-red-70)"&gt;&lt;input type="radio" name="cat-color" value="red"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Red&lt;/span&gt;&lt;/label&gt;
-  &lt;/fieldset&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::popover id="oc-color-select-pop" trigger="Choose color"&gt;
+    &lt;x-oc::color-select list name="cat-color" label="Category color" value="green" :options="[
+        'blue' =&gt; ['Blue', 'var(--color-vividblue-95)'],
+        'green' =&gt; ['Green', 'var(--color-green-60)'],
+        'orange' =&gt; ['Orange', 'var(--color-orange-95)'],
+        'red' =&gt; ['Red', 'var(--color-red-70)'],
+    ]" /&gt;
+&lt;/x-oc::popover&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -145,15 +171,14 @@ class ColorSelectListInAPopover extends Component
 
 {{-- resources/views/livewire/color-select-list-in-a-popover.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-color-select-pop"&gt;Choose color&lt;/button&gt;
-    &lt;div class="oc-popover" id="oc-color-select-pop" popover&gt;
-      &lt;fieldset class="oc-color-select oc-color-select--list" role="radiogroup" aria-label="Category color"&gt;
-        &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-vividblue-95)"&gt;&lt;input type="radio" name="cat-color" value="blue"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Blue&lt;/span&gt;&lt;/label&gt;
-        &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-green-60)"&gt;&lt;input type="radio" name="cat-color" value="green" checked&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Green&lt;/span&gt;&lt;/label&gt;
-        &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-orange-95)"&gt;&lt;input type="radio" name="cat-color" value="orange"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Orange&lt;/span&gt;&lt;/label&gt;
-        &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-red-70)"&gt;&lt;input type="radio" name="cat-color" value="red"&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Red&lt;/span&gt;&lt;/label&gt;
-      &lt;/fieldset&gt;
-    &lt;/div&gt;
+    &lt;x-oc::popover id="oc-color-select-pop" trigger="Choose color"&gt;
+        &lt;x-oc::color-select list name="cat-color" label="Category color" value="green" :options="[
+            'blue' =&gt; ['Blue', 'var(--color-vividblue-95)'],
+            'green' =&gt; ['Green', 'var(--color-green-60)'],
+            'orange' =&gt; ['Orange', 'var(--color-orange-95)'],
+            'red' =&gt; ['Red', 'var(--color-red-70)'],
+        ]" /&gt;
+    &lt;/x-oc::popover&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

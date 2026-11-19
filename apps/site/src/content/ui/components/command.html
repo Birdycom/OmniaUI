@@ -25,51 +25,51 @@
   </ul>
   <div class="oc-command-empty" hidden>No results found.</div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Command } from "@birdycom/omniaui-react";
+
+const groups = [
+  { label: "Suggestions", items: [{ id: "invoice", label: "New invoice", shortcut: "Ctrl N" }, { id: "contacts", label: "Open contacts" }] },
+  { label: "Settings", items: [{ id: "appearance", label: "Appearance" }, { id: "billing", label: "Billing", disabled: true }] },
+];
+
+function run(id: string) {
+  // open the page or action behind the command
+}
+
+export function Example() {
   return (
-    &lt;div className="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox"&gt;
-      &lt;input className="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands" /&gt;
-      &lt;ul className="oc-command-list" role="listbox"&gt;
-        &lt;li className="oc-command-group-label" role="presentation"&gt;Suggestions&lt;/li&gt;
-        &lt;li className="oc-command-item" role="option" aria-selected="true"&gt;New invoice &lt;span className="oc-command-shortcut"&gt;Ctrl N&lt;/span&gt;&lt;/li&gt;
-        &lt;li className="oc-command-item" role="option"&gt;Open contacts&lt;/li&gt;
-        &lt;li className="oc-command-separator" role="separator" /&gt;
-        &lt;li className="oc-command-group-label" role="presentation"&gt;Settings&lt;/li&gt;
-        &lt;li className="oc-command-item" role="option"&gt;Appearance&lt;/li&gt;
-        &lt;li className="oc-command-item" role="option" aria-disabled="true"&gt;Billing&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;div className="oc-command-empty" hidden&gt;No results found.&lt;/div&gt;
-    &lt;/div&gt;
+    &lt;Command groups={groups} onSelect={(item) =&gt; run(item.id)} /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox"&gt;
-    &lt;input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands" /&gt;
-    &lt;ul class="oc-command-list" role="listbox"&gt;
-      &lt;li class="oc-command-group-label" role="presentation"&gt;Suggestions&lt;/li&gt;
-      &lt;li class="oc-command-item" role="option" aria-selected="true"&gt;New invoice &lt;span class="oc-command-shortcut"&gt;Ctrl N&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-command-item" role="option"&gt;Open contacts&lt;/li&gt;
-      &lt;li class="oc-command-separator" role="separator"&gt;&lt;/li&gt;
-      &lt;li class="oc-command-group-label" role="presentation"&gt;Settings&lt;/li&gt;
-      &lt;li class="oc-command-item" role="option"&gt;Appearance&lt;/li&gt;
-      &lt;li class="oc-command-item" role="option" aria-disabled="true"&gt;Billing&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;div class="oc-command-empty" hidden&gt;No results found.&lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCommand } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const query = ref("");
+const items = [
+  { label: "New invoice", value: "invoice", group: "Suggestions", shortcut: "Ctrl N" },
+  { label: "Open contacts", value: "contacts", group: "Suggestions" },
+  { label: "Appearance", value: "appearance", group: "Settings" },
+  { label: "Billing", value: "billing", group: "Settings", disabled: true },
+];
+
+function run(item: { value?: string }) {
+  // open the page or action behind the command
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCommand v-model:query="query" :items="items" @select="run" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox"&gt;
-  &lt;input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands"&gt;
-  &lt;ul class="oc-command-list" role="listbox"&gt;
-    &lt;li class="oc-command-group-label" role="presentation"&gt;Suggestions&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option" aria-selected="true"&gt;New invoice &lt;span class="oc-command-shortcut"&gt;Ctrl N&lt;/span&gt;&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option"&gt;Open contacts&lt;/li&gt;
-    &lt;li class="oc-command-separator" role="separator"&gt;&lt;/li&gt;
-    &lt;li class="oc-command-group-label" role="presentation"&gt;Settings&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option"&gt;Appearance&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option" aria-disabled="true"&gt;Billing&lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;div class="oc-command-empty" hidden&gt;No results found.&lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::command :items="[
+    ['group' =&gt; 'Suggestions'],
+    ['label' =&gt; 'New invoice', 'shortcut' =&gt; 'Ctrl N', 'selected' =&gt; true],
+    ['label' =&gt; 'Open contacts'],
+    ['separator' =&gt; true],
+    ['group' =&gt; 'Settings'],
+    ['label' =&gt; 'Appearance'],
+    ['label' =&gt; 'Billing', 'disabled' =&gt; true],
+]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -85,18 +85,16 @@ class Command extends Component
 }
 
 {{-- resources/views/livewire/command.blade.php --}}
-&lt;div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox"&gt;
-  &lt;input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands"&gt;
-  &lt;ul class="oc-command-list" role="listbox"&gt;
-    &lt;li class="oc-command-group-label" role="presentation"&gt;Suggestions&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option" aria-selected="true"&gt;New invoice &lt;span class="oc-command-shortcut"&gt;Ctrl N&lt;/span&gt;&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option"&gt;Open contacts&lt;/li&gt;
-    &lt;li class="oc-command-separator" role="separator"&gt;&lt;/li&gt;
-    &lt;li class="oc-command-group-label" role="presentation"&gt;Settings&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option"&gt;Appearance&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option" aria-disabled="true"&gt;Billing&lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;div class="oc-command-empty" hidden&gt;No results found.&lt;/div&gt;
+&lt;div&gt;
+    &lt;x-oc::command :items="[
+        ['group' =&gt; 'Suggestions'],
+        ['label' =&gt; 'New invoice', 'shortcut' =&gt; 'Ctrl N', 'selected' =&gt; true],
+        ['label' =&gt; 'Open contacts'],
+        ['separator' =&gt; true],
+        ['group' =&gt; 'Settings'],
+        ['label' =&gt; 'Appearance'],
+        ['label' =&gt; 'Billing', 'disabled' =&gt; true],
+    ]" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

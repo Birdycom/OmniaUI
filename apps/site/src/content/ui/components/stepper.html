@@ -17,51 +17,66 @@
   <li><button class="oc-stepper-item" type="button" disabled><span><span class="oc-stepper-label">Banking</span><span class="oc-stepper-meta">3/4</span></span></button></li>
   <li><button class="oc-stepper-item" type="button" disabled><span><span class="oc-stepper-label">Team</span><span class="oc-stepper-meta">4/4</span></span></button></li>
 </ol>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;ol className="oc-stepper" aria-label="Setup steps"&gt;
-      &lt;li&gt;&lt;button className="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span&gt;&lt;span className="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;span className="oc-stepper-meta"&gt;1/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;button className="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span&gt;&lt;span className="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;span className="oc-stepper-meta"&gt;2/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;button className="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span className="oc-stepper-label"&gt;Banking&lt;/span&gt;&lt;span className="oc-stepper-meta"&gt;3/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;button className="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span className="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;span className="oc-stepper-meta"&gt;4/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-    &lt;/ol&gt;
-  );
+<oc-code lang="tsx">import { useState } from "react";
+import { Stepper } from "@birdycom/omniaui-react";
+
+const steps = [
+  { label: "Company", meta: "1/4" },
+  { label: "Invoicing", meta: "2/4" },
+  { label: "Banking", meta: "3/4" },
+  { label: "Team", meta: "4/4" },
+];
+
+export function Example() {
+  const [current, setCurrent] = useState(1); // 0-based: earlier steps are done and clickable, later ones disabled
+  return &lt;Stepper aria-label="Setup steps" steps={steps} current={current} onStepChange={setCurrent} /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;ol class="oc-stepper" aria-label="Setup steps"&gt;
-    &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;1/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;2/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Banking&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;3/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;4/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-  &lt;/ol&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcStepper } from "@birdycom/omniaui-vue";
+
+const steps = [
+  { label: "Company", meta: "1/4" },
+  { label: "Invoicing", meta: "2/4" },
+  { label: "Banking", meta: "3/4" },
+  { label: "Team", meta: "4/4" },
+];
+const current = ref(1); // 0-based: earlier steps are done and clickable, later ones disabled
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcStepper v-model="current" label="Setup steps" :steps="steps" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;ol class="oc-stepper" aria-label="Setup steps"&gt;
-  &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;1/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;2/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Banking&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;3/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;4/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-&lt;/ol&gt;</oc-code>
+<oc-code lang="blade">{{-- current is 1-based; the "n/total" meta text is added for you --}}
+&lt;x-oc::stepper label="Setup steps" :steps="['Company', 'Invoicing', 'Banking', 'Team']" :current="2" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class Stepper extends Component
+class SetupWizard extends Component
 {
+    public array $steps = ['Company', 'Invoicing', 'Banking', 'Team'];
+
+    public int $step = 2; // 1-based, earlier steps are done
+
+    public function next(): void
+    {
+        $this-&gt;step = min($this-&gt;step + 1, count($this-&gt;steps));
+    }
+
     public function render()
     {
-        return view('livewire.stepper');
+        return view('livewire.setup-wizard');
     }
 }
 
-{{-- resources/views/livewire/stepper.blade.php --}}
-&lt;ol class="oc-stepper" aria-label="Setup steps"&gt;
-  &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;1/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;2/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Banking&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;3/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;4/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-&lt;/ol&gt;</oc-code>
+{{-- resources/views/livewire/setup-wizard.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::stepper label="Setup steps" :steps="$steps" :current="$step" /&gt;
+    {{-- … the form of the current step, whose submit calls next() --}}
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

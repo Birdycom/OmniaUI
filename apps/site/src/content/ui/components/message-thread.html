@@ -123,289 +123,163 @@ document.addEventListener("keydown", (e) => {
   e.target.form.requestSubmit();
 });
 </script>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { MessageThread } from "@birdycom/omniaui-react";
+
+import type { MessageListItem } from "@birdycom/omniaui-react";
+
+const messages: MessageListItem[] = [
+  { divider: "Tuesday 14 October" },
+  {
+    sender: "Customer 1", avatar: "C1", time: "09:12", datetime: "2026-10-14T09:12",
+    text: "The supplier dropped off two worktop samples at the workshop. Photo attached.",
+    attachments: [{ kind: "image", href: "#samples.jpg", alt: "Two worktop samples on the workbench", art: 6, caption: "samples.jpg · 2.1 MB" }],
+  },
+  {
+    sender: "Customer 1", avatar: "C1", time: "09:13", datetime: "2026-10-14T09:13", continued: true,
+    text: &lt;p&gt;Which one should we order: &lt;strong&gt;Calacatta matt&lt;/strong&gt; or &lt;strong&gt;Nero Marquina polished&lt;/strong&gt;? The cutting slot is Friday.&lt;/p&gt;,
+  },
+  {
+    direction: "out", avatar: "C6", time: "09:20", datetime: "2026-10-14T09:20", status: "read",
+    text: "Calacatta matt, 20 mm. I'll send the updated quote to the client today.",
+    attachments: [{ name: "Quote kitchen Project 1 v2.pdf", size: "1.2 MB", href: "#quote.pdf" }],
+    actions: [{ name: "delete", label: "Delete this message", destructive: true }],
+  },
+  { divider: "Today" },
+  { sender: "Customer 1", avatar: "C1", time: "10:02", datetime: "2026-10-24T10:02", text: "Client signed. Can you confirm the edge profile before 16:00?" },
+];
+
+async function sendMessage(text: string) {
+  // POST the reply to your API; the thread shows "Sending message…" until this resolves.
+}
+
+export function Example() {
   return (
-    &lt;section className="oc-message-thread" aria-labelledby="oc-thread-demo-title" style={{ inlineSize: "100%", maxInlineSize: "40rem" }}&gt;
-      &lt;header className="oc-message-thread__header"&gt;
-        &lt;div className="oc-message-thread__heading"&gt;
-          &lt;h3 className="oc-message-thread__title" id="oc-thread-demo-title"&gt;Kitchen worktop: which finish?&lt;/h3&gt;
-          &lt;p className="oc-message-thread__meta"&gt;&lt;strong&gt;Project 1&lt;/strong&gt; · Customer 1 → Customer 6 · 14 Oct 2026&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-avatar-group oc-message-thread__people" aria-label="2 participants"&gt;&lt;span className="oc-avatar" title="Customer 1"&gt;C1&lt;/span&gt;&lt;span className="oc-avatar" title="Customer 6"&gt;C6&lt;/span&gt;&lt;/div&gt;
-        &lt;div className="oc-message-thread__actions"&gt;
-          &lt;span className="oc-badge oc-badge--destructive"&gt;Urgent&lt;/span&gt;
-          &lt;button type="button" className="oc-message-thread__icon-btn" popoverTarget="oc-thread-demo-menu" aria-label="Conversation actions"&gt;&lt;svg data-icon="mdi:dots-vertical" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /&gt;&lt;/svg&gt;&lt;/button&gt;
-          &lt;div className="oc-dropdown-menu" id="oc-thread-demo-menu" popover="" role="menu"&gt;
-            &lt;button type="button" className="oc-dropdown-item" role="menuitem"&gt;Mark as unread&lt;/button&gt;
-            &lt;button type="button" className="oc-dropdown-item" role="menuitem"&gt;Move to archive&lt;/button&gt;
-            &lt;div className="oc-dropdown-separator" role="separator" /&gt;
-            &lt;button type="button" className="oc-dropdown-item oc-dropdown-item--destructive" role="menuitem"&gt;Delete conversation&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/header&gt;
-
-      &lt;div className="oc-message-thread__scroll" tabIndex={0} role="log" aria-label="Messages" aria-live="polite"&gt;
-        &lt;div className="oc-message-list"&gt;
-          &lt;div className="oc-message-divider"&gt;&lt;span&gt;Tuesday 14 October&lt;/span&gt;&lt;/div&gt;
-          &lt;article className="oc-message"&gt;
-            &lt;span className="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-            &lt;div className="oc-message__bubble"&gt;
-              &lt;p className="oc-message__sender"&gt;Customer 1&lt;/p&gt;
-              &lt;div className="oc-message__text"&gt;&lt;p&gt;The supplier dropped off two worktop samples at the workshop. Photo attached.&lt;/p&gt;&lt;/div&gt;
-              &lt;div className="oc-message__attachments"&gt;&lt;a className="oc-attachment-image" href="#samples.jpg"&gt;&lt;span className="oc-media-art oc-media-art--6" role="img" aria-label="Two worktop samples on the workbench" /&gt;&lt;span className="oc-attachment-image__caption"&gt;samples.jpg · 2.1 MB&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-              &lt;p className="oc-message__meta"&gt;&lt;time dateTime="2026-10-14T09:12"&gt;09:12&lt;/time&gt;&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/article&gt;
-          &lt;article className="oc-message oc-message--continued"&gt;
-            &lt;span className="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-            &lt;div className="oc-message__bubble"&gt;
-              &lt;div className="oc-message__text"&gt;&lt;p&gt;Which one should we order: &lt;strong&gt;Calacatta matt&lt;/strong&gt; or &lt;strong&gt;Nero Marquina polished&lt;/strong&gt;? The cutting slot is Friday.&lt;/p&gt;&lt;/div&gt;
-              &lt;p className="oc-message__meta"&gt;&lt;time dateTime="2026-10-14T09:13"&gt;09:13&lt;/time&gt;&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/article&gt;
-          &lt;article className="oc-message oc-message--out"&gt;
-            &lt;span className="oc-avatar oc-message__avatar"&gt;C6&lt;/span&gt;
-            &lt;div className="oc-message__bubble"&gt;
-              &lt;div className="oc-message__text"&gt;&lt;p&gt;Calacatta matt, 20 mm. I'll send the updated quote to the client today.&lt;/p&gt;&lt;/div&gt;
-              &lt;div className="oc-message__attachments"&gt;&lt;a className="oc-attachment oc-attachment--pdf" href="#quote.pdf"&gt;&lt;span className="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;Quote kitchen Project 1 v2.pdf&lt;/span&gt;&lt;span className="oc-attachment__size"&gt;1.2 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-              &lt;p className="oc-message__meta"&gt;&lt;time dateTime="2026-10-14T09:20"&gt;09:20&lt;/time&gt;&lt;span className="oc-message__status oc-message__status--read"&gt;Read&lt;/span&gt;&lt;/p&gt;
-            &lt;/div&gt;
-            &lt;div className="oc-message__actions"&gt;&lt;button type="button" className="oc-message__action oc-message__action--destructive" aria-label="Delete this message"&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-          &lt;/article&gt;
-          &lt;div className="oc-message-divider"&gt;&lt;span&gt;Today&lt;/span&gt;&lt;/div&gt;
-          &lt;article className="oc-message"&gt;
-            &lt;span className="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-            &lt;div className="oc-message__bubble"&gt;
-              &lt;p className="oc-message__sender"&gt;Customer 1&lt;/p&gt;
-              &lt;div className="oc-message__text"&gt;&lt;p&gt;Client signed. Can you confirm the edge profile before 16:00?&lt;/p&gt;&lt;/div&gt;
-              &lt;p className="oc-message__meta"&gt;&lt;time dateTime="2026-10-24T10:02"&gt;10:02&lt;/time&gt;&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/article&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-
-      &lt;div className="oc-message-thread__footer"&gt;
-        &lt;form className="oc-chat-composer" action="#" aria-label="Reply"&gt;
-          &lt;label className="oc-visually-hidden" htmlFor="oc-thread-demo-input"&gt;Message&lt;/label&gt;
-          &lt;textarea className="oc-chat-composer__input" id="oc-thread-demo-input" name="message" rows={1} placeholder="Type your reply…" required /&gt;
-          &lt;div className="oc-chat-composer__bar"&gt;
-            &lt;div className="oc-chat-composer__tools"&gt;
-              &lt;button type="button" className="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-              &lt;button type="button" className="oc-chat-composer__tool" aria-label="Insert emoji"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81" /&gt;&lt;/svg&gt;&lt;/button&gt;
-            &lt;/div&gt;
-            &lt;span className="oc-chat-composer__hint"&gt;Ctrl + Enter to send&lt;/span&gt;
-            &lt;button type="submit" className="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/form&gt;
-      &lt;/div&gt;
-
-      &lt;div className="oc-message-thread__busy" role="status"&gt;
-        &lt;span className="oc-spinner oc-spinner--lg" aria-hidden="true" /&gt;{" "}
-        &lt;strong&gt;Sending message…&lt;/strong&gt;{" "}
-        &lt;span&gt;Please wait, do not close this conversation.&lt;/span&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
+    &lt;MessageThread
+      id="oc-thread-demo"
+      style={{ inlineSize: "100%", maxInlineSize: "40rem" }}
+      title="Kitchen worktop: which finish?"
+      project="Project 1"
+      meta="Customer 1 → Customer 6 · 14 Oct 2026"
+      participants={[{ initials: "C1", name: "Customer 1" }, { initials: "C6", name: "Customer 6" }]}
+      status={{ label: "Urgent", variant: "destructive" }}
+      menu={[
+        { name: "unread", label: "Mark as unread" },
+        { name: "archive", label: "Move to archive" },
+        { separator: true },
+        { name: "delete", label: "Delete conversation", destructive: true },
+      ]}
+      onMenu={(name) =&gt; console.log(name)}
+      messages={messages}
+      onSend={async (text) =&gt; { await sendMessage(text); }}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;section class="oc-message-thread" aria-labelledby="oc-thread-demo-title" style="inline-size:100%;max-inline-size:40rem"&gt;
-    &lt;header class="oc-message-thread__header"&gt;
-      &lt;div class="oc-message-thread__heading"&gt;
-        &lt;h3 class="oc-message-thread__title" id="oc-thread-demo-title"&gt;Kitchen worktop: which finish?&lt;/h3&gt;
-        &lt;p class="oc-message-thread__meta"&gt;&lt;strong&gt;Project 1&lt;/strong&gt; · Customer 1 → Customer 6 · 14 Oct 2026&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-avatar-group oc-message-thread__people" aria-label="2 participants"&gt;&lt;span class="oc-avatar" title="Customer 1"&gt;C1&lt;/span&gt;&lt;span class="oc-avatar" title="Customer 6"&gt;C6&lt;/span&gt;&lt;/div&gt;
-      &lt;div class="oc-message-thread__actions"&gt;
-        &lt;span class="oc-badge oc-badge--destructive"&gt;Urgent&lt;/span&gt;
-        &lt;button type="button" class="oc-message-thread__icon-btn" popovertarget="oc-thread-demo-menu" aria-label="Conversation actions"&gt;&lt;svg data-icon="mdi:dots-vertical" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2" /&gt;&lt;/svg&gt;&lt;/button&gt;
-        &lt;div class="oc-dropdown-menu" id="oc-thread-demo-menu" popover="" role="menu"&gt;
-          &lt;button type="button" class="oc-dropdown-item" role="menuitem"&gt;Mark as unread&lt;/button&gt;
-          &lt;button type="button" class="oc-dropdown-item" role="menuitem"&gt;Move to archive&lt;/button&gt;
-          &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-          &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive" role="menuitem"&gt;Delete conversation&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/header&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcMessageThread } from "@birdycom/omniaui-vue";
 
-    &lt;div class="oc-message-thread__scroll" tabindex="0" role="log" aria-label="Messages" aria-live="polite"&gt;
-      &lt;div class="oc-message-list"&gt;
-        &lt;div class="oc-message-divider"&gt;&lt;span&gt;Tuesday 14 October&lt;/span&gt;&lt;/div&gt;
-        &lt;article class="oc-message"&gt;
-          &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-          &lt;div class="oc-message__bubble"&gt;
-            &lt;p class="oc-message__sender"&gt;Customer 1&lt;/p&gt;
-            &lt;div class="oc-message__text"&gt;&lt;p&gt;The supplier dropped off two worktop samples at the workshop. Photo attached.&lt;/p&gt;&lt;/div&gt;
-            &lt;div class="oc-message__attachments"&gt;&lt;a class="oc-attachment-image" href="#samples.jpg"&gt;&lt;span class="oc-media-art oc-media-art--6" role="img" aria-label="Two worktop samples on the workbench"&gt;&lt;/span&gt;&lt;span class="oc-attachment-image__caption"&gt;samples.jpg · 2.1 MB&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-            &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:12"&gt;09:12&lt;/time&gt;&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/article&gt;
-        &lt;article class="oc-message oc-message--continued"&gt;
-          &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-          &lt;div class="oc-message__bubble"&gt;
-            &lt;div class="oc-message__text"&gt;&lt;p&gt;Which one should we order: &lt;strong&gt;Calacatta matt&lt;/strong&gt; or &lt;strong&gt;Nero Marquina polished&lt;/strong&gt;? The cutting slot is Friday.&lt;/p&gt;&lt;/div&gt;
-            &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:13"&gt;09:13&lt;/time&gt;&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/article&gt;
-        &lt;article class="oc-message oc-message--out"&gt;
-          &lt;span class="oc-avatar oc-message__avatar"&gt;C6&lt;/span&gt;
-          &lt;div class="oc-message__bubble"&gt;
-            &lt;div class="oc-message__text"&gt;&lt;p&gt;Calacatta matt, 20 mm. I'll send the updated quote to the client today.&lt;/p&gt;&lt;/div&gt;
-            &lt;div class="oc-message__attachments"&gt;&lt;a class="oc-attachment oc-attachment--pdf" href="#quote.pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Quote kitchen Project 1 v2.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;1.2 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-            &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:20"&gt;09:20&lt;/time&gt;&lt;span class="oc-message__status oc-message__status--read"&gt;Read&lt;/span&gt;&lt;/p&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-message__actions"&gt;&lt;button type="button" class="oc-message__action oc-message__action--destructive" aria-label="Delete this message"&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-        &lt;/article&gt;
-        &lt;div class="oc-message-divider"&gt;&lt;span&gt;Today&lt;/span&gt;&lt;/div&gt;
-        &lt;article class="oc-message"&gt;
-          &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-          &lt;div class="oc-message__bubble"&gt;
-            &lt;p class="oc-message__sender"&gt;Customer 1&lt;/p&gt;
-            &lt;div class="oc-message__text"&gt;&lt;p&gt;Client signed. Can you confirm the edge profile before 16:00?&lt;/p&gt;&lt;/div&gt;
-            &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-24T10:02"&gt;10:02&lt;/time&gt;&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/article&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+import type { MessageListItem } from "@birdycom/omniaui-vue";
 
-    &lt;div class="oc-message-thread__footer"&gt;
-      &lt;form class="oc-chat-composer" action="#" aria-label="Reply"&gt;
-        &lt;label class="oc-visually-hidden" for="oc-thread-demo-input"&gt;Message&lt;/label&gt;
-        &lt;textarea class="oc-chat-composer__input" id="oc-thread-demo-input" name="message" rows="1" placeholder="Type your reply…" required&gt;&lt;/textarea&gt;
-        &lt;div class="oc-chat-composer__bar"&gt;
-          &lt;div class="oc-chat-composer__tools"&gt;
-            &lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-            &lt;button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81" /&gt;&lt;/svg&gt;&lt;/button&gt;
-          &lt;/div&gt;
-          &lt;span class="oc-chat-composer__hint"&gt;Ctrl + Enter to send&lt;/span&gt;
-          &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/form&gt;
-    &lt;/div&gt;
+const messages: MessageListItem[] = [
+  { divider: "Tuesday 14 October" },
+  {
+    sender: "Customer 1", avatar: "C1", time: "09:12", datetime: "2026-10-14T09:12",
+    text: "The supplier dropped off two worktop samples at the workshop. Photo attached.",
+    attachments: [{ kind: "image", href: "#samples.jpg", alt: "Two worktop samples on the workbench", art: 6, caption: "samples.jpg · 2.1 MB" }],
+  },
+  {
+    sender: "Customer 1", avatar: "C1", time: "09:13", datetime: "2026-10-14T09:13", continued: true,
+    html: "&lt;p&gt;Which one should we order: &lt;strong&gt;Calacatta matt&lt;/strong&gt; or &lt;strong&gt;Nero Marquina polished&lt;/strong&gt;? The cutting slot is Friday.&lt;/p&gt;",
+  },
+  {
+    direction: "out", avatar: "C6", time: "09:20", datetime: "2026-10-14T09:20", status: "read",
+    text: "Calacatta matt, 20 mm. I'll send the updated quote to the client today.",
+    attachments: [{ name: "Quote kitchen Project 1 v2.pdf", size: "1.2 MB", href: "#quote.pdf" }],
+    actions: [{ name: "delete", label: "Delete this message", destructive: true }],
+  },
+  { divider: "Today" },
+  { sender: "Customer 1", avatar: "C1", time: "10:02", datetime: "2026-10-24T10:02", text: "Client signed. Can you confirm the edge profile before 16:00?" },
+];
 
-    &lt;div class="oc-message-thread__busy" role="status"&gt;
-      &lt;span class="oc-spinner oc-spinner--lg" aria-hidden="true"&gt;&lt;/span&gt;
-      &lt;strong&gt;Sending message…&lt;/strong&gt;
-      &lt;span&gt;Please wait, do not close this conversation.&lt;/span&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
+async function sendMessage(text: string) {
+  // POST the reply to your API; the thread shows "Sending message…" until this resolves.
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcMessageThread
+    id="oc-thread-demo"
+    style="inline-size:100%;max-inline-size:40rem"
+    title="Kitchen worktop: which finish?"
+    project="Project 1"
+    meta="Customer 1 → Customer 6 · 14 Oct 2026"
+    :participants="[{ initials: 'C1', name: 'Customer 1' }, { initials: 'C6', name: 'Customer 6' }]"
+    :status="{ label: 'Urgent', variant: 'destructive' }"
+    :messages="messages"
+    :on-send="sendMessage"
+  /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-message-thread" aria-labelledby="oc-thread-demo-title" style="inline-size:100%;max-inline-size:40rem"&gt;
-  &lt;header class="oc-message-thread__header"&gt;
-    &lt;div class="oc-message-thread__heading"&gt;
-      &lt;h3 class="oc-message-thread__title" id="oc-thread-demo-title"&gt;Kitchen worktop: which finish?&lt;/h3&gt;
-      &lt;p class="oc-message-thread__meta"&gt;&lt;strong&gt;Project 1&lt;/strong&gt; · Customer 1 → Customer 6 · 14 Oct 2026&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-avatar-group oc-message-thread__people" aria-label="2 participants"&gt;&lt;span class="oc-avatar" title="Customer 1"&gt;C1&lt;/span&gt;&lt;span class="oc-avatar" title="Customer 6"&gt;C6&lt;/span&gt;&lt;/div&gt;
-    &lt;div class="oc-message-thread__actions"&gt;
-      &lt;span class="oc-badge oc-badge--destructive"&gt;Urgent&lt;/span&gt;
-      &lt;button type="button" class="oc-message-thread__icon-btn" popovertarget="oc-thread-demo-menu" aria-label="Conversation actions"&gt;&lt;svg data-icon="mdi:dots-vertical" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2"/&gt;&lt;/svg&gt;&lt;/button&gt;
-      &lt;div class="oc-dropdown-menu" id="oc-thread-demo-menu" popover="" role="menu"&gt;
-        &lt;button type="button" class="oc-dropdown-item" role="menuitem"&gt;Mark as unread&lt;/button&gt;
-        &lt;button type="button" class="oc-dropdown-item" role="menuitem"&gt;Move to archive&lt;/button&gt;
-        &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-        &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive" role="menuitem"&gt;Delete conversation&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/header&gt;
-
-  &lt;div class="oc-message-thread__scroll" tabindex="0" role="log" aria-label="Messages" aria-live="polite"&gt;
-    &lt;div class="oc-message-list"&gt;
-      &lt;div class="oc-message-divider"&gt;&lt;span&gt;Tuesday 14 October&lt;/span&gt;&lt;/div&gt;
-      &lt;article class="oc-message"&gt;
-        &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-        &lt;div class="oc-message__bubble"&gt;
-          &lt;p class="oc-message__sender"&gt;Customer 1&lt;/p&gt;
-          &lt;div class="oc-message__text"&gt;&lt;p&gt;The supplier dropped off two worktop samples at the workshop. Photo attached.&lt;/p&gt;&lt;/div&gt;
-          &lt;div class="oc-message__attachments"&gt;&lt;a class="oc-attachment-image" href="#samples.jpg"&gt;&lt;span class="oc-media-art oc-media-art--6" role="img" aria-label="Two worktop samples on the workbench"&gt;&lt;/span&gt;&lt;span class="oc-attachment-image__caption"&gt;samples.jpg · 2.1 MB&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-          &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:12"&gt;09:12&lt;/time&gt;&lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/article&gt;
-      &lt;article class="oc-message oc-message--continued"&gt;
-        &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-        &lt;div class="oc-message__bubble"&gt;
-          &lt;div class="oc-message__text"&gt;&lt;p&gt;Which one should we order: &lt;strong&gt;Calacatta matt&lt;/strong&gt; or &lt;strong&gt;Nero Marquina polished&lt;/strong&gt;? The cutting slot is Friday.&lt;/p&gt;&lt;/div&gt;
-          &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:13"&gt;09:13&lt;/time&gt;&lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/article&gt;
-      &lt;article class="oc-message oc-message--out"&gt;
-        &lt;span class="oc-avatar oc-message__avatar"&gt;C6&lt;/span&gt;
-        &lt;div class="oc-message__bubble"&gt;
-          &lt;div class="oc-message__text"&gt;&lt;p&gt;Calacatta matt, 20 mm. I'll send the updated quote to the client today.&lt;/p&gt;&lt;/div&gt;
-          &lt;div class="oc-message__attachments"&gt;&lt;a class="oc-attachment oc-attachment--pdf" href="#quote.pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Quote kitchen Project 1 v2.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;1.2 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-          &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:20"&gt;09:20&lt;/time&gt;&lt;span class="oc-message__status oc-message__status--read"&gt;Read&lt;/span&gt;&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-message__actions"&gt;&lt;button type="button" class="oc-message__action oc-message__action--destructive" aria-label="Delete this message"&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-      &lt;/article&gt;
-      &lt;div class="oc-message-divider"&gt;&lt;span&gt;Today&lt;/span&gt;&lt;/div&gt;
-      &lt;article class="oc-message"&gt;
-        &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-        &lt;div class="oc-message__bubble"&gt;
-          &lt;p class="oc-message__sender"&gt;Customer 1&lt;/p&gt;
-          &lt;div class="oc-message__text"&gt;&lt;p&gt;Client signed. Can you confirm the edge profile before 16:00?&lt;/p&gt;&lt;/div&gt;
-          &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-24T10:02"&gt;10:02&lt;/time&gt;&lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/article&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class="oc-message-thread__footer"&gt;
-    &lt;form class="oc-chat-composer" action="#" aria-label="Reply"&gt;
-      &lt;label class="oc-visually-hidden" for="oc-thread-demo-input"&gt;Message&lt;/label&gt;
-      &lt;textarea class="oc-chat-composer__input" id="oc-thread-demo-input" name="message" rows="1" placeholder="Type your reply…" required&gt;&lt;/textarea&gt;
-      &lt;div class="oc-chat-composer__bar"&gt;
-        &lt;div class="oc-chat-composer__tools"&gt;
-          &lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-          &lt;button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/&gt;&lt;/svg&gt;&lt;/button&gt;
-        &lt;/div&gt;
-        &lt;span class="oc-chat-composer__hint"&gt;Ctrl + Enter to send&lt;/span&gt;
-        &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/form&gt;
-  &lt;/div&gt;
-
-  &lt;div class="oc-message-thread__busy" role="status"&gt;
-    &lt;span class="oc-spinner oc-spinner--lg" aria-hidden="true"&gt;&lt;/span&gt;
-    &lt;strong&gt;Sending message…&lt;/strong&gt;
-    &lt;span&gt;Please wait, do not close this conversation.&lt;/span&gt;
-  &lt;/div&gt;
-&lt;/section&gt;
-&lt;script&gt;
-// Optional: append the typed message as an outgoing bubble (demo behaviour; an app posts the form instead).
-document.addEventListener("submit", (e) =&gt; {
-  const form = e.target.closest(".oc-message-thread form.oc-chat-composer");
-  if (!form || e.defaultPrevented) return;
-  e.preventDefault();
-  const thread = form.closest(".oc-message-thread"), field = form.querySelector("textarea"), text = field.value.trim();
-  if (!text) return;
-  thread.setAttribute("aria-busy", "true");
-  setTimeout(() =&gt; {
-    const list = thread.querySelector(".oc-message-list"), last = list.lastElementChild;
-    const msg = document.createElement("article");
-    msg.className = "oc-message oc-message--out" + (last?.matches(".oc-message--out") ? " oc-message--continued" : "");
-    msg.innerHTML = '&lt;span class="oc-avatar oc-message__avatar"&gt;&lt;/span&gt;&lt;div class="oc-message__bubble"&gt;&lt;div class="oc-message__text"&gt;&lt;p&gt;&lt;/p&gt;&lt;/div&gt;&lt;p class="oc-message__meta"&gt;&lt;time&gt;&lt;/time&gt;&lt;span class="oc-message__status"&gt;Sent&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;';
-    msg.querySelector(".oc-avatar").textContent = list.querySelector(".oc-message--out .oc-avatar")?.textContent || "Me";
-    msg.querySelector("p").textContent = text;
-    msg.querySelector("time").textContent = new Date().toTimeString().slice(0, 5);
-    list.append(msg);
-    field.value = "";
-    thread.removeAttribute("aria-busy");
-    field.focus();
-  }, 600);
-});
-document.addEventListener("keydown", (e) =&gt; {
-  if (e.defaultPrevented || e.key !== "Enter" || !(e.ctrlKey || e.metaKey) || !e.target.matches(".oc-message-thread .oc-chat-composer__input")) return;
-  e.preventDefault();
-  e.target.form.requestSubmit();
-});
-&lt;/script&gt;</oc-code>
+<oc-code lang="blade">{{-- $messages usually comes from the controller; written out here --}}
+@php
+    $messages = [
+        ['divider' =&gt; 'Tuesday 14 October'],
+        ['sender' =&gt; 'Customer 1', 'avatar' =&gt; 'C1', 'time' =&gt; '09:12', 'datetime' =&gt; '2026-10-14T09:12',
+            'text' =&gt; 'The supplier dropped off two worktop samples at the workshop. Photo attached.',
+            'attachments' =&gt; [['kind' =&gt; 'image', 'href' =&gt; '#samples.jpg', 'alt' =&gt; 'Two worktop samples on the workbench', 'art' =&gt; 6, 'caption' =&gt; 'samples.jpg · 2.1 MB']]],
+        ['sender' =&gt; 'Customer 1', 'avatar' =&gt; 'C1', 'time' =&gt; '09:13', 'datetime' =&gt; '2026-10-14T09:13', 'continued' =&gt; true,
+            'html' =&gt; '&lt;p&gt;Which one should we order: &lt;strong&gt;Calacatta matt&lt;/strong&gt; or &lt;strong&gt;Nero Marquina polished&lt;/strong&gt;? The cutting slot is Friday.&lt;/p&gt;'],
+        ['direction' =&gt; 'out', 'avatar' =&gt; 'C6', 'time' =&gt; '09:20', 'datetime' =&gt; '2026-10-14T09:20', 'status' =&gt; 'read',
+            'text' =&gt; "Calacatta matt, 20 mm. I'll send the updated quote to the client today.",
+            'attachments' =&gt; [['name' =&gt; 'Quote kitchen Project 1 v2.pdf', 'size' =&gt; '1.2 MB', 'href' =&gt; '#quote.pdf']],
+            'actions' =&gt; [['name' =&gt; 'delete', 'label' =&gt; 'Delete this message', 'destructive' =&gt; true]]],
+        ['divider' =&gt; 'Today'],
+        ['sender' =&gt; 'Customer 1', 'avatar' =&gt; 'C1', 'time' =&gt; '10:02', 'datetime' =&gt; '2026-10-24T10:02', 'text' =&gt; 'Client signed. Can you confirm the edge profile before 16:00?'],
+    ];
+@endphp
+&lt;x-oc::message-thread id="oc-thread-demo" style="inline-size:100%;max-inline-size:40rem"
+    title="Kitchen worktop: which finish?"
+    project="Project 1"
+    meta="Customer 1 → Customer 6 · 14 Oct 2026"
+    :participants="[['initials' =&gt; 'C1', 'name' =&gt; 'Customer 1'], ['initials' =&gt; 'C6', 'name' =&gt; 'Customer 6']]"
+    :status="['label' =&gt; 'Urgent', 'variant' =&gt; 'destructive']"
+    :menu="[['label' =&gt; 'Mark as unread'], ['label' =&gt; 'Move to archive'], ['separator' =&gt; true], ['label' =&gt; 'Delete conversation', 'destructive' =&gt; true]]"
+    :messages="$messages"
+    action="/projects/1/messages" method="post"
+/&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class MessageThread extends Component
 {
+    public array $messages = [
+        ['divider' =&gt; 'Tuesday 14 October'],
+        ['sender' =&gt; 'Customer 1', 'avatar' =&gt; 'C1', 'time' =&gt; '09:12', 'datetime' =&gt; '2026-10-14T09:12',
+            'text' =&gt; 'The supplier dropped off two worktop samples at the workshop. Photo attached.',
+            'attachments' =&gt; [['kind' =&gt; 'image', 'href' =&gt; '#samples.jpg', 'alt' =&gt; 'Two worktop samples on the workbench', 'art' =&gt; 6, 'caption' =&gt; 'samples.jpg · 2.1 MB']]],
+        ['sender' =&gt; 'Customer 1', 'avatar' =&gt; 'C1', 'time' =&gt; '09:13', 'datetime' =&gt; '2026-10-14T09:13', 'continued' =&gt; true,
+            'html' =&gt; '&lt;p&gt;Which one should we order: &lt;strong&gt;Calacatta matt&lt;/strong&gt; or &lt;strong&gt;Nero Marquina polished&lt;/strong&gt;? The cutting slot is Friday.&lt;/p&gt;'],
+        ['direction' =&gt; 'out', 'avatar' =&gt; 'C6', 'time' =&gt; '09:20', 'datetime' =&gt; '2026-10-14T09:20', 'status' =&gt; 'read',
+            'text' =&gt; "Calacatta matt, 20 mm. I'll send the updated quote to the client today.",
+            'attachments' =&gt; [['name' =&gt; 'Quote kitchen Project 1 v2.pdf', 'size' =&gt; '1.2 MB', 'href' =&gt; '#quote.pdf']],
+            'actions' =&gt; [['name' =&gt; 'delete', 'label' =&gt; 'Delete this message', 'destructive' =&gt; true]]],
+        ['divider' =&gt; 'Today'],
+        ['sender' =&gt; 'Customer 1', 'avatar' =&gt; 'C1', 'time' =&gt; '10:02', 'datetime' =&gt; '2026-10-24T10:02', 'text' =&gt; 'Client signed. Can you confirm the edge profile before 16:00?'],
+    ];
+
+    #[Validate('required|string|max:2000')]
+    public string $reply = '';
+
+    public function send(): void
+    {
+        $this-&gt;validate();
+        // Store the message (Message::create(...)), then show it as an outgoing bubble.
+        $this-&gt;messages[] = ['direction' =&gt; 'out', 'avatar' =&gt; 'C6', 'time' =&gt; now()-&gt;format('H:i'), 'status' =&gt; 'sent', 'text' =&gt; $this-&gt;reply];
+        $this-&gt;reset('reply');
+    }
+
     public function render()
     {
         return view('livewire.message-thread');
@@ -414,115 +288,27 @@ class MessageThread extends Component
 
 {{-- resources/views/livewire/message-thread.blade.php --}}
 &lt;div&gt;
-    &lt;section class="oc-message-thread" aria-labelledby="oc-thread-demo-title" style="inline-size:100%;max-inline-size:40rem"&gt;
-      &lt;header class="oc-message-thread__header"&gt;
-        &lt;div class="oc-message-thread__heading"&gt;
-          &lt;h3 class="oc-message-thread__title" id="oc-thread-demo-title"&gt;Kitchen worktop: which finish?&lt;/h3&gt;
-          &lt;p class="oc-message-thread__meta"&gt;&lt;strong&gt;Project 1&lt;/strong&gt; · Customer 1 → Customer 6 · 14 Oct 2026&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-avatar-group oc-message-thread__people" aria-label="2 participants"&gt;&lt;span class="oc-avatar" title="Customer 1"&gt;C1&lt;/span&gt;&lt;span class="oc-avatar" title="Customer 6"&gt;C6&lt;/span&gt;&lt;/div&gt;
-        &lt;div class="oc-message-thread__actions"&gt;
-          &lt;span class="oc-badge oc-badge--destructive"&gt;Urgent&lt;/span&gt;
-          &lt;button type="button" class="oc-message-thread__icon-btn" popovertarget="oc-thread-demo-menu" aria-label="Conversation actions"&gt;&lt;svg data-icon="mdi:dots-vertical" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0-6a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2"/&gt;&lt;/svg&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-thread-demo-menu" popover="" role="menu"&gt;
-            &lt;button type="button" class="oc-dropdown-item" role="menuitem"&gt;Mark as unread&lt;/button&gt;
-            &lt;button type="button" class="oc-dropdown-item" role="menuitem"&gt;Move to archive&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-            &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive" role="menuitem"&gt;Delete conversation&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/header&gt;
-
-      &lt;div class="oc-message-thread__scroll" tabindex="0" role="log" aria-label="Messages" aria-live="polite"&gt;
-        &lt;div class="oc-message-list"&gt;
-          &lt;div class="oc-message-divider"&gt;&lt;span&gt;Tuesday 14 October&lt;/span&gt;&lt;/div&gt;
-          &lt;article class="oc-message"&gt;
-            &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-            &lt;div class="oc-message__bubble"&gt;
-              &lt;p class="oc-message__sender"&gt;Customer 1&lt;/p&gt;
-              &lt;div class="oc-message__text"&gt;&lt;p&gt;The supplier dropped off two worktop samples at the workshop. Photo attached.&lt;/p&gt;&lt;/div&gt;
-              &lt;div class="oc-message__attachments"&gt;&lt;a class="oc-attachment-image" href="#samples.jpg"&gt;&lt;span class="oc-media-art oc-media-art--6" role="img" aria-label="Two worktop samples on the workbench"&gt;&lt;/span&gt;&lt;span class="oc-attachment-image__caption"&gt;samples.jpg · 2.1 MB&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-              &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:12"&gt;09:12&lt;/time&gt;&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/article&gt;
-          &lt;article class="oc-message oc-message--continued"&gt;
-            &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-            &lt;div class="oc-message__bubble"&gt;
-              &lt;div class="oc-message__text"&gt;&lt;p&gt;Which one should we order: &lt;strong&gt;Calacatta matt&lt;/strong&gt; or &lt;strong&gt;Nero Marquina polished&lt;/strong&gt;? The cutting slot is Friday.&lt;/p&gt;&lt;/div&gt;
-              &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:13"&gt;09:13&lt;/time&gt;&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/article&gt;
-          &lt;article class="oc-message oc-message--out"&gt;
-            &lt;span class="oc-avatar oc-message__avatar"&gt;C6&lt;/span&gt;
-            &lt;div class="oc-message__bubble"&gt;
-              &lt;div class="oc-message__text"&gt;&lt;p&gt;Calacatta matt, 20 mm. I'll send the updated quote to the client today.&lt;/p&gt;&lt;/div&gt;
-              &lt;div class="oc-message__attachments"&gt;&lt;a class="oc-attachment oc-attachment--pdf" href="#quote.pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Quote kitchen Project 1 v2.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;1.2 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
-              &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-14T09:20"&gt;09:20&lt;/time&gt;&lt;span class="oc-message__status oc-message__status--read"&gt;Read&lt;/span&gt;&lt;/p&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-message__actions"&gt;&lt;button type="button" class="oc-message__action oc-message__action--destructive" aria-label="Delete this message"&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-          &lt;/article&gt;
-          &lt;div class="oc-message-divider"&gt;&lt;span&gt;Today&lt;/span&gt;&lt;/div&gt;
-          &lt;article class="oc-message"&gt;
-            &lt;span class="oc-avatar oc-message__avatar"&gt;C1&lt;/span&gt;
-            &lt;div class="oc-message__bubble"&gt;
-              &lt;p class="oc-message__sender"&gt;Customer 1&lt;/p&gt;
-              &lt;div class="oc-message__text"&gt;&lt;p&gt;Client signed. Can you confirm the edge profile before 16:00?&lt;/p&gt;&lt;/div&gt;
-              &lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-24T10:02"&gt;10:02&lt;/time&gt;&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/article&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-
-      &lt;div class="oc-message-thread__footer"&gt;
-        &lt;form class="oc-chat-composer" action="#" aria-label="Reply"&gt;
-          &lt;label class="oc-visually-hidden" for="oc-thread-demo-input"&gt;Message&lt;/label&gt;
-          &lt;textarea class="oc-chat-composer__input" id="oc-thread-demo-input" name="message" rows="1" placeholder="Type your reply…" required&gt;&lt;/textarea&gt;
-          &lt;div class="oc-chat-composer__bar"&gt;
-            &lt;div class="oc-chat-composer__tools"&gt;
-              &lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-              &lt;button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/&gt;&lt;/svg&gt;&lt;/button&gt;
-            &lt;/div&gt;
-            &lt;span class="oc-chat-composer__hint"&gt;Ctrl + Enter to send&lt;/span&gt;
-            &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/form&gt;
-      &lt;/div&gt;
-
-      &lt;div class="oc-message-thread__busy" role="status"&gt;
-        &lt;span class="oc-spinner oc-spinner--lg" aria-hidden="true"&gt;&lt;/span&gt;
-        &lt;strong&gt;Sending message…&lt;/strong&gt;
-        &lt;span&gt;Please wait, do not close this conversation.&lt;/span&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
-    &lt;script&gt;
-    // Optional: append the typed message as an outgoing bubble (demo behaviour; an app posts the form instead).
-    document.addEventListener("submit", (e) =&gt; {
-      const form = e.target.closest(".oc-message-thread form.oc-chat-composer");
-      if (!form || e.defaultPrevented) return;
-      e.preventDefault();
-      const thread = form.closest(".oc-message-thread"), field = form.querySelector("textarea"), text = field.value.trim();
-      if (!text) return;
-      thread.setAttribute("aria-busy", "true");
-      setTimeout(() =&gt; {
-        const list = thread.querySelector(".oc-message-list"), last = list.lastElementChild;
-        const msg = document.createElement("article");
-        msg.className = "oc-message oc-message--out" + (last?.matches(".oc-message--out") ? " oc-message--continued" : "");
-        msg.innerHTML = '&lt;span class="oc-avatar oc-message__avatar"&gt;&lt;/span&gt;&lt;div class="oc-message__bubble"&gt;&lt;div class="oc-message__text"&gt;&lt;p&gt;&lt;/p&gt;&lt;/div&gt;&lt;p class="oc-message__meta"&gt;&lt;time&gt;&lt;/time&gt;&lt;span class="oc-message__status"&gt;Sent&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;';
-        msg.querySelector(".oc-avatar").textContent = list.querySelector(".oc-message--out .oc-avatar")?.textContent || "Me";
-        msg.querySelector("p").textContent = text;
-        msg.querySelector("time").textContent = new Date().toTimeString().slice(0, 5);
-        list.append(msg);
-        field.value = "";
-        thread.removeAttribute("aria-busy");
-        field.focus();
-      }, 600);
-    });
-    document.addEventListener("keydown", (e) =&gt; {
-      if (e.defaultPrevented || e.key !== "Enter" || !(e.ctrlKey || e.metaKey) || !e.target.matches(".oc-message-thread .oc-chat-composer__input")) return;
-      e.preventDefault();
-      e.target.form.requestSubmit();
-    });
-    &lt;/script&gt;
+    &lt;x-oc::message-thread id="oc-thread-demo" style="inline-size:100%;max-inline-size:40rem"
+        title="Kitchen worktop: which finish?"
+        project="Project 1"
+        meta="Customer 1 → Customer 6 · 14 Oct 2026"
+        :participants="[['initials' =&gt; 'C1', 'name' =&gt; 'Customer 1'], ['initials' =&gt; 'C6', 'name' =&gt; 'Customer 6']]"
+        :status="['label' =&gt; 'Urgent', 'variant' =&gt; 'destructive']"
+        :menu="[]"
+        :messages="$messages"
+        :busy="false"&gt;
+        &lt;x-slot:composer&gt;
+            &lt;form class="oc-chat-composer" wire:submit="send" aria-label="Reply"&gt;
+                &lt;label class="oc-visually-hidden" for="oc-thread-demo-input"&gt;Message&lt;/label&gt;
+                &lt;textarea class="oc-chat-composer__input" id="oc-thread-demo-input" wire:model="reply" rows="1" placeholder="Type your reply…" required&gt;&lt;/textarea&gt;
+                &lt;div class="oc-chat-composer__bar"&gt;
+                    &lt;span class="oc-chat-composer__hint" wire:loading.remove wire:target="send"&gt;Ctrl + Enter to send&lt;/span&gt;
+                    &lt;span class="oc-chat-composer__hint" wire:loading wire:target="send"&gt;Sending…&lt;/span&gt;
+                    &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;x-oc::webicon name="mdi:send" /&gt;&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/form&gt;
+        &lt;/x-slot:composer&gt;
+    &lt;/x-oc::message-thread&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="busy" class="oc-section-content__title mt-2">Sending state</h3><p class="oc-section-content__desc">Set <code>aria-busy="true"</code> on the thread while a message or a large upload is on its way. The overlay blocks double sends and tells the user to wait. Remove the attribute when the server answers.</p>
@@ -539,50 +325,57 @@ class MessageThread extends Component
   <div class="oc-message-thread__footer"><p class="oc-message-thread__note">Uploading 1 file…</p></div>
   <div class="oc-message-thread__busy" role="status"><span class="oc-spinner oc-spinner--lg" aria-hidden="true"></span><strong>Uploading attachment and sending…</strong><span>Please wait, do not close this conversation.</span></div>
 </section>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { MessageThread } from "@birdycom/omniaui-react";
+import type { CSSProperties } from "react";
 
 export function Example() {
   return (
-    &lt;section className="oc-message-thread oc-message-thread--plain" aria-busy="true" aria-labelledby="oc-thread-busy-title" style={{ "--oc-message-thread-height": "16rem", inlineSize: "100%", maxInlineSize: "28rem" } as CSSProperties}&gt;
-      &lt;header className="oc-message-thread__header"&gt;
-        &lt;div className="oc-message-thread__heading"&gt;&lt;h3 className="oc-message-thread__title" id="oc-thread-busy-title"&gt;Delivery note 4471&lt;/h3&gt;&lt;p className="oc-message-thread__meta"&gt;Workshop · Customer 2&lt;/p&gt;&lt;/div&gt;
-      &lt;/header&gt;
-      &lt;div className="oc-message-thread__scroll" tabIndex={0} role="log" aria-label="Messages"&gt;
-        &lt;div className="oc-message-list"&gt;
-          &lt;article className="oc-message"&gt;&lt;span className="oc-avatar oc-message__avatar"&gt;C2&lt;/span&gt;&lt;div className="oc-message__bubble"&gt;&lt;div className="oc-message__text"&gt;&lt;p&gt;Can you send me the signed delivery note?&lt;/p&gt;&lt;/div&gt;&lt;p className="oc-message__meta"&gt;&lt;time dateTime="2026-10-24T11:05"&gt;11:05&lt;/time&gt;&lt;/p&gt;&lt;/div&gt;&lt;/article&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-message-thread__footer"&gt;&lt;p className="oc-message-thread__note"&gt;Uploading 1 file…&lt;/p&gt;&lt;/div&gt;
-      &lt;div className="oc-message-thread__busy" role="status"&gt;&lt;span className="oc-spinner oc-spinner--lg" aria-hidden="true" /&gt;&lt;strong&gt;Uploading attachment and sending…&lt;/strong&gt;&lt;span&gt;Please wait, do not close this conversation.&lt;/span&gt;&lt;/div&gt;
-    &lt;/section&gt;
+    &lt;MessageThread
+      id="oc-thread-busy"
+      plain
+      busy
+      style={{ "--oc-message-thread-height": "16rem", inlineSize: "100%", maxInlineSize: "28rem" } as CSSProperties}
+      title="Delivery note 4471"
+      meta="Workshop · Customer 2"
+      participants={[]}
+      status={null}
+      menu={null}
+      live={false}
+      messages={[{ avatar: "C2", time: "11:05", datetime: "2026-10-24T11:05", text: "Can you send me the signed delivery note?" }]}
+      note="Uploading 1 file…"
+      busyTitle="Uploading attachment and sending…"
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;section class="oc-message-thread oc-message-thread--plain" aria-busy="true" aria-labelledby="oc-thread-busy-title" style="--oc-message-thread-height:16rem;inline-size:100%;max-inline-size:28rem"&gt;
-    &lt;header class="oc-message-thread__header"&gt;
-      &lt;div class="oc-message-thread__heading"&gt;&lt;h3 class="oc-message-thread__title" id="oc-thread-busy-title"&gt;Delivery note 4471&lt;/h3&gt;&lt;p class="oc-message-thread__meta"&gt;Workshop · Customer 2&lt;/p&gt;&lt;/div&gt;
-    &lt;/header&gt;
-    &lt;div class="oc-message-thread__scroll" tabindex="0" role="log" aria-label="Messages"&gt;
-      &lt;div class="oc-message-list"&gt;
-        &lt;article class="oc-message"&gt;&lt;span class="oc-avatar oc-message__avatar"&gt;C2&lt;/span&gt;&lt;div class="oc-message__bubble"&gt;&lt;div class="oc-message__text"&gt;&lt;p&gt;Can you send me the signed delivery note?&lt;/p&gt;&lt;/div&gt;&lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-24T11:05"&gt;11:05&lt;/time&gt;&lt;/p&gt;&lt;/div&gt;&lt;/article&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-message-thread__footer"&gt;&lt;p class="oc-message-thread__note"&gt;Uploading 1 file…&lt;/p&gt;&lt;/div&gt;
-    &lt;div class="oc-message-thread__busy" role="status"&gt;&lt;span class="oc-spinner oc-spinner--lg" aria-hidden="true"&gt;&lt;/span&gt;&lt;strong&gt;Uploading attachment and sending…&lt;/strong&gt;&lt;span&gt;Please wait, do not close this conversation.&lt;/span&gt;&lt;/div&gt;
-  &lt;/section&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcMessageThread } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcMessageThread
+    id="oc-thread-busy"
+    plain
+    busy
+    style="--oc-message-thread-height:16rem;inline-size:100%;max-inline-size:28rem"
+    title="Delivery note 4471"
+    project=""
+    meta="Workshop · Customer 2"
+    :participants="[]"
+    :status="null"
+    :menu="null"
+    :live="false"
+    :messages="[{ avatar: 'C2', time: '11:05', datetime: '2026-10-24T11:05', text: 'Can you send me the signed delivery note?' }]"
+    note="Uploading 1 file…"
+    busy-title="Uploading attachment and sending…"
+  /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-message-thread oc-message-thread--plain" aria-busy="true" aria-labelledby="oc-thread-busy-title" style="--oc-message-thread-height:16rem;inline-size:100%;max-inline-size:28rem"&gt;
-  &lt;header class="oc-message-thread__header"&gt;
-    &lt;div class="oc-message-thread__heading"&gt;&lt;h3 class="oc-message-thread__title" id="oc-thread-busy-title"&gt;Delivery note 4471&lt;/h3&gt;&lt;p class="oc-message-thread__meta"&gt;Workshop · Customer 2&lt;/p&gt;&lt;/div&gt;
-  &lt;/header&gt;
-  &lt;div class="oc-message-thread__scroll" tabindex="0" role="log" aria-label="Messages"&gt;
-    &lt;div class="oc-message-list"&gt;
-      &lt;article class="oc-message"&gt;&lt;span class="oc-avatar oc-message__avatar"&gt;C2&lt;/span&gt;&lt;div class="oc-message__bubble"&gt;&lt;div class="oc-message__text"&gt;&lt;p&gt;Can you send me the signed delivery note?&lt;/p&gt;&lt;/div&gt;&lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-24T11:05"&gt;11:05&lt;/time&gt;&lt;/p&gt;&lt;/div&gt;&lt;/article&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-message-thread__footer"&gt;&lt;p class="oc-message-thread__note"&gt;Uploading 1 file…&lt;/p&gt;&lt;/div&gt;
-  &lt;div class="oc-message-thread__busy" role="status"&gt;&lt;span class="oc-spinner oc-spinner--lg" aria-hidden="true"&gt;&lt;/span&gt;&lt;strong&gt;Uploading attachment and sending…&lt;/strong&gt;&lt;span&gt;Please wait, do not close this conversation.&lt;/span&gt;&lt;/div&gt;
-&lt;/section&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::message-thread id="oc-thread-busy" plain busy style="--oc-message-thread-height:16rem;inline-size:100%;max-inline-size:28rem"
+    title="Delivery note 4471" project="" meta="Workshop · Customer 2"
+    :participants="[]" :status="[]" :menu="[]" :live="false"
+    :messages="[['avatar' =&gt; 'C2', 'time' =&gt; '11:05', 'datetime' =&gt; '2026-10-24T11:05', 'text' =&gt; 'Can you send me the signed delivery note?']]"
+    note="Uploading 1 file…"
+    busy-title="Uploading attachment and sending…"
+/&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -591,6 +384,13 @@ use Livewire\Component;
 
 class MessageThreadSendingState extends Component
 {
+    /** True while the attachment uploads (set it from your upload handler). */
+    public bool $uploading = true;
+
+    public array $messages = [
+        ['avatar' =&gt; 'C2', 'time' =&gt; '11:05', 'datetime' =&gt; '2026-10-24T11:05', 'text' =&gt; 'Can you send me the signed delivery note?'],
+    ];
+
     public function render()
     {
         return view('livewire.message-thread-sending-state');
@@ -598,18 +398,15 @@ class MessageThreadSendingState extends Component
 }
 
 {{-- resources/views/livewire/message-thread-sending-state.blade.php --}}
-&lt;section class="oc-message-thread oc-message-thread--plain" aria-busy="true" aria-labelledby="oc-thread-busy-title" style="--oc-message-thread-height:16rem;inline-size:100%;max-inline-size:28rem"&gt;
-  &lt;header class="oc-message-thread__header"&gt;
-    &lt;div class="oc-message-thread__heading"&gt;&lt;h3 class="oc-message-thread__title" id="oc-thread-busy-title"&gt;Delivery note 4471&lt;/h3&gt;&lt;p class="oc-message-thread__meta"&gt;Workshop · Customer 2&lt;/p&gt;&lt;/div&gt;
-  &lt;/header&gt;
-  &lt;div class="oc-message-thread__scroll" tabindex="0" role="log" aria-label="Messages"&gt;
-    &lt;div class="oc-message-list"&gt;
-      &lt;article class="oc-message"&gt;&lt;span class="oc-avatar oc-message__avatar"&gt;C2&lt;/span&gt;&lt;div class="oc-message__bubble"&gt;&lt;div class="oc-message__text"&gt;&lt;p&gt;Can you send me the signed delivery note?&lt;/p&gt;&lt;/div&gt;&lt;p class="oc-message__meta"&gt;&lt;time datetime="2026-10-24T11:05"&gt;11:05&lt;/time&gt;&lt;/p&gt;&lt;/div&gt;&lt;/article&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-message-thread__footer"&gt;&lt;p class="oc-message-thread__note"&gt;Uploading 1 file…&lt;/p&gt;&lt;/div&gt;
-  &lt;div class="oc-message-thread__busy" role="status"&gt;&lt;span class="oc-spinner oc-spinner--lg" aria-hidden="true"&gt;&lt;/span&gt;&lt;strong&gt;Uploading attachment and sending…&lt;/strong&gt;&lt;span&gt;Please wait, do not close this conversation.&lt;/span&gt;&lt;/div&gt;
-&lt;/section&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::message-thread id="oc-thread-busy" plain :busy="$uploading" style="--oc-message-thread-height:16rem;inline-size:100%;max-inline-size:28rem"
+        title="Delivery note 4471" project="" meta="Workshop · Customer 2"
+        :participants="[]" :status="[]" :menu="[]" :live="false"
+        :messages="$messages"
+        :note="$uploading ? 'Uploading 1 file…' : null"
+        busy-title="Uploading attachment and sending…"
+    /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

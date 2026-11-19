@@ -28,79 +28,54 @@
   </div>
   <p class="oc-field-description">Digits only; spaces are fine.</p>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-field" style={{ maxInlineSize: "22rem" }}&gt;
-      &lt;label className="oc-field-label" htmlFor="oc-phone-demo"&gt;Mobile number&lt;/label&gt;
-      &lt;div className="oc-phone-input"&gt;
-        &lt;select className="oc-phone-input-dial" name="phone_dial" aria-label="Country code" defaultValue="+32"&gt;
-          &lt;option value="+32"&gt;BE +32&lt;/option&gt;
-          &lt;option value="+31"&gt;NL +31&lt;/option&gt;
-          &lt;option value="+33"&gt;FR +33&lt;/option&gt;
-          &lt;option value="+49"&gt;DE +49&lt;/option&gt;
-        &lt;/select&gt;
-        &lt;input className="oc-phone-input-number" id="oc-phone-demo" name="phone" type="tel" inputMode="tel" autoComplete="tel-national" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}" /&gt;
-      &lt;/div&gt;
-      &lt;p className="oc-field-description"&gt;Digits only; spaces are fine.&lt;/p&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-    &lt;label class="oc-field-label" for="oc-phone-demo"&gt;Mobile number&lt;/label&gt;
-    &lt;div class="oc-phone-input"&gt;
-      &lt;select class="oc-phone-input-dial" name="phone_dial" aria-label="Country code"&gt;
-        &lt;option value="+32" selected&gt;BE +32&lt;/option&gt;
-        &lt;option value="+31"&gt;NL +31&lt;/option&gt;
-        &lt;option value="+33"&gt;FR +33&lt;/option&gt;
-        &lt;option value="+49"&gt;DE +49&lt;/option&gt;
-      &lt;/select&gt;
-      &lt;input class="oc-phone-input-number" id="oc-phone-demo" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}" /&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-field-description"&gt;Digits only; spaces are fine.&lt;/p&gt;
-  &lt;/div&gt;
+<oc-code lang="tsx">const [phone, setPhone] = useState("");
+
+&lt;FormField label="Mobile number" description="Digits only; spaces are fine." style={{ maxInlineSize: "22rem" }}&gt;
+  &lt;PhoneInput name="phone" value={phone} onChange={setPhone} defaultDial="+32" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}" /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFormField, OcPhoneInput } from '@birdycom/omniaui-vue'
+
+const phone = ref('')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Mobile number" description="Digits only; spaces are fine." style="max-inline-size:22rem" v-slot="f"&gt;
+    &lt;OcPhoneInput :id="f.id" v-model="phone" name="phone" default-dial="+32" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}" :aria-describedby="f.describedBy" /&gt;
+  &lt;/OcFormField&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-  &lt;label class="oc-field-label" for="oc-phone-demo"&gt;Mobile number&lt;/label&gt;
-  &lt;div class="oc-phone-input"&gt;
-    &lt;select class="oc-phone-input-dial" name="phone_dial" aria-label="Country code"&gt;
-      &lt;option value="+32" selected&gt;BE +32&lt;/option&gt;
-      &lt;option value="+31"&gt;NL +31&lt;/option&gt;
-      &lt;option value="+33"&gt;FR +33&lt;/option&gt;
-      &lt;option value="+49"&gt;DE +49&lt;/option&gt;
-    &lt;/select&gt;
-    &lt;input class="oc-phone-input-number" id="oc-phone-demo" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}"&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-field-description"&gt;Digits only; spaces are fine.&lt;/p&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Mobile number" for="phone" name="phone" description="Digits only; spaces are fine." style="max-inline-size:22rem"&gt;
+    &lt;x-oc::phone-input id="phone" name="phone" dial-name="phone_dial" :dial="old('phone_dial', '+32')" :value="old('phone')" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class PhoneInput extends Component
+class MobileNumber extends Component
 {
+    public string $phone = '';
+
+    public function save(): void
+    {
+        $this-&gt;validate(['phone' =&gt; ['required', 'regex:/^[0-9 ]{8,14}$/']]);
+    }
+
     public function render()
     {
-        return view('livewire.phone-input');
+        return view('livewire.mobile-number');
     }
 }
 
-{{-- resources/views/livewire/phone-input.blade.php --}}
-&lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-  &lt;label class="oc-field-label" for="oc-phone-demo"&gt;Mobile number&lt;/label&gt;
-  &lt;div class="oc-phone-input"&gt;
-    &lt;select class="oc-phone-input-dial" name="phone_dial" aria-label="Country code"&gt;
-      &lt;option value="+32" selected&gt;BE +32&lt;/option&gt;
-      &lt;option value="+31"&gt;NL +31&lt;/option&gt;
-      &lt;option value="+33"&gt;FR +33&lt;/option&gt;
-      &lt;option value="+49"&gt;DE +49&lt;/option&gt;
-    &lt;/select&gt;
-    &lt;input class="oc-phone-input-number" id="oc-phone-demo" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}"&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-field-description"&gt;Digits only; spaces are fine.&lt;/p&gt;
-&lt;/div&gt;</oc-code>
+{{-- resources/views/livewire/mobile-number.blade.php --}}
+&lt;form wire:submit="save"&gt;
+    {{-- the dial select posts as phone_dial; wire:model binds the number --}}
+    &lt;x-oc::form-field label="Mobile number" for="phone" name="phone" description="Digits only; spaces are fine." style="max-inline-size:22rem"&gt;
+        &lt;x-oc::phone-input id="phone" wire:model.blur="phone" :error="$errors-&gt;has('phone')" placeholder="470 12 34 56" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Invalid and small</h3>
@@ -142,49 +117,19 @@ class PhoneInput extends Component
   &lt;select class="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;BE +32&lt;/option&gt;&lt;/select&gt;
   &lt;input class="oc-phone-input-number" type="tel" placeholder="470 12 34 56" aria-label="Phone (small)"&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;&gt;
-      &lt;div className="oc-field" style={{ maxInlineSize: "22rem" }}&gt;
-        &lt;label className="oc-field-label" htmlFor="oc-phone-error"&gt;Phone&lt;/label&gt;
-        &lt;div className="oc-phone-input"&gt;
-          &lt;select className="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;NL +31&lt;/option&gt;&lt;/select&gt;
-          &lt;input className="oc-phone-input-number" id="oc-phone-error" type="tel" defaultValue="12" aria-invalid="true" aria-describedby="oc-phone-error-msg" /&gt;
-        &lt;/div&gt;
-        &lt;p className="oc-field-error" id="oc-phone-error-msg"&gt;This number is too short.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-phone-input oc-phone-input--sm" style={{ maxInlineSize: "16rem" }}&gt;
-        &lt;select className="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;BE +32&lt;/option&gt;&lt;/select&gt;
-        &lt;input className="oc-phone-input-number" type="tel" placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;
-      &lt;/div&gt;
-    &lt;/&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-    &lt;label class="oc-field-label" for="oc-phone-error"&gt;Phone&lt;/label&gt;
-    &lt;div class="oc-phone-input"&gt;
-      &lt;select class="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;NL +31&lt;/option&gt;&lt;/select&gt;
-      &lt;input class="oc-phone-input-number" id="oc-phone-error" type="tel" value="12" aria-invalid="true" aria-describedby="oc-phone-error-msg" /&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-field-error" id="oc-phone-error-msg"&gt;This number is too short.&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-phone-input oc-phone-input--sm" style="max-inline-size:16rem"&gt;
-    &lt;select class="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;BE +32&lt;/option&gt;&lt;/select&gt;
-    &lt;input class="oc-phone-input-number" type="tel" placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-  &lt;label class="oc-field-label" for="oc-phone-error"&gt;Phone&lt;/label&gt;
-  &lt;div class="oc-phone-input"&gt;
-    &lt;select class="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;NL +31&lt;/option&gt;&lt;/select&gt;
-    &lt;input class="oc-phone-input-number" id="oc-phone-error" type="tel" value="12" aria-invalid="true" aria-describedby="oc-phone-error-msg"&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-field-error" id="oc-phone-error-msg"&gt;This number is too short.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="oc-phone-input oc-phone-input--sm" style="max-inline-size:16rem"&gt;
-  &lt;select class="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;BE +32&lt;/option&gt;&lt;/select&gt;
-  &lt;input class="oc-phone-input-number" type="tel" placeholder="470 12 34 56" aria-label="Phone (small)"&gt;
+<oc-code lang="tsx">&lt;FormField label="Phone" error="This number is too short." style={{ maxInlineSize: "22rem" }}&gt;
+  &lt;PhoneInput defaultValue="+3112" defaultDial="+31" countries={[{ dial: "+31", label: "NL +31" }]} error /&gt;
+&lt;/FormField&gt;
+&lt;PhoneInput size="sm" style={{ maxInlineSize: "16rem" }} countries={[{ dial: "+32", label: "BE +32" }]} placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Phone" error="This number is too short." style="max-inline-size:22rem" v-slot="f"&gt;
+  &lt;OcPhoneInput :id="f.id" model-value="+3112" :countries="[{ dial: '+31', label: 'NL +31' }]" error :aria-describedby="f.describedBy" /&gt;
+&lt;/OcFormField&gt;
+&lt;OcPhoneInput size="sm" style="max-inline-size:16rem" :countries="[{ dial: '+32', label: 'BE +32' }]" placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Phone" for="phone-error" error="This number is too short." style="max-inline-size:22rem"&gt;
+    &lt;x-oc::phone-input id="phone-error" dial="+31" :countries="['+31' =&gt; 'NL +31']" value="12" error aria-describedby="phone-error-error" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;div style="max-inline-size:16rem"&gt;
+    &lt;x-oc::phone-input size="sm" :countries="['+32' =&gt; 'BE +32']" placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -192,27 +137,43 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class PhoneInputStates extends Component
+class PhoneCheck extends Component
 {
+    public string $phone = '12';
+
+    public function mount(): void
+    {
+        $this-&gt;validateOnly('phone');
+    }
+
+    public function updatedPhone(): void
+    {
+        $this-&gt;validateOnly('phone');
+    }
+
+    protected function rules(): array
+    {
+        return ['phone' =&gt; ['required', 'min:8']];
+    }
+
+    protected function messages(): array
+    {
+        return ['phone.min' =&gt; 'This number is too short.'];
+    }
+
     public function render()
     {
-        return view('livewire.phone-input-states');
+        return view('livewire.phone-check');
     }
 }
 
-{{-- resources/views/livewire/phone-input-states.blade.php --}}
+{{-- resources/views/livewire/phone-check.blade.php --}}
 &lt;div&gt;
-    &lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-      &lt;label class="oc-field-label" for="oc-phone-error"&gt;Phone&lt;/label&gt;
-      &lt;div class="oc-phone-input"&gt;
-        &lt;select class="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;NL +31&lt;/option&gt;&lt;/select&gt;
-        &lt;input class="oc-phone-input-number" id="oc-phone-error" type="tel" value="12" aria-invalid="true" aria-describedby="oc-phone-error-msg"&gt;
-      &lt;/div&gt;
-      &lt;p class="oc-field-error" id="oc-phone-error-msg"&gt;This number is too short.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-phone-input oc-phone-input--sm" style="max-inline-size:16rem"&gt;
-      &lt;select class="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;BE +32&lt;/option&gt;&lt;/select&gt;
-      &lt;input class="oc-phone-input-number" type="tel" placeholder="470 12 34 56" aria-label="Phone (small)"&gt;
+    &lt;x-oc::form-field label="Phone" for="phone" name="phone" style="max-inline-size:22rem"&gt;
+        &lt;x-oc::phone-input id="phone" dial="+31" :countries="['+31' =&gt; 'NL +31']" wire:model.blur="phone" :error="$errors-&gt;has('phone')" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div style="max-inline-size:16rem"&gt;
+        &lt;x-oc::phone-input size="sm" :countries="['+32' =&gt; 'BE +32']" placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;
     &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>

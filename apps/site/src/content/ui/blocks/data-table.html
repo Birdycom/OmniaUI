@@ -152,591 +152,166 @@
     </div>
   </div>
 </section>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Badge, Button, ButtonLink, DataTable, Webicon, type DataTableColumn, type DataTableRow } from "@birdycom/omniaui-react";
+
+type Contact = { id: number; status: "Active" | "Pending" | "Archived"; balance: number };
+const contacts: Contact[] = [
+  [420, "Active"], [840, "Active"], [1260, "Pending"], [1680, "Archived"], [2100, "Active"], [310, "Pending"],
+  [975, "Active"], [150, "Archived"], [3240, "Active"], [560, "Active"], [1890, "Pending"], [720, "Active"],
+].map(([balance, status], i) =&gt; ({ id: i + 1, balance: balance as number, status: status as Contact["status"] }));
+
+const tone = { Active: "success", Pending: "warning", Archived: "secondary" } as const;
+
+const columns: DataTableColumn[] = [
+  { key: "name", header: "Name", defaultSort: "ascending" },
+  { key: "email", header: "E-mail" },
+  { key: "status", header: "Status" },
+  { key: "balance", header: "Balance", numeric: true },
+];
+const rows: DataTableRow[] = contacts.map((c) =&gt; ({
+  key: `contact-${c.id}`,
+  status: c.status === "Archived" ? "archived" : "active",
+  cells: {
+    name: `Contact ${c.id}`,
+    email: `info@contact${c.id}.example`,
+    status: &lt;Badge variant={tone[c.status]}&gt;{c.status}&lt;/Badge&gt;,
+    balance: c.balance.toFixed(2),
+  },
+  values: { status: c.status, balance: String(c.balance) },
+}));
+
+export function Example() {
+  // search, filter, sort, select and paging run in the component (live: search while typing)
   return (
-    &lt;section className="oc-card oc-block-datatable" id="oc-block-contacts" data-oc-data-table="" data-oc-live="true"&gt;
-      &lt;header className="oc-block-datatable-head"&gt;
-        &lt;div&gt;
-          &lt;h2 className="oc-block-datatable-title"&gt;Contacts&lt;/h2&gt;
-          &lt;p className="oc-block-datatable-description"&gt;All customers and suppliers.&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div&gt;
-          &lt;button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-export=""&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2zm10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55z" /&gt;&lt;/svg&gt;Export&lt;/button&gt;
-          &lt;button className="oc-btn oc-btn--sm" type="button"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z" /&gt;&lt;/svg&gt;New contact&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/header&gt;
-      &lt;div className="oc-block-datatable-body"&gt;
-        &lt;div className="oc-table-toolbar"&gt;
-          &lt;input className="oc-input oc-data-table-search" type="search" placeholder="Search contacts..." aria-label="Search contacts" /&gt;
-          &lt;div className="oc-filter-pills" role="group" aria-label="Status filter"&gt;
-            &lt;button className="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true"&gt;Active&lt;/button&gt;
-            &lt;button className="oc-filter-pill" type="button" data-oc-filter="all"&gt;Including archived&lt;/button&gt;
-            &lt;button className="oc-filter-pill" type="button" data-oc-filter="archived"&gt;Archived only&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-datatable-bulk oc-data-table-bulk" hidden&gt;&lt;span data-oc-selected-count=""&gt;0 selected&lt;/span&gt;&lt;button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2zm10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55z" /&gt;&lt;/svg&gt;Export&lt;/button&gt;&lt;button className="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;Delete&lt;/button&gt;&lt;/div&gt;
-        &lt;div className="oc-table-wrap"&gt;
-          &lt;table className="oc-table"&gt;
-            &lt;thead&gt;
-              &lt;tr&gt;
-                &lt;th data-oc-col="select" style={{ width: "2.5rem" }}&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label="Select all" /&gt;&lt;/th&gt;
-                &lt;th data-oc-col="name" aria-sort="ascending"&gt;&lt;button className="oc-table-sort" type="button"&gt;Name&lt;/button&gt;&lt;/th&gt;
-                &lt;th data-oc-col="email"&gt;&lt;button className="oc-table-sort" type="button"&gt;E-mail&lt;/button&gt;&lt;/th&gt;
-                &lt;th data-oc-col="status"&gt;&lt;button className="oc-table-sort" type="button"&gt;Status&lt;/button&gt;&lt;/th&gt;
-                &lt;th data-oc-col="balance" data-numeric=""&gt;&lt;button className="oc-table-sort" type="button"&gt;Balance&lt;/button&gt;&lt;/th&gt;
-                &lt;th data-oc-col="actions"&gt;&lt;span className="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;
-              &lt;/tr&gt;
-            &lt;/thead&gt;
-            &lt;tbody&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-1" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 1" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 1&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact1.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;420.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 1" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 1" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-2" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 2" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 2&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact2.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;840.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 2" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 2" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-3" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 3" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 3&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact3.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;1260.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 3" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 3" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-4" data-oc-status="archived"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 4" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 4&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact4.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--secondary"&gt;Archived&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;1680.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 4" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 4" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-5" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 5" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 5&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact5.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;2100.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 5" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 5" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-6" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 6" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 6&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact6.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;310.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 6" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 6" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-7" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 7" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 7&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact7.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;975.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 7" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 7" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-8" data-oc-status="archived"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 8" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 8&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact8.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--secondary"&gt;Archived&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;150.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 8" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 8" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-9" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 9" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 9&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact9.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;3240.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 9" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 9" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-10" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 10" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 10&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact10.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;560.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 10" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 10" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-11" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 11" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 11&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact11.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;1890.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 11" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 11" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;tr data-oc-row="" data-oc-key="contact-12" data-oc-status="active"&gt;
-              &lt;td data-oc-col="select"&gt;&lt;input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 12" /&gt;&lt;/td&gt;
-              &lt;td data-oc-col="name"&gt;Contact 12&lt;/td&gt;
-              &lt;td data-oc-col="email"&gt;info@contact12.example&lt;/td&gt;
-              &lt;td data-oc-col="status"&gt;&lt;span className="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-              &lt;td data-oc-col="balance" data-numeric=""&gt;720.00&lt;/td&gt;
-              &lt;td className="oc-table-actions" data-oc-col="actions"&gt;&lt;a className="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 12" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button className="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 12" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-            &lt;/tr&gt;
-            &lt;/tbody&gt;
-          &lt;/table&gt;
-          &lt;p className="oc-data-table-empty" hidden&gt;No contacts found.&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-table-footer"&gt;
-          &lt;span data-oc-summary="Showing {from} to {to} of {total} entries"&gt;Showing 1 to 5 of 10 entries&lt;/span&gt;
-          &lt;label&gt;Rows per page &lt;select className="oc-select" data-oc-page-size="" aria-label="Rows per page"&gt;&lt;option&gt;5&lt;/option&gt;&lt;option&gt;10&lt;/option&gt;&lt;option&gt;25&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
-          &lt;nav className="oc-data-table-pager" data-oc-pager="" aria-label="Pagination" /&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
+    &lt;DataTable
+      id="oc-block-contacts"
+      title="Contacts"
+      columns={columns}
+      rows={rows}
+      pageSize={5}
+      live
+      archive
+      searchPlaceholder="Search contacts..."
+      actions={&lt;&gt;
+        &lt;Button size="sm" variant="outline"&gt;&lt;Webicon name="mdi:download-outline" /&gt;Export&lt;/Button&gt;
+        &lt;Button size="sm"&gt;&lt;Webicon name="mdi:plus" /&gt;New contact&lt;/Button&gt;
+      &lt;/&gt;}
+      rowActions={(row) =&gt; (
+        &lt;ButtonLink variant="soft-primary" icon size="sm" href={`/contacts/${row.key}/edit`} aria-label="Edit" title="Edit"&gt;&lt;Webicon name="mdi:pencil-outline" /&gt;&lt;/ButtonLink&gt;
+      )}
+      onBulk={(action, keys) =&gt; console.log(action, keys)}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;section class="oc-card oc-block-datatable" id="oc-block-contacts" data-oc-data-table="" data-oc-live="true"&gt;
-    &lt;header class="oc-block-datatable-head"&gt;
-      &lt;div&gt;
-        &lt;h2 class="oc-block-datatable-title"&gt;Contacts&lt;/h2&gt;
-        &lt;p class="oc-block-datatable-description"&gt;All customers and suppliers.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div&gt;
-        &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-export=""&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2zm10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55z" /&gt;&lt;/svg&gt;Export&lt;/button&gt;
-        &lt;button class="oc-btn oc-btn--sm" type="button"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z" /&gt;&lt;/svg&gt;New contact&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/header&gt;
-    &lt;div class="oc-block-datatable-body"&gt;
-      &lt;div class="oc-table-toolbar"&gt;
-        &lt;input class="oc-input oc-data-table-search" type="search" placeholder="Search contacts..." aria-label="Search contacts" /&gt;
-        &lt;div class="oc-filter-pills" role="group" aria-label="Status filter"&gt;
-          &lt;button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true"&gt;Active&lt;/button&gt;
-          &lt;button class="oc-filter-pill" type="button" data-oc-filter="all"&gt;Including archived&lt;/button&gt;
-          &lt;button class="oc-filter-pill" type="button" data-oc-filter="archived"&gt;Archived only&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-datatable-bulk oc-data-table-bulk" hidden&gt;&lt;span data-oc-selected-count=""&gt;0 selected&lt;/span&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2zm10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55z" /&gt;&lt;/svg&gt;Export&lt;/button&gt;&lt;button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;Delete&lt;/button&gt;&lt;/div&gt;
-      &lt;div class="oc-table-wrap"&gt;
-        &lt;table class="oc-table"&gt;
-          &lt;thead&gt;
-            &lt;tr&gt;
-              &lt;th data-oc-col="select" style="width:2.5rem"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label="Select all" /&gt;&lt;/th&gt;
-              &lt;th data-oc-col="name" aria-sort="ascending"&gt;&lt;button class="oc-table-sort" type="button"&gt;Name&lt;/button&gt;&lt;/th&gt;
-              &lt;th data-oc-col="email"&gt;&lt;button class="oc-table-sort" type="button"&gt;E-mail&lt;/button&gt;&lt;/th&gt;
-              &lt;th data-oc-col="status"&gt;&lt;button class="oc-table-sort" type="button"&gt;Status&lt;/button&gt;&lt;/th&gt;
-              &lt;th data-oc-col="balance" data-numeric=""&gt;&lt;button class="oc-table-sort" type="button"&gt;Balance&lt;/button&gt;&lt;/th&gt;
-              &lt;th data-oc-col="actions"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;
-            &lt;/tr&gt;
-          &lt;/thead&gt;
-          &lt;tbody&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-1" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 1" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 1&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact1.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;420.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 1" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 1" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-2" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 2" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 2&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact2.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;840.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 2" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 2" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-3" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 3" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 3&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact3.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;1260.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 3" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 3" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-4" data-oc-status="archived"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 4" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 4&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact4.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--secondary"&gt;Archived&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;1680.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 4" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 4" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-5" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 5" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 5&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact5.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;2100.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 5" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 5" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-6" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 6" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 6&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact6.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;310.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 6" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 6" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-7" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 7" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 7&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact7.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;975.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 7" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 7" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-8" data-oc-status="archived"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 8" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 8&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact8.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--secondary"&gt;Archived&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;150.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 8" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 8" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-9" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 9" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 9&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact9.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;3240.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 9" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 9" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-10" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 10" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 10&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact10.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;560.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 10" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 10" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-11" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 11" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 11&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact11.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;1890.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 11" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 11" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="contact-12" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 12" /&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Contact 12&lt;/td&gt;
-            &lt;td data-oc-col="email"&gt;info@contact12.example&lt;/td&gt;
-            &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="balance" data-numeric=""&gt;720.00&lt;/td&gt;
-            &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 12" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 12" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-        &lt;p class="oc-data-table-empty" hidden&gt;No contacts found.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-table-footer"&gt;
-        &lt;span data-oc-summary="Showing {from} to {to} of {total} entries"&gt;Showing 1 to 5 of 10 entries&lt;/span&gt;
-        &lt;label&gt;Rows per page &lt;select class="oc-select" data-oc-page-size="" aria-label="Rows per page"&gt;&lt;option&gt;5&lt;/option&gt;&lt;option&gt;10&lt;/option&gt;&lt;option&gt;25&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
-        &lt;nav class="oc-data-table-pager" data-oc-pager="" aria-label="Pagination"&gt;&lt;/nav&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBadge, OcButton, OcDataTable, OcWebicon } from "@birdycom/omniaui-vue";
+
+const statuses = ["Active", "Active", "Pending", "Archived", "Active", "Pending", "Active", "Archived", "Active", "Active", "Pending", "Active"];
+const balances = [420, 840, 1260, 1680, 2100, 310, 975, 150, 3240, 560, 1890, 720];
+const tone: Record&lt;string, "success" | "warning" | "secondary"&gt; = { Active: "success", Pending: "warning", Archived: "secondary" };
+
+const columns = [
+  { key: "name", header: "Name", defaultSort: "ascending" as const },
+  { key: "email", header: "E-mail" },
+  { key: "status", header: "Status" },
+  { key: "balance", header: "Balance", numeric: true },
+];
+const rows = balances.map((balance, i) =&gt; ({
+  key: `contact-${i + 1}`,
+  status: (statuses[i] === "Archived" ? "archived" : "active") as "archived" | "active",
+  cells: { name: `Contact ${i + 1}`, email: `info@contact${i + 1}.example`, status: statuses[i], balance: balance.toFixed(2) },
+  values: { balance: String(balance) },
+}));
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- search, filter, sort, select and paging run in the component (live: search while typing) --&gt;
+  &lt;OcDataTable table-id="oc-block-contacts" title="Contacts" :columns="columns" :rows="rows" :page-size="5" live archive search-placeholder="Search contacts..."&gt;
+    &lt;template #page-actions&gt;
+      &lt;OcButton size="sm" variant="outline"&gt;&lt;OcWebicon name="mdi:download-outline" /&gt;Export&lt;/OcButton&gt;
+      &lt;OcButton size="sm"&gt;&lt;OcWebicon name="mdi:plus" /&gt;New contact&lt;/OcButton&gt;
+    &lt;/template&gt;
+    &lt;template #cell-status="{ row }"&gt;&lt;OcBadge :variant="tone[row.cells.status]"&gt;{{ row.cells.status }}&lt;/OcBadge&gt;&lt;/template&gt;
+    &lt;template #actions="{ row }"&gt;
+      &lt;OcButton variant="soft-primary" icon size="sm" :href="`/contacts/${row.key}/edit`" aria-label="Edit" title="Edit"&gt;&lt;OcWebicon name="mdi:pencil-outline" /&gt;&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcDataTable&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-card oc-block-datatable" id="oc-block-contacts" data-oc-data-table="" data-oc-live="true"&gt;
-  &lt;header class="oc-block-datatable-head"&gt;
-    &lt;div&gt;
-      &lt;h2 class="oc-block-datatable-title"&gt;Contacts&lt;/h2&gt;
-      &lt;p class="oc-block-datatable-description"&gt;All customers and suppliers.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div&gt;
-      &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-export=""&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2zm10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55z"/&gt;&lt;/svg&gt;Export&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--sm" type="button"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/&gt;&lt;/svg&gt;New contact&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/header&gt;
-  &lt;div class="oc-block-datatable-body"&gt;
-    &lt;div class="oc-table-toolbar"&gt;
-      &lt;input class="oc-input oc-data-table-search" type="search" placeholder="Search contacts..." aria-label="Search contacts"&gt;
-      &lt;div class="oc-filter-pills" role="group" aria-label="Status filter"&gt;
-        &lt;button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true"&gt;Active&lt;/button&gt;
-        &lt;button class="oc-filter-pill" type="button" data-oc-filter="all"&gt;Including archived&lt;/button&gt;
-        &lt;button class="oc-filter-pill" type="button" data-oc-filter="archived"&gt;Archived only&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-datatable-bulk oc-data-table-bulk" hidden&gt;&lt;span data-oc-selected-count=""&gt;0 selected&lt;/span&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2zm10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55z"/&gt;&lt;/svg&gt;Export&lt;/button&gt;&lt;button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;Delete&lt;/button&gt;&lt;/div&gt;
-    &lt;div class="oc-table-wrap"&gt;
-      &lt;table class="oc-table"&gt;
-        &lt;thead&gt;
-          &lt;tr&gt;
-            &lt;th data-oc-col="select" style="width:2.5rem"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label="Select all"&gt;&lt;/th&gt;
-            &lt;th data-oc-col="name" aria-sort="ascending"&gt;&lt;button class="oc-table-sort" type="button"&gt;Name&lt;/button&gt;&lt;/th&gt;
-            &lt;th data-oc-col="email"&gt;&lt;button class="oc-table-sort" type="button"&gt;E-mail&lt;/button&gt;&lt;/th&gt;
-            &lt;th data-oc-col="status"&gt;&lt;button class="oc-table-sort" type="button"&gt;Status&lt;/button&gt;&lt;/th&gt;
-            &lt;th data-oc-col="balance" data-numeric=""&gt;&lt;button class="oc-table-sort" type="button"&gt;Balance&lt;/button&gt;&lt;/th&gt;
-            &lt;th data-oc-col="actions"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;
-          &lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-1" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 1"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 1&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact1.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;420.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 1" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 1" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-2" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 2"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 2&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact2.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;840.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 2" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 2" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-3" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 3"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 3&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact3.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;1260.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 3" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 3" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-4" data-oc-status="archived"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 4"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 4&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact4.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--secondary"&gt;Archived&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;1680.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 4" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 4" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-5" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 5"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 5&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact5.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;2100.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 5" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 5" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-6" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 6"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 6&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact6.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;310.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 6" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 6" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-7" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 7"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 7&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact7.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;975.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 7" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 7" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-8" data-oc-status="archived"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 8"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 8&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact8.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--secondary"&gt;Archived&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;150.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 8" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 8" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-9" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 9"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 9&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact9.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;3240.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 9" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 9" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-10" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 10"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 10&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact10.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;560.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 10" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 10" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-11" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 11"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 11&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact11.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;1890.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 11" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 11" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-12" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 12"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 12&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact12.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;720.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 12" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 12" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-      &lt;p class="oc-data-table-empty" hidden&gt;No contacts found.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-table-footer"&gt;
-      &lt;span data-oc-summary="Showing {from} to {to} of {total} entries"&gt;Showing 1 to 5 of 10 entries&lt;/span&gt;
-      &lt;label&gt;Rows per page &lt;select class="oc-select" data-oc-page-size="" aria-label="Rows per page"&gt;&lt;option&gt;5&lt;/option&gt;&lt;option&gt;10&lt;/option&gt;&lt;option&gt;25&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
-      &lt;nav class="oc-data-table-pager" data-oc-pager="" aria-label="Pagination"&gt;&lt;/nav&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+<oc-code lang="blade">{{-- In your controller: $columns and $rows (cells = what the table shows, values = what search and sort use) --}}
+@php
+    $columns = [
+        ['key' =&gt; 'name', 'header' =&gt; 'Name', 'defaultSort' =&gt; 'ascending'],
+        ['key' =&gt; 'email', 'header' =&gt; 'E-mail'],
+        ['key' =&gt; 'status', 'header' =&gt; 'Status'],
+        ['key' =&gt; 'balance', 'header' =&gt; 'Balance', 'numeric' =&gt; true],
+    ];
+    $rows = collect([[420, 'Active'], [840, 'Active'], [1260, 'Pending'], [1680, 'Archived'], [2100, 'Active'], [310, 'Pending'], [975, 'Active'], [150, 'Archived'], [3240, 'Active'], [560, 'Active'], [1890, 'Pending'], [720, 'Active']])
+        -&gt;map(fn ($c, $i) =&gt; [
+            'key' =&gt; 'contact-'.($i + 1),
+            'status' =&gt; $c[1] === 'Archived' ? 'archived' : 'active',
+            'cells' =&gt; ['name' =&gt; 'Contact '.($i + 1), 'email' =&gt; 'info@contact'.($i + 1).'.example', 'status' =&gt; $c[1], 'balance' =&gt; number_format($c[0], 2)],
+            'values' =&gt; ['balance' =&gt; (string) $c[0]],
+        ])-&gt;all();
+@endphp
+&lt;x-oc::data-table table-id="oc-block-contacts" title="Contacts" :columns="$columns" :rows="$rows" :page-size="5" live archive search-placeholder="Search contacts..."&gt;
+    &lt;x-slot:pageActions&gt;
+        &lt;x-oc::button size="sm" variant="outline"&gt;&lt;x-oc::webicon name="mdi:download-outline" /&gt;Export&lt;/x-oc::button&gt;
+        &lt;x-oc::button size="sm" href="/contacts/create"&gt;&lt;x-oc::webicon name="mdi:plus" /&gt;New contact&lt;/x-oc::button&gt;
+    &lt;/x-slot:pageActions&gt;
+&lt;/x-oc::data-table&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class DataTable extends Component
+// Client-side list (search, sort, paging in data-table.js) fed by the component.
+// For server-side search and paging on a large table, extend Omniacss\Livewire\DataTable instead (see the Data table component).
+class ContactsTable extends Component
 {
+    /** @return list&lt;array&lt;string, mixed&gt;&gt; */
+    public function columns(): array
+    {
+        return [
+            ['key' =&gt; 'name', 'header' =&gt; 'Name', 'defaultSort' =&gt; 'ascending'],
+            ['key' =&gt; 'email', 'header' =&gt; 'E-mail'],
+            ['key' =&gt; 'status', 'header' =&gt; 'Status'],
+            ['key' =&gt; 'balance', 'header' =&gt; 'Balance', 'numeric' =&gt; true],
+        ];
+    }
+
+    /** @return list&lt;array&lt;string, mixed&gt;&gt; */
+    public function rows(): array
+    {
+        // Contact::orderBy('name')-&gt;get()-&gt;map(...)
+        return collect([[420, 'Active'], [840, 'Active'], [1260, 'Pending'], [1680, 'Archived'], [2100, 'Active'], [310, 'Pending'], [975, 'Active'], [150, 'Archived'], [3240, 'Active'], [560, 'Active'], [1890, 'Pending'], [720, 'Active']])
+            -&gt;map(fn ($c, $i) =&gt; [
+                'key' =&gt; 'contact-'.($i + 1),
+                'status' =&gt; $c[1] === 'Archived' ? 'archived' : 'active',
+                'cells' =&gt; ['name' =&gt; 'Contact '.($i + 1), 'email' =&gt; 'info@contact'.($i + 1).'.example', 'status' =&gt; $c[1], 'balance' =&gt; number_format($c[0], 2)],
+                'values' =&gt; ['balance' =&gt; (string) $c[0]],
+                'href' =&gt; url('/contacts/'.($i + 1).'/edit'),
+            ])-&gt;all();
+    }
+
     public function render()
     {
-        return view('livewire.data-table');
+        return view('livewire.contacts-table');
     }
 }
 
-{{-- resources/views/livewire/data-table.blade.php --}}
-&lt;section class="oc-card oc-block-datatable" id="oc-block-contacts" data-oc-data-table="" data-oc-live="true"&gt;
-  &lt;header class="oc-block-datatable-head"&gt;
-    &lt;div&gt;
-      &lt;h2 class="oc-block-datatable-title"&gt;Contacts&lt;/h2&gt;
-      &lt;p class="oc-block-datatable-description"&gt;All customers and suppliers.&lt;/p&gt;
+{{-- resources/views/livewire/contacts-table.blade.php --}}
+&lt;div&gt;
+    {{-- wire:ignore keeps the search, sort and page the user picked --}}
+    &lt;div wire:ignore&gt;
+        &lt;x-oc::data-table table-id="oc-block-contacts" title="Contacts" :columns="$this-&gt;columns()" :rows="$this-&gt;rows()" :page-size="5" live archive search-placeholder="Search contacts..."&gt;
+            &lt;x-slot:pageActions&gt;
+                &lt;x-oc::button size="sm" variant="outline"&gt;&lt;x-oc::webicon name="mdi:download-outline" /&gt;Export&lt;/x-oc::button&gt;
+                &lt;x-oc::button size="sm" href="/contacts/create"&gt;&lt;x-oc::webicon name="mdi:plus" /&gt;New contact&lt;/x-oc::button&gt;
+            &lt;/x-slot:pageActions&gt;
+        &lt;/x-oc::data-table&gt;
     &lt;/div&gt;
-    &lt;div&gt;
-      &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-export=""&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2zm10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55z"/&gt;&lt;/svg&gt;Export&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--sm" type="button"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/&gt;&lt;/svg&gt;New contact&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/header&gt;
-  &lt;div class="oc-block-datatable-body"&gt;
-    &lt;div class="oc-table-toolbar"&gt;
-      &lt;input class="oc-input oc-data-table-search" type="search" placeholder="Search contacts..." aria-label="Search contacts"&gt;
-      &lt;div class="oc-filter-pills" role="group" aria-label="Status filter"&gt;
-        &lt;button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true"&gt;Active&lt;/button&gt;
-        &lt;button class="oc-filter-pill" type="button" data-oc-filter="all"&gt;Including archived&lt;/button&gt;
-        &lt;button class="oc-filter-pill" type="button" data-oc-filter="archived"&gt;Archived only&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-datatable-bulk oc-data-table-bulk" hidden&gt;&lt;span data-oc-selected-count=""&gt;0 selected&lt;/span&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 12h2v5h16v-5h2v5c0 1.11-.89 2-2 2H4a2 2 0 0 1-2-2zm10 3l5.55-5.46l-1.42-1.41L13 11.25V2h-2v9.25L7.88 8.13L6.46 9.55z"/&gt;&lt;/svg&gt;Export&lt;/button&gt;&lt;button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;Delete&lt;/button&gt;&lt;/div&gt;
-    &lt;div class="oc-table-wrap"&gt;
-      &lt;table class="oc-table"&gt;
-        &lt;thead&gt;
-          &lt;tr&gt;
-            &lt;th data-oc-col="select" style="width:2.5rem"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label="Select all"&gt;&lt;/th&gt;
-            &lt;th data-oc-col="name" aria-sort="ascending"&gt;&lt;button class="oc-table-sort" type="button"&gt;Name&lt;/button&gt;&lt;/th&gt;
-            &lt;th data-oc-col="email"&gt;&lt;button class="oc-table-sort" type="button"&gt;E-mail&lt;/button&gt;&lt;/th&gt;
-            &lt;th data-oc-col="status"&gt;&lt;button class="oc-table-sort" type="button"&gt;Status&lt;/button&gt;&lt;/th&gt;
-            &lt;th data-oc-col="balance" data-numeric=""&gt;&lt;button class="oc-table-sort" type="button"&gt;Balance&lt;/button&gt;&lt;/th&gt;
-            &lt;th data-oc-col="actions"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;
-          &lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-1" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 1"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 1&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact1.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;420.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 1" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 1" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-2" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 2"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 2&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact2.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;840.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 2" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 2" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-3" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 3"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 3&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact3.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;1260.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 3" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 3" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-4" data-oc-status="archived"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 4"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 4&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact4.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--secondary"&gt;Archived&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;1680.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 4" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 4" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-5" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 5"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 5&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact5.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;2100.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 5" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 5" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-6" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 6"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 6&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact6.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;310.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 6" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 6" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-7" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 7"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 7&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact7.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;975.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 7" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 7" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-8" data-oc-status="archived"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 8"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 8&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact8.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--secondary"&gt;Archived&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;150.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 8" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 8" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-9" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 9"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 9&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact9.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;3240.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 9" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 9" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-10" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 10"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 10&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact10.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;560.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 10" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 10" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-11" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 11"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 11&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact11.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;Pending&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;1890.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 11" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 11" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr data-oc-row="" data-oc-key="contact-12" data-oc-status="active"&gt;
-          &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Contact 12"&gt;&lt;/td&gt;
-          &lt;td data-oc-col="name"&gt;Contact 12&lt;/td&gt;
-          &lt;td data-oc-col="email"&gt;info@contact12.example&lt;/td&gt;
-          &lt;td data-oc-col="status"&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;
-          &lt;td data-oc-col="balance" data-numeric=""&gt;720.00&lt;/td&gt;
-          &lt;td class="oc-table-actions" data-oc-col="actions"&gt;&lt;a class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" href="#" aria-label="Edit Contact 12" title="Edit"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;&lt;button class="oc-btn oc-btn--soft-destructive oc-btn--icon oc-btn--sm" type="button" data-oc-row-action="delete" aria-label="Delete Contact 12" title="Delete"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-      &lt;p class="oc-data-table-empty" hidden&gt;No contacts found.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-table-footer"&gt;
-      &lt;span data-oc-summary="Showing {from} to {to} of {total} entries"&gt;Showing 1 to 5 of 10 entries&lt;/span&gt;
-      &lt;label&gt;Rows per page &lt;select class="oc-select" data-oc-page-size="" aria-label="Rows per page"&gt;&lt;option&gt;5&lt;/option&gt;&lt;option&gt;10&lt;/option&gt;&lt;option&gt;25&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
-      &lt;nav class="oc-data-table-pager" data-oc-pager="" aria-label="Pagination"&gt;&lt;/nav&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

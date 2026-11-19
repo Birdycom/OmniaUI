@@ -18,30 +18,38 @@
   <li class="oc-checklist-item">One number</li>
   <li class="oc-checklist-item">One symbol</li>
 </ul>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Checklist, ChecklistItem } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;ul className="oc-checklist" aria-live="polite" aria-label="Password requirements"&gt;
-      &lt;li className="oc-checklist-item is-done"&gt;At least 12 characters&lt;/li&gt;
-      &lt;li className="oc-checklist-item is-done"&gt;One uppercase letter&lt;/li&gt;
-      &lt;li className="oc-checklist-item"&gt;One number&lt;/li&gt;
-      &lt;li className="oc-checklist-item"&gt;One symbol&lt;/li&gt;
-    &lt;/ul&gt;
+    &lt;Checklist aria-live="polite" aria-label="Password requirements"&gt;
+      &lt;ChecklistItem done&gt;At least 12 characters&lt;/ChecklistItem&gt;
+      &lt;ChecklistItem done&gt;One uppercase letter&lt;/ChecklistItem&gt;
+      &lt;ChecklistItem&gt;One number&lt;/ChecklistItem&gt;
+      &lt;ChecklistItem&gt;One symbol&lt;/ChecklistItem&gt;
+    &lt;/Checklist&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;ul class="oc-checklist" aria-live="polite" aria-label="Password requirements"&gt;
-    &lt;li class="oc-checklist-item is-done"&gt;At least 12 characters&lt;/li&gt;
-    &lt;li class="oc-checklist-item is-done"&gt;One uppercase letter&lt;/li&gt;
-    &lt;li class="oc-checklist-item"&gt;One number&lt;/li&gt;
-    &lt;li class="oc-checklist-item"&gt;One symbol&lt;/li&gt;
-  &lt;/ul&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcChecklist } from "@birdycom/omniaui-vue";
+
+const rules = [
+  { title: "At least 12 characters", done: true },
+  { title: "One uppercase letter", done: true },
+  { title: "One number", done: false },
+  { title: "One symbol", done: false },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcChecklist label="Password requirements" :items="rules" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;ul class="oc-checklist" aria-live="polite" aria-label="Password requirements"&gt;
-  &lt;li class="oc-checklist-item is-done"&gt;At least 12 characters&lt;/li&gt;
-  &lt;li class="oc-checklist-item is-done"&gt;One uppercase letter&lt;/li&gt;
-  &lt;li class="oc-checklist-item"&gt;One number&lt;/li&gt;
-  &lt;li class="oc-checklist-item"&gt;One symbol&lt;/li&gt;
-&lt;/ul&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::checklist label="Password requirements" :items="[
+    ['label' =&gt; 'At least 12 characters', 'done' =&gt; true],
+    ['label' =&gt; 'One uppercase letter', 'done' =&gt; true],
+    ['label' =&gt; 'One number', 'done' =&gt; false],
+    ['label' =&gt; 'One symbol', 'done' =&gt; false],
+]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -50,6 +58,13 @@ use Livewire\Component;
 
 class Checklist extends Component
 {
+    public array $rules = [
+        ['label' =&gt; 'At least 12 characters', 'done' =&gt; true],
+        ['label' =&gt; 'One uppercase letter', 'done' =&gt; true],
+        ['label' =&gt; 'One number', 'done' =&gt; false],
+        ['label' =&gt; 'One symbol', 'done' =&gt; false],
+    ];
+
     public function render()
     {
         return view('livewire.checklist');
@@ -57,12 +72,9 @@ class Checklist extends Component
 }
 
 {{-- resources/views/livewire/checklist.blade.php --}}
-&lt;ul class="oc-checklist" aria-live="polite" aria-label="Password requirements"&gt;
-  &lt;li class="oc-checklist-item is-done"&gt;At least 12 characters&lt;/li&gt;
-  &lt;li class="oc-checklist-item is-done"&gt;One uppercase letter&lt;/li&gt;
-  &lt;li class="oc-checklist-item"&gt;One number&lt;/li&gt;
-  &lt;li class="oc-checklist-item"&gt;One symbol&lt;/li&gt;
-&lt;/ul&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::checklist label="Password requirements" :items="$rules" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Card with actions</h3>
@@ -88,42 +100,49 @@ class Checklist extends Component
     &lt;a class="oc-btn oc-btn--outline oc-btn--sm" href="/settings/bank"&gt;Open&lt;/a&gt;
   &lt;/li&gt;
 &lt;/ul&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { ButtonLink, Checklist, ChecklistItem } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;ul className="oc-checklist oc-checklist--card"&gt;
-      &lt;li className="oc-checklist-item is-done"&gt;
-        &lt;span className="oc-checklist-text"&gt;&lt;span className="oc-checklist-title"&gt;Add company details&lt;/span&gt;&lt;span className="oc-checklist-hint"&gt;Name, VAT number, address&lt;/span&gt;&lt;/span&gt;{" "}
-        &lt;a className="oc-btn oc-btn--outline oc-btn--sm" href="/settings/company"&gt;Open&lt;/a&gt;
-      &lt;/li&gt;
-      &lt;li className="oc-checklist-item"&gt;
-        &lt;span className="oc-checklist-text"&gt;&lt;span className="oc-checklist-title"&gt;Connect your bank&lt;/span&gt;&lt;span className="oc-checklist-hint"&gt;Import transactions automatically&lt;/span&gt;&lt;/span&gt;{" "}
-        &lt;a className="oc-btn oc-btn--outline oc-btn--sm" href="/settings/bank"&gt;Open&lt;/a&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
+    &lt;Checklist card&gt;
+      &lt;ChecklistItem
+        done
+        title="Add company details"
+        hint="Name, VAT number, address"
+        action={&lt;ButtonLink variant="outline" size="sm" href="/settings/company"&gt;Open&lt;/ButtonLink&gt;}
+      /&gt;
+      &lt;ChecklistItem
+        title="Connect your bank"
+        hint="Import transactions automatically"
+        action={&lt;ButtonLink variant="outline" size="sm" href="/settings/bank"&gt;Open&lt;/ButtonLink&gt;}
+      /&gt;
+    &lt;/Checklist&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;ul class="oc-checklist oc-checklist--card"&gt;
-    &lt;li class="oc-checklist-item is-done"&gt;
-      &lt;span class="oc-checklist-text"&gt;&lt;span class="oc-checklist-title"&gt;Add company details&lt;/span&gt;&lt;span class="oc-checklist-hint"&gt;Name, VAT number, address&lt;/span&gt;&lt;/span&gt;
-      &lt;a class="oc-btn oc-btn--outline oc-btn--sm" href="/settings/company"&gt;Open&lt;/a&gt;
-    &lt;/li&gt;
-    &lt;li class="oc-checklist-item"&gt;
-      &lt;span class="oc-checklist-text"&gt;&lt;span class="oc-checklist-title"&gt;Connect your bank&lt;/span&gt;&lt;span class="oc-checklist-hint"&gt;Import transactions automatically&lt;/span&gt;&lt;/span&gt;
-      &lt;a class="oc-btn oc-btn--outline oc-btn--sm" href="/settings/bank"&gt;Open&lt;/a&gt;
-    &lt;/li&gt;
-  &lt;/ul&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcChecklist } from "@birdycom/omniaui-vue";
+
+const steps = [
+  { title: "Add company details", hint: "Name, VAT number, address", done: true },
+  { title: "Connect your bank", hint: "Import transactions automatically", done: false },
+];
+const links: Record&lt;string, string&gt; = {
+  "Add company details": "/settings/company",
+  "Connect your bank": "/settings/bank",
+};
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcChecklist card :items="steps"&gt;
+    &lt;template #action="{ item }"&gt;
+      &lt;OcButton variant="outline" size="sm" :href="links[item.title]"&gt;Open&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcChecklist&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;ul class="oc-checklist oc-checklist--card"&gt;
-  &lt;li class="oc-checklist-item is-done"&gt;
-    &lt;span class="oc-checklist-text"&gt;&lt;span class="oc-checklist-title"&gt;Add company details&lt;/span&gt;&lt;span class="oc-checklist-hint"&gt;Name, VAT number, address&lt;/span&gt;&lt;/span&gt;
-    &lt;a class="oc-btn oc-btn--outline oc-btn--sm" href="/settings/company"&gt;Open&lt;/a&gt;
-  &lt;/li&gt;
-  &lt;li class="oc-checklist-item"&gt;
-    &lt;span class="oc-checklist-text"&gt;&lt;span class="oc-checklist-title"&gt;Connect your bank&lt;/span&gt;&lt;span class="oc-checklist-hint"&gt;Import transactions automatically&lt;/span&gt;&lt;/span&gt;
-    &lt;a class="oc-btn oc-btn--outline oc-btn--sm" href="/settings/bank"&gt;Open&lt;/a&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::checklist card :items="[
+    ['title' =&gt; 'Add company details', 'hint' =&gt; 'Name, VAT number, address', 'done' =&gt; true, 'href' =&gt; '/settings/company'],
+    ['title' =&gt; 'Connect your bank', 'hint' =&gt; 'Import transactions automatically', 'done' =&gt; false, 'href' =&gt; '/settings/bank'],
+]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -132,6 +151,11 @@ use Livewire\Component;
 
 class ChecklistCard extends Component
 {
+    public array $steps = [
+        ['title' =&gt; 'Add company details', 'hint' =&gt; 'Name, VAT number, address', 'done' =&gt; true, 'href' =&gt; '/settings/company'],
+        ['title' =&gt; 'Connect your bank', 'hint' =&gt; 'Import transactions automatically', 'done' =&gt; false, 'href' =&gt; '/settings/bank'],
+    ];
+
     public function render()
     {
         return view('livewire.checklist-card');
@@ -139,16 +163,9 @@ class ChecklistCard extends Component
 }
 
 {{-- resources/views/livewire/checklist-card.blade.php --}}
-&lt;ul class="oc-checklist oc-checklist--card"&gt;
-  &lt;li class="oc-checklist-item is-done"&gt;
-    &lt;span class="oc-checklist-text"&gt;&lt;span class="oc-checklist-title"&gt;Add company details&lt;/span&gt;&lt;span class="oc-checklist-hint"&gt;Name, VAT number, address&lt;/span&gt;&lt;/span&gt;
-    &lt;a class="oc-btn oc-btn--outline oc-btn--sm" href="/settings/company"&gt;Open&lt;/a&gt;
-  &lt;/li&gt;
-  &lt;li class="oc-checklist-item"&gt;
-    &lt;span class="oc-checklist-text"&gt;&lt;span class="oc-checklist-title"&gt;Connect your bank&lt;/span&gt;&lt;span class="oc-checklist-hint"&gt;Import transactions automatically&lt;/span&gt;&lt;/span&gt;
-    &lt;a class="oc-btn oc-btn--outline oc-btn--sm" href="/settings/bank"&gt;Open&lt;/a&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::checklist card :items="$steps" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

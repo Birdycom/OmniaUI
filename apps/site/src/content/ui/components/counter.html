@@ -15,17 +15,19 @@
           <p class="oc-section-content__desc">The number counts up from 0 to 1250 once, when the page loads. Reload the page to see it again, or use the next examples.</p>
           <oc-demo title="Counter">
 <strong class="oc-counter font-2" style="--oc-counter-to: 1250"></strong>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { Counter } from "@birdycom/omniaui-react";
 
 export function Example() {
-  return (
-    &lt;strong className="oc-counter font-2" style={{ "--oc-counter-to": "1250" } as CSSProperties} /&gt;
-  );
+  return &lt;Counter to={1250} onView={false} className="font-2" /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;strong class="oc-counter font-2" style="--oc-counter-to: 1250"&gt;&lt;/strong&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCounter } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCounter :to="1250" :on-view="false" class="font-2" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;strong class="oc-counter font-2" style="--oc-counter-to: 1250"&gt;&lt;/strong&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::counter :to="1250" :on-view="false" class="font-2" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -41,7 +43,9 @@ class Counter extends Component
 }
 
 {{-- resources/views/livewire/counter.blade.php --}}
-&lt;strong class="oc-counter font-2" style="--oc-counter-to: 1250"&gt;&lt;/strong&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::counter :to="1250" :on-view="false" class="font-2" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Prefix and suffix</h3>
@@ -76,24 +80,32 @@ class Counter extends Component
 &lt;strong class="oc-counter font-2" style="--oc-counter-to: 4800; --oc-counter-prefix: '€ '"&gt;&lt;/strong&gt;
 &lt;strong class="oc-counter font-2" style="--oc-counter-from: 10; --oc-counter-to: 0; --oc-counter-duration: 3s"&gt;&lt;/strong&gt;</oc-code>
 <oc-code lang="tsx">import type { CSSProperties } from "react";
+import { Counter } from "@birdycom/omniaui-react";
 
 export function Example() {
   return (
     &lt;&gt;
-      &lt;strong className="oc-counter font-2" style={{ "--oc-counter-to": "98", "--oc-counter-suffix": "'%'" } as CSSProperties} /&gt;{" "}
-      &lt;strong className="oc-counter font-2" style={{ "--oc-counter-to": "4800", "--oc-counter-prefix": "'€ '" } as CSSProperties} /&gt;{" "}
-      &lt;strong className="oc-counter font-2" style={{ "--oc-counter-from": "10", "--oc-counter-to": "0", "--oc-counter-duration": "3s" } as CSSProperties} /&gt;
+      &lt;Counter to={98} suffix="%" onView={false} className="font-2" /&gt;
+      {/* no prefix prop: set the custom property yourself */}
+      &lt;Counter to={4800} onView={false} className="font-2" style={{ "--oc-counter-prefix": "'€ '" } as CSSProperties} /&gt;
+      &lt;Counter to={0} onView={false} className="font-2" style={{ "--oc-counter-from": 10, "--oc-counter-duration": "3s" } as CSSProperties} /&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;strong class="oc-counter font-2" style="--oc-counter-to: 98; --oc-counter-suffix: '%'"&gt;&lt;/strong&gt;
-  &lt;strong class="oc-counter font-2" style="--oc-counter-to: 4800; --oc-counter-prefix: '€ '"&gt;&lt;/strong&gt;
-  &lt;strong class="oc-counter font-2" style="--oc-counter-from: 10; --oc-counter-to: 0; --oc-counter-duration: 3s"&gt;&lt;/strong&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCounter } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCounter :to="98" suffix="%" :on-view="false" class="font-2" /&gt;
+  &lt;!-- no prefix prop: set the custom property yourself --&gt;
+  &lt;OcCounter :to="4800" :on-view="false" class="font-2" style="--oc-counter-prefix: '€ '" /&gt;
+  &lt;OcCounter :to="0" :on-view="false" class="font-2" style="--oc-counter-from: 10; --oc-counter-duration: 3s" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;strong class="oc-counter font-2" style="--oc-counter-to: 98; --oc-counter-suffix: '%'"&gt;&lt;/strong&gt;
-&lt;strong class="oc-counter font-2" style="--oc-counter-to: 4800; --oc-counter-prefix: '€ '"&gt;&lt;/strong&gt;
-&lt;strong class="oc-counter font-2" style="--oc-counter-from: 10; --oc-counter-to: 0; --oc-counter-duration: 3s"&gt;&lt;/strong&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::counter :to="98" suffix="%" :on-view="false" class="font-2" /&gt;
+{{-- no prefix prop: set the custom property yourself --}}
+&lt;x-oc::counter :to="4800" :on-view="false" class="font-2" style="--oc-counter-prefix: '€ '" /&gt;
+&lt;x-oc::counter :to="0" :on-view="false" class="font-2" style="--oc-counter-from: 10; --oc-counter-duration: 3s" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -110,9 +122,10 @@ class CounterPrefixAndSuffix extends Component
 
 {{-- resources/views/livewire/counter-prefix-and-suffix.blade.php --}}
 &lt;div&gt;
-    &lt;strong class="oc-counter font-2" style="--oc-counter-to: 98; --oc-counter-suffix: '%'"&gt;&lt;/strong&gt;
-    &lt;strong class="oc-counter font-2" style="--oc-counter-to: 4800; --oc-counter-prefix: '€ '"&gt;&lt;/strong&gt;
-    &lt;strong class="oc-counter font-2" style="--oc-counter-from: 10; --oc-counter-to: 0; --oc-counter-duration: 3s"&gt;&lt;/strong&gt;
+    &lt;x-oc::counter :to="98" suffix="%" :on-view="false" class="font-2" /&gt;
+    {{-- no prefix prop: set the custom property yourself --}}
+    &lt;x-oc::counter :to="4800" :on-view="false" class="font-2" style="--oc-counter-prefix: '€ '" /&gt;
+    &lt;x-oc::counter :to="0" :on-view="false" class="font-2" style="--oc-counter-from: 10; --oc-counter-duration: 3s" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -120,17 +133,22 @@ class CounterPrefixAndSuffix extends Component
           <p class="oc-section-content__desc"><code>.oc-counter--on-view</code> starts the animation when the number scrolls into view (scroll-driven animation); browsers without it show the end value.</p>
           <oc-demo title="Counter - start on view">
 <strong class="oc-counter oc-counter--on-view font-2" style="--oc-counter-to: 1250; --oc-counter-suffix: '+'"></strong>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { Counter } from "@birdycom/omniaui-react";
 
 export function Example() {
-  return (
-    &lt;strong className="oc-counter oc-counter--on-view font-2" style={{ "--oc-counter-to": "1250", "--oc-counter-suffix": "'+'" } as CSSProperties} /&gt;
-  );
+  // onView is the default: the count starts when the number scrolls into view
+  return &lt;Counter to={1250} suffix="+" className="font-2" /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;strong class="oc-counter oc-counter--on-view font-2" style="--oc-counter-to: 1250; --oc-counter-suffix: '+'"&gt;&lt;/strong&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCounter } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- on-view is the default: the count starts when the number scrolls into view --&gt;
+  &lt;OcCounter :to="1250" suffix="+" class="font-2" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;strong class="oc-counter oc-counter--on-view font-2" style="--oc-counter-to: 1250; --oc-counter-suffix: '+'"&gt;&lt;/strong&gt;</oc-code>
+<oc-code lang="blade">{{-- on-view is the default: the count starts when the number scrolls into view --}}
+&lt;x-oc::counter :to="1250" suffix="+" class="font-2" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -146,7 +164,10 @@ class CounterStartOnView extends Component
 }
 
 {{-- resources/views/livewire/counter-start-on-view.blade.php --}}
-&lt;strong class="oc-counter oc-counter--on-view font-2" style="--oc-counter-to: 1250; --oc-counter-suffix: '+'"&gt;&lt;/strong&gt;</oc-code>
+&lt;div&gt;
+    {{-- on-view is the default: the count starts when the number scrolls into view --}}
+    &lt;x-oc::counter :to="1250" suffix="+" class="font-2" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

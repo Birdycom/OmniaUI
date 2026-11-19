@@ -19,58 +19,55 @@
     <button class="oc-btn oc-btn--outline oc-btn--lg" type="button">See the prices</button>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-block-cta"&gt;
-      &lt;h2&gt;Want to see it with your own data?&lt;/h2&gt;
-      &lt;p&gt;Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour.&lt;/p&gt;
-      &lt;div className="oc-block-hero-actions"&gt;
-        &lt;button className="oc-btn oc-btn--lg" type="button"&gt;Plan a demo&lt;/button&gt;
-        &lt;button className="oc-btn oc-btn--outline oc-btn--lg" type="button"&gt;See the prices&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-block-cta"&gt;
-    &lt;h2&gt;Want to see it with your own data?&lt;/h2&gt;
-    &lt;p&gt;Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour.&lt;/p&gt;
-    &lt;div class="oc-block-hero-actions"&gt;
-      &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Plan a demo&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--outline oc-btn--lg" type="button"&gt;See the prices&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-cta"&gt;
-  &lt;h2&gt;Want to see it with your own data?&lt;/h2&gt;
-  &lt;p&gt;Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Plan a demo&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline oc-btn--lg" type="button"&gt;See the prices&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;BlockCta
+  title="Want to see it with your own data?"
+  description="Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour."
+  actions={&lt;&gt;
+    &lt;ButtonLink size="lg" href="/demo"&gt;Plan a demo&lt;/ButtonLink&gt;
+    &lt;ButtonLink size="lg" variant="outline" href="/pricing"&gt;See the prices&lt;/ButtonLink&gt;
+  &lt;/&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcBlockCta title="Want to see it with your own data?" text="Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour."&gt;
+  &lt;template #actions&gt;
+    &lt;OcButton size="lg" href="/demo"&gt;Plan a demo&lt;/OcButton&gt;
+    &lt;OcButton size="lg" variant="outline" href="/pricing"&gt;See the prices&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcBlockCta&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.cta title="Want to see it with your own data?" text="Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour."&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button size="lg" href="/demo"&gt;Plan a demo&lt;/x-oc::button&gt;
+        &lt;x-oc::button size="lg" variant="outline" href="/pricing"&gt;See the prices&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.cta&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class CtaCallToAction extends Component
+class DemoCta extends Component
 {
+    public string $title = 'Want to see it with your own data?';
+
+    public function start(): void
+    {
+        $this-&gt;redirect('/demo', navigate: true);
+    }
+
     public function render()
     {
-        return view('livewire.cta-call-to-action');
+        return view('livewire.demo-cta');
     }
 }
 
-{{-- resources/views/livewire/cta-call-to-action.blade.php --}}
-&lt;div class="oc-block-cta"&gt;
-  &lt;h2&gt;Want to see it with your own data?&lt;/h2&gt;
-  &lt;p&gt;Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Plan a demo&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline oc-btn--lg" type="button"&gt;See the prices&lt;/button&gt;
-  &lt;/div&gt;
+{{-- resources/views/livewire/demo-cta.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.cta :title="$title" text="Send us one of your quotes and we show the whole flow, from quote to invoice, in half an hour."&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button size="lg" wire:click="start"&gt;Plan a demo&lt;/x-oc::button&gt;
+            &lt;x-oc::button size="lg" variant="outline" href="/pricing"&gt;See the prices&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::block.cta&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc mt-2"><code>.oc-block-cta--solid</code> puts the panel in the brand color and turns the buttons around: the main button becomes light with brand-colored text, an outline button gets a light line. Use it once per page, for the step you most want a visitor to take.</p>
@@ -83,58 +80,55 @@ class CtaCallToAction extends Component
     <button class="oc-btn oc-btn--outline oc-btn--lg" type="button">Call us</button>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-block-cta oc-block-cta--solid"&gt;
-      &lt;h2&gt;Have a project in mind?&lt;/h2&gt;
-      &lt;p&gt;Tell us what you need. We answer within one working day, with a plan and a price.&lt;/p&gt;
-      &lt;div className="oc-block-hero-actions"&gt;
-        &lt;button className="oc-btn oc-btn--lg" type="button"&gt;Start a project&lt;/button&gt;
-        &lt;button className="oc-btn oc-btn--outline oc-btn--lg" type="button"&gt;Call us&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-block-cta oc-block-cta--solid"&gt;
-    &lt;h2&gt;Have a project in mind?&lt;/h2&gt;
-    &lt;p&gt;Tell us what you need. We answer within one working day, with a plan and a price.&lt;/p&gt;
-    &lt;div class="oc-block-hero-actions"&gt;
-      &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Start a project&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--outline oc-btn--lg" type="button"&gt;Call us&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-cta oc-block-cta--solid"&gt;
-  &lt;h2&gt;Have a project in mind?&lt;/h2&gt;
-  &lt;p&gt;Tell us what you need. We answer within one working day, with a plan and a price.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Start a project&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline oc-btn--lg" type="button"&gt;Call us&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;BlockCta className="oc-block-cta--solid"
+  title="Have a project in mind?"
+  description="Tell us what you need. We answer within one working day, with a plan and a price."
+  actions={&lt;&gt;
+    &lt;ButtonLink size="lg" href="/contact"&gt;Start a project&lt;/ButtonLink&gt;
+    &lt;ButtonLink size="lg" variant="outline" href="tel:+3230000000"&gt;Call us&lt;/ButtonLink&gt;
+  &lt;/&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcBlockCta class="oc-block-cta--solid" title="Have a project in mind?" text="Tell us what you need. We answer within one working day, with a plan and a price."&gt;
+  &lt;template #actions&gt;
+    &lt;OcButton size="lg" href="/contact"&gt;Start a project&lt;/OcButton&gt;
+    &lt;OcButton size="lg" variant="outline" href="tel:+3230000000"&gt;Call us&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcBlockCta&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.cta class="oc-block-cta--solid" title="Have a project in mind?" text="Tell us what you need. We answer within one working day, with a plan and a price."&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button size="lg" href="/contact"&gt;Start a project&lt;/x-oc::button&gt;
+        &lt;x-oc::button size="lg" variant="outline" href="tel:+3230000000"&gt;Call us&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.cta&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class CtaCallToActionSolid extends Component
+class ProjectCta extends Component
 {
+    public string $title = 'Have a project in mind?';
+
+    public function start(): void
+    {
+        $this-&gt;redirect('/contact', navigate: true);
+    }
+
     public function render()
     {
-        return view('livewire.cta-call-to-action-solid');
+        return view('livewire.project-cta');
     }
 }
 
-{{-- resources/views/livewire/cta-call-to-action-solid.blade.php --}}
-&lt;div class="oc-block-cta oc-block-cta--solid"&gt;
-  &lt;h2&gt;Have a project in mind?&lt;/h2&gt;
-  &lt;p&gt;Tell us what you need. We answer within one working day, with a plan and a price.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Start a project&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline oc-btn--lg" type="button"&gt;Call us&lt;/button&gt;
-  &lt;/div&gt;
+{{-- resources/views/livewire/project-cta.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.cta class="oc-block-cta--solid" :title="$title" text="Tell us what you need. We answer within one working day, with a plan and a price."&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button size="lg" wire:click="start"&gt;Start a project&lt;/x-oc::button&gt;
+            &lt;x-oc::button size="lg" variant="outline" href="tel:+3230000000"&gt;Call us&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::block.cta&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc mt-2"><code>.oc-block-cta--center</code> centers everything, for a closing band at the end of a page. It combines with <code>--solid</code>.</p>
@@ -146,54 +140,49 @@ class CtaCallToActionSolid extends Component
     <button class="oc-btn oc-btn--lg" type="button">Create an account</button>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-block-cta oc-block-cta--center"&gt;
-      &lt;h2&gt;Ready to start?&lt;/h2&gt;
-      &lt;p&gt;Create an account for Company 1 in two minutes. No card needed.&lt;/p&gt;
-      &lt;div className="oc-block-hero-actions"&gt;
-        &lt;button className="oc-btn oc-btn--lg" type="button"&gt;Create an account&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-block-cta oc-block-cta--center"&gt;
-    &lt;h2&gt;Ready to start?&lt;/h2&gt;
-    &lt;p&gt;Create an account for Company 1 in two minutes. No card needed.&lt;/p&gt;
-    &lt;div class="oc-block-hero-actions"&gt;
-      &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Create an account&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-cta oc-block-cta--center"&gt;
-  &lt;h2&gt;Ready to start?&lt;/h2&gt;
-  &lt;p&gt;Create an account for Company 1 in two minutes. No card needed.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Create an account&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;BlockCta className="oc-block-cta--center"
+  title="Ready to start?"
+  description="Create an account for Company 1 in two minutes. No card needed."
+  actions={&lt;ButtonLink size="lg" href="/register"&gt;Create an account&lt;/ButtonLink&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcBlockCta class="oc-block-cta--center" title="Ready to start?" text="Create an account for Company 1 in two minutes. No card needed."&gt;
+  &lt;template #actions&gt;
+    &lt;OcButton size="lg" href="/register"&gt;Create an account&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcBlockCta&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.cta class="oc-block-cta--center" title="Ready to start?" text="Create an account for Company 1 in two minutes. No card needed."&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button size="lg" href="/register"&gt;Create an account&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.cta&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class CtaCallToActionCenter extends Component
+class SignupCta extends Component
 {
+    public string $title = 'Ready to start?';
+
+    public function start(): void
+    {
+        $this-&gt;redirect('/register', navigate: true);
+    }
+
     public function render()
     {
-        return view('livewire.cta-call-to-action-center');
+        return view('livewire.signup-cta');
     }
 }
 
-{{-- resources/views/livewire/cta-call-to-action-center.blade.php --}}
-&lt;div class="oc-block-cta oc-block-cta--center"&gt;
-  &lt;h2&gt;Ready to start?&lt;/h2&gt;
-  &lt;p&gt;Create an account for Company 1 in two minutes. No card needed.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--lg" type="button"&gt;Create an account&lt;/button&gt;
-  &lt;/div&gt;
+{{-- resources/views/livewire/signup-cta.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.cta class="oc-block-cta--center" :title="$title" text="Create an account for Company 1 in two minutes. No card needed."&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button size="lg" wire:click="start"&gt;Create an account&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::block.cta&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc mt-2"><code>.oc-block-cta--glow</code> is the quiet festive one: a single soft light in the brand color behind a larger, centered title. The surface stays the card color, so the text keeps its full contrast.</p>
@@ -206,58 +195,55 @@ class CtaCallToActionCenter extends Component
     <button class="oc-btn oc-btn--glass oc-btn--lg" type="button">Call us</button>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-block-cta oc-block-cta--glow"&gt;
-      &lt;h2&gt;Have a project in mind?&lt;/h2&gt;
-      &lt;p&gt;Tell us what you need. We answer within one working day, with a plan and a price.&lt;/p&gt;
-      &lt;div className="oc-block-hero-actions"&gt;
-        &lt;button className="oc-btn oc-btn--gradient oc-btn--lg" type="button"&gt;Start a project&lt;/button&gt;
-        &lt;button className="oc-btn oc-btn--glass oc-btn--lg" type="button"&gt;Call us&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-block-cta oc-block-cta--glow"&gt;
-    &lt;h2&gt;Have a project in mind?&lt;/h2&gt;
-    &lt;p&gt;Tell us what you need. We answer within one working day, with a plan and a price.&lt;/p&gt;
-    &lt;div class="oc-block-hero-actions"&gt;
-      &lt;button class="oc-btn oc-btn--gradient oc-btn--lg" type="button"&gt;Start a project&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--glass oc-btn--lg" type="button"&gt;Call us&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-cta oc-block-cta--glow"&gt;
-  &lt;h2&gt;Have a project in mind?&lt;/h2&gt;
-  &lt;p&gt;Tell us what you need. We answer within one working day, with a plan and a price.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--gradient oc-btn--lg" type="button"&gt;Start a project&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--glass oc-btn--lg" type="button"&gt;Call us&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;BlockCta className="oc-block-cta--glow"
+  title="Have a project in mind?"
+  description="Tell us what you need. We answer within one working day, with a plan and a price."
+  actions={&lt;&gt;
+    &lt;ButtonLink size="lg" variant="gradient" href="/contact"&gt;Start a project&lt;/ButtonLink&gt;
+    &lt;ButtonLink size="lg" variant="glass" href="tel:+3230000000"&gt;Call us&lt;/ButtonLink&gt;
+  &lt;/&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcBlockCta class="oc-block-cta--glow" title="Have a project in mind?" text="Tell us what you need. We answer within one working day, with a plan and a price."&gt;
+  &lt;template #actions&gt;
+    &lt;OcButton size="lg" variant="gradient" href="/contact"&gt;Start a project&lt;/OcButton&gt;
+    &lt;OcButton size="lg" variant="glass" href="tel:+3230000000"&gt;Call us&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcBlockCta&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.cta class="oc-block-cta--glow" title="Have a project in mind?" text="Tell us what you need. We answer within one working day, with a plan and a price."&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button size="lg" variant="gradient" href="/contact"&gt;Start a project&lt;/x-oc::button&gt;
+        &lt;x-oc::button size="lg" variant="glass" href="tel:+3230000000"&gt;Call us&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.cta&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class CtaCallToActionGlow extends Component
+class GlowCta extends Component
 {
+    public string $title = 'Have a project in mind?';
+
+    public function start(): void
+    {
+        $this-&gt;redirect('/contact', navigate: true);
+    }
+
     public function render()
     {
-        return view('livewire.cta-call-to-action-glow');
+        return view('livewire.glow-cta');
     }
 }
 
-{{-- resources/views/livewire/cta-call-to-action-glow.blade.php --}}
-&lt;div class="oc-block-cta oc-block-cta--glow"&gt;
-  &lt;h2&gt;Have a project in mind?&lt;/h2&gt;
-  &lt;p&gt;Tell us what you need. We answer within one working day, with a plan and a price.&lt;/p&gt;
-  &lt;div class="oc-block-hero-actions"&gt;
-    &lt;button class="oc-btn oc-btn--gradient oc-btn--lg" type="button"&gt;Start a project&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--glass oc-btn--lg" type="button"&gt;Call us&lt;/button&gt;
-  &lt;/div&gt;
+{{-- resources/views/livewire/glow-cta.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.cta class="oc-block-cta--glow" :title="$title" text="Tell us what you need. We answer within one working day, with a plan and a price."&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button size="lg" variant="gradient" wire:click="start"&gt;Start a project&lt;/x-oc::button&gt;
+            &lt;x-oc::button size="lg" variant="glass" href="tel:+3230000000"&gt;Call us&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::block.cta&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

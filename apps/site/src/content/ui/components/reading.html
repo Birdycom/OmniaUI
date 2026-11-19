@@ -35,23 +35,29 @@
 <oc-code lang="html">&lt;span class="oc-reading"&gt;41 °C&lt;/span&gt;
 &lt;span class="oc-reading oc-reading--warm"&gt;72 °C&lt;/span&gt;
 &lt;span class="oc-reading oc-reading--hot"&gt;88 °C&lt;/span&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Reading } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
     &lt;&gt;
-      &lt;span className="oc-reading"&gt;41 °C&lt;/span&gt;{" "}
-      &lt;span className="oc-reading oc-reading--warm"&gt;72 °C&lt;/span&gt;{" "}
-      &lt;span className="oc-reading oc-reading--hot"&gt;88 °C&lt;/span&gt;
+      &lt;Reading&gt;41 °C&lt;/Reading&gt;{" "}
+      &lt;Reading level="warm"&gt;72 °C&lt;/Reading&gt;{" "}
+      &lt;Reading level="hot"&gt;88 °C&lt;/Reading&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;span class="oc-reading"&gt;41 °C&lt;/span&gt;
-  &lt;span class="oc-reading oc-reading--warm"&gt;72 °C&lt;/span&gt;
-  &lt;span class="oc-reading oc-reading--hot"&gt;88 °C&lt;/span&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcReading } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcReading&gt;41 °C&lt;/OcReading&gt;
+  &lt;OcReading level="warm"&gt;72 °C&lt;/OcReading&gt;
+  &lt;OcReading level="hot"&gt;88 °C&lt;/OcReading&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;span class="oc-reading"&gt;41 °C&lt;/span&gt;
-&lt;span class="oc-reading oc-reading--warm"&gt;72 °C&lt;/span&gt;
-&lt;span class="oc-reading oc-reading--hot"&gt;88 °C&lt;/span&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::reading&gt;41 °C&lt;/x-oc::reading&gt;
+&lt;x-oc::reading level="warm"&gt;72 °C&lt;/x-oc::reading&gt;
+&lt;x-oc::reading level="hot"&gt;88 °C&lt;/x-oc::reading&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -68,9 +74,9 @@ class ReadingThreeLevels extends Component
 
 {{-- resources/views/livewire/reading-three-levels.blade.php --}}
 &lt;div&gt;
-    &lt;span class="oc-reading"&gt;41 °C&lt;/span&gt;
-    &lt;span class="oc-reading oc-reading--warm"&gt;72 °C&lt;/span&gt;
-    &lt;span class="oc-reading oc-reading--hot"&gt;88 °C&lt;/span&gt;
+    &lt;x-oc::reading&gt;41 °C&lt;/x-oc::reading&gt;
+    &lt;x-oc::reading level="warm"&gt;72 °C&lt;/x-oc::reading&gt;
+    &lt;x-oc::reading level="hot"&gt;88 °C&lt;/x-oc::reading&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-2">In a meter row</h3>
@@ -88,49 +94,48 @@ class ReadingThreeLevels extends Component
     <span class="oc-meter-row__bar" role="meter" aria-label="GPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="84"></span>
   </div>
 </div>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { MeterRow, Reading } from "@birdycom/omniaui-react";
 
 export function Example() {
   return (
     &lt;div className="oc-meter-list" style={{ inlineSize: "min(100%,26rem)" }}&gt;
-      &lt;div className="oc-meter-row" style={{ "--oc-meter": "38%" } as CSSProperties}&gt;
-        &lt;span className="oc-meter-row__label"&gt;CPU&lt;/span&gt;{" "}
-        &lt;span className="oc-meter-row__value"&gt;&lt;strong&gt;38%&lt;/strong&gt;&lt;span className="oc-reading"&gt;57 °C&lt;/span&gt;&lt;/span&gt;{" "}
-        &lt;span className="oc-meter-row__bar" role="meter" aria-label="CPU" aria-valuemin={0} aria-valuemax={100} aria-valuenow={38} /&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-meter-row" data-level="warn" style={{ "--oc-meter": "84%" } as CSSProperties}&gt;
-        &lt;span className="oc-meter-row__label"&gt;GPU&lt;/span&gt;{" "}
-        &lt;span className="oc-meter-row__value"&gt;&lt;strong&gt;84%&lt;/strong&gt;&lt;span className="oc-reading oc-reading--hot"&gt;86 °C&lt;/span&gt;&lt;/span&gt;{" "}
-        &lt;span className="oc-meter-row__bar" role="meter" aria-label="GPU" aria-valuemin={0} aria-valuemax={100} aria-valuenow={84} /&gt;
-      &lt;/div&gt;
+      {/* the value goes after the percentage, e.g. "38% · 57 °C" */}
+      &lt;MeterRow label="CPU" percent={38} value={&lt;Reading&gt;57 °C&lt;/Reading&gt;} /&gt;
+      &lt;MeterRow label="GPU" percent={84} value={&lt;Reading level="hot"&gt;86 °C&lt;/Reading&gt;} /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcReading } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- OcMeterRow takes its value as text: for a colored reading, write the row --&gt;
   &lt;div class="oc-meter-list" style="inline-size:min(100%,26rem)"&gt;
     &lt;div class="oc-meter-row" style="--oc-meter: 38%"&gt;
       &lt;span class="oc-meter-row__label"&gt;CPU&lt;/span&gt;
-      &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;38%&lt;/strong&gt;&lt;span class="oc-reading"&gt;57 °C&lt;/span&gt;&lt;/span&gt;
+      &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;38%&lt;/strong&gt;&lt;OcReading&gt;57 °C&lt;/OcReading&gt;&lt;/span&gt;
       &lt;span class="oc-meter-row__bar" role="meter" aria-label="CPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="38"&gt;&lt;/span&gt;
     &lt;/div&gt;
     &lt;div class="oc-meter-row" data-level="warn" style="--oc-meter: 84%"&gt;
       &lt;span class="oc-meter-row__label"&gt;GPU&lt;/span&gt;
-      &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;84%&lt;/strong&gt;&lt;span class="oc-reading oc-reading--hot"&gt;86 °C&lt;/span&gt;&lt;/span&gt;
+      &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;84%&lt;/strong&gt;&lt;OcReading level="hot"&gt;86 °C&lt;/OcReading&gt;&lt;/span&gt;
       &lt;span class="oc-meter-row__bar" role="meter" aria-label="GPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="84"&gt;&lt;/span&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-meter-list" style="inline-size:min(100%,26rem)"&gt;
-  &lt;div class="oc-meter-row" style="--oc-meter: 38%"&gt;
-    &lt;span class="oc-meter-row__label"&gt;CPU&lt;/span&gt;
-    &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;38%&lt;/strong&gt;&lt;span class="oc-reading"&gt;57 °C&lt;/span&gt;&lt;/span&gt;
-    &lt;span class="oc-meter-row__bar" role="meter" aria-label="CPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="38"&gt;&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-meter-row" data-level="warn" style="--oc-meter: 84%"&gt;
-    &lt;span class="oc-meter-row__label"&gt;GPU&lt;/span&gt;
-    &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;84%&lt;/strong&gt;&lt;span class="oc-reading oc-reading--hot"&gt;86 °C&lt;/span&gt;&lt;/span&gt;
-    &lt;span class="oc-meter-row__bar" role="meter" aria-label="GPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="84"&gt;&lt;/span&gt;
-  &lt;/div&gt;
+<oc-code lang="blade">{{-- &lt;x-oc::meter-row&gt; takes its value as text: for a colored reading, write the row --}}
+&lt;div class="oc-meter-list" style="inline-size:min(100%,26rem)"&gt;
+    &lt;div class="oc-meter-row" style="--oc-meter: 38%"&gt;
+        &lt;span class="oc-meter-row__label"&gt;CPU&lt;/span&gt;
+        &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;38%&lt;/strong&gt;&lt;x-oc::reading&gt;57 °C&lt;/x-oc::reading&gt;&lt;/span&gt;
+        &lt;span class="oc-meter-row__bar" role="meter" aria-label="CPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="38"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-meter-row" data-level="warn" style="--oc-meter: 84%"&gt;
+        &lt;span class="oc-meter-row__label"&gt;GPU&lt;/span&gt;
+        &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;84%&lt;/strong&gt;&lt;x-oc::reading level="hot"&gt;86 °C&lt;/x-oc::reading&gt;&lt;/span&gt;
+        &lt;span class="oc-meter-row__bar" role="meter" aria-label="GPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="84"&gt;&lt;/span&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -147,17 +152,20 @@ class ReadingInAMeterRow extends Component
 }
 
 {{-- resources/views/livewire/reading-in-a-meter-row.blade.php --}}
-&lt;div class="oc-meter-list" style="inline-size:min(100%,26rem)"&gt;
-  &lt;div class="oc-meter-row" style="--oc-meter: 38%"&gt;
-    &lt;span class="oc-meter-row__label"&gt;CPU&lt;/span&gt;
-    &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;38%&lt;/strong&gt;&lt;span class="oc-reading"&gt;57 °C&lt;/span&gt;&lt;/span&gt;
-    &lt;span class="oc-meter-row__bar" role="meter" aria-label="CPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="38"&gt;&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-meter-row" data-level="warn" style="--oc-meter: 84%"&gt;
-    &lt;span class="oc-meter-row__label"&gt;GPU&lt;/span&gt;
-    &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;84%&lt;/strong&gt;&lt;span class="oc-reading oc-reading--hot"&gt;86 °C&lt;/span&gt;&lt;/span&gt;
-    &lt;span class="oc-meter-row__bar" role="meter" aria-label="GPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="84"&gt;&lt;/span&gt;
-  &lt;/div&gt;
+&lt;div&gt;
+    {{-- &lt;x-oc::meter-row&gt; takes its value as text: for a colored reading, write the row --}}
+    &lt;div class="oc-meter-list" style="inline-size:min(100%,26rem)"&gt;
+        &lt;div class="oc-meter-row" style="--oc-meter: 38%"&gt;
+            &lt;span class="oc-meter-row__label"&gt;CPU&lt;/span&gt;
+            &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;38%&lt;/strong&gt;&lt;x-oc::reading&gt;57 °C&lt;/x-oc::reading&gt;&lt;/span&gt;
+            &lt;span class="oc-meter-row__bar" role="meter" aria-label="CPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="38"&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="oc-meter-row" data-level="warn" style="--oc-meter: 84%"&gt;
+            &lt;span class="oc-meter-row__label"&gt;GPU&lt;/span&gt;
+            &lt;span class="oc-meter-row__value"&gt;&lt;strong&gt;84%&lt;/strong&gt;&lt;x-oc::reading level="hot"&gt;86 °C&lt;/x-oc::reading&gt;&lt;/span&gt;
+            &lt;span class="oc-meter-row__bar" role="meter" aria-label="GPU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="84"&gt;&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

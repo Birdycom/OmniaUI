@@ -380,155 +380,48 @@ class ArticlesTable extends DataTable
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class DataTableArticlesBordered extends Component
+class ArticlesBordered extends Component
 {
+    /** @return list&lt;array&lt;string, mixed&gt;&gt; */
+    public function columns(): array
+    {
+        return [
+            ['key' =&gt; 'sku', 'header' =&gt; 'Article ID', 'defaultSort' =&gt; 'ascending'],
+            ['key' =&gt; 'name', 'header' =&gt; 'Name'],
+            ['key' =&gt; 'category', 'header' =&gt; 'Category'],
+            ['key' =&gt; 'price', 'header' =&gt; 'Price', 'numeric' =&gt; true],
+        ];
+    }
+
+    /** @return list&lt;array&lt;string, mixed&gt;&gt; */
+    public function rows(): array
+    {
+        return DB::table('articles')-&gt;orderBy('sku')-&gt;get()-&gt;map(fn ($a) =&gt; [
+            'key' =&gt; $a-&gt;id,
+            'status' =&gt; strtolower($a-&gt;status) === 'active' ? 'active' : 'deleted',
+            'cells' =&gt; ['sku' =&gt; $a-&gt;sku, 'name' =&gt; $a-&gt;name, 'category' =&gt; $a-&gt;category ?? 'Materials', 'price' =&gt; number_format((float) $a-&gt;price, 2, ',', '.')],
+            'values' =&gt; ['price' =&gt; (string) $a-&gt;price],
+            'href' =&gt; url('/articles/'.$a-&gt;id.'/edit'),
+        ])-&gt;all();
+    }
+
     public function render()
     {
-        return view('livewire.data-table-articles-bordered');
+        return view('livewire.articles-bordered');
     }
 }
 
-{{-- resources/views/livewire/data-table-articles-bordered.blade.php --}}
-&lt;div class="oc-data-table oc-data-table--bordered" id="oc-articles-v2" data-page-size="10" data-oc-live="true"&gt;
-  &lt;div class="oc-data-table-toolbar"&gt;
-    &lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" popovertarget="oc-articles-v2-menu" aria-label="List actions" title="List actions"&gt;&lt;iconify-icon icon="mdi:tune-variant" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-    &lt;div class="oc-dropdown-menu" id="oc-articles-v2-menu" popover=""&gt;
-      &lt;button class="oc-dropdown-item" type="button" data-oc-export=""&gt;&lt;iconify-icon icon="mdi:export" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Export CSV&lt;/button&gt;
-      &lt;button class="oc-dropdown-item" type="button" data-oc-bulk="duplicate"&gt;&lt;iconify-icon icon="mdi:content-duplicate" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Duplicate selection&lt;/button&gt;
-      &lt;button class="oc-dropdown-item" type="button" data-oc-bulk="archive"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Move selection to trash&lt;/button&gt;
+{{-- resources/views/livewire/articles-bordered.blade.php --}}
+&lt;div&gt;
+    {{-- client-side list (search, sort, paging in data-table.js) fed by the component; wire:ignore keeps its state --}}
+    &lt;div wire:ignore&gt;
+        &lt;x-oc::data-table table-id="articles-v2" variant="bordered" :columns="$this-&gt;columns()" :rows="$this-&gt;rows()" :page-size="10" live
+            search-placeholder="Search by name, article ID or description…"
+            :column-filters="[['column' =&gt; 'category', 'label' =&gt; 'Category', 'icon' =&gt; 'mdi:filter-outline', 'options' =&gt; ['Labour' =&gt; 'Labour', 'Materials' =&gt; 'Materials', 'Transport' =&gt; 'Transport']]]" /&gt;
     &lt;/div&gt;
-    &lt;input class="oc-input oc-data-table-search" type="search" placeholder="Search by name, article ID or description…" aria-label="Search articles"&gt;
-    &lt;div class="oc-filter-pills" role="group" aria-label="Trash filter"&gt;
-      &lt;button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true"&gt;Active only&lt;/button&gt;
-      &lt;button class="oc-filter-pill" type="button" data-oc-filter="all"&gt;Including trash&lt;/button&gt;
-      &lt;button class="oc-filter-pill" type="button" data-oc-filter="deleted"&gt;Trash only&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-data-table-filters"&gt;
-    &lt;label class="oc-data-table-filter"&gt;&lt;iconify-icon icon="mdi:filter-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;select class="oc-select" data-oc-col-filter="category" aria-label="Category"&gt;
-      &lt;option value="" selected&gt;All categories&lt;/option&gt;
-      &lt;option value="Labour"&gt;Labour&lt;/option&gt;
-      &lt;option value="Materials"&gt;Materials&lt;/option&gt;
-      &lt;option value="Transport"&gt;Transport&lt;/option&gt;
-    &lt;/select&gt;&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-data-table-bulk" hidden&gt;
-    &lt;span data-oc-selected-count=""&gt;0 selected&lt;/span&gt;
-    &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Move to trash&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear"&gt;Clear&lt;/button&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-data-table-frame"&gt;
-    &lt;div class="oc-data-table-scroll"&gt;
-      &lt;table class="oc-table oc-data-table-table"&gt;
-        &lt;thead&gt;
-          &lt;tr&gt;
-            &lt;th data-oc-col="select" class="oc-data-table-select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label="Select all"&gt;&lt;/th&gt;
-            &lt;th data-oc-col="sku" data-oc-sort="text" aria-sort="ascending"&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Article ID&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="name" data-oc-sort="text"&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Name&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="category" data-oc-sort="text"&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Category&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="supplier"&gt;&lt;span class="oc-data-table-th"&gt;Supplier&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="buy" data-oc-sort="numeric" data-numeric&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Purchase excl.&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="unit" data-oc-sort="text"&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Unit&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="sell" data-oc-sort="numeric" data-numeric&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Sale excl.&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="actions" style="width:5rem;text-align:center"&gt;Actions&lt;/th&gt;
-          &lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-          &lt;tr data-oc-row="" data-oc-key="art-0001" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Article 1"&gt;&lt;/td&gt;
-            &lt;td data-oc-col="sku"&gt;&lt;span class="oc-data-table-code"&gt;ART-0001&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Article 1&lt;/td&gt;
-            &lt;td data-oc-col="category"&gt;Labour&lt;/td&gt;
-            &lt;td data-oc-col="supplier"&gt;Supplier 1&lt;/td&gt;
-            &lt;td data-oc-col="buy" data-numeric="" data-oc-value="75.00"&gt;€ 75,00&lt;/td&gt;
-            &lt;td data-oc-col="unit"&gt;per hour&lt;/td&gt;
-            &lt;td data-oc-col="sell" data-numeric="" data-oc-value="62.50"&gt;€ 62,50&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" aria-label="Actions for Article 1" title="Actions"&gt;&lt;iconify-icon icon="mdi:menu" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="art-0002" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Article 2"&gt;&lt;/td&gt;
-            &lt;td data-oc-col="sku"&gt;&lt;span class="oc-data-table-code"&gt;ART-0002&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Article 2&lt;/td&gt;
-            &lt;td data-oc-col="category"&gt;Labour&lt;/td&gt;
-            &lt;td data-oc-col="supplier"&gt;–&lt;/td&gt;
-            &lt;td data-oc-col="buy" data-numeric="" data-oc-value="300.00"&gt;€ 300,00&lt;/td&gt;
-            &lt;td data-oc-col="unit"&gt;per hour&lt;/td&gt;
-            &lt;td data-oc-col="sell" data-numeric="" data-oc-value="300.00"&gt;€ 300,00&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" aria-label="Actions for Article 2" title="Actions"&gt;&lt;iconify-icon icon="mdi:menu" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="art-0003" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Article 3"&gt;&lt;/td&gt;
-            &lt;td data-oc-col="sku"&gt;&lt;span class="oc-data-table-code"&gt;ART-0003&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Article 3&lt;/td&gt;
-            &lt;td data-oc-col="category"&gt;Labour&lt;/td&gt;
-            &lt;td data-oc-col="supplier"&gt;–&lt;/td&gt;
-            &lt;td data-oc-col="buy" data-numeric="" data-oc-value="1.00"&gt;€ 1,00&lt;/td&gt;
-            &lt;td data-oc-col="unit"&gt;per meter&lt;/td&gt;
-            &lt;td data-oc-col="sell" data-numeric="" data-oc-value="1.00"&gt;€ 1,00&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" aria-label="Actions for Article 3" title="Actions"&gt;&lt;iconify-icon icon="mdi:menu" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="art-0004" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Article 4"&gt;&lt;/td&gt;
-            &lt;td data-oc-col="sku"&gt;&lt;span class="oc-data-table-code"&gt;ART-0004&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Article 4&lt;/td&gt;
-            &lt;td data-oc-col="category"&gt;Materials&lt;/td&gt;
-            &lt;td data-oc-col="supplier"&gt;Supplier 2&lt;/td&gt;
-            &lt;td data-oc-col="buy" data-numeric="" data-oc-value="26.95"&gt;€ 26,95&lt;/td&gt;
-            &lt;td data-oc-col="unit"&gt;per piece&lt;/td&gt;
-            &lt;td data-oc-col="sell" data-numeric="" data-oc-value="26.95"&gt;€ 26,95&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" aria-label="Actions for Article 4" title="Actions"&gt;&lt;iconify-icon icon="mdi:menu" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="art-0005" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Article 5"&gt;&lt;/td&gt;
-            &lt;td data-oc-col="sku"&gt;&lt;span class="oc-data-table-code"&gt;ART-0005&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Article 5&lt;/td&gt;
-            &lt;td data-oc-col="category"&gt;Materials&lt;/td&gt;
-            &lt;td data-oc-col="supplier"&gt;Supplier 1&lt;/td&gt;
-            &lt;td data-oc-col="buy" data-numeric="" data-oc-value="93.75"&gt;€ 93,75&lt;/td&gt;
-            &lt;td data-oc-col="unit"&gt;per m²&lt;/td&gt;
-            &lt;td data-oc-col="sell" data-numeric="" data-oc-value="93.75"&gt;€ 93,75&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" aria-label="Actions for Article 5" title="Actions"&gt;&lt;iconify-icon icon="mdi:menu" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="art-0006" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Article 6"&gt;&lt;/td&gt;
-            &lt;td data-oc-col="sku"&gt;&lt;span class="oc-data-table-code"&gt;ART-0006&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Article 6&lt;/td&gt;
-            &lt;td data-oc-col="category"&gt;Transport&lt;/td&gt;
-            &lt;td data-oc-col="supplier"&gt;Supplier 3&lt;/td&gt;
-            &lt;td data-oc-col="buy" data-numeric="" data-oc-value="75.00"&gt;€ 75,00&lt;/td&gt;
-            &lt;td data-oc-col="unit"&gt;–&lt;/td&gt;
-            &lt;td data-oc-col="sell" data-numeric="" data-oc-value="75.00"&gt;€ 75,00&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" aria-label="Actions for Article 6" title="Actions"&gt;&lt;iconify-icon icon="mdi:menu" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="art-0007" data-oc-status="active"&gt;
-            &lt;td data-oc-col="select"&gt;&lt;input class="oc-checkbox" type="checkbox" data-oc-select="" aria-label="Select Article 7"&gt;&lt;/td&gt;
-            &lt;td data-oc-col="sku"&gt;&lt;span class="oc-data-table-code"&gt;ART-0007&lt;/span&gt;&lt;/td&gt;
-            &lt;td data-oc-col="name"&gt;Article 7&lt;/td&gt;
-            &lt;td data-oc-col="category"&gt;Labour&lt;/td&gt;
-            &lt;td data-oc-col="supplier"&gt;Supplier 2&lt;/td&gt;
-            &lt;td data-oc-col="buy" data-numeric="" data-oc-value="93.75"&gt;€ 93,75&lt;/td&gt;
-            &lt;td data-oc-col="unit"&gt;per hour&lt;/td&gt;
-            &lt;td data-oc-col="sell" data-numeric="" data-oc-value="93.75"&gt;€ 93,75&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" aria-label="Actions for Article 7" title="Actions"&gt;&lt;iconify-icon icon="mdi:menu" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-      &lt;p class="oc-data-table-empty" hidden&gt;No articles match these filters.&lt;/p&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-data-table-footer"&gt;
-    &lt;p class="oc-data-table-summary" data-oc-summary="Showing {from}–{to} of {total} articles"&gt;Showing 1–7 of 7 articles&lt;/p&gt;
-    &lt;label class="oc-data-table-per-page"&gt;Rows per page
-      &lt;select class="oc-select" data-oc-page-size="" aria-label="Rows per page"&gt;
-        &lt;option value="10" selected&gt;10&lt;/option&gt;
-        &lt;option value="25"&gt;25&lt;/option&gt;
-        &lt;option value="100"&gt;100&lt;/option&gt;
-      &lt;/select&gt;
-    &lt;/label&gt;
-    &lt;nav class="oc-data-table-pager" data-oc-pager="" aria-label="Pagination"&gt;&lt;/nav&gt;
-  &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-pro">Pro: column widths and row drag <span class="oc-badge-version">v0.14.2</span></h3>
@@ -729,68 +622,47 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class DataTableLabelsAndAPlainList extends Component
+class GamesList extends Component
 {
+    /** @var list&lt;array{key: string, name: string, date: string, players: int}&gt; */
+    public array $games = [
+        ['key' =&gt; 'g1', 'name' =&gt; 'Route 1', 'date' =&gt; '2026-11-08', 'players' =&gt; 42],
+        ['key' =&gt; 'g2', 'name' =&gt; 'Route 2', 'date' =&gt; '2026-11-15', 'players' =&gt; 18],
+    ];
+
+    /** @return list&lt;array&lt;string, mixed&gt;&gt; */
+    public function rows(): array
+    {
+        return collect($this-&gt;games)-&gt;map(fn ($g) =&gt; [
+            'key' =&gt; $g['key'],
+            'cells' =&gt; ['name' =&gt; $g['name'], 'date' =&gt; \Carbon\Carbon::parse($g['date'])-&gt;format('d/m/Y'), 'players' =&gt; $g['players']],
+            'values' =&gt; ['date' =&gt; $g['date']],
+            'href' =&gt; url('/games/'.$g['key']),
+        ])-&gt;all();
+    }
+
     public function render()
     {
-        return view('livewire.data-table-labels-and-a-plain-list');
+        return view('livewire.games-list');
     }
 }
 
-{{-- resources/views/livewire/data-table-labels-and-a-plain-list.blade.php --}}
-&lt;div class="oc-data-table" id="oc-games-nl" data-page-size="0" data-oc-no-grid data-oc-labels='{"summary":"{total} spellen","sortedBy":"Gesorteerd op {label}, {dir}","ascending":"oplopend","descending":"aflopend"}'&gt;
-  &lt;div class="oc-data-table-toolbar"&gt;
-    &lt;div class="oc-data-table-heading"&gt;
-      &lt;span class="oc-data-table-title"&gt;Spellen&lt;/span&gt;
-      &lt;button class="oc-btn oc-btn--outline oc-btn--icon oc-btn--sm" type="button" popovertarget="oc-games-nl-menu" aria-label="Lijstacties" title="Lijstacties"&gt;&lt;iconify-icon icon="mdi:tune-variant" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-      &lt;div class="oc-dropdown-menu" id="oc-games-nl-menu" popover=""&gt;
-        &lt;button class="oc-dropdown-item" type="button" data-oc-export=""&gt;CSV exporteren&lt;/button&gt;
-        &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-        &lt;button class="oc-dropdown-item" type="button" data-oc-density="comfortable"&gt;Ruime rijen&lt;/button&gt;
-        &lt;button class="oc-dropdown-item" type="button" data-oc-density="compact"&gt;Compacte rijen&lt;/button&gt;
-      &lt;/div&gt;
+{{-- resources/views/livewire/games-list.blade.php --}}
+&lt;div&gt;
+    &lt;div wire:ignore&gt;
+        &lt;x-oc::data-table title="Spellen" table-id="games-nl" :page-size="0" :rows="$this-&gt;rows()"
+            :columns="[
+                ['key' =&gt; 'name', 'header' =&gt; 'Naam', 'defaultSort' =&gt; 'ascending'],
+                ['key' =&gt; 'date', 'header' =&gt; 'Datum'],
+                ['key' =&gt; 'players', 'header' =&gt; 'Spelers', 'numeric' =&gt; true],
+            ]"
+            :filters="false" :view="false" :pagination="false" :selectable="false"
+            :labels="[
+                'listActions' =&gt; 'Lijstacties', 'exportCsv' =&gt; 'CSV exporteren', 'comfortable' =&gt; 'Ruime rijen', 'compact' =&gt; 'Compacte rijen',
+                'search' =&gt; '{name} zoeken', 'actions' =&gt; 'Acties', 'edit' =&gt; '{name} bewerken', 'noResults' =&gt; 'Geen resultaten',
+                'summary' =&gt; '{total} spellen', 'sortedBy' =&gt; 'Gesorteerd op {label}, {dir}', 'ascending' =&gt; 'oplopend', 'descending' =&gt; 'aflopend',
+            ]" /&gt;
     &lt;/div&gt;
-    &lt;input class="oc-input oc-data-table-search" type="search" placeholder="Zoeken..." aria-label="Spellen zoeken"&gt;
-    &lt;p class="oc-data-table-sort-summary" data-oc-sort-summary="" role="status"&gt;&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-data-table-frame"&gt;
-    &lt;div class="oc-data-table-scroll"&gt;
-      &lt;table class="oc-table oc-data-table-table"&gt;
-        &lt;thead&gt;
-          &lt;tr&gt;
-            &lt;th data-oc-col="name" data-oc-sort="text" aria-sort="ascending"&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Naam&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="date" data-oc-sort="text"&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Datum&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="players" data-oc-sort="numeric" data-numeric=""&gt;&lt;span class="oc-data-table-th"&gt;&lt;button class="oc-table-sort" type="button"&gt;Spelers&lt;/button&gt;&lt;/span&gt;&lt;/th&gt;
-            &lt;th data-oc-col="actions"&gt;&lt;span class="oc-data-table-th"&gt;Acties&lt;/span&gt;&lt;/th&gt;
-          &lt;/tr&gt;
-        &lt;/thead&gt;
-        &lt;tbody&gt;
-          &lt;tr data-oc-row="" data-oc-key="g1" data-oc-status="active"&gt;
-            &lt;td data-oc-col="name"&gt;Route 1&lt;/td&gt;
-            &lt;td data-oc-col="date" data-oc-value="2026-11-08"&gt;08/11/2026&lt;/td&gt;
-            &lt;td data-oc-col="players" data-numeric=""&gt;42&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;div style="display: flex; gap: 0.375rem; justify-content: flex-end"&gt;&lt;button class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" type="button" aria-label="Route 1 bewerken" title="Bewerken"&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/div&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="g2" data-oc-status="active"&gt;
-            &lt;td data-oc-col="name"&gt;Route 2&lt;/td&gt;
-            &lt;td data-oc-col="date" data-oc-value="2026-11-15"&gt;15/11/2026&lt;/td&gt;
-            &lt;td data-oc-col="players" data-numeric=""&gt;18&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;div style="display: flex; gap: 0.375rem; justify-content: flex-end"&gt;&lt;button class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" type="button" aria-label="Route 2 bewerken" title="Bewerken"&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/div&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-          &lt;tr data-oc-row="" data-oc-key="g3" data-oc-status="active"&gt;
-            &lt;td data-oc-col="name"&gt;Route 3&lt;/td&gt;
-            &lt;td data-oc-col="date" data-oc-value="2026-11-22"&gt;22/11/2026&lt;/td&gt;
-            &lt;td data-oc-col="players" data-numeric=""&gt;27&lt;/td&gt;
-            &lt;td data-oc-col="actions"&gt;&lt;div style="display: flex; gap: 0.375rem; justify-content: flex-end"&gt;&lt;button class="oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm" type="button" aria-label="Route 3 bewerken" title="Bewerken"&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/div&gt;&lt;/td&gt;
-          &lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-data-table-empty" hidden&gt;Geen resultaten&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-data-table-footer"&gt;
-    &lt;p class="oc-data-table-summary" data-oc-summary="{total} spellen"&gt;&lt;/p&gt;
-  &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 

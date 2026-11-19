@@ -57,37 +57,43 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
 
-class ConfirmDialogTypedConfirmation extends Component
+class DeleteProject extends Component
 {
+    use WithOcModal;
+
+    public string $project = 'Kitchen renovation';
+
+    public string $confirmation = '';
+
+    public function delete(): void
+    {
+        $this-&gt;validate(['confirmation' =&gt; 'required|in:DELETE'], ['confirmation.in' =&gt; 'Type DELETE to confirm.']);
+        // delete the project, its quotes and files
+        $this-&gt;reset('confirmation');
+        $this-&gt;closeOcModal('delete');
+    }
+
     public function render()
     {
-        return view('livewire.confirm-dialog-typed-confirmation');
+        return view('livewire.delete-project');
     }
 }
 
-{{-- resources/views/livewire/confirm-dialog-typed-confirmation.blade.php --}}
+{{-- resources/views/livewire/delete-project.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn oc-btn--destructive" type="button" command="show-modal" commandfor="oc-confirm-dialog-docs"&gt;Delete project&lt;/button&gt;
+    &lt;x-oc::button variant="destructive" wire:click="openOcModal('delete')"&gt;Delete project&lt;/x-oc::button&gt;
 
-    &lt;dialog class="oc-modal" id="oc-confirm-dialog-docs" closedby="any" aria-labelledby="oc-confirm-dialog-docs-title" aria-describedby="oc-confirm-dialog-docs-text"&gt;
-      &lt;div class="oc-modal-content oc-alert-dialog oc-alert-dialog--error oc-alert-dialog--confirm"&gt;
-        &lt;button class="oc-alert-dialog-close" type="button" command="close" commandfor="oc-confirm-dialog-docs" aria-label="Close"&gt;×&lt;/button&gt;
-        &lt;span class="oc-alert-dialog-icon" aria-hidden="true"&gt;×&lt;/span&gt;
-        &lt;h2 class="oc-modal-title" id="oc-confirm-dialog-docs-title"&gt;Delete "Kitchen renovation"?&lt;/h2&gt;
-        &lt;form class="oc-alert-dialog-form" method="dialog"&gt;
-          &lt;div class="oc-modal-body" id="oc-confirm-dialog-docs-text"&gt;This removes the project, its quotes and all files. This cannot be undone.&lt;/div&gt;
-          &lt;label class="oc-alert-dialog-typed"&gt;
+    {{-- open state entangled with ocModals.delete (WithOcModal); confirm runs delete() --}}
+    &lt;x-oc::wire.alert-dialog name="delete" type="error" :title="sprintf('Delete “%s”?', $project)" confirm="Delete project" action="delete"&gt;
+        This removes the project, its quotes and all files. This cannot be undone.
+        &lt;label class="oc-alert-dialog-typed"&gt;
             &lt;span&gt;Type &lt;code&gt;DELETE&lt;/code&gt; to confirm&lt;/span&gt;
-            &lt;input class="oc-input" name="confirm" pattern="DELETE" required autocomplete="off"&gt;
-          &lt;/label&gt;
-          &lt;div class="oc-modal-footer"&gt;
-            &lt;button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="oc-confirm-dialog-docs"&gt;Cancel&lt;/button&gt;
-            &lt;button class="oc-btn oc-btn--destructive oc-alert-dialog-confirm" type="submit" value="confirm"&gt;Delete project&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/form&gt;
-      &lt;/div&gt;
-    &lt;/dialog&gt;
+            &lt;x-oc::wire.input model="confirmation" live autocomplete="off" /&gt;
+        &lt;/label&gt;
+        @error('confirmation') &lt;p class="oc-field-error"&gt;{{ $message }}&lt;/p&gt; @enderror
+    &lt;/x-oc::wire.alert-dialog&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -138,21 +144,45 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class ConfirmDialogUnsavedChanges extends Component
+class QuoteEditor extends Component
 {
+    public bool $dirty = true;
+
+    /** The button the user chose: save, cancel or discard (dialog.returnValue). */
+    public function choose(string $choice): void
+    {
+        match ($choice) {
+            'save' =&gt; $this-&gt;save(),
+            'discard' =&gt; $this-&gt;leave(),
+            default =&gt; null,
+        };
+    }
+
+    public function save(): void
+    {
+        // store the quote
+        $this-&gt;dirty = false;
+    }
+
+    public function leave(): void
+    {
+        $this-&gt;redirect('/quotes', navigate: true);
+    }
+
     public function render()
     {
-        return view('livewire.confirm-dialog-unsaved-changes');
+        return view('livewire.quote-editor');
     }
 }
 
-{{-- resources/views/livewire/confirm-dialog-unsaved-changes.blade.php --}}
+{{-- resources/views/livewire/quote-editor.blade.php --}}
 &lt;div&gt;
     &lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="unsaved"&gt;Leave page&lt;/button&gt;
-    &lt;x-oc::confirm-dialog id="unsaved" type="question" title="Save your changes?" confirm="Save" discard="Don't save"&gt;
+    {{-- method="dialog": the chosen button is dialog.returnValue; pass it to the component when the dialog closes --}}
+    &lt;x-oc::confirm-dialog id="unsaved" type="question" title="Save your changes?" confirm="Save" discard="Don't save"
+        wire:ignore.self x-data x-on:close="$event.target.returnValue &amp;&amp; $wire.choose($event.target.returnValue)"&gt;
         You changed the quote. Leaving now loses those changes.
     &lt;/x-oc::confirm-dialog&gt;
-    {{-- method="dialog": read dialog.returnValue (save, cancel or discard) after the close event --}}
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

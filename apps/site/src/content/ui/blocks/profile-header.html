@@ -48,117 +48,108 @@
     </div>
   </div>
 </section>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { BlockProfileHeader, Button } from "@birdycom/omniaui-react";
+
+const grid = (items: [string, string][]) =&gt; (
+  &lt;ul className="oc-block-profile-grid"&gt;
+    {items.map(([title, text]) =&gt; &lt;li key={title}&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;{title}&lt;/strong&gt;&lt;small&gt;{text}&lt;/small&gt;&lt;/li&gt;)}
+  &lt;/ul&gt;
+);
+
+export function Example() {
+  // tabs with content switch on the page (radios, no JavaScript); tabs with href are links
   return (
-    &lt;section className="oc-block-profile oc-accent--violet" aria-labelledby="oc-profile-name"&gt;
-      &lt;div className="oc-block-profile-banner" aria-hidden="true" /&gt;
-      &lt;div className="oc-block-profile-bar"&gt;
-        &lt;span className="oc-avatar oc-block-profile-avatar" aria-hidden="true"&gt;C1&lt;/span&gt;
-        &lt;div className="oc-block-profile-info"&gt;
-          &lt;h1 className="oc-block-profile-name" id="oc-profile-name"&gt;Company 1&lt;/h1&gt;
-          &lt;p className="oc-block-profile-meta"&gt;@company1 · 12.4K followers · 86 videos&lt;/p&gt;
-          &lt;p className="oc-block-profile-bio"&gt;Short tutorials about web design, CSS and building small business apps.&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-profile-actions"&gt;
-          &lt;button className="oc-btn" type="button"&gt;Follow&lt;/button&gt;
-          &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Share&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-block-profile-tabs" role="radiogroup" aria-label="Profile sections"&gt;
-        &lt;label className="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" defaultChecked /&gt;Home&lt;/label&gt;
-        &lt;label className="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" /&gt;Videos&lt;/label&gt;
-        &lt;label className="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" /&gt;Playlists&lt;/label&gt;
-        &lt;label className="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" /&gt;About&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-block-profile-panels"&gt;
-        &lt;div className="oc-block-profile-panel"&gt;
-          &lt;ul className="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Video 1&lt;/strong&gt;&lt;small&gt;Container queries in 8 minutes&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Video 2&lt;/strong&gt;&lt;small&gt;Colors in OKLCH&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Video 3&lt;/strong&gt;&lt;small&gt;A form without JavaScript&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-profile-panel"&gt;
-          &lt;ul className="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Video 4&lt;/strong&gt;&lt;small&gt;Scroll snap carousel&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Video 5&lt;/strong&gt;&lt;small&gt;Anchor positioning&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Video 6&lt;/strong&gt;&lt;small&gt;Dark mode with light-dark()&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Video 7&lt;/strong&gt;&lt;small&gt;Dialogs and popovers&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-profile-panel"&gt;
-          &lt;ul className="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Playlist 1&lt;/strong&gt;&lt;small&gt;Modern CSS · 12 videos&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span className="oc-block-profile-thumb" /&gt;&lt;strong&gt;Playlist 2&lt;/strong&gt;&lt;small&gt;Small business apps · 8 videos&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-profile-panel"&gt;
-          &lt;p className="oc-block-profile-bio" style={{ margin: "0" }}&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
+    &lt;BlockProfileHeader
+      className="oc-accent--violet"
+      headingLevel={1}
+      avatar="C1"
+      name="Company 1"
+      meta="@company1 · 12.4K followers · 86 videos"
+      bio="Short tutorials about web design, CSS and building small business apps."
+      actions={&lt;&gt;
+        &lt;Button&gt;Follow&lt;/Button&gt;
+        &lt;Button variant="outline"&gt;Share&lt;/Button&gt;
+      &lt;/&gt;}
+      tabsLabel="Profile sections"
+      tabs={[
+        { label: "Home", current: true, content: grid([["Video 1", "Container queries in 8 minutes"], ["Video 2", "Colors in OKLCH"], ["Video 3", "A form without JavaScript"]]) },
+        { label: "Videos", content: grid([["Video 4", "Scroll snap carousel"], ["Video 5", "Anchor positioning"], ["Video 6", "Dark mode with light-dark()"], ["Video 7", "Dialogs and popovers"]]) },
+        { label: "Playlists", content: grid([["Playlist 1", "Modern CSS · 12 videos"], ["Playlist 2", "Small business apps · 8 videos"]]) },
+        { label: "About", content: &lt;p className="oc-block-profile-bio" style={{ margin: 0 }}&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt; },
+      ]}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;section class="oc-block-profile oc-accent--violet" aria-labelledby="oc-profile-name"&gt;
-    &lt;div class="oc-block-profile-banner" aria-hidden="true"&gt;&lt;/div&gt;
-    &lt;div class="oc-block-profile-bar"&gt;
-      &lt;span class="oc-avatar oc-block-profile-avatar" aria-hidden="true"&gt;C1&lt;/span&gt;
-      &lt;div class="oc-block-profile-info"&gt;
-        &lt;h1 class="oc-block-profile-name" id="oc-profile-name"&gt;Company 1&lt;/h1&gt;
-        &lt;p class="oc-block-profile-meta"&gt;@company1 · 12.4K followers · 86 videos&lt;/p&gt;
-        &lt;p class="oc-block-profile-bio"&gt;Short tutorials about web design, CSS and building small business apps.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-profile-actions"&gt;
-        &lt;button class="oc-btn" type="button"&gt;Follow&lt;/button&gt;
-        &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Share&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-tabs" role="radiogroup" aria-label="Profile sections"&gt;
-      &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" checked /&gt;Home&lt;/label&gt;
-      &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" /&gt;Videos&lt;/label&gt;
-      &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" /&gt;Playlists&lt;/label&gt;
-      &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" /&gt;About&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-panels"&gt;
-      &lt;div class="oc-block-profile-panel"&gt;
-        &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 1&lt;/strong&gt;&lt;small&gt;Container queries in 8 minutes&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 2&lt;/strong&gt;&lt;small&gt;Colors in OKLCH&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 3&lt;/strong&gt;&lt;small&gt;A form without JavaScript&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-profile-panel"&gt;
-        &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 4&lt;/strong&gt;&lt;small&gt;Scroll snap carousel&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 5&lt;/strong&gt;&lt;small&gt;Anchor positioning&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 6&lt;/strong&gt;&lt;small&gt;Dark mode with light-dark()&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 7&lt;/strong&gt;&lt;small&gt;Dialogs and popovers&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-profile-panel"&gt;
-        &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Playlist 1&lt;/strong&gt;&lt;small&gt;Modern CSS · 12 videos&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Playlist 2&lt;/strong&gt;&lt;small&gt;Small business apps · 8 videos&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-profile-panel"&gt;
-        &lt;p class="oc-block-profile-bio" style="margin:0"&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-block-profile oc-accent--violet" aria-labelledby="oc-profile-name"&gt;
-  &lt;div class="oc-block-profile-banner" aria-hidden="true"&gt;&lt;/div&gt;
-  &lt;div class="oc-block-profile-bar"&gt;
-    &lt;span class="oc-avatar oc-block-profile-avatar" aria-hidden="true"&gt;C1&lt;/span&gt;
-    &lt;div class="oc-block-profile-info"&gt;
-      &lt;h1 class="oc-block-profile-name" id="oc-profile-name"&gt;Company 1&lt;/h1&gt;
-      &lt;p class="oc-block-profile-meta"&gt;@company1 &amp;middot; 12.4K followers &amp;middot; 86 videos&lt;/p&gt;
-      &lt;p class="oc-block-profile-bio"&gt;Short tutorials about web design, CSS and building small business apps.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-actions"&gt;
-      &lt;button class="oc-btn" type="button"&gt;Follow&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Share&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-profile-tabs" role="radiogroup" aria-label="Profile sections"&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" checked&gt;Home&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab"&gt;Videos&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab"&gt;Playlists&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab"&gt;About&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-profile-panels"&gt;
-    &lt;div class="oc-block-profile-panel"&gt;
-      &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 1&lt;/strong&gt;&lt;small&gt;Container queries in 8 minutes&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 2&lt;/strong&gt;&lt;small&gt;Colors in OKLCH&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 3&lt;/strong&gt;&lt;small&gt;A form without JavaScript&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-panel"&gt;
-      &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 4&lt;/strong&gt;&lt;small&gt;Scroll snap carousel&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 5&lt;/strong&gt;&lt;small&gt;Anchor positioning&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 6&lt;/strong&gt;&lt;small&gt;Dark mode with light-dark()&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 7&lt;/strong&gt;&lt;small&gt;Dialogs and popovers&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-panel"&gt;
-      &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Playlist 1&lt;/strong&gt;&lt;small&gt;Modern CSS · 12 videos&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Playlist 2&lt;/strong&gt;&lt;small&gt;Small business apps · 8 videos&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-panel"&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockProfileHeader, OcButton } from "@birdycom/omniaui-vue";
+
+const panels = [
+  [["Video 1", "Container queries in 8 minutes"], ["Video 2", "Colors in OKLCH"], ["Video 3", "A form without JavaScript"]],
+  [["Video 4", "Scroll snap carousel"], ["Video 5", "Anchor positioning"], ["Video 6", "Dark mode with light-dark()"], ["Video 7", "Dialogs and popovers"]],
+  [["Playlist 1", "Modern CSS · 12 videos"], ["Playlist 2", "Small business apps · 8 videos"]],
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- with panel-N slots the tabs switch on the page (radios, no JavaScript) --&gt;
+  &lt;OcBlockProfileHeader
+    class="oc-accent--violet"
+    :heading-level="1"
+    initials="C1"
+    name="Company 1"
+    meta="@company1 · 12.4K followers · 86 videos"
+    bio="Short tutorials about web design, CSS and building small business apps."
+    tabs-label="Profile sections"
+    :tabs="[{ label: 'Home', current: true }, { label: 'Videos' }, { label: 'Playlists' }, { label: 'About' }]"
+  &gt;
+    &lt;template #actions&gt;
+      &lt;OcButton&gt;Follow&lt;/OcButton&gt;
+      &lt;OcButton variant="outline"&gt;Share&lt;/OcButton&gt;
+    &lt;/template&gt;
+    &lt;template v-for="(items, i) in panels" :key="i" #[`panel-${i}`]&gt;
+      &lt;ul class="oc-block-profile-grid"&gt;
+        &lt;li v-for="[title, text] in items" :key="title"&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;{{ title }}&lt;/strong&gt;&lt;small&gt;{{ text }}&lt;/small&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/template&gt;
+    &lt;template #panel-3&gt;
       &lt;p class="oc-block-profile-bio" style="margin:0"&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockProfileHeader&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php
+    $panels = [
+        ['Video 1' =&gt; 'Container queries in 8 minutes', 'Video 2' =&gt; 'Colors in OKLCH', 'Video 3' =&gt; 'A form without JavaScript'],
+        ['Video 4' =&gt; 'Scroll snap carousel', 'Video 5' =&gt; 'Anchor positioning', 'Video 6' =&gt; 'Dark mode with light-dark()', 'Video 7' =&gt; 'Dialogs and popovers'],
+        ['Playlist 1' =&gt; 'Modern CSS · 12 videos', 'Playlist 2' =&gt; 'Small business apps · 8 videos'],
+    ];
+@endphp
+&lt;x-oc::block.profile-header class="oc-accent--violet"&gt;
+    &lt;x-slot:avatar&gt;C1&lt;/x-slot:avatar&gt;
+    &lt;x-slot:name&gt;Company 1&lt;/x-slot:name&gt;
+    &lt;x-slot:meta&gt;@company1 · 12.4K followers · 86 videos&lt;/x-slot:meta&gt;
+    &lt;x-slot:bio&gt;Short tutorials about web design, CSS and building small business apps.&lt;/x-slot:bio&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button&gt;Follow&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline"&gt;Share&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+    &lt;x-slot:tabs&gt;
+        @foreach (['Home', 'Videos', 'Playlists', 'About'] as $tab)
+            &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" @checked($loop-&gt;first)&gt;{{ $tab }}&lt;/label&gt;
+        @endforeach
+    &lt;/x-slot:tabs&gt;
+    @foreach ($panels as $items)
+        &lt;div class="oc-block-profile-panel"&gt;
+            &lt;ul class="oc-block-profile-grid"&gt;
+                @foreach ($items as $title =&gt; $text)
+                    &lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;{{ $title }}&lt;/strong&gt;&lt;small&gt;{{ $text }}&lt;/small&gt;&lt;/li&gt;
+                @endforeach
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    @endforeach
+    &lt;div class="oc-block-profile-panel"&gt;
+        &lt;p class="oc-block-profile-bio" style="margin:0"&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+&lt;/x-oc::block.profile-header&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -174,41 +165,42 @@ class ProfileHeader extends Component
 }
 
 {{-- resources/views/livewire/profile-header.blade.php --}}
-&lt;section class="oc-block-profile oc-accent--violet" aria-labelledby="oc-profile-name"&gt;
-  &lt;div class="oc-block-profile-banner" aria-hidden="true"&gt;&lt;/div&gt;
-  &lt;div class="oc-block-profile-bar"&gt;
-    &lt;span class="oc-avatar oc-block-profile-avatar" aria-hidden="true"&gt;C1&lt;/span&gt;
-    &lt;div class="oc-block-profile-info"&gt;
-      &lt;h1 class="oc-block-profile-name" id="oc-profile-name"&gt;Company 1&lt;/h1&gt;
-      &lt;p class="oc-block-profile-meta"&gt;@company1 &amp;middot; 12.4K followers &amp;middot; 86 videos&lt;/p&gt;
-      &lt;p class="oc-block-profile-bio"&gt;Short tutorials about web design, CSS and building small business apps.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-actions"&gt;
-      &lt;button class="oc-btn" type="button"&gt;Follow&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Share&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-profile-tabs" role="radiogroup" aria-label="Profile sections"&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" checked&gt;Home&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab"&gt;Videos&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab"&gt;Playlists&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab"&gt;About&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-profile-panels"&gt;
-    &lt;div class="oc-block-profile-panel"&gt;
-      &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 1&lt;/strong&gt;&lt;small&gt;Container queries in 8 minutes&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 2&lt;/strong&gt;&lt;small&gt;Colors in OKLCH&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 3&lt;/strong&gt;&lt;small&gt;A form without JavaScript&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-panel"&gt;
-      &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 4&lt;/strong&gt;&lt;small&gt;Scroll snap carousel&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 5&lt;/strong&gt;&lt;small&gt;Anchor positioning&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 6&lt;/strong&gt;&lt;small&gt;Dark mode with light-dark()&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Video 7&lt;/strong&gt;&lt;small&gt;Dialogs and popovers&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-panel"&gt;
-      &lt;ul class="oc-block-profile-grid"&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Playlist 1&lt;/strong&gt;&lt;small&gt;Modern CSS · 12 videos&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;Playlist 2&lt;/strong&gt;&lt;small&gt;Small business apps · 8 videos&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-panel"&gt;
-      &lt;p class="oc-block-profile-bio" style="margin:0"&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+&lt;div&gt;
+    @php
+        $panels = [
+            ['Video 1' =&gt; 'Container queries in 8 minutes', 'Video 2' =&gt; 'Colors in OKLCH', 'Video 3' =&gt; 'A form without JavaScript'],
+            ['Video 4' =&gt; 'Scroll snap carousel', 'Video 5' =&gt; 'Anchor positioning', 'Video 6' =&gt; 'Dark mode with light-dark()', 'Video 7' =&gt; 'Dialogs and popovers'],
+            ['Playlist 1' =&gt; 'Modern CSS · 12 videos', 'Playlist 2' =&gt; 'Small business apps · 8 videos'],
+        ];
+    @endphp
+    &lt;x-oc::block.profile-header class="oc-accent--violet"&gt;
+        &lt;x-slot:avatar&gt;C1&lt;/x-slot:avatar&gt;
+        &lt;x-slot:name&gt;Company 1&lt;/x-slot:name&gt;
+        &lt;x-slot:meta&gt;@company1 · 12.4K followers · 86 videos&lt;/x-slot:meta&gt;
+        &lt;x-slot:bio&gt;Short tutorials about web design, CSS and building small business apps.&lt;/x-slot:bio&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button&gt;Follow&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="outline"&gt;Share&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+        &lt;x-slot:tabs&gt;
+            @foreach (['Home', 'Videos', 'Playlists', 'About'] as $tab)
+                &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" @checked($loop-&gt;first)&gt;{{ $tab }}&lt;/label&gt;
+            @endforeach
+        &lt;/x-slot:tabs&gt;
+        @foreach ($panels as $items)
+            &lt;div class="oc-block-profile-panel"&gt;
+                &lt;ul class="oc-block-profile-grid"&gt;
+                    @foreach ($items as $title =&gt; $text)
+                        &lt;li&gt;&lt;span class="oc-block-profile-thumb"&gt;&lt;/span&gt;&lt;strong&gt;{{ $title }}&lt;/strong&gt;&lt;small&gt;{{ $text }}&lt;/small&gt;&lt;/li&gt;
+                    @endforeach
+                &lt;/ul&gt;
+            &lt;/div&gt;
+        @endforeach
+        &lt;div class="oc-block-profile-panel"&gt;
+            &lt;p class="oc-block-profile-bio" style="margin:0"&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::block.profile-header&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc"><code>--compact</code>: a lower banner and a smaller avatar, here with the green accent.</p>
           <oc-demo title="Compact, green accent" size="tall">
@@ -233,75 +225,62 @@ class ProfileHeader extends Component
     <div class="oc-block-profile-panel"><p class="oc-block-profile-bio" style="margin:0">Project 1 · kitchen · in progress.</p></div>
   </div>
 </section>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { BlockProfileHeader, Button } from "@birdycom/omniaui-react";
+
+const bio = (text: string) =&gt; &lt;p className="oc-block-profile-bio" style={{ margin: 0 }}&gt;{text}&lt;/p&gt;;
+
+export function Example() {
   return (
-    &lt;section className="oc-block-profile oc-block-profile--compact oc-accent--green" aria-labelledby="oc-profile-compact-name"&gt;
-      &lt;div className="oc-block-profile-banner" aria-hidden="true" /&gt;
-      &lt;div className="oc-block-profile-bar"&gt;
-        &lt;span className="oc-avatar oc-block-profile-avatar" aria-hidden="true"&gt;C1&lt;/span&gt;
-        &lt;div className="oc-block-profile-info"&gt;
-          &lt;h2 className="oc-block-profile-name" id="oc-profile-compact-name"&gt;Customer 1&lt;/h2&gt;
-          &lt;p className="oc-block-profile-meta"&gt;City 1 · Customer since 2021&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-profile-actions"&gt;&lt;button className="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Edit&lt;/button&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-block-profile-tabs" role="radiogroup" aria-label="Customer sections"&gt;
-        &lt;label className="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" defaultChecked /&gt;Overview&lt;/label&gt;
-        &lt;label className="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" /&gt;Invoices&lt;/label&gt;
-        &lt;label className="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" /&gt;Projects&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-block-profile-panels"&gt;
-        &lt;div className="oc-block-profile-panel"&gt;&lt;p className="oc-block-profile-bio" style={{ margin: "0" }}&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/div&gt;
-        &lt;div className="oc-block-profile-panel"&gt;&lt;p className="oc-block-profile-bio" style={{ margin: "0" }}&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/div&gt;
-        &lt;div className="oc-block-profile-panel"&gt;&lt;p className="oc-block-profile-bio" style={{ margin: "0" }}&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
+    &lt;BlockProfileHeader
+      compact
+      className="oc-accent--green"
+      avatar="C1"
+      name="Customer 1"
+      meta="City 1 · Customer since 2021"
+      actions={&lt;Button size="sm" variant="outline"&gt;Edit&lt;/Button&gt;}
+      tabsLabel="Customer sections"
+      tabs={[
+        { label: "Overview", current: true, content: bio("Customer 1 · info@customer1.example · 3 open quotes.") },
+        { label: "Invoices", content: bio("INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.") },
+        { label: "Projects", content: bio("Project 1 · kitchen · in progress.") },
+      ]}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;section class="oc-block-profile oc-block-profile--compact oc-accent--green" aria-labelledby="oc-profile-compact-name"&gt;
-    &lt;div class="oc-block-profile-banner" aria-hidden="true"&gt;&lt;/div&gt;
-    &lt;div class="oc-block-profile-bar"&gt;
-      &lt;span class="oc-avatar oc-block-profile-avatar" aria-hidden="true"&gt;C1&lt;/span&gt;
-      &lt;div class="oc-block-profile-info"&gt;
-        &lt;h2 class="oc-block-profile-name" id="oc-profile-compact-name"&gt;Customer 1&lt;/h2&gt;
-        &lt;p class="oc-block-profile-meta"&gt;City 1 · Customer since 2021&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-profile-actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Edit&lt;/button&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-tabs" role="radiogroup" aria-label="Customer sections"&gt;
-      &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" checked /&gt;Overview&lt;/label&gt;
-      &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" /&gt;Invoices&lt;/label&gt;
-      &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" /&gt;Projects&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-panels"&gt;
-      &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/div&gt;
-      &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/div&gt;
-      &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockProfileHeader, OcButton } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockProfileHeader
+    compact
+    class="oc-accent--green"
+    initials="C1"
+    name="Customer 1"
+    meta="City 1 · Customer since 2021"
+    tabs-label="Customer sections"
+    :tabs="[{ label: 'Overview', current: true }, { label: 'Invoices' }, { label: 'Projects' }]"
+  &gt;
+    &lt;template #actions&gt;&lt;OcButton size="sm" variant="outline"&gt;Edit&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;template #panel-0&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/template&gt;
+    &lt;template #panel-1&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/template&gt;
+    &lt;template #panel-2&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/template&gt;
+  &lt;/OcBlockProfileHeader&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-block-profile oc-block-profile--compact oc-accent--green" aria-labelledby="oc-profile-compact-name"&gt;
-  &lt;div class="oc-block-profile-banner" aria-hidden="true"&gt;&lt;/div&gt;
-  &lt;div class="oc-block-profile-bar"&gt;
-    &lt;span class="oc-avatar oc-block-profile-avatar" aria-hidden="true"&gt;C1&lt;/span&gt;
-    &lt;div class="oc-block-profile-info"&gt;
-      &lt;h2 class="oc-block-profile-name" id="oc-profile-compact-name"&gt;Customer 1&lt;/h2&gt;
-      &lt;p class="oc-block-profile-meta"&gt;City 1 &amp;middot; Customer since 2021&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Edit&lt;/button&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-profile-tabs" role="radiogroup" aria-label="Customer sections"&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" checked&gt;Overview&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab"&gt;Invoices&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab"&gt;Projects&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-profile-panels"&gt;
+<oc-code lang="blade">&lt;x-oc::block.profile-header class="oc-block-profile--compact oc-accent--green" aria-labelledby="oc-profile-compact-name"&gt;
+    &lt;x-slot:avatar&gt;C1&lt;/x-slot:avatar&gt;
+    &lt;x-slot:name&gt;Customer 1&lt;/x-slot:name&gt;
+    &lt;x-slot:meta&gt;City 1 · Customer since 2021&lt;/x-slot:meta&gt;
+    &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" variant="outline"&gt;Edit&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;x-slot:tabs&gt;
+        @foreach (['Overview', 'Invoices', 'Projects'] as $tab)
+            &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" @checked($loop-&gt;first)&gt;{{ $tab }}&lt;/label&gt;
+        @endforeach
+    &lt;/x-slot:tabs&gt;
     &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/div&gt;
     &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/div&gt;
     &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+&lt;/x-oc::block.profile-header&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -317,27 +296,22 @@ class ProfileHeaderCompactGreenAccent extends Component
 }
 
 {{-- resources/views/livewire/profile-header-compact-green-accent.blade.php --}}
-&lt;section class="oc-block-profile oc-block-profile--compact oc-accent--green" aria-labelledby="oc-profile-compact-name"&gt;
-  &lt;div class="oc-block-profile-banner" aria-hidden="true"&gt;&lt;/div&gt;
-  &lt;div class="oc-block-profile-bar"&gt;
-    &lt;span class="oc-avatar oc-block-profile-avatar" aria-hidden="true"&gt;C1&lt;/span&gt;
-    &lt;div class="oc-block-profile-info"&gt;
-      &lt;h2 class="oc-block-profile-name" id="oc-profile-compact-name"&gt;Customer 1&lt;/h2&gt;
-      &lt;p class="oc-block-profile-meta"&gt;City 1 &amp;middot; Customer since 2021&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-profile-actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Edit&lt;/button&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-profile-tabs" role="radiogroup" aria-label="Customer sections"&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" checked&gt;Overview&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab"&gt;Invoices&lt;/label&gt;
-    &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab"&gt;Projects&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-profile-panels"&gt;
-    &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/div&gt;
-    &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/div&gt;
-    &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::block.profile-header class="oc-block-profile--compact oc-accent--green" aria-labelledby="oc-profile-compact-name"&gt;
+        &lt;x-slot:avatar&gt;C1&lt;/x-slot:avatar&gt;
+        &lt;x-slot:name&gt;Customer 1&lt;/x-slot:name&gt;
+        &lt;x-slot:meta&gt;City 1 · Customer since 2021&lt;/x-slot:meta&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" variant="outline"&gt;Edit&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+        &lt;x-slot:tabs&gt;
+            @foreach (['Overview', 'Invoices', 'Projects'] as $tab)
+                &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" @checked($loop-&gt;first)&gt;{{ $tab }}&lt;/label&gt;
+            @endforeach
+        &lt;/x-slot:tabs&gt;
+        &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/div&gt;
+        &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/div&gt;
+        &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/div&gt;
+    &lt;/x-oc::block.profile-header&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

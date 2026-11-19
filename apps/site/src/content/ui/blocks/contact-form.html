@@ -102,379 +102,177 @@
     </div>
   </div>
 </section>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;section className="oc-block-contact-form" aria-label="Contact"&gt;
-      &lt;div className="oc-block-contact-form-layout" data-contact-root=""&gt;
-        &lt;div className="oc-panel" id="contact-form"&gt;
-          &lt;div className="oc-result" role="status" tabIndex={-1} data-contact-success="" hidden&gt;
-            &lt;span className="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:check" /&gt;&lt;/span&gt;
-            &lt;h2 className="oc-result__title"&gt;Thank you, your message was sent&lt;/h2&gt;
-            &lt;p className="oc-result__text"&gt;You will get a confirmation by e-mail. We usually answer within one working day.&lt;br /&gt;Urgent? Call us on &lt;a href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;.&lt;/p&gt;
-            &lt;div className="oc-result__actions"&gt;
-              &lt;a className="oc-btn oc-btn--outline" href="#contact-form" data-contact-again=""&gt;Send another message&lt;/a&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
+<oc-code lang="tsx">const [sent, setSent] = useState(false);
+const [busy, setBusy] = useState(false);
+const [errors, setErrors] = useState&lt;Record&lt;string, string&gt;&gt;({});
 
-          &lt;div data-contact-body=""&gt;
-            &lt;h2 className="oc-block-contact-form-title"&gt;Send us a message&lt;/h2&gt;
-            &lt;p className="oc-block-contact-form-intro"&gt;We usually answer within one working day.&lt;/p&gt;
-            &lt;p className="oc-alert oc-alert--danger" role="alert" data-contact-alert="" hidden /&gt;
+&lt;BlockContactForm
+  action="/contact"
+  intro="We usually answer within one working day."
+  subjects={[
+    { value: "project", label: "A new project" },
+    { value: "support", label: "Support" },
+    { value: "other", label: "Something else" },
+  ]}
+  errors={errors}
+  sent={sent}
+  busy={busy}
+  note={&lt;&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/&gt;}
+  successText={&lt;&gt;You will get a confirmation by e-mail. We usually answer within one working day.&lt;br /&gt;Urgent? Call us on &lt;a href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;.&lt;/&gt;}
+  onAgain={() =&gt; setSent(false)}
+  onSubmit={async (e) =&gt; {
+    e.preventDefault();
+    setBusy(true);
+    const res = await fetch("/contact", { method: "POST", headers: { Accept: "application/json" }, body: new FormData(e.currentTarget) });
+    const data = await res.json();
+    setBusy(false);
+    data.sent ? setSent(true) : setErrors(data.errors ?? {});
+  }}
+  cards={[
+    { title: "Mail us", icon: "mdi:email-outline", lines: [{ text: "info@company1.example", href: "mailto:info@company1.example" }] },
+    { title: "Call us", icon: "mdi:phone-outline", lines: [{ text: "+32 3 000 00 00", href: "tel:+3230000000" }] },
+    { title: "We come to you", icon: "mdi:map-marker-outline", lines: [{ text: "We work on location." }, { text: "Make an appointment by mail or phone." }] },
+    { title: "Helpdesk", icon: "mdi:headset", lines: [{ text: "support@company1.example", href: "mailto:support@company1.example" }] },
+  ]}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcBlockContactForm } from '@birdycom/omniaui-vue'
 
-            &lt;form className="oc-form oc-form--filled" method="post" action="/contact" noValidate data-contact-form=""&gt;
-              &lt;div className="oc-honeypot" aria-hidden="true"&gt;
-                &lt;label htmlFor="contact-website"&gt;Leave this field empty&lt;/label&gt;
-                &lt;input type="text" id="contact-website" name="website" tabIndex={-1} autoComplete="off" /&gt;
-              &lt;/div&gt;
+const sent = ref(false)
+const busy = ref(false)
+const errors = ref&lt;Record&lt;string, string&gt;&gt;({})
 
-              &lt;div className="oc-field-group oc-field-group--row"&gt;
-                &lt;div className="oc-field"&gt;
-                  &lt;label className="oc-field-label" htmlFor="contact-name"&gt;Name&lt;/label&gt;
-                  &lt;input className="oc-input" type="text" id="contact-name" name="name" required maxLength={100} autoComplete="name" /&gt;
-                &lt;/div&gt;
-                &lt;div className="oc-field"&gt;
-                  &lt;label className="oc-field-label" htmlFor="contact-email"&gt;E-mail&lt;/label&gt;
-                  &lt;input className="oc-input" type="email" id="contact-email" name="email" required maxLength={254} autoComplete="email" /&gt;
-                &lt;/div&gt;
-              &lt;/div&gt;
+async function submit(event: Event) {
+  event.preventDefault()
+  busy.value = true
+  const res = await fetch('/contact', { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(event.target as HTMLFormElement) })
+  const data = await res.json()
+  busy.value = false
+  if (data.sent) sent.value = true
+  else errors.value = data.errors ?? {}
+}
+&lt;/script&gt;
 
-              &lt;div className="oc-field-group oc-field-group--row"&gt;
-                &lt;div className="oc-field"&gt;
-                  &lt;label className="oc-field-label" htmlFor="contact-phone"&gt;Phone &lt;span className="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/label&gt;
-                  &lt;input className="oc-input" type="tel" id="contact-phone" name="phone" maxLength={40} autoComplete="tel" inputMode="tel" /&gt;
-                &lt;/div&gt;
-                &lt;div className="oc-field"&gt;
-                  &lt;label className="oc-field-label" htmlFor="contact-subject"&gt;What is it about?&lt;/label&gt;
-                  &lt;select className="oc-select" id="contact-subject" name="subject" required&gt;
-                    &lt;option value=""&gt;Choose a subject&lt;/option&gt;
-                    &lt;option value="project"&gt;A new project&lt;/option&gt;
-                    &lt;option value="support"&gt;Support&lt;/option&gt;
-                    &lt;option value="other"&gt;Something else&lt;/option&gt;
-                  &lt;/select&gt;
-                &lt;/div&gt;
-              &lt;/div&gt;
-
-              &lt;div className="oc-field"&gt;
-                &lt;label className="oc-field-label" htmlFor="contact-message"&gt;Your message&lt;/label&gt;
-                &lt;textarea className="oc-input oc-textarea" id="contact-message" name="message" rows={6} required maxLength={5000} /&gt;
-              &lt;/div&gt;
-
-              &lt;div className="oc-form-actions"&gt;
-                &lt;button className="oc-btn oc-btn--lg" type="submit" data-contact-submit=""&gt;&lt;span data-contact-label=""&gt;Send message&lt;/span&gt;&lt;/button&gt;
-                &lt;p className="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="#privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
-              &lt;/div&gt;
-            &lt;/form&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-
-        &lt;div className="oc-block-contact-form-cards"&gt;
-          &lt;article className="oc-block-contact-card"&gt;
-            &lt;span className="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:email-outline" /&gt;&lt;/span&gt;
-            &lt;h3 className="oc-block-contact-title"&gt;Mail us&lt;/h3&gt;
-            &lt;a className="oc-block-contact-line" href="mailto:info@company1.example"&gt;info@company1.example&lt;/a&gt;
-          &lt;/article&gt;
-          &lt;article className="oc-block-contact-card"&gt;
-            &lt;span className="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:phone-outline" /&gt;&lt;/span&gt;
-            &lt;h3 className="oc-block-contact-title"&gt;Call us&lt;/h3&gt;
-            &lt;a className="oc-block-contact-line" href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;
-          &lt;/article&gt;
-          &lt;article className="oc-block-contact-card"&gt;
-            &lt;span className="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:map-marker-outline" /&gt;&lt;/span&gt;
-            &lt;h3 className="oc-block-contact-title"&gt;We come to you&lt;/h3&gt;
-            &lt;p className="oc-block-contact-line"&gt;We work on location.&lt;/p&gt;
-            &lt;p className="oc-block-contact-line"&gt;Make an appointment by mail or phone.&lt;/p&gt;
-          &lt;/article&gt;
-          &lt;article className="oc-block-contact-card"&gt;
-            &lt;span className="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:headset" /&gt;&lt;/span&gt;
-            &lt;h3 className="oc-block-contact-title"&gt;Helpdesk&lt;/h3&gt;
-            &lt;a className="oc-block-contact-line" href="mailto:support@company1.example"&gt;support@company1.example&lt;/a&gt;
-          &lt;/article&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;section class="oc-block-contact-form" aria-label="Contact"&gt;
-    &lt;div class="oc-block-contact-form-layout" data-contact-root=""&gt;
-      &lt;div class="oc-panel" id="contact-form"&gt;
-        &lt;div class="oc-result" role="status" tabindex="-1" data-contact-success="" hidden&gt;
-          &lt;span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:check"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-          &lt;h2 class="oc-result__title"&gt;Thank you, your message was sent&lt;/h2&gt;
-          &lt;p class="oc-result__text"&gt;You will get a confirmation by e-mail. We usually answer within one working day.&lt;br /&gt;Urgent? Call us on &lt;a href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;.&lt;/p&gt;
-          &lt;div class="oc-result__actions"&gt;
-            &lt;a class="oc-btn oc-btn--outline" href="#contact-form" data-contact-again=""&gt;Send another message&lt;/a&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-
-        &lt;div data-contact-body=""&gt;
-          &lt;h2 class="oc-block-contact-form-title"&gt;Send us a message&lt;/h2&gt;
-          &lt;p class="oc-block-contact-form-intro"&gt;We usually answer within one working day.&lt;/p&gt;
-          &lt;p class="oc-alert oc-alert--danger" role="alert" data-contact-alert="" hidden&gt;&lt;/p&gt;
-
-          &lt;form class="oc-form oc-form--filled" method="post" action="/contact" novalidate data-contact-form=""&gt;
-            &lt;div class="oc-honeypot" aria-hidden="true"&gt;
-              &lt;label for="contact-website"&gt;Leave this field empty&lt;/label&gt;
-              &lt;input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off" /&gt;
-            &lt;/div&gt;
-
-            &lt;div class="oc-field-group oc-field-group--row"&gt;
-              &lt;div class="oc-field"&gt;
-                &lt;label class="oc-field-label" for="contact-name"&gt;Name&lt;/label&gt;
-                &lt;input class="oc-input" type="text" id="contact-name" name="name" required maxlength="100" autocomplete="name" /&gt;
-              &lt;/div&gt;
-              &lt;div class="oc-field"&gt;
-                &lt;label class="oc-field-label" for="contact-email"&gt;E-mail&lt;/label&gt;
-                &lt;input class="oc-input" type="email" id="contact-email" name="email" required maxlength="254" autocomplete="email" /&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
-
-            &lt;div class="oc-field-group oc-field-group--row"&gt;
-              &lt;div class="oc-field"&gt;
-                &lt;label class="oc-field-label" for="contact-phone"&gt;Phone &lt;span class="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/label&gt;
-                &lt;input class="oc-input" type="tel" id="contact-phone" name="phone" maxlength="40" autocomplete="tel" inputmode="tel" /&gt;
-              &lt;/div&gt;
-              &lt;div class="oc-field"&gt;
-                &lt;label class="oc-field-label" for="contact-subject"&gt;What is it about?&lt;/label&gt;
-                &lt;select class="oc-select" id="contact-subject" name="subject" required&gt;
-                  &lt;option value=""&gt;Choose a subject&lt;/option&gt;
-                  &lt;option value="project"&gt;A new project&lt;/option&gt;
-                  &lt;option value="support"&gt;Support&lt;/option&gt;
-                  &lt;option value="other"&gt;Something else&lt;/option&gt;
-                &lt;/select&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
-
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-message"&gt;Your message&lt;/label&gt;
-              &lt;textarea class="oc-input oc-textarea" id="contact-message" name="message" rows="6" required maxlength="5000"&gt;&lt;/textarea&gt;
-            &lt;/div&gt;
-
-            &lt;div class="oc-form-actions"&gt;
-              &lt;button class="oc-btn oc-btn--lg" type="submit" data-contact-submit=""&gt;&lt;span data-contact-label=""&gt;Send message&lt;/span&gt;&lt;/button&gt;
-              &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="#privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/form&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-
-      &lt;div class="oc-block-contact-form-cards"&gt;
-        &lt;article class="oc-block-contact-card"&gt;
-          &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:email-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-          &lt;h3 class="oc-block-contact-title"&gt;Mail us&lt;/h3&gt;
-          &lt;a class="oc-block-contact-line" href="mailto:info@company1.example"&gt;info@company1.example&lt;/a&gt;
-        &lt;/article&gt;
-        &lt;article class="oc-block-contact-card"&gt;
-          &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:phone-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-          &lt;h3 class="oc-block-contact-title"&gt;Call us&lt;/h3&gt;
-          &lt;a class="oc-block-contact-line" href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;
-        &lt;/article&gt;
-        &lt;article class="oc-block-contact-card"&gt;
-          &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:map-marker-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-          &lt;h3 class="oc-block-contact-title"&gt;We come to you&lt;/h3&gt;
-          &lt;p class="oc-block-contact-line"&gt;We work on location.&lt;/p&gt;
-          &lt;p class="oc-block-contact-line"&gt;Make an appointment by mail or phone.&lt;/p&gt;
-        &lt;/article&gt;
-        &lt;article class="oc-block-contact-card"&gt;
-          &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:headset"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-          &lt;h3 class="oc-block-contact-title"&gt;Helpdesk&lt;/h3&gt;
-          &lt;a class="oc-block-contact-line" href="mailto:support@company1.example"&gt;support@company1.example&lt;/a&gt;
-        &lt;/article&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
+&lt;template&gt;
+  &lt;OcBlockContactForm
+    action="/contact"
+    intro="We usually answer within one working day."
+    :subjects="[
+      { value: 'project', label: 'A new project' },
+      { value: 'support', label: 'Support' },
+      { value: 'other', label: 'Something else' },
+    ]"
+    :errors="errors"
+    :sent="sent"
+    :busy="busy"
+    success-text="You will get a confirmation by e-mail. We usually answer within one working day."
+    :cards="[
+      { title: 'Mail us', icon: 'mdi:email-outline', lines: [{ text: 'info@company1.example', href: 'mailto:info@company1.example' }] },
+      { title: 'Call us', icon: 'mdi:phone-outline', lines: [{ text: '+32 3 000 00 00', href: 'tel:+3230000000' }] },
+      { title: 'We come to you', icon: 'mdi:map-marker-outline', lines: [{ text: 'We work on location.' }, { text: 'Make an appointment by mail or phone.' }] },
+      { title: 'Helpdesk', icon: 'mdi:headset', lines: [{ text: 'support@company1.example', href: 'mailto:support@company1.example' }] },
+    ]"
+    @submit="submit"
+    @again="sent = false"
+  &gt;
+    &lt;template #note&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/template&gt;
+  &lt;/OcBlockContactForm&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-block-contact-form" aria-label="Contact"&gt;
-  &lt;div class="oc-block-contact-form-layout" data-contact-root&gt;
-    &lt;div class="oc-panel" id="contact-form"&gt;
-      &lt;div class="oc-result" role="status" tabindex="-1" data-contact-success hidden&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:check"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h2 class="oc-result__title"&gt;Thank you, your message was sent&lt;/h2&gt;
-        &lt;p class="oc-result__text"&gt;You will get a confirmation by e-mail. We usually answer within one working day.&lt;br&gt;Urgent? Call us on &lt;a href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;.&lt;/p&gt;
-        &lt;div class="oc-result__actions"&gt;
-          &lt;a class="oc-btn oc-btn--outline" href="#contact-form" data-contact-again&gt;Send another message&lt;/a&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-
-      &lt;div data-contact-body&gt;
-        &lt;h2 class="oc-block-contact-form-title"&gt;Send us a message&lt;/h2&gt;
-        &lt;p class="oc-block-contact-form-intro"&gt;We usually answer within one working day.&lt;/p&gt;
-        &lt;p class="oc-alert oc-alert--danger" role="alert" data-contact-alert hidden&gt;&lt;/p&gt;
-
-        &lt;form class="oc-form oc-form--filled" method="post" action="/contact" novalidate data-contact-form&gt;
-          &lt;div class="oc-honeypot" aria-hidden="true"&gt;
-            &lt;label for="contact-website"&gt;Leave this field empty&lt;/label&gt;
-            &lt;input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off"&gt;
-          &lt;/div&gt;
-
-          &lt;div class="oc-field-group oc-field-group--row"&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-name"&gt;Name&lt;/label&gt;
-              &lt;input class="oc-input" type="text" id="contact-name" name="name" required maxlength="100" autocomplete="name"&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-email"&gt;E-mail&lt;/label&gt;
-              &lt;input class="oc-input" type="email" id="contact-email" name="email" required maxlength="254" autocomplete="email"&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-
-          &lt;div class="oc-field-group oc-field-group--row"&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-phone"&gt;Phone &lt;span class="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/label&gt;
-              &lt;input class="oc-input" type="tel" id="contact-phone" name="phone" maxlength="40" autocomplete="tel" inputmode="tel"&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-subject"&gt;What is it about?&lt;/label&gt;
-              &lt;select class="oc-select" id="contact-subject" name="subject" required&gt;
-                &lt;option value=""&gt;Choose a subject&lt;/option&gt;
-                &lt;option value="project"&gt;A new project&lt;/option&gt;
-                &lt;option value="support"&gt;Support&lt;/option&gt;
-                &lt;option value="other"&gt;Something else&lt;/option&gt;
-              &lt;/select&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="contact-message"&gt;Your message&lt;/label&gt;
-            &lt;textarea class="oc-input oc-textarea" id="contact-message" name="message" rows="6" required maxlength="5000"&gt;&lt;/textarea&gt;
-          &lt;/div&gt;
-
-          &lt;div class="oc-form-actions"&gt;
-            &lt;button class="oc-btn oc-btn--lg" type="submit" data-contact-submit&gt;&lt;span data-contact-label&gt;Send message&lt;/span&gt;&lt;/button&gt;
-            &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="#privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/form&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-
-    &lt;div class="oc-block-contact-form-cards"&gt;
-      &lt;article class="oc-block-contact-card"&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:email-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h3 class="oc-block-contact-title"&gt;Mail us&lt;/h3&gt;
-        &lt;a class="oc-block-contact-line" href="mailto:info@company1.example"&gt;info@company1.example&lt;/a&gt;
-      &lt;/article&gt;
-      &lt;article class="oc-block-contact-card"&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:phone-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h3 class="oc-block-contact-title"&gt;Call us&lt;/h3&gt;
-        &lt;a class="oc-block-contact-line" href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;
-      &lt;/article&gt;
-      &lt;article class="oc-block-contact-card"&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:map-marker-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h3 class="oc-block-contact-title"&gt;We come to you&lt;/h3&gt;
-        &lt;p class="oc-block-contact-line"&gt;We work on location.&lt;/p&gt;
-        &lt;p class="oc-block-contact-line"&gt;Make an appointment by mail or phone.&lt;/p&gt;
-      &lt;/article&gt;
-      &lt;article class="oc-block-contact-card"&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:headset"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h3 class="oc-block-contact-title"&gt;Helpdesk&lt;/h3&gt;
-        &lt;a class="oc-block-contact-line" href="mailto:support@company1.example"&gt;support@company1.example&lt;/a&gt;
-      &lt;/article&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+<oc-code lang="blade">{{-- errors and old values come from Laravel; the controller redirects back with session('sent') --}}
+&lt;x-oc::block.contact-form
+    :action="route('contact.send')"
+    intro="We usually answer within one working day."
+    :subjects="['project' =&gt; 'A new project', 'support' =&gt; 'Support', 'other' =&gt; 'Something else']"
+    :sent="session('sent', false)"
+    :cards="[
+        ['title' =&gt; 'Mail us', 'icon' =&gt; 'mdi:email-outline', 'lines' =&gt; [['info@company1.example', 'mailto:info@company1.example']]],
+        ['title' =&gt; 'Call us', 'icon' =&gt; 'mdi:phone-outline', 'lines' =&gt; [['+32 3 000 00 00', 'tel:+3230000000']]],
+        ['title' =&gt; 'We come to you', 'icon' =&gt; 'mdi:map-marker-outline', 'lines' =&gt; [['We work on location.', null], ['Make an appointment by mail or phone.', null]]],
+        ['title' =&gt; 'Helpdesk', 'icon' =&gt; 'mdi:headset', 'lines' =&gt; [['support@company1.example', 'mailto:support@company1.example']]],
+    ]"&gt;
+    &lt;x-slot:note&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/x-slot:note&gt;
+&lt;/x-oc::block.contact-form&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class ContactForm extends Component
+class ContactPage extends Component
 {
+    public string $name = '';
+
+    public string $email = '';
+
+    public string $phone = '';
+
+    public string $subject = '';
+
+    public string $message = '';
+
+    public bool $sent = false;
+
+    protected function rules(): array
+    {
+        return [
+            'name' =&gt; 'required|max:100',
+            'email' =&gt; 'required|email|max:254',
+            'phone' =&gt; 'nullable|max:40',
+            'subject' =&gt; 'required|in:project,support,other',
+            'message' =&gt; 'required|max:5000',
+        ];
+    }
+
+    public function send(): void
+    {
+        $this-&gt;validate();
+        // mail the message, then show the result
+        $this-&gt;reset('name', 'email', 'phone', 'subject', 'message');
+        $this-&gt;sent = true;
+    }
+
+    public function again(): void
+    {
+        $this-&gt;sent = false;
+    }
+
     public function render()
     {
-        return view('livewire.contact-form');
+        return view('livewire.contact-page');
     }
 }
 
-{{-- resources/views/livewire/contact-form.blade.php --}}
-&lt;section class="oc-block-contact-form" aria-label="Contact"&gt;
-  &lt;div class="oc-block-contact-form-layout" data-contact-root&gt;
-    &lt;div class="oc-panel" id="contact-form"&gt;
-      &lt;div class="oc-result" role="status" tabindex="-1" data-contact-success hidden&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:check"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h2 class="oc-result__title"&gt;Thank you, your message was sent&lt;/h2&gt;
-        &lt;p class="oc-result__text"&gt;You will get a confirmation by e-mail. We usually answer within one working day.&lt;br&gt;Urgent? Call us on &lt;a href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;.&lt;/p&gt;
-        &lt;div class="oc-result__actions"&gt;
-          &lt;a class="oc-btn oc-btn--outline" href="#contact-form" data-contact-again&gt;Send another message&lt;/a&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-
-      &lt;div data-contact-body&gt;
-        &lt;h2 class="oc-block-contact-form-title"&gt;Send us a message&lt;/h2&gt;
-        &lt;p class="oc-block-contact-form-intro"&gt;We usually answer within one working day.&lt;/p&gt;
-        &lt;p class="oc-alert oc-alert--danger" role="alert" data-contact-alert hidden&gt;&lt;/p&gt;
-
-        &lt;form class="oc-form oc-form--filled" method="post" action="/contact" novalidate data-contact-form&gt;
-          &lt;div class="oc-honeypot" aria-hidden="true"&gt;
-            &lt;label for="contact-website"&gt;Leave this field empty&lt;/label&gt;
-            &lt;input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off"&gt;
-          &lt;/div&gt;
-
-          &lt;div class="oc-field-group oc-field-group--row"&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-name"&gt;Name&lt;/label&gt;
-              &lt;input class="oc-input" type="text" id="contact-name" name="name" required maxlength="100" autocomplete="name"&gt;
+{{-- resources/views/livewire/contact-page.blade.php --}}
+{{-- the block's form submits; Alpine hands the submit to send(), the fields are bound with wire:model --}}
+&lt;div&gt;
+    &lt;x-oc::block.contact-form intro="We usually answer within one working day." :sent="$sent" again-href="#contact-form"
+        x-data x-on:submit.prevent="$wire.send()" x-on:click="$event.target.closest('[data-contact-again]') &amp;&amp; ($event.preventDefault(), $wire.again())"
+        :cards="[
+            ['title' =&gt; 'Mail us', 'icon' =&gt; 'mdi:email-outline', 'lines' =&gt; [['info@company1.example', 'mailto:info@company1.example']]],
+            ['title' =&gt; 'Call us', 'icon' =&gt; 'mdi:phone-outline', 'lines' =&gt; [['+32 3 000 00 00', 'tel:+3230000000']]],
+            ['title' =&gt; 'We come to you', 'icon' =&gt; 'mdi:map-marker-outline', 'lines' =&gt; [['We work on location.', null], ['Make an appointment by mail or phone.', null]]],
+            ['title' =&gt; 'Helpdesk', 'icon' =&gt; 'mdi:headset', 'lines' =&gt; [['support@company1.example', 'mailto:support@company1.example']]],
+        ]"&gt;
+        &lt;x-slot:fields&gt;
+            &lt;div class="oc-field-group oc-field-group--row"&gt;
+                &lt;x-oc::form-field label="Name" for="contact-name" name="name"&gt;&lt;x-oc::wire.input id="contact-name" model="name" autocomplete="name" maxlength="100" /&gt;&lt;/x-oc::form-field&gt;
+                &lt;x-oc::form-field label="E-mail" for="contact-email" name="email"&gt;&lt;x-oc::wire.input id="contact-email" model="email" blur type="email" autocomplete="email" maxlength="254" /&gt;&lt;/x-oc::form-field&gt;
             &lt;/div&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-email"&gt;E-mail&lt;/label&gt;
-              &lt;input class="oc-input" type="email" id="contact-email" name="email" required maxlength="254" autocomplete="email"&gt;
+            &lt;div class="oc-field-group oc-field-group--row"&gt;
+                &lt;x-oc::form-field for="contact-phone" name="phone"&gt;
+                    &lt;x-slot:label&gt;Phone &lt;span class="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/x-slot:label&gt;
+                    &lt;x-oc::wire.input id="contact-phone" model="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" /&gt;
+                &lt;/x-oc::form-field&gt;
+                &lt;x-oc::form-field label="What is it about?" for="contact-subject" name="subject"&gt;
+                    &lt;x-oc::wire.select id="contact-subject" model="subject" placeholder="Choose a subject" :options="['project' =&gt; 'A new project', 'support' =&gt; 'Support', 'other' =&gt; 'Something else']" /&gt;
+                &lt;/x-oc::form-field&gt;
             &lt;/div&gt;
-          &lt;/div&gt;
-
-          &lt;div class="oc-field-group oc-field-group--row"&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-phone"&gt;Phone &lt;span class="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/label&gt;
-              &lt;input class="oc-input" type="tel" id="contact-phone" name="phone" maxlength="40" autocomplete="tel" inputmode="tel"&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-subject"&gt;What is it about?&lt;/label&gt;
-              &lt;select class="oc-select" id="contact-subject" name="subject" required&gt;
-                &lt;option value=""&gt;Choose a subject&lt;/option&gt;
-                &lt;option value="project"&gt;A new project&lt;/option&gt;
-                &lt;option value="support"&gt;Support&lt;/option&gt;
-                &lt;option value="other"&gt;Something else&lt;/option&gt;
-              &lt;/select&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="contact-message"&gt;Your message&lt;/label&gt;
-            &lt;textarea class="oc-input oc-textarea" id="contact-message" name="message" rows="6" required maxlength="5000"&gt;&lt;/textarea&gt;
-          &lt;/div&gt;
-
-          &lt;div class="oc-form-actions"&gt;
-            &lt;button class="oc-btn oc-btn--lg" type="submit" data-contact-submit&gt;&lt;span data-contact-label&gt;Send message&lt;/span&gt;&lt;/button&gt;
-            &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="#privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/form&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-
-    &lt;div class="oc-block-contact-form-cards"&gt;
-      &lt;article class="oc-block-contact-card"&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:email-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h3 class="oc-block-contact-title"&gt;Mail us&lt;/h3&gt;
-        &lt;a class="oc-block-contact-line" href="mailto:info@company1.example"&gt;info@company1.example&lt;/a&gt;
-      &lt;/article&gt;
-      &lt;article class="oc-block-contact-card"&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:phone-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h3 class="oc-block-contact-title"&gt;Call us&lt;/h3&gt;
-        &lt;a class="oc-block-contact-line" href="tel:+3230000000"&gt;+32 3 000 00 00&lt;/a&gt;
-      &lt;/article&gt;
-      &lt;article class="oc-block-contact-card"&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:map-marker-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h3 class="oc-block-contact-title"&gt;We come to you&lt;/h3&gt;
-        &lt;p class="oc-block-contact-line"&gt;We work on location.&lt;/p&gt;
-        &lt;p class="oc-block-contact-line"&gt;Make an appointment by mail or phone.&lt;/p&gt;
-      &lt;/article&gt;
-      &lt;article class="oc-block-contact-card"&gt;
-        &lt;span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:headset"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;h3 class="oc-block-contact-title"&gt;Helpdesk&lt;/h3&gt;
-        &lt;a class="oc-block-contact-line" href="mailto:support@company1.example"&gt;support@company1.example&lt;/a&gt;
-      &lt;/article&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+            &lt;x-oc::form-field label="Your message" for="contact-message" name="message"&gt;&lt;x-oc::wire.textarea id="contact-message" model="message" rows="6" maxlength="5000" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;/x-slot:fields&gt;
+        &lt;x-slot:note&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/x-slot:note&gt;
+    &lt;/x-oc::block.contact-form&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="demo-2">After a failed post</h3>
@@ -511,143 +309,69 @@ class ContactForm extends Component
 </section>
 <oc-code lang="tsx">import type { CSSProperties } from "react";
 
-export function Example() {
-  return (
-    &lt;section className="oc-block-contact-form" aria-label="Contact"&gt;
-      &lt;div className="oc-block-contact-form-layout" style={{ "--oc-contact-form-cols": "1fr" } as CSSProperties}&gt;
-        &lt;div className="oc-panel"&gt;
-          &lt;h2 className="oc-block-contact-form-title"&gt;Send us a message&lt;/h2&gt;
-          &lt;p className="oc-alert oc-alert--danger" role="alert"&gt;Please check the fields in red.&lt;/p&gt;
-          &lt;form className="oc-form oc-form--filled" method="post" action="/contact" noValidate&gt;
-            &lt;div className="oc-field-group oc-field-group--row"&gt;
-              &lt;div className="oc-field"&gt;
-                &lt;label className="oc-field-label" htmlFor="contact-err-name"&gt;Name&lt;/label&gt;
-                &lt;input className="oc-input" type="text" id="contact-err-name" name="name" defaultValue="Customer 1" /&gt;
-              &lt;/div&gt;
-              &lt;div className="oc-field"&gt;
-                &lt;label className="oc-field-label" htmlFor="contact-err-email"&gt;E-mail&lt;/label&gt;
-                &lt;input className="oc-input" type="email" id="contact-err-email" name="email" defaultValue="customer1@" aria-invalid="true" aria-describedby="err-email" /&gt;
-                &lt;p className="oc-field-error" id="err-email"&gt;Fill in a valid e-mail address.&lt;/p&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div className="oc-field"&gt;
-              &lt;label className="oc-field-label" htmlFor="contact-err-message"&gt;Your message&lt;/label&gt;
-              &lt;textarea className="oc-input oc-textarea" id="contact-err-message" name="message" rows={4} aria-invalid="true" aria-describedby="err-message" /&gt;
-              &lt;p className="oc-field-error" id="err-message"&gt;Write a short message.&lt;/p&gt;
-            &lt;/div&gt;
-            &lt;div className="oc-form-actions"&gt;
-              &lt;button className="oc-btn oc-btn--lg" type="submit"&gt;Send message&lt;/button&gt;
-            &lt;/div&gt;
-          &lt;/form&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;section class="oc-block-contact-form" aria-label="Contact"&gt;
-    &lt;div class="oc-block-contact-form-layout" style="--oc-contact-form-cols: 1fr"&gt;
-      &lt;div class="oc-panel"&gt;
-        &lt;h2 class="oc-block-contact-form-title"&gt;Send us a message&lt;/h2&gt;
-        &lt;p class="oc-alert oc-alert--danger" role="alert"&gt;Please check the fields in red.&lt;/p&gt;
-        &lt;form class="oc-form oc-form--filled" method="post" action="/contact" novalidate&gt;
-          &lt;div class="oc-field-group oc-field-group--row"&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-err-name"&gt;Name&lt;/label&gt;
-              &lt;input class="oc-input" type="text" id="contact-err-name" name="name" value="Customer 1" /&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="contact-err-email"&gt;E-mail&lt;/label&gt;
-              &lt;input class="oc-input" type="email" id="contact-err-email" name="email" value="customer1@" aria-invalid="true" aria-describedby="err-email" /&gt;
-              &lt;p class="oc-field-error" id="err-email"&gt;Fill in a valid e-mail address.&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="contact-err-message"&gt;Your message&lt;/label&gt;
-            &lt;textarea class="oc-input oc-textarea" id="contact-err-message" name="message" rows="4" aria-invalid="true" aria-describedby="err-message"&gt;&lt;/textarea&gt;
-            &lt;p class="oc-field-error" id="err-message"&gt;Write a short message.&lt;/p&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-form-actions"&gt;
-            &lt;button class="oc-btn oc-btn--lg" type="submit"&gt;Send message&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/form&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-block-contact-form" aria-label="Contact"&gt;
-  &lt;div class="oc-block-contact-form-layout" style="--oc-contact-form-cols: 1fr"&gt;
-    &lt;div class="oc-panel"&gt;
-      &lt;h2 class="oc-block-contact-form-title"&gt;Send us a message&lt;/h2&gt;
-      &lt;p class="oc-alert oc-alert--danger" role="alert"&gt;Please check the fields in red.&lt;/p&gt;
-      &lt;form class="oc-form oc-form--filled" method="post" action="/contact" novalidate&gt;
-        &lt;div class="oc-field-group oc-field-group--row"&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="contact-err-name"&gt;Name&lt;/label&gt;
-            &lt;input class="oc-input" type="text" id="contact-err-name" name="name" value="Customer 1"&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="contact-err-email"&gt;E-mail&lt;/label&gt;
-            &lt;input class="oc-input" type="email" id="contact-err-email" name="email" value="customer1@" aria-invalid="true" aria-describedby="err-email"&gt;
-            &lt;p class="oc-field-error" id="err-email"&gt;Fill in a valid e-mail address.&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-field"&gt;
-          &lt;label class="oc-field-label" for="contact-err-message"&gt;Your message&lt;/label&gt;
-          &lt;textarea class="oc-input oc-textarea" id="contact-err-message" name="message" rows="4" aria-invalid="true" aria-describedby="err-message"&gt;&lt;/textarea&gt;
-          &lt;p class="oc-field-error" id="err-message"&gt;Write a short message.&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-form-actions"&gt;
-          &lt;button class="oc-btn oc-btn--lg" type="submit"&gt;Send message&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/form&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+// After a failed post: the server's field errors (and the values that were sent) go back into the block
+&lt;BlockContactForm
+  action="/contact"
+  style={{ "--oc-contact-form-cols": "1fr" } as CSSProperties}
+  values={{ name: "Customer 1", email: "customer1@" }}
+  errors={{ email: "Fill in a valid e-mail address.", message: "Write a short message." }}
+  errorText="Please check the fields in red."
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;!-- After a failed post: the server's field errors (and the values that were sent) go back into the block --&gt;
+&lt;OcBlockContactForm
+  action="/contact"
+  style="--oc-contact-form-cols: 1fr"
+  :values="{ name: 'Customer 1', email: 'customer1@' }"
+  :errors="{ email: 'Fill in a valid e-mail address.', message: 'Write a short message.' }"
+  error-text="Please check the fields in red."
+/&gt;</oc-code>
+<oc-code lang="blade">{{-- After a failed post Laravel fills $errors and old(): the block shows the alert, the red fields and the values --}}
+{{-- $request-&gt;validate(['email' =&gt; 'required|email', 'message' =&gt; 'required'], ['email.email' =&gt; 'Fill in a valid e-mail address.', 'message.required' =&gt; 'Write a short message.']) --}}
+&lt;x-oc::block.contact-form :action="route('contact.send')" style="--oc-contact-form-cols: 1fr" error-text="Please check the fields in red." /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class ContactFormErrors extends Component
+class ContactShort extends Component
 {
+    public string $name = 'Customer 1';
+
+    public string $email = 'customer1@';
+
+    public string $message = '';
+
+    public bool $sent = false;
+
+    public function send(): void
+    {
+        $this-&gt;validate(
+            ['name' =&gt; 'required', 'email' =&gt; 'required|email', 'message' =&gt; 'required'],
+            ['email.email' =&gt; 'Fill in a valid e-mail address.', 'message.required' =&gt; 'Write a short message.'],
+        );
+        $this-&gt;sent = true;
+    }
+
     public function render()
     {
-        return view('livewire.contact-form-errors');
+        return view('livewire.contact-short');
     }
 }
 
-{{-- resources/views/livewire/contact-form-errors.blade.php --}}
-&lt;section class="oc-block-contact-form" aria-label="Contact"&gt;
-  &lt;div class="oc-block-contact-form-layout" style="--oc-contact-form-cols: 1fr"&gt;
-    &lt;div class="oc-panel"&gt;
-      &lt;h2 class="oc-block-contact-form-title"&gt;Send us a message&lt;/h2&gt;
-      &lt;p class="oc-alert oc-alert--danger" role="alert"&gt;Please check the fields in red.&lt;/p&gt;
-      &lt;form class="oc-form oc-form--filled" method="post" action="/contact" novalidate&gt;
-        &lt;div class="oc-field-group oc-field-group--row"&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="contact-err-name"&gt;Name&lt;/label&gt;
-            &lt;input class="oc-input" type="text" id="contact-err-name" name="name" value="Customer 1"&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="contact-err-email"&gt;E-mail&lt;/label&gt;
-            &lt;input class="oc-input" type="email" id="contact-err-email" name="email" value="customer1@" aria-invalid="true" aria-describedby="err-email"&gt;
-            &lt;p class="oc-field-error" id="err-email"&gt;Fill in a valid e-mail address.&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-field"&gt;
-          &lt;label class="oc-field-label" for="contact-err-message"&gt;Your message&lt;/label&gt;
-          &lt;textarea class="oc-input oc-textarea" id="contact-err-message" name="message" rows="4" aria-invalid="true" aria-describedby="err-message"&gt;&lt;/textarea&gt;
-          &lt;p class="oc-field-error" id="err-message"&gt;Write a short message.&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-form-actions"&gt;
-          &lt;button class="oc-btn oc-btn--lg" type="submit"&gt;Send message&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/form&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+{{-- resources/views/livewire/contact-short.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.contact-form style="--oc-contact-form-cols: 1fr" :sent="$sent" error-text="Please check the fields in red."
+        x-data x-on:submit.prevent="$wire.send()"&gt;
+        &lt;x-slot:fields&gt;
+            &lt;div class="oc-field-group oc-field-group--row"&gt;
+                &lt;x-oc::form-field label="Name" for="contact-name" name="name"&gt;&lt;x-oc::wire.input id="contact-name" model="name" autocomplete="name" maxlength="100" /&gt;&lt;/x-oc::form-field&gt;
+                &lt;x-oc::form-field label="E-mail" for="contact-email" name="email"&gt;&lt;x-oc::wire.input id="contact-email" model="email" blur type="email" autocomplete="email" maxlength="254" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;/div&gt;
+            &lt;x-oc::form-field label="Your message" for="contact-message" name="message"&gt;&lt;x-oc::wire.textarea id="contact-message" model="message" rows="4" maxlength="5000" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;/x-slot:fields&gt;
+    &lt;/x-oc::block.contact-form&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

@@ -15,27 +15,34 @@
   <button class="oc-btn oc-btn--outline" type="button">Center</button>
   <button class="oc-btn oc-btn--outline" type="button">Right</button>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Button } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // no ButtonGroup component in React: the wrapper is one div with role="group"
   return (
     &lt;div className="oc-btn-group" role="group" aria-label="Text alignment"&gt;
-      &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Left&lt;/button&gt;
-      &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Center&lt;/button&gt;
-      &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Right&lt;/button&gt;
+      &lt;Button variant="outline"&gt;Left&lt;/Button&gt;
+      &lt;Button variant="outline"&gt;Center&lt;/Button&gt;
+      &lt;Button variant="outline"&gt;Right&lt;/Button&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-btn-group" role="group" aria-label="Text alignment"&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Left&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Center&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Right&lt;/button&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcButtonGroup } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButtonGroup label="Text alignment"&gt;
+    &lt;OcButton variant="outline"&gt;Left&lt;/OcButton&gt;
+    &lt;OcButton variant="outline"&gt;Center&lt;/OcButton&gt;
+    &lt;OcButton variant="outline"&gt;Right&lt;/OcButton&gt;
+  &lt;/OcButtonGroup&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-btn-group" role="group" aria-label="Text alignment"&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Left&lt;/button&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Center&lt;/button&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Right&lt;/button&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button-group label="Text alignment"&gt;
+    &lt;x-oc::button variant="outline"&gt;Left&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline"&gt;Center&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline"&gt;Right&lt;/x-oc::button&gt;
+&lt;/x-oc::button-group&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -51,10 +58,12 @@ class ButtonGroup extends Component
 }
 
 {{-- resources/views/livewire/button-group.blade.php --}}
-&lt;div class="oc-btn-group" role="group" aria-label="Text alignment"&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Left&lt;/button&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Center&lt;/button&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Right&lt;/button&gt;
+&lt;div&gt;
+    &lt;x-oc::button-group label="Text alignment"&gt;
+        &lt;x-oc::button variant="outline"&gt;Left&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline"&gt;Center&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline"&gt;Right&lt;/x-oc::button&gt;
+    &lt;/x-oc::button-group&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="vertical" class="oc-section-content__title mt-2">Vertical and with text</h3><p class="oc-section-content__desc"><code>--vertical</code> stacks the buttons; <code>.oc-btn-group-text</code> adds a non-interactive cell.</p>
@@ -93,66 +102,89 @@ class ButtonGroup extends Component
   &lt;span class="oc-btn-group-text"&gt;3 items&lt;/span&gt;
   &lt;button class="oc-btn oc-btn--outline" type="button" aria-label="Increase"&gt;+&lt;/button&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { Button } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [items, setItems] = useState(3);
   return (
     &lt;&gt;
       &lt;div className="oc-btn-group oc-btn-group--vertical" role="group" aria-label="Zoom"&gt;
-        &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Zoom in&lt;/button&gt;
-        &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Zoom out&lt;/button&gt;
+        &lt;Button variant="outline"&gt;Zoom in&lt;/Button&gt;
+        &lt;Button variant="outline"&gt;Zoom out&lt;/Button&gt;
       &lt;/div&gt;
       &lt;div className="oc-btn-group" role="group" aria-label="Quantity"&gt;
-        &lt;button className="oc-btn oc-btn--outline" type="button" aria-label="Decrease"&gt;−&lt;/button&gt;
-        &lt;span className="oc-btn-group-text"&gt;3 items&lt;/span&gt;
-        &lt;button className="oc-btn oc-btn--outline" type="button" aria-label="Increase"&gt;+&lt;/button&gt;
+        &lt;Button variant="outline" aria-label="Decrease" onClick={() =&gt; setItems((n) =&gt; Math.max(0, n - 1))}&gt;−&lt;/Button&gt;
+        &lt;span className="oc-btn-group-text"&gt;{items} items&lt;/span&gt;
+        &lt;Button variant="outline" aria-label="Increase" onClick={() =&gt; setItems((n) =&gt; n + 1)}&gt;+&lt;/Button&gt;
       &lt;/div&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-btn-group oc-btn-group--vertical" role="group" aria-label="Zoom"&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Zoom in&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Zoom out&lt;/button&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-btn-group" role="group" aria-label="Quantity"&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button" aria-label="Decrease"&gt;−&lt;/button&gt;
-    &lt;span class="oc-btn-group-text"&gt;3 items&lt;/span&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button" aria-label="Increase"&gt;+&lt;/button&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcButton, OcButtonGroup, OcButtonGroupText } from "@birdycom/omniaui-vue";
+
+const items = ref(3);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButtonGroup vertical label="Zoom"&gt;
+    &lt;OcButton variant="outline"&gt;Zoom in&lt;/OcButton&gt;
+    &lt;OcButton variant="outline"&gt;Zoom out&lt;/OcButton&gt;
+  &lt;/OcButtonGroup&gt;
+  &lt;OcButtonGroup label="Quantity"&gt;
+    &lt;OcButton variant="outline" aria-label="Decrease" @click="items = Math.max(0, items - 1)"&gt;−&lt;/OcButton&gt;
+    &lt;OcButtonGroupText&gt;{{ items }} items&lt;/OcButtonGroupText&gt;
+    &lt;OcButton variant="outline" aria-label="Increase" @click="items++"&gt;+&lt;/OcButton&gt;
+  &lt;/OcButtonGroup&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-btn-group oc-btn-group--vertical" role="group" aria-label="Zoom"&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Zoom in&lt;/button&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Zoom out&lt;/button&gt;
-&lt;/div&gt;
-&lt;div class="oc-btn-group" role="group" aria-label="Quantity"&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button" aria-label="Decrease"&gt;−&lt;/button&gt;
-  &lt;span class="oc-btn-group-text"&gt;3 items&lt;/span&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button" aria-label="Increase"&gt;+&lt;/button&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button-group vertical label="Zoom"&gt;
+    &lt;x-oc::button variant="outline"&gt;Zoom in&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline"&gt;Zoom out&lt;/x-oc::button&gt;
+&lt;/x-oc::button-group&gt;
+&lt;x-oc::button-group label="Quantity"&gt;
+    &lt;x-oc::button variant="outline" aria-label="Decrease"&gt;−&lt;/x-oc::button&gt;
+    &lt;span class="oc-btn-group-text"&gt;3 items&lt;/span&gt;
+    &lt;x-oc::button variant="outline" aria-label="Increase"&gt;+&lt;/x-oc::button&gt;
+&lt;/x-oc::button-group&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class ButtonGroupVerticalAndWithText extends Component
+class ItemCount extends Component
 {
+    public int $items = 3;
+
+    public function decrease(): void
+    {
+        $this-&gt;items = max(0, $this-&gt;items - 1);
+    }
+
+    public function increase(): void
+    {
+        $this-&gt;items++;
+    }
+
     public function render()
     {
-        return view('livewire.button-group-vertical-and-with-text');
+        return view('livewire.item-count');
     }
 }
 
-{{-- resources/views/livewire/button-group-vertical-and-with-text.blade.php --}}
+{{-- resources/views/livewire/item-count.blade.php --}}
 &lt;div&gt;
-    &lt;div class="oc-btn-group oc-btn-group--vertical" role="group" aria-label="Zoom"&gt;
-      &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Zoom in&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Zoom out&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-btn-group" role="group" aria-label="Quantity"&gt;
-      &lt;button class="oc-btn oc-btn--outline" type="button" aria-label="Decrease"&gt;−&lt;/button&gt;
-      &lt;span class="oc-btn-group-text"&gt;3 items&lt;/span&gt;
-      &lt;button class="oc-btn oc-btn--outline" type="button" aria-label="Increase"&gt;+&lt;/button&gt;
-    &lt;/div&gt;
+    &lt;x-oc::button-group vertical label="Zoom"&gt;
+        &lt;x-oc::button variant="outline"&gt;Zoom in&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline"&gt;Zoom out&lt;/x-oc::button&gt;
+    &lt;/x-oc::button-group&gt;
+    &lt;x-oc::button-group label="Quantity"&gt;
+        &lt;x-oc::button variant="outline" aria-label="Decrease" wire:click="decrease"&gt;−&lt;/x-oc::button&gt;
+        &lt;span class="oc-btn-group-text"&gt;{{ $items }} items&lt;/span&gt;
+        &lt;x-oc::button variant="outline" aria-label="Increase" wire:click="increase"&gt;+&lt;/x-oc::button&gt;
+    &lt;/x-oc::button-group&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

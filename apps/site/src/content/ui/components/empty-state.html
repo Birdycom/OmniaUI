@@ -20,62 +20,62 @@
     <button class="oc-btn oc-btn--outline" type="button">Import</button>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-empty"&gt;
-      &lt;span className="oc-empty-icon" aria-hidden="true"&gt;+&lt;/span&gt;
-      &lt;h3 className="oc-empty-title"&gt;No contacts yet&lt;/h3&gt;
-      &lt;p className="oc-empty-text"&gt;Add your first contact to start tracking conversations and invoices.&lt;/p&gt;
-      &lt;div className="oc-empty-actions"&gt;
-        &lt;button className="oc-btn" type="button"&gt;New contact&lt;/button&gt;
-        &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Import&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-empty"&gt;
-    &lt;span class="oc-empty-icon" aria-hidden="true"&gt;+&lt;/span&gt;
-    &lt;h3 class="oc-empty-title"&gt;No contacts yet&lt;/h3&gt;
-    &lt;p class="oc-empty-text"&gt;Add your first contact to start tracking conversations and invoices.&lt;/p&gt;
-    &lt;div class="oc-empty-actions"&gt;
-      &lt;button class="oc-btn" type="button"&gt;New contact&lt;/button&gt;
-      &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Import&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-empty"&gt;
-  &lt;span class="oc-empty-icon" aria-hidden="true"&gt;+&lt;/span&gt;
-  &lt;h3 class="oc-empty-title"&gt;No contacts yet&lt;/h3&gt;
-  &lt;p class="oc-empty-text"&gt;Add your first contact to start tracking conversations and invoices.&lt;/p&gt;
-  &lt;div class="oc-empty-actions"&gt;
-    &lt;button class="oc-btn" type="button"&gt;New contact&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Import&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;EmptyState
+  icon="+"
+  title="No contacts yet"
+  description="Add your first contact to start tracking conversations and invoices."
+  actions={&lt;&gt;
+    &lt;Button onClick={create}&gt;New contact&lt;/Button&gt;
+    &lt;Button variant="outline" onClick={openImport}&gt;Import&lt;/Button&gt;
+  &lt;/&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcEmptyState icon="+" title="No contacts yet" text="Add your first contact to start tracking conversations and invoices."&gt;
+  &lt;template #actions&gt;
+    &lt;OcButton @click="create"&gt;New contact&lt;/OcButton&gt;
+    &lt;OcButton variant="outline" @click="openImport"&gt;Import&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcEmptyState&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::empty-state title="No contacts yet" text="Add your first contact to start tracking conversations and invoices."&gt;
+    &lt;x-oc::button href="/contacts/create"&gt;New contact&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline" href="/contacts/import"&gt;Import&lt;/x-oc::button&gt;
+&lt;/x-oc::empty-state&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class EmptyState extends Component
+class ContactList extends Component
 {
+    /** @var list&lt;array{name: string}&gt; */
+    public array $contacts = [];
+
+    public function create(): void
+    {
+        $this-&gt;redirect('/contacts/create', navigate: true);
+    }
+
+    public function import(): void
+    {
+        $this-&gt;redirect('/contacts/import', navigate: true);
+    }
+
     public function render()
     {
-        return view('livewire.empty-state');
+        return view('livewire.contact-list');
     }
 }
 
-{{-- resources/views/livewire/empty-state.blade.php --}}
-&lt;div class="oc-empty"&gt;
-  &lt;span class="oc-empty-icon" aria-hidden="true"&gt;+&lt;/span&gt;
-  &lt;h3 class="oc-empty-title"&gt;No contacts yet&lt;/h3&gt;
-  &lt;p class="oc-empty-text"&gt;Add your first contact to start tracking conversations and invoices.&lt;/p&gt;
-  &lt;div class="oc-empty-actions"&gt;
-    &lt;button class="oc-btn" type="button"&gt;New contact&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Import&lt;/button&gt;
-  &lt;/div&gt;
+{{-- resources/views/livewire/contact-list.blade.php --}}
+&lt;div&gt;
+    @forelse ($contacts as $contact)
+        &lt;p wire:key="contact-{{ $loop-&gt;index }}"&gt;{{ $contact['name'] }}&lt;/p&gt;
+    @empty
+        &lt;x-oc::empty-state title="No contacts yet" text="Add your first contact to start tracking conversations and invoices."&gt;
+            &lt;x-oc::button wire:click="create"&gt;New contact&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="outline" wire:click="import"&gt;Import&lt;/x-oc::button&gt;
+        &lt;/x-oc::empty-state&gt;
+    @endforelse
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -128,30 +128,38 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class EmptyStateLocked extends Component
+class LockedSteps extends Component
 {
+    public int $distance = 120;
+
+    public int $minutesLeft = 25;
+
+    public bool $reminder = false;
+
+    public function scan(): void
+    {
+        $this-&gt;redirect('/scan', navigate: true);
+    }
+
+    public function remind(): void
+    {
+        $this-&gt;reminder = true;
+    }
+
     public function render()
     {
-        return view('livewire.empty-state-locked');
+        return view('livewire.locked-steps');
     }
 }
 
-{{-- resources/views/livewire/empty-state-locked.blade.php --}}
+{{-- resources/views/livewire/locked-steps.blade.php --}}
 &lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1rem;inline-size:100%"&gt;
-  &lt;div class="oc-empty oc-empty--locked"&gt;
-    &lt;span class="oc-empty-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:lock-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-    &lt;h3 class="oc-empty-title"&gt;Walk into the zone&lt;/h3&gt;
-    &lt;p class="oc-empty-text"&gt;Step 3 opens when you are near the old gate.&lt;/p&gt;
-    &lt;span class="oc-empty-meta"&gt;120 m to go&lt;/span&gt;
-    &lt;div class="oc-empty-actions"&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Scan the code instead&lt;/button&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-empty oc-empty--locked"&gt;
-    &lt;span class="oc-empty-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:clock-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-    &lt;h3 class="oc-empty-title"&gt;Opens at 14:00&lt;/h3&gt;
-    &lt;p class="oc-empty-text"&gt;The final question is shown to every team at the same time.&lt;/p&gt;
-    &lt;span class="oc-empty-meta"&gt;in 25 minutes&lt;/span&gt;
-    &lt;div class="oc-empty-actions"&gt;&lt;button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"&gt;Remind me&lt;/button&gt;&lt;/div&gt;
-  &lt;/div&gt;
+    &lt;x-oc::empty-state locked title="Walk into the zone" text="Step 3 opens when you are near the old gate." :meta="$distance.' m to go'"&gt;
+        &lt;x-oc::button variant="outline" size="sm" wire:click="scan"&gt;Scan the code instead&lt;/x-oc::button&gt;
+    &lt;/x-oc::empty-state&gt;
+    &lt;x-oc::empty-state locked icon="mdi:clock-outline" title="Opens at 14:00" text="The final question is shown to every team at the same time." :meta="'in '.$minutesLeft.' minutes'"&gt;
+        &lt;x-oc::button variant="ghost" size="sm" wire:click="remind" :disabled="$reminder"&gt;{{ $reminder ? 'We will remind you' : 'Remind me' }}&lt;/x-oc::button&gt;
+    &lt;/x-oc::empty-state&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

@@ -363,31 +363,55 @@ class ShowcaseCodeWindowAndBrowserFrame extends Component
               <div class="oc-stat-strip__item"><span class="oc-stat-strip__value"><span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 4"></span></span><span class="oc-stat-strip__label">platforms: web, desktop, WordPress, npm</span></div>
               <div class="oc-stat-strip__item"><span class="oc-stat-strip__value">1</span><span class="oc-stat-strip__label">point of contact</span></div>
             </div>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { Counter } from "@birdycom/omniaui-react";
+
+const stats = [
+  { to: 25, suffix: "+", label: "years of IT experience" },
+  { to: 8, label: "own products and apps" },
+  { to: 4, label: "platforms: web, desktop, WordPress, npm" },
+];
 
 export function Example() {
+  // Counter counts up once the strip scrolls into view
   return (
     &lt;div className="oc-stat-strip w-full"&gt;
-      &lt;div className="oc-stat-strip__item"&gt;&lt;span className="oc-stat-strip__value"&gt;&lt;span className="oc-counter oc-counter--on-view" style={{ "--oc-counter-to": "25" } as CSSProperties} /&gt;&lt;/span&gt;&lt;span className="oc-stat-strip__suffix oc-stat-strip__value"&gt;+&lt;/span&gt;&lt;span className="oc-stat-strip__label"&gt;years of IT experience&lt;/span&gt;&lt;/div&gt;
-      &lt;div className="oc-stat-strip__item"&gt;&lt;span className="oc-stat-strip__value"&gt;&lt;span className="oc-counter oc-counter--on-view" style={{ "--oc-counter-to": "8" } as CSSProperties} /&gt;&lt;/span&gt;&lt;span className="oc-stat-strip__label"&gt;own products and apps&lt;/span&gt;&lt;/div&gt;
-      &lt;div className="oc-stat-strip__item"&gt;&lt;span className="oc-stat-strip__value"&gt;&lt;span className="oc-counter oc-counter--on-view" style={{ "--oc-counter-to": "4" } as CSSProperties} /&gt;&lt;/span&gt;&lt;span className="oc-stat-strip__label"&gt;platforms: web, desktop, WordPress, npm&lt;/span&gt;&lt;/div&gt;
+      {stats.map((s) =&gt; (
+        &lt;div key={s.label} className="oc-stat-strip__item"&gt;
+          &lt;span className="oc-stat-strip__value"&gt;&lt;Counter to={s.to} /&gt;&lt;/span&gt;
+          {s.suffix &amp;&amp; &lt;span className="oc-stat-strip__suffix oc-stat-strip__value"&gt;{s.suffix}&lt;/span&gt;}
+          &lt;span className="oc-stat-strip__label"&gt;{s.label}&lt;/span&gt;
+        &lt;/div&gt;
+      ))}
       &lt;div className="oc-stat-strip__item"&gt;&lt;span className="oc-stat-strip__value"&gt;1&lt;/span&gt;&lt;span className="oc-stat-strip__label"&gt;point of contact&lt;/span&gt;&lt;/div&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCounter } from "@birdycom/omniaui-vue";
+
+const stats = [
+  { to: 25, suffix: "+", label: "years of IT experience" },
+  { to: 8, label: "own products and apps" },
+  { to: 4, label: "platforms: web, desktop, WordPress, npm" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- OcCounter counts up once the strip scrolls into view --&gt;
   &lt;div class="oc-stat-strip w-full"&gt;
-    &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 25"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__suffix oc-stat-strip__value"&gt;+&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;years of IT experience&lt;/span&gt;&lt;/div&gt;
-    &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 8"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;own products and apps&lt;/span&gt;&lt;/div&gt;
-    &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 4"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;platforms: web, desktop, WordPress, npm&lt;/span&gt;&lt;/div&gt;
+    &lt;div v-for="s in stats" :key="s.label" class="oc-stat-strip__item"&gt;
+      &lt;span class="oc-stat-strip__value"&gt;&lt;OcCounter :to="s.to" /&gt;&lt;/span&gt;
+      &lt;span v-if="s.suffix" class="oc-stat-strip__suffix oc-stat-strip__value"&gt;{{ s.suffix }}&lt;/span&gt;
+      &lt;span class="oc-stat-strip__label"&gt;{{ s.label }}&lt;/span&gt;
+    &lt;/div&gt;
     &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;1&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;point of contact&lt;/span&gt;&lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-stat-strip w-full"&gt;
-  &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 25"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__suffix oc-stat-strip__value"&gt;+&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;years of IT experience&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 8"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;own products and apps&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 4"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;platforms: web, desktop, WordPress, npm&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;1&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;point of contact&lt;/span&gt;&lt;/div&gt;
+    &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;x-oc::counter :to="25" /&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__suffix oc-stat-strip__value"&gt;+&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;years of IT experience&lt;/span&gt;&lt;/div&gt;
+    &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;x-oc::counter :to="8" /&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;own products and apps&lt;/span&gt;&lt;/div&gt;
+    &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;x-oc::counter :to="4" /&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;platforms: web, desktop, WordPress, npm&lt;/span&gt;&lt;/div&gt;
+    &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;1&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;point of contact&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -404,11 +428,13 @@ class ShowcaseStatStrip extends Component
 }
 
 {{-- resources/views/livewire/showcase-stat-strip.blade.php --}}
-&lt;div class="oc-stat-strip w-full"&gt;
-  &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 25"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__suffix oc-stat-strip__value"&gt;+&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;years of IT experience&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 8"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;own products and apps&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;span class="oc-counter oc-counter--on-view" style="--oc-counter-to: 4"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;platforms: web, desktop, WordPress, npm&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;1&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;point of contact&lt;/span&gt;&lt;/div&gt;
+&lt;div&gt;
+    &lt;div class="oc-stat-strip w-full"&gt;
+        &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;x-oc::counter :to="25" /&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__suffix oc-stat-strip__value"&gt;+&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;years of IT experience&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;x-oc::counter :to="8" /&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;own products and apps&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;&lt;x-oc::counter :to="4" /&gt;&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;platforms: web, desktop, WordPress, npm&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="oc-stat-strip__item"&gt;&lt;span class="oc-stat-strip__value"&gt;1&lt;/span&gt;&lt;span class="oc-stat-strip__label"&gt;point of contact&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="stat-band" class="oc-section-content__title mt-2">Key figures over the full width <span class="oc-badge-version">v0.13.0</span></h3><p class="oc-section-content__desc">An <code>.oc-band</code> runs over the full width of the page with a line above and below; the figures stay in the <code>.oc-container</code>. <code>.oc-stat-strip--plain</code> drops the strip's own lines and background. With four figures the strip shows two rows of two up to 960px.</p>
@@ -554,7 +580,9 @@ class ShowcaseSteps extends Component
               <ul class="oc-tag-list oc-accent--violet"><li>PHP</li><li>MySQL</li><li>OmniaCSS</li></ul>
               <ul class="oc-check-list"><li>No JavaScript needed</li><li>Light and dark mode</li><li>Omnia colors only</li></ul>
             </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { FactList } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
     &lt;div className="oc-split w-full align-items-start"&gt;
       &lt;ol className="oc-timeline"&gt;
@@ -562,45 +590,37 @@ class ShowcaseSteps extends Component
         &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
       &lt;/ol&gt;
-      &lt;dl className="oc-fact-list"&gt;
-        &lt;div&gt;&lt;dt&gt;Platform&lt;/dt&gt;&lt;dd&gt;Web&lt;/dd&gt;&lt;/div&gt;
-        &lt;div&gt;&lt;dt&gt;Language&lt;/dt&gt;&lt;dd&gt;PHP 8.4&lt;/dd&gt;&lt;/div&gt;
-        &lt;div&gt;&lt;dt&gt;License&lt;/dt&gt;&lt;dd&gt;MIT&lt;/dd&gt;&lt;/div&gt;
-      &lt;/dl&gt;
+      &lt;FactList items={[{ label: "Platform", value: "Web" }, { label: "Language", value: "PHP 8.4" }, { label: "License", value: "MIT" }]} /&gt;
       &lt;ul className="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
       &lt;ul className="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcFactList } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-split w-full align-items-start"&gt;
     &lt;ol class="oc-timeline"&gt;
       &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
       &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
       &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
     &lt;/ol&gt;
-    &lt;dl class="oc-fact-list"&gt;
-      &lt;div&gt;&lt;dt&gt;Platform&lt;/dt&gt;&lt;dd&gt;Web&lt;/dd&gt;&lt;/div&gt;
-      &lt;div&gt;&lt;dt&gt;Language&lt;/dt&gt;&lt;dd&gt;PHP 8.4&lt;/dd&gt;&lt;/div&gt;
-      &lt;div&gt;&lt;dt&gt;License&lt;/dt&gt;&lt;dd&gt;MIT&lt;/dd&gt;&lt;/div&gt;
-    &lt;/dl&gt;
+    &lt;OcFactList :items="[{ label: 'Platform', value: 'Web' }, { label: 'Language', value: 'PHP 8.4' }, { label: 'License', value: 'MIT' }]" /&gt;
     &lt;ul class="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
     &lt;ul class="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-split w-full align-items-start"&gt;
-  &lt;ol class="oc-timeline"&gt;
-    &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
-  &lt;/ol&gt;
-  &lt;dl class="oc-fact-list"&gt;
-    &lt;div&gt;&lt;dt&gt;Platform&lt;/dt&gt;&lt;dd&gt;Web&lt;/dd&gt;&lt;/div&gt;
-    &lt;div&gt;&lt;dt&gt;Language&lt;/dt&gt;&lt;dd&gt;PHP 8.4&lt;/dd&gt;&lt;/div&gt;
-    &lt;div&gt;&lt;dt&gt;License&lt;/dt&gt;&lt;dd&gt;MIT&lt;/dd&gt;&lt;/div&gt;
-  &lt;/dl&gt;
-  &lt;ul class="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
-  &lt;ul class="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
+    &lt;ol class="oc-timeline"&gt;
+        &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;x-oc::fact-list :items="['Platform' =&gt; 'Web', 'Language' =&gt; 'PHP 8.4', 'License' =&gt; 'MIT']" /&gt;
+    &lt;ul class="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
+    &lt;ul class="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -617,19 +637,17 @@ class ShowcaseTimelineFactListTagListAnd extends Component
 }
 
 {{-- resources/views/livewire/showcase-timeline-fact-list-tag-list-and.blade.php --}}
-&lt;div class="oc-split w-full align-items-start"&gt;
-  &lt;ol class="oc-timeline"&gt;
-    &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
-  &lt;/ol&gt;
-  &lt;dl class="oc-fact-list"&gt;
-    &lt;div&gt;&lt;dt&gt;Platform&lt;/dt&gt;&lt;dd&gt;Web&lt;/dd&gt;&lt;/div&gt;
-    &lt;div&gt;&lt;dt&gt;Language&lt;/dt&gt;&lt;dd&gt;PHP 8.4&lt;/dd&gt;&lt;/div&gt;
-    &lt;div&gt;&lt;dt&gt;License&lt;/dt&gt;&lt;dd&gt;MIT&lt;/dd&gt;&lt;/div&gt;
-  &lt;/dl&gt;
-  &lt;ul class="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
-  &lt;ul class="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
+&lt;div&gt;
+    &lt;div class="oc-split w-full align-items-start"&gt;
+        &lt;ol class="oc-timeline"&gt;
+            &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
+        &lt;/ol&gt;
+        &lt;x-oc::fact-list :items="['Platform' =&gt; 'Web', 'Language' =&gt; 'PHP 8.4', 'License' =&gt; 'MIT']" /&gt;
+        &lt;ul class="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
+        &lt;ul class="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <oc-demo title="Marquee (hover to pause)">
@@ -639,30 +657,22 @@ class ShowcaseTimelineFactListTagListAnd extends Component
                 <span class="oc-marquee__item" aria-hidden="true">anchor positioning</span><span class="oc-marquee__item" aria-hidden="true">view transitions</span><span class="oc-marquee__item" aria-hidden="true">light-dark()</span><span class="oc-marquee__item" aria-hidden="true">@starting-style</span><span class="oc-marquee__item" aria-hidden="true">popover</span>
               </div>
             </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-marquee w-full"&gt;
-      &lt;div className="oc-marquee__track"&gt;
-        &lt;span className="oc-marquee__item"&gt;anchor positioning&lt;/span&gt;&lt;span className="oc-marquee__item"&gt;view transitions&lt;/span&gt;&lt;span className="oc-marquee__item"&gt;light-dark()&lt;/span&gt;&lt;span className="oc-marquee__item"&gt;@starting-style&lt;/span&gt;&lt;span className="oc-marquee__item"&gt;popover&lt;/span&gt;{" "}
-        &lt;span className="oc-marquee__item" aria-hidden="true"&gt;anchor positioning&lt;/span&gt;&lt;span className="oc-marquee__item" aria-hidden="true"&gt;view transitions&lt;/span&gt;&lt;span className="oc-marquee__item" aria-hidden="true"&gt;light-dark()&lt;/span&gt;&lt;span className="oc-marquee__item" aria-hidden="true"&gt;@starting-style&lt;/span&gt;&lt;span className="oc-marquee__item" aria-hidden="true"&gt;popover&lt;/span&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
+<oc-code lang="tsx">import { Marquee } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // the items are rendered twice (the copy is aria-hidden); hover or focus pauses it
+  return &lt;Marquee className="w-full" items={["anchor positioning", "view transitions", "light-dark()", "@starting-style", "popover"]} /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-marquee w-full"&gt;
-    &lt;div class="oc-marquee__track"&gt;
-      &lt;span class="oc-marquee__item"&gt;anchor positioning&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;view transitions&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;light-dark()&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;@starting-style&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;popover&lt;/span&gt;
-      &lt;span class="oc-marquee__item" aria-hidden="true"&gt;anchor positioning&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;view transitions&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;light-dark()&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;@starting-style&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;popover&lt;/span&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcMarquee } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- the items are rendered twice (the copy is aria-hidden); hover or focus pauses it --&gt;
+  &lt;OcMarquee class="w-full" :items="['anchor positioning', 'view transitions', 'light-dark()', '@starting-style', 'popover']" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-marquee w-full"&gt;
-  &lt;div class="oc-marquee__track"&gt;
-    &lt;span class="oc-marquee__item"&gt;anchor positioning&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;view transitions&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;light-dark()&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;@starting-style&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;popover&lt;/span&gt;
-    &lt;span class="oc-marquee__item" aria-hidden="true"&gt;anchor positioning&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;view transitions&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;light-dark()&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;@starting-style&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;popover&lt;/span&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- the items are rendered twice (the copy is aria-hidden); hover or focus pauses it --}}
+&lt;x-oc::marquee class="w-full" :items="['anchor positioning', 'view transitions', 'light-dark()', '@starting-style', 'popover']" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -678,11 +688,9 @@ class ShowcaseMarqueeHoverToPause extends Component
 }
 
 {{-- resources/views/livewire/showcase-marquee-hover-to-pause.blade.php --}}
-&lt;div class="oc-marquee w-full"&gt;
-  &lt;div class="oc-marquee__track"&gt;
-    &lt;span class="oc-marquee__item"&gt;anchor positioning&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;view transitions&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;light-dark()&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;@starting-style&lt;/span&gt;&lt;span class="oc-marquee__item"&gt;popover&lt;/span&gt;
-    &lt;span class="oc-marquee__item" aria-hidden="true"&gt;anchor positioning&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;view transitions&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;light-dark()&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;@starting-style&lt;/span&gt;&lt;span class="oc-marquee__item" aria-hidden="true"&gt;popover&lt;/span&gt;
-  &lt;/div&gt;
+&lt;div&gt;
+    {{-- the items are rendered twice (the copy is aria-hidden); hover or focus pauses it --}}
+    &lt;x-oc::marquee class="w-full" :items="['anchor positioning', 'view transitions', 'light-dark()', '@starting-style', 'popover']" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="backdrop" class="oc-section-content__title mt-2">Backdrop &amp; reveal on scroll</h3><p class="oc-section-content__desc"><code>.oc-backdrop</code> paints slowly drifting color blobs and a fine grid behind the page (<code>.oc-backdrop--local</code> keeps it inside a section). <code>.oc-reveal</code> slides elements in as they enter the viewport using a scroll-driven animation; without support they are simply visible.</p>

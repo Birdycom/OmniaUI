@@ -34,106 +34,81 @@
     <span class="oc-filter-counts-hint">Everything together</span>
   </label>
 </fieldset>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;fieldset className="oc-filter-counts" aria-label="Show transactions"&gt;
-      &lt;label className="oc-filter-counts-item oc-filter-counts-item--success"&gt;
-        &lt;input type="radio" name="view" value="active" defaultChecked /&gt;
-        &lt;span className="oc-filter-counts-value"&gt;128&lt;/span&gt;{" "}
-        &lt;span className="oc-filter-counts-label"&gt;Active&lt;/span&gt;{" "}
-        &lt;span className="oc-filter-counts-hint"&gt;Visible in reports&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label className="oc-filter-counts-item oc-filter-counts-item--destructive"&gt;
-        &lt;input type="radio" name="view" value="deleted" /&gt;
-        &lt;span className="oc-filter-counts-value"&gt;6&lt;/span&gt;{" "}
-        &lt;span className="oc-filter-counts-label"&gt;Deleted&lt;/span&gt;{" "}
-        &lt;span className="oc-filter-counts-hint"&gt;Can be restored&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label className="oc-filter-counts-item"&gt;
-        &lt;input type="radio" name="view" value="all" /&gt;
-        &lt;span className="oc-filter-counts-value"&gt;134&lt;/span&gt;{" "}
-        &lt;span className="oc-filter-counts-label"&gt;All&lt;/span&gt;{" "}
-        &lt;span className="oc-filter-counts-hint"&gt;Everything together&lt;/span&gt;
-      &lt;/label&gt;
-    &lt;/fieldset&gt;
-  );
+<oc-code lang="tsx">import { useState } from "react";
+import { FilterCounts } from "@birdycom/omniaui-react";
+import type { FilterCountsOption } from "@birdycom/omniaui-react";
+
+const options: FilterCountsOption[] = [
+  { value: "active", label: "Active", count: 128, hint: "Visible in reports", tone: "success" },
+  { value: "deleted", label: "Deleted", count: 6, hint: "Can be restored", tone: "destructive" },
+  { value: "all", label: "All", count: 134, hint: "Everything together" },
+];
+
+export function Example() {
+  const [view, setView] = useState("active");
+  return &lt;FilterCounts name="view" aria-label="Show transactions" options={options} value={view} onChange={setView} /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;fieldset class="oc-filter-counts" aria-label="Show transactions"&gt;
-    &lt;label class="oc-filter-counts-item oc-filter-counts-item--success"&gt;
-      &lt;input type="radio" name="view" value="active" checked /&gt;
-      &lt;span class="oc-filter-counts-value"&gt;128&lt;/span&gt;
-      &lt;span class="oc-filter-counts-label"&gt;Active&lt;/span&gt;
-      &lt;span class="oc-filter-counts-hint"&gt;Visible in reports&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-filter-counts-item oc-filter-counts-item--destructive"&gt;
-      &lt;input type="radio" name="view" value="deleted" /&gt;
-      &lt;span class="oc-filter-counts-value"&gt;6&lt;/span&gt;
-      &lt;span class="oc-filter-counts-label"&gt;Deleted&lt;/span&gt;
-      &lt;span class="oc-filter-counts-hint"&gt;Can be restored&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-filter-counts-item"&gt;
-      &lt;input type="radio" name="view" value="all" /&gt;
-      &lt;span class="oc-filter-counts-value"&gt;134&lt;/span&gt;
-      &lt;span class="oc-filter-counts-label"&gt;All&lt;/span&gt;
-      &lt;span class="oc-filter-counts-hint"&gt;Everything together&lt;/span&gt;
-    &lt;/label&gt;
-  &lt;/fieldset&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFilterCounts } from '@birdycom/omniaui-vue'
+import type { FilterCountsItem } from '@birdycom/omniaui-vue'
+
+const options: FilterCountsItem[] = [
+  { value: 'active', label: 'Active', count: 128, hint: 'Visible in reports', tone: 'success' },
+  { value: 'deleted', label: 'Deleted', count: 6, hint: 'Can be restored', tone: 'destructive' },
+  { value: 'all', label: 'All', count: 134, hint: 'Everything together' },
+]
+const view = ref('active')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFilterCounts v-model="view" name="view" label="Show transactions" :options="options" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;fieldset class="oc-filter-counts" aria-label="Show transactions"&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--success"&gt;
-    &lt;input type="radio" name="view" value="active" checked&gt;
-    &lt;span class="oc-filter-counts-value"&gt;128&lt;/span&gt;
-    &lt;span class="oc-filter-counts-label"&gt;Active&lt;/span&gt;
-    &lt;span class="oc-filter-counts-hint"&gt;Visible in reports&lt;/span&gt;
-  &lt;/label&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--destructive"&gt;
-    &lt;input type="radio" name="view" value="deleted"&gt;
-    &lt;span class="oc-filter-counts-value"&gt;6&lt;/span&gt;
-    &lt;span class="oc-filter-counts-label"&gt;Deleted&lt;/span&gt;
-    &lt;span class="oc-filter-counts-hint"&gt;Can be restored&lt;/span&gt;
-  &lt;/label&gt;
-  &lt;label class="oc-filter-counts-item"&gt;
-    &lt;input type="radio" name="view" value="all"&gt;
-    &lt;span class="oc-filter-counts-value"&gt;134&lt;/span&gt;
-    &lt;span class="oc-filter-counts-label"&gt;All&lt;/span&gt;
-    &lt;span class="oc-filter-counts-hint"&gt;Everything together&lt;/span&gt;
-  &lt;/label&gt;
-&lt;/fieldset&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::filter-counts
+    name="view"
+    label="Show transactions"
+    :value="request('view', 'active')"
+    :options="[
+        ['value' =&gt; 'active', 'label' =&gt; 'Active', 'count' =&gt; 128, 'hint' =&gt; 'Visible in reports', 'tone' =&gt; 'success'],
+        ['value' =&gt; 'deleted', 'label' =&gt; 'Deleted', 'count' =&gt; 6, 'hint' =&gt; 'Can be restored', 'tone' =&gt; 'destructive'],
+        ['value' =&gt; 'all', 'label' =&gt; 'All', 'count' =&gt; 134, 'hint' =&gt; 'Everything together'],
+    ]"
+/&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class FilterCountsFilterTiles extends Component
+class TransactionFilter extends Component
 {
+    public string $view = 'active';
+
+    public array $options = [
+        ['value' =&gt; 'active', 'label' =&gt; 'Active', 'count' =&gt; 128, 'hint' =&gt; 'Visible in reports', 'tone' =&gt; 'success'],
+        ['value' =&gt; 'deleted', 'label' =&gt; 'Deleted', 'count' =&gt; 6, 'hint' =&gt; 'Can be restored', 'tone' =&gt; 'destructive'],
+        ['value' =&gt; 'all', 'label' =&gt; 'All', 'count' =&gt; 134, 'hint' =&gt; 'Everything together'],
+    ];
+
     public function render()
     {
-        return view('livewire.filter-counts-filter-tiles');
+        return view('livewire.transaction-filter');
     }
 }
 
-{{-- resources/views/livewire/filter-counts-filter-tiles.blade.php --}}
+{{-- resources/views/livewire/transaction-filter.blade.php --}}
+{{-- wire:model goes on the radios, so the tiles are written out (&lt;x-oc::filter-counts&gt; passes attributes to the fieldset) --}}
 &lt;fieldset class="oc-filter-counts" aria-label="Show transactions"&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--success"&gt;
-    &lt;input type="radio" name="view" value="active" checked&gt;
-    &lt;span class="oc-filter-counts-value"&gt;128&lt;/span&gt;
-    &lt;span class="oc-filter-counts-label"&gt;Active&lt;/span&gt;
-    &lt;span class="oc-filter-counts-hint"&gt;Visible in reports&lt;/span&gt;
-  &lt;/label&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--destructive"&gt;
-    &lt;input type="radio" name="view" value="deleted"&gt;
-    &lt;span class="oc-filter-counts-value"&gt;6&lt;/span&gt;
-    &lt;span class="oc-filter-counts-label"&gt;Deleted&lt;/span&gt;
-    &lt;span class="oc-filter-counts-hint"&gt;Can be restored&lt;/span&gt;
-  &lt;/label&gt;
-  &lt;label class="oc-filter-counts-item"&gt;
-    &lt;input type="radio" name="view" value="all"&gt;
-    &lt;span class="oc-filter-counts-value"&gt;134&lt;/span&gt;
-    &lt;span class="oc-filter-counts-label"&gt;All&lt;/span&gt;
-    &lt;span class="oc-filter-counts-hint"&gt;Everything together&lt;/span&gt;
-  &lt;/label&gt;
+    @foreach ($options as $option)
+        &lt;label @class(['oc-filter-counts-item', 'oc-filter-counts-item--'.($option['tone'] ?? '') =&gt; isset($option['tone'])])&gt;
+            &lt;input type="radio" value="{{ $option['value'] }}" wire:model.live="view"&gt;
+            &lt;span class="oc-filter-counts-value"&gt;{{ $option['count'] }}&lt;/span&gt;
+            &lt;span class="oc-filter-counts-label"&gt;{{ $option['label'] }}&lt;/span&gt;
+            @isset($option['hint'])
+                &lt;span class="oc-filter-counts-hint"&gt;{{ $option['hint'] }}&lt;/span&gt;
+            @endisset
+        &lt;/label&gt;
+    @endforeach
 &lt;/fieldset&gt;</oc-code>
           </oc-demo>
 
@@ -146,50 +121,83 @@ class FilterCountsFilterTiles extends Component
   <label class="oc-filter-counts-item oc-filter-counts-item--destructive"><input type="radio" name="inv" value="late"><span class="oc-filter-counts-value">3</span><span class="oc-filter-counts-label">Overdue</span></label>
   <label class="oc-filter-counts-item oc-filter-counts-item--muted"><input type="radio" name="inv" value="draft" disabled><span class="oc-filter-counts-value">0</span><span class="oc-filter-counts-label">Draft</span></label>
 </fieldset>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;fieldset className="oc-filter-counts oc-filter-counts--compact" aria-label="Show invoices"&gt;
-      &lt;label className="oc-filter-counts-item"&gt;&lt;input type="radio" name="inv" value="open" defaultChecked /&gt;&lt;span className="oc-filter-counts-value"&gt;12&lt;/span&gt;&lt;span className="oc-filter-counts-label"&gt;Open&lt;/span&gt;&lt;/label&gt;
-      &lt;label className="oc-filter-counts-item oc-filter-counts-item--success"&gt;&lt;input type="radio" name="inv" value="paid" /&gt;&lt;span className="oc-filter-counts-value"&gt;87&lt;/span&gt;&lt;span className="oc-filter-counts-label"&gt;Paid&lt;/span&gt;&lt;/label&gt;
-      &lt;label className="oc-filter-counts-item oc-filter-counts-item--destructive"&gt;&lt;input type="radio" name="inv" value="late" /&gt;&lt;span className="oc-filter-counts-value"&gt;3&lt;/span&gt;&lt;span className="oc-filter-counts-label"&gt;Overdue&lt;/span&gt;&lt;/label&gt;
-      &lt;label className="oc-filter-counts-item oc-filter-counts-item--muted"&gt;&lt;input type="radio" name="inv" value="draft" disabled /&gt;&lt;span className="oc-filter-counts-value"&gt;0&lt;/span&gt;&lt;span className="oc-filter-counts-label"&gt;Draft&lt;/span&gt;&lt;/label&gt;
-    &lt;/fieldset&gt;
-  );
+<oc-code lang="tsx">import { useState } from "react";
+import { FilterCounts } from "@birdycom/omniaui-react";
+import type { FilterCountsOption } from "@birdycom/omniaui-react";
+
+const options: FilterCountsOption[] = [
+  { value: "open", label: "Open", count: 12 },
+  { value: "paid", label: "Paid", count: 87, tone: "success" },
+  { value: "late", label: "Overdue", count: 3, tone: "destructive" },
+  { value: "draft", label: "Draft", count: 0, tone: "muted", disabled: true },
+];
+
+export function Example() {
+  const [status, setStatus] = useState("open");
+  return &lt;FilterCounts compact name="inv" aria-label="Show invoices" options={options} value={status} onChange={setStatus} /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;fieldset class="oc-filter-counts oc-filter-counts--compact" aria-label="Show invoices"&gt;
-    &lt;label class="oc-filter-counts-item"&gt;&lt;input type="radio" name="inv" value="open" checked /&gt;&lt;span class="oc-filter-counts-value"&gt;12&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Open&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-filter-counts-item oc-filter-counts-item--success"&gt;&lt;input type="radio" name="inv" value="paid" /&gt;&lt;span class="oc-filter-counts-value"&gt;87&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Paid&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-filter-counts-item oc-filter-counts-item--destructive"&gt;&lt;input type="radio" name="inv" value="late" /&gt;&lt;span class="oc-filter-counts-value"&gt;3&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Overdue&lt;/span&gt;&lt;/label&gt;
-    &lt;label class="oc-filter-counts-item oc-filter-counts-item--muted"&gt;&lt;input type="radio" name="inv" value="draft" disabled /&gt;&lt;span class="oc-filter-counts-value"&gt;0&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Draft&lt;/span&gt;&lt;/label&gt;
-  &lt;/fieldset&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFilterCounts } from '@birdycom/omniaui-vue'
+import type { FilterCountsItem } from '@birdycom/omniaui-vue'
+
+const options: FilterCountsItem[] = [
+  { value: 'open', label: 'Open', count: 12 },
+  { value: 'paid', label: 'Paid', count: 87, tone: 'success' },
+  { value: 'late', label: 'Overdue', count: 3, tone: 'destructive' },
+  { value: 'draft', label: 'Draft', count: 0, tone: 'muted', disabled: true },
+]
+const status = ref('open')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFilterCounts v-model="status" compact name="inv" label="Show invoices" :options="options" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;fieldset class="oc-filter-counts oc-filter-counts--compact" aria-label="Show invoices"&gt;
-  &lt;label class="oc-filter-counts-item"&gt;&lt;input type="radio" name="inv" value="open" checked&gt;&lt;span class="oc-filter-counts-value"&gt;12&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Open&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--success"&gt;&lt;input type="radio" name="inv" value="paid"&gt;&lt;span class="oc-filter-counts-value"&gt;87&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Paid&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--destructive"&gt;&lt;input type="radio" name="inv" value="late"&gt;&lt;span class="oc-filter-counts-value"&gt;3&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Overdue&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--muted"&gt;&lt;input type="radio" name="inv" value="draft" disabled&gt;&lt;span class="oc-filter-counts-value"&gt;0&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Draft&lt;/span&gt;&lt;/label&gt;
-&lt;/fieldset&gt;</oc-code>
+<oc-code lang="blade">{{-- &lt;x-oc::filter-counts&gt; has no disabled tile: Draft (0) is left out --}}
+&lt;x-oc::filter-counts
+    name="inv"
+    label="Show invoices"
+    compact
+    :value="request('inv', 'open')"
+    :options="[
+        ['value' =&gt; 'open', 'label' =&gt; 'Open', 'count' =&gt; 12],
+        ['value' =&gt; 'paid', 'label' =&gt; 'Paid', 'count' =&gt; 87, 'tone' =&gt; 'success'],
+        ['value' =&gt; 'late', 'label' =&gt; 'Overdue', 'count' =&gt; 3, 'tone' =&gt; 'destructive'],
+    ]"
+/&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class FilterCountsCompact extends Component
+class InvoiceFilter extends Component
 {
+    public string $status = 'open';
+
+    public array $options = [
+        ['value' =&gt; 'open', 'label' =&gt; 'Open', 'count' =&gt; 12],
+        ['value' =&gt; 'paid', 'label' =&gt; 'Paid', 'count' =&gt; 87, 'tone' =&gt; 'success'],
+        ['value' =&gt; 'late', 'label' =&gt; 'Overdue', 'count' =&gt; 3, 'tone' =&gt; 'destructive'],
+        ['value' =&gt; 'draft', 'label' =&gt; 'Draft', 'count' =&gt; 0, 'tone' =&gt; 'muted'],
+    ];
+
     public function render()
     {
-        return view('livewire.filter-counts-compact');
+        return view('livewire.invoice-filter');
     }
 }
 
-{{-- resources/views/livewire/filter-counts-compact.blade.php --}}
+{{-- resources/views/livewire/invoice-filter.blade.php --}}
+{{-- wire:model goes on the radios, so the tiles are written out (&lt;x-oc::filter-counts&gt; passes attributes to the fieldset) --}}
 &lt;fieldset class="oc-filter-counts oc-filter-counts--compact" aria-label="Show invoices"&gt;
-  &lt;label class="oc-filter-counts-item"&gt;&lt;input type="radio" name="inv" value="open" checked&gt;&lt;span class="oc-filter-counts-value"&gt;12&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Open&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--success"&gt;&lt;input type="radio" name="inv" value="paid"&gt;&lt;span class="oc-filter-counts-value"&gt;87&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Paid&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--destructive"&gt;&lt;input type="radio" name="inv" value="late"&gt;&lt;span class="oc-filter-counts-value"&gt;3&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Overdue&lt;/span&gt;&lt;/label&gt;
-  &lt;label class="oc-filter-counts-item oc-filter-counts-item--muted"&gt;&lt;input type="radio" name="inv" value="draft" disabled&gt;&lt;span class="oc-filter-counts-value"&gt;0&lt;/span&gt;&lt;span class="oc-filter-counts-label"&gt;Draft&lt;/span&gt;&lt;/label&gt;
+    @foreach ($options as $option)
+        &lt;label @class(['oc-filter-counts-item', 'oc-filter-counts-item--'.($option['tone'] ?? '') =&gt; isset($option['tone'])])&gt;
+            &lt;input type="radio" value="{{ $option['value'] }}" wire:model.live="status" @disabled($option['count'] === 0)&gt;
+            &lt;span class="oc-filter-counts-value"&gt;{{ $option['count'] }}&lt;/span&gt;
+            &lt;span class="oc-filter-counts-label"&gt;{{ $option['label'] }}&lt;/span&gt;
+        &lt;/label&gt;
+    @endforeach
 &lt;/fieldset&gt;</oc-code>
           </oc-demo>
         </div>

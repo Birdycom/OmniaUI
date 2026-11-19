@@ -49,54 +49,97 @@ document.addEventListener("click", async (e) => {
     setTimeout(() =&gt; { b.classList.remove("is-copied"); b.textContent = "Copy"; }, 1500);
   });
 &lt;/script&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useRef, useState } from "react";
+
+export function Example() {
+  // no CodeWindow component: the frame is markup, the copy button a few lines of state
+  const code = useRef&lt;HTMLPreElement&gt;(null);
+  const [copied, setCopied] = useState(false);
+  const copy = async () =&gt; {
+    await navigator.clipboard.writeText(code.current?.textContent ?? "");
+    setCopied(true);
+    setTimeout(() =&gt; setCopied(false), 1500);
+  };
   return (
-    &lt;&gt;
-      &lt;link rel="stylesheet" href="omnia.css" /&gt;
-      {/* A primary button with a webicon */}
-      &lt;button className="oc-btn" type="button"&gt;
-        &lt;iconify-icon icon="mdi:content-save-outline" /&gt;{" "}
-        Save
-      &lt;/button&gt;
-    &lt;/&gt;
+    &lt;div className="oc-code-window"&gt;
+      &lt;div className="oc-code-window__bar"&gt;
+        &lt;i /&gt;&lt;i /&gt;&lt;i /&gt;
+        &lt;span className="oc-code-window__title"&gt;index.html&lt;/span&gt;
+        &lt;button type="button" className={`oc-code-copy${copied ? " is-copied" : ""}`} onClick={copy}&gt;{copied ? "Copied" : "Copy"}&lt;/button&gt;
+      &lt;/div&gt;
+      {/* Highlighted code: an .oc-code-block (or pre.code-preview) with .hl-tag, .hl-attr, .hl-string … spans */}
+      &lt;div className="oc-code-block"&gt;
+        &lt;pre className="code-preview" ref={code}&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;link rel="stylesheet" href="omnia.css" /&gt;
-  &lt;!-- A primary button with a webicon --&gt;
-  &lt;button class="oc-btn" type="button"&gt;
-    &lt;iconify-icon icon="mdi:content-save-outline"&gt;&lt;/iconify-icon&gt;
-    Save
-  &lt;/button&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+
+// no OcCodeWindow component: the frame is markup, the copy button a few lines of state
+const code = ref&lt;HTMLPreElement | null&gt;(null);
+const copied = ref(false);
+async function copy() {
+  await navigator.clipboard.writeText(code.value?.textContent ?? "");
+  copied.value = true;
+  setTimeout(() =&gt; (copied.value = false), 1500);
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-code-window"&gt;
+    &lt;div class="oc-code-window__bar"&gt;
+      &lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;
+      &lt;span class="oc-code-window__title"&gt;index.html&lt;/span&gt;
+      &lt;button type="button" :class="['oc-code-copy', copied &amp;&amp; 'is-copied']" @click="copy"&gt;{{ copied ? "Copied" : "Copy" }}&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;!-- Highlighted code: an .oc-code-block (or pre.code-preview) with .hl-tag, .hl-attr, .hl-string … spans --&gt;
+    &lt;div class="oc-code-block"&gt;
+      &lt;pre ref="code" class="code-preview"&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;link rel="stylesheet" href="omnia.css"&gt;
-&lt;!-- A primary button with a webicon --&gt;
-&lt;button class="oc-btn" type="button"&gt;
-  &lt;iconify-icon icon="mdi:content-save-outline"&gt;&lt;/iconify-icon&gt;
-  Save
-&lt;/button&gt;</oc-code>
+<oc-code lang="blade">{{-- no Blade component: the frame is markup; the copy button needs the script from the HTML tab --}}
+&lt;div class="oc-code-window"&gt;
+    &lt;div class="oc-code-window__bar"&gt;
+        &lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;
+        &lt;span class="oc-code-window__title"&gt;index.html&lt;/span&gt;
+        &lt;button type="button" class="oc-code-copy" data-copy-target="#sample .code-preview"&gt;Copy&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-code-block" id="sample"&gt;
+        &lt;pre class="code-preview"&gt;&lt;code&gt;{{ $code ?? '…' }}&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class CodeWindow extends Component
+class CodeSample extends Component
 {
+    public string $file = 'index.html';
+
+    public string $code = '&lt;button class="oc-btn" type="button"&gt;Save&lt;/button&gt;';
+
     public function render()
     {
-        return view('livewire.code-window');
+        return view('livewire.code-sample');
     }
 }
 
-{{-- resources/views/livewire/code-window.blade.php --}}
-&lt;div&gt;
-    &lt;link rel="stylesheet" href="omnia.css"&gt;
-    &lt;!-- A primary button with a webicon --&gt;
-    &lt;button class="oc-btn" type="button"&gt;
-      &lt;iconify-icon icon="mdi:content-save-outline"&gt;&lt;/iconify-icon&gt;
-      Save
-    &lt;/button&gt;
+{{-- resources/views/livewire/code-sample.blade.php --}}
+&lt;div class="oc-code-window" x-data="{ copied: false }"&gt;
+    &lt;div class="oc-code-window__bar"&gt;
+        &lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;
+        &lt;span class="oc-code-window__title"&gt;{{ $file }}&lt;/span&gt;
+        {{-- copying happens in the browser: Alpine, no round trip --}}
+        &lt;button type="button" class="oc-code-copy" :class="copied &amp;&amp; 'is-copied'" x-on:click="navigator.clipboard.writeText($refs.code.textContent); copied = true; setTimeout(() =&gt; copied = false, 1500)" x-text="copied ? 'Copied' : 'Copy'"&gt;Copy&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-code-block"&gt;
+        &lt;pre class="code-preview" x-ref="code"&gt;&lt;code&gt;{{ $code }}&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 

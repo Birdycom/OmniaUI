@@ -49,150 +49,76 @@ document.addEventListener("click", (e) => {
   field.focus();
 });
 </script>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { EmojiPicker, Input } from "@birdycom/omniaui-react";
+
+const groups = [
+  { label: "Smileys", emojis: ["😀", "😃", "😄", "😁", "😂", "🙂", "😉", "😍", "🤔", "😎", "😢", "😴", "😯", "🥳", "😤", "🤗"] },
+  { label: "Gestures", emojis: ["👍", "👎", "👏", "🙌", "👋", "🙏", "✌️", "💪"] },
+];
+
+export function Example() {
+  const [message, setMessage] = useState("");
   return (
-    &lt;&gt;
-      &lt;div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}&gt;
-        &lt;input className="oc-input" id="oc-emoji-field" placeholder="Say something nice" style={{ inlineSize: "16rem" }} /&gt;
-        &lt;button type="button" className="oc-emoji-picker__trigger" popoverTarget="oc-emoji-demo" aria-label="Insert emoji"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81" /&gt;&lt;/svg&gt;&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-emoji-picker" id="oc-emoji-demo" popover="" data-oc-emoji-target="#oc-emoji-field" aria-label="Emoji"&gt;
-        &lt;p className="oc-emoji-picker__label"&gt;Smileys&lt;/p&gt;
-        &lt;div className="oc-emoji-picker__grid"&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;😀&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;😃&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;😄&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;😁&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;😂&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;🙂&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;😉&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;😍&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;🤔&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;😎&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;😢&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;😴&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;😯&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;🥳&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;😤&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;🤗&lt;/button&gt;
-        &lt;/div&gt;
-        &lt;p className="oc-emoji-picker__label"&gt;Gestures&lt;/p&gt;
-        &lt;div className="oc-emoji-picker__grid"&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;👍&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;👎&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;👏&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;🙌&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;👋&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;🙏&lt;/button&gt;
-          &lt;button type="button" className="oc-emoji-picker__item"&gt;✌️&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;💪&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/&gt;
+    &lt;div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}&gt;
+      &lt;Input id="oc-emoji-field" placeholder="Say something nice" style={{ inlineSize: "16rem" }} value={message} onChange={(e) =&gt; setMessage(e.target.value)} /&gt;
+      {/* the panel closes itself after a pick */}
+      &lt;EmojiPicker groups={groups} onSelect={(emoji) =&gt; setMessage((m) =&gt; m + emoji)} /&gt;
+    &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcEmojiPicker, OcInput } from "@birdycom/omniaui-vue";
+
+const groups = [
+  { label: "Smileys", emojis: ["😀", "😃", "😄", "😁", "😂", "🙂", "😉", "😍", "🤔", "😎", "😢", "😴", "😯", "🥳", "😤", "🤗"] },
+  { label: "Gestures", emojis: ["👍", "👎", "👏", "🙌", "👋", "🙏", "✌️", "💪"] },
+];
+const message = ref("");
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
-    &lt;input class="oc-input" id="oc-emoji-field" placeholder="Say something nice" style="inline-size:16rem" /&gt;
-    &lt;button type="button" class="oc-emoji-picker__trigger" popovertarget="oc-emoji-demo" aria-label="Insert emoji"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81" /&gt;&lt;/svg&gt;&lt;/button&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-emoji-picker" id="oc-emoji-demo" popover="" data-oc-emoji-target="#oc-emoji-field" aria-label="Emoji"&gt;
-    &lt;p class="oc-emoji-picker__label"&gt;Smileys&lt;/p&gt;
-    &lt;div class="oc-emoji-picker__grid"&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😀&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😃&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😄&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😁&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😂&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙂&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😉&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😍&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;🤔&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😎&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😢&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😴&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😯&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🥳&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😤&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🤗&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-emoji-picker__label"&gt;Gestures&lt;/p&gt;
-    &lt;div class="oc-emoji-picker__grid"&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;👍&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;👎&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;👏&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙌&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;👋&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙏&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;✌️&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;💪&lt;/button&gt;
-    &lt;/div&gt;
+    &lt;OcInput id="oc-emoji-field" v-model="message" placeholder="Say something nice" style="inline-size:16rem" /&gt;
+    &lt;!-- the panel closes itself after a pick --&gt;
+    &lt;OcEmojiPicker :groups="groups" @select="message += $event" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
-  &lt;input class="oc-input" id="oc-emoji-field" placeholder="Say something nice" style="inline-size:16rem"&gt;
-  &lt;button type="button" class="oc-emoji-picker__trigger" popovertarget="oc-emoji-demo" aria-label="Insert emoji"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/&gt;&lt;/svg&gt;&lt;/button&gt;
-&lt;/div&gt;
-&lt;div class="oc-emoji-picker" id="oc-emoji-demo" popover="" data-oc-emoji-target="#oc-emoji-field" aria-label="Emoji"&gt;
-  &lt;p class="oc-emoji-picker__label"&gt;Smileys&lt;/p&gt;
-  &lt;div class="oc-emoji-picker__grid"&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😀&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😃&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😄&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😁&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😂&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙂&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😉&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😍&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;🤔&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😎&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😢&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😴&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😯&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🥳&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😤&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🤗&lt;/button&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-emoji-picker__label"&gt;Gestures&lt;/p&gt;
-  &lt;div class="oc-emoji-picker__grid"&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;👍&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;👎&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;👏&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙌&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;👋&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙏&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;✌️&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;💪&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;script&gt;
-document.addEventListener("click", (e) =&gt; {
-  const item = e.target.closest(".oc-emoji-picker__item");
-  const picker = item?.closest(".oc-emoji-picker");
-  const field = picker?.dataset.ocEmojiTarget &amp;&amp; document.querySelector(picker.dataset.ocEmojiTarget);
-  if (!field) return;
-  field.setRangeText(item.textContent, field.selectionStart ?? field.value.length, field.selectionEnd ?? field.value.length, "end");
-  field.dispatchEvent(new Event("input", { bubbles: true }));
-  picker.hidePopover?.();
-  field.focus();
-});
-&lt;/script&gt;</oc-code>
+<oc-code lang="blade">{{-- target: the field the insert script from snippets/emoji-picker.html writes the emoji into --}}
+&lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+    &lt;x-oc::input id="oc-emoji-field" name="message" placeholder="Say something nice" style="inline-size:16rem" /&gt;
+    &lt;x-oc::emoji-picker id="oc-emoji-demo" target="#oc-emoji-field" :groups="[
+        'Smileys' =&gt; ['😀', '😃', '😄', '😁', '😂', '🙂', '😉', '😍', '🤔', '😎', '😢', '😴', '😯', '🥳', '😤', '🤗'],
+        'Gestures' =&gt; ['👍', '👎', '👏', '🙌', '👋', '🙏', '✌️', '💪'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class EmojiPicker extends Component
+class MessageField extends Component
 {
+    public string $message = '';
+
     public function render()
     {
-        return view('livewire.emoji-picker');
+        return view('livewire.message-field');
     }
 }
 
-{{-- resources/views/livewire/emoji-picker.blade.php --}}
+{{-- resources/views/livewire/message-field.blade.php --}}
 &lt;div&gt;
+    {{-- the insert script (snippets/emoji-picker.html) fires an input event, so wire:model picks up the emoji --}}
     &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
-      &lt;input class="oc-input" id="oc-emoji-field" placeholder="Say something nice" style="inline-size:16rem"&gt;
-      &lt;button type="button" class="oc-emoji-picker__trigger" popovertarget="oc-emoji-demo" aria-label="Insert emoji"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/&gt;&lt;/svg&gt;&lt;/button&gt;
+        &lt;x-oc::input id="oc-emoji-field" wire:model="message" placeholder="Say something nice" style="inline-size:16rem" /&gt;
+        &lt;x-oc::emoji-picker id="oc-emoji-demo" target="#oc-emoji-field" :groups="[
+            'Smileys' =&gt; ['😀', '😃', '😄', '😁', '😂', '🙂', '😉', '😍', '🤔', '😎', '😢', '😴', '😯', '🥳', '😤', '🤗'],
+            'Gestures' =&gt; ['👍', '👎', '👏', '🙌', '👋', '🙏', '✌️', '💪'],
+        ]" /&gt;
     &lt;/div&gt;
-    &lt;div class="oc-emoji-picker" id="oc-emoji-demo" popover="" data-oc-emoji-target="#oc-emoji-field" aria-label="Emoji"&gt;
-      &lt;p class="oc-emoji-picker__label"&gt;Smileys&lt;/p&gt;
-      &lt;div class="oc-emoji-picker__grid"&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;😀&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😃&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;😄&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😁&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;😂&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙂&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;😉&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😍&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;🤔&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😎&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;😢&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😴&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;😯&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🥳&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;😤&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🤗&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;p class="oc-emoji-picker__label"&gt;Gestures&lt;/p&gt;
-      &lt;div class="oc-emoji-picker__grid"&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;👍&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;👎&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;👏&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙌&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;👋&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🙏&lt;/button&gt;
-        &lt;button type="button" class="oc-emoji-picker__item"&gt;✌️&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;💪&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;script&gt;
-    document.addEventListener("click", (e) =&gt; {
-      const item = e.target.closest(".oc-emoji-picker__item");
-      const picker = item?.closest(".oc-emoji-picker");
-      const field = picker?.dataset.ocEmojiTarget &amp;&amp; document.querySelector(picker.dataset.ocEmojiTarget);
-      if (!field) return;
-      field.setRangeText(item.textContent, field.selectionStart ?? field.value.length, field.selectionEnd ?? field.value.length, "end");
-      field.dispatchEvent(new Event("input", { bubbles: true }));
-      picker.hidePopover?.();
-      field.focus();
-    });
-    &lt;/script&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="inline" class="oc-section-content__title mt-2">Inline panel</h3><p class="oc-section-content__desc"><code>.oc-emoji-picker--inline</code> without the <code>popover</code> attribute: the same grid, always visible (a reaction bar, a settings field).</p>
@@ -205,36 +131,29 @@ class EmojiPicker extends Component
     <button type="button" class="oc-emoji-picker__item">🔥</button><button type="button" class="oc-emoji-picker__item">👀</button>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { EmojiPicker } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-emoji-picker oc-emoji-picker--inline" role="group" aria-label="React with an emoji"&gt;
-      &lt;div className="oc-emoji-picker__grid"&gt;
-        &lt;button type="button" className="oc-emoji-picker__item"&gt;👍&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;❤️&lt;/button&gt;
-        &lt;button type="button" className="oc-emoji-picker__item"&gt;😂&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;😯&lt;/button&gt;
-        &lt;button type="button" className="oc-emoji-picker__item"&gt;😢&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;🎉&lt;/button&gt;
-        &lt;button type="button" className="oc-emoji-picker__item"&gt;🔥&lt;/button&gt;&lt;button type="button" className="oc-emoji-picker__item"&gt;👀&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;EmojiPicker
+      inline
+      aria-label="React with an emoji"
+      groups={[{ emojis: ["👍", "❤️", "😂", "😯", "😢", "🎉", "🔥", "👀"] }]}
+      onSelect={(emoji) =&gt; console.log("reaction", emoji)}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-emoji-picker oc-emoji-picker--inline" role="group" aria-label="React with an emoji"&gt;
-    &lt;div class="oc-emoji-picker__grid"&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;👍&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;❤️&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😂&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😯&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;😢&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🎉&lt;/button&gt;
-      &lt;button type="button" class="oc-emoji-picker__item"&gt;🔥&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;👀&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcEmojiPicker } from "@birdycom/omniaui-vue";
+
+const react = (emoji: string) =&gt; console.log("reaction", emoji);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcEmojiPicker inline label="React with an emoji" :groups="[{ emojis: ['👍', '❤️', '😂', '😯', '😢', '🎉', '🔥', '👀'] }]" @select="react" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-emoji-picker oc-emoji-picker--inline" role="group" aria-label="React with an emoji"&gt;
-  &lt;div class="oc-emoji-picker__grid"&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;👍&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;❤️&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😂&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😯&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😢&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🎉&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;🔥&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;👀&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- a list without a string key: one grid without a group label --}}
+&lt;x-oc::emoji-picker inline label="React with an emoji" :groups="[['👍', '❤️', '😂', '😯', '😢', '🎉', '🔥', '👀']]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -250,13 +169,9 @@ class EmojiPickerInlinePanel extends Component
 }
 
 {{-- resources/views/livewire/emoji-picker-inline-panel.blade.php --}}
-&lt;div class="oc-emoji-picker oc-emoji-picker--inline" role="group" aria-label="React with an emoji"&gt;
-  &lt;div class="oc-emoji-picker__grid"&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;👍&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;❤️&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😂&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;😯&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;😢&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;🎉&lt;/button&gt;
-    &lt;button type="button" class="oc-emoji-picker__item"&gt;🔥&lt;/button&gt;&lt;button type="button" class="oc-emoji-picker__item"&gt;👀&lt;/button&gt;
-  &lt;/div&gt;
+&lt;div&gt;
+    {{-- a list without a string key: one grid without a group label --}}
+    &lt;x-oc::emoji-picker inline label="React with an emoji" :groups="[['👍', '❤️', '😂', '😯', '😢', '🎉', '🔥', '👀']]" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

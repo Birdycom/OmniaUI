@@ -29,56 +29,62 @@
     <p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)">Resets at 18:00.</p>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Badge, Card, Glass, GlassPanel, Progress, Status } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
     &lt;div className="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style={{ minBlockSize: "22rem" }}&gt;
       &lt;img className="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style={{ objectFit: "cover" }} loading="lazy" /&gt;
-      &lt;div className="oc-glass p-1 grid gap-0.7 w-full" style={{ maxInlineSize: "22rem" }}&gt;
-        &lt;div className="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;span className="oc-badge oc-badge--outline"&gt;Pro plan&lt;/span&gt;&lt;/div&gt;
-        &lt;div className="oc-glass-panel p-0.7 grid gap-0.5"&gt;
+      &lt;Glass className="p-1 grid gap-0.7 w-full" style={{ maxInlineSize: "22rem" }}&gt;
+        &lt;div className="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;Badge variant="outline"&gt;Pro plan&lt;/Badge&gt;&lt;/div&gt;
+        &lt;GlassPanel className="p-0.7 grid gap-0.5"&gt;
           &lt;div className="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span className="font-num-tabular"&gt;34%&lt;/span&gt;&lt;/div&gt;
-          &lt;div className="oc-progress oc-progress--sm oc-progress--glow" role="progressbar" aria-valuenow={34} aria-valuemin={0} aria-valuemax={100} aria-label="Session usage, schedule 20 %"&gt;&lt;span className="oc-progress-bar" style={{ width: "34%" }} /&gt;&lt;span className="oc-progress-marker" style={{ left: "20%" }} /&gt;&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;article className="oc-card p-0.7"&gt;
-          &lt;p className="oc-status"&gt;&lt;span className="oc-status-dot oc-status-dot--working" aria-hidden="true" /&gt;&lt;span className="oc-status__text"&gt;Agent working on the docs&lt;/span&gt;&lt;span className="oc-status__meta"&gt;4:10&lt;/span&gt;&lt;/p&gt;
-        &lt;/article&gt;
+          &lt;Progress value={34} size="sm" glow marker={20} aria-label="Session usage, schedule 20 %" /&gt;
+        &lt;/GlassPanel&gt;
+        &lt;Card className="p-0.7"&gt;
+          &lt;Status tone="working" meta="4:10"&gt;Agent working on the docs&lt;/Status&gt;
+        &lt;/Card&gt;
         &lt;hr className="oc-glass-divider" /&gt;
         &lt;p className="m-0 font-0.8" style={{ color: "var(--oc-muted-foreground)" }}&gt;Resets at 18:00.&lt;/p&gt;
-      &lt;/div&gt;
+      &lt;/Glass&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBadge, OcCard, OcGlass, OcGlassPanel, OcProgress, OcStatus } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 22rem"&gt;
     &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy" /&gt;
-    &lt;div class="oc-glass p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
-      &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Pro plan&lt;/span&gt;&lt;/div&gt;
-      &lt;div class="oc-glass-panel p-0.7 grid gap-0.5"&gt;
+    &lt;OcGlass class="p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
+      &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;OcBadge variant="outline"&gt;Pro plan&lt;/OcBadge&gt;&lt;/div&gt;
+      &lt;OcGlassPanel class="p-0.7 grid gap-0.5"&gt;
         &lt;div class="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span class="font-num-tabular"&gt;34%&lt;/span&gt;&lt;/div&gt;
-        &lt;div class="oc-progress oc-progress--sm oc-progress--glow" role="progressbar" aria-valuenow="34" aria-valuemin="0" aria-valuemax="100" aria-label="Session usage, schedule 20 %"&gt;&lt;span class="oc-progress-bar" style="width: 34%"&gt;&lt;/span&gt;&lt;span class="oc-progress-marker" style="left: 20%"&gt;&lt;/span&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;article class="oc-card p-0.7"&gt;
-        &lt;p class="oc-status"&gt;&lt;span class="oc-status-dot oc-status-dot--working" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-status__text"&gt;Agent working on the docs&lt;/span&gt;&lt;span class="oc-status__meta"&gt;4:10&lt;/span&gt;&lt;/p&gt;
-      &lt;/article&gt;
+        &lt;OcProgress :value="34" size="sm" glow :marker="20" label="Session usage, schedule 20 %" /&gt;
+      &lt;/OcGlassPanel&gt;
+      &lt;OcCard class="p-0.7"&gt;
+        &lt;OcStatus tone="working" meta="4:10"&gt;Agent working on the docs&lt;/OcStatus&gt;
+      &lt;/OcCard&gt;
       &lt;hr class="oc-glass-divider" /&gt;
       &lt;p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)"&gt;Resets at 18:00.&lt;/p&gt;
-    &lt;/div&gt;
+    &lt;/OcGlass&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 22rem"&gt;
-  &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy"&gt;
-  &lt;div class="oc-glass p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
-    &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Pro plan&lt;/span&gt;&lt;/div&gt;
-    &lt;div class="oc-glass-panel p-0.7 grid gap-0.5"&gt;
-      &lt;div class="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span class="font-num-tabular"&gt;34%&lt;/span&gt;&lt;/div&gt;
-      &lt;div class="oc-progress oc-progress--sm oc-progress--glow" role="progressbar" aria-valuenow="34" aria-valuemin="0" aria-valuemax="100" aria-label="Session usage, schedule 20 %"&gt;&lt;span class="oc-progress-bar" style="width: 34%"&gt;&lt;/span&gt;&lt;span class="oc-progress-marker" style="left: 20%"&gt;&lt;/span&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;article class="oc-card p-0.7"&gt;
-      &lt;p class="oc-status"&gt;&lt;span class="oc-status-dot oc-status-dot--working" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-status__text"&gt;Agent working on the docs&lt;/span&gt;&lt;span class="oc-status__meta"&gt;4:10&lt;/span&gt;&lt;/p&gt;
-    &lt;/article&gt;
-    &lt;hr class="oc-glass-divider"&gt;
-    &lt;p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)"&gt;Resets at 18:00.&lt;/p&gt;
-  &lt;/div&gt;
+    &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy"&gt;
+    &lt;x-oc::glass class="p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
+        &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;x-oc::badge variant="outline"&gt;Pro plan&lt;/x-oc::badge&gt;&lt;/div&gt;
+        &lt;x-oc::glass-panel class="p-0.7 grid gap-0.5"&gt;
+            &lt;div class="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span class="font-num-tabular"&gt;34%&lt;/span&gt;&lt;/div&gt;
+            &lt;x-oc::progress :value="34" size="sm" glow :marker="20" label="Session usage, schedule 20 %" /&gt;
+        &lt;/x-oc::glass-panel&gt;
+        &lt;x-oc::card class="p-0.7"&gt;
+            &lt;x-oc::status tone="working" meta="4:10"&gt;Agent working on the docs&lt;/x-oc::status&gt;
+        &lt;/x-oc::card&gt;
+        &lt;hr class="oc-glass-divider"&gt;
+        &lt;p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)"&gt;Resets at 18:00.&lt;/p&gt;
+    &lt;/x-oc::glass&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -86,29 +92,31 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class GlassOverAPhoto extends Component
+class UsageCard extends Component
 {
+    public int $session = 34;
+
     public function render()
     {
-        return view('livewire.glass-over-a-photo');
+        return view('livewire.usage-card');
     }
 }
 
-{{-- resources/views/livewire/glass-over-a-photo.blade.php --}}
+{{-- resources/views/livewire/usage-card.blade.php --}}
 &lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 22rem"&gt;
-  &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy"&gt;
-  &lt;div class="oc-glass p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
-    &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Pro plan&lt;/span&gt;&lt;/div&gt;
-    &lt;div class="oc-glass-panel p-0.7 grid gap-0.5"&gt;
-      &lt;div class="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span class="font-num-tabular"&gt;34%&lt;/span&gt;&lt;/div&gt;
-      &lt;div class="oc-progress oc-progress--sm oc-progress--glow" role="progressbar" aria-valuenow="34" aria-valuemin="0" aria-valuemax="100" aria-label="Session usage, schedule 20 %"&gt;&lt;span class="oc-progress-bar" style="width: 34%"&gt;&lt;/span&gt;&lt;span class="oc-progress-marker" style="left: 20%"&gt;&lt;/span&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;article class="oc-card p-0.7"&gt;
-      &lt;p class="oc-status"&gt;&lt;span class="oc-status-dot oc-status-dot--working" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-status__text"&gt;Agent working on the docs&lt;/span&gt;&lt;span class="oc-status__meta"&gt;4:10&lt;/span&gt;&lt;/p&gt;
-    &lt;/article&gt;
-    &lt;hr class="oc-glass-divider"&gt;
-    &lt;p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)"&gt;Resets at 18:00.&lt;/p&gt;
-  &lt;/div&gt;
+    &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy"&gt;
+    &lt;x-oc::glass class="p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
+        &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;x-oc::badge variant="outline"&gt;Pro plan&lt;/x-oc::badge&gt;&lt;/div&gt;
+        &lt;x-oc::glass-panel class="p-0.7 grid gap-0.5"&gt;
+            &lt;div class="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span class="font-num-tabular"&gt;{{ $session }}%&lt;/span&gt;&lt;/div&gt;
+            &lt;x-oc::progress :value="$session" size="sm" glow :marker="20" label="Session usage, schedule 20 %" /&gt;
+        &lt;/x-oc::glass-panel&gt;
+        &lt;x-oc::card class="p-0.7"&gt;
+            &lt;x-oc::status tone="working" meta="4:10"&gt;Agent working on the docs&lt;/x-oc::status&gt;
+        &lt;/x-oc::card&gt;
+        &lt;hr class="oc-glass-divider"&gt;
+        &lt;p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)"&gt;Resets at 18:00.&lt;/p&gt;
+    &lt;/x-oc::glass&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -129,53 +137,61 @@ class GlassOverAPhoto extends Component
     </div>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Glass, GlassPanel, Titlebar, TitlebarBody, TitlebarButton, Webicon } from "@birdycom/omniaui-react";
+
+export function Example({ onClose }: { onClose: () =&gt; void }) {
   return (
-    &lt;div className="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style={{ minBlockSize: "20rem", background: "linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))" }}&gt;
-      &lt;div className="oc-glass oc-glass--flat oc-titlebar-window w-full" style={{ maxInlineSize: "22rem", blockSize: "16rem" }}&gt;
-        &lt;header className="oc-titlebar"&gt;
-          &lt;div className="oc-titlebar__main"&gt;&lt;span className="oc-titlebar__title"&gt;Widget&lt;/span&gt;&lt;span className="oc-titlebar__subtitle"&gt;Overview&lt;/span&gt;&lt;/div&gt;
-          &lt;div className="oc-titlebar__actions"&gt;&lt;button type="button" className="oc-titlebar__btn oc-titlebar__btn--close" aria-label="Close"&gt;&lt;svg data-icon="mdi:close" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-        &lt;/header&gt;
-        &lt;div className="oc-titlebar-body p-1 grid gap-0.7 align-start"&gt;
-          &lt;div className="oc-glass-panel p-0.7"&gt;First panel&lt;/div&gt;
-          &lt;div className="oc-glass-panel oc-glass-panel--strong p-0.7"&gt;Strong panel&lt;/div&gt;
-          &lt;div className="oc-glass-panel p-0.7"&gt;Scroll for the hairline&lt;/div&gt;
-          &lt;div className="oc-glass-panel p-0.7"&gt;Last panel&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+    &lt;div
+      className="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg"
+      style={{ minBlockSize: "20rem", background: "linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))" }}
+    &gt;
+      &lt;Glass flat className="oc-titlebar-window w-full" style={{ maxInlineSize: "22rem", blockSize: "16rem" }}&gt;
+        &lt;Titlebar title="Widget" subtitle="Overview"&gt;
+          &lt;TitlebarButton label="Close" close onClick={onClose}&gt;&lt;Webicon name="mdi:close" /&gt;&lt;/TitlebarButton&gt;
+        &lt;/Titlebar&gt;
+        &lt;TitlebarBody className="p-1 grid gap-0.7 align-start"&gt;
+          &lt;GlassPanel className="p-0.7"&gt;First panel&lt;/GlassPanel&gt;
+          &lt;GlassPanel strong className="p-0.7"&gt;Strong panel&lt;/GlassPanel&gt;
+          &lt;GlassPanel className="p-0.7"&gt;Scroll for the hairline&lt;/GlassPanel&gt;
+          &lt;GlassPanel className="p-0.7"&gt;Last panel&lt;/GlassPanel&gt;
+        &lt;/TitlebarBody&gt;
+      &lt;/Glass&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcGlass, OcGlassPanel, OcTitlebar, OcTitlebarBody, OcTitlebarButton, OcWebicon } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ close: [] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 20rem; background: linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))"&gt;
-    &lt;div class="oc-glass oc-glass--flat oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
-      &lt;header class="oc-titlebar"&gt;
-        &lt;div class="oc-titlebar__main"&gt;&lt;span class="oc-titlebar__title"&gt;Widget&lt;/span&gt;&lt;span class="oc-titlebar__subtitle"&gt;Overview&lt;/span&gt;&lt;/div&gt;
-        &lt;div class="oc-titlebar__actions"&gt;&lt;button type="button" class="oc-titlebar__btn oc-titlebar__btn--close" aria-label="Close"&gt;&lt;svg data-icon="mdi:close" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-      &lt;/header&gt;
-      &lt;div class="oc-titlebar-body p-1 grid gap-0.7 align-start"&gt;
-        &lt;div class="oc-glass-panel p-0.7"&gt;First panel&lt;/div&gt;
-        &lt;div class="oc-glass-panel oc-glass-panel--strong p-0.7"&gt;Strong panel&lt;/div&gt;
-        &lt;div class="oc-glass-panel p-0.7"&gt;Scroll for the hairline&lt;/div&gt;
-        &lt;div class="oc-glass-panel p-0.7"&gt;Last panel&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;OcGlass flat class="oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
+      &lt;OcTitlebar title="Widget" subtitle="Overview"&gt;
+        &lt;OcTitlebarButton label="Close" close @click="emit('close')"&gt;&lt;OcWebicon name="mdi:close" /&gt;&lt;/OcTitlebarButton&gt;
+      &lt;/OcTitlebar&gt;
+      &lt;OcTitlebarBody class="p-1 grid gap-0.7 align-start"&gt;
+        &lt;OcGlassPanel class="p-0.7"&gt;First panel&lt;/OcGlassPanel&gt;
+        &lt;OcGlassPanel strong class="p-0.7"&gt;Strong panel&lt;/OcGlassPanel&gt;
+        &lt;OcGlassPanel class="p-0.7"&gt;Scroll for the hairline&lt;/OcGlassPanel&gt;
+        &lt;OcGlassPanel class="p-0.7"&gt;Last panel&lt;/OcGlassPanel&gt;
+      &lt;/OcTitlebarBody&gt;
+    &lt;/OcGlass&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 20rem; background: linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))"&gt;
-  &lt;div class="oc-glass oc-glass--flat oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
-    &lt;header class="oc-titlebar"&gt;
-      &lt;div class="oc-titlebar__main"&gt;&lt;span class="oc-titlebar__title"&gt;Widget&lt;/span&gt;&lt;span class="oc-titlebar__subtitle"&gt;Overview&lt;/span&gt;&lt;/div&gt;
-      &lt;div class="oc-titlebar__actions"&gt;&lt;button type="button" class="oc-titlebar__btn oc-titlebar__btn--close" aria-label="Close"&gt;&lt;svg data-icon="mdi:close" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-    &lt;/header&gt;
-    &lt;div class="oc-titlebar-body p-1 grid gap-0.7 align-start"&gt;
-      &lt;div class="oc-glass-panel p-0.7"&gt;First panel&lt;/div&gt;
-      &lt;div class="oc-glass-panel oc-glass-panel--strong p-0.7"&gt;Strong panel&lt;/div&gt;
-      &lt;div class="oc-glass-panel p-0.7"&gt;Scroll for the hairline&lt;/div&gt;
-      &lt;div class="oc-glass-panel p-0.7"&gt;Last panel&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+    &lt;x-oc::glass flat class="oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
+        &lt;x-oc::titlebar title="Widget" subtitle="Overview"&gt;
+            &lt;x-oc::titlebar-button label="Close" close&gt;&lt;x-oc::webicon name="mdi:close" /&gt;&lt;/x-oc::titlebar-button&gt;
+        &lt;/x-oc::titlebar&gt;
+        &lt;x-oc::titlebar-body class="p-1 grid gap-0.7 align-start"&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;First panel&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel strong class="p-0.7"&gt;Strong panel&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;Scroll for the hairline&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;Last panel&lt;/x-oc::glass-panel&gt;
+        &lt;/x-oc::titlebar-body&gt;
+    &lt;/x-oc::glass&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -183,28 +199,27 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class GlassDesktopWindow extends Component
+class GlassWidget extends Component
 {
     public function render()
     {
-        return view('livewire.glass-desktop-window');
+        return view('livewire.glass-widget');
     }
 }
 
-{{-- resources/views/livewire/glass-desktop-window.blade.php --}}
+{{-- resources/views/livewire/glass-widget.blade.php --}}
 &lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 20rem; background: linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))"&gt;
-  &lt;div class="oc-glass oc-glass--flat oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
-    &lt;header class="oc-titlebar"&gt;
-      &lt;div class="oc-titlebar__main"&gt;&lt;span class="oc-titlebar__title"&gt;Widget&lt;/span&gt;&lt;span class="oc-titlebar__subtitle"&gt;Overview&lt;/span&gt;&lt;/div&gt;
-      &lt;div class="oc-titlebar__actions"&gt;&lt;button type="button" class="oc-titlebar__btn oc-titlebar__btn--close" aria-label="Close"&gt;&lt;svg data-icon="mdi:close" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-    &lt;/header&gt;
-    &lt;div class="oc-titlebar-body p-1 grid gap-0.7 align-start"&gt;
-      &lt;div class="oc-glass-panel p-0.7"&gt;First panel&lt;/div&gt;
-      &lt;div class="oc-glass-panel oc-glass-panel--strong p-0.7"&gt;Strong panel&lt;/div&gt;
-      &lt;div class="oc-glass-panel p-0.7"&gt;Scroll for the hairline&lt;/div&gt;
-      &lt;div class="oc-glass-panel p-0.7"&gt;Last panel&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+    &lt;x-oc::glass flat class="oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
+        &lt;x-oc::titlebar title="Widget" subtitle="Overview"&gt;
+            &lt;x-oc::titlebar-button label="Close" close&gt;&lt;x-oc::webicon name="mdi:close" /&gt;&lt;/x-oc::titlebar-button&gt;
+        &lt;/x-oc::titlebar&gt;
+        &lt;x-oc::titlebar-body class="p-1 grid gap-0.7 align-start"&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;First panel&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel strong class="p-0.7"&gt;Strong panel&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;Scroll for the hairline&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;Last panel&lt;/x-oc::glass-panel&gt;
+        &lt;/x-oc::titlebar-body&gt;
+    &lt;/x-oc::glass&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="liquid">Liquid glass menu bar <span class="oc-badge-version">v0.12.6</span></h3>
@@ -222,47 +237,106 @@ class GlassDesktopWindow extends Component
     <div class="oc-glass-bar oc-glass-bar--round"><button class="oc-glass-bar__item" type="button" aria-label="Search"><iconify-icon icon="mdi:magnify" aria-hidden="true"></iconify-icon></button></div>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { GlassBar, Glass, Webicon } from "@birdycom/omniaui-react";
+
+const sections = [
+  { label: "Home", icon: "mdi:home-variant" },
+  { label: "Explore", icon: "mdi:compass-outline" },
+  { label: "Library", icon: "mdi:play-box-multiple-outline" },
+  { label: "Profile", icon: "mdi:account-circle-outline" },
+];
+
+export function Example() {
+  const [section, setSection] = useState(0);
   return (
     &lt;div className="relative w-full grid p-2 overflow-hidden rounded-lg" style={{ minBlockSize: "24rem", alignContent: "space-between", justifyItems: "center" }}&gt;
       &lt;img className="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style={{ objectFit: "cover" }} loading="lazy" /&gt;
-      &lt;nav className="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"&gt;&lt;label className="oc-glass-bar__item" title="Draw"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Draw" defaultChecked /&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true" /&gt;&lt;/label&gt;&lt;label className="oc-glass-bar__item" title="Text"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Text" /&gt;&lt;iconify-icon icon="mdi:format-text" aria-hidden="true" /&gt;&lt;/label&gt;&lt;label className="oc-glass-bar__item" title="Shapes"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Shapes" /&gt;&lt;iconify-icon icon="mdi:shape-outline" aria-hidden="true" /&gt;&lt;/label&gt;&lt;label className="oc-glass-bar__item" title="Images"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Images" /&gt;&lt;iconify-icon icon="mdi:image-outline" aria-hidden="true" /&gt;&lt;/label&gt;&lt;span className="oc-glass-bar__sep" aria-hidden="true" /&gt;&lt;label className="oc-glass-bar__item" title="Share"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Share" /&gt;&lt;iconify-icon icon="mdi:share-variant-outline" aria-hidden="true" /&gt;&lt;/label&gt;&lt;/nav&gt;
-      &lt;div className="oc-glass oc-glass--liquid p-1 grid gap-0.5" style={{ maxInlineSize: "18rem", borderRadius: "22px" }}&gt;
-        &lt;strong&gt;Now playing&lt;/strong&gt;{" "}
+      {/* The tools bar has a separator, which GlassBar has no place for: written out */}
+      &lt;nav className="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"&gt;
+        &lt;label className="oc-glass-bar__item" title="Draw"&gt;&lt;input type="radio" name="tool" aria-label="Draw" defaultChecked /&gt;&lt;Webicon name="mdi:pencil-outline" bare /&gt;&lt;/label&gt;
+        &lt;label className="oc-glass-bar__item" title="Text"&gt;&lt;input type="radio" name="tool" aria-label="Text" /&gt;&lt;Webicon name="mdi:format-text" bare /&gt;&lt;/label&gt;
+        &lt;label className="oc-glass-bar__item" title="Shapes"&gt;&lt;input type="radio" name="tool" aria-label="Shapes" /&gt;&lt;Webicon name="mdi:shape-outline" bare /&gt;&lt;/label&gt;
+        &lt;label className="oc-glass-bar__item" title="Images"&gt;&lt;input type="radio" name="tool" aria-label="Images" /&gt;&lt;Webicon name="mdi:image-outline" bare /&gt;&lt;/label&gt;
+        &lt;span className="oc-glass-bar__sep" aria-hidden="true" /&gt;
+        &lt;label className="oc-glass-bar__item" title="Share"&gt;&lt;input type="radio" name="tool" aria-label="Share" /&gt;&lt;Webicon name="mdi:share-variant-outline" bare /&gt;&lt;/label&gt;
+      &lt;/nav&gt;
+      &lt;Glass liquid className="p-1 grid gap-0.5" style={{ maxInlineSize: "18rem", borderRadius: "22px" }}&gt;
+        &lt;strong&gt;Now playing&lt;/strong&gt;
         &lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
-      &lt;/div&gt;
+      &lt;/Glass&gt;
       &lt;div className="flex align-items-center gap-0.5"&gt;
-        &lt;nav className="oc-glass-bar" aria-label="Main"&gt;&lt;label className="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" defaultChecked /&gt;&lt;iconify-icon icon="mdi:home-variant" aria-hidden="true" /&gt;&lt;span&gt;Home&lt;/span&gt;&lt;/label&gt;&lt;label className="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" /&gt;&lt;iconify-icon icon="mdi:compass-outline" aria-hidden="true" /&gt;&lt;span&gt;Explore&lt;/span&gt;&lt;/label&gt;&lt;label className="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" /&gt;&lt;iconify-icon icon="mdi:play-box-multiple-outline" aria-hidden="true" /&gt;&lt;span&gt;Library&lt;/span&gt;&lt;/label&gt;&lt;label className="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" /&gt;&lt;iconify-icon icon="mdi:account-circle-outline" aria-hidden="true" /&gt;&lt;span&gt;Profile&lt;/span&gt;&lt;/label&gt;&lt;/nav&gt;
-        &lt;div className="oc-glass-bar oc-glass-bar--round"&gt;&lt;button className="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;iconify-icon icon="mdi:magnify" aria-hidden="true" /&gt;&lt;/button&gt;&lt;/div&gt;
+        &lt;GlassBar label="Main" items={sections.map((s, i) =&gt; ({ ...s, current: i === section, onClick: () =&gt; setSection(i) }))} /&gt;
+        &lt;div className="oc-glass-bar oc-glass-bar--round"&gt;&lt;button className="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;Webicon name="mdi:magnify" bare /&gt;&lt;/button&gt;&lt;/div&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { computed, ref } from 'vue'
+import { OcGlass, OcGlassBar, OcWebicon } from '@birdycom/omniaui-vue'
+
+const section = ref(0)
+const sections = [
+  { label: 'Home', icon: 'mdi:home-variant' },
+  { label: 'Explore', icon: 'mdi:compass-outline' },
+  { label: 'Library', icon: 'mdi:play-box-multiple-outline' },
+  { label: 'Profile', icon: 'mdi:account-circle-outline' },
+]
+const items = computed(() =&gt; sections.map((s, i) =&gt; ({ ...s, current: i === section.value })))
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 24rem; align-content: space-between; justify-items: center"&gt;
     &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy" /&gt;
-    &lt;nav class="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"&gt;&lt;label class="oc-glass-bar__item" title="Draw"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Draw" checked /&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Text"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Text" /&gt;&lt;iconify-icon icon="mdi:format-text" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Shapes"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Shapes" /&gt;&lt;iconify-icon icon="mdi:shape-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Images"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Images" /&gt;&lt;iconify-icon icon="mdi:image-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;span class="oc-glass-bar__sep" aria-hidden="true"&gt;&lt;/span&gt;&lt;label class="oc-glass-bar__item" title="Share"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Share" /&gt;&lt;iconify-icon icon="mdi:share-variant-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;/nav&gt;
-    &lt;div class="oc-glass oc-glass--liquid p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
+    &lt;!-- The tools bar has a separator, which OcGlassBar has no place for: written out --&gt;
+    &lt;nav class="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"&gt;
+      &lt;label class="oc-glass-bar__item" title="Draw"&gt;&lt;input type="radio" name="tool" aria-label="Draw" checked&gt;&lt;OcWebicon name="mdi:pencil-outline" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Text"&gt;&lt;input type="radio" name="tool" aria-label="Text"&gt;&lt;OcWebicon name="mdi:format-text" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Shapes"&gt;&lt;input type="radio" name="tool" aria-label="Shapes"&gt;&lt;OcWebicon name="mdi:shape-outline" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Images"&gt;&lt;input type="radio" name="tool" aria-label="Images"&gt;&lt;OcWebicon name="mdi:image-outline" bare /&gt;&lt;/label&gt;
+      &lt;span class="oc-glass-bar__sep" aria-hidden="true"&gt;&lt;/span&gt;
+      &lt;label class="oc-glass-bar__item" title="Share"&gt;&lt;input type="radio" name="tool" aria-label="Share"&gt;&lt;OcWebicon name="mdi:share-variant-outline" bare /&gt;&lt;/label&gt;
+    &lt;/nav&gt;
+    &lt;OcGlass liquid class="p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
       &lt;strong&gt;Now playing&lt;/strong&gt;
       &lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
-    &lt;/div&gt;
+    &lt;/OcGlass&gt;
     &lt;div class="flex align-items-center gap-0.5"&gt;
-      &lt;nav class="oc-glass-bar" aria-label="Main"&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" checked /&gt;&lt;iconify-icon icon="mdi:home-variant" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Home&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" /&gt;&lt;iconify-icon icon="mdi:compass-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Explore&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" /&gt;&lt;iconify-icon icon="mdi:play-box-multiple-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Library&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" /&gt;&lt;iconify-icon icon="mdi:account-circle-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Profile&lt;/span&gt;&lt;/label&gt;&lt;/nav&gt;
-      &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;iconify-icon icon="mdi:magnify" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/div&gt;
+      &lt;OcGlassBar label="Main" :items="items" @select="section = $event"&gt;
+        &lt;template #icon-0&gt;&lt;OcWebicon name="mdi:home-variant" bare /&gt;&lt;/template&gt;
+        &lt;template #icon-1&gt;&lt;OcWebicon name="mdi:compass-outline" bare /&gt;&lt;/template&gt;
+        &lt;template #icon-2&gt;&lt;OcWebicon name="mdi:play-box-multiple-outline" bare /&gt;&lt;/template&gt;
+        &lt;template #icon-3&gt;&lt;OcWebicon name="mdi:account-circle-outline" bare /&gt;&lt;/template&gt;
+      &lt;/OcGlassBar&gt;
+      &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;OcWebicon name="mdi:magnify" bare /&gt;&lt;/button&gt;&lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 24rem; align-content: space-between; justify-items: center"&gt;
-  &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy"&gt;
-  &lt;nav class="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"&gt;&lt;label class="oc-glass-bar__item" title="Draw"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Draw" checked&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Text"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Text"&gt;&lt;iconify-icon icon="mdi:format-text" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Shapes"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Shapes"&gt;&lt;iconify-icon icon="mdi:shape-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Images"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Images"&gt;&lt;iconify-icon icon="mdi:image-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;span class="oc-glass-bar__sep" aria-hidden="true"&gt;&lt;/span&gt;&lt;label class="oc-glass-bar__item" title="Share"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Share"&gt;&lt;iconify-icon icon="mdi:share-variant-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;/nav&gt;
-  &lt;div class="oc-glass oc-glass--liquid p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
-    &lt;strong&gt;Now playing&lt;/strong&gt;
-    &lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;div class="flex align-items-center gap-0.5"&gt;
-    &lt;nav class="oc-glass-bar" aria-label="Main"&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" checked&gt;&lt;iconify-icon icon="mdi:home-variant" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Home&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar"&gt;&lt;iconify-icon icon="mdi:compass-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Explore&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar"&gt;&lt;iconify-icon icon="mdi:play-box-multiple-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Library&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar"&gt;&lt;iconify-icon icon="mdi:account-circle-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Profile&lt;/span&gt;&lt;/label&gt;&lt;/nav&gt;
-    &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;iconify-icon icon="mdi:magnify" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/div&gt;
-  &lt;/div&gt;
+    &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy"&gt;
+    {{-- The tools bar has a separator, which the items prop has no place for: written out --}}
+    &lt;nav class="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"&gt;
+      &lt;label class="oc-glass-bar__item" title="Draw"&gt;&lt;input type="radio" name="tool" aria-label="Draw" checked&gt;&lt;x-oc::webicon name="mdi:pencil-outline" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Text"&gt;&lt;input type="radio" name="tool" aria-label="Text"&gt;&lt;x-oc::webicon name="mdi:format-text" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Shapes"&gt;&lt;input type="radio" name="tool" aria-label="Shapes"&gt;&lt;x-oc::webicon name="mdi:shape-outline" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Images"&gt;&lt;input type="radio" name="tool" aria-label="Images"&gt;&lt;x-oc::webicon name="mdi:image-outline" bare /&gt;&lt;/label&gt;
+      &lt;span class="oc-glass-bar__sep" aria-hidden="true"&gt;&lt;/span&gt;
+      &lt;label class="oc-glass-bar__item" title="Share"&gt;&lt;input type="radio" name="tool" aria-label="Share"&gt;&lt;x-oc::webicon name="mdi:share-variant-outline" bare /&gt;&lt;/label&gt;
+    &lt;/nav&gt;
+    &lt;x-oc::glass liquid class="p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
+        &lt;strong&gt;Now playing&lt;/strong&gt;
+        &lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
+    &lt;/x-oc::glass&gt;
+    &lt;div class="flex align-items-center gap-0.5"&gt;
+        &lt;x-oc::glass-bar label="Main" :items="[
+            ['label' =&gt; 'Home', 'icon' =&gt; 'mdi:home-variant', 'href' =&gt; '/home', 'current' =&gt; true],
+            ['label' =&gt; 'Explore', 'icon' =&gt; 'mdi:compass-outline', 'href' =&gt; '/explore'],
+            ['label' =&gt; 'Library', 'icon' =&gt; 'mdi:play-box-multiple-outline', 'href' =&gt; '/library'],
+            ['label' =&gt; 'Profile', 'icon' =&gt; 'mdi:account-circle-outline', 'href' =&gt; '/profile'],
+        ]" /&gt;
+        &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;x-oc::webicon name="mdi:magnify" bare /&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -270,26 +344,47 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class GlassLiquidMenuBar extends Component
+class MediaBars extends Component
 {
+    public string $section = 'home';
+
+    public array $sections = [
+        'home' =&gt; ['Home', 'mdi:home-variant'],
+        'explore' =&gt; ['Explore', 'mdi:compass-outline'],
+        'library' =&gt; ['Library', 'mdi:play-box-multiple-outline'],
+        'profile' =&gt; ['Profile', 'mdi:account-circle-outline'],
+    ];
+
     public function render()
     {
-        return view('livewire.glass-liquid-menu-bar');
+        return view('livewire.media-bars');
     }
 }
 
-{{-- resources/views/livewire/glass-liquid-menu-bar.blade.php --}}
+{{-- resources/views/livewire/media-bars.blade.php --}}
 &lt;div class="relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 24rem; align-content: space-between; justify-items: center"&gt;
-  &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy"&gt;
-  &lt;nav class="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"&gt;&lt;label class="oc-glass-bar__item" title="Draw"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Draw" checked&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Text"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Text"&gt;&lt;iconify-icon icon="mdi:format-text" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Shapes"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Shapes"&gt;&lt;iconify-icon icon="mdi:shape-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item" title="Images"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Images"&gt;&lt;iconify-icon icon="mdi:image-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;span class="oc-glass-bar__sep" aria-hidden="true"&gt;&lt;/span&gt;&lt;label class="oc-glass-bar__item" title="Share"&gt;&lt;input type="radio" name="oc-glass-demo-tools" aria-label="Share"&gt;&lt;iconify-icon icon="mdi:share-variant-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/label&gt;&lt;/nav&gt;
-  &lt;div class="oc-glass oc-glass--liquid p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
-    &lt;strong&gt;Now playing&lt;/strong&gt;
-    &lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;div class="flex align-items-center gap-0.5"&gt;
-    &lt;nav class="oc-glass-bar" aria-label="Main"&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar" checked&gt;&lt;iconify-icon icon="mdi:home-variant" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Home&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar"&gt;&lt;iconify-icon icon="mdi:compass-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Explore&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar"&gt;&lt;iconify-icon icon="mdi:play-box-multiple-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Library&lt;/span&gt;&lt;/label&gt;&lt;label class="oc-glass-bar__item"&gt;&lt;input type="radio" name="oc-glass-demo-bar"&gt;&lt;iconify-icon icon="mdi:account-circle-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span&gt;Profile&lt;/span&gt;&lt;/label&gt;&lt;/nav&gt;
-    &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;iconify-icon icon="mdi:magnify" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;&lt;/div&gt;
-  &lt;/div&gt;
+    &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy"&gt;
+    {{-- The tools bar has a separator, which the items prop has no place for: written out --}}
+    &lt;nav class="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"&gt;
+      &lt;label class="oc-glass-bar__item" title="Draw"&gt;&lt;input type="radio" name="tool" aria-label="Draw" checked&gt;&lt;x-oc::webicon name="mdi:pencil-outline" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Text"&gt;&lt;input type="radio" name="tool" aria-label="Text"&gt;&lt;x-oc::webicon name="mdi:format-text" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Shapes"&gt;&lt;input type="radio" name="tool" aria-label="Shapes"&gt;&lt;x-oc::webicon name="mdi:shape-outline" bare /&gt;&lt;/label&gt;
+      &lt;label class="oc-glass-bar__item" title="Images"&gt;&lt;input type="radio" name="tool" aria-label="Images"&gt;&lt;x-oc::webicon name="mdi:image-outline" bare /&gt;&lt;/label&gt;
+      &lt;span class="oc-glass-bar__sep" aria-hidden="true"&gt;&lt;/span&gt;
+      &lt;label class="oc-glass-bar__item" title="Share"&gt;&lt;input type="radio" name="tool" aria-label="Share"&gt;&lt;x-oc::webicon name="mdi:share-variant-outline" bare /&gt;&lt;/label&gt;
+    &lt;/nav&gt;
+    &lt;x-oc::glass liquid class="p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
+        &lt;strong&gt;Now playing&lt;/strong&gt;
+        &lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
+    &lt;/x-oc::glass&gt;
+    &lt;div class="flex align-items-center gap-0.5"&gt;
+        &lt;nav class="oc-glass-bar" aria-label="Main"&gt;
+            @foreach ($sections as $key =&gt; [$label, $icon])
+                &lt;button type="button" class="oc-glass-bar__item" wire:click="$set('section', '{{ $key }}')" aria-pressed="{{ $section === $key ? 'true' : 'false' }}"&gt;&lt;x-oc::webicon :name="$icon" bare /&gt;&lt;span&gt;{{ $label }}&lt;/span&gt;&lt;/button&gt;
+            @endforeach
+        &lt;/nav&gt;
+        &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;x-oc::webicon name="mdi:magnify" bare /&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="amount">Amount of glass <span class="oc-badge-version">v0.12.6</span></h3>
@@ -327,46 +422,51 @@ class GlassLiquidMenuBar extends Component
 &lt;div class="oc-glass oc-glass--liquid oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
 &lt;div class="oc-glass oc-glass--liquid p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
 &lt;div class="oc-glass oc-glass--liquid oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Glass } from "@birdycom/omniaui-react";
+
+// Over a photo or a gradient; --clear and --frost set the amount of blur.
+export function Example() {
   return (
     &lt;&gt;
-      {/* Over a photo or a gradient */}
-      &lt;div className="oc-glass oc-glass--liquid oc-glass--clear p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
-      &lt;div className="oc-glass oc-glass--liquid p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
-      &lt;div className="oc-glass oc-glass--liquid oc-glass--frost p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
+      &lt;Glass liquid className="oc-glass--clear p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/Glass&gt;
+      &lt;Glass liquid className="p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/Glass&gt;
+      &lt;Glass liquid className="oc-glass--frost p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/Glass&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;!-- Over a photo or a gradient --&gt;
-  &lt;div class="oc-glass oc-glass--liquid oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="oc-glass oc-glass--liquid p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
-  &lt;div class="oc-glass oc-glass--liquid oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcGlass } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Over a photo or a gradient; --clear and --frost set the amount of blur --&gt;
+  &lt;OcGlass liquid class="oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/OcGlass&gt;
+  &lt;OcGlass liquid class="p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/OcGlass&gt;
+  &lt;OcGlass liquid class="oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/OcGlass&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;!-- Over a photo or a gradient --&gt;
-&lt;div class="oc-glass oc-glass--liquid oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
-&lt;div class="oc-glass oc-glass--liquid p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
-&lt;div class="oc-glass oc-glass--liquid oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- Over a photo or a gradient; --clear and --frost set the amount of blur --}}
+&lt;x-oc::glass liquid class="oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+&lt;x-oc::glass liquid class="p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+&lt;x-oc::glass liquid class="oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class GlassAmount extends Component
+class GlassAmounts extends Component
 {
     public function render()
     {
-        return view('livewire.glass-amount');
+        return view('livewire.glass-amounts');
     }
 }
 
-{{-- resources/views/livewire/glass-amount.blade.php --}}
+{{-- resources/views/livewire/glass-amounts.blade.php --}}
 &lt;div&gt;
-    &lt;!-- Over a photo or a gradient --&gt;
-    &lt;div class="oc-glass oc-glass--liquid oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
-    &lt;div class="oc-glass oc-glass--liquid p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
-    &lt;div class="oc-glass oc-glass--liquid oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
+    &lt;x-oc::glass liquid class="oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+    &lt;x-oc::glass liquid class="p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+    &lt;x-oc::glass liquid class="oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 

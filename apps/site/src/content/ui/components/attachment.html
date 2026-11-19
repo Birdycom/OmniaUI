@@ -74,103 +74,72 @@
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { Attachment, AttachmentImage, AttachmentList, AttachmentThumb, type AttachmentFile } from "@birdycom/omniaui-react";
+
+const files: AttachmentFile[] = [
+  { name: "Quote kitchen Project 1 v2.pdf", size: "1.2 MB", href: "/files/quote.pdf" },
+  { name: "Measurements ground floor.xlsx", size: "86 KB", href: "/files/measurements.xlsx" },
+  { name: "Contract addendum.docx", size: "240 KB", href: "/files/contract.docx" },
+  { name: "Plans architect.zip", size: "14.8 MB", href: "/files/plans.zip" },
+];
 
 export function Example() {
   return (
     &lt;div style={{ display: "grid", gap: "1.25rem", inlineSize: "100%", maxInlineSize: "40rem" }}&gt;
-      &lt;ul className="oc-attachment-list" aria-label="Files in this message"&gt;
-        &lt;li&gt;&lt;a className="oc-attachment oc-attachment--pdf" href="/files/quote.pdf"&gt;&lt;span className="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;Quote kitchen Project 1 v2.pdf&lt;/span&gt;&lt;span className="oc-attachment__size"&gt;1.2 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a className="oc-attachment oc-attachment--sheet" href="/files/measurements.xlsx"&gt;&lt;span className="oc-attachment__icon" aria-hidden="true"&gt;XLS&lt;/span&gt;&lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;Measurements ground floor.xlsx&lt;/span&gt;&lt;span className="oc-attachment__size"&gt;86 KB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a className="oc-attachment oc-attachment--doc" href="/files/contract.docx"&gt;&lt;span className="oc-attachment__icon" aria-hidden="true"&gt;DOC&lt;/span&gt;&lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;Contract addendum.docx&lt;/span&gt;&lt;span className="oc-attachment__size"&gt;240 KB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;a className="oc-attachment oc-attachment--zip" href="/files/plans.zip"&gt;&lt;span className="oc-attachment__icon" aria-hidden="true"&gt;ZIP&lt;/span&gt;&lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;Plans architect.zip&lt;/span&gt;&lt;span className="oc-attachment__size"&gt;14.8 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-      &lt;/ul&gt;
+      {/* the type (icon color) and the icon text come from the extension */}
+      &lt;AttachmentList items={files} aria-label="Files in this message" /&gt;
 
-      &lt;a className="oc-attachment-image" href="/files/worktop-sample.jpg"&gt;
-        &lt;span className="oc-media-art oc-media-art--6" role="img" aria-label="Photo of the Calacatta worktop sample" /&gt;{" "}
-        &lt;span className="oc-attachment-image__caption"&gt;worktop-sample.jpg · 2.1 MB&lt;/span&gt;
-      &lt;/a&gt;
+      &lt;AttachmentImage href="/files/worktop-sample.jpg" art={6} alt="Photo of the Calacatta worktop sample" caption="worktop-sample.jpg · 2.1 MB" /&gt;
 
-      &lt;div className="oc-attachment-list" aria-label="Files to send"&gt;
-        &lt;div className="oc-attachment-thumb"&gt;
-          &lt;span className="oc-media-art oc-media-art--2" role="img" aria-label="Pasted screenshot" /&gt;
-          &lt;button type="button" className="oc-attachment__remove" aria-label="Remove screenshot.png"&gt;✕&lt;/button&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-attachment oc-attachment--pdf oc-attachment--uploading" style={{ "--oc-attachment-progress": "65%" } as CSSProperties}&gt;
-          &lt;span className="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;{" "}
-          &lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;Delivery note 4471.pdf&lt;/span&gt;&lt;span className="oc-attachment__size" role="status"&gt;Uploading… 65%&lt;/span&gt;&lt;/span&gt;
-          &lt;button type="button" className="oc-attachment__remove" aria-label="Cancel upload of Delivery note 4471.pdf"&gt;✕&lt;/button&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-attachment oc-attachment--image oc-attachment--error"&gt;
-          &lt;span className="oc-attachment__icon" aria-hidden="true"&gt;HEIC&lt;/span&gt;{" "}
-          &lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;IMG_2048.heic&lt;/span&gt;&lt;span className="oc-attachment__size"&gt;Larger than 25 MB&lt;/span&gt;&lt;/span&gt;
-          &lt;button type="button" className="oc-attachment__remove" aria-label="Remove IMG_2048.heic"&gt;✕&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+      &lt;AttachmentList as="div" aria-label="Files to send"&gt;
+        &lt;AttachmentThumb art={2} alt="Pasted screenshot" removeLabel="Remove screenshot.png" onRemove={() =&gt; {}} /&gt;
+        &lt;Attachment name="Delivery note 4471.pdf" state="uploading" progress={65} size="Uploading… 65%" removable removeLabel="Cancel upload of Delivery note 4471.pdf" /&gt;
+        &lt;Attachment name="IMG_2048.heic" state="error" size="Larger than 25 MB" removable /&gt;
+      &lt;/AttachmentList&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAttachment, OcAttachmentImage, OcAttachmentList, OcAttachmentThumb } from "@birdycom/omniaui-vue";
+
+const files = [
+  { name: "Quote kitchen Project 1 v2.pdf", size: "1.2 MB", href: "/files/quote.pdf" },
+  { name: "Measurements ground floor.xlsx", size: "86 KB", href: "/files/measurements.xlsx" },
+  { name: "Contract addendum.docx", size: "240 KB", href: "/files/contract.docx" },
+  { name: "Plans architect.zip", size: "14.8 MB", href: "/files/plans.zip" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div style="display:grid;gap:1.25rem;inline-size:100%;max-inline-size:40rem"&gt;
-    &lt;ul class="oc-attachment-list" aria-label="Files in this message"&gt;
-      &lt;li&gt;&lt;a class="oc-attachment oc-attachment--pdf" href="/files/quote.pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Quote kitchen Project 1 v2.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;1.2 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a class="oc-attachment oc-attachment--sheet" href="/files/measurements.xlsx"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;XLS&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Measurements ground floor.xlsx&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;86 KB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a class="oc-attachment oc-attachment--doc" href="/files/contract.docx"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;DOC&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Contract addendum.docx&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;240 KB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a class="oc-attachment oc-attachment--zip" href="/files/plans.zip"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;ZIP&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Plans architect.zip&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;14.8 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
+    &lt;!-- the type (icon color) and the icon text come from the extension --&gt;
+    &lt;OcAttachmentList :items="files" label="Files in this message" /&gt;
 
-    &lt;a class="oc-attachment-image" href="/files/worktop-sample.jpg"&gt;
-      &lt;span class="oc-media-art oc-media-art--6" role="img" aria-label="Photo of the Calacatta worktop sample"&gt;&lt;/span&gt;
-      &lt;span class="oc-attachment-image__caption"&gt;worktop-sample.jpg · 2.1 MB&lt;/span&gt;
-    &lt;/a&gt;
+    &lt;OcAttachmentImage href="/files/worktop-sample.jpg" :art="6" alt="Photo of the Calacatta worktop sample" caption="worktop-sample.jpg · 2.1 MB" /&gt;
 
-    &lt;div class="oc-attachment-list" aria-label="Files to send"&gt;
-      &lt;div class="oc-attachment-thumb"&gt;
-        &lt;span class="oc-media-art oc-media-art--2" role="img" aria-label="Pasted screenshot"&gt;&lt;/span&gt;
-        &lt;button type="button" class="oc-attachment__remove" aria-label="Remove screenshot.png"&gt;✕&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-attachment oc-attachment--pdf oc-attachment--uploading" style="--oc-attachment-progress:65%"&gt;
-        &lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;
-        &lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Delivery note 4471.pdf&lt;/span&gt;&lt;span class="oc-attachment__size" role="status"&gt;Uploading… 65%&lt;/span&gt;&lt;/span&gt;
-        &lt;button type="button" class="oc-attachment__remove" aria-label="Cancel upload of Delivery note 4471.pdf"&gt;✕&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-attachment oc-attachment--image oc-attachment--error"&gt;
-        &lt;span class="oc-attachment__icon" aria-hidden="true"&gt;HEIC&lt;/span&gt;
-        &lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;IMG_2048.heic&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;Larger than 25 MB&lt;/span&gt;&lt;/span&gt;
-        &lt;button type="button" class="oc-attachment__remove" aria-label="Remove IMG_2048.heic"&gt;✕&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;OcAttachmentList as="div" label="Files to send"&gt;
+      &lt;OcAttachmentThumb :art="2" alt="Pasted screenshot" remove-label="Remove screenshot.png" /&gt;
+      &lt;OcAttachment name="Delivery note 4471.pdf" state="uploading" :progress="65" size="Uploading… 65%" removable remove-label="Cancel upload of Delivery note 4471.pdf" /&gt;
+      &lt;OcAttachment name="IMG_2048.heic" state="error" size="Larger than 25 MB" removable /&gt;
+    &lt;/OcAttachmentList&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:grid;gap:1.25rem;inline-size:100%;max-inline-size:40rem"&gt;
-  &lt;ul class="oc-attachment-list" aria-label="Files in this message"&gt;
-    &lt;li&gt;&lt;a class="oc-attachment oc-attachment--pdf" href="/files/quote.pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Quote kitchen Project 1 v2.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;1.2 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a class="oc-attachment oc-attachment--sheet" href="/files/measurements.xlsx"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;XLS&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Measurements ground floor.xlsx&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;86 KB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a class="oc-attachment oc-attachment--doc" href="/files/contract.docx"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;DOC&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Contract addendum.docx&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;240 KB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a class="oc-attachment oc-attachment--zip" href="/files/plans.zip"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;ZIP&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Plans architect.zip&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;14.8 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;/ul&gt;
+    {{-- the type (icon color) and the icon text come from the extension --}}
+    &lt;x-oc::attachment.list label="Files in this message" :items="[
+        ['name' =&gt; 'Quote kitchen Project 1 v2.pdf', 'size' =&gt; '1.2 MB', 'href' =&gt; '/files/quote.pdf'],
+        ['name' =&gt; 'Measurements ground floor.xlsx', 'size' =&gt; '86 KB', 'href' =&gt; '/files/measurements.xlsx'],
+        ['name' =&gt; 'Contract addendum.docx', 'size' =&gt; '240 KB', 'href' =&gt; '/files/contract.docx'],
+        ['name' =&gt; 'Plans architect.zip', 'size' =&gt; '14.8 MB', 'href' =&gt; '/files/plans.zip'],
+    ]" /&gt;
 
-  &lt;a class="oc-attachment-image" href="/files/worktop-sample.jpg"&gt;
-    &lt;span class="oc-media-art oc-media-art--6" role="img" aria-label="Photo of the Calacatta worktop sample"&gt;&lt;/span&gt;
-    &lt;span class="oc-attachment-image__caption"&gt;worktop-sample.jpg · 2.1 MB&lt;/span&gt;
-  &lt;/a&gt;
+    &lt;x-oc::attachment.image href="/files/worktop-sample.jpg" :art="6" alt="Photo of the Calacatta worktop sample" caption="worktop-sample.jpg · 2.1 MB" /&gt;
 
-  &lt;div class="oc-attachment-list" aria-label="Files to send"&gt;
-    &lt;div class="oc-attachment-thumb"&gt;
-      &lt;span class="oc-media-art oc-media-art--2" role="img" aria-label="Pasted screenshot"&gt;&lt;/span&gt;
-      &lt;button type="button" class="oc-attachment__remove" aria-label="Remove screenshot.png"&gt;✕&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-attachment oc-attachment--pdf oc-attachment--uploading" style="--oc-attachment-progress:65%"&gt;
-      &lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;
-      &lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Delivery note 4471.pdf&lt;/span&gt;&lt;span class="oc-attachment__size" role="status"&gt;Uploading… 65%&lt;/span&gt;&lt;/span&gt;
-      &lt;button type="button" class="oc-attachment__remove" aria-label="Cancel upload of Delivery note 4471.pdf"&gt;✕&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-attachment oc-attachment--image oc-attachment--error"&gt;
-      &lt;span class="oc-attachment__icon" aria-hidden="true"&gt;HEIC&lt;/span&gt;
-      &lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;IMG_2048.heic&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;Larger than 25 MB&lt;/span&gt;&lt;/span&gt;
-      &lt;button type="button" class="oc-attachment__remove" aria-label="Remove IMG_2048.heic"&gt;✕&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+    &lt;x-oc::attachment.list as="div" label="Files to send"&gt;
+        &lt;x-oc::attachment.thumb :art="2" alt="Pasted screenshot" remove-label="Remove screenshot.png" /&gt;
+        &lt;x-oc::attachment name="Delivery note 4471.pdf" state="uploading" :progress="65" size="Uploading… 65%" removable remove-label="Cancel upload of Delivery note 4471.pdf" /&gt;
+        &lt;x-oc::attachment name="IMG_2048.heic" state="error" size="Larger than 25 MB" removable /&gt;
+    &lt;/x-oc::attachment.list&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -187,35 +156,24 @@ class Attachment extends Component
 }
 
 {{-- resources/views/livewire/attachment.blade.php --}}
-&lt;div style="display:grid;gap:1.25rem;inline-size:100%;max-inline-size:40rem"&gt;
-  &lt;ul class="oc-attachment-list" aria-label="Files in this message"&gt;
-    &lt;li&gt;&lt;a class="oc-attachment oc-attachment--pdf" href="/files/quote.pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Quote kitchen Project 1 v2.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;1.2 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a class="oc-attachment oc-attachment--sheet" href="/files/measurements.xlsx"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;XLS&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Measurements ground floor.xlsx&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;86 KB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a class="oc-attachment oc-attachment--doc" href="/files/contract.docx"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;DOC&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Contract addendum.docx&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;240 KB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a class="oc-attachment oc-attachment--zip" href="/files/plans.zip"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;ZIP&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Plans architect.zip&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;14.8 MB&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;/ul&gt;
+&lt;div&gt;
+    &lt;div style="display:grid;gap:1.25rem;inline-size:100%;max-inline-size:40rem"&gt;
+        {{-- the type (icon color) and the icon text come from the extension --}}
+        &lt;x-oc::attachment.list label="Files in this message" :items="[
+            ['name' =&gt; 'Quote kitchen Project 1 v2.pdf', 'size' =&gt; '1.2 MB', 'href' =&gt; '/files/quote.pdf'],
+            ['name' =&gt; 'Measurements ground floor.xlsx', 'size' =&gt; '86 KB', 'href' =&gt; '/files/measurements.xlsx'],
+            ['name' =&gt; 'Contract addendum.docx', 'size' =&gt; '240 KB', 'href' =&gt; '/files/contract.docx'],
+            ['name' =&gt; 'Plans architect.zip', 'size' =&gt; '14.8 MB', 'href' =&gt; '/files/plans.zip'],
+        ]" /&gt;
 
-  &lt;a class="oc-attachment-image" href="/files/worktop-sample.jpg"&gt;
-    &lt;span class="oc-media-art oc-media-art--6" role="img" aria-label="Photo of the Calacatta worktop sample"&gt;&lt;/span&gt;
-    &lt;span class="oc-attachment-image__caption"&gt;worktop-sample.jpg · 2.1 MB&lt;/span&gt;
-  &lt;/a&gt;
+        &lt;x-oc::attachment.image href="/files/worktop-sample.jpg" :art="6" alt="Photo of the Calacatta worktop sample" caption="worktop-sample.jpg · 2.1 MB" /&gt;
 
-  &lt;div class="oc-attachment-list" aria-label="Files to send"&gt;
-    &lt;div class="oc-attachment-thumb"&gt;
-      &lt;span class="oc-media-art oc-media-art--2" role="img" aria-label="Pasted screenshot"&gt;&lt;/span&gt;
-      &lt;button type="button" class="oc-attachment__remove" aria-label="Remove screenshot.png"&gt;✕&lt;/button&gt;
+        &lt;x-oc::attachment.list as="div" label="Files to send"&gt;
+            &lt;x-oc::attachment.thumb :art="2" alt="Pasted screenshot" remove-label="Remove screenshot.png" /&gt;
+            &lt;x-oc::attachment name="Delivery note 4471.pdf" state="uploading" :progress="65" size="Uploading… 65%" removable remove-label="Cancel upload of Delivery note 4471.pdf" /&gt;
+            &lt;x-oc::attachment name="IMG_2048.heic" state="error" size="Larger than 25 MB" removable /&gt;
+        &lt;/x-oc::attachment.list&gt;
     &lt;/div&gt;
-    &lt;div class="oc-attachment oc-attachment--pdf oc-attachment--uploading" style="--oc-attachment-progress:65%"&gt;
-      &lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;
-      &lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Delivery note 4471.pdf&lt;/span&gt;&lt;span class="oc-attachment__size" role="status"&gt;Uploading… 65%&lt;/span&gt;&lt;/span&gt;
-      &lt;button type="button" class="oc-attachment__remove" aria-label="Cancel upload of Delivery note 4471.pdf"&gt;✕&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-attachment oc-attachment--image oc-attachment--error"&gt;
-      &lt;span class="oc-attachment__icon" aria-hidden="true"&gt;HEIC&lt;/span&gt;
-      &lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;IMG_2048.heic&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;Larger than 25 MB&lt;/span&gt;&lt;/span&gt;
-      &lt;button type="button" class="oc-attachment__remove" aria-label="Remove IMG_2048.heic"&gt;✕&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="composer" class="oc-section-content__title mt-2">Above a composer</h3><p class="oc-section-content__desc">Put the list of files to send right above the <a href="chat-composer.html">chat composer</a>. The file input stays a native <code>&lt;input type="file"&gt;</code>.</p>
@@ -248,53 +206,62 @@ class Attachment extends Component
     &lt;/div&gt;
   &lt;/form&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { AttachmentList, ChatComposer, Webicon, type AttachmentFile } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [files, setFiles] = useState&lt;AttachmentFile[]&gt;([
+    { name: "screenshot-14-10.png", size: "412 KB", image: "/uploads/screenshot-14-10.png", removable: true },
+    { name: "Floor plan kitchen.pdf", size: "3.4 MB", removable: true },
+  ]);
   return (
     &lt;div style={{ display: "grid", gap: "0.5rem", inlineSize: "100%", maxInlineSize: "32rem" }}&gt;
-      &lt;ul className="oc-attachment-list oc-attachment-list--stack" aria-label="Files to send"&gt;
-        &lt;li&gt;&lt;div className="oc-attachment oc-attachment--image"&gt;&lt;span className="oc-attachment__icon"&gt;&lt;span className="oc-media-art oc-media-art--3" role="img" aria-label="Preview of screenshot-14-10.png" /&gt;&lt;/span&gt;&lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;screenshot-14-10.png&lt;/span&gt;&lt;span className="oc-attachment__size"&gt;412 KB&lt;/span&gt;&lt;/span&gt;&lt;button type="button" className="oc-attachment__remove" aria-label="Remove screenshot-14-10.png"&gt;✕&lt;/button&gt;&lt;/div&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;div className="oc-attachment oc-attachment--pdf"&gt;&lt;span className="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span className="oc-attachment__body"&gt;&lt;span className="oc-attachment__name"&gt;Floor plan kitchen.pdf&lt;/span&gt;&lt;span className="oc-attachment__size"&gt;3.4 MB&lt;/span&gt;&lt;/span&gt;&lt;button type="button" className="oc-attachment__remove" aria-label="Remove Floor plan kitchen.pdf"&gt;✕&lt;/button&gt;&lt;/div&gt;&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;form className="oc-chat-composer oc-chat-composer--inline" action="/messages" method="post" aria-label="Message"&gt;
-        &lt;label className="oc-visually-hidden" htmlFor="oc-attachment-demo-input"&gt;Message&lt;/label&gt;
-        &lt;textarea className="oc-chat-composer__input" id="oc-attachment-demo-input" rows={1} placeholder="Add a note to the files…" /&gt;
-        &lt;div className="oc-chat-composer__bar"&gt;
-          &lt;div className="oc-chat-composer__tools"&gt;&lt;button type="button" className="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-          &lt;button type="submit" className="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/form&gt;
+      &lt;AttachmentList stack items={files} aria-label="Files to send" onRemove={(_, i) =&gt; setFiles(files.filter((__, j) =&gt; j !== i))} /&gt;
+      &lt;ChatComposer
+        inline
+        placeholder="Add a note to the files…"
+        tools={&lt;button type="button" className="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;Webicon name="mdi:paperclip" /&gt;&lt;/button&gt;}
+        onSend={(text) =&gt; console.log("send", text, files)}
+      /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcAttachment, OcAttachmentList, OcChatComposer, OcWebicon } from "@birdycom/omniaui-vue";
+
+const files = ref([
+  { name: "screenshot-14-10.png", size: "412 KB", image: "/uploads/screenshot-14-10.png" },
+  { name: "Floor plan kitchen.pdf", size: "3.4 MB" },
+]);
+const note = ref("");
+const send = (text: string) =&gt; console.log("send", text, files.value);
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div style="display:grid;gap:0.5rem;inline-size:100%;max-inline-size:32rem"&gt;
-    &lt;ul class="oc-attachment-list oc-attachment-list--stack" aria-label="Files to send"&gt;
-      &lt;li&gt;&lt;div class="oc-attachment oc-attachment--image"&gt;&lt;span class="oc-attachment__icon"&gt;&lt;span class="oc-media-art oc-media-art--3" role="img" aria-label="Preview of screenshot-14-10.png"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;screenshot-14-10.png&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;412 KB&lt;/span&gt;&lt;/span&gt;&lt;button type="button" class="oc-attachment__remove" aria-label="Remove screenshot-14-10.png"&gt;✕&lt;/button&gt;&lt;/div&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;div class="oc-attachment oc-attachment--pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Floor plan kitchen.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;3.4 MB&lt;/span&gt;&lt;/span&gt;&lt;button type="button" class="oc-attachment__remove" aria-label="Remove Floor plan kitchen.pdf"&gt;✕&lt;/button&gt;&lt;/div&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;form class="oc-chat-composer oc-chat-composer--inline" action="/messages" method="post" aria-label="Message"&gt;
-      &lt;label class="oc-visually-hidden" for="oc-attachment-demo-input"&gt;Message&lt;/label&gt;
-      &lt;textarea class="oc-chat-composer__input" id="oc-attachment-demo-input" rows="1" placeholder="Add a note to the files…"&gt;&lt;/textarea&gt;
-      &lt;div class="oc-chat-composer__bar"&gt;
-        &lt;div class="oc-chat-composer__tools"&gt;&lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z" /&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-        &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/form&gt;
+    &lt;OcAttachmentList stack label="Files to send"&gt;
+      &lt;li v-for="(file, i) in files" :key="file.name"&gt;
+        &lt;OcAttachment v-bind="file" removable :remove-label="`Remove ${file.name}`" @remove="files.splice(i, 1)" /&gt;
+      &lt;/li&gt;
+    &lt;/OcAttachmentList&gt;
+    &lt;OcChatComposer v-model="note" inline placeholder="Add a note to the files…" @send="send"&gt;
+      &lt;template #tools&gt;
+        &lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;OcWebicon name="mdi:paperclip" /&gt;&lt;/button&gt;
+      &lt;/template&gt;
+    &lt;/OcChatComposer&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:grid;gap:0.5rem;inline-size:100%;max-inline-size:32rem"&gt;
-  &lt;ul class="oc-attachment-list oc-attachment-list--stack" aria-label="Files to send"&gt;
-    &lt;li&gt;&lt;div class="oc-attachment oc-attachment--image"&gt;&lt;span class="oc-attachment__icon"&gt;&lt;span class="oc-media-art oc-media-art--3" role="img" aria-label="Preview of screenshot-14-10.png"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;screenshot-14-10.png&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;412 KB&lt;/span&gt;&lt;/span&gt;&lt;button type="button" class="oc-attachment__remove" aria-label="Remove screenshot-14-10.png"&gt;✕&lt;/button&gt;&lt;/div&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;div class="oc-attachment oc-attachment--pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Floor plan kitchen.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;3.4 MB&lt;/span&gt;&lt;/span&gt;&lt;button type="button" class="oc-attachment__remove" aria-label="Remove Floor plan kitchen.pdf"&gt;✕&lt;/button&gt;&lt;/div&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;form class="oc-chat-composer oc-chat-composer--inline" action="/messages" method="post" aria-label="Message"&gt;
-    &lt;label class="oc-visually-hidden" for="oc-attachment-demo-input"&gt;Message&lt;/label&gt;
-    &lt;textarea class="oc-chat-composer__input" id="oc-attachment-demo-input" rows="1" placeholder="Add a note to the files…"&gt;&lt;/textarea&gt;
-    &lt;div class="oc-chat-composer__bar"&gt;
-      &lt;div class="oc-chat-composer__tools"&gt;&lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-      &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/form&gt;
+    {{-- removing a file is up to your app: the remove buttons are plain buttons --}}
+    &lt;x-oc::attachment.list stack label="Files to send" :items="[
+        ['name' =&gt; 'screenshot-14-10.png', 'size' =&gt; '412 KB', 'image' =&gt; '/uploads/screenshot-14-10.png', 'removable' =&gt; true],
+        ['name' =&gt; 'Floor plan kitchen.pdf', 'size' =&gt; '3.4 MB', 'removable' =&gt; true],
+    ]" /&gt;
+    &lt;x-oc::chat-composer inline action="/messages" id="oc-attachment-demo-input" placeholder="Add a note to the files…"&gt;
+        @csrf
+        &lt;x-slot:tools&gt;&lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;x-oc::webicon name="mdi:paperclip" /&gt;&lt;/button&gt;&lt;/x-slot:tools&gt;
+    &lt;/x-oc::chat-composer&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -311,19 +278,18 @@ class AttachmentAboveAComposer extends Component
 }
 
 {{-- resources/views/livewire/attachment-above-a-composer.blade.php --}}
-&lt;div style="display:grid;gap:0.5rem;inline-size:100%;max-inline-size:32rem"&gt;
-  &lt;ul class="oc-attachment-list oc-attachment-list--stack" aria-label="Files to send"&gt;
-    &lt;li&gt;&lt;div class="oc-attachment oc-attachment--image"&gt;&lt;span class="oc-attachment__icon"&gt;&lt;span class="oc-media-art oc-media-art--3" role="img" aria-label="Preview of screenshot-14-10.png"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;screenshot-14-10.png&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;412 KB&lt;/span&gt;&lt;/span&gt;&lt;button type="button" class="oc-attachment__remove" aria-label="Remove screenshot-14-10.png"&gt;✕&lt;/button&gt;&lt;/div&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;div class="oc-attachment oc-attachment--pdf"&gt;&lt;span class="oc-attachment__icon" aria-hidden="true"&gt;PDF&lt;/span&gt;&lt;span class="oc-attachment__body"&gt;&lt;span class="oc-attachment__name"&gt;Floor plan kitchen.pdf&lt;/span&gt;&lt;span class="oc-attachment__size"&gt;3.4 MB&lt;/span&gt;&lt;/span&gt;&lt;button type="button" class="oc-attachment__remove" aria-label="Remove Floor plan kitchen.pdf"&gt;✕&lt;/button&gt;&lt;/div&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;form class="oc-chat-composer oc-chat-composer--inline" action="/messages" method="post" aria-label="Message"&gt;
-    &lt;label class="oc-visually-hidden" for="oc-attachment-demo-input"&gt;Message&lt;/label&gt;
-    &lt;textarea class="oc-chat-composer__input" id="oc-attachment-demo-input" rows="1" placeholder="Add a note to the files…"&gt;&lt;/textarea&gt;
-    &lt;div class="oc-chat-composer__bar"&gt;
-      &lt;div class="oc-chat-composer__tools"&gt;&lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M16.5 6v11.5a4 4 0 0 1-4 4a4 4 0 0 1-4-4V5a2.5 2.5 0 0 1 2.5-2.5A2.5 2.5 0 0 1 13.5 5v10.5a1 1 0 0 1-1 1a1 1 0 0 1-1-1V6H10v9.5a2.5 2.5 0 0 0 2.5 2.5a2.5 2.5 0 0 0 2.5-2.5V5a4 4 0 0 0-4-4a4 4 0 0 0-4 4v12.5a5.5 5.5 0 0 0 5.5 5.5a5.5 5.5 0 0 0 5.5-5.5V6z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
-      &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z"/&gt;&lt;/svg&gt;&lt;/button&gt;
+&lt;div&gt;
+    &lt;div style="display:grid;gap:0.5rem;inline-size:100%;max-inline-size:32rem"&gt;
+        {{-- removing a file is up to your app: the remove buttons are plain buttons --}}
+        &lt;x-oc::attachment.list stack label="Files to send" :items="[
+            ['name' =&gt; 'screenshot-14-10.png', 'size' =&gt; '412 KB', 'image' =&gt; '/uploads/screenshot-14-10.png', 'removable' =&gt; true],
+            ['name' =&gt; 'Floor plan kitchen.pdf', 'size' =&gt; '3.4 MB', 'removable' =&gt; true],
+        ]" /&gt;
+        &lt;x-oc::chat-composer inline action="/messages" id="oc-attachment-demo-input" placeholder="Add a note to the files…"&gt;
+            @csrf
+            &lt;x-slot:tools&gt;&lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;x-oc::webicon name="mdi:paperclip" /&gt;&lt;/button&gt;&lt;/x-slot:tools&gt;
+        &lt;/x-oc::chat-composer&gt;
     &lt;/div&gt;
-  &lt;/form&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

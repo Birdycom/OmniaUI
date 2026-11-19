@@ -18,7 +18,7 @@ const args = process.argv.slice(2);
 const opt = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : undefined; };
 const only = opt("--pages")?.split(",").map((p) => p.trim().replace(/\\/g, "/")).filter(Boolean);
 const which = opt("--only");
-const TMP = path.join(REPO, "node_modules/.cache/code-tabs-check");
+const TMP = path.join(REPO, "node_modules/.cache", "code-tabs-check" + (process.env.CODE_TABS_RUN ? "-" + process.env.CODE_TABS_RUN : ""));
 const posix = (p) => p.replace(/\\/g, "/");
 
 fs.rmSync(TMP, { recursive: true, force: true });

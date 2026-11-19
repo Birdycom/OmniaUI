@@ -32,28 +32,63 @@
   });
 })();
 </script>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useRef, useState, type MouseEvent } from "react";
+import { DropdownItem, DropdownSeparator } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const menu = useRef&lt;HTMLDivElement&gt;(null);
+  const [bookmarks, setBookmarks] = useState(true);
+
+  const open = (e: MouseEvent) =&gt; {
+    e.preventDefault();
+    const el = menu.current!;
+    el.style.setProperty("--oc-context-x", `${Math.min(e.clientX, innerWidth - 220)}px`);
+    el.style.setProperty("--oc-context-y", `${Math.min(e.clientY, innerHeight - 220)}px`);
+    // Firefox fires contextmenu while the right button is still down: open after the release
+    if (e.buttons) window.addEventListener("pointerup", () =&gt; setTimeout(() =&gt; el.showPopover()), { once: true });
+    else el.showPopover();
+  };
+
   return (
     &lt;&gt;
-      &lt;div className="oc-context-area" id="oc-ctx-area" tabIndex={0}&gt;Right-click (or press the menu key) here&lt;/div&gt;
-      &lt;div className="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover="" role="menu" aria-label="Actions"&gt;
-        &lt;button className="oc-dropdown-item" type="button" role="menuitem"&gt;Back &lt;span className="oc-dropdown-shortcut"&gt;Alt ←&lt;/span&gt;&lt;/button&gt;
-        &lt;button className="oc-dropdown-item" type="button" role="menuitem"&gt;Reload &lt;span className="oc-dropdown-shortcut"&gt;Ctrl R&lt;/span&gt;&lt;/button&gt;
-        &lt;div className="oc-dropdown-separator" role="separator" /&gt;
-        &lt;button className="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true"&gt;Show bookmarks&lt;/button&gt;
-        &lt;button className="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem"&gt;Delete&lt;/button&gt;
+      &lt;div className="oc-context-area" tabIndex={0} onContextMenu={open}&gt;Right-click (or press the menu key) here&lt;/div&gt;
+      {/* the menu is a popover; DropdownItem closes it after a click */}
+      &lt;div ref={menu} className="oc-dropdown-menu oc-context-menu" popover="" role="menu" aria-label="Actions"&gt;
+        &lt;DropdownItem role="menuitem" hint="Alt ←" onClick={() =&gt; history.back()}&gt;Back&lt;/DropdownItem&gt;
+        &lt;DropdownItem role="menuitem" hint="Ctrl R" onClick={() =&gt; location.reload()}&gt;Reload&lt;/DropdownItem&gt;
+        &lt;DropdownSeparator role="separator" /&gt;
+        &lt;DropdownItem checked={bookmarks} onClick={() =&gt; setBookmarks(!bookmarks)}&gt;Show bookmarks&lt;/DropdownItem&gt;
+        &lt;DropdownItem role="menuitem" className="oc-dropdown-item--destructive"&gt;Delete&lt;/DropdownItem&gt;
       &lt;/div&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-context-area" id="oc-ctx-area" tabindex="0"&gt;Right-click (or press the menu key) here&lt;/div&gt;
-  &lt;div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover="" role="menu" aria-label="Actions"&gt;
-    &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Back &lt;span class="oc-dropdown-shortcut"&gt;Alt ←&lt;/span&gt;&lt;/button&gt;
-    &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Reload &lt;span class="oc-dropdown-shortcut"&gt;Ctrl R&lt;/span&gt;&lt;/button&gt;
-    &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-    &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true"&gt;Show bookmarks&lt;/button&gt;
-    &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem"&gt;Delete&lt;/button&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcDropdownItem, OcDropdownSeparator } from "@birdycom/omniaui-vue";
+
+const menu = ref&lt;HTMLDivElement | null&gt;(null);
+const bookmarks = ref(true);
+
+function open(e: MouseEvent) {
+  const el = menu.value!;
+  el.style.setProperty("--oc-context-x", `${Math.min(e.clientX, innerWidth - 220)}px`);
+  el.style.setProperty("--oc-context-y", `${Math.min(e.clientY, innerHeight - 220)}px`);
+  // Firefox fires contextmenu while the right button is still down: open after the release
+  if (e.buttons) window.addEventListener("pointerup", () =&gt; setTimeout(() =&gt; el.showPopover()), { once: true });
+  else el.showPopover();
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-context-area" tabindex="0" @contextmenu.prevent="open"&gt;Right-click (or press the menu key) here&lt;/div&gt;
+  &lt;!-- the menu is a popover; OcDropdownItem closes it after a click --&gt;
+  &lt;div ref="menu" class="oc-dropdown-menu oc-context-menu" popover="" role="menu" aria-label="Actions"&gt;
+    &lt;OcDropdownItem role="menuitem" hint="Alt ←"&gt;Back&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem role="menuitem" hint="Ctrl R"&gt;Reload&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator role="separator" /&gt;
+    &lt;OcDropdownItem :checked="bookmarks" @click="bookmarks = !bookmarks"&gt;Show bookmarks&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem role="menuitem" class="oc-dropdown-item--destructive"&gt;Delete&lt;/OcDropdownItem&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-context-area" id="oc-ctx-area" tabindex="0"&gt;Right-click (or press the menu key) here&lt;/div&gt;
@@ -84,38 +119,40 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class ContextMenu extends Component
+class BrowserArea extends Component
 {
+    public bool $bookmarks = true;
+
+    public function toggleBookmarks(): void
+    {
+        $this-&gt;bookmarks = ! $this-&gt;bookmarks;
+    }
+
+    public function delete(): void
+    {
+        // Item::findOrFail($this-&gt;itemId)-&gt;delete();
+    }
+
     public function render()
     {
-        return view('livewire.context-menu');
+        return view('livewire.browser-area');
     }
 }
 
-{{-- resources/views/livewire/context-menu.blade.php --}}
-&lt;div&gt;
-    &lt;div class="oc-context-area" id="oc-ctx-area" tabindex="0"&gt;Right-click (or press the menu key) here&lt;/div&gt;
-    &lt;div class="oc-dropdown-menu oc-context-menu" id="oc-ctx-menu" popover="" role="menu" aria-label="Actions"&gt;
-      &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Back &lt;span class="oc-dropdown-shortcut"&gt;Alt ←&lt;/span&gt;&lt;/button&gt;
-      &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;Reload &lt;span class="oc-dropdown-shortcut"&gt;Ctrl R&lt;/span&gt;&lt;/button&gt;
-      &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-      &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true"&gt;Show bookmarks&lt;/button&gt;
-      &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem"&gt;Delete&lt;/button&gt;
+{{-- resources/views/livewire/browser-area.blade.php --}}
+{{-- Alpine opens the popover at the pointer; the items call the component --}}
+&lt;div x-data x-on:contextmenu.prevent="
+    $refs.menu.style.setProperty('--oc-context-x', Math.min($event.clientX, innerWidth - 220) + 'px');
+    $refs.menu.style.setProperty('--oc-context-y', Math.min($event.clientY, innerHeight - 220) + 'px');
+    $event.buttons ? addEventListener('pointerup', () =&gt; setTimeout(() =&gt; $refs.menu.showPopover()), { once: true }) : $refs.menu.showPopover()"&gt;
+    &lt;div class="oc-context-area" tabindex="0"&gt;Right-click (or press the menu key) here&lt;/div&gt;
+    &lt;div class="oc-dropdown-menu oc-context-menu" x-ref="menu" popover role="menu" aria-label="Actions"&gt;
+        &lt;button class="oc-dropdown-item" type="button" role="menuitem" x-on:click="history.back()"&gt;Back &lt;span class="oc-dropdown-shortcut"&gt;Alt ←&lt;/span&gt;&lt;/button&gt;
+        &lt;button class="oc-dropdown-item" type="button" role="menuitem" x-on:click="location.reload()"&gt;Reload &lt;span class="oc-dropdown-shortcut"&gt;Ctrl R&lt;/span&gt;&lt;/button&gt;
+        &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
+        &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="{{ $bookmarks ? 'true' : 'false' }}" wire:click="toggleBookmarks"&gt;Show bookmarks&lt;/button&gt;
+        &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem" wire:click="delete" wire:confirm="Delete this item?"&gt;Delete&lt;/button&gt;
     &lt;/div&gt;
-    &lt;script&gt;
-    (function () {
-      var area = document.getElementById('oc-ctx-area'), menu = document.getElementById('oc-ctx-menu');
-      area.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-        menu.style.setProperty('--oc-context-x', Math.min(e.clientX, innerWidth - 220) + 'px');
-        menu.style.setProperty('--oc-context-y', Math.min(e.clientY, innerHeight - 220) + 'px');
-        // Firefox fires contextmenu while the right button is still down: open after the release,
-        // or that release would close the menu again right away.
-        if (e.buttons) window.addEventListener('pointerup', function () { setTimeout(function () { menu.showPopover(); }); }, { once: true });
-        else menu.showPopover();
-      });
-    })();
-    &lt;/script&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

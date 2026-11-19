@@ -58,20 +58,27 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class LogoAPlateOnlyWhereItWould extends Component
+class CustomerLogos extends Component
 {
+    public array $customers = [
+        ['name' =&gt; 'Company 1', 'logo' =&gt; '/img/samples/logo-company-1.svg'],
+        ['name' =&gt; 'Company 2', 'logo' =&gt; '/img/samples/logo-company-2.svg'],
+        ['name' =&gt; 'Company 3', 'logo' =&gt; '/img/samples/logo-company-3.svg'],
+        ['name' =&gt; 'Company 4', 'logo' =&gt; '/img/samples/logo-company-4.svg'],
+    ];
+
     public function render()
     {
-        return view('livewire.logo-a-plate-only-where-it-would');
+        return view('livewire.customer-logos');
     }
 }
 
-{{-- resources/views/livewire/logo-a-plate-only-where-it-would.blade.php --}}
+{{-- resources/views/livewire/customer-logos.blade.php --}}
 &lt;div&gt;
-    &lt;span class="oc-logo" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-1.svg" alt="Company 1"&gt;&lt;/span&gt;
-    &lt;span class="oc-logo" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-2.svg" alt="Company 2"&gt;&lt;/span&gt;
-    &lt;span class="oc-logo" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-3.svg" alt="Company 3"&gt;&lt;/span&gt;
-    &lt;span class="oc-logo" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-4.svg" alt="Company 4"&gt;&lt;/span&gt;
+    {{-- plate="auto": oc-logo.js measures each logo and adds a plate only where it would disappear --}}
+    @foreach ($customers as $customer)
+        &lt;x-oc::logo :src="$customer['logo']" :alt="$customer['name']" wire:key="logo-{{ $loop-&gt;index }}" /&gt;
+    @endforeach
     &lt;script type="module" src="/js/oc-logo.js"&gt;&lt;/script&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -101,21 +108,28 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class LogoSameBox extends Component
+class CustomerLogoGrid extends Component
 {
+    public array $customers = [
+        ['name' =&gt; 'Company 1', 'logo' =&gt; '/img/samples/logo-company-1.svg'],
+        ['name' =&gt; 'Company 2', 'logo' =&gt; '/img/samples/logo-company-2.svg'],
+        ['name' =&gt; 'Company 3', 'logo' =&gt; '/img/samples/logo-company-3.svg'],
+        ['name' =&gt; 'Company 4', 'logo' =&gt; '/img/samples/logo-company-4.svg'],
+    ];
+
     public function render()
     {
-        return view('livewire.logo-same-box');
+        return view('livewire.customer-logo-grid');
     }
 }
 
-{{-- resources/views/livewire/logo-same-box.blade.php --}}
+{{-- resources/views/livewire/customer-logo-grid.blade.php --}}
 &lt;div&gt;
+    {{-- fit="box": every logo in the same 10rem x 2rem box --}}
     &lt;div class="grid gap-1 w-full" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); justify-items: center"&gt;
-    &lt;span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-1.svg" alt="Company 1"&gt;&lt;/span&gt;
-    &lt;span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-2.svg" alt="Company 2"&gt;&lt;/span&gt;
-    &lt;span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-3.svg" alt="Company 3"&gt;&lt;/span&gt;
-    &lt;span class="oc-logo oc-logo--box" style="--oc-logo-w: 10rem; --oc-logo-h: 2rem" data-plate="auto"&gt;&lt;img src="/img/samples/logo-company-4.svg" alt="Company 4"&gt;&lt;/span&gt;
+        @foreach ($customers as $customer)
+            &lt;x-oc::logo :src="$customer['logo']" :alt="$customer['name']" fit="box" max-width="10rem" height="2rem" wire:key="logo-{{ $loop-&gt;index }}" /&gt;
+        @endforeach
     &lt;/div&gt;
     &lt;script type="module" src="/js/oc-logo.js"&gt;&lt;/script&gt;
 &lt;/div&gt;</oc-code>

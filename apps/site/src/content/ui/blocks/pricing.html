@@ -52,135 +52,131 @@
               </div>
             </div>
           </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { BlockPricing } from "@birdycom/omniaui-react";
+import type { PricingPlan } from "@birdycom/omniaui-react";
+
+const plans: PricingPlan[] = [
+  {
+    name: "Free",
+    description: "For one user, to try it out",
+    price: "€0",
+    period: "/month",
+    features: ["Quotes and invoices", "1 user", "Support by e-mail"],
+    action: "Get started",
+    href: "/signup?plan=free",
+  },
+  {
+    name: "Pro",
+    description: "For a team of up to 10 people",
+    price: "€29",
+    period: "/month",
+    features: ["Everything in Free", "10 users", "Stock and purchasing", "Support by phone"],
+    action: "Subscribe",
+    featured: true,
+    href: "/signup?plan=pro",
+  },
+  {
+    name: "Enterprise",
+    description: "For larger companies",
+    price: "Custom",
+    features: ["Everything in Pro", "Links to your other software", "A fixed contact person", "Agreed response times"],
+    action: "Contact sales",
+    href: "/signup?plan=enterprise",
+  },
+];
+
+export function Example() {
   return (
-    &lt;div className="oc-block-pricing"&gt;
-      &lt;h2&gt;Plans and prices&lt;/h2&gt;
-      &lt;p&gt;Prices per month, excluding VAT. Change or stop at the end of any month.&lt;/p&gt;
-      &lt;div className="oc-block-pricing-grid"&gt;
-        &lt;div className="oc-block-pricing-card"&gt;
-          &lt;p className="oc-block-pricing-name"&gt;Free&lt;/p&gt;
-          &lt;p className="oc-block-pricing-desc"&gt;For one user, to try it out&lt;/p&gt;
-          &lt;p className="oc-block-pricing-price"&gt;€0 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
-          &lt;ul className="oc-block-pricing-features"&gt;
+    &lt;BlockPricing
+      title="Plans and prices"
+      description="Prices per month, excluding VAT. Change or stop at the end of any month."
+      plans={plans}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockPricing } from '@birdycom/omniaui-vue'
+import type { PricingPlan } from '@birdycom/omniaui-vue'
+
+const plans: PricingPlan[] = [
+  {
+    name: 'Free',
+    description: 'For one user, to try it out',
+    price: '€0',
+    period: '/month',
+    features: ['Quotes and invoices', '1 user', 'Support by e-mail'],
+    cta: 'Get started',
+  },
+  {
+    name: 'Pro',
+    description: 'For a team of up to 10 people',
+    price: '€29',
+    period: '/month',
+    features: ['Everything in Free', '10 users', 'Stock and purchasing', 'Support by phone'],
+    cta: 'Subscribe',
+    featured: true,
+  },
+  {
+    name: 'Enterprise',
+    description: 'For larger companies',
+    price: 'Custom',
+    features: ['Everything in Pro', 'Links to your other software', 'A fixed contact person', 'Agreed response times'],
+    cta: 'Contact sales',
+  },
+]
+
+function choose(plan: PricingPlan) {
+  window.location.href = `/signup?plan=${plan.name.toLowerCase()}`
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockPricing
+    title="Plans and prices"
+    description="Prices per month, excluding VAT. Change or stop at the end of any month."
+    :plans="plans"
+    @select="choose"
+  /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.pricing&gt;
+    &lt;x-slot:title&gt;Plans and prices&lt;/x-slot:title&gt;
+    &lt;x-slot:text&gt;Prices per month, excluding VAT. Change or stop at the end of any month.&lt;/x-slot:text&gt;
+    &lt;div class="oc-block-pricing-card"&gt;
+        &lt;p class="oc-block-pricing-name"&gt;Free&lt;/p&gt;
+        &lt;p class="oc-block-pricing-desc"&gt;For one user, to try it out&lt;/p&gt;
+        &lt;p class="oc-block-pricing-price"&gt;&amp;euro;0 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
+        &lt;ul class="oc-block-pricing-features"&gt;
             &lt;li&gt;Quotes and invoices&lt;/li&gt;
             &lt;li&gt;1 user&lt;/li&gt;
             &lt;li&gt;Support by e-mail&lt;/li&gt;
-          &lt;/ul&gt;
-          &lt;button className="oc-btn oc-btn--outline" style={{ width: "100%" }}&gt;Get started&lt;/button&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-pricing-card oc-block-pricing-card--featured"&gt;
-          &lt;p className="oc-block-pricing-name"&gt;Pro&lt;/p&gt;
-          &lt;p className="oc-block-pricing-desc"&gt;For a team of up to 10 people&lt;/p&gt;
-          &lt;p className="oc-block-pricing-price"&gt;€29 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
-          &lt;ul className="oc-block-pricing-features"&gt;
+        &lt;/ul&gt;
+        &lt;x-oc::button variant="outline" href="/signup?plan=free" style="width:100%;"&gt;Get started&lt;/x-oc::button&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-block-pricing-card oc-block-pricing-card--featured"&gt;
+        &lt;p class="oc-block-pricing-name"&gt;Pro&lt;/p&gt;
+        &lt;p class="oc-block-pricing-desc"&gt;For a team of up to 10 people&lt;/p&gt;
+        &lt;p class="oc-block-pricing-price"&gt;&amp;euro;29 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
+        &lt;ul class="oc-block-pricing-features"&gt;
             &lt;li&gt;Everything in Free&lt;/li&gt;
             &lt;li&gt;10 users&lt;/li&gt;
             &lt;li&gt;Stock and purchasing&lt;/li&gt;
             &lt;li&gt;Support by phone&lt;/li&gt;
-          &lt;/ul&gt;
-          &lt;button className="oc-btn" style={{ width: "100%" }}&gt;Subscribe&lt;/button&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-pricing-card"&gt;
-          &lt;p className="oc-block-pricing-name"&gt;Enterprise&lt;/p&gt;
-          &lt;p className="oc-block-pricing-desc"&gt;For larger companies&lt;/p&gt;
-          &lt;p className="oc-block-pricing-price"&gt;Custom&lt;/p&gt;
-          &lt;ul className="oc-block-pricing-features"&gt;
-            &lt;li&gt;Everything in Pro&lt;/li&gt;
-            &lt;li&gt;Links to your other software&lt;/li&gt;
-            &lt;li&gt;A fixed contact person&lt;/li&gt;
-            &lt;li&gt;Agreed response times&lt;/li&gt;
-          &lt;/ul&gt;
-          &lt;button className="oc-btn oc-btn--outline" style={{ width: "100%" }}&gt;Contact sales&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+        &lt;/ul&gt;
+        &lt;x-oc::button href="/signup?plan=pro" style="width:100%;"&gt;Subscribe&lt;/x-oc::button&gt;
     &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-block-pricing"&gt;
-    &lt;h2&gt;Plans and prices&lt;/h2&gt;
-    &lt;p&gt;Prices per month, excluding VAT. Change or stop at the end of any month.&lt;/p&gt;
-    &lt;div class="oc-block-pricing-grid"&gt;
-      &lt;div class="oc-block-pricing-card"&gt;
-        &lt;p class="oc-block-pricing-name"&gt;Free&lt;/p&gt;
-        &lt;p class="oc-block-pricing-desc"&gt;For one user, to try it out&lt;/p&gt;
-        &lt;p class="oc-block-pricing-price"&gt;€0 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
-        &lt;ul class="oc-block-pricing-features"&gt;
-          &lt;li&gt;Quotes and invoices&lt;/li&gt;
-          &lt;li&gt;1 user&lt;/li&gt;
-          &lt;li&gt;Support by e-mail&lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;button class="oc-btn oc-btn--outline" style="width:100%;"&gt;Get started&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-pricing-card oc-block-pricing-card--featured"&gt;
-        &lt;p class="oc-block-pricing-name"&gt;Pro&lt;/p&gt;
-        &lt;p class="oc-block-pricing-desc"&gt;For a team of up to 10 people&lt;/p&gt;
-        &lt;p class="oc-block-pricing-price"&gt;€29 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
-        &lt;ul class="oc-block-pricing-features"&gt;
-          &lt;li&gt;Everything in Free&lt;/li&gt;
-          &lt;li&gt;10 users&lt;/li&gt;
-          &lt;li&gt;Stock and purchasing&lt;/li&gt;
-          &lt;li&gt;Support by phone&lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;button class="oc-btn" style="width:100%;"&gt;Subscribe&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-pricing-card"&gt;
+    &lt;div class="oc-block-pricing-card"&gt;
         &lt;p class="oc-block-pricing-name"&gt;Enterprise&lt;/p&gt;
         &lt;p class="oc-block-pricing-desc"&gt;For larger companies&lt;/p&gt;
         &lt;p class="oc-block-pricing-price"&gt;Custom&lt;/p&gt;
         &lt;ul class="oc-block-pricing-features"&gt;
-          &lt;li&gt;Everything in Pro&lt;/li&gt;
-          &lt;li&gt;Links to your other software&lt;/li&gt;
-          &lt;li&gt;A fixed contact person&lt;/li&gt;
-          &lt;li&gt;Agreed response times&lt;/li&gt;
+            &lt;li&gt;Everything in Pro&lt;/li&gt;
+            &lt;li&gt;Links to your other software&lt;/li&gt;
+            &lt;li&gt;A fixed contact person&lt;/li&gt;
+            &lt;li&gt;Agreed response times&lt;/li&gt;
         &lt;/ul&gt;
-        &lt;button class="oc-btn oc-btn--outline" style="width:100%;"&gt;Contact sales&lt;/button&gt;
-      &lt;/div&gt;
+        &lt;x-oc::button variant="outline" href="/signup?plan=enterprise" style="width:100%;"&gt;Contact sales&lt;/x-oc::button&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-pricing"&gt;
-  &lt;h2&gt;Plans and prices&lt;/h2&gt;
-  &lt;p&gt;Prices per month, excluding VAT. Change or stop at the end of any month.&lt;/p&gt;
-  &lt;div class="oc-block-pricing-grid"&gt;
-    &lt;div class="oc-block-pricing-card"&gt;
-      &lt;p class="oc-block-pricing-name"&gt;Free&lt;/p&gt;
-      &lt;p class="oc-block-pricing-desc"&gt;For one user, to try it out&lt;/p&gt;
-      &lt;p class="oc-block-pricing-price"&gt;€0 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
-      &lt;ul class="oc-block-pricing-features"&gt;
-        &lt;li&gt;Quotes and invoices&lt;/li&gt;
-        &lt;li&gt;1 user&lt;/li&gt;
-        &lt;li&gt;Support by e-mail&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;button class="oc-btn oc-btn--outline" style="width:100%;"&gt;Get started&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-pricing-card oc-block-pricing-card--featured"&gt;
-      &lt;p class="oc-block-pricing-name"&gt;Pro&lt;/p&gt;
-      &lt;p class="oc-block-pricing-desc"&gt;For a team of up to 10 people&lt;/p&gt;
-      &lt;p class="oc-block-pricing-price"&gt;€29 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
-      &lt;ul class="oc-block-pricing-features"&gt;
-        &lt;li&gt;Everything in Free&lt;/li&gt;
-        &lt;li&gt;10 users&lt;/li&gt;
-        &lt;li&gt;Stock and purchasing&lt;/li&gt;
-        &lt;li&gt;Support by phone&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;button class="oc-btn" style="width:100%;"&gt;Subscribe&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-pricing-card"&gt;
-      &lt;p class="oc-block-pricing-name"&gt;Enterprise&lt;/p&gt;
-      &lt;p class="oc-block-pricing-desc"&gt;For larger companies&lt;/p&gt;
-      &lt;p class="oc-block-pricing-price"&gt;Custom&lt;/p&gt;
-      &lt;ul class="oc-block-pricing-features"&gt;
-        &lt;li&gt;Everything in Pro&lt;/li&gt;
-        &lt;li&gt;Links to your other software&lt;/li&gt;
-        &lt;li&gt;A fixed contact person&lt;/li&gt;
-        &lt;li&gt;Agreed response times&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;button class="oc-btn oc-btn--outline" style="width:100%;"&gt;Contact sales&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::block.pricing&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -189,6 +185,38 @@ use Livewire\Component;
 
 class Pricing extends Component
 {
+    public array $plans = [
+        'free' =&gt; [
+            'name' =&gt; 'Free',
+            'description' =&gt; 'For one user, to try it out',
+            'price' =&gt; '€0',
+            'period' =&gt; '/month',
+            'features' =&gt; ['Quotes and invoices', '1 user', 'Support by e-mail'],
+            'cta' =&gt; 'Get started',
+        ],
+        'pro' =&gt; [
+            'name' =&gt; 'Pro',
+            'description' =&gt; 'For a team of up to 10 people',
+            'price' =&gt; '€29',
+            'period' =&gt; '/month',
+            'features' =&gt; ['Everything in Free', '10 users', 'Stock and purchasing', 'Support by phone'],
+            'cta' =&gt; 'Subscribe',
+            'featured' =&gt; true,
+        ],
+        'enterprise' =&gt; [
+            'name' =&gt; 'Enterprise',
+            'description' =&gt; 'For larger companies',
+            'price' =&gt; 'Custom',
+            'features' =&gt; ['Everything in Pro', 'Links to your other software', 'A fixed contact person', 'Agreed response times'],
+            'cta' =&gt; 'Contact sales',
+        ],
+    ];
+
+    public function choose(string $plan)
+    {
+        return redirect()-&gt;to('/signup?plan='.$plan);
+    }
+
     public function render()
     {
         return view('livewire.pricing');
@@ -196,46 +224,24 @@ class Pricing extends Component
 }
 
 {{-- resources/views/livewire/pricing.blade.php --}}
-&lt;div class="oc-block-pricing"&gt;
-  &lt;h2&gt;Plans and prices&lt;/h2&gt;
-  &lt;p&gt;Prices per month, excluding VAT. Change or stop at the end of any month.&lt;/p&gt;
-  &lt;div class="oc-block-pricing-grid"&gt;
-    &lt;div class="oc-block-pricing-card"&gt;
-      &lt;p class="oc-block-pricing-name"&gt;Free&lt;/p&gt;
-      &lt;p class="oc-block-pricing-desc"&gt;For one user, to try it out&lt;/p&gt;
-      &lt;p class="oc-block-pricing-price"&gt;€0 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
-      &lt;ul class="oc-block-pricing-features"&gt;
-        &lt;li&gt;Quotes and invoices&lt;/li&gt;
-        &lt;li&gt;1 user&lt;/li&gt;
-        &lt;li&gt;Support by e-mail&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;button class="oc-btn oc-btn--outline" style="width:100%;"&gt;Get started&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-pricing-card oc-block-pricing-card--featured"&gt;
-      &lt;p class="oc-block-pricing-name"&gt;Pro&lt;/p&gt;
-      &lt;p class="oc-block-pricing-desc"&gt;For a team of up to 10 people&lt;/p&gt;
-      &lt;p class="oc-block-pricing-price"&gt;€29 &lt;span&gt;/month&lt;/span&gt;&lt;/p&gt;
-      &lt;ul class="oc-block-pricing-features"&gt;
-        &lt;li&gt;Everything in Free&lt;/li&gt;
-        &lt;li&gt;10 users&lt;/li&gt;
-        &lt;li&gt;Stock and purchasing&lt;/li&gt;
-        &lt;li&gt;Support by phone&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;button class="oc-btn" style="width:100%;"&gt;Subscribe&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-pricing-card"&gt;
-      &lt;p class="oc-block-pricing-name"&gt;Enterprise&lt;/p&gt;
-      &lt;p class="oc-block-pricing-desc"&gt;For larger companies&lt;/p&gt;
-      &lt;p class="oc-block-pricing-price"&gt;Custom&lt;/p&gt;
-      &lt;ul class="oc-block-pricing-features"&gt;
-        &lt;li&gt;Everything in Pro&lt;/li&gt;
-        &lt;li&gt;Links to your other software&lt;/li&gt;
-        &lt;li&gt;A fixed contact person&lt;/li&gt;
-        &lt;li&gt;Agreed response times&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;button class="oc-btn oc-btn--outline" style="width:100%;"&gt;Contact sales&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+&lt;div&gt;
+    &lt;x-oc::block.pricing&gt;
+        &lt;x-slot:title&gt;Plans and prices&lt;/x-slot:title&gt;
+        &lt;x-slot:text&gt;Prices per month, excluding VAT. Change or stop at the end of any month.&lt;/x-slot:text&gt;
+        @foreach ($plans as $key =&gt; $plan)
+            &lt;div @class(['oc-block-pricing-card', 'oc-block-pricing-card--featured' =&gt; $plan['featured'] ?? false])&gt;
+                &lt;p class="oc-block-pricing-name"&gt;{{ $plan['name'] }}&lt;/p&gt;
+                &lt;p class="oc-block-pricing-desc"&gt;{{ $plan['description'] }}&lt;/p&gt;
+                &lt;p class="oc-block-pricing-price"&gt;{{ $plan['price'] }} @if ($plan['period'] ?? null)&lt;span&gt;{{ $plan['period'] }}&lt;/span&gt;@endif&lt;/p&gt;
+                &lt;ul class="oc-block-pricing-features"&gt;
+                    @foreach ($plan['features'] as $feature)
+                        &lt;li&gt;{{ $feature }}&lt;/li&gt;
+                    @endforeach
+                &lt;/ul&gt;
+                &lt;x-oc::button :variant="($plan['featured'] ?? false) ? 'primary' : 'outline'" wire:click="choose('{{ $key }}')" style="width:100%;"&gt;{{ $plan['cta'] }}&lt;/x-oc::button&gt;
+            &lt;/div&gt;
+        @endforeach
+    &lt;/x-oc::block.pricing&gt;
 &lt;/div&gt;</oc-code>
         </oc-demo>
         </div>

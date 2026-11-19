@@ -64,107 +64,114 @@
   &lt;/div&gt;
   &lt;div style="display:flex;gap:0.5rem"&gt;&lt;button class="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Save&lt;/button&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
 &lt;/form&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Button, FormField, Input, Select, Webicon } from "@birdycom/omniaui-react";
+
+function LineForm({ id, compact }: { id: string; compact?: boolean }) {
+  // .oc-density-compact on a parent makes every control inside 2rem high instead of 2.5rem
+  return (
+    &lt;form className={compact ? "oc-density-compact" : undefined} style={{ display: "grid", gap: "0.75rem" }}&gt;
+      &lt;FormField label="Description"&gt;&lt;Input id={`${id}-desc`} defaultValue="Article 1" /&gt;&lt;/FormField&gt;
+      &lt;div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}&gt;
+        &lt;FormField label="Quantity"&gt;&lt;Input id={`${id}-qty`} defaultValue="2" /&gt;&lt;/FormField&gt;
+        &lt;FormField label="VAT"&gt;&lt;Select id={`${id}-vat`} options={["21%", "6%"]} /&gt;&lt;/FormField&gt;
+      &lt;/div&gt;
+      &lt;div style={{ display: "flex", gap: "0.5rem" }}&gt;
+        &lt;Button size="sm" type="submit"&gt;&lt;Webicon name="mdi:content-save-outline" /&gt;Save&lt;/Button&gt;
+        &lt;Button size="sm" variant="outline"&gt;Cancel&lt;/Button&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  );
+}
+
+export function Example() {
   return (
     &lt;&gt;
-      {/* Standard: 2.5rem controls */}
-      &lt;form style={{ display: "grid", gap: "0.75rem" }}&gt;
-        &lt;div className="oc-field"&gt;&lt;label className="oc-field-label" htmlFor="d-desc"&gt;Description&lt;/label&gt;&lt;input className="oc-input" id="d-desc" defaultValue="Article 1" /&gt;&lt;/div&gt;
-        &lt;div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}&gt;
-          &lt;div className="oc-field"&gt;&lt;label className="oc-field-label" htmlFor="d-qty"&gt;Quantity&lt;/label&gt;&lt;input className="oc-input" id="d-qty" defaultValue="2" /&gt;&lt;/div&gt;
-          &lt;div className="oc-field"&gt;&lt;label className="oc-field-label" htmlFor="d-vat"&gt;VAT&lt;/label&gt;&lt;select className="oc-select" id="d-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div style={{ display: "flex", gap: "0.5rem" }}&gt;&lt;button className="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true" /&gt;Save&lt;/button&gt;&lt;button className="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
-      &lt;/form&gt;
-
-      {/* Compact: 2rem controls */}
-      &lt;form className="oc-density-compact" style={{ display: "grid", gap: "0.75rem" }}&gt;
-        &lt;div className="oc-field"&gt;&lt;label className="oc-field-label" htmlFor="oc-density-compact-desc"&gt;Description&lt;/label&gt;&lt;input className="oc-input" id="oc-density-compact-desc" defaultValue="Article 1" /&gt;&lt;/div&gt;
-        &lt;div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}&gt;
-          &lt;div className="oc-field"&gt;&lt;label className="oc-field-label" htmlFor="oc-density-compact-qty"&gt;Quantity&lt;/label&gt;&lt;input className="oc-input" id="oc-density-compact-qty" defaultValue="2" /&gt;&lt;/div&gt;
-          &lt;div className="oc-field"&gt;&lt;label className="oc-field-label" htmlFor="oc-density-compact-vat"&gt;VAT&lt;/label&gt;&lt;select className="oc-select" id="oc-density-compact-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div style={{ display: "flex", gap: "0.5rem" }}&gt;&lt;button className="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true" /&gt;Save&lt;/button&gt;&lt;button className="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
-      &lt;/form&gt;
+      &lt;LineForm id="d" /&gt;
+      &lt;LineForm id="oc-density-compact" compact /&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;!-- Standard: 2.5rem controls --&gt;
-  &lt;form style="display:grid;gap:0.75rem"&gt;
-    &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-desc"&gt;Description&lt;/label&gt;&lt;input class="oc-input" id="d-desc" value="Article 1" /&gt;&lt;/div&gt;
-    &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"&gt;
-      &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-qty"&gt;Quantity&lt;/label&gt;&lt;input class="oc-input" id="d-qty" value="2" /&gt;&lt;/div&gt;
-      &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-vat"&gt;VAT&lt;/label&gt;&lt;select class="oc-select" id="d-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div style="display:flex;gap:0.5rem"&gt;&lt;button class="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Save&lt;/button&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
-  &lt;/form&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcFormField, OcInput, OcSelect, OcWebicon } from "@birdycom/omniaui-vue";
 
-  &lt;!-- Compact: 2rem controls --&gt;
-  &lt;form class="oc-density-compact" style="display:grid;gap:0.75rem"&gt;
-    &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-desc"&gt;Description&lt;/label&gt;&lt;input class="oc-input" id="oc-density-compact-desc" value="Article 1" /&gt;&lt;/div&gt;
+// .oc-density-compact on a parent makes every control inside 2rem high instead of 2.5rem
+const forms = [
+  { id: "d", compact: false },
+  { id: "oc-density-compact", compact: true },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;form v-for="f in forms" :key="f.id" :class="{ 'oc-density-compact': f.compact }" style="display:grid;gap:0.75rem"&gt;
+    &lt;OcFormField label="Description" :for="`${f.id}-desc`"&gt;&lt;OcInput :id="`${f.id}-desc`" model-value="Article 1" /&gt;&lt;/OcFormField&gt;
     &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"&gt;
-      &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-qty"&gt;Quantity&lt;/label&gt;&lt;input class="oc-input" id="oc-density-compact-qty" value="2" /&gt;&lt;/div&gt;
-      &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-vat"&gt;VAT&lt;/label&gt;&lt;select class="oc-select" id="oc-density-compact-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+      &lt;OcFormField label="Quantity" :for="`${f.id}-qty`"&gt;&lt;OcInput :id="`${f.id}-qty`" model-value="2" /&gt;&lt;/OcFormField&gt;
+      &lt;OcFormField label="VAT" :for="`${f.id}-vat`"&gt;&lt;OcSelect :id="`${f.id}-vat`" :options="['21%', '6%']" /&gt;&lt;/OcFormField&gt;
     &lt;/div&gt;
-    &lt;div style="display:flex;gap:0.5rem"&gt;&lt;button class="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Save&lt;/button&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
+    &lt;div style="display:flex;gap:0.5rem"&gt;
+      &lt;OcButton size="sm" type="submit"&gt;&lt;OcWebicon name="mdi:content-save-outline" /&gt;Save&lt;/OcButton&gt;
+      &lt;OcButton size="sm" variant="outline"&gt;Cancel&lt;/OcButton&gt;
+    &lt;/div&gt;
   &lt;/form&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;!-- Standard: 2.5rem controls --&gt;
-&lt;form style="display:grid;gap:0.75rem"&gt;
-  &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-desc"&gt;Description&lt;/label&gt;&lt;input class="oc-input" id="d-desc" value="Article 1"&gt;&lt;/div&gt;
-  &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"&gt;
-    &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-qty"&gt;Quantity&lt;/label&gt;&lt;input class="oc-input" id="d-qty" value="2"&gt;&lt;/div&gt;
-    &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-vat"&gt;VAT&lt;/label&gt;&lt;select class="oc-select" id="d-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div style="display:flex;gap:0.5rem"&gt;&lt;button class="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Save&lt;/button&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
-&lt;/form&gt;
-
-&lt;!-- Compact: 2rem controls --&gt;
-&lt;form class="oc-density-compact" style="display:grid;gap:0.75rem"&gt;
-  &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-desc"&gt;Description&lt;/label&gt;&lt;input class="oc-input" id="oc-density-compact-desc" value="Article 1"&gt;&lt;/div&gt;
-  &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"&gt;
-    &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-qty"&gt;Quantity&lt;/label&gt;&lt;input class="oc-input" id="oc-density-compact-qty" value="2"&gt;&lt;/div&gt;
-    &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-vat"&gt;VAT&lt;/label&gt;&lt;select class="oc-select" id="oc-density-compact-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div style="display:flex;gap:0.5rem"&gt;&lt;button class="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Save&lt;/button&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
-&lt;/form&gt;</oc-code>
+<oc-code lang="blade">{{-- .oc-density-compact on a parent makes every control inside 2rem high instead of 2.5rem --}}
+@foreach (['d' =&gt; false, 'oc-density-compact' =&gt; true] as $id =&gt; $compact)
+    &lt;form @class(['oc-density-compact' =&gt; $compact]) style="display:grid;gap:0.75rem"&gt;
+        &lt;x-oc::form-field label="Description" :for="$id.'-desc'"&gt;&lt;x-oc::input :id="$id.'-desc'" value="Article 1" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"&gt;
+            &lt;x-oc::form-field label="Quantity" :for="$id.'-qty'"&gt;&lt;x-oc::input :id="$id.'-qty'" value="2" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="VAT" :for="$id.'-vat'"&gt;&lt;x-oc::select :id="$id.'-vat'" :options="['21' =&gt; '21%', '6' =&gt; '6%']" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;/div&gt;
+        &lt;div style="display:flex;gap:0.5rem"&gt;
+            &lt;x-oc::button size="sm" type="submit"&gt;&lt;x-oc::webicon name="mdi:content-save-outline" /&gt;Save&lt;/x-oc::button&gt;
+            &lt;x-oc::button size="sm" variant="outline"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;/div&gt;
+    &lt;/form&gt;
+@endforeach</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class FormDensity extends Component
+class InvoiceLine extends Component
 {
+    public bool $compact = false;
+
+    #[Validate('required|max:120')]
+    public string $description = 'Article 1';
+
+    #[Validate('required|numeric|min:0')]
+    public string $quantity = '2';
+
+    public string $vat = '21';
+
+    public function save(): void
+    {
+        $this-&gt;validate();
+        // $this-&gt;line-&gt;update($this-&gt;only('description', 'quantity', 'vat'));
+    }
+
     public function render()
     {
-        return view('livewire.form-density');
+        return view('livewire.invoice-line');
     }
 }
 
-{{-- resources/views/livewire/form-density.blade.php --}}
-&lt;div&gt;
-    &lt;!-- Standard: 2.5rem controls --&gt;
-    &lt;form style="display:grid;gap:0.75rem"&gt;
-      &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-desc"&gt;Description&lt;/label&gt;&lt;input class="oc-input" id="d-desc" value="Article 1"&gt;&lt;/div&gt;
-      &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"&gt;
-        &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-qty"&gt;Quantity&lt;/label&gt;&lt;input class="oc-input" id="d-qty" value="2"&gt;&lt;/div&gt;
-        &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="d-vat"&gt;VAT&lt;/label&gt;&lt;select class="oc-select" id="d-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div style="display:flex;gap:0.5rem"&gt;&lt;button class="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Save&lt;/button&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
-    &lt;/form&gt;
-
-    &lt;!-- Compact: 2rem controls --&gt;
-    &lt;form class="oc-density-compact" style="display:grid;gap:0.75rem"&gt;
-      &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-desc"&gt;Description&lt;/label&gt;&lt;input class="oc-input" id="oc-density-compact-desc" value="Article 1"&gt;&lt;/div&gt;
-      &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"&gt;
-        &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-qty"&gt;Quantity&lt;/label&gt;&lt;input class="oc-input" id="oc-density-compact-qty" value="2"&gt;&lt;/div&gt;
-        &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-density-compact-vat"&gt;VAT&lt;/label&gt;&lt;select class="oc-select" id="oc-density-compact-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div style="display:flex;gap:0.5rem"&gt;&lt;button class="oc-btn oc-btn--sm" type="submit"&gt;&lt;iconify-icon icon="mdi:content-save-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Save&lt;/button&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Cancel&lt;/button&gt;&lt;/div&gt;
-    &lt;/form&gt;
-&lt;/div&gt;</oc-code>
+{{-- resources/views/livewire/invoice-line.blade.php --}}
+{{-- &lt;livewire:invoice-line /&gt; or &lt;livewire:invoice-line compact /&gt; --}}
+&lt;form wire:submit="save" @class(['oc-density-compact' =&gt; $compact]) style="display:grid;gap:0.75rem"&gt;
+    &lt;x-oc::form-field label="Description" for="line-desc" name="description"&gt;&lt;x-oc::wire.input id="line-desc" model="description" /&gt;&lt;/x-oc::form-field&gt;
+    &lt;div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"&gt;
+        &lt;x-oc::form-field label="Quantity" for="line-qty" name="quantity"&gt;&lt;x-oc::wire.input id="line-qty" model="quantity" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="VAT" for="line-vat" name="vat"&gt;&lt;x-oc::wire.select id="line-vat" model="vat" :options="['21' =&gt; '21%', '6' =&gt; '6%']" /&gt;&lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;div style="display:flex;gap:0.5rem"&gt;
+        &lt;x-oc::button size="sm" type="submit"&gt;&lt;x-oc::webicon name="mdi:content-save-outline" /&gt;Save&lt;/x-oc::button&gt;
+        &lt;x-oc::button size="sm" variant="outline" wire:click="$refresh"&gt;Cancel&lt;/x-oc::button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

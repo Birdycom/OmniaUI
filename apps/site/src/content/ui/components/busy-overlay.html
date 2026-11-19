@@ -23,62 +23,87 @@
 // Demo only: the real overlay stays open until the next page loads.
 document.addEventListener("command", (e) => { if (e.source?.hasAttribute("data-oc-busy-demo")) setTimeout(() => document.getElementById("oc-busy-overlay-demo").close(), 3000); }, true);
 </script>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { BusyOverlay, Button } from "@birdycom/omniaui-react";
+
+export function Example({ save }: { save: () =&gt; Promise&lt;void&gt; }) {
+  const [busy, setBusy] = useState(false);
   return (
     &lt;&gt;
-      &lt;button className="oc-btn" type="button" command="show-modal" commandfor="oc-busy-overlay-demo" data-oc-busy-demo=""&gt;Save (demo: closes after 3 seconds)&lt;/button&gt;
-      &lt;dialog className="oc-busy-overlay" id="oc-busy-overlay-demo" closedby="none" aria-labelledby="oc-busy-overlay-demo-title" aria-describedby="oc-busy-overlay-demo-text"&gt;
-        &lt;span className="oc-spinner" role="status" aria-label="Busy" /&gt;
-        &lt;h2 className="oc-busy-overlay__title" id="oc-busy-overlay-demo-title"&gt;Saving…&lt;/h2&gt;
-        &lt;p className="oc-busy-overlay__text" id="oc-busy-overlay-demo-text"&gt;The photos are being processed. This can take a minute; please keep this page open.&lt;/p&gt;
-      &lt;/dialog&gt;
+      &lt;Button
+        onClick={async () =&gt; {
+          setBusy(true);
+          try {
+            await save();
+          } finally {
+            setBusy(false);
+          }
+        }}
+      &gt;
+        Save
+      &lt;/Button&gt;
+      &lt;BusyOverlay open={busy} title="Saving…" text="The photos are being processed. This can take a minute; please keep this page open." /&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;button class="oc-btn" type="button" command="show-modal" commandfor="oc-busy-overlay-demo" data-oc-busy-demo=""&gt;Save (demo: closes after 3 seconds)&lt;/button&gt;
-  &lt;dialog class="oc-busy-overlay" id="oc-busy-overlay-demo" closedby="none" aria-labelledby="oc-busy-overlay-demo-title" aria-describedby="oc-busy-overlay-demo-text"&gt;
-    &lt;span class="oc-spinner" role="status" aria-label="Busy"&gt;&lt;/span&gt;
-    &lt;h2 class="oc-busy-overlay__title" id="oc-busy-overlay-demo-title"&gt;Saving…&lt;/h2&gt;
-    &lt;p class="oc-busy-overlay__text" id="oc-busy-overlay-demo-text"&gt;The photos are being processed. This can take a minute; please keep this page open.&lt;/p&gt;
-  &lt;/dialog&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcBusyOverlay, OcButton } from '@birdycom/omniaui-vue'
+
+const props = defineProps&lt;{ save: () =&gt; Promise&lt;void&gt; }&gt;()
+const busy = ref(false)
+
+async function onSave() {
+  busy.value = true
+  try {
+    await props.save()
+  } finally {
+    busy.value = false
+  }
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton @click="onSave"&gt;Save&lt;/OcButton&gt;
+  &lt;OcBusyOverlay v-model:open="busy" title="Saving…" text="The photos are being processed. This can take a minute; please keep this page open." /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn" type="button" command="show-modal" commandfor="oc-busy-overlay-demo" data-oc-busy-demo=""&gt;Save (demo: closes after 3 seconds)&lt;/button&gt;
-&lt;dialog class="oc-busy-overlay" id="oc-busy-overlay-demo" closedby="none" aria-labelledby="oc-busy-overlay-demo-title" aria-describedby="oc-busy-overlay-demo-text"&gt;
-  &lt;span class="oc-spinner" role="status" aria-label="Busy"&gt;&lt;/span&gt;
-  &lt;h2 class="oc-busy-overlay__title" id="oc-busy-overlay-demo-title"&gt;Saving…&lt;/h2&gt;
-  &lt;p class="oc-busy-overlay__text" id="oc-busy-overlay-demo-text"&gt;The photos are being processed. This can take a minute; please keep this page open.&lt;/p&gt;
-&lt;/dialog&gt;
-&lt;script&gt;
-// Demo only: the real overlay stays open until the next page loads.
-document.addEventListener("command", (e) =&gt; { if (e.source?.hasAttribute("data-oc-busy-demo")) setTimeout(() =&gt; document.getElementById("oc-busy-overlay-demo").close(), 3000); }, true);
-&lt;/script&gt;</oc-code>
+<oc-code lang="blade">{{-- data-oc-busy opens the overlay when the form is submitted; the next page load removes it --}}
+&lt;form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" data-oc-busy="oc-busy-overlay-demo"&gt;
+    @csrf
+    &lt;input type="file" name="photos[]" multiple&gt;
+    &lt;x-oc::button type="submit"&gt;Save&lt;/x-oc::button&gt;
+&lt;/form&gt;
+
+&lt;x-oc::busy-overlay id="oc-busy-overlay-demo" title="Saving…" text="The photos are being processed. This can take a minute; please keep this page open." /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class BusyOverlay extends Component
+class SavePhotos extends Component
 {
+    public function save(): void
+    {
+        // process the photos …
+
+        $this-&gt;js("document.getElementById('oc-busy-overlay-demo').close()");
+    }
+
     public function render()
     {
-        return view('livewire.busy-overlay');
+        return view('livewire.save-photos');
     }
 }
 
-{{-- resources/views/livewire/busy-overlay.blade.php --}}
+{{-- resources/views/livewire/save-photos.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn" type="button" command="show-modal" commandfor="oc-busy-overlay-demo" data-oc-busy-demo=""&gt;Save (demo: closes after 3 seconds)&lt;/button&gt;
-    &lt;dialog class="oc-busy-overlay" id="oc-busy-overlay-demo" closedby="none" aria-labelledby="oc-busy-overlay-demo-title" aria-describedby="oc-busy-overlay-demo-text"&gt;
-      &lt;span class="oc-spinner" role="status" aria-label="Busy"&gt;&lt;/span&gt;
-      &lt;h2 class="oc-busy-overlay__title" id="oc-busy-overlay-demo-title"&gt;Saving…&lt;/h2&gt;
-      &lt;p class="oc-busy-overlay__text" id="oc-busy-overlay-demo-text"&gt;The photos are being processed. This can take a minute; please keep this page open.&lt;/p&gt;
-    &lt;/dialog&gt;
-    &lt;script&gt;
-    // Demo only: the real overlay stays open until the next page loads.
-    document.addEventListener("command", (e) =&gt; { if (e.source?.hasAttribute("data-oc-busy-demo")) setTimeout(() =&gt; document.getElementById("oc-busy-overlay-demo").close(), 3000); }, true);
-    &lt;/script&gt;
+    {{-- data-oc-busy opens the overlay on submit; save() closes it when the work is done --}}
+    &lt;form wire:submit="save" data-oc-busy="oc-busy-overlay-demo"&gt;
+        &lt;x-oc::button type="submit"&gt;Save&lt;/x-oc::button&gt;
+    &lt;/form&gt;
+
+    &lt;x-oc::busy-overlay id="oc-busy-overlay-demo" wire:ignore.self title="Saving…" text="The photos are being processed. This can take a minute; please keep this page open." /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

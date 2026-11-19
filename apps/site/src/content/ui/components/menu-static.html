@@ -25,24 +25,49 @@
   <div class="oc-dropdown-separator"></div>
   <button type="button" class="oc-dropdown-item oc-dropdown-item--destructive">Quit<span class="oc-dropdown-hint">Ctrl+Q</span></button>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-dropdown-menu oc-dropdown-menu--static" role="menu" aria-label="App 1" style={{ maxInlineSize: "17rem" }}&gt;
-      &lt;div className="oc-dropdown-label"&gt;View&lt;/div&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Always on top&lt;span className="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Compact mode&lt;/button&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Start with Windows&lt;/button&gt;
-      &lt;div className="oc-dropdown-separator" /&gt;
-      &lt;div className="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Every minute&lt;/button&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Every 5 minutes&lt;span className="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
-      &lt;div className="oc-dropdown-separator" /&gt;
-      &lt;button type="button" className="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span className="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-dropdown-menu oc-dropdown-menu--static" role="menu" aria-label="App 1" style="max-inline-size:17rem"&gt;
+<oc-code lang="tsx">const [onTop, setOnTop] = useState(true);
+const [compact, setCompact] = useState(false);
+const [autostart, setAutostart] = useState(true);
+const [refresh, setRefresh] = useState(5);
+
+&lt;MenuStatic aria-label="App 1" style={{ maxInlineSize: "17rem" }}&gt;
+  &lt;DropdownLabel&gt;View&lt;/DropdownLabel&gt;
+  &lt;DropdownItem checked={onTop} hint="Ctrl+T" onClick={() =&gt; setOnTop(!onTop)}&gt;Always on top&lt;/DropdownItem&gt;
+  &lt;DropdownItem checked={compact} onClick={() =&gt; setCompact(!compact)}&gt;Compact mode&lt;/DropdownItem&gt;
+  &lt;DropdownItem checked={autostart} onClick={() =&gt; setAutostart(!autostart)}&gt;Start with Windows&lt;/DropdownItem&gt;
+  &lt;DropdownSeparator /&gt;
+  &lt;DropdownLabel&gt;Refresh&lt;/DropdownLabel&gt;
+  &lt;DropdownItem checked={refresh === 1} onClick={() =&gt; setRefresh(1)}&gt;Every minute&lt;/DropdownItem&gt;
+  &lt;DropdownItem checked={refresh === 5} hint={refresh === 5 ? "now" : undefined} onClick={() =&gt; setRefresh(5)}&gt;Every 5 minutes&lt;/DropdownItem&gt;
+  &lt;DropdownSeparator /&gt;
+  &lt;DropdownItem className="oc-dropdown-item--destructive" hint="Ctrl+Q" onClick={quit}&gt;Quit&lt;/DropdownItem&gt;
+&lt;/MenuStatic&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcDropdownItem, OcDropdownLabel, OcDropdownSeparator, OcMenuStatic } from '@birdycom/omniaui-vue'
+
+const onTop = ref(true)
+const compact = ref(false)
+const autostart = ref(true)
+const refresh = ref(5)
+const emit = defineEmits&lt;{ quit: [] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcMenuStatic aria-label="App 1" style="max-inline-size:17rem"&gt;
+    &lt;OcDropdownLabel&gt;View&lt;/OcDropdownLabel&gt;
+    &lt;OcDropdownItem :checked="onTop" hint="Ctrl+T" @click="onTop = !onTop"&gt;Always on top&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem :checked="compact" @click="compact = !compact"&gt;Compact mode&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem :checked="autostart" @click="autostart = !autostart"&gt;Start with Windows&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator /&gt;
+    &lt;OcDropdownLabel&gt;Refresh&lt;/OcDropdownLabel&gt;
+    &lt;OcDropdownItem :checked="refresh === 1" @click="refresh = 1"&gt;Every minute&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem :checked="refresh === 5" :hint="refresh === 5 ? 'now' : undefined" @click="refresh = 5"&gt;Every 5 minutes&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator /&gt;
+    &lt;OcDropdownItem class="oc-dropdown-item--destructive" hint="Ctrl+Q" @click="emit('quit')"&gt;Quit&lt;/OcDropdownItem&gt;
+  &lt;/OcMenuStatic&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::menu-static aria-label="App 1" style="max-inline-size:17rem"&gt;
     &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
     &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
     &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
@@ -53,46 +78,60 @@
     &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
     &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
     &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-dropdown-menu oc-dropdown-menu--static" role="menu" aria-label="App 1" style="max-inline-size:17rem"&gt;
-  &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Start with Windows&lt;/button&gt;
-  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-  &lt;div class="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every minute&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
-  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::menu-static&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class MenuStaticStaticMenuTrayMenu extends Component
+class TrayMenu extends Component
 {
+    public bool $onTop = true;
+
+    public bool $compact = false;
+
+    public bool $autostart = true;
+
+    public int $refresh = 5;
+
+    public function toggle(string $setting): void
+    {
+        if (in_array($setting, ['onTop', 'compact', 'autostart'], true)) {
+            $this-&gt;{$setting} = ! $this-&gt;{$setting};
+        }
+    }
+
+    public function setRefresh(int $minutes): void
+    {
+        $this-&gt;refresh = $minutes;
+    }
+
+    public function quit(): void
+    {
+        $this-&gt;redirect('/');
+    }
+
     public function render()
     {
-        return view('livewire.menu-static-static-menu-tray-menu');
+        return view('livewire.tray-menu');
     }
 }
 
-{{-- resources/views/livewire/menu-static-static-menu-tray-menu.blade.php --}}
-&lt;div class="oc-dropdown-menu oc-dropdown-menu--static" role="menu" aria-label="App 1" style="max-inline-size:17rem"&gt;
-  &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Start with Windows&lt;/button&gt;
-  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-  &lt;div class="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every minute&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
-  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
+{{-- resources/views/livewire/tray-menu.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::menu-static aria-label="App 1" style="max-inline-size:17rem"&gt;
+        &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $onTop ? 'true' : 'false' }}" wire:click="toggle('onTop')"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $compact ? 'true' : 'false' }}" wire:click="toggle('compact')"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $autostart ? 'true' : 'false' }}" wire:click="toggle('autostart')"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Start with Windows&lt;/button&gt;
+        &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+        &lt;div class="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $refresh === 1 ? 'true' : 'false' }}" wire:click="setRefresh(1)"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every minute&lt;/button&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $refresh === 5 ? 'true' : 'false' }}" wire:click="setRefresh(5)"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
+        &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+        &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive" wire:click="quit"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
+    &lt;/x-oc::menu-static&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-2">Flat, in a glass window</h3>
@@ -112,82 +151,121 @@ class MenuStaticStaticMenuTrayMenu extends Component
   <button type="button" class="oc-dropdown-item oc-dropdown-item--destructive">Quit<span class="oc-dropdown-hint">Ctrl+Q</span></button>
 </div>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-glass" style={{ padding: "4px", inlineSize: "min(100%,17rem)" }}&gt;
-    &lt;div className="oc-dropdown-menu oc-dropdown-menu--static oc-dropdown-menu--flat" role="menu" aria-label="App 1"&gt;
-      &lt;div className="oc-dropdown-label"&gt;View&lt;/div&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Always on top&lt;span className="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Compact mode&lt;/button&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Start with Windows&lt;/button&gt;
-      &lt;div className="oc-dropdown-separator" /&gt;
-      &lt;div className="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Every minute&lt;/button&gt;
-      &lt;button type="button" className="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span className="oc-dropdown-check" aria-hidden="true" /&gt;Every 5 minutes&lt;span className="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
-      &lt;div className="oc-dropdown-separator" /&gt;
-      &lt;button type="button" className="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span className="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-glass" style="padding:4px;inline-size:min(100%,17rem)"&gt;
-  &lt;div class="oc-dropdown-menu oc-dropdown-menu--static oc-dropdown-menu--flat" role="menu" aria-label="App 1"&gt;
-    &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
-    &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
-    &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
-    &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Start with Windows&lt;/button&gt;
-    &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-    &lt;div class="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
-    &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every minute&lt;/button&gt;
-    &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
-    &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-    &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
-  &lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="tsx">const [onTop, setOnTop] = useState(true);
+const [compact, setCompact] = useState(false);
+const [autostart, setAutostart] = useState(true);
+const [refresh, setRefresh] = useState(5);
+
+&lt;Glass style={{ padding: "4px", inlineSize: "min(100%,17rem)" }}&gt;
+  &lt;MenuStatic flat aria-label="App 1"&gt;
+    &lt;DropdownLabel&gt;View&lt;/DropdownLabel&gt;
+    &lt;DropdownItem checked={onTop} hint="Ctrl+T" onClick={() =&gt; setOnTop(!onTop)}&gt;Always on top&lt;/DropdownItem&gt;
+    &lt;DropdownItem checked={compact} onClick={() =&gt; setCompact(!compact)}&gt;Compact mode&lt;/DropdownItem&gt;
+    &lt;DropdownItem checked={autostart} onClick={() =&gt; setAutostart(!autostart)}&gt;Start with Windows&lt;/DropdownItem&gt;
+    &lt;DropdownSeparator /&gt;
+    &lt;DropdownLabel&gt;Refresh&lt;/DropdownLabel&gt;
+    &lt;DropdownItem checked={refresh === 1} onClick={() =&gt; setRefresh(1)}&gt;Every minute&lt;/DropdownItem&gt;
+    &lt;DropdownItem checked={refresh === 5} hint={refresh === 5 ? "now" : undefined} onClick={() =&gt; setRefresh(5)}&gt;Every 5 minutes&lt;/DropdownItem&gt;
+    &lt;DropdownSeparator /&gt;
+    &lt;DropdownItem className="oc-dropdown-item--destructive" hint="Ctrl+Q" onClick={quit}&gt;Quit&lt;/DropdownItem&gt;
+  &lt;/MenuStatic&gt;
+&lt;/Glass&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcDropdownItem, OcDropdownLabel, OcDropdownSeparator, OcGlass, OcMenuStatic } from '@birdycom/omniaui-vue'
+
+const onTop = ref(true)
+const compact = ref(false)
+const autostart = ref(true)
+const refresh = ref(5)
+const emit = defineEmits&lt;{ quit: [] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcGlass style="padding:4px;inline-size:min(100%,17rem)"&gt;
+    &lt;OcMenuStatic flat aria-label="App 1"&gt;
+      &lt;OcDropdownLabel&gt;View&lt;/OcDropdownLabel&gt;
+      &lt;OcDropdownItem :checked="onTop" hint="Ctrl+T" @click="onTop = !onTop"&gt;Always on top&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownItem :checked="compact" @click="compact = !compact"&gt;Compact mode&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownItem :checked="autostart" @click="autostart = !autostart"&gt;Start with Windows&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownSeparator /&gt;
+      &lt;OcDropdownLabel&gt;Refresh&lt;/OcDropdownLabel&gt;
+      &lt;OcDropdownItem :checked="refresh === 1" @click="refresh = 1"&gt;Every minute&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownItem :checked="refresh === 5" :hint="refresh === 5 ? 'now' : undefined" @click="refresh = 5"&gt;Every 5 minutes&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownSeparator /&gt;
+      &lt;OcDropdownItem class="oc-dropdown-item--destructive" hint="Ctrl+Q" @click="emit('quit')"&gt;Quit&lt;/OcDropdownItem&gt;
+    &lt;/OcMenuStatic&gt;
+  &lt;/OcGlass&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-glass" style="padding:4px;inline-size:min(100%,17rem)"&gt;
-&lt;div class="oc-dropdown-menu oc-dropdown-menu--static oc-dropdown-menu--flat" role="menu" aria-label="App 1"&gt;
-  &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Start with Windows&lt;/button&gt;
-  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-  &lt;div class="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every minute&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
-  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::glass style="padding:4px;inline-size:min(100%,17rem)"&gt;
+    &lt;x-oc::menu-static flat aria-label="App 1"&gt;
+        &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Start with Windows&lt;/button&gt;
+        &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+        &lt;div class="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every minute&lt;/button&gt;
+        &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
+        &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+        &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
+    &lt;/x-oc::menu-static&gt;
+&lt;/x-oc::glass&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class MenuStaticStaticMenuFlatInAGlass extends Component
+class TrayMenuGlass extends Component
 {
+    public bool $onTop = true;
+
+    public bool $compact = false;
+
+    public bool $autostart = true;
+
+    public int $refresh = 5;
+
+    public function toggle(string $setting): void
+    {
+        if (in_array($setting, ['onTop', 'compact', 'autostart'], true)) {
+            $this-&gt;{$setting} = ! $this-&gt;{$setting};
+        }
+    }
+
+    public function setRefresh(int $minutes): void
+    {
+        $this-&gt;refresh = $minutes;
+    }
+
+    public function quit(): void
+    {
+        $this-&gt;redirect('/');
+    }
+
     public function render()
     {
-        return view('livewire.menu-static-static-menu-flat-in-a-glass');
+        return view('livewire.tray-menu-glass');
     }
 }
 
-{{-- resources/views/livewire/menu-static-static-menu-flat-in-a-glass.blade.php --}}
-&lt;div class="oc-glass" style="padding:4px;inline-size:min(100%,17rem)"&gt;
-&lt;div class="oc-dropdown-menu oc-dropdown-menu--static oc-dropdown-menu--flat" role="menu" aria-label="App 1"&gt;
-  &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Start with Windows&lt;/button&gt;
-  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-  &lt;div class="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every minute&lt;/button&gt;
-  &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
-  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-  &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
-&lt;/div&gt;
+{{-- resources/views/livewire/tray-menu-glass.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::glass style="padding:4px;inline-size:min(100%,17rem)"&gt;
+        &lt;x-oc::menu-static flat aria-label="App 1"&gt;
+            &lt;div class="oc-dropdown-label"&gt;View&lt;/div&gt;
+            &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $onTop ? 'true' : 'false' }}" wire:click="toggle('onTop')"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Always on top&lt;span class="oc-dropdown-hint"&gt;Ctrl+T&lt;/span&gt;&lt;/button&gt;
+            &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $compact ? 'true' : 'false' }}" wire:click="toggle('compact')"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Compact mode&lt;/button&gt;
+            &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $autostart ? 'true' : 'false' }}" wire:click="toggle('autostart')"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Start with Windows&lt;/button&gt;
+            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+            &lt;div class="oc-dropdown-label"&gt;Refresh&lt;/div&gt;
+            &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $refresh === 1 ? 'true' : 'false' }}" wire:click="setRefresh(1)"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every minute&lt;/button&gt;
+            &lt;button type="button" class="oc-dropdown-item" role="menuitemcheckbox" aria-checked="{{ $refresh === 5 ? 'true' : 'false' }}" wire:click="setRefresh(5)"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Every 5 minutes&lt;span class="oc-dropdown-hint"&gt;now&lt;/span&gt;&lt;/button&gt;
+            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+            &lt;button type="button" class="oc-dropdown-item oc-dropdown-item--destructive" wire:click="quit"&gt;Quit&lt;span class="oc-dropdown-hint"&gt;Ctrl+Q&lt;/span&gt;&lt;/button&gt;
+        &lt;/x-oc::menu-static&gt;
+    &lt;/x-oc::glass&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

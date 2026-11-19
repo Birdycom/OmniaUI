@@ -33,68 +33,60 @@
     </select>
   </label>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { LanguageSelect } from "@birdycom/omniaui-react";
+
+const languages = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Nederlands" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+];
+const currencies = [
+  { value: "EUR", label: "EUR" },
+  { value: "USD", label: "USD" },
+  { value: "GBP", label: "GBP" },
+];
+
+export function Example() {
+  const [locale, setLocale] = useState("en");
+  const [currency, setCurrency] = useState("EUR");
   return (
     &lt;div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}&gt;
-      &lt;label className="oc-language-select"&gt;
-        &lt;span className="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2" /&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;select className="oc-language-select-control" name="locale" aria-label="Language" defaultValue="en"&gt;
-          &lt;option value="en"&gt;English&lt;/option&gt;
-          &lt;option value="nl"&gt;Nederlands&lt;/option&gt;
-          &lt;option value="fr"&gt;Français&lt;/option&gt;
-          &lt;option value="de"&gt;Deutsch&lt;/option&gt;
-        &lt;/select&gt;
-      &lt;/label&gt;
-      &lt;label className="oc-language-select oc-language-select--currency"&gt;
-        &lt;span className="oc-language-select-icon" aria-hidden="true"&gt;€&lt;/span&gt;
-        &lt;select className="oc-language-select-control" name="currency" aria-label="Currency" defaultValue="EUR"&gt;
-          &lt;option value="EUR"&gt;EUR&lt;/option&gt;
-          &lt;option value="USD"&gt;USD&lt;/option&gt;
-          &lt;option value="GBP"&gt;GBP&lt;/option&gt;
-        &lt;/select&gt;
-      &lt;/label&gt;
+      &lt;LanguageSelect name="locale" options={languages} value={locale} onChange={setLocale} /&gt;
+      {/* currency: the € symbol in the primary color; pass icon="$" for another symbol */}
+      &lt;LanguageSelect currency name="currency" options={currencies} value={currency} onChange={setCurrency} /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcLanguageSelect } from "@birdycom/omniaui-vue";
+
+const languages = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Nederlands" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+];
+const currencies = [
+  { value: "EUR", label: "EUR" },
+  { value: "USD", label: "USD" },
+  { value: "GBP", label: "GBP" },
+];
+const locale = ref("en");
+const currency = ref("EUR");
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center"&gt;
-    &lt;label class="oc-language-select"&gt;
-      &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2" /&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;select class="oc-language-select-control" name="locale" aria-label="Language"&gt;
-        &lt;option value="en" selected&gt;English&lt;/option&gt;
-        &lt;option value="nl"&gt;Nederlands&lt;/option&gt;
-        &lt;option value="fr"&gt;Français&lt;/option&gt;
-        &lt;option value="de"&gt;Deutsch&lt;/option&gt;
-      &lt;/select&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-language-select oc-language-select--currency"&gt;
-      &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;€&lt;/span&gt;
-      &lt;select class="oc-language-select-control" name="currency" aria-label="Currency"&gt;
-        &lt;option value="EUR" selected&gt;EUR&lt;/option&gt;
-        &lt;option value="USD"&gt;USD&lt;/option&gt;
-        &lt;option value="GBP"&gt;GBP&lt;/option&gt;
-      &lt;/select&gt;
-    &lt;/label&gt;
+    &lt;OcLanguageSelect v-model="locale" name="locale" :options="languages" /&gt;
+    &lt;OcLanguageSelect v-model="currency" currency name="currency" :options="currencies" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center"&gt;
-  &lt;label class="oc-language-select"&gt;
-    &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;select class="oc-language-select-control" name="locale" aria-label="Language"&gt;
-      &lt;option value="en" selected&gt;English&lt;/option&gt;
-      &lt;option value="nl"&gt;Nederlands&lt;/option&gt;
-      &lt;option value="fr"&gt;Fran&amp;ccedil;ais&lt;/option&gt;
-      &lt;option value="de"&gt;Deutsch&lt;/option&gt;
-    &lt;/select&gt;
-  &lt;/label&gt;
-  &lt;label class="oc-language-select oc-language-select--currency"&gt;
-    &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&amp;euro;&lt;/span&gt;
-    &lt;select class="oc-language-select-control" name="currency" aria-label="Currency"&gt;
-      &lt;option value="EUR" selected&gt;EUR&lt;/option&gt;
-      &lt;option value="USD"&gt;USD&lt;/option&gt;
-      &lt;option value="GBP"&gt;GBP&lt;/option&gt;
-    &lt;/select&gt;
-  &lt;/label&gt;
+    &lt;x-oc::language-select name="locale" :value="app()-&gt;getLocale()" :options="['en' =&gt; 'English', 'nl' =&gt; 'Nederlands', 'fr' =&gt; 'Français', 'de' =&gt; 'Deutsch']" /&gt;
+    &lt;x-oc::language-select currency name="currency" value="EUR" :options="['EUR' =&gt; 'EUR', 'USD' =&gt; 'USD', 'GBP' =&gt; 'GBP']" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -102,33 +94,30 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class LanguageSelectLanguageAndCurrency extends Component
+class ShopSettings extends Component
 {
+    public string $locale = 'en';
+
+    public string $currency = 'EUR';
+
+    public function updatedLocale(string $value): void
+    {
+        app()-&gt;setLocale($value);
+    }
+
     public function render()
     {
-        return view('livewire.language-select-language-and-currency');
+        return view('livewire.shop-settings');
     }
 }
 
-{{-- resources/views/livewire/language-select-language-and-currency.blade.php --}}
-&lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center"&gt;
-  &lt;label class="oc-language-select"&gt;
-    &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;select class="oc-language-select-control" name="locale" aria-label="Language"&gt;
-      &lt;option value="en" selected&gt;English&lt;/option&gt;
-      &lt;option value="nl"&gt;Nederlands&lt;/option&gt;
-      &lt;option value="fr"&gt;Fran&amp;ccedil;ais&lt;/option&gt;
-      &lt;option value="de"&gt;Deutsch&lt;/option&gt;
-    &lt;/select&gt;
-  &lt;/label&gt;
-  &lt;label class="oc-language-select oc-language-select--currency"&gt;
-    &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&amp;euro;&lt;/span&gt;
-    &lt;select class="oc-language-select-control" name="currency" aria-label="Currency"&gt;
-      &lt;option value="EUR" selected&gt;EUR&lt;/option&gt;
-      &lt;option value="USD"&gt;USD&lt;/option&gt;
-      &lt;option value="GBP"&gt;GBP&lt;/option&gt;
-    &lt;/select&gt;
-  &lt;/label&gt;
+{{-- resources/views/livewire/shop-settings.blade.php --}}
+&lt;div&gt;
+    {{-- attributes such as wire:model go to the select --}}
+    &lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center"&gt;
+        &lt;x-oc::language-select wire:model.live="locale" :value="$locale" :options="['en' =&gt; 'English', 'nl' =&gt; 'Nederlands', 'fr' =&gt; 'Français', 'de' =&gt; 'Deutsch']" /&gt;
+        &lt;x-oc::language-select currency wire:model.live="currency" :value="$currency" :options="['EUR' =&gt; 'EUR', 'USD' =&gt; 'USD', 'GBP' =&gt; 'GBP']" /&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -148,50 +137,42 @@ class LanguageSelectLanguageAndCurrency extends Component
     </label>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { LanguageSelect } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
     &lt;div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.5rem 1rem", border: "1px solid var(--oc-border)", borderRadius: "var(--oc-radius)" }}&gt;
       &lt;strong&gt;Brand&lt;/strong&gt;
       &lt;div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}&gt;
-        &lt;label className="oc-language-select oc-language-select--ghost"&gt;
-          &lt;span className="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2" /&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;select className="oc-language-select-control" aria-label="Language" defaultValue="NL"&gt;&lt;option&gt;EN&lt;/option&gt;&lt;option&gt;NL&lt;/option&gt;&lt;option&gt;FR&lt;/option&gt;&lt;/select&gt;
-        &lt;/label&gt;
-        &lt;label className="oc-language-select oc-language-select--ghost oc-language-select--currency"&gt;
-          &lt;span className="oc-language-select-icon" aria-hidden="true"&gt;$&lt;/span&gt;
-          &lt;select className="oc-language-select-control" aria-label="Currency"&gt;&lt;option&gt;USD&lt;/option&gt;&lt;option&gt;EUR&lt;/option&gt;&lt;/select&gt;
-        &lt;/label&gt;
+        &lt;LanguageSelect ghost defaultValue="NL" options={["EN", "NL", "FR"].map((l) =&gt; ({ value: l, label: l }))} /&gt;
+        &lt;LanguageSelect ghost currency icon="$" options={["USD", "EUR"].map((c) =&gt; ({ value: c, label: c }))} /&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcLanguageSelect } from "@birdycom/omniaui-vue";
+
+const lang = ref("NL");
+const currency = ref("USD");
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 1rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
     &lt;strong&gt;Brand&lt;/strong&gt;
     &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
-      &lt;label class="oc-language-select oc-language-select--ghost"&gt;
-        &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2" /&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;select class="oc-language-select-control" aria-label="Language"&gt;&lt;option&gt;EN&lt;/option&gt;&lt;option selected&gt;NL&lt;/option&gt;&lt;option&gt;FR&lt;/option&gt;&lt;/select&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-language-select oc-language-select--ghost oc-language-select--currency"&gt;
-        &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;$&lt;/span&gt;
-        &lt;select class="oc-language-select-control" aria-label="Currency"&gt;&lt;option&gt;USD&lt;/option&gt;&lt;option&gt;EUR&lt;/option&gt;&lt;/select&gt;
-      &lt;/label&gt;
+      &lt;OcLanguageSelect v-model="lang" ghost :options="['EN', 'NL', 'FR'].map((l) =&gt; ({ value: l, label: l }))" /&gt;
+      &lt;OcLanguageSelect v-model="currency" ghost currency icon="$" :options="['USD', 'EUR'].map((c) =&gt; ({ value: c, label: c }))" /&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 1rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
-  &lt;strong&gt;Brand&lt;/strong&gt;
-  &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
-    &lt;label class="oc-language-select oc-language-select--ghost"&gt;
-      &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;select class="oc-language-select-control" aria-label="Language"&gt;&lt;option&gt;EN&lt;/option&gt;&lt;option selected&gt;NL&lt;/option&gt;&lt;option&gt;FR&lt;/option&gt;&lt;/select&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-language-select oc-language-select--ghost oc-language-select--currency"&gt;
-      &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;$&lt;/span&gt;
-      &lt;select class="oc-language-select-control" aria-label="Currency"&gt;&lt;option&gt;USD&lt;/option&gt;&lt;option&gt;EUR&lt;/option&gt;&lt;/select&gt;
-    &lt;/label&gt;
-  &lt;/div&gt;
+    &lt;strong&gt;Brand&lt;/strong&gt;
+    &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+        &lt;x-oc::language-select ghost value="NL" :options="['EN' =&gt; 'EN', 'NL' =&gt; 'NL', 'FR' =&gt; 'FR']" /&gt;
+        &lt;x-oc::language-select ghost currency icon="$" :options="['USD' =&gt; 'USD', 'EUR' =&gt; 'EUR']" /&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -208,18 +189,14 @@ class LanguageSelectGhost extends Component
 }
 
 {{-- resources/views/livewire/language-select-ghost.blade.php --}}
-&lt;div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 1rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
-  &lt;strong&gt;Brand&lt;/strong&gt;
-  &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
-    &lt;label class="oc-language-select oc-language-select--ghost"&gt;
-      &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;select class="oc-language-select-control" aria-label="Language"&gt;&lt;option&gt;EN&lt;/option&gt;&lt;option selected&gt;NL&lt;/option&gt;&lt;option&gt;FR&lt;/option&gt;&lt;/select&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-language-select oc-language-select--ghost oc-language-select--currency"&gt;
-      &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;$&lt;/span&gt;
-      &lt;select class="oc-language-select-control" aria-label="Currency"&gt;&lt;option&gt;USD&lt;/option&gt;&lt;option&gt;EUR&lt;/option&gt;&lt;/select&gt;
-    &lt;/label&gt;
-  &lt;/div&gt;
+&lt;div&gt;
+    &lt;div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 1rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+        &lt;strong&gt;Brand&lt;/strong&gt;
+        &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+            &lt;x-oc::language-select ghost value="NL" :options="['EN' =&gt; 'EN', 'NL' =&gt; 'NL', 'FR' =&gt; 'FR']" /&gt;
+            &lt;x-oc::language-select ghost currency icon="$" :options="['USD' =&gt; 'USD', 'EUR' =&gt; 'EUR']" /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -237,44 +214,48 @@ class LanguageSelectGhost extends Component
     </select>
   </label>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { LanguageSelect } from "@birdycom/omniaui-react";
+
+const languages = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Nederlands" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+];
+
+export function Example() {
   return (
     &lt;div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", inlineSize: "min(100%,20rem)", padding: "0.25rem 0.25rem 0.25rem 0.75rem", border: "1px solid var(--oc-border)", borderRadius: "var(--oc-radius)" }}&gt;
       &lt;strong&gt;App 1&lt;/strong&gt;
-      &lt;label className="oc-language-select oc-language-select--ghost oc-language-select--code" data-code="NL"&gt;
-        &lt;select className="oc-language-select-control" aria-label="Language" defaultValue="nl"&gt;
-          &lt;option value="en"&gt;English&lt;/option&gt;
-          &lt;option value="nl"&gt;Nederlands&lt;/option&gt;
-          &lt;option value="fr"&gt;Français&lt;/option&gt;
-          &lt;option value="de"&gt;Deutsch&lt;/option&gt;
-        &lt;/select&gt;
-      &lt;/label&gt;
+      {/* closed it shows only the code of the chosen language ("NL") */}
+      &lt;LanguageSelect ghost code defaultValue="nl" options={languages} /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcLanguageSelect } from "@birdycom/omniaui-vue";
+
+const languages = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Nederlands" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+];
+const locale = ref("nl");
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div style="display:flex;justify-content:space-between;align-items:center;inline-size:min(100%,20rem);padding:0.25rem 0.25rem 0.25rem 0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
     &lt;strong&gt;App 1&lt;/strong&gt;
-    &lt;label class="oc-language-select oc-language-select--ghost oc-language-select--code" data-code="NL"&gt;
-      &lt;select class="oc-language-select-control" aria-label="Language"&gt;
-        &lt;option value="en"&gt;English&lt;/option&gt;
-        &lt;option value="nl" selected&gt;Nederlands&lt;/option&gt;
-        &lt;option value="fr"&gt;Français&lt;/option&gt;
-        &lt;option value="de"&gt;Deutsch&lt;/option&gt;
-      &lt;/select&gt;
-    &lt;/label&gt;
+    &lt;!-- closed it shows only the code of the chosen language ("NL") --&gt;
+    &lt;OcLanguageSelect v-model="locale" ghost code :options="languages" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:flex;justify-content:space-between;align-items:center;inline-size:min(100%,20rem);padding:0.25rem 0.25rem 0.25rem 0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
-  &lt;strong&gt;App 1&lt;/strong&gt;
-  &lt;label class="oc-language-select oc-language-select--ghost oc-language-select--code" data-code="NL"&gt;
-    &lt;select class="oc-language-select-control" aria-label="Language"&gt;
-      &lt;option value="en"&gt;English&lt;/option&gt;
-      &lt;option value="nl" selected&gt;Nederlands&lt;/option&gt;
-      &lt;option value="fr"&gt;Français&lt;/option&gt;
-      &lt;option value="de"&gt;Deutsch&lt;/option&gt;
-    &lt;/select&gt;
-  &lt;/label&gt;
+    &lt;strong&gt;App 1&lt;/strong&gt;
+    {{-- closed it shows only the code of the chosen language ("NL") --}}
+    &lt;x-oc::language-select ghost code value="nl" :options="['en' =&gt; 'English', 'nl' =&gt; 'Nederlands', 'fr' =&gt; 'Français', 'de' =&gt; 'Deutsch']" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -291,16 +272,12 @@ class LanguageSelectCode extends Component
 }
 
 {{-- resources/views/livewire/language-select-code.blade.php --}}
-&lt;div style="display:flex;justify-content:space-between;align-items:center;inline-size:min(100%,20rem);padding:0.25rem 0.25rem 0.25rem 0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
-  &lt;strong&gt;App 1&lt;/strong&gt;
-  &lt;label class="oc-language-select oc-language-select--ghost oc-language-select--code" data-code="NL"&gt;
-    &lt;select class="oc-language-select-control" aria-label="Language"&gt;
-      &lt;option value="en"&gt;English&lt;/option&gt;
-      &lt;option value="nl" selected&gt;Nederlands&lt;/option&gt;
-      &lt;option value="fr"&gt;Français&lt;/option&gt;
-      &lt;option value="de"&gt;Deutsch&lt;/option&gt;
-    &lt;/select&gt;
-  &lt;/label&gt;
+&lt;div&gt;
+    &lt;div style="display:flex;justify-content:space-between;align-items:center;inline-size:min(100%,20rem);padding:0.25rem 0.25rem 0.25rem 0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+        &lt;strong&gt;App 1&lt;/strong&gt;
+        {{-- closed it shows only the code of the chosen language ("NL") --}}
+        &lt;x-oc::language-select ghost code value="nl" :options="['en' =&gt; 'English', 'nl' =&gt; 'Nederlands', 'fr' =&gt; 'Français', 'de' =&gt; 'Deutsch']" /&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -340,47 +317,41 @@ class LanguageSelectCode extends Component
   &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=fr" hreflang="fr" lang="fr"&gt;Français&lt;/a&gt;
   &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=de" hreflang="de" lang="de"&gt;Deutsch&lt;/a&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;&gt;
-      &lt;button type="button" className="oc-language-select" popoverTarget="oc-language-menu" aria-label="Language: Nederlands"&gt;
-        &lt;span className="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2" /&gt;&lt;/svg&gt;&lt;/span&gt;{" "}
-        Nederlands
-      &lt;/button&gt;
-      &lt;div className="oc-dropdown-menu" id="oc-language-menu" popover=""&gt;
-        &lt;div className="oc-dropdown-label"&gt;Language&lt;/div&gt;
-        &lt;a className="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=en" hrefLang="en" lang="en"&gt;English&lt;/a&gt;{" "}
-        &lt;a className="oc-dropdown-item" role="menuitemradio" aria-checked="true" href="?lang=nl" hrefLang="nl" lang="nl"&gt;Nederlands&lt;/a&gt;{" "}
-        &lt;a className="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=fr" hrefLang="fr" lang="fr"&gt;Français&lt;/a&gt;{" "}
-        &lt;a className="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=de" hrefLang="de" lang="de"&gt;Deutsch&lt;/a&gt;
-      &lt;/div&gt;
-    &lt;/&gt;
-  );
+<oc-code lang="tsx">import { LanguageMenu } from "@birdycom/omniaui-react";
+
+const languages = [
+  { value: "en", label: "English", href: "?lang=en" },
+  { value: "nl", label: "Nederlands", href: "?lang=nl" },
+  { value: "fr", label: "Français", href: "?lang=fr" },
+  { value: "de", label: "Deutsch", href: "?lang=de" },
+];
+
+export function Example() {
+  // a button that opens a popover menu; with href every item is a link with hreflang
+  return &lt;LanguageMenu id="oc-language-menu" options={languages} value="nl" show="name" /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;button type="button" class="oc-language-select" popovertarget="oc-language-menu" aria-label="Language: Nederlands"&gt;
-    &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2" /&gt;&lt;/svg&gt;&lt;/span&gt;
-    Nederlands
-  &lt;/button&gt;
-  &lt;div class="oc-dropdown-menu" id="oc-language-menu" popover=""&gt;
-    &lt;div class="oc-dropdown-label"&gt;Language&lt;/div&gt;
-    &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=en" hreflang="en" lang="en"&gt;English&lt;/a&gt;
-    &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="true" href="?lang=nl" hreflang="nl" lang="nl"&gt;Nederlands&lt;/a&gt;
-    &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=fr" hreflang="fr" lang="fr"&gt;Français&lt;/a&gt;
-    &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=de" hreflang="de" lang="de"&gt;Deutsch&lt;/a&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcLanguageMenu } from "@birdycom/omniaui-vue";
+
+const languages = [
+  { value: "en", label: "English", href: "?lang=en" },
+  { value: "nl", label: "Nederlands", href: "?lang=nl" },
+  { value: "fr", label: "Français", href: "?lang=fr" },
+  { value: "de", label: "Deutsch", href: "?lang=de" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- a button that opens a popover menu; with href every item is a link with hreflang --&gt;
+  &lt;OcLanguageMenu :options="languages" model-value="nl" show="name" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;button type="button" class="oc-language-select" popovertarget="oc-language-menu" aria-label="Language: Nederlands"&gt;
-  &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/&gt;&lt;/svg&gt;&lt;/span&gt;
-  Nederlands
-&lt;/button&gt;
-&lt;div class="oc-dropdown-menu" id="oc-language-menu" popover&gt;
-  &lt;div class="oc-dropdown-label"&gt;Language&lt;/div&gt;
-  &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=en" hreflang="en" lang="en"&gt;English&lt;/a&gt;
-  &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="true" href="?lang=nl" hreflang="nl" lang="nl"&gt;Nederlands&lt;/a&gt;
-  &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=fr" hreflang="fr" lang="fr"&gt;Français&lt;/a&gt;
-  &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=de" hreflang="de" lang="de"&gt;Deutsch&lt;/a&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- a button that opens a popover menu; with href every item is a link with hreflang --}}
+&lt;x-oc::language-menu id="oc-language-menu" show="name" :value="app()-&gt;getLocale()" :options="[
+    'en' =&gt; ['label' =&gt; 'English', 'href' =&gt; '?lang=en'],
+    'nl' =&gt; ['label' =&gt; 'Nederlands', 'href' =&gt; '?lang=nl'],
+    'fr' =&gt; ['label' =&gt; 'Français', 'href' =&gt; '?lang=fr'],
+    'de' =&gt; ['label' =&gt; 'Deutsch', 'href' =&gt; '?lang=de'],
+]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -397,17 +368,13 @@ class LanguageSelectDropdown extends Component
 
 {{-- resources/views/livewire/language-select-dropdown.blade.php --}}
 &lt;div&gt;
-    &lt;button type="button" class="oc-language-select" popovertarget="oc-language-menu" aria-label="Language: Nederlands"&gt;
-      &lt;span class="oc-language-select-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"&gt;&lt;path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/&gt;&lt;/svg&gt;&lt;/span&gt;
-      Nederlands
-    &lt;/button&gt;
-    &lt;div class="oc-dropdown-menu" id="oc-language-menu" popover&gt;
-      &lt;div class="oc-dropdown-label"&gt;Language&lt;/div&gt;
-      &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=en" hreflang="en" lang="en"&gt;English&lt;/a&gt;
-      &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="true" href="?lang=nl" hreflang="nl" lang="nl"&gt;Nederlands&lt;/a&gt;
-      &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=fr" hreflang="fr" lang="fr"&gt;Français&lt;/a&gt;
-      &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=de" hreflang="de" lang="de"&gt;Deutsch&lt;/a&gt;
-    &lt;/div&gt;
+    {{-- a button that opens a popover menu; with href every item is a link with hreflang --}}
+    &lt;x-oc::language-menu id="oc-language-menu" show="name" :value="app()-&gt;getLocale()" :options="[
+        'en' =&gt; ['label' =&gt; 'English', 'href' =&gt; '?lang=en'],
+        'nl' =&gt; ['label' =&gt; 'Nederlands', 'href' =&gt; '?lang=nl'],
+        'fr' =&gt; ['label' =&gt; 'Français', 'href' =&gt; '?lang=fr'],
+        'de' =&gt; ['label' =&gt; 'Deutsch', 'href' =&gt; '?lang=de'],
+    ]" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 

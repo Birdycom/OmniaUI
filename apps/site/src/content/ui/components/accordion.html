@@ -27,54 +27,57 @@
     <div class="oc-accordion-content"><p>Yes. <code>::details-content</code> with <code>interpolate-size</code> animates the height; older browsers open without animation.</p></div>
   </details>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Accordion, AccordionItem } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // items with the same name open one at a time (native exclusive &lt;details&gt;)
   return (
-    &lt;div className="oc-accordion"&gt;
-      &lt;details className="oc-accordion-item" name="faq" open&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;Is it accessible?&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Yes. It uses the native details and summary elements, so focus, Enter and Space work out of the box.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-      &lt;details className="oc-accordion-item" name="faq"&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;Does it need JavaScript?&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;No. Items with the same &lt;code&gt;name&lt;/code&gt; open one at a time.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-      &lt;details className="oc-accordion-item" name="faq"&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;Is it animated?&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Yes. &lt;code&gt;::details-content&lt;/code&gt; with &lt;code&gt;interpolate-size&lt;/code&gt; animates the height; older browsers open without animation.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-    &lt;/div&gt;
+    &lt;Accordion&gt;
+      &lt;AccordionItem name="faq" title="Is it accessible?" open&gt;
+        &lt;p&gt;Yes. It uses the native details and summary elements, so focus, Enter and Space work out of the box.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+      &lt;AccordionItem name="faq" title="Does it need JavaScript?"&gt;
+        &lt;p&gt;No. Items with the same &lt;code&gt;name&lt;/code&gt; open one at a time.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+      &lt;AccordionItem name="faq" title="Is it animated?"&gt;
+        &lt;p&gt;Yes. &lt;code&gt;::details-content&lt;/code&gt; with &lt;code&gt;interpolate-size&lt;/code&gt; animates the height; older browsers open without animation.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+    &lt;/Accordion&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-accordion"&gt;
-    &lt;details class="oc-accordion-item" name="faq" open&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;Is it accessible?&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes. It uses the native details and summary elements, so focus, Enter and Space work out of the box.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;details class="oc-accordion-item" name="faq"&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;Does it need JavaScript?&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;No. Items with the same &lt;code&gt;name&lt;/code&gt; open one at a time.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;details class="oc-accordion-item" name="faq"&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;Is it animated?&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes. &lt;code&gt;::details-content&lt;/code&gt; with &lt;code&gt;interpolate-size&lt;/code&gt; animates the height; older browsers open without animation.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcAccordion, OcAccordionItem } from "@birdycom/omniaui-vue";
+
+const first = ref(true);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- OcAccordion gives its items one group name: one open at a time --&gt;
+  &lt;OcAccordion name="faq"&gt;
+    &lt;OcAccordionItem v-model:open="first" title="Is it accessible?"&gt;
+      &lt;p&gt;Yes. It uses the native details and summary elements, so focus, Enter and Space work out of the box.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+    &lt;OcAccordionItem title="Does it need JavaScript?"&gt;
+      &lt;p&gt;No. Items with the same &lt;code&gt;name&lt;/code&gt; open one at a time.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+    &lt;OcAccordionItem title="Is it animated?"&gt;
+      &lt;p&gt;Yes. &lt;code&gt;::details-content&lt;/code&gt; with &lt;code&gt;interpolate-size&lt;/code&gt; animates the height; older browsers open without animation.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+  &lt;/OcAccordion&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-accordion"&gt;
-  &lt;details class="oc-accordion-item" name="faq" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Is it accessible?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes. It uses the native details and summary elements, so focus, Enter and Space work out of the box.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="faq"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Does it need JavaScript?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;No. Items with the same &lt;code&gt;name&lt;/code&gt; open one at a time.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="faq"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Is it animated?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes. &lt;code&gt;::details-content&lt;/code&gt; with &lt;code&gt;interpolate-size&lt;/code&gt; animates the height; older browsers open without animation.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- items with the same name open one at a time (native exclusive &lt;details&gt;) --}}
+&lt;x-oc::accordion&gt;
+    &lt;x-oc::accordion.item name="faq" title="Is it accessible?" open&gt;
+        &lt;p&gt;Yes. It uses the native details and summary elements, so focus, Enter and Space work out of the box.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+    &lt;x-oc::accordion.item name="faq" title="Does it need JavaScript?"&gt;
+        &lt;p&gt;No. Items with the same &lt;code&gt;name&lt;/code&gt; open one at a time.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+    &lt;x-oc::accordion.item name="faq" title="Is it animated?"&gt;
+        &lt;p&gt;Yes. &lt;code&gt;::details-content&lt;/code&gt; with &lt;code&gt;interpolate-size&lt;/code&gt; animates the height; older browsers open without animation.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+&lt;/x-oc::accordion&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -90,19 +93,19 @@ class Accordion extends Component
 }
 
 {{-- resources/views/livewire/accordion.blade.php --}}
-&lt;div class="oc-accordion"&gt;
-  &lt;details class="oc-accordion-item" name="faq" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Is it accessible?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes. It uses the native details and summary elements, so focus, Enter and Space work out of the box.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="faq"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Does it need JavaScript?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;No. Items with the same &lt;code&gt;name&lt;/code&gt; open one at a time.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="faq"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Is it animated?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes. &lt;code&gt;::details-content&lt;/code&gt; with &lt;code&gt;interpolate-size&lt;/code&gt; animates the height; older browsers open without animation.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
+&lt;div&gt;
+    {{-- items with the same name open one at a time (native exclusive &lt;details&gt;) --}}
+    &lt;x-oc::accordion&gt;
+        &lt;x-oc::accordion.item name="faq" title="Is it accessible?" open&gt;
+            &lt;p&gt;Yes. It uses the native details and summary elements, so focus, Enter and Space work out of the box.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+        &lt;x-oc::accordion.item name="faq" title="Does it need JavaScript?"&gt;
+            &lt;p&gt;No. Items with the same &lt;code&gt;name&lt;/code&gt; open one at a time.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+        &lt;x-oc::accordion.item name="faq" title="Is it animated?"&gt;
+            &lt;p&gt;Yes. &lt;code&gt;::details-content&lt;/code&gt; with &lt;code&gt;interpolate-size&lt;/code&gt; animates the height; older browsers open without animation.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+    &lt;/x-oc::accordion&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -123,54 +126,58 @@ class Accordion extends Component
     <div class="oc-accordion-content"><p>Yes, within 30 days in its original packaging.</p></div>
   </details>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Accordion, AccordionItem } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // no name: every item opens and closes on its own
   return (
-    &lt;div className="oc-accordion"&gt;
-      &lt;details className="oc-accordion-item" open&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;What are your shipping options?&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Standard (5–7 days), express (2–3 days) and overnight shipping.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-      &lt;details className="oc-accordion-item" open&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;How do I track my order?&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;You receive a tracking link by e-mail as soon as the parcel leaves the warehouse.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-      &lt;details className="oc-accordion-item"&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;Can I return an item?&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Yes, within 30 days in its original packaging.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-    &lt;/div&gt;
+    &lt;Accordion&gt;
+      &lt;AccordionItem title="What are your shipping options?" open&gt;
+        &lt;p&gt;Standard (5–7 days), express (2–3 days) and overnight shipping.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+      &lt;AccordionItem title="How do I track my order?" open&gt;
+        &lt;p&gt;You receive a tracking link by e-mail as soon as the parcel leaves the warehouse.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+      &lt;AccordionItem title="Can I return an item?"&gt;
+        &lt;p&gt;Yes, within 30 days in its original packaging.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+    &lt;/Accordion&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcAccordionItem } from "@birdycom/omniaui-vue";
+
+const shipping = ref(true);
+const tracking = ref(true);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- OcAccordion always groups its items: for several open at once, use the items in a plain .oc-accordion --&gt;
   &lt;div class="oc-accordion"&gt;
-    &lt;details class="oc-accordion-item" open&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;What are your shipping options?&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Standard (5–7 days), express (2–3 days) and overnight shipping.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;details class="oc-accordion-item" open&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;How do I track my order?&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;You receive a tracking link by e-mail as soon as the parcel leaves the warehouse.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;details class="oc-accordion-item"&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;Can I return an item?&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes, within 30 days in its original packaging.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
+    &lt;OcAccordionItem v-model:open="shipping" title="What are your shipping options?"&gt;
+      &lt;p&gt;Standard (5–7 days), express (2–3 days) and overnight shipping.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+    &lt;OcAccordionItem v-model:open="tracking" title="How do I track my order?"&gt;
+      &lt;p&gt;You receive a tracking link by e-mail as soon as the parcel leaves the warehouse.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+    &lt;OcAccordionItem title="Can I return an item?"&gt;
+      &lt;p&gt;Yes, within 30 days in its original packaging.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-accordion"&gt;
-  &lt;details class="oc-accordion-item" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;What are your shipping options?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Standard (5–7 days), express (2–3 days) and overnight shipping.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;How do I track my order?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;You receive a tracking link by e-mail as soon as the parcel leaves the warehouse.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Can I return an item?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes, within 30 days in its original packaging.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- :name="null": no group, every item opens and closes on its own --}}
+&lt;x-oc::accordion&gt;
+    &lt;x-oc::accordion.item :name="null" title="What are your shipping options?" open&gt;
+        &lt;p&gt;Standard (5–7 days), express (2–3 days) and overnight shipping.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+    &lt;x-oc::accordion.item :name="null" title="How do I track my order?" open&gt;
+        &lt;p&gt;You receive a tracking link by e-mail as soon as the parcel leaves the warehouse.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+    &lt;x-oc::accordion.item :name="null" title="Can I return an item?"&gt;
+        &lt;p&gt;Yes, within 30 days in its original packaging.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+&lt;/x-oc::accordion&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -186,19 +193,19 @@ class AccordionMultipleOpen extends Component
 }
 
 {{-- resources/views/livewire/accordion-multiple-open.blade.php --}}
-&lt;div class="oc-accordion"&gt;
-  &lt;details class="oc-accordion-item" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;What are your shipping options?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Standard (5–7 days), express (2–3 days) and overnight shipping.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;How do I track my order?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;You receive a tracking link by e-mail as soon as the parcel leaves the warehouse.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Can I return an item?&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes, within 30 days in its original packaging.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
+&lt;div&gt;
+    {{-- :name="null": no group, every item opens and closes on its own --}}
+    &lt;x-oc::accordion&gt;
+        &lt;x-oc::accordion.item :name="null" title="What are your shipping options?" open&gt;
+            &lt;p&gt;Standard (5–7 days), express (2–3 days) and overnight shipping.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+        &lt;x-oc::accordion.item :name="null" title="How do I track my order?" open&gt;
+            &lt;p&gt;You receive a tracking link by e-mail as soon as the parcel leaves the warehouse.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+        &lt;x-oc::accordion.item :name="null" title="Can I return an item?"&gt;
+            &lt;p&gt;Yes, within 30 days in its original packaging.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+    &lt;/x-oc::accordion&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -215,42 +222,51 @@ class AccordionMultipleOpen extends Component
     <div class="oc-accordion-content"><p>Choose which e-mails you receive.</p></div>
   </details>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Accordion, AccordionItem, Webicon } from "@birdycom/omniaui-react";
+
+const chevron = &lt;Webicon name="mdi:chevron-down" bare className="oc-accordion-chevron size-5" /&gt;;
+
+export function Example() {
   return (
-    &lt;div className="oc-accordion"&gt;
-      &lt;details className="oc-accordion-item" name="icons" open&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;Account&lt;iconify-icon icon="mdi:chevron-down" className="oc-accordion-chevron size-5" height="unset" aria-hidden="true" /&gt;&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Name, e-mail address and password.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-      &lt;details className="oc-accordion-item" name="icons"&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;Notifications&lt;iconify-icon icon="mdi:chevron-down" className="oc-accordion-chevron size-5" height="unset" aria-hidden="true" /&gt;&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Choose which e-mails you receive.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-    &lt;/div&gt;
+    &lt;Accordion&gt;
+      &lt;AccordionItem name="icons" title={&lt;&gt;Account{chevron}&lt;/&gt;} open&gt;
+        &lt;p&gt;Name, e-mail address and password.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+      &lt;AccordionItem name="icons" title={&lt;&gt;Notifications{chevron}&lt;/&gt;}&gt;
+        &lt;p&gt;Choose which e-mails you receive.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+    &lt;/Accordion&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-accordion"&gt;
-    &lt;details class="oc-accordion-item" name="icons" open&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;Account&lt;iconify-icon icon="mdi:chevron-down" class="oc-accordion-chevron size-5" height="unset" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Name, e-mail address and password.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;details class="oc-accordion-item" name="icons"&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;Notifications&lt;iconify-icon icon="mdi:chevron-down" class="oc-accordion-chevron size-5" height="unset" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Choose which e-mails you receive.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcAccordion, OcAccordionItem, OcWebicon } from "@birdycom/omniaui-vue";
+
+const account = ref(true);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcAccordion name="icons"&gt;
+    &lt;OcAccordionItem v-model:open="account"&gt;
+      &lt;template #title&gt;Account&lt;OcWebicon name="mdi:chevron-down" bare class="oc-accordion-chevron size-5" /&gt;&lt;/template&gt;
+      &lt;p&gt;Name, e-mail address and password.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+    &lt;OcAccordionItem&gt;
+      &lt;template #title&gt;Notifications&lt;OcWebicon name="mdi:chevron-down" bare class="oc-accordion-chevron size-5" /&gt;&lt;/template&gt;
+      &lt;p&gt;Choose which e-mails you receive.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+  &lt;/OcAccordion&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-accordion"&gt;
-  &lt;details class="oc-accordion-item" name="icons" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Account&lt;iconify-icon icon="mdi:chevron-down" class="oc-accordion-chevron size-5" height="unset" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Name, e-mail address and password.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="icons"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Notifications&lt;iconify-icon icon="mdi:chevron-down" class="oc-accordion-chevron size-5" height="unset" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Choose which e-mails you receive.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::accordion&gt;
+    &lt;x-oc::accordion.item name="icons" open&gt;
+        &lt;x-slot:title&gt;Account&lt;x-oc::webicon name="mdi:chevron-down" bare class="oc-accordion-chevron size-5" /&gt;&lt;/x-slot:title&gt;
+        &lt;p&gt;Name, e-mail address and password.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+    &lt;x-oc::accordion.item name="icons"&gt;
+        &lt;x-slot:title&gt;Notifications&lt;x-oc::webicon name="mdi:chevron-down" bare class="oc-accordion-chevron size-5" /&gt;&lt;/x-slot:title&gt;
+        &lt;p&gt;Choose which e-mails you receive.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+&lt;/x-oc::accordion&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -266,15 +282,17 @@ class AccordionIconChevron extends Component
 }
 
 {{-- resources/views/livewire/accordion-icon-chevron.blade.php --}}
-&lt;div class="oc-accordion"&gt;
-  &lt;details class="oc-accordion-item" name="icons" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Account&lt;iconify-icon icon="mdi:chevron-down" class="oc-accordion-chevron size-5" height="unset" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Name, e-mail address and password.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="icons"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Notifications&lt;iconify-icon icon="mdi:chevron-down" class="oc-accordion-chevron size-5" height="unset" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Choose which e-mails you receive.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
+&lt;div&gt;
+    &lt;x-oc::accordion&gt;
+        &lt;x-oc::accordion.item name="icons" open&gt;
+            &lt;x-slot:title&gt;Account&lt;x-oc::webicon name="mdi:chevron-down" bare class="oc-accordion-chevron size-5" /&gt;&lt;/x-slot:title&gt;
+            &lt;p&gt;Name, e-mail address and password.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+        &lt;x-oc::accordion.item name="icons"&gt;
+            &lt;x-slot:title&gt;Notifications&lt;x-oc::webicon name="mdi:chevron-down" bare class="oc-accordion-chevron size-5" /&gt;&lt;/x-slot:title&gt;
+            &lt;p&gt;Choose which e-mails you receive.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+    &lt;/x-oc::accordion&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -295,54 +313,54 @@ class AccordionIconChevron extends Component
     <div class="oc-accordion-content"><p>Invoices, payment method and VAT number.</p></div>
   </details>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Accordion, AccordionItem } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-accordion oc-accordion--flush"&gt;
-      &lt;details className="oc-accordion-item" name="flush" open&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;General&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Language, time zone and date format.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-      &lt;details className="oc-accordion-item" name="flush"&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;Privacy&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Who can see your profile and activity.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-      &lt;details className="oc-accordion-item" name="flush"&gt;
-        &lt;summary className="oc-accordion-trigger"&gt;Billing&lt;/summary&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Invoices, payment method and VAT number.&lt;/p&gt;&lt;/div&gt;
-      &lt;/details&gt;
-    &lt;/div&gt;
+    &lt;Accordion className="oc-accordion--flush"&gt;
+      &lt;AccordionItem name="flush" title="General" open&gt;
+        &lt;p&gt;Language, time zone and date format.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+      &lt;AccordionItem name="flush" title="Privacy"&gt;
+        &lt;p&gt;Who can see your profile and activity.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+      &lt;AccordionItem name="flush" title="Billing"&gt;
+        &lt;p&gt;Invoices, payment method and VAT number.&lt;/p&gt;
+      &lt;/AccordionItem&gt;
+    &lt;/Accordion&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-accordion oc-accordion--flush"&gt;
-    &lt;details class="oc-accordion-item" name="flush" open&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;General&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Language, time zone and date format.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;details class="oc-accordion-item" name="flush"&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;Privacy&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Who can see your profile and activity.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-    &lt;details class="oc-accordion-item" name="flush"&gt;
-      &lt;summary class="oc-accordion-trigger"&gt;Billing&lt;/summary&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Invoices, payment method and VAT number.&lt;/p&gt;&lt;/div&gt;
-    &lt;/details&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcAccordion, OcAccordionItem } from "@birdycom/omniaui-vue";
+
+const general = ref(true);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcAccordion name="flush" class="oc-accordion--flush"&gt;
+    &lt;OcAccordionItem v-model:open="general" title="General"&gt;
+      &lt;p&gt;Language, time zone and date format.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+    &lt;OcAccordionItem title="Privacy"&gt;
+      &lt;p&gt;Who can see your profile and activity.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+    &lt;OcAccordionItem title="Billing"&gt;
+      &lt;p&gt;Invoices, payment method and VAT number.&lt;/p&gt;
+    &lt;/OcAccordionItem&gt;
+  &lt;/OcAccordion&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-accordion oc-accordion--flush"&gt;
-  &lt;details class="oc-accordion-item" name="flush" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;General&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Language, time zone and date format.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="flush"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Privacy&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Who can see your profile and activity.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="flush"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Billing&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Invoices, payment method and VAT number.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::accordion flush&gt;
+    &lt;x-oc::accordion.item name="flush" title="General" open&gt;
+        &lt;p&gt;Language, time zone and date format.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+    &lt;x-oc::accordion.item name="flush" title="Privacy"&gt;
+        &lt;p&gt;Who can see your profile and activity.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+    &lt;x-oc::accordion.item name="flush" title="Billing"&gt;
+        &lt;p&gt;Invoices, payment method and VAT number.&lt;/p&gt;
+    &lt;/x-oc::accordion.item&gt;
+&lt;/x-oc::accordion&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -358,19 +376,18 @@ class AccordionFlush extends Component
 }
 
 {{-- resources/views/livewire/accordion-flush.blade.php --}}
-&lt;div class="oc-accordion oc-accordion--flush"&gt;
-  &lt;details class="oc-accordion-item" name="flush" open&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;General&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Language, time zone and date format.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="flush"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Privacy&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Who can see your profile and activity.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
-  &lt;details class="oc-accordion-item" name="flush"&gt;
-    &lt;summary class="oc-accordion-trigger"&gt;Billing&lt;/summary&gt;
-    &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Invoices, payment method and VAT number.&lt;/p&gt;&lt;/div&gt;
-  &lt;/details&gt;
+&lt;div&gt;
+    &lt;x-oc::accordion flush&gt;
+        &lt;x-oc::accordion.item name="flush" title="General" open&gt;
+            &lt;p&gt;Language, time zone and date format.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+        &lt;x-oc::accordion.item name="flush" title="Privacy"&gt;
+            &lt;p&gt;Who can see your profile and activity.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+        &lt;x-oc::accordion.item name="flush" title="Billing"&gt;
+            &lt;p&gt;Invoices, payment method and VAT number.&lt;/p&gt;
+        &lt;/x-oc::accordion.item&gt;
+    &lt;/x-oc::accordion&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -403,37 +420,61 @@ class AccordionFlush extends Component
     trigger.setAttribute("aria-expanded", String(item.classList.toggle("is-open")));
   }
 </script>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+
+const items = [
+  { title: "Can I access my account history?", body: "Yes. Go to Settings → Account → History." },
+  { title: "Premium feature (disabled)", body: "Only available on the Pro plan.", disabled: true },
+  { title: "How do I update my e-mail address?", body: "Settings → Profile → E-mail. You receive a verification link." },
+];
+
+export function Example() {
+  // AccordionItem is a native &lt;details&gt;: for state in your own code (single open, disabled items) write the .is-open markup
+  const [open, setOpen] = useState&lt;number | null&gt;(0);
   return (
     &lt;div className="oc-accordion"&gt;
-      &lt;div className="oc-accordion-item is-open"&gt;
-        &lt;button type="button" className="oc-accordion-trigger" aria-expanded="true"&gt;Can I access my account history?&lt;/button&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Yes. Go to Settings → Account → History.&lt;/p&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-accordion-item"&gt;
-        &lt;button type="button" className="oc-accordion-trigger" disabled&gt;Premium feature (disabled)&lt;/button&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Only available on the Pro plan.&lt;/p&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-accordion-item"&gt;
-        &lt;button type="button" className="oc-accordion-trigger" aria-expanded="false"&gt;How do I update my e-mail address?&lt;/button&gt;
-        &lt;div className="oc-accordion-content"&gt;&lt;p&gt;Settings → Profile → E-mail. You receive a verification link.&lt;/p&gt;&lt;/div&gt;
-      &lt;/div&gt;
+      {items.map((item, i) =&gt; (
+        &lt;div key={item.title} className={`oc-accordion-item${open === i ? " is-open" : ""}`}&gt;
+          &lt;button
+            type="button"
+            className="oc-accordion-trigger"
+            disabled={item.disabled}
+            aria-expanded={item.disabled ? undefined : open === i}
+            onClick={() =&gt; setOpen(open === i ? null : i)}
+          &gt;
+            {item.title}
+          &lt;/button&gt;
+          &lt;div className="oc-accordion-content"&gt;&lt;p&gt;{item.body}&lt;/p&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      ))}
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+
+const items = [
+  { title: "Can I access my account history?", body: "Yes. Go to Settings → Account → History." },
+  { title: "Premium feature (disabled)", body: "Only available on the Pro plan.", disabled: true },
+  { title: "How do I update my e-mail address?", body: "Settings → Profile → E-mail. You receive a verification link." },
+];
+// OcAccordionItem is a native &lt;details&gt;: for state in your own code (single open, disabled items) write the .is-open markup
+const open = ref&lt;number | null&gt;(0);
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-accordion"&gt;
-    &lt;div class="oc-accordion-item is-open"&gt;
-      &lt;button type="button" class="oc-accordion-trigger" aria-expanded="true"&gt;Can I access my account history?&lt;/button&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes. Go to Settings → Account → History.&lt;/p&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-accordion-item"&gt;
-      &lt;button type="button" class="oc-accordion-trigger" disabled&gt;Premium feature (disabled)&lt;/button&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Only available on the Pro plan.&lt;/p&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-accordion-item"&gt;
-      &lt;button type="button" class="oc-accordion-trigger" aria-expanded="false"&gt;How do I update my e-mail address?&lt;/button&gt;
-      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Settings → Profile → E-mail. You receive a verification link.&lt;/p&gt;&lt;/div&gt;
+    &lt;div v-for="(item, i) in items" :key="item.title" :class="['oc-accordion-item', open === i &amp;&amp; 'is-open']"&gt;
+      &lt;button
+        type="button"
+        class="oc-accordion-trigger"
+        :disabled="item.disabled"
+        :aria-expanded="item.disabled ? undefined : open === i"
+        @click="open = open === i ? null : i"
+      &gt;
+        {{ item.title }}
+      &lt;/button&gt;
+      &lt;div class="oc-accordion-content"&gt;&lt;p&gt;{{ item.body }}&lt;/p&gt;&lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
@@ -469,42 +510,36 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class AccordionScriptControlled extends Component
+class AccountHelp extends Component
 {
+    public ?int $open = 0;
+
+    public function toggle(int $index): void
+    {
+        $this-&gt;open = $this-&gt;open === $index ? null : $index;
+    }
+
     public function render()
     {
-        return view('livewire.accordion-script-controlled');
+        return view('livewire.account-help');
     }
 }
 
-{{-- resources/views/livewire/accordion-script-controlled.blade.php --}}
-&lt;div&gt;
-    &lt;div class="oc-accordion"&gt;
-      &lt;div class="oc-accordion-item is-open"&gt;
-        &lt;button type="button" class="oc-accordion-trigger" aria-expanded="true" onclick="accordionSingle(this)"&gt;Can I access my account history?&lt;/button&gt;
+{{-- resources/views/livewire/account-help.blade.php --}}
+{{-- &lt;x-oc::accordion.item&gt; is a native &lt;details&gt;; with the open state on the server, use the .is-open markup --}}
+&lt;div class="oc-accordion"&gt;
+    &lt;div @class(['oc-accordion-item', 'is-open' =&gt; $open === 0])&gt;
+        &lt;button type="button" class="oc-accordion-trigger" aria-expanded="{{ $open === 0 ? 'true' : 'false' }}" wire:click="toggle(0)"&gt;Can I access my account history?&lt;/button&gt;
         &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Yes. Go to Settings → Account → History.&lt;/p&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-accordion-item"&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-accordion-item"&gt;
         &lt;button type="button" class="oc-accordion-trigger" disabled&gt;Premium feature (disabled)&lt;/button&gt;
         &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Only available on the Pro plan.&lt;/p&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-accordion-item"&gt;
-        &lt;button type="button" class="oc-accordion-trigger" aria-expanded="false" onclick="accordionSingle(this)"&gt;How do I update my e-mail address?&lt;/button&gt;
-        &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Settings → Profile → E-mail. You receive a verification link.&lt;/p&gt;&lt;/div&gt;
-      &lt;/div&gt;
     &lt;/div&gt;
-    &lt;script&gt;
-      // Single open: close the other items, toggle this one and keep aria-expanded in sync.
-      function accordionSingle(trigger) {
-        const item = trigger.closest(".oc-accordion-item");
-        for (const other of trigger.closest(".oc-accordion").querySelectorAll(".oc-accordion-item")) {
-          if (other === item) continue;
-          other.classList.remove("is-open");
-          other.querySelector(".oc-accordion-trigger")?.setAttribute("aria-expanded", "false");
-        }
-        trigger.setAttribute("aria-expanded", String(item.classList.toggle("is-open")));
-      }
-    &lt;/script&gt;
+    &lt;div @class(['oc-accordion-item', 'is-open' =&gt; $open === 2])&gt;
+        &lt;button type="button" class="oc-accordion-trigger" aria-expanded="{{ $open === 2 ? 'true' : 'false' }}" wire:click="toggle(2)"&gt;How do I update my e-mail address?&lt;/button&gt;
+        &lt;div class="oc-accordion-content"&gt;&lt;p&gt;Settings → Profile → E-mail. You receive a verification link.&lt;/p&gt;&lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

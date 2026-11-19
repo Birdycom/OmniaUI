@@ -23,59 +23,55 @@
   </div>
   <p class="oc-field-description">13 digits is an EAN-13. Anything else is an internal code.</p>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-field" style={{ maxInlineSize: "22rem" }}&gt;
-      &lt;label className="oc-field-label" htmlFor="oc-barcode-demo"&gt;Our barcode&lt;/label&gt;
-      &lt;div className="oc-input-group oc-input-group--affix"&gt;
-        &lt;span className="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;input className="oc-input oc-barcode-input-field" id="oc-barcode-demo" name="ean" type="text" maxLength={80} placeholder="EAN-13 or internal code" autoComplete="off" spellCheck="false" /&gt;
-      &lt;/div&gt;
-      &lt;p className="oc-field-description"&gt;13 digits is an EAN-13. Anything else is an internal code.&lt;/p&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-    &lt;label class="oc-field-label" for="oc-barcode-demo"&gt;Our barcode&lt;/label&gt;
+<oc-code lang="tsx">// The field on its own (no preview): an input group with the barcode glyph
+&lt;FormField label="Our barcode" description="13 digits is an EAN-13. Anything else is an internal code." style={{ maxInlineSize: "22rem" }}&gt;
+  &lt;InputGroup className="oc-input-group--affix" prefix={&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;}&gt;
+    &lt;Input className="oc-barcode-input-field" name="ean" maxLength={80} placeholder="EAN-13 or internal code" autoComplete="off" spellCheck={false} /&gt;
+  &lt;/InputGroup&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Our barcode" description="13 digits is an EAN-13. Anything else is an internal code." style="max-inline-size:22rem" v-slot="f"&gt;
+  &lt;OcInputGroup class="oc-input-group--affix"&gt;
+    &lt;template #prefix&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/template&gt;
+    &lt;OcInput :id="f.id" class="oc-barcode-input-field" name="ean" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false" :aria-describedby="f.describedBy" /&gt;
+  &lt;/OcInputGroup&gt;
+&lt;/OcFormField&gt;</oc-code>
+<oc-code lang="blade">{{-- x-oc::input-group takes text addons; the barcode glyph is markup, so the group is written out --}}
+&lt;x-oc::form-field label="Our barcode" for="ean" name="ean" description="13 digits is an EAN-13. Anything else is an internal code." style="max-inline-size:22rem"&gt;
     &lt;div class="oc-input-group oc-input-group--affix"&gt;
-      &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;input class="oc-input oc-barcode-input-field" id="oc-barcode-demo" name="ean" type="text" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false" /&gt;
+        &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
+        &lt;x-oc::input id="ean" name="ean" class="oc-barcode-input-field" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false" /&gt;
     &lt;/div&gt;
-    &lt;p class="oc-field-description"&gt;13 digits is an EAN-13. Anything else is an internal code.&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-  &lt;label class="oc-field-label" for="oc-barcode-demo"&gt;Our barcode&lt;/label&gt;
-  &lt;div class="oc-input-group oc-input-group--affix"&gt;
-    &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;input class="oc-input oc-barcode-input-field" id="oc-barcode-demo" name="ean" type="text" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false"&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-field-description"&gt;13 digits is an EAN-13. Anything else is an internal code.&lt;/p&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::form-field&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class BarcodeInput extends Component
+class ArticleBarcode extends Component
 {
+    public string $ean = '';
+
+    public function save(): void
+    {
+        $this-&gt;validate(['ean' =&gt; 'required|max:80']);
+    }
+
     public function render()
     {
-        return view('livewire.barcode-input');
+        return view('livewire.article-barcode');
     }
 }
 
-{{-- resources/views/livewire/barcode-input.blade.php --}}
-&lt;div class="oc-field" style="max-inline-size:22rem"&gt;
-  &lt;label class="oc-field-label" for="oc-barcode-demo"&gt;Our barcode&lt;/label&gt;
-  &lt;div class="oc-input-group oc-input-group--affix"&gt;
-    &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;input class="oc-input oc-barcode-input-field" id="oc-barcode-demo" name="ean" type="text" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false"&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-field-description"&gt;13 digits is an EAN-13. Anything else is an internal code.&lt;/p&gt;
-&lt;/div&gt;</oc-code>
+{{-- resources/views/livewire/article-barcode.blade.php --}}
+&lt;form wire:submit="save"&gt;
+    &lt;x-oc::form-field label="Our barcode" for="ean" name="ean" description="13 digits is an EAN-13. Anything else is an internal code." style="max-inline-size:22rem"&gt;
+        &lt;div class="oc-input-group oc-input-group--affix"&gt;
+            &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;x-oc::wire.input id="ean" model="ean" class="oc-barcode-input-field" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false" /&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Valid, empty and invalid</h3>
@@ -168,170 +164,61 @@ class BarcodeInput extends Component
     &lt;figcaption class="oc-barcode-preview-code"&gt;Use 8 or 13 digits&lt;/figcaption&gt;
   &lt;/figure&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;&gt;
-      {/* Valid */}
-      &lt;div className="oc-barcode-input"&gt;
-        &lt;div className="oc-input-group oc-input-group--affix"&gt;
-          &lt;span className="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;input className="oc-input oc-barcode-input-field" type="text" defaultValue="5412345678908" aria-label="Barcode" /&gt;
-        &lt;/div&gt;
-        &lt;figure className="oc-barcode-preview"&gt;
-          &lt;div className="oc-barcode-preview-bars" aria-hidden="true" /&gt;
-          &lt;figcaption className="oc-barcode-preview-code"&gt;5412345678908&lt;/figcaption&gt;
-        &lt;/figure&gt;
-      &lt;/div&gt;
+<oc-code lang="tsx">{/* Valid */}
+&lt;BarcodeInput defaultValue="5412345678908" aria-label="Barcode" /&gt;
 
-      {/* Empty */}
-      &lt;div className="oc-barcode-input"&gt;
-        &lt;div className="oc-input-group oc-input-group--affix"&gt;
-          &lt;span className="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;input className="oc-input oc-barcode-input-field" type="text" placeholder="EAN-13 or internal code" aria-label="Barcode (empty)" /&gt;
-        &lt;/div&gt;
-        &lt;figure className="oc-barcode-preview oc-barcode-preview--empty"&gt;
-          &lt;div className="oc-barcode-preview-bars" aria-hidden="true" /&gt;
-          &lt;figcaption className="oc-barcode-preview-code"&gt;No code yet&lt;/figcaption&gt;
-        &lt;/figure&gt;
-      &lt;/div&gt;
+{/* Empty */}
+&lt;BarcodeInput aria-label="Barcode (empty)" /&gt;
 
-      {/* Invalid */}
-      &lt;div className="oc-barcode-input"&gt;
-        &lt;div className="oc-input-group oc-input-group--affix"&gt;
-          &lt;span className="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;input className="oc-input oc-barcode-input-field" type="text" defaultValue="54123" aria-invalid="true" aria-label="Barcode (invalid)" /&gt;
-        &lt;/div&gt;
-        &lt;figure className="oc-barcode-preview oc-barcode-preview--empty"&gt;
-          &lt;div className="oc-barcode-preview-bars" aria-hidden="true" /&gt;
-          &lt;figcaption className="oc-barcode-preview-code"&gt;Use 8 or 13 digits&lt;/figcaption&gt;
-        &lt;/figure&gt;
-      &lt;/div&gt;
-    &lt;/&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;!-- Valid --&gt;
-  &lt;div class="oc-barcode-input"&gt;
-    &lt;div class="oc-input-group oc-input-group--affix"&gt;
-      &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;input class="oc-input oc-barcode-input-field" type="text" value="5412345678908" aria-label="Barcode" /&gt;
-    &lt;/div&gt;
-    &lt;figure class="oc-barcode-preview"&gt;
-      &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-      &lt;figcaption class="oc-barcode-preview-code"&gt;5412345678908&lt;/figcaption&gt;
-    &lt;/figure&gt;
-  &lt;/div&gt;
+{/* Invalid */}
+&lt;BarcodeInput defaultValue="54123" error aria-label="Barcode (invalid)" /&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcBarcodeInput } from '@birdycom/omniaui-vue'
 
-  &lt;!-- Empty --&gt;
-  &lt;div class="oc-barcode-input"&gt;
-    &lt;div class="oc-input-group oc-input-group--affix"&gt;
-      &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;input class="oc-input oc-barcode-input-field" type="text" placeholder="EAN-13 or internal code" aria-label="Barcode (empty)" /&gt;
-    &lt;/div&gt;
-    &lt;figure class="oc-barcode-preview oc-barcode-preview--empty"&gt;
-      &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-      &lt;figcaption class="oc-barcode-preview-code"&gt;No code yet&lt;/figcaption&gt;
-    &lt;/figure&gt;
-  &lt;/div&gt;
+const valid = ref('5412345678908')
+const empty = ref('')
+const invalid = ref('54123')
+&lt;/script&gt;
 
-  &lt;!-- Invalid --&gt;
-  &lt;div class="oc-barcode-input"&gt;
-    &lt;div class="oc-input-group oc-input-group--affix"&gt;
-      &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;input class="oc-input oc-barcode-input-field" type="text" value="54123" aria-invalid="true" aria-label="Barcode (invalid)" /&gt;
-    &lt;/div&gt;
-    &lt;figure class="oc-barcode-preview oc-barcode-preview--empty"&gt;
-      &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-      &lt;figcaption class="oc-barcode-preview-code"&gt;Use 8 or 13 digits&lt;/figcaption&gt;
-    &lt;/figure&gt;
-  &lt;/div&gt;
+&lt;template&gt;
+  &lt;OcBarcodeInput v-model="valid" aria-label="Barcode" /&gt;
+  &lt;OcBarcodeInput v-model="empty" aria-label="Barcode (empty)" /&gt;
+  &lt;OcBarcodeInput v-model="invalid" error aria-label="Barcode (invalid)" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;!-- Valid --&gt;
-&lt;div class="oc-barcode-input"&gt;
-  &lt;div class="oc-input-group oc-input-group--affix"&gt;
-    &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;input class="oc-input oc-barcode-input-field" type="text" value="5412345678908" aria-label="Barcode"&gt;
-  &lt;/div&gt;
-  &lt;figure class="oc-barcode-preview"&gt;
-    &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-    &lt;figcaption class="oc-barcode-preview-code"&gt;5412345678908&lt;/figcaption&gt;
-  &lt;/figure&gt;
-&lt;/div&gt;
+<oc-code lang="blade">{{-- Valid --}}
+&lt;x-oc::barcode-input name="barcode" value="5412345678908" aria-label="Barcode" /&gt;
 
-&lt;!-- Empty --&gt;
-&lt;div class="oc-barcode-input"&gt;
-  &lt;div class="oc-input-group oc-input-group--affix"&gt;
-    &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;input class="oc-input oc-barcode-input-field" type="text" placeholder="EAN-13 or internal code" aria-label="Barcode (empty)"&gt;
-  &lt;/div&gt;
-  &lt;figure class="oc-barcode-preview oc-barcode-preview--empty"&gt;
-    &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-    &lt;figcaption class="oc-barcode-preview-code"&gt;No code yet&lt;/figcaption&gt;
-  &lt;/figure&gt;
-&lt;/div&gt;
+{{-- Empty --}}
+&lt;x-oc::barcode-input name="barcode_empty" aria-label="Barcode (empty)" /&gt;
 
-&lt;!-- Invalid --&gt;
-&lt;div class="oc-barcode-input"&gt;
-  &lt;div class="oc-input-group oc-input-group--affix"&gt;
-    &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;input class="oc-input oc-barcode-input-field" type="text" value="54123" aria-invalid="true" aria-label="Barcode (invalid)"&gt;
-  &lt;/div&gt;
-  &lt;figure class="oc-barcode-preview oc-barcode-preview--empty"&gt;
-    &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-    &lt;figcaption class="oc-barcode-preview-code"&gt;Use 8 or 13 digits&lt;/figcaption&gt;
-  &lt;/figure&gt;
-&lt;/div&gt;</oc-code>
+{{-- Invalid --}}
+&lt;x-oc::barcode-input name="barcode_invalid" value="54123" error empty="Use 8 or 13 digits" aria-label="Barcode (invalid)" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class BarcodeInputStates extends Component
+class BarcodeCheck extends Component
 {
+    public string $barcode = '5412345678908';
+
+    public function updatedBarcode(): void
+    {
+        $this-&gt;validateOnly('barcode', ['barcode' =&gt; ['nullable', 'regex:/^(\d{8}|\d{13})$/']], ['barcode.regex' =&gt; 'Use 8 or 13 digits']);
+    }
+
     public function render()
     {
-        return view('livewire.barcode-input-states');
+        return view('livewire.barcode-check');
     }
 }
 
-{{-- resources/views/livewire/barcode-input-states.blade.php --}}
+{{-- resources/views/livewire/barcode-check.blade.php --}}
 &lt;div&gt;
-    &lt;!-- Valid --&gt;
-    &lt;div class="oc-barcode-input"&gt;
-      &lt;div class="oc-input-group oc-input-group--affix"&gt;
-        &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;input class="oc-input oc-barcode-input-field" type="text" value="5412345678908" aria-label="Barcode"&gt;
-      &lt;/div&gt;
-      &lt;figure class="oc-barcode-preview"&gt;
-        &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-        &lt;figcaption class="oc-barcode-preview-code"&gt;5412345678908&lt;/figcaption&gt;
-      &lt;/figure&gt;
-    &lt;/div&gt;
-
-    &lt;!-- Empty --&gt;
-    &lt;div class="oc-barcode-input"&gt;
-      &lt;div class="oc-input-group oc-input-group--affix"&gt;
-        &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;input class="oc-input oc-barcode-input-field" type="text" placeholder="EAN-13 or internal code" aria-label="Barcode (empty)"&gt;
-      &lt;/div&gt;
-      &lt;figure class="oc-barcode-preview oc-barcode-preview--empty"&gt;
-        &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-        &lt;figcaption class="oc-barcode-preview-code"&gt;No code yet&lt;/figcaption&gt;
-      &lt;/figure&gt;
-    &lt;/div&gt;
-
-    &lt;!-- Invalid --&gt;
-    &lt;div class="oc-barcode-input"&gt;
-      &lt;div class="oc-input-group oc-input-group--affix"&gt;
-        &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;input class="oc-input oc-barcode-input-field" type="text" value="54123" aria-invalid="true" aria-label="Barcode (invalid)"&gt;
-      &lt;/div&gt;
-      &lt;figure class="oc-barcode-preview oc-barcode-preview--empty"&gt;
-        &lt;div class="oc-barcode-preview-bars" aria-hidden="true"&gt;&lt;/div&gt;
-        &lt;figcaption class="oc-barcode-preview-code"&gt;Use 8 or 13 digits&lt;/figcaption&gt;
-      &lt;/figure&gt;
-    &lt;/div&gt;
+    &lt;x-oc::barcode-input name="barcode" :value="$barcode" wire:model.live.debounce.400ms="barcode" :error="$errors-&gt;has('barcode')" aria-label="Barcode" /&gt;
+    @error('barcode') &lt;p class="oc-field-error"&gt;{{ $message }}&lt;/p&gt; @enderror
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

@@ -35,81 +35,87 @@
     </tbody>
   </table>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Table, TableActionIcon, TableActions, Webicon } from "@birdycom/omniaui-react";
+
+const contacts = [
+  { id: 1, name: "Contact 1", email: "info@contact1.example", locked: false },
+  { id: 3, name: "Contact 3", email: "info@contact3.example", locked: true },
+];
+
+function remove(id: number) {
+  // ask for confirmation, then delete
+}
+
+export function Example() {
   return (
-    &lt;div className="oc-table-wrap"&gt;
-      &lt;table className="oc-table"&gt;
-        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style={{ width: "7rem" }}&gt;&lt;span className="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-        &lt;tbody&gt;
-          &lt;tr&gt;
-            &lt;td&gt;Contact 1&lt;/td&gt;&lt;td&gt;info@contact1.example&lt;/td&gt;
-            &lt;td className="oc-table-actions oc-table-actions--icons"&gt;
-              &lt;a className="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 1" title="View"&gt;&lt;svg data-icon="mdi:eye-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0" /&gt;&lt;/svg&gt;&lt;/a&gt;{" "}
-              &lt;a className="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 1" title="Edit"&gt;&lt;svg data-icon="mdi:pencil-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;
-              &lt;button className="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 1" title="Delete"&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-            &lt;/td&gt;
+    &lt;Table&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style={{ width: "7rem" }}&gt;&lt;span className="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        {contacts.map((c) =&gt; (
+          &lt;tr key={c.id}&gt;
+            &lt;td&gt;{c.name}&lt;/td&gt;&lt;td&gt;{c.email}&lt;/td&gt;
+            &lt;TableActions className="oc-table-actions--icons"&gt;
+              &lt;TableActionIcon label={`View ${c.name}`} tone="primary" href={`/contacts/${c.id}`}&gt;&lt;Webicon name="mdi:eye-outline" /&gt;&lt;/TableActionIcon&gt;
+              &lt;TableActionIcon label={`Edit ${c.name}`} href={`/contacts/${c.id}/edit`}&gt;&lt;Webicon name="mdi:pencil-outline" /&gt;&lt;/TableActionIcon&gt;
+              &lt;TableActionIcon label={`Delete ${c.name}`} tone="destructive" disabled={c.locked} onClick={() =&gt; remove(c.id)}&gt;&lt;Webicon name="mdi:trash-can-outline" /&gt;&lt;/TableActionIcon&gt;
+            &lt;/TableActions&gt;
           &lt;/tr&gt;
-          &lt;tr&gt;
-            &lt;td&gt;Contact 3&lt;/td&gt;&lt;td&gt;info@contact3.example&lt;/td&gt;
-            &lt;td className="oc-table-actions oc-table-actions--icons"&gt;
-              &lt;a className="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 3" title="View"&gt;&lt;svg data-icon="mdi:eye-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0" /&gt;&lt;/svg&gt;&lt;/a&gt;{" "}
-              &lt;a className="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 3" title="Edit"&gt;&lt;svg data-icon="mdi:pencil-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;
-              &lt;button className="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 3" title="Delete (locked)" disabled&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-            &lt;/td&gt;
-          &lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-    &lt;/div&gt;
+        ))}
+      &lt;/tbody&gt;
+    &lt;/Table&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTableActions, OcWebicon } from "@birdycom/omniaui-vue";
+
+const contacts = [
+  { id: 1, name: "Contact 1", email: "info@contact1.example", locked: false },
+  { id: 3, name: "Contact 3", email: "info@contact3.example", locked: true },
+];
+
+function remove(id: number) {
+  // ask for confirmation, then delete
+}
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-table-wrap"&gt;
     &lt;table class="oc-table"&gt;
       &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:7rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
       &lt;tbody&gt;
-        &lt;tr&gt;
-          &lt;td&gt;Contact 1&lt;/td&gt;&lt;td&gt;info@contact1.example&lt;/td&gt;
-          &lt;td class="oc-table-actions oc-table-actions--icons"&gt;
-            &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 1" title="View"&gt;&lt;svg data-icon="mdi:eye-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0" /&gt;&lt;/svg&gt;&lt;/a&gt;
-            &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 1" title="Edit"&gt;&lt;svg data-icon="mdi:pencil-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;
-            &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 1" title="Delete"&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-          &lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-          &lt;td&gt;Contact 3&lt;/td&gt;&lt;td&gt;info@contact3.example&lt;/td&gt;
-          &lt;td class="oc-table-actions oc-table-actions--icons"&gt;
-            &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 3" title="View"&gt;&lt;svg data-icon="mdi:eye-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0" /&gt;&lt;/svg&gt;&lt;/a&gt;
-            &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 3" title="Edit"&gt;&lt;svg data-icon="mdi:pencil-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" /&gt;&lt;/svg&gt;&lt;/a&gt;
-            &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 3" title="Delete (locked)" disabled&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z" /&gt;&lt;/svg&gt;&lt;/button&gt;
-          &lt;/td&gt;
+        &lt;tr v-for="c in contacts" :key="c.id"&gt;
+          &lt;td&gt;{{ c.name }}&lt;/td&gt;&lt;td&gt;{{ c.email }}&lt;/td&gt;
+          &lt;OcTableActions&gt;
+            &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" :href="`/contacts/${c.id}`" :aria-label="`View ${c.name}`" title="View"&gt;&lt;OcWebicon name="mdi:eye-outline" /&gt;&lt;/a&gt;
+            &lt;a class="oc-table-actions-icon" :href="`/contacts/${c.id}/edit`" :aria-label="`Edit ${c.name}`" title="Edit"&gt;&lt;OcWebicon name="mdi:pencil-outline" /&gt;&lt;/a&gt;
+            &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" :aria-label="`Delete ${c.name}`" title="Delete" :disabled="c.locked" @click="remove(c.id)"&gt;&lt;OcWebicon name="mdi:trash-can-outline" /&gt;&lt;/button&gt;
+          &lt;/OcTableActions&gt;
         &lt;/tr&gt;
       &lt;/tbody&gt;
     &lt;/table&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-table-wrap"&gt;
-  &lt;table class="oc-table"&gt;
+<oc-code lang="blade">&lt;x-oc::table&gt;
     &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:7rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
     &lt;tbody&gt;
-      &lt;tr&gt;
-        &lt;td&gt;Contact 1&lt;/td&gt;&lt;td&gt;info@contact1.example&lt;/td&gt;
-        &lt;td class="oc-table-actions oc-table-actions--icons"&gt;
-          &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 1" title="View"&gt;&lt;svg data-icon="mdi:eye-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0"/&gt;&lt;/svg&gt;&lt;/a&gt;
-          &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 1" title="Edit"&gt;&lt;svg data-icon="mdi:pencil-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;
-          &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 1" title="Delete"&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-        &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-        &lt;td&gt;Contact 3&lt;/td&gt;&lt;td&gt;info@contact3.example&lt;/td&gt;
-        &lt;td class="oc-table-actions oc-table-actions--icons"&gt;
-          &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 3" title="View"&gt;&lt;svg data-icon="mdi:eye-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0"/&gt;&lt;/svg&gt;&lt;/a&gt;
-          &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 3" title="Edit"&gt;&lt;svg data-icon="mdi:pencil-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;
-          &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 3" title="Delete (locked)" disabled&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-        &lt;/td&gt;
-      &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Contact 1&lt;/td&gt;&lt;td&gt;info@contact1.example&lt;/td&gt;
+            &lt;x-oc::table-actions&gt;
+                &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 1" title="View"&gt;&lt;x-oc::webicon name="mdi:eye-outline" /&gt;&lt;/a&gt;
+                &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 1" title="Edit"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;/a&gt;
+                &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 1" title="Delete"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/button&gt;
+            &lt;/x-oc::table-actions&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Contact 3&lt;/td&gt;&lt;td&gt;info@contact3.example&lt;/td&gt;
+            &lt;x-oc::table-actions&gt;
+                &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 3" title="View"&gt;&lt;x-oc::webicon name="mdi:eye-outline" /&gt;&lt;/a&gt;
+                &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 3" title="Edit"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;/a&gt;
+                &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 3" title="Delete (locked)" disabled&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/button&gt;
+            &lt;/x-oc::table-actions&gt;
+        &lt;/tr&gt;
     &lt;/tbody&gt;
-  &lt;/table&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::table&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -118,6 +124,16 @@ use Livewire\Component;
 
 class TableActionsIconActions extends Component
 {
+    public array $contacts = [
+        ['id' =&gt; 1, 'name' =&gt; 'Contact 1', 'email' =&gt; 'info@contact1.example', 'locked' =&gt; false],
+        ['id' =&gt; 3, 'name' =&gt; 'Contact 3', 'email' =&gt; 'info@contact3.example', 'locked' =&gt; true],
+    ];
+
+    public function delete($id): void
+    {
+        $this-&gt;contacts = array_values(array_filter($this-&gt;contacts, fn ($c) =&gt; $c['id'] !== (int) $id || $c['locked']));
+    }
+
     public function render()
     {
         return view('livewire.table-actions-icon-actions');
@@ -125,28 +141,22 @@ class TableActionsIconActions extends Component
 }
 
 {{-- resources/views/livewire/table-actions-icon-actions.blade.php --}}
-&lt;div class="oc-table-wrap"&gt;
-  &lt;table class="oc-table"&gt;
-    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:7rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;
-        &lt;td&gt;Contact 1&lt;/td&gt;&lt;td&gt;info@contact1.example&lt;/td&gt;
-        &lt;td class="oc-table-actions oc-table-actions--icons"&gt;
-          &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 1" title="View"&gt;&lt;svg data-icon="mdi:eye-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0"/&gt;&lt;/svg&gt;&lt;/a&gt;
-          &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 1" title="Edit"&gt;&lt;svg data-icon="mdi:pencil-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;
-          &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 1" title="Delete"&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-        &lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-        &lt;td&gt;Contact 3&lt;/td&gt;&lt;td&gt;info@contact3.example&lt;/td&gt;
-        &lt;td class="oc-table-actions oc-table-actions--icons"&gt;
-          &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 3" title="View"&gt;&lt;svg data-icon="mdi:eye-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0"/&gt;&lt;/svg&gt;&lt;/a&gt;
-          &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 3" title="Edit"&gt;&lt;svg data-icon="mdi:pencil-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/&gt;&lt;/svg&gt;&lt;/a&gt;
-          &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 3" title="Delete (locked)" disabled&gt;&lt;svg data-icon="mdi:trash-can-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/&gt;&lt;/svg&gt;&lt;/button&gt;
-        &lt;/td&gt;
-      &lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
+&lt;div&gt;
+    &lt;x-oc::table&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:7rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($contacts as $contact)
+                &lt;tr wire:key="contact-{{ $contact['id'] }}"&gt;
+                    &lt;td&gt;{{ $contact['name'] }}&lt;/td&gt;&lt;td&gt;{{ $contact['email'] }}&lt;/td&gt;
+                    &lt;x-oc::table-actions&gt;
+                        &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="/contacts/{{ $contact['id'] }}" aria-label="View {{ $contact['name'] }}" title="View"&gt;&lt;x-oc::webicon name="mdi:eye-outline" /&gt;&lt;/a&gt;
+                        &lt;a class="oc-table-actions-icon" href="/contacts/{{ $contact['id'] }}/edit" aria-label="Edit {{ $contact['name'] }}" title="Edit"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;/a&gt;
+                        &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete {{ $contact['name'] }}" title="Delete" @disabled($contact['locked']) wire:click="delete({{ $contact['id'] }})" wire:confirm="Delete {{ $contact['name'] }}?"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/button&gt;
+                    &lt;/x-oc::table-actions&gt;
+                &lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -173,72 +183,67 @@ class TableActionsIconActions extends Component
     </tbody>
   </table>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Table, TableActions, TableActionsMenu } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-table-wrap"&gt;
-      &lt;table className="oc-table"&gt;
-        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style={{ width: "4rem" }}&gt;&lt;span className="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-        &lt;tbody&gt;
-          &lt;tr&gt;
-            &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
-            &lt;td className="oc-table-actions"&gt;
-              &lt;button className="oc-table-actions-more" type="button" popoverTarget="oc-table-actions-docs-menu" aria-label="Actions for Alan" /&gt;
-              &lt;div className="oc-dropdown-menu" id="oc-table-actions-docs-menu" popover=""&gt;
-                &lt;a className="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;{" "}
-                &lt;a className="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
-                &lt;button className="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
-                &lt;div className="oc-dropdown-separator" /&gt;
-                &lt;button className="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
-              &lt;/div&gt;
-            &lt;/td&gt;
-          &lt;/tr&gt;
-        &lt;/tbody&gt;
-      &lt;/table&gt;
-    &lt;/div&gt;
+    &lt;Table&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style={{ width: "4rem" }}&gt;&lt;span className="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
+          &lt;TableActions&gt;
+            &lt;TableActionsMenu label="Actions for Contact 2" id="oc-table-actions-docs-menu"&gt;
+              &lt;a className="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
+              &lt;a className="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
+              &lt;button className="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
+              &lt;div className="oc-dropdown-separator" /&gt;
+              &lt;button className="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
+            &lt;/TableActionsMenu&gt;
+          &lt;/TableActions&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/Table&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTableActions } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-table-wrap"&gt;
     &lt;table class="oc-table"&gt;
       &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:4rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
       &lt;tbody&gt;
         &lt;tr&gt;
           &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
-          &lt;td class="oc-table-actions"&gt;
-            &lt;button class="oc-table-actions-more" type="button" popovertarget="oc-table-actions-docs-menu" aria-label="Actions for Alan"&gt;&lt;/button&gt;
-            &lt;div class="oc-dropdown-menu" id="oc-table-actions-docs-menu" popover=""&gt;
-              &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
-              &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
-              &lt;button class="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
-              &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-              &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
-            &lt;/div&gt;
-          &lt;/td&gt;
-        &lt;/tr&gt;
-      &lt;/tbody&gt;
-    &lt;/table&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-table-wrap"&gt;
-  &lt;table class="oc-table"&gt;
-    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:4rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;
-        &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
-        &lt;td class="oc-table-actions"&gt;
-          &lt;button class="oc-table-actions-more" type="button" popovertarget="oc-table-actions-docs-menu" aria-label="Actions for Alan"&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-table-actions-docs-menu" popover=""&gt;
+          &lt;OcTableActions menu-label="Actions for Contact 2"&gt;
             &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
             &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
             &lt;button class="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
             &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
             &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/td&gt;
-      &lt;/tr&gt;
+          &lt;/OcTableActions&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:4rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
+            &lt;x-oc::table-actions menu="Actions for Contact 2" id="oc-table-actions-docs-menu"&gt;
+                &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
+                &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
+                &lt;button class="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
+                &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+                &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
+            &lt;/x-oc::table-actions&gt;
+        &lt;/tr&gt;
     &lt;/tbody&gt;
-  &lt;/table&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::table&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -247,6 +252,16 @@ use Livewire\Component;
 
 class TableActionsOverflowMenu extends Component
 {
+    public function duplicate(int $id): void
+    {
+        // Copy contact $id.
+    }
+
+    public function delete(int $id): void
+    {
+        // Delete contact $id.
+    }
+
     public function render()
     {
         return view('livewire.table-actions-overflow-menu');
@@ -254,25 +269,22 @@ class TableActionsOverflowMenu extends Component
 }
 
 {{-- resources/views/livewire/table-actions-overflow-menu.blade.php --}}
-&lt;div class="oc-table-wrap"&gt;
-  &lt;table class="oc-table"&gt;
-    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:4rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;
-        &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
-        &lt;td class="oc-table-actions"&gt;
-          &lt;button class="oc-table-actions-more" type="button" popovertarget="oc-table-actions-docs-menu" aria-label="Actions for Alan"&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-table-actions-docs-menu" popover=""&gt;
-            &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
-            &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
-            &lt;button class="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/td&gt;
-      &lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
+&lt;div&gt;
+    &lt;x-oc::table&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:4rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+            &lt;tr&gt;
+                &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
+                &lt;x-oc::table-actions menu="Actions for Contact 2" id="oc-table-actions-docs-menu"&gt;
+                    &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
+                    &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
+                    &lt;button class="oc-dropdown-item" type="button" wire:click="duplicate(2)"&gt;Duplicate&lt;/button&gt;
+                    &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+                    &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" wire:click="delete(2)"&gt;Delete&lt;/button&gt;
+                &lt;/x-oc::table-actions&gt;
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

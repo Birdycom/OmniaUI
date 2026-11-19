@@ -14,42 +14,38 @@
   <input class="oc-copy-field-value" type="text" readonly value="JBSWY3DPEHPK3PXP" aria-label="Setup key">
   <button class="oc-copy-field-button" type="button" onclick="const b = this; navigator.clipboard.writeText(b.previousElementSibling.value); b.classList.add('is-copied'); b.textContent = 'Copied'; setTimeout(function () { b.classList.remove('is-copied'); b.textContent = 'Copy'; }, 1500)">Copy</button>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-copy-field"&gt;
-      &lt;input className="oc-copy-field-value" type="text" readOnly defaultValue="JBSWY3DPEHPK3PXP" aria-label="Setup key" /&gt;
-      &lt;button className="oc-copy-field-button" type="button"&gt;Copy&lt;/button&gt;
-    &lt;/div&gt;
-  );
+<oc-code lang="tsx">import { CopyField } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return &lt;CopyField value="JBSWY3DPEHPK3PXP" label="Setup key" /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-copy-field"&gt;
-    &lt;input class="oc-copy-field-value" type="text" readonly value="JBSWY3DPEHPK3PXP" aria-label="Setup key" /&gt;
-    &lt;button class="oc-copy-field-button" type="button"&gt;Copy&lt;/button&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCopyField } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCopyField value="JBSWY3DPEHPK3PXP" label="Setup key" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-copy-field"&gt;
-  &lt;input class="oc-copy-field-value" type="text" readonly value="JBSWY3DPEHPK3PXP" aria-label="Setup key"&gt;
-  &lt;button class="oc-copy-field-button" type="button" onclick="const b = this; navigator.clipboard.writeText(b.previousElementSibling.value); b.classList.add('is-copied'); b.textContent = 'Copied'; setTimeout(function () { b.classList.remove('is-copied'); b.textContent = 'Copy'; }, 1500)"&gt;Copy&lt;/button&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::copy-field value="JBSWY3DPEHPK3PXP" label="Setup key" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class CopyField extends Component
+class TwoFactorSetup extends Component
 {
+    public string $setupKey = 'JBSWY3DPEHPK3PXP';
+
     public function render()
     {
-        return view('livewire.copy-field');
+        return view('livewire.two-factor-setup');
     }
 }
 
-{{-- resources/views/livewire/copy-field.blade.php --}}
-&lt;div class="oc-copy-field"&gt;
-  &lt;input class="oc-copy-field-value" type="text" readonly value="JBSWY3DPEHPK3PXP" aria-label="Setup key"&gt;
-  &lt;button class="oc-copy-field-button" type="button" onclick="const b = this; navigator.clipboard.writeText(b.previousElementSibling.value); b.classList.add('is-copied'); b.textContent = 'Copied'; setTimeout(function () { b.classList.remove('is-copied'); b.textContent = 'Copy'; }, 1500)"&gt;Copy&lt;/button&gt;
+{{-- resources/views/livewire/two-factor-setup.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::copy-field :value="$setupKey" label="Setup key" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -88,17 +84,22 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class CopyFieldDisplay extends Component
+class JoinCodes extends Component
 {
+    public string $joinCode = 'K7QM2XPA';
+
+    public string $voucher = '48210937';
+
     public function render()
     {
-        return view('livewire.copy-field-display');
+        return view('livewire.join-codes');
     }
 }
 
-{{-- resources/views/livewire/copy-field-display.blade.php --}}
+{{-- resources/views/livewire/join-codes.blade.php --}}
 &lt;div&gt;
-    &lt;x-oc::copy-field display :group="4" value="K7QM2XPA" label="Join code" caption="Type this code in the app to join." /&gt;
+    &lt;x-oc::copy-field display :group="4" :value="$joinCode" label="Join code" caption="Type this code in the app to join." /&gt;
+    &lt;x-oc::copy-field display="lg" :group="4" :value="$voucher" label="Voucher" caption="Valid until 31 December." /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

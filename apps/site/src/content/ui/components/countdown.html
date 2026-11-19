@@ -57,31 +57,33 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class Countdown extends Component
+class QuizTimers extends Component
 {
+    public int $roundSeconds = 75;
+
+    public bool $timeUp = false;
+
+    public function timeUp(): void
+    {
+        $this-&gt;timeUp = true;
+        // close the round, save the answers …
+    }
+
     public function render()
     {
-        return view('livewire.countdown');
+        return view('livewire.quiz-timers');
     }
 }
 
-{{-- resources/views/livewire/countdown.blade.php --}}
-&lt;div&gt;
-    &lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1.5rem;align-items:center;justify-items:start;inline-size:100%"&gt;
-      &lt;div class="oc-countdown" role="timer" aria-label="Time left" data-oc-countdown data-oc-countdown-seconds="300"&gt;
-        &lt;span class="oc-countdown-label"&gt;Time left&lt;/span&gt;
-        &lt;b class="oc-countdown-time"&gt;5:00&lt;/b&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-countdown oc-countdown--pill" role="timer" aria-label="Round ends in" data-oc-countdown data-oc-countdown-seconds="75" data-oc-countdown-total="300" data-oc-countdown-low="90"&gt;
-        &lt;span class="oc-countdown-label"&gt;Round ends in&lt;/span&gt;
-        &lt;b class="oc-countdown-time"&gt;1:15&lt;/b&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-countdown oc-countdown--bar" style="inline-size:100%" role="timer" aria-label="Answer within" data-oc-countdown data-oc-countdown-seconds="45" data-oc-countdown-total="120"&gt;
-        &lt;span class="oc-countdown-label"&gt;Answer within&lt;/span&gt;
-        &lt;b class="oc-countdown-time"&gt;0:45&lt;/b&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;script type="module" src="/js/oc-countdown.js"&gt;&lt;/script&gt;
+{{-- resources/views/livewire/quiz-timers.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1.5rem;align-items:center;justify-items:start;inline-size:100%"&gt;
+    {{-- oc-countdown.js ticks in the browser (wire:ignore) and fires oc-countdown-end at zero --}}
+    &lt;x-oc::countdown wire:ignore :seconds="300" /&gt;
+    &lt;x-oc::countdown wire:ignore variant="pill" :seconds="$roundSeconds" :total="300" :low="90" label="Round ends in" x-on:oc-countdown-end="$wire.timeUp()" /&gt;
+    &lt;x-oc::countdown wire:ignore bar :seconds="45" :total="120" label="Answer within" style="inline-size:100%" /&gt;
+    @if ($timeUp)
+        &lt;p role="status"&gt;Time is up.&lt;/p&gt;
+    @endif
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -100,50 +102,53 @@ class Countdown extends Component
     &lt;b class="oc-countdown-time"&gt;30:00&lt;/b&gt;
   &lt;/div&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Countdown } from "@birdycom/omniaui-react";
+
+export function Example({ onFinish }: { onFinish: () =&gt; void }) {
   return (
     &lt;div style={{ display: "grid", justifyItems: "center", inlineSize: "100%" }}&gt;
-      &lt;div className="oc-countdown oc-countdown--display oc-countdown--bar" role="timer" aria-label="Until the finish" data-oc-countdown="" data-oc-countdown-seconds="1800" style={{ inlineSize: "min(100%,22rem)" }} data-oc-countdown-total="3600"&gt;
-        &lt;span className="oc-countdown-label"&gt;Until the finish&lt;/span&gt;{" "}
-        &lt;b className="oc-countdown-time"&gt;30:00&lt;/b&gt;
-      &lt;/div&gt;
+      &lt;Countdown variant="display" bar seconds={1800} total={3600} label="Until the finish" style={{ inlineSize: "min(100%,22rem)" }} onEnd={onFinish} /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCountdown } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ finish: [] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div style="display:grid;justify-items:center;inline-size:100%"&gt;
-    &lt;div class="oc-countdown oc-countdown--display oc-countdown--bar" role="timer" aria-label="Until the finish" data-oc-countdown="" data-oc-countdown-seconds="1800" style="inline-size:min(100%,22rem)" data-oc-countdown-total="3600"&gt;
-      &lt;span class="oc-countdown-label"&gt;Until the finish&lt;/span&gt;
-      &lt;b class="oc-countdown-time"&gt;30:00&lt;/b&gt;
-    &lt;/div&gt;
+    &lt;OcCountdown variant="display" bar :seconds="1800" :total="3600" label="Until the finish" style="inline-size:min(100%,22rem)" @end="emit('finish')" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:grid;justify-items:center;inline-size:100%"&gt;
-  &lt;div class="oc-countdown oc-countdown--display oc-countdown--bar" role="timer" aria-label="Until the finish" data-oc-countdown data-oc-countdown-seconds="1800" style="inline-size:min(100%,22rem)" data-oc-countdown-total="3600"&gt;
-    &lt;span class="oc-countdown-label"&gt;Until the finish&lt;/span&gt;
-    &lt;b class="oc-countdown-time"&gt;30:00&lt;/b&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+    &lt;x-oc::countdown variant="display" bar :seconds="1800" :total="3600" label="Until the finish" style="inline-size:min(100%,22rem)" /&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-countdown.js"&gt;&lt;/script&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class CountdownLargeDigits extends Component
+class FinishCountdown extends Component
 {
+    public function finish(): void
+    {
+        // the time is up: close the race …
+    }
+
     public function render()
     {
-        return view('livewire.countdown-large-digits');
+        return view('livewire.finish-countdown');
     }
 }
 
-{{-- resources/views/livewire/countdown-large-digits.blade.php --}}
+{{-- resources/views/livewire/finish-countdown.blade.php --}}
 &lt;div style="display:grid;justify-items:center;inline-size:100%"&gt;
-  &lt;div class="oc-countdown oc-countdown--display oc-countdown--bar" role="timer" aria-label="Until the finish" data-oc-countdown data-oc-countdown-seconds="1800" style="inline-size:min(100%,22rem)" data-oc-countdown-total="3600"&gt;
-    &lt;span class="oc-countdown-label"&gt;Until the finish&lt;/span&gt;
-    &lt;b class="oc-countdown-time"&gt;30:00&lt;/b&gt;
-  &lt;/div&gt;
+    {{-- oc-countdown.js (loaded once in the layout) ticks in the browser and fires oc-countdown-end at zero --}}
+    &lt;x-oc::countdown wire:ignore variant="display" bar :seconds="1800" :total="3600" label="Until the finish" style="inline-size:min(100%,22rem)" x-on:oc-countdown-end="$wire.finish()" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

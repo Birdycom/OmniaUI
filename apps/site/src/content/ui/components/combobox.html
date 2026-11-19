@@ -21,70 +21,74 @@
     <li class="oc-combobox-option" role="option" tabindex="-1">Vue</li>
   </ul>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-combobox"&gt;
-      &lt;input className="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework…" aria-label="Framework" /&gt;
-      &lt;ul className="oc-combobox-list" id="oc-cb-list" role="listbox" aria-label="Frameworks"&gt;
-        &lt;li className="oc-combobox-option" role="option" tabIndex={-1}&gt;Astro&lt;/li&gt;
-        &lt;li className="oc-combobox-option" role="option" tabIndex={-1} aria-selected="true"&gt;Laravel&lt;/li&gt;
-        &lt;li className="oc-combobox-option" role="option" tabIndex={-1}&gt;Nuxt&lt;/li&gt;
-        &lt;li className="oc-combobox-option" role="option" tabIndex={-1}&gt;React&lt;/li&gt;
-        &lt;li className="oc-combobox-option" role="option" tabIndex={-1} aria-disabled="true"&gt;Svelte (soon)&lt;/li&gt;
-        &lt;li className="oc-combobox-option" role="option" tabIndex={-1}&gt;Vue&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  );
+<oc-code lang="tsx">import { useState } from "react";
+import { Combobox } from "@birdycom/omniaui-react";
+
+const frameworks = [
+  { value: "astro", label: "Astro" },
+  { value: "laravel", label: "Laravel" },
+  { value: "nuxt", label: "Nuxt" },
+  { value: "react", label: "React" },
+  { value: "svelte", label: "Svelte (soon)", disabled: true },
+  { value: "vue", label: "Vue" },
+];
+
+export function Example() {
+  const [framework, setFramework] = useState("laravel");
+  return &lt;Combobox options={frameworks} value={framework} onChange={setFramework} label="Framework" placeholder="Select framework…" name="framework" /&gt;;
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-combobox"&gt;
-    &lt;input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework…" aria-label="Framework" /&gt;
-    &lt;ul class="oc-combobox-list" id="oc-cb-list" role="listbox" aria-label="Frameworks"&gt;
-      &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Astro&lt;/li&gt;
-      &lt;li class="oc-combobox-option" role="option" tabindex="-1" aria-selected="true"&gt;Laravel&lt;/li&gt;
-      &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Nuxt&lt;/li&gt;
-      &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;React&lt;/li&gt;
-      &lt;li class="oc-combobox-option" role="option" tabindex="-1" aria-disabled="true"&gt;Svelte (soon)&lt;/li&gt;
-      &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Vue&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcCombobox } from '@birdycom/omniaui-vue'
+
+const frameworks = [
+  { value: 'astro', label: 'Astro' },
+  { value: 'laravel', label: 'Laravel' },
+  { value: 'nuxt', label: 'Nuxt' },
+  { value: 'react', label: 'React' },
+  { value: 'svelte', label: 'Svelte (soon)', disabled: true },
+  { value: 'vue', label: 'Vue' },
+]
+const framework = ref('laravel')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCombobox v-model="framework" :options="frameworks" label="Framework" placeholder="Select framework…" name="framework" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-combobox"&gt;
-  &lt;input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework…" aria-label="Framework"&gt;
-  &lt;ul class="oc-combobox-list" id="oc-cb-list" role="listbox" aria-label="Frameworks"&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Astro&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1" aria-selected="true"&gt;Laravel&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Nuxt&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;React&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1" aria-disabled="true"&gt;Svelte (soon)&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Vue&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- Typing, arrow keys and Enter: oc-combobox.js (npx omniaui copy-js combobox) --}}
+&lt;x-oc::combobox name="framework" label="Framework" placeholder="Select framework…" value="laravel" :options="['astro' =&gt; 'Astro', 'laravel' =&gt; 'Laravel', 'nuxt' =&gt; 'Nuxt', 'react' =&gt; 'React', 'svelte' =&gt; ['label' =&gt; 'Svelte (soon)', 'disabled' =&gt; true], 'vue' =&gt; 'Vue']" /&gt;
+&lt;script type="module" src="/js/oc-combobox.js"&gt;&lt;/script&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class Combobox extends Component
+class FrameworkPicker extends Component
 {
+    public string $framework = 'laravel';
+
+    public array $frameworks = ['astro' =&gt; 'Astro', 'laravel' =&gt; 'Laravel', 'nuxt' =&gt; 'Nuxt', 'react' =&gt; 'React', 'svelte' =&gt; ['label' =&gt; 'Svelte (soon)', 'disabled' =&gt; true], 'vue' =&gt; 'Vue'];
+
     public function render()
     {
-        return view('livewire.combobox');
+        return view('livewire.framework-picker');
     }
 }
 
-{{-- resources/views/livewire/combobox.blade.php --}}
-&lt;div class="oc-combobox"&gt;
-  &lt;input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework…" aria-label="Framework"&gt;
-  &lt;ul class="oc-combobox-list" id="oc-cb-list" role="listbox" aria-label="Frameworks"&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Astro&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1" aria-selected="true"&gt;Laravel&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Nuxt&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;React&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1" aria-disabled="true"&gt;Svelte (soon)&lt;/li&gt;
-    &lt;li class="oc-combobox-option" role="option" tabindex="-1"&gt;Vue&lt;/li&gt;
-  &lt;/ul&gt;
+{{-- resources/views/livewire/framework-picker.blade.php --}}
+&lt;div&gt;
+    {{-- oc-combobox.js reports the choice with an oc-combobox-change event; wire:ignore keeps its state between renders --}}
+    &lt;x-oc::combobox
+        wire:ignore
+        x-on:oc-combobox-change="$wire.set('framework', $event.detail.value)"
+        name="framework"
+        label="Framework"
+        placeholder="Select framework…"
+        :value="$framework"
+        :options="$frameworks"
+    /&gt;
+    &lt;p class="oc-text-muted"&gt;Chosen: {{ $framework }}&lt;/p&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -187,26 +191,58 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class ComboboxWithIcons extends Component
+class PaymentDetails extends Component
 {
-    public function render()
-    {
-        return view('livewire.combobox-with-icons');
-    }
-}
+    public string $payment = '';
 
-{{-- resources/views/livewire/combobox-with-icons.blade.php --}}
-&lt;div&gt;
-    &lt;x-oc::combobox name="payment" label="Payment method" placeholder="Payment method" icon="mdi:wallet-outline" :options="[
+    public string $country = 'be';
+
+    public array $methods = [
         'transfer' =&gt; ['label' =&gt; 'Bank transfer', 'icon' =&gt; 'mdi:bank-outline'],
         'card' =&gt; ['label' =&gt; 'Credit card', 'icon' =&gt; 'mdi:credit-card-outline'],
         'invoice' =&gt; ['label' =&gt; 'Invoice', 'icon' =&gt; 'mdi:file-document-outline'],
         'cash' =&gt; ['label' =&gt; 'Cash', 'icon' =&gt; 'mdi:cash'],
         'voucher' =&gt; ['label' =&gt; 'Voucher (soon)', 'icon' =&gt; 'mdi:ticket-percent-outline', 'disabled' =&gt; true],
         'other' =&gt; 'Other',
-    ]" /&gt;
-    &lt;x-oc::combobox name="country" label="Country" value="be" :options="['be' =&gt; ['label' =&gt; 'Belgium', 'icon' =&gt; 'flag:be-4x3'], 'fr' =&gt; ['label' =&gt; 'France', 'icon' =&gt; 'flag:fr-4x3']]" /&gt;
-    &lt;script type="module" src="/js/oc-combobox.js"&gt;&lt;/script&gt;
+    ];
+
+    public array $countries = [
+        'be' =&gt; ['label' =&gt; 'Belgium', 'icon' =&gt; 'flag:be-4x3'],
+        'fr' =&gt; ['label' =&gt; 'France', 'icon' =&gt; 'flag:fr-4x3'],
+        'de' =&gt; ['label' =&gt; 'Germany', 'icon' =&gt; 'flag:de-4x3'],
+        'it' =&gt; ['label' =&gt; 'Italy', 'icon' =&gt; 'flag:it-4x3'],
+        'nl' =&gt; ['label' =&gt; 'Netherlands', 'icon' =&gt; 'flag:nl-4x3'],
+        'es' =&gt; ['label' =&gt; 'Spain', 'icon' =&gt; 'flag:es-4x3'],
+        'gb' =&gt; ['label' =&gt; 'United Kingdom', 'icon' =&gt; 'flag:gb-4x3'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.payment-details');
+    }
+}
+
+{{-- resources/views/livewire/payment-details.blade.php --}}
+&lt;div class="flex flex-wrap gap-2 w-full"&gt;
+    {{-- oc-combobox.js reports the choice with an oc-combobox-change event; wire:ignore keeps its state between renders --}}
+    &lt;x-oc::combobox
+        wire:ignore
+        x-on:oc-combobox-change="$wire.set('payment', $event.detail.value)"
+        name="payment"
+        label="Payment method"
+        placeholder="Payment method"
+        icon="mdi:wallet-outline"
+        :value="$payment"
+        :options="$methods"
+    /&gt;
+    &lt;x-oc::combobox
+        wire:ignore
+        x-on:oc-combobox-change="$wire.set('country', $event.detail.value)"
+        name="country"
+        label="Country"
+        :value="$country"
+        :options="$countries"
+    /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

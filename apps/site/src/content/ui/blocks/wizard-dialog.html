@@ -38,138 +38,164 @@
     </div>
   </div>
 </dialog>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { BlockWizardDialog, Button, FormField, Input } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const [prefix, setPrefix] = useState("INV-");
+  const [nextNumber, setNextNumber] = useState("1001");
+
+  const steps = [
+    { label: "Company", content: &lt;FormField label="Company name"&gt;&lt;Input defaultValue="Company 1" /&gt;&lt;/FormField&gt; },
+    {
+      label: "Invoicing",
+      content: (
+        &lt;&gt;
+          &lt;FormField label="Invoice prefix"&gt;&lt;Input value={prefix} onChange={(e) =&gt; setPrefix(e.target.value)} /&gt;&lt;/FormField&gt;
+          &lt;FormField label="Next number"&gt;&lt;Input value={nextNumber} onChange={(e) =&gt; setNextNumber(e.target.value)} /&gt;&lt;/FormField&gt;
+        &lt;/&gt;
+      ),
+    },
+    { label: "Team", content: &lt;FormField label="Invite by e-mail"&gt;&lt;Input type="email" placeholder="info@company1.example" /&gt;&lt;/FormField&gt; },
+  ];
+
   return (
     &lt;&gt;
-      &lt;button className="oc-btn" type="button" command="show-modal" commandfor="oc-wizard-demo"&gt;Open setup wizard&lt;/button&gt;
-
-      &lt;dialog className="oc-modal" id="oc-wizard-demo" closedby="closerequest" aria-labelledby="oc-wizard-title"&gt;
-        &lt;div className="oc-modal-content oc-modal-content--xl"&gt;
-          &lt;button className="oc-modal-close" type="button" command="close" commandfor="oc-wizard-demo" aria-label="Close"&gt;×&lt;/button&gt;
-          &lt;div className="oc-block-wizard"&gt;
-            &lt;div className="oc-block-wizard-rail"&gt;
-              &lt;ol className="oc-stepper" aria-label="Setup steps"&gt;
-                &lt;li&gt;&lt;button className="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span className="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;button className="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span className="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;button className="oc-stepper-item" type="button" disabled&gt;&lt;span className="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-              &lt;/ol&gt;
-            &lt;/div&gt;
-            &lt;div className="oc-block-wizard-main"&gt;
-              &lt;div className="oc-modal-header"&gt;&lt;h2 className="oc-modal-title" id="oc-wizard-title"&gt;Invoicing&lt;/h2&gt;&lt;p className="oc-modal-description"&gt;Step 2 of 3&lt;/p&gt;&lt;/div&gt;
-              &lt;div className="oc-block-wizard-step"&gt;
-                &lt;div className="oc-field"&gt;&lt;label className="oc-field-label" htmlFor="oc-wizard-prefix"&gt;Invoice prefix&lt;/label&gt;&lt;input className="oc-input" id="oc-wizard-prefix" defaultValue="INV-" /&gt;&lt;/div&gt;
-                &lt;div className="oc-field"&gt;&lt;label className="oc-field-label" htmlFor="oc-wizard-next"&gt;Next number&lt;/label&gt;&lt;input className="oc-input" id="oc-wizard-next" defaultValue="1001" /&gt;&lt;/div&gt;
-              &lt;/div&gt;
-              &lt;div className="oc-modal-footer"&gt;
-                &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Back&lt;/button&gt;
-                &lt;button className="oc-btn" type="button"&gt;Next&lt;/button&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/dialog&gt;
+      &lt;Button onClick={() =&gt; setOpen(true)}&gt;Open setup wizard&lt;/Button&gt;
+      &lt;BlockWizardDialog
+        open={open}
+        onOpenChange={setOpen}
+        steps={steps}
+        step={step}
+        onStepChange={setStep}
+        onFinish={() =&gt; setOpen(false)}
+      /&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;button class="oc-btn" type="button" command="show-modal" commandfor="oc-wizard-demo"&gt;Open setup wizard&lt;/button&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcBlockWizardDialog, OcButton, OcFormField, OcInput } from '@birdycom/omniaui-vue'
 
-  &lt;dialog class="oc-modal" id="oc-wizard-demo" closedby="closerequest" aria-labelledby="oc-wizard-title"&gt;
-    &lt;div class="oc-modal-content oc-modal-content--xl"&gt;
-      &lt;button class="oc-modal-close" type="button" command="close" commandfor="oc-wizard-demo" aria-label="Close"&gt;×&lt;/button&gt;
-      &lt;div class="oc-block-wizard"&gt;
-        &lt;div class="oc-block-wizard-rail"&gt;
-          &lt;ol class="oc-stepper" aria-label="Setup steps"&gt;
-            &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span class="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span class="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span class="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-          &lt;/ol&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-block-wizard-main"&gt;
-          &lt;div class="oc-modal-header"&gt;&lt;h2 class="oc-modal-title" id="oc-wizard-title"&gt;Invoicing&lt;/h2&gt;&lt;p class="oc-modal-description"&gt;Step 2 of 3&lt;/p&gt;&lt;/div&gt;
-          &lt;div class="oc-block-wizard-step"&gt;
-            &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-wizard-prefix"&gt;Invoice prefix&lt;/label&gt;&lt;input class="oc-input" id="oc-wizard-prefix" value="INV-" /&gt;&lt;/div&gt;
-            &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-wizard-next"&gt;Next number&lt;/label&gt;&lt;input class="oc-input" id="oc-wizard-next" value="1001" /&gt;&lt;/div&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-modal-footer"&gt;
-            &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Back&lt;/button&gt;
-            &lt;button class="oc-btn" type="button"&gt;Next&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/dialog&gt;
+const open = ref(false)
+const step = ref(1)
+const steps = [{ label: 'Company' }, { label: 'Invoicing' }, { label: 'Team' }]
+const company = ref('Company 1')
+const prefix = ref('INV-')
+const nextNumber = ref('1001')
+const invite = ref('')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton @click="open = true"&gt;Open setup wizard&lt;/OcButton&gt;
+  &lt;OcBlockWizardDialog v-model:open="open" v-model:step="step" :steps="steps" @finish="step = 0"&gt;
+    &lt;template #step-0&gt;
+      &lt;OcFormField label="Company name" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="company" /&gt;&lt;/OcFormField&gt;
+    &lt;/template&gt;
+    &lt;template #step-1&gt;
+      &lt;OcFormField label="Invoice prefix" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="prefix" /&gt;&lt;/OcFormField&gt;
+      &lt;OcFormField label="Next number" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="nextNumber" /&gt;&lt;/OcFormField&gt;
+    &lt;/template&gt;
+    &lt;template #step-2&gt;
+      &lt;OcFormField label="Invite by e-mail" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="invite" type="email" placeholder="info@company1.example" /&gt;&lt;/OcFormField&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockWizardDialog&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn" type="button" command="show-modal" commandfor="oc-wizard-demo"&gt;Open setup wizard&lt;/button&gt;
-
-&lt;dialog class="oc-modal" id="oc-wizard-demo" closedby="closerequest" aria-labelledby="oc-wizard-title"&gt;
-  &lt;div class="oc-modal-content oc-modal-content--xl"&gt;
-    &lt;button class="oc-modal-close" type="button" command="close" commandfor="oc-wizard-demo" aria-label="Close"&gt;×&lt;/button&gt;
-    &lt;div class="oc-block-wizard"&gt;
-      &lt;div class="oc-block-wizard-rail"&gt;
-        &lt;ol class="oc-stepper" aria-label="Setup steps"&gt;
-          &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span class="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span class="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span class="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-        &lt;/ol&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-wizard-main"&gt;
-        &lt;div class="oc-modal-header"&gt;&lt;h2 class="oc-modal-title" id="oc-wizard-title"&gt;Invoicing&lt;/h2&gt;&lt;p class="oc-modal-description"&gt;Step 2 of 3&lt;/p&gt;&lt;/div&gt;
-        &lt;div class="oc-block-wizard-step"&gt;
-          &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-wizard-prefix"&gt;Invoice prefix&lt;/label&gt;&lt;input class="oc-input" id="oc-wizard-prefix" value="INV-"&gt;&lt;/div&gt;
-          &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-wizard-next"&gt;Next number&lt;/label&gt;&lt;input class="oc-input" id="oc-wizard-next" value="1001"&gt;&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-modal-footer"&gt;
-          &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Back&lt;/button&gt;
-          &lt;button class="oc-btn" type="button"&gt;Next&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/dialog&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.wizard-dialog
+    id="oc-wizard-demo"
+    :steps="['Company', 'Invoicing', 'Team']"
+    :current="2"
+    title="Invoicing"
+    description="Step 2 of 3"
+    trigger="Open setup wizard"
+&gt;
+    &lt;x-oc::form-field label="Invoice prefix" for="oc-wizard-prefix"&gt;
+        &lt;x-oc::input id="oc-wizard-prefix" name="prefix" value="INV-" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Next number" for="oc-wizard-next"&gt;
+        &lt;x-oc::input id="oc-wizard-next" name="next_number" value="1001" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button variant="outline"&gt;Back&lt;/x-oc::button&gt;
+        &lt;x-oc::button type="submit"&gt;Next&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::block.wizard-dialog&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class WizardDialog extends Component
+class SetupWizard extends Component
 {
+    public array $steps = ['Company', 'Invoicing', 'Team'];
+
+    public int $step = 2;
+
+    public string $company = 'Company 1';
+
+    public string $prefix = 'INV-';
+
+    public string $nextNumber = '1001';
+
+    public string $invite = '';
+
+    public function back(): void
+    {
+        $this-&gt;step = max(1, $this-&gt;step - 1);
+    }
+
+    public function next(): void
+    {
+        if ($this-&gt;step &lt; count($this-&gt;steps)) {
+            $this-&gt;step++;
+
+            return;
+        }
+        // save the settings, then close the dialog in the browser
+        $this-&gt;dispatch('wizard-done');
+    }
+
     public function render()
     {
-        return view('livewire.wizard-dialog');
+        return view('livewire.setup-wizard');
     }
 }
 
-{{-- resources/views/livewire/wizard-dialog.blade.php --}}
+{{-- resources/views/livewire/setup-wizard.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn" type="button" command="show-modal" commandfor="oc-wizard-demo"&gt;Open setup wizard&lt;/button&gt;
-
-    &lt;dialog class="oc-modal" id="oc-wizard-demo" closedby="closerequest" aria-labelledby="oc-wizard-title"&gt;
-      &lt;div class="oc-modal-content oc-modal-content--xl"&gt;
-        &lt;button class="oc-modal-close" type="button" command="close" commandfor="oc-wizard-demo" aria-label="Close"&gt;×&lt;/button&gt;
-        &lt;div class="oc-block-wizard"&gt;
-          &lt;div class="oc-block-wizard-rail"&gt;
-            &lt;ol class="oc-stepper" aria-label="Setup steps"&gt;
-              &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span class="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span class="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span class="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
-            &lt;/ol&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-block-wizard-main"&gt;
-            &lt;div class="oc-modal-header"&gt;&lt;h2 class="oc-modal-title" id="oc-wizard-title"&gt;Invoicing&lt;/h2&gt;&lt;p class="oc-modal-description"&gt;Step 2 of 3&lt;/p&gt;&lt;/div&gt;
-            &lt;div class="oc-block-wizard-step"&gt;
-              &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-wizard-prefix"&gt;Invoice prefix&lt;/label&gt;&lt;input class="oc-input" id="oc-wizard-prefix" value="INV-"&gt;&lt;/div&gt;
-              &lt;div class="oc-field"&gt;&lt;label class="oc-field-label" for="oc-wizard-next"&gt;Next number&lt;/label&gt;&lt;input class="oc-input" id="oc-wizard-next" value="1001"&gt;&lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-modal-footer"&gt;
-              &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Back&lt;/button&gt;
-              &lt;button class="oc-btn" type="button"&gt;Next&lt;/button&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/dialog&gt;
+    &lt;x-oc::block.wizard-dialog
+        id="oc-wizard-demo"
+        wire:ignore.self
+        :steps="$steps"
+        :current="$step"
+        :title="$steps[$step - 1]"
+        :description="'Step '.$step.' of '.count($steps)"
+        trigger="Open setup wizard"
+    &gt;
+        @if ($step === 1)
+            &lt;x-oc::form-field label="Company name" for="oc-wizard-company"&gt;
+                &lt;x-oc::wire.input model="company" id="oc-wizard-company" /&gt;
+            &lt;/x-oc::form-field&gt;
+        @elseif ($step === 2)
+            &lt;x-oc::form-field label="Invoice prefix" for="oc-wizard-prefix"&gt;
+                &lt;x-oc::wire.input model="prefix" id="oc-wizard-prefix" /&gt;
+            &lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="Next number" for="oc-wizard-next"&gt;
+                &lt;x-oc::wire.input model="nextNumber" id="oc-wizard-next" /&gt;
+            &lt;/x-oc::form-field&gt;
+        @else
+            &lt;x-oc::form-field label="Invite by e-mail" for="oc-wizard-invite"&gt;
+                &lt;x-oc::wire.input model="invite" id="oc-wizard-invite" type="email" placeholder="info@company1.example" /&gt;
+            &lt;/x-oc::form-field&gt;
+        @endif
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button variant="outline" wire:click="back" :disabled="$step === 1"&gt;Back&lt;/x-oc::button&gt;
+            &lt;x-oc::button wire:click="next"&gt;{{ $step === count($steps) ? 'Finish' : 'Next' }}&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.wizard-dialog&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

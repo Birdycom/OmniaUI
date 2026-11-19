@@ -34,75 +34,70 @@
   </ul>
   <a class="oc-btn oc-price-card__cta" href="#signup">Choose Pro</a>
 </article>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { ButtonLink, PriceCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // the period switch is a radio group + :has(): no state, no JavaScript
   return (
-    &lt;article className="oc-price-card"&gt;
-      &lt;div className="oc-price-card__head"&gt;
-        &lt;h3 className="oc-price-card__name"&gt;Pro&lt;/h3&gt;
-        &lt;span className="oc-price-card__discount"&gt;Save 20%&lt;/span&gt;
-      &lt;/div&gt;
-      &lt;p className="oc-price-card__desc"&gt;For small teams that send invoices every week.&lt;/p&gt;
-      &lt;div className="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period"&gt;
-        &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-pro" value="monthly" defaultChecked /&gt; Monthly&lt;/label&gt;
-        &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-pro" value="yearly" /&gt; Yearly&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;p className="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span className="oc-price-card__amount"&gt;€12&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-      &lt;p className="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span className="oc-price-card__amount"&gt;€115&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;s className="oc-price-card__was"&gt;€144&lt;/s&gt;&lt;span className="oc-price-card__note"&gt;Billed once a year&lt;/span&gt;&lt;/p&gt;
-      &lt;ul className="oc-price-card__features"&gt;
-        &lt;li className="oc-price-card__feature"&gt;Unlimited invoices&lt;/li&gt;
-        &lt;li className="oc-price-card__feature"&gt;5 team members&lt;/li&gt;
-        &lt;li className="oc-price-card__feature"&gt;Bank import&lt;/li&gt;
-        &lt;li className="oc-price-card__feature oc-price-card__feature--excluded"&gt;Custom domain&lt;/li&gt;
-        &lt;li className="oc-price-card__feature oc-price-card__feature--excluded"&gt;Priority support&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;a className="oc-btn oc-price-card__cta" href="#signup"&gt;Choose Pro&lt;/a&gt;
-    &lt;/article&gt;
+    &lt;PriceCard
+      name="Pro"
+      discount="Save 20%"
+      description="For small teams that send invoices every week."
+      monthly={{ amount: "€12", period: "/month" }}
+      yearly={{ amount: "€115", period: "/year", was: "€144", note: "Billed once a year" }}
+      features={[
+        { label: "Unlimited invoices" },
+        { label: "5 team members" },
+        { label: "Bank import" },
+        { label: "Custom domain", excluded: true },
+        { label: "Priority support", excluded: true },
+      ]}
+      cta={&lt;ButtonLink className="oc-price-card__cta" href="#signup"&gt;Choose Pro&lt;/ButtonLink&gt;}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;article class="oc-price-card"&gt;
-    &lt;div class="oc-price-card__head"&gt;
-      &lt;h3 class="oc-price-card__name"&gt;Pro&lt;/h3&gt;
-      &lt;span class="oc-price-card__discount"&gt;Save 20%&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-price-card__desc"&gt;For small teams that send invoices every week.&lt;/p&gt;
-    &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period"&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-pro" value="monthly" checked /&gt; Monthly&lt;/label&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-pro" value="yearly" /&gt; Yearly&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;€12&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;€115&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;s class="oc-price-card__was"&gt;€144&lt;/s&gt;&lt;span class="oc-price-card__note"&gt;Billed once a year&lt;/span&gt;&lt;/p&gt;
-    &lt;ul class="oc-price-card__features"&gt;
-      &lt;li class="oc-price-card__feature"&gt;Unlimited invoices&lt;/li&gt;
-      &lt;li class="oc-price-card__feature"&gt;5 team members&lt;/li&gt;
-      &lt;li class="oc-price-card__feature"&gt;Bank import&lt;/li&gt;
-      &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Custom domain&lt;/li&gt;
-      &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Priority support&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;a class="oc-btn oc-price-card__cta" href="#signup"&gt;Choose Pro&lt;/a&gt;
-  &lt;/article&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- the period switch is a radio group + :has(): no state, no JavaScript --&gt;
+  &lt;OcPriceCard
+    name="Pro"
+    discount="Save 20%"
+    description="For small teams that send invoices every week."
+    :monthly="{ amount: '€12', period: '/month' }"
+    :yearly="{ amount: '€115', period: '/year', was: '€144', note: 'Billed once a year' }"
+    :features="[
+      { label: 'Unlimited invoices' },
+      { label: '5 team members' },
+      { label: 'Bank import' },
+      { label: 'Custom domain', excluded: true },
+      { label: 'Priority support', excluded: true },
+    ]"
+  &gt;
+    &lt;template #cta&gt;
+      &lt;OcButton class="oc-price-card__cta" href="#signup"&gt;Choose Pro&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcPriceCard&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;article class="oc-price-card"&gt;
-  &lt;div class="oc-price-card__head"&gt;
-    &lt;h3 class="oc-price-card__name"&gt;Pro&lt;/h3&gt;
-    &lt;span class="oc-price-card__discount"&gt;Save 20%&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-price-card__desc"&gt;For small teams that send invoices every week.&lt;/p&gt;
-  &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period"&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-pro" value="monthly" checked&gt; Monthly&lt;/label&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-pro" value="yearly"&gt; Yearly&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;12&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;115&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;s class="oc-price-card__was"&gt;&amp;euro;144&lt;/s&gt;&lt;span class="oc-price-card__note"&gt;Billed once a year&lt;/span&gt;&lt;/p&gt;
-  &lt;ul class="oc-price-card__features"&gt;
-    &lt;li class="oc-price-card__feature"&gt;Unlimited invoices&lt;/li&gt;
-    &lt;li class="oc-price-card__feature"&gt;5 team members&lt;/li&gt;
-    &lt;li class="oc-price-card__feature"&gt;Bank import&lt;/li&gt;
-    &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Custom domain&lt;/li&gt;
-    &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Priority support&lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;a class="oc-btn oc-price-card__cta" href="#signup"&gt;Choose Pro&lt;/a&gt;
-&lt;/article&gt;</oc-code>
+<oc-code lang="blade">{{-- the period switch is a radio group + :has(): no JavaScript --}}
+&lt;x-oc::price-card
+    name="Pro"
+    discount="Save 20%"
+    description="For small teams that send invoices every week."
+    :monthly="['amount' =&gt; '€12', 'period' =&gt; '/month']"
+    :yearly="['amount' =&gt; '€115', 'period' =&gt; '/year', 'was' =&gt; '€144', 'note' =&gt; 'Billed once a year']"
+    :features="[
+        'Unlimited invoices',
+        '5 team members',
+        'Bank import',
+        ['label' =&gt; 'Custom domain', 'excluded' =&gt; true],
+        ['label' =&gt; 'Priority support', 'excluded' =&gt; true],
+    ]"
+&gt;
+    &lt;x-oc::button class="oc-price-card__cta" href="#signup"&gt;Choose Pro&lt;/x-oc::button&gt;
+&lt;/x-oc::price-card&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -118,27 +113,25 @@ class PriceCardWithPeriodSwitch extends Component
 }
 
 {{-- resources/views/livewire/price-card-with-period-switch.blade.php --}}
-&lt;article class="oc-price-card"&gt;
-  &lt;div class="oc-price-card__head"&gt;
-    &lt;h3 class="oc-price-card__name"&gt;Pro&lt;/h3&gt;
-    &lt;span class="oc-price-card__discount"&gt;Save 20%&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-price-card__desc"&gt;For small teams that send invoices every week.&lt;/p&gt;
-  &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period"&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-pro" value="monthly" checked&gt; Monthly&lt;/label&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-pro" value="yearly"&gt; Yearly&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;12&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;115&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;s class="oc-price-card__was"&gt;&amp;euro;144&lt;/s&gt;&lt;span class="oc-price-card__note"&gt;Billed once a year&lt;/span&gt;&lt;/p&gt;
-  &lt;ul class="oc-price-card__features"&gt;
-    &lt;li class="oc-price-card__feature"&gt;Unlimited invoices&lt;/li&gt;
-    &lt;li class="oc-price-card__feature"&gt;5 team members&lt;/li&gt;
-    &lt;li class="oc-price-card__feature"&gt;Bank import&lt;/li&gt;
-    &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Custom domain&lt;/li&gt;
-    &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Priority support&lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;a class="oc-btn oc-price-card__cta" href="#signup"&gt;Choose Pro&lt;/a&gt;
-&lt;/article&gt;</oc-code>
+&lt;div&gt;
+    {{-- the period switch is a radio group + :has(): no JavaScript --}}
+    &lt;x-oc::price-card
+        name="Pro"
+        discount="Save 20%"
+        description="For small teams that send invoices every week."
+        :monthly="['amount' =&gt; '€12', 'period' =&gt; '/month']"
+        :yearly="['amount' =&gt; '€115', 'period' =&gt; '/year', 'was' =&gt; '€144', 'note' =&gt; 'Billed once a year']"
+        :features="[
+            'Unlimited invoices',
+            '5 team members',
+            'Bank import',
+            ['label' =&gt; 'Custom domain', 'excluded' =&gt; true],
+            ['label' =&gt; 'Priority support', 'excluded' =&gt; true],
+        ]"
+    &gt;
+        &lt;x-oc::button class="oc-price-card__cta" href="#signup"&gt;Choose Pro&lt;/x-oc::button&gt;
+    &lt;/x-oc::price-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc">Two plans in a row, the second one featured with an accent border and a badge. Both cards are equally high.</p>
           <oc-demo title="Basic and featured side by side">
@@ -175,110 +168,77 @@ class PriceCardWithPeriodSwitch extends Component
     <a class="oc-btn oc-price-card__cta" href="#business">Choose Business</a>
   </article>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { ButtonLink, PriceCard } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
     &lt;div className="oc-card-grid w-full"&gt;
-      &lt;article className="oc-price-card"&gt;
-        &lt;div className="oc-price-card__head"&gt;&lt;h3 className="oc-price-card__name"&gt;Starter&lt;/h3&gt;&lt;/div&gt;
-        &lt;p className="oc-price-card__desc"&gt;For freelancers.&lt;/p&gt;
-        &lt;div className="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Starter"&gt;
-          &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-starter" value="monthly" defaultChecked /&gt; Monthly&lt;/label&gt;
-          &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-starter" value="yearly" /&gt; Yearly&lt;/label&gt;
-        &lt;/div&gt;
-        &lt;p className="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span className="oc-price-card__amount"&gt;€5&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-        &lt;p className="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span className="oc-price-card__amount"&gt;€50&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;/p&gt;
-        &lt;ul className="oc-price-card__features"&gt;
-          &lt;li className="oc-price-card__feature"&gt;50 invoices a month&lt;/li&gt;
-          &lt;li className="oc-price-card__feature oc-price-card__feature--excluded"&gt;Team members&lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;a className="oc-btn oc-btn--outline oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/a&gt;
-      &lt;/article&gt;
-      &lt;article className="oc-price-card oc-price-card--featured oc-accent--violet"&gt;
-        &lt;div className="oc-price-card__head"&gt;&lt;h3 className="oc-price-card__name"&gt;Business&lt;/h3&gt;&lt;span className="oc-price-card__discount"&gt;2 months free&lt;/span&gt;&lt;/div&gt;
-        &lt;p className="oc-price-card__desc"&gt;For growing companies.&lt;/p&gt;
-        &lt;div className="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Business"&gt;
-          &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-business" value="monthly" /&gt; Monthly&lt;/label&gt;
-          &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-business" value="yearly" defaultChecked /&gt; Yearly&lt;/label&gt;
-        &lt;/div&gt;
-        &lt;p className="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span className="oc-price-card__amount"&gt;€29&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-        &lt;p className="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span className="oc-price-card__amount"&gt;€290&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;s className="oc-price-card__was"&gt;€348&lt;/s&gt;&lt;/p&gt;
-        &lt;ul className="oc-price-card__features"&gt;
-          &lt;li className="oc-price-card__feature"&gt;Unlimited invoices&lt;/li&gt;
-          &lt;li className="oc-price-card__feature"&gt;Unlimited team members&lt;/li&gt;
-          &lt;li className="oc-price-card__feature"&gt;Priority support&lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;a className="oc-btn oc-price-card__cta" href="#business"&gt;Choose Business&lt;/a&gt;
-      &lt;/article&gt;
+      &lt;PriceCard
+        name="Starter"
+        description="For freelancers."
+        monthly={{ amount: "€5", period: "/month" }}
+        yearly={{ amount: "€50", period: "/year" }}
+        features={[{ label: "50 invoices a month" }, { label: "Team members", excluded: true }]}
+        cta={&lt;ButtonLink variant="outline" className="oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/ButtonLink&gt;}
+      /&gt;
+      &lt;PriceCard
+        featured
+        className="oc-accent--violet"
+        name="Business"
+        discount="2 months free"
+        description="For growing companies."
+        defaultPeriod="yearly"
+        monthly={{ amount: "€29", period: "/month" }}
+        yearly={{ amount: "€290", period: "/year", was: "€348" }}
+        features={[{ label: "Unlimited invoices" }, { label: "Unlimited team members" }, { label: "Priority support" }]}
+        cta={&lt;ButtonLink className="oc-price-card__cta" href="#business"&gt;Choose Business&lt;/ButtonLink&gt;}
+      /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-card-grid w-full"&gt;
-    &lt;article class="oc-price-card"&gt;
-      &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Starter&lt;/h3&gt;&lt;/div&gt;
-      &lt;p class="oc-price-card__desc"&gt;For freelancers.&lt;/p&gt;
-      &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Starter"&gt;
-        &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-starter" value="monthly" checked /&gt; Monthly&lt;/label&gt;
-        &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-starter" value="yearly" /&gt; Yearly&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;€5&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-      &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;€50&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;/p&gt;
-      &lt;ul class="oc-price-card__features"&gt;
-        &lt;li class="oc-price-card__feature"&gt;50 invoices a month&lt;/li&gt;
-        &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Team members&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;a class="oc-btn oc-btn--outline oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/a&gt;
-    &lt;/article&gt;
-    &lt;article class="oc-price-card oc-price-card--featured oc-accent--violet"&gt;
-      &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Business&lt;/h3&gt;&lt;span class="oc-price-card__discount"&gt;2 months free&lt;/span&gt;&lt;/div&gt;
-      &lt;p class="oc-price-card__desc"&gt;For growing companies.&lt;/p&gt;
-      &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Business"&gt;
-        &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-business" value="monthly" /&gt; Monthly&lt;/label&gt;
-        &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-business" value="yearly" checked /&gt; Yearly&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;€29&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-      &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;€290&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;s class="oc-price-card__was"&gt;€348&lt;/s&gt;&lt;/p&gt;
-      &lt;ul class="oc-price-card__features"&gt;
-        &lt;li class="oc-price-card__feature"&gt;Unlimited invoices&lt;/li&gt;
-        &lt;li class="oc-price-card__feature"&gt;Unlimited team members&lt;/li&gt;
-        &lt;li class="oc-price-card__feature"&gt;Priority support&lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;a class="oc-btn oc-price-card__cta" href="#business"&gt;Choose Business&lt;/a&gt;
-    &lt;/article&gt;
+    &lt;OcPriceCard
+      name="Starter"
+      description="For freelancers."
+      :monthly="{ amount: '€5', period: '/month' }"
+      :yearly="{ amount: '€50', period: '/year' }"
+      :features="[{ label: '50 invoices a month' }, { label: 'Team members', excluded: true }]"
+    &gt;
+      &lt;template #cta&gt;&lt;OcButton variant="outline" class="oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcPriceCard&gt;
+    &lt;OcPriceCard
+      featured
+      class="oc-accent--violet"
+      name="Business"
+      discount="2 months free"
+      description="For growing companies."
+      default-period="yearly"
+      :monthly="{ amount: '€29', period: '/month' }"
+      :yearly="{ amount: '€290', period: '/year', was: '€348' }"
+      :features="[{ label: 'Unlimited invoices' }, { label: 'Unlimited team members' }, { label: 'Priority support' }]"
+    &gt;
+      &lt;template #cta&gt;&lt;OcButton class="oc-price-card__cta" href="#business"&gt;Choose Business&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcPriceCard&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-card-grid w-full"&gt;
-  &lt;article class="oc-price-card"&gt;
-    &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Starter&lt;/h3&gt;&lt;/div&gt;
-    &lt;p class="oc-price-card__desc"&gt;For freelancers.&lt;/p&gt;
-    &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Starter"&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-starter" value="monthly" checked&gt; Monthly&lt;/label&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-starter" value="yearly"&gt; Yearly&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;5&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;50&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;/p&gt;
-    &lt;ul class="oc-price-card__features"&gt;
-      &lt;li class="oc-price-card__feature"&gt;50 invoices a month&lt;/li&gt;
-      &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Team members&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;a class="oc-btn oc-btn--outline oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/a&gt;
-  &lt;/article&gt;
-  &lt;article class="oc-price-card oc-price-card--featured oc-accent--violet"&gt;
-    &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Business&lt;/h3&gt;&lt;span class="oc-price-card__discount"&gt;2 months free&lt;/span&gt;&lt;/div&gt;
-    &lt;p class="oc-price-card__desc"&gt;For growing companies.&lt;/p&gt;
-    &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Business"&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-business" value="monthly"&gt; Monthly&lt;/label&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-business" value="yearly" checked&gt; Yearly&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;29&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;290&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;s class="oc-price-card__was"&gt;&amp;euro;348&lt;/s&gt;&lt;/p&gt;
-    &lt;ul class="oc-price-card__features"&gt;
-      &lt;li class="oc-price-card__feature"&gt;Unlimited invoices&lt;/li&gt;
-      &lt;li class="oc-price-card__feature"&gt;Unlimited team members&lt;/li&gt;
-      &lt;li class="oc-price-card__feature"&gt;Priority support&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;a class="oc-btn oc-price-card__cta" href="#business"&gt;Choose Business&lt;/a&gt;
-  &lt;/article&gt;
+    &lt;x-oc::price-card name="Starter" description="For freelancers."
+        :monthly="['amount' =&gt; '€5', 'period' =&gt; '/month']"
+        :yearly="['amount' =&gt; '€50', 'period' =&gt; '/year']"
+        :features="['50 invoices a month', ['label' =&gt; 'Team members', 'excluded' =&gt; true]]"&gt;
+        &lt;x-oc::button variant="outline" class="oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/x-oc::button&gt;
+    &lt;/x-oc::price-card&gt;
+    &lt;x-oc::price-card featured class="oc-accent--violet" name="Business" discount="2 months free" description="For growing companies." default-period="yearly"
+        :monthly="['amount' =&gt; '€29', 'period' =&gt; '/month']"
+        :yearly="['amount' =&gt; '€290', 'period' =&gt; '/year', 'was' =&gt; '€348']"
+        :features="['Unlimited invoices', 'Unlimited team members', 'Priority support']"&gt;
+        &lt;x-oc::button class="oc-price-card__cta" href="#business"&gt;Choose Business&lt;/x-oc::button&gt;
+    &lt;/x-oc::price-card&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -295,38 +255,21 @@ class PriceCardBasicAndFeaturedSideBySide extends Component
 }
 
 {{-- resources/views/livewire/price-card-basic-and-featured-side-by-side.blade.php --}}
-&lt;div class="oc-card-grid w-full"&gt;
-  &lt;article class="oc-price-card"&gt;
-    &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Starter&lt;/h3&gt;&lt;/div&gt;
-    &lt;p class="oc-price-card__desc"&gt;For freelancers.&lt;/p&gt;
-    &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Starter"&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-starter" value="monthly" checked&gt; Monthly&lt;/label&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-starter" value="yearly"&gt; Yearly&lt;/label&gt;
+&lt;div&gt;
+    &lt;div class="oc-card-grid w-full"&gt;
+        &lt;x-oc::price-card name="Starter" description="For freelancers."
+            :monthly="['amount' =&gt; '€5', 'period' =&gt; '/month']"
+            :yearly="['amount' =&gt; '€50', 'period' =&gt; '/year']"
+            :features="['50 invoices a month', ['label' =&gt; 'Team members', 'excluded' =&gt; true]]"&gt;
+            &lt;x-oc::button variant="outline" class="oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/x-oc::button&gt;
+        &lt;/x-oc::price-card&gt;
+        &lt;x-oc::price-card featured class="oc-accent--violet" name="Business" discount="2 months free" description="For growing companies." default-period="yearly"
+            :monthly="['amount' =&gt; '€29', 'period' =&gt; '/month']"
+            :yearly="['amount' =&gt; '€290', 'period' =&gt; '/year', 'was' =&gt; '€348']"
+            :features="['Unlimited invoices', 'Unlimited team members', 'Priority support']"&gt;
+            &lt;x-oc::button class="oc-price-card__cta" href="#business"&gt;Choose Business&lt;/x-oc::button&gt;
+        &lt;/x-oc::price-card&gt;
     &lt;/div&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;5&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;50&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;/p&gt;
-    &lt;ul class="oc-price-card__features"&gt;
-      &lt;li class="oc-price-card__feature"&gt;50 invoices a month&lt;/li&gt;
-      &lt;li class="oc-price-card__feature oc-price-card__feature--excluded"&gt;Team members&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;a class="oc-btn oc-btn--outline oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/a&gt;
-  &lt;/article&gt;
-  &lt;article class="oc-price-card oc-price-card--featured oc-accent--violet"&gt;
-    &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Business&lt;/h3&gt;&lt;span class="oc-price-card__discount"&gt;2 months free&lt;/span&gt;&lt;/div&gt;
-    &lt;p class="oc-price-card__desc"&gt;For growing companies.&lt;/p&gt;
-    &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Business"&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-business" value="monthly"&gt; Monthly&lt;/label&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-business" value="yearly" checked&gt; Yearly&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;29&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;290&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;s class="oc-price-card__was"&gt;&amp;euro;348&lt;/s&gt;&lt;/p&gt;
-    &lt;ul class="oc-price-card__features"&gt;
-      &lt;li class="oc-price-card__feature"&gt;Unlimited invoices&lt;/li&gt;
-      &lt;li class="oc-price-card__feature"&gt;Unlimited team members&lt;/li&gt;
-      &lt;li class="oc-price-card__feature"&gt;Priority support&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;a class="oc-btn oc-price-card__cta" href="#business"&gt;Choose Business&lt;/a&gt;
-  &lt;/article&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc">A third option in the switch for a one-time price. Click the three periods.</p>
@@ -344,51 +287,44 @@ class PriceCardBasicAndFeaturedSideBySide extends Component
   <p class="oc-price-card__price oc-price-card__price--lifetime"><span class="oc-price-card__amount">&euro;249</span><span class="oc-price-card__period">once</span><span class="oc-price-card__note">All future updates</span></p>
   <a class="oc-btn oc-price-card__cta" href="#studio">Choose Studio</a>
 </article>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { ButtonLink, PriceCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // lifetime adds a third option to the switch (it needs a yearly price)
   return (
-    &lt;article className="oc-price-card"&gt;
-      &lt;div className="oc-price-card__head"&gt;&lt;h3 className="oc-price-card__name"&gt;Studio&lt;/h3&gt;&lt;/div&gt;
-      &lt;p className="oc-price-card__desc"&gt;A third radio with &lt;code&gt;value="lifetime"&lt;/code&gt; shows a one-time price.&lt;/p&gt;
-      &lt;div className="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Studio"&gt;
-        &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="monthly" defaultChecked /&gt; Monthly&lt;/label&gt;
-        &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="yearly" /&gt; Yearly&lt;/label&gt;
-        &lt;label className="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="lifetime" /&gt; Lifetime&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;p className="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span className="oc-price-card__amount"&gt;€9&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-      &lt;p className="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span className="oc-price-card__amount"&gt;€90&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;/p&gt;
-      &lt;p className="oc-price-card__price oc-price-card__price--lifetime"&gt;&lt;span className="oc-price-card__amount"&gt;€249&lt;/span&gt;&lt;span className="oc-price-card__period"&gt;once&lt;/span&gt;&lt;span className="oc-price-card__note"&gt;All future updates&lt;/span&gt;&lt;/p&gt;
-      &lt;a className="oc-btn oc-price-card__cta" href="#studio"&gt;Choose Studio&lt;/a&gt;
-    &lt;/article&gt;
+    &lt;PriceCard
+      name="Studio"
+      description={&lt;&gt;A third radio with &lt;code&gt;value="lifetime"&lt;/code&gt; shows a one-time price.&lt;/&gt;}
+      monthly={{ amount: "€9", period: "/month" }}
+      yearly={{ amount: "€90", period: "/year" }}
+      lifetime={{ amount: "€249", period: "once", note: "All future updates" }}
+      cta={&lt;ButtonLink className="oc-price-card__cta" href="#studio"&gt;Choose Studio&lt;/ButtonLink&gt;}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;article class="oc-price-card"&gt;
-    &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Studio&lt;/h3&gt;&lt;/div&gt;
-    &lt;p class="oc-price-card__desc"&gt;A third radio with &lt;code&gt;value="lifetime"&lt;/code&gt; shows a one-time price.&lt;/p&gt;
-    &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Studio"&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="monthly" checked /&gt; Monthly&lt;/label&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="yearly" /&gt; Yearly&lt;/label&gt;
-      &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="lifetime" /&gt; Lifetime&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;€9&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;€90&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;/p&gt;
-    &lt;p class="oc-price-card__price oc-price-card__price--lifetime"&gt;&lt;span class="oc-price-card__amount"&gt;€249&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;once&lt;/span&gt;&lt;span class="oc-price-card__note"&gt;All future updates&lt;/span&gt;&lt;/p&gt;
-    &lt;a class="oc-btn oc-price-card__cta" href="#studio"&gt;Choose Studio&lt;/a&gt;
-  &lt;/article&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- lifetime adds a third option to the switch (it needs a yearly price) --&gt;
+  &lt;OcPriceCard
+    name="Studio"
+    description='A third radio with value="lifetime" shows a one-time price.'
+    :monthly="{ amount: '€9', period: '/month' }"
+    :yearly="{ amount: '€90', period: '/year' }"
+    :lifetime="{ amount: '€249', period: 'once', note: 'All future updates' }"
+  &gt;
+    &lt;template #cta&gt;&lt;OcButton class="oc-price-card__cta" href="#studio"&gt;Choose Studio&lt;/OcButton&gt;&lt;/template&gt;
+  &lt;/OcPriceCard&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;article class="oc-price-card"&gt;
-  &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Studio&lt;/h3&gt;&lt;/div&gt;
-  &lt;p class="oc-price-card__desc"&gt;A third radio with &lt;code&gt;value="lifetime"&lt;/code&gt; shows a one-time price.&lt;/p&gt;
-  &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Studio"&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="monthly" checked&gt; Monthly&lt;/label&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="yearly"&gt; Yearly&lt;/label&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="lifetime"&gt; Lifetime&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;9&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;90&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;/p&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--lifetime"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;249&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;once&lt;/span&gt;&lt;span class="oc-price-card__note"&gt;All future updates&lt;/span&gt;&lt;/p&gt;
-  &lt;a class="oc-btn oc-price-card__cta" href="#studio"&gt;Choose Studio&lt;/a&gt;
-&lt;/article&gt;</oc-code>
+<oc-code lang="blade">{{-- lifetime adds a third option to the switch (it needs a yearly price) --}}
+&lt;x-oc::price-card name="Studio" description='A third radio with value="lifetime" shows a one-time price.'
+    :monthly="['amount' =&gt; '€9', 'period' =&gt; '/month']"
+    :yearly="['amount' =&gt; '€90', 'period' =&gt; '/year']"
+    :lifetime="['amount' =&gt; '€249', 'period' =&gt; 'once', 'note' =&gt; 'All future updates']"&gt;
+    &lt;x-oc::button class="oc-price-card__cta" href="#studio"&gt;Choose Studio&lt;/x-oc::button&gt;
+&lt;/x-oc::price-card&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -404,19 +340,15 @@ class PriceCardMonthlyYearlyOrLifetime extends Component
 }
 
 {{-- resources/views/livewire/price-card-monthly-yearly-or-lifetime.blade.php --}}
-&lt;article class="oc-price-card"&gt;
-  &lt;div class="oc-price-card__head"&gt;&lt;h3 class="oc-price-card__name"&gt;Studio&lt;/h3&gt;&lt;/div&gt;
-  &lt;p class="oc-price-card__desc"&gt;A third radio with &lt;code&gt;value="lifetime"&lt;/code&gt; shows a one-time price.&lt;/p&gt;
-  &lt;div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period, Studio"&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="monthly" checked&gt; Monthly&lt;/label&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="yearly"&gt; Yearly&lt;/label&gt;
-    &lt;label class="oc-segmented-item"&gt;&lt;input type="radio" name="oc-price-studio" value="lifetime"&gt; Lifetime&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--monthly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;9&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/month&lt;/span&gt;&lt;/p&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--yearly"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;90&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;/year&lt;/span&gt;&lt;/p&gt;
-  &lt;p class="oc-price-card__price oc-price-card__price--lifetime"&gt;&lt;span class="oc-price-card__amount"&gt;&amp;euro;249&lt;/span&gt;&lt;span class="oc-price-card__period"&gt;once&lt;/span&gt;&lt;span class="oc-price-card__note"&gt;All future updates&lt;/span&gt;&lt;/p&gt;
-  &lt;a class="oc-btn oc-price-card__cta" href="#studio"&gt;Choose Studio&lt;/a&gt;
-&lt;/article&gt;</oc-code>
+&lt;div&gt;
+    {{-- lifetime adds a third option to the switch (it needs a yearly price) --}}
+    &lt;x-oc::price-card name="Studio" description='A third radio with value="lifetime" shows a one-time price.'
+        :monthly="['amount' =&gt; '€9', 'period' =&gt; '/month']"
+        :yearly="['amount' =&gt; '€90', 'period' =&gt; '/year']"
+        :lifetime="['amount' =&gt; '€249', 'period' =&gt; 'once', 'note' =&gt; 'All future updates']"&gt;
+        &lt;x-oc::button class="oc-price-card__cta" href="#studio"&gt;Choose Studio&lt;/x-oc::button&gt;
+    &lt;/x-oc::price-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

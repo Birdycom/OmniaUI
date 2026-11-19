@@ -319,16 +319,31 @@ class ModalSizes extends Component
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/dialog&gt;</oc-code>
-<oc-code lang="tsx">&lt;Modal open={open} onOpenChange={setOpen} size="sm" closeRound title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
-{/* the same option on the other dialogs */}
-&lt;Sheet closeRound closeClassName="my-close" … /&gt;
-&lt;ConfirmDialog closeRound … /&gt;
-&lt;AlertDialog closeButton closeRound … /&gt;</oc-code>
-<oc-code lang="vue">&lt;OcModal v-model:open="open" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
-&lt;!-- the same option on the other dialogs --&gt;
-&lt;OcSheet close-round close-class="my-close" … /&gt;
-&lt;OcConfirmDialog close-round … /&gt;
-&lt;OcAlertDialog close-button close-round … /&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { Button, Modal } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  return (
+    &lt;&gt;
+      &lt;Button variant="outline" onClick={() =&gt; setOpen(true)}&gt;Open the notice&lt;/Button&gt;
+      {/* the same option on Sheet, ConfirmDialog and AlertDialog: closeRound (+ closeClassName for an extra class) */}
+      &lt;Modal open={open} onOpenChange={setOpen} size="sm" closeRound title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcButton, OcModal } from "@birdycom/omniaui-vue";
+
+const open = ref(false);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton variant="outline" @click="open = true"&gt;Open the notice&lt;/OcButton&gt;
+  &lt;!-- the same option on OcSheet, OcConfirmDialog and OcAlertDialog: close-round (+ close-class for an extra class) --&gt;
+  &lt;OcModal v-model:open="open" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
+&lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::modal id="notice" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved."&gt;
     &lt;x-slot:trigger&gt;&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="notice"&gt;Open the notice&lt;/button&gt;&lt;/x-slot:trigger&gt;
 &lt;/x-oc::modal&gt;
@@ -373,86 +388,77 @@ class ModalRoundCloseButton extends Component
     </div>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { Button, Modal, ModalClose } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // In React the open state lives in your component: Modal opens the native &lt;dialog&gt; for you,
+  // so you never toggle .is-open yourself (that class is for markup without a &lt;dialog&gt;).
+  const [open, setOpen] = useState(false);
   return (
     &lt;&gt;
-      &lt;button className="oc-btn oc-btn--outline"&gt;Open (class toggle)&lt;/button&gt;
-
-      &lt;div className="oc-modal" id="demo-modal-class"&gt;
-        &lt;div className="oc-modal-overlay" /&gt;
-        &lt;div className="oc-modal-content oc-modal-content--sm"&gt;
-          &lt;div className="oc-modal-header"&gt;
-            &lt;h3 className="oc-modal-title"&gt;Confirm&lt;/h3&gt;
-            &lt;p className="oc-modal-description"&gt;Opened by adding &lt;code&gt;.is-open&lt;/code&gt;.&lt;/p&gt;
-          &lt;/div&gt;
-          &lt;div className="oc-modal-footer"&gt;
-            &lt;button className="oc-btn"&gt;Close&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+      &lt;Button variant="outline" onClick={() =&gt; setOpen(true)}&gt;Open (class toggle)&lt;/Button&gt;
+      &lt;Modal
+        open={open}
+        onOpenChange={setOpen}
+        size="sm"
+        title="Confirm"
+        description={&lt;&gt;Opened by adding &lt;code&gt;.is-open&lt;/code&gt;.&lt;/&gt;}
+        footer={&lt;ModalClose&gt;Close&lt;/ModalClose&gt;}
+      /&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;button class="oc-btn oc-btn--outline"&gt;Open (class toggle)&lt;/button&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcButton, OcModal } from "@birdycom/omniaui-vue";
 
-  &lt;div class="oc-modal" id="demo-modal-class"&gt;
-    &lt;div class="oc-modal-overlay"&gt;&lt;/div&gt;
-    &lt;div class="oc-modal-content oc-modal-content--sm"&gt;
-      &lt;div class="oc-modal-header"&gt;
-        &lt;h3 class="oc-modal-title"&gt;Confirm&lt;/h3&gt;
-        &lt;p class="oc-modal-description"&gt;Opened by adding &lt;code&gt;.is-open&lt;/code&gt;.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-modal-footer"&gt;
-        &lt;button class="oc-btn"&gt;Close&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+// The open state lives in your component: OcModal opens the native &lt;dialog&gt; for you,
+// so you never toggle .is-open yourself (that class is for markup without a &lt;dialog&gt;).
+const open = ref(false);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton variant="outline" @click="open = true"&gt;Open (class toggle)&lt;/OcButton&gt;
+  &lt;OcModal v-model:open="open" size="sm" title="Confirm" description="Opened by adding .is-open."&gt;
+    &lt;template #footer="{ close }"&gt;
+      &lt;OcButton @click="close"&gt;Close&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcModal&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn oc-btn--outline" onclick="document.getElementById('demo-modal-class').classList.add('is-open')"&gt;Open (class toggle)&lt;/button&gt;
-
-&lt;div class="oc-modal" id="demo-modal-class"&gt;
-  &lt;div class="oc-modal-overlay" onclick="this.parentElement.classList.remove('is-open')"&gt;&lt;/div&gt;
-  &lt;div class="oc-modal-content oc-modal-content--sm"&gt;
-    &lt;div class="oc-modal-header"&gt;
-      &lt;h3 class="oc-modal-title"&gt;Confirm&lt;/h3&gt;
-      &lt;p class="oc-modal-description"&gt;Opened by adding &lt;code&gt;.is-open&lt;/code&gt;.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-modal-footer"&gt;
-      &lt;button class="oc-btn" onclick="this.closest('.oc-modal').classList.remove('is-open')"&gt;Close&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- &lt;x-oc::modal&gt; is a native &lt;dialog&gt;: the trigger opens it with invoker commands, no class toggling or script --}}
+&lt;x-oc::modal id="demo-modal-class" size="sm" title="Confirm" description="Opened by adding .is-open."&gt;
+    &lt;x-slot:trigger&gt;&lt;x-oc::button variant="outline" command="show-modal" commandfor="demo-modal-class"&gt;Open (class toggle)&lt;/x-oc::button&gt;&lt;/x-slot:trigger&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button command="close" commandfor="demo-modal-class"&gt;Close&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
 
-class ModalClassToggle extends Component
+class ConfirmNotice extends Component
 {
+    use WithOcModal;
+
     public function render()
     {
-        return view('livewire.modal-class-toggle');
+        return view('livewire.confirm-notice');
     }
 }
 
-{{-- resources/views/livewire/modal-class-toggle.blade.php --}}
+{{-- resources/views/livewire/confirm-notice.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn oc-btn--outline" onclick="document.getElementById('demo-modal-class').classList.add('is-open')"&gt;Open (class toggle)&lt;/button&gt;
-
-    &lt;div class="oc-modal" id="demo-modal-class"&gt;
-      &lt;div class="oc-modal-overlay" onclick="this.parentElement.classList.remove('is-open')"&gt;&lt;/div&gt;
-      &lt;div class="oc-modal-content oc-modal-content--sm"&gt;
-        &lt;div class="oc-modal-header"&gt;
-          &lt;h3 class="oc-modal-title"&gt;Confirm&lt;/h3&gt;
-          &lt;p class="oc-modal-description"&gt;Opened by adding &lt;code&gt;.is-open&lt;/code&gt;.&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-modal-footer"&gt;
-          &lt;button class="oc-btn" onclick="this.closest('.oc-modal').classList.remove('is-open')"&gt;Close&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('confirm')"&gt;Open (class toggle)&lt;/x-oc::button&gt;
+    {{-- the open state lives on the server (WithOcModal): no class toggling in the browser --}}
+    &lt;x-oc::wire.modal name="confirm" size="sm" title="Confirm" description="Opened by adding .is-open."&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button wire:click="closeOcModal('confirm')"&gt;Close&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.modal&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

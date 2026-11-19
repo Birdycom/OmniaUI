@@ -44,101 +44,69 @@
   </div>
 </div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { AvatarPicker } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [avatar, setAvatar] = useState&lt;File | null&gt;(null);
+  const [logo, setLogo] = useState&lt;File | null&gt;(null);
+
   return (
     &lt;div style={{ display: "grid", gap: "1.5rem" }}&gt;
-    &lt;div className="oc-avatar-picker" data-oc-max-kb="2048"&gt;
-      &lt;label className="oc-avatar-picker__preview" htmlFor="oc-avatar-me" title="Choose an image"&gt;
-        &lt;span data-oc-initials=""&gt;C1&lt;/span&gt;
-        &lt;input className="oc-avatar-picker__file" id="oc-avatar-me" type="file" accept="image/png,image/jpeg,image/webp" /&gt;
-      &lt;/label&gt;
-      &lt;div className="oc-avatar-picker__text"&gt;
-        &lt;span className="oc-avatar-picker__label"&gt;Profile picture&lt;/span&gt;{" "}
-        &lt;span className="oc-avatar-picker__hint"&gt;PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle.&lt;/span&gt;
-        &lt;div className="oc-avatar-picker__actions"&gt;
-          &lt;button type="button" className="oc-btn oc-btn--outline oc-btn--sm" data-oc-avatar-upload=""&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true" /&gt;Upload&lt;/button&gt;
-          &lt;button type="button" className="oc-btn oc-btn--ghost oc-btn--sm" data-oc-avatar-remove=""&gt;&lt;iconify-icon icon="mdi:close" aria-hidden="true" /&gt;Remove&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div className="oc-avatar-picker oc-avatar-picker--square oc-avatar-picker--logo"&gt;
-      &lt;label className="oc-avatar-picker__preview" htmlFor="oc-logo-company" title="Choose an image"&gt;
-        &lt;span data-oc-initials=""&gt;CO&lt;/span&gt;
-        &lt;input className="oc-avatar-picker__file" id="oc-logo-company" type="file" accept="image/svg+xml,image/png" /&gt;
-      &lt;/label&gt;
-      &lt;div className="oc-avatar-picker__text"&gt;
-        &lt;span className="oc-avatar-picker__label"&gt;Company logo&lt;/span&gt;{" "}
-        &lt;span className="oc-avatar-picker__hint"&gt;SVG or PNG on a transparent background.&lt;/span&gt;
-        &lt;div className="oc-avatar-picker__actions"&gt;
-          &lt;button type="button" className="oc-btn oc-btn--outline oc-btn--sm" data-oc-avatar-upload=""&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true" /&gt;Upload&lt;/button&gt;
-          &lt;button type="button" className="oc-btn oc-btn--ghost oc-btn--sm" data-oc-avatar-remove=""&gt;&lt;iconify-icon icon="mdi:close" aria-hidden="true" /&gt;Remove&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+      &lt;AvatarPicker
+        name="avatar"
+        initials="C1"
+        accept="image/png,image/jpeg,image/webp"
+        maxKb={2048}
+        hint="PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle."
+        onChange={(file) =&gt; setAvatar(file)}
+      /&gt;
+      &lt;AvatarPicker
+        name="logo"
+        initials="CO"
+        label="Company logo"
+        logo
+        accept="image/svg+xml,image/png"
+        hint="SVG or PNG on a transparent background."
+        onChange={(file) =&gt; setLogo(file)}
+      /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAvatarPicker } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const avatar = ref&lt;File | null&gt;(null);
+const logo = ref&lt;File | null&gt;(null);
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div style="display:grid;gap:1.5rem"&gt;
-  &lt;div class="oc-avatar-picker" data-oc-max-kb="2048"&gt;
-    &lt;label class="oc-avatar-picker__preview" for="oc-avatar-me" title="Choose an image"&gt;
-      &lt;span data-oc-initials=""&gt;C1&lt;/span&gt;
-      &lt;input class="oc-avatar-picker__file" id="oc-avatar-me" type="file" accept="image/png,image/jpeg,image/webp" /&gt;
-    &lt;/label&gt;
-    &lt;div class="oc-avatar-picker__text"&gt;
-      &lt;span class="oc-avatar-picker__label"&gt;Profile picture&lt;/span&gt;
-      &lt;span class="oc-avatar-picker__hint"&gt;PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle.&lt;/span&gt;
-      &lt;div class="oc-avatar-picker__actions"&gt;
-        &lt;button type="button" class="oc-btn oc-btn--outline oc-btn--sm" data-oc-avatar-upload=""&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Upload&lt;/button&gt;
-        &lt;button type="button" class="oc-btn oc-btn--ghost oc-btn--sm" data-oc-avatar-remove=""&gt;&lt;iconify-icon icon="mdi:close" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Remove&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-avatar-picker oc-avatar-picker--square oc-avatar-picker--logo"&gt;
-    &lt;label class="oc-avatar-picker__preview" for="oc-logo-company" title="Choose an image"&gt;
-      &lt;span data-oc-initials=""&gt;CO&lt;/span&gt;
-      &lt;input class="oc-avatar-picker__file" id="oc-logo-company" type="file" accept="image/svg+xml,image/png" /&gt;
-    &lt;/label&gt;
-    &lt;div class="oc-avatar-picker__text"&gt;
-      &lt;span class="oc-avatar-picker__label"&gt;Company logo&lt;/span&gt;
-      &lt;span class="oc-avatar-picker__hint"&gt;SVG or PNG on a transparent background.&lt;/span&gt;
-      &lt;div class="oc-avatar-picker__actions"&gt;
-        &lt;button type="button" class="oc-btn oc-btn--outline oc-btn--sm" data-oc-avatar-upload=""&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Upload&lt;/button&gt;
-        &lt;button type="button" class="oc-btn oc-btn--ghost oc-btn--sm" data-oc-avatar-remove=""&gt;&lt;iconify-icon icon="mdi:close" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Remove&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+    &lt;OcAvatarPicker
+      name="avatar"
+      initials="C1"
+      accept="image/png,image/jpeg,image/webp"
+      :max-kb="2048"
+      hint="PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle."
+      @change="avatar = $event"
+    /&gt;
+    &lt;OcAvatarPicker
+      name="logo"
+      initials="CO"
+      label="Company logo"
+      logo
+      accept="image/svg+xml,image/png"
+      hint="SVG or PNG on a transparent background."
+      @change="logo = $event"
+    /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:grid;gap:1.5rem"&gt;
-&lt;div class="oc-avatar-picker" data-oc-max-kb="2048"&gt;
-  &lt;label class="oc-avatar-picker__preview" for="oc-avatar-me" title="Choose an image"&gt;
-    &lt;span data-oc-initials&gt;C1&lt;/span&gt;
-    &lt;input class="oc-avatar-picker__file" id="oc-avatar-me" type="file" accept="image/png,image/jpeg,image/webp"&gt;
-  &lt;/label&gt;
-  &lt;div class="oc-avatar-picker__text"&gt;
-    &lt;span class="oc-avatar-picker__label"&gt;Profile picture&lt;/span&gt;
-    &lt;span class="oc-avatar-picker__hint"&gt;PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle.&lt;/span&gt;
-    &lt;div class="oc-avatar-picker__actions"&gt;
-      &lt;button type="button" class="oc-btn oc-btn--outline oc-btn--sm" data-oc-avatar-upload&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Upload&lt;/button&gt;
-      &lt;button type="button" class="oc-btn oc-btn--ghost oc-btn--sm" data-oc-avatar-remove&gt;&lt;iconify-icon icon="mdi:close" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Remove&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="oc-avatar-picker oc-avatar-picker--square oc-avatar-picker--logo"&gt;
-  &lt;label class="oc-avatar-picker__preview" for="oc-logo-company" title="Choose an image"&gt;
-    &lt;span data-oc-initials&gt;CO&lt;/span&gt;
-    &lt;input class="oc-avatar-picker__file" id="oc-logo-company" type="file" accept="image/svg+xml,image/png"&gt;
-  &lt;/label&gt;
-  &lt;div class="oc-avatar-picker__text"&gt;
-    &lt;span class="oc-avatar-picker__label"&gt;Company logo&lt;/span&gt;
-    &lt;span class="oc-avatar-picker__hint"&gt;SVG or PNG on a transparent background.&lt;/span&gt;
-    &lt;div class="oc-avatar-picker__actions"&gt;
-      &lt;button type="button" class="oc-btn oc-btn--outline oc-btn--sm" data-oc-avatar-upload&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Upload&lt;/button&gt;
-      &lt;button type="button" class="oc-btn oc-btn--ghost oc-btn--sm" data-oc-avatar-remove&gt;&lt;iconify-icon icon="mdi:close" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Remove&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+    &lt;x-oc::avatar-picker name="avatar" id="oc-avatar-me" initials="C1" accept="image/png,image/jpeg,image/webp" :max-kb="2048"
+        hint="PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle." /&gt;
+    &lt;x-oc::avatar-picker name="logo" id="oc-logo-company" initials="CO" label="Company logo" logo accept="image/svg+xml,image/png"
+        hint="SVG or PNG on a transparent background." /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -156,34 +124,10 @@ class AvatarPicker extends Component
 
 {{-- resources/views/livewire/avatar-picker.blade.php --}}
 &lt;div style="display:grid;gap:1.5rem"&gt;
-&lt;div class="oc-avatar-picker" data-oc-max-kb="2048"&gt;
-  &lt;label class="oc-avatar-picker__preview" for="oc-avatar-me" title="Choose an image"&gt;
-    &lt;span data-oc-initials&gt;C1&lt;/span&gt;
-    &lt;input class="oc-avatar-picker__file" id="oc-avatar-me" type="file" accept="image/png,image/jpeg,image/webp"&gt;
-  &lt;/label&gt;
-  &lt;div class="oc-avatar-picker__text"&gt;
-    &lt;span class="oc-avatar-picker__label"&gt;Profile picture&lt;/span&gt;
-    &lt;span class="oc-avatar-picker__hint"&gt;PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle.&lt;/span&gt;
-    &lt;div class="oc-avatar-picker__actions"&gt;
-      &lt;button type="button" class="oc-btn oc-btn--outline oc-btn--sm" data-oc-avatar-upload&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Upload&lt;/button&gt;
-      &lt;button type="button" class="oc-btn oc-btn--ghost oc-btn--sm" data-oc-avatar-remove&gt;&lt;iconify-icon icon="mdi:close" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Remove&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="oc-avatar-picker oc-avatar-picker--square oc-avatar-picker--logo"&gt;
-  &lt;label class="oc-avatar-picker__preview" for="oc-logo-company" title="Choose an image"&gt;
-    &lt;span data-oc-initials&gt;CO&lt;/span&gt;
-    &lt;input class="oc-avatar-picker__file" id="oc-logo-company" type="file" accept="image/svg+xml,image/png"&gt;
-  &lt;/label&gt;
-  &lt;div class="oc-avatar-picker__text"&gt;
-    &lt;span class="oc-avatar-picker__label"&gt;Company logo&lt;/span&gt;
-    &lt;span class="oc-avatar-picker__hint"&gt;SVG or PNG on a transparent background.&lt;/span&gt;
-    &lt;div class="oc-avatar-picker__actions"&gt;
-      &lt;button type="button" class="oc-btn oc-btn--outline oc-btn--sm" data-oc-avatar-upload&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Upload&lt;/button&gt;
-      &lt;button type="button" class="oc-btn oc-btn--ghost oc-btn--sm" data-oc-avatar-remove&gt;&lt;iconify-icon icon="mdi:close" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Remove&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+    &lt;x-oc::avatar-picker name="avatar" id="oc-avatar-me" initials="C1" accept="image/png,image/jpeg,image/webp" :max-kb="2048"
+        hint="PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle." /&gt;
+    &lt;x-oc::avatar-picker name="logo" id="oc-logo-company" initials="CO" label="Company logo" logo accept="image/svg+xml,image/png"
+        hint="SVG or PNG on a transparent background." /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

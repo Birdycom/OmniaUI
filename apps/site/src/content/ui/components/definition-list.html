@@ -21,42 +21,47 @@
   </dl>
   <div class="oc-dl-footer"><button class="oc-btn oc-btn--sm" type="button">Use these details</button></div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Button, DefinitionList } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-dl-panel" role="region" aria-label="Company data"&gt;
-      &lt;h3 className="oc-dl-title"&gt;Company data found&lt;/h3&gt;
-      &lt;p className="oc-dl-description"&gt;Retrieved from the VAT register.&lt;/p&gt;
-      &lt;dl className="oc-dl"&gt;
-        &lt;div className="oc-dl-row"&gt;&lt;dt className="oc-dl-term"&gt;Name&lt;/dt&gt;&lt;dd className="oc-dl-detail"&gt;Company 1 BV&lt;/dd&gt;&lt;/div&gt;
-        &lt;div className="oc-dl-row"&gt;&lt;dt className="oc-dl-term"&gt;Enterprise number&lt;/dt&gt;&lt;dd className="oc-dl-detail"&gt;BE 0123.456.789&lt;/dd&gt;&lt;/div&gt;
-        &lt;div className="oc-dl-row"&gt;&lt;dt className="oc-dl-term"&gt;Address&lt;/dt&gt;&lt;dd className="oc-dl-detail"&gt;Main Street 1, 2000 Antwerp&lt;/dd&gt;&lt;/div&gt;
-      &lt;/dl&gt;
-      &lt;div className="oc-dl-footer"&gt;&lt;button className="oc-btn oc-btn--sm" type="button"&gt;Use these details&lt;/button&gt;&lt;/div&gt;
-    &lt;/div&gt;
+    &lt;DefinitionList
+      aria-label="Company data"
+      title="Company data found"
+      description="Retrieved from the VAT register."
+      items={[
+        { term: "Name", detail: "Company 1 BV" },
+        { term: "Enterprise number", detail: "BE 0123.456.789" },
+        { term: "Address", detail: "Main Street 1, 2000 Antwerp" },
+      ]}
+      footer={&lt;Button type="button" size="sm"&gt;Use these details&lt;/Button&gt;}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-dl-panel" role="region" aria-label="Company data"&gt;
-    &lt;h3 class="oc-dl-title"&gt;Company data found&lt;/h3&gt;
-    &lt;p class="oc-dl-description"&gt;Retrieved from the VAT register.&lt;/p&gt;
-    &lt;dl class="oc-dl"&gt;
-      &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Name&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Company 1 BV&lt;/dd&gt;&lt;/div&gt;
-      &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Enterprise number&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;BE 0123.456.789&lt;/dd&gt;&lt;/div&gt;
-      &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Address&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Main Street 1, 2000 Antwerp&lt;/dd&gt;&lt;/div&gt;
-    &lt;/dl&gt;
-    &lt;div class="oc-dl-footer"&gt;&lt;button class="oc-btn oc-btn--sm" type="button"&gt;Use these details&lt;/button&gt;&lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcDefinitionList } from "@birdycom/omniaui-vue";
+
+const rows = [
+  { term: "Name", detail: "Company 1 BV" },
+  { term: "Enterprise number", detail: "BE 0123.456.789" },
+  { term: "Address", detail: "Main Street 1, 2000 Antwerp" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDefinitionList title="Company data found" description="Retrieved from the VAT register." label="Company data" :rows="rows"&gt;
+    &lt;template #footer&gt;&lt;OcButton size="sm"&gt;Use these details&lt;/OcButton&gt;&lt;/template&gt;
+  &lt;/OcDefinitionList&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-dl-panel" role="region" aria-label="Company data"&gt;
-  &lt;h3 class="oc-dl-title"&gt;Company data found&lt;/h3&gt;
-  &lt;p class="oc-dl-description"&gt;Retrieved from the VAT register.&lt;/p&gt;
-  &lt;dl class="oc-dl"&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Name&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Company 1 BV&lt;/dd&gt;&lt;/div&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Enterprise number&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;BE 0123.456.789&lt;/dd&gt;&lt;/div&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Address&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Main Street 1, 2000 Antwerp&lt;/dd&gt;&lt;/div&gt;
-  &lt;/dl&gt;
-  &lt;div class="oc-dl-footer"&gt;&lt;button class="oc-btn oc-btn--sm" type="button"&gt;Use these details&lt;/button&gt;&lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::definition-list title="Company data found" description="Retrieved from the VAT register." label="Company data" :items="[
+    'Name' =&gt; 'Company 1 BV',
+    'Enterprise number' =&gt; 'BE 0123.456.789',
+    'Address' =&gt; 'Main Street 1, 2000 Antwerp',
+]"&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button size="sm"&gt;Use these details&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::definition-list&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -65,6 +70,18 @@ use Livewire\Component;
 
 class DefinitionList extends Component
 {
+    /** Found in the VAT register (term =&gt; detail). */
+    public array $company = [
+        'Name' =&gt; 'Company 1 BV',
+        'Enterprise number' =&gt; 'BE 0123.456.789',
+        'Address' =&gt; 'Main Street 1, 2000 Antwerp',
+    ];
+
+    public function useDetails(): void
+    {
+        $this-&gt;dispatch('company-details', details: $this-&gt;company);
+    }
+
     public function render()
     {
         return view('livewire.definition-list');
@@ -72,15 +89,12 @@ class DefinitionList extends Component
 }
 
 {{-- resources/views/livewire/definition-list.blade.php --}}
-&lt;div class="oc-dl-panel" role="region" aria-label="Company data"&gt;
-  &lt;h3 class="oc-dl-title"&gt;Company data found&lt;/h3&gt;
-  &lt;p class="oc-dl-description"&gt;Retrieved from the VAT register.&lt;/p&gt;
-  &lt;dl class="oc-dl"&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Name&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Company 1 BV&lt;/dd&gt;&lt;/div&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Enterprise number&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;BE 0123.456.789&lt;/dd&gt;&lt;/div&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Address&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Main Street 1, 2000 Antwerp&lt;/dd&gt;&lt;/div&gt;
-  &lt;/dl&gt;
-  &lt;div class="oc-dl-footer"&gt;&lt;button class="oc-btn oc-btn--sm" type="button"&gt;Use these details&lt;/button&gt;&lt;/div&gt;
+&lt;div&gt;
+    &lt;x-oc::definition-list title="Company data found" description="Retrieved from the VAT register." label="Company data" :items="$company"&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button size="sm" wire:click="useDetails"&gt;Use these details&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::definition-list&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title" id="glossary">Glossary <span class="oc-badge-version">v0.14.1</span></h3>
@@ -94,36 +108,40 @@ class DefinitionList extends Component
     <div class="oc-dl-row"><dt class="oc-dl-term">Personal data</dt><dd class="oc-dl-detail">Any information about a person who can be identified, directly or indirectly.</dd></div>
   </dl>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { DefinitionList } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-dl-panel" role="region" aria-label="Definitions"&gt;
-      &lt;h3 className="oc-dl-title"&gt;Definitions&lt;/h3&gt;
-      &lt;dl className="oc-dl oc-dl--glossary"&gt;
-        &lt;div className="oc-dl-row"&gt;&lt;dt className="oc-dl-term"&gt;Service&lt;/dt&gt;&lt;dd className="oc-dl-detail"&gt;The software and the support that Company 1 delivers under this agreement.&lt;/dd&gt;&lt;/div&gt;
-        &lt;div className="oc-dl-row"&gt;&lt;dt className="oc-dl-term"&gt;Customer&lt;/dt&gt;&lt;dd className="oc-dl-detail"&gt;The person or company that orders the service and pays the invoices.&lt;/dd&gt;&lt;/div&gt;
-        &lt;div className="oc-dl-row"&gt;&lt;dt className="oc-dl-term"&gt;Personal data&lt;/dt&gt;&lt;dd className="oc-dl-detail"&gt;Any information about a person who can be identified, directly or indirectly.&lt;/dd&gt;&lt;/div&gt;
-      &lt;/dl&gt;
-    &lt;/div&gt;
+    &lt;DefinitionList
+      aria-label="Definitions"
+      title="Definitions"
+      glossary
+      items={[
+        { term: "Service", detail: "The software and the support that Company 1 delivers under this agreement." },
+        { term: "Customer", detail: "The person or company that orders the service and pays the invoices." },
+        { term: "Personal data", detail: "Any information about a person who can be identified, directly or indirectly." },
+      ]}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-dl-panel" role="region" aria-label="Definitions"&gt;
-    &lt;h3 class="oc-dl-title"&gt;Definitions&lt;/h3&gt;
-    &lt;dl class="oc-dl oc-dl--glossary"&gt;
-      &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Service&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;The software and the support that Company 1 delivers under this agreement.&lt;/dd&gt;&lt;/div&gt;
-      &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Customer&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;The person or company that orders the service and pays the invoices.&lt;/dd&gt;&lt;/div&gt;
-      &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Personal data&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Any information about a person who can be identified, directly or indirectly.&lt;/dd&gt;&lt;/div&gt;
-    &lt;/dl&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDefinitionList } from "@birdycom/omniaui-vue";
+
+const rows = [
+  { term: "Service", detail: "The software and the support that Company 1 delivers under this agreement." },
+  { term: "Customer", detail: "The person or company that orders the service and pays the invoices." },
+  { term: "Personal data", detail: "Any information about a person who can be identified, directly or indirectly." },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDefinitionList title="Definitions" glossary :rows="rows" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-dl-panel" role="region" aria-label="Definitions"&gt;
-  &lt;h3 class="oc-dl-title"&gt;Definitions&lt;/h3&gt;
-  &lt;dl class="oc-dl oc-dl--glossary"&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Service&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;The software and the support that Company 1 delivers under this agreement.&lt;/dd&gt;&lt;/div&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Customer&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;The person or company that orders the service and pays the invoices.&lt;/dd&gt;&lt;/div&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Personal data&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Any information about a person who can be identified, directly or indirectly.&lt;/dd&gt;&lt;/div&gt;
-  &lt;/dl&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::definition-list title="Definitions" glossary :items="[
+    'Service' =&gt; 'The software and the support that Company 1 delivers under this agreement.',
+    'Customer' =&gt; 'The person or company that orders the service and pays the invoices.',
+    'Personal data' =&gt; 'Any information about a person who can be identified, directly or indirectly.',
+]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -139,13 +157,12 @@ class DefinitionListGlossary extends Component
 }
 
 {{-- resources/views/livewire/definition-list-glossary.blade.php --}}
-&lt;div class="oc-dl-panel" role="region" aria-label="Definitions"&gt;
-  &lt;h3 class="oc-dl-title"&gt;Definitions&lt;/h3&gt;
-  &lt;dl class="oc-dl oc-dl--glossary"&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Service&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;The software and the support that Company 1 delivers under this agreement.&lt;/dd&gt;&lt;/div&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Customer&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;The person or company that orders the service and pays the invoices.&lt;/dd&gt;&lt;/div&gt;
-    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Personal data&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Any information about a person who can be identified, directly or indirectly.&lt;/dd&gt;&lt;/div&gt;
-  &lt;/dl&gt;
+&lt;div&gt;
+    &lt;x-oc::definition-list title="Definitions" glossary :items="[
+        'Service' =&gt; 'The software and the support that Company 1 delivers under this agreement.',
+        'Customer' =&gt; 'The person or company that orders the service and pays the invoices.',
+        'Personal data' =&gt; 'Any information about a person who can be identified, directly or indirectly.',
+    ]" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

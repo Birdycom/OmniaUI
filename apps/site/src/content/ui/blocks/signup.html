@@ -47,170 +47,125 @@
     <p class="oc-block-authcard-foot">Already have an account? <a href="#">Sign in</a></p>
   </form>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-block-authpage oc-block-authpage--plain"&gt;
-      &lt;form className="oc-block-authcard" action="#" method="post"&gt;
-        &lt;span className="oc-block-authcard-logo"&gt;&lt;svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;div className="oc-block-authcard-head"&gt;
-          &lt;h1 className="oc-block-authcard-title"&gt;Create an account&lt;/h1&gt;
-          &lt;p className="oc-block-authcard-text"&gt;Enter your information to get started&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-authcard-fields"&gt;
-          &lt;div className="oc-field"&gt;
-            &lt;label className="oc-field-label" htmlFor="oc-signup01-name"&gt;Full name&lt;/label&gt;
-            &lt;input className="oc-input" id="oc-signup01-name" name="text" type="text" autoComplete="name" required placeholder="Contact 1" /&gt;
-          &lt;/div&gt;
-          &lt;div className="oc-field"&gt;
-            &lt;label className="oc-field-label" htmlFor="oc-signup01-email"&gt;E-mail&lt;/label&gt;
-            &lt;input className="oc-input" id="oc-signup01-email" name="email" type="email" autoComplete="email" required placeholder="name@company1.example" /&gt;
-          &lt;/div&gt;
-          &lt;div className="oc-field"&gt;
-            &lt;label className="oc-field-label" htmlFor="oc-signup01-password"&gt;Password&lt;/label&gt;
-            &lt;div className="oc-input-reveal"&gt;
-              &lt;input className="oc-input" id="oc-signup01-password" name="oc-signup01-password" type="password" autoComplete="new-password" required /&gt;
-              &lt;button className="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-          &lt;div className="oc-field"&gt;
-            &lt;label className="oc-field-label" htmlFor="oc-signup01-confirm"&gt;Confirm password&lt;/label&gt;
-            &lt;div className="oc-input-reveal"&gt;
-              &lt;input className="oc-input" id="oc-signup01-confirm" name="oc-signup01-confirm" type="password" autoComplete="new-password" required /&gt;
-              &lt;button className="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-          &lt;p className="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
-          &lt;button className="oc-btn oc-block-authcard-submit" type="submit"&gt;Create account&lt;/button&gt;
-        &lt;/div&gt;
-        &lt;p className="oc-block-authcard-foot"&gt;Already have an account? &lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
-      &lt;/form&gt;
+<oc-code lang="tsx">// No React block for the signup card: the block markup with FormField, Input, PasswordInput and Button
+&lt;div className="oc-block-authpage oc-block-authpage--plain"&gt;
+  &lt;form className="oc-block-authcard" onSubmit={(e) =&gt; { e.preventDefault(); register(new FormData(e.currentTarget)); }}&gt;
+    &lt;span className="oc-block-authcard-logo"&gt;&lt;Webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+    &lt;div className="oc-block-authcard-head"&gt;
+      &lt;h1 className="oc-block-authcard-title"&gt;Create an account&lt;/h1&gt;
+      &lt;p className="oc-block-authcard-text"&gt;Enter your information to get started&lt;/p&gt;
     &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+    &lt;div className="oc-block-authcard-fields"&gt;
+      &lt;FormField label="Full name"&gt;&lt;Input name="name" autoComplete="name" required placeholder="Contact 1" /&gt;&lt;/FormField&gt;
+      &lt;FormField label="E-mail"&gt;&lt;Input name="email" type="email" autoComplete="email" required placeholder="name@company1.example" /&gt;&lt;/FormField&gt;
+      &lt;FormField label="Password"&gt;&lt;PasswordInput name="password" autoComplete="new-password" required /&gt;&lt;/FormField&gt;
+      &lt;FormField label="Confirm password"&gt;&lt;PasswordInput name="password_confirmation" autoComplete="new-password" required /&gt;&lt;/FormField&gt;
+      &lt;p className="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
+      &lt;Button type="submit" className="oc-block-authcard-submit"&gt;Create account&lt;/Button&gt;
+    &lt;/div&gt;
+    &lt;p className="oc-block-authcard-foot"&gt;Already have an account? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+  &lt;/form&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { reactive } from 'vue'
+import { OcButton, OcFormField, OcInput, OcPasswordInput, OcWebicon } from '@birdycom/omniaui-vue'
+
+const form = reactive({ name: '', email: '', password: '', password_confirmation: '' })
+const emit = defineEmits&lt;{ register: [form: typeof form] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-block-authpage oc-block-authpage--plain"&gt;
-    &lt;form class="oc-block-authcard" action="#" method="post"&gt;
-      &lt;span class="oc-block-authcard-logo"&gt;&lt;svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z" /&gt;&lt;/svg&gt;&lt;/span&gt;
+    &lt;form class="oc-block-authcard" @submit.prevent="emit('register', form)"&gt;
+      &lt;span class="oc-block-authcard-logo"&gt;&lt;OcWebicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
       &lt;div class="oc-block-authcard-head"&gt;
         &lt;h1 class="oc-block-authcard-title"&gt;Create an account&lt;/h1&gt;
         &lt;p class="oc-block-authcard-text"&gt;Enter your information to get started&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class="oc-block-authcard-fields"&gt;
-        &lt;div class="oc-field"&gt;
-          &lt;label class="oc-field-label" for="oc-signup01-name"&gt;Full name&lt;/label&gt;
-          &lt;input class="oc-input" id="oc-signup01-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1" /&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-field"&gt;
-          &lt;label class="oc-field-label" for="oc-signup01-email"&gt;E-mail&lt;/label&gt;
-          &lt;input class="oc-input" id="oc-signup01-email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example" /&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-field"&gt;
-          &lt;label class="oc-field-label" for="oc-signup01-password"&gt;Password&lt;/label&gt;
-          &lt;div class="oc-input-reveal"&gt;
-            &lt;input class="oc-input" id="oc-signup01-password" name="oc-signup01-password" type="password" autocomplete="new-password" required /&gt;
-            &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-field"&gt;
-          &lt;label class="oc-field-label" for="oc-signup01-confirm"&gt;Confirm password&lt;/label&gt;
-          &lt;div class="oc-input-reveal"&gt;
-            &lt;input class="oc-input" id="oc-signup01-confirm" name="oc-signup01-confirm" type="password" autocomplete="new-password" required /&gt;
-            &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
+        &lt;OcFormField label="Full name" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="form.name" name="name" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/OcFormField&gt;
+        &lt;OcFormField label="E-mail" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="form.email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/OcFormField&gt;
+        &lt;OcFormField label="Password" v-slot="f"&gt;&lt;OcPasswordInput :id="f.id" v-model="form.password" name="password" autocomplete="new-password" required /&gt;&lt;/OcFormField&gt;
+        &lt;OcFormField label="Confirm password" v-slot="f"&gt;&lt;OcPasswordInput :id="f.id" v-model="form.password_confirmation" name="password_confirmation" autocomplete="new-password" required /&gt;&lt;/OcFormField&gt;
         &lt;p class="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
-        &lt;button class="oc-btn oc-block-authcard-submit" type="submit"&gt;Create account&lt;/button&gt;
+        &lt;OcButton type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/OcButton&gt;
       &lt;/div&gt;
-      &lt;p class="oc-block-authcard-foot"&gt;Already have an account? &lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+      &lt;p class="oc-block-authcard-foot"&gt;Already have an account? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
     &lt;/form&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-authpage oc-block-authpage--plain"&gt;
-  &lt;form class="oc-block-authcard" action="#" method="post"&gt;
-    &lt;span class="oc-block-authcard-logo"&gt;&lt;svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;div class="oc-block-authcard-head"&gt;
-      &lt;h1 class="oc-block-authcard-title"&gt;Create an account&lt;/h1&gt;
-      &lt;p class="oc-block-authcard-text"&gt;Enter your information to get started&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-authcard-fields"&gt;
-      &lt;div class="oc-field"&gt;
-        &lt;label class="oc-field-label" for="oc-signup01-name"&gt;Full name&lt;/label&gt;
-        &lt;input class="oc-input" id="oc-signup01-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1"&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-field"&gt;
-        &lt;label class="oc-field-label" for="oc-signup01-email"&gt;E-mail&lt;/label&gt;
-        &lt;input class="oc-input" id="oc-signup01-email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example"&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-field"&gt;
-        &lt;label class="oc-field-label" for="oc-signup01-password"&gt;Password&lt;/label&gt;
-        &lt;div class="oc-input-reveal"&gt;
-          &lt;input class="oc-input" id="oc-signup01-password" name="oc-signup01-password" type="password" autocomplete="new-password" required&gt;
-          &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
+<oc-code lang="blade">&lt;x-oc::block.signup-01&gt;
+    &lt;form class="oc-block-authcard" method="POST" action="/register"&gt;
+        @csrf
+        &lt;span class="oc-block-authcard-logo"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+        &lt;div class="oc-block-authcard-head"&gt;
+            &lt;h1 class="oc-block-authcard-title"&gt;Create an account&lt;/h1&gt;
+            &lt;p class="oc-block-authcard-text"&gt;Enter your information to get started&lt;/p&gt;
         &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-field"&gt;
-        &lt;label class="oc-field-label" for="oc-signup01-confirm"&gt;Confirm password&lt;/label&gt;
-        &lt;div class="oc-input-reveal"&gt;
-          &lt;input class="oc-input" id="oc-signup01-confirm" name="oc-signup01-confirm" type="password" autocomplete="new-password" required&gt;
-          &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
+        &lt;div class="oc-block-authcard-fields"&gt;
+            &lt;x-oc::form-field label="Full name" for="name" name="name"&gt;&lt;x-oc::input id="name" name="name" :value="old('name')" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;&lt;x-oc::input id="email" name="email" type="email" :value="old('email')" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::password-input label="Password" id="password" name="password" autocomplete="new-password" required /&gt;
+            &lt;x-oc::password-input label="Confirm password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" required /&gt;
+            &lt;p class="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
+            &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/x-oc::button&gt;
         &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;p class="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
-      &lt;button class="oc-btn oc-block-authcard-submit" type="submit"&gt;Create account&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-block-authcard-foot"&gt;Already have an account? &lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
-  &lt;/form&gt;
-&lt;/div&gt;</oc-code>
+        &lt;p class="oc-block-authcard-foot"&gt;Already have an account? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+    &lt;/form&gt;
+&lt;/x-oc::block.signup-01&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class Signup01SimpleCard extends Component
+class Register extends Component
 {
+    #[Validate('required|string|max:255')]
+    public string $name = '';
+
+    #[Validate('required|email|max:255')]
+    public string $email = '';
+
+    #[Validate('required|min:8|confirmed')]
+    public string $password = '';
+
+    public string $password_confirmation = '';
+
+    public function register(): void
+    {
+        $this-&gt;validate();
+        // create the user, log in and redirect
+    }
+
     public function render()
     {
-        return view('livewire.signup01-simple-card');
+        return view('livewire.register');
     }
 }
 
-{{-- resources/views/livewire/signup01-simple-card.blade.php --}}
-&lt;div class="oc-block-authpage oc-block-authpage--plain"&gt;
-  &lt;form class="oc-block-authcard" action="#" method="post"&gt;
-    &lt;span class="oc-block-authcard-logo"&gt;&lt;svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-    &lt;div class="oc-block-authcard-head"&gt;
-      &lt;h1 class="oc-block-authcard-title"&gt;Create an account&lt;/h1&gt;
-      &lt;p class="oc-block-authcard-text"&gt;Enter your information to get started&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-authcard-fields"&gt;
-      &lt;div class="oc-field"&gt;
-        &lt;label class="oc-field-label" for="oc-signup01-name"&gt;Full name&lt;/label&gt;
-        &lt;input class="oc-input" id="oc-signup01-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1"&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-field"&gt;
-        &lt;label class="oc-field-label" for="oc-signup01-email"&gt;E-mail&lt;/label&gt;
-        &lt;input class="oc-input" id="oc-signup01-email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example"&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-field"&gt;
-        &lt;label class="oc-field-label" for="oc-signup01-password"&gt;Password&lt;/label&gt;
-        &lt;div class="oc-input-reveal"&gt;
-          &lt;input class="oc-input" id="oc-signup01-password" name="oc-signup01-password" type="password" autocomplete="new-password" required&gt;
-          &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-field"&gt;
-        &lt;label class="oc-field-label" for="oc-signup01-confirm"&gt;Confirm password&lt;/label&gt;
-        &lt;div class="oc-input-reveal"&gt;
-          &lt;input class="oc-input" id="oc-signup01-confirm" name="oc-signup01-confirm" type="password" autocomplete="new-password" required&gt;
-          &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;p class="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
-      &lt;button class="oc-btn oc-block-authcard-submit" type="submit"&gt;Create account&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;p class="oc-block-authcard-foot"&gt;Already have an account? &lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
-  &lt;/form&gt;
+{{-- resources/views/livewire/register.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.signup-01&gt;
+        &lt;form class="oc-block-authcard" wire:submit="register"&gt;
+            &lt;span class="oc-block-authcard-logo"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+            &lt;div class="oc-block-authcard-head"&gt;
+                &lt;h1 class="oc-block-authcard-title"&gt;Create an account&lt;/h1&gt;
+                &lt;p class="oc-block-authcard-text"&gt;Enter your information to get started&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class="oc-block-authcard-fields"&gt;
+                &lt;x-oc::form-field label="Full name" for="name" name="name"&gt;&lt;x-oc::wire.input id="name" model="name" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/x-oc::form-field&gt;
+                &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;&lt;x-oc::wire.input id="email" model="email" blur type="email" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/x-oc::form-field&gt;
+                &lt;x-oc::password-input label="Password" id="password" wire:model="password" autocomplete="new-password" :error="$errors-&gt;has('password')" required /&gt;
+                @error('password') &lt;p class="oc-field-error"&gt;{{ $message }}&lt;/p&gt; @enderror
+                &lt;x-oc::password-input label="Confirm password" id="password_confirmation" wire:model="password_confirmation" autocomplete="new-password" required /&gt;
+                &lt;p class="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
+                &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/x-oc::button&gt;
+            &lt;/div&gt;
+            &lt;p class="oc-block-authcard-foot"&gt;Already have an account? &lt;a href="/login" wire:navigate&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+        &lt;/form&gt;
+    &lt;/x-oc::block.signup-01&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -256,182 +211,161 @@ class Signup01SimpleCard extends Component
     </div>
   </div>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-block-authduo oc-block-authduo--reverse"&gt;
-      &lt;div className="oc-block-authduo-grid"&gt;
-        &lt;aside className="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
-          &lt;a className="oc-block-authduo-logo" href="#"&gt;&lt;svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z" /&gt;&lt;/svg&gt; Company 1&lt;/a&gt;
-          &lt;blockquote className="oc-block-authduo-quote"&gt;
-            &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
-            &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
-          &lt;/blockquote&gt;
-        &lt;/aside&gt;
-        &lt;div className="oc-block-authduo-form"&gt;
-          &lt;form className="oc-block-authcard oc-block-authcard--flat" action="#" method="post"&gt;
-            &lt;div className="oc-block-authcard-head"&gt;
-              &lt;h1 className="oc-block-authcard-title"&gt;Create your account&lt;/h1&gt;
-              &lt;p className="oc-block-authcard-text"&gt;Free for 14 days, no card needed&lt;/p&gt;
-            &lt;/div&gt;
-            &lt;div className="oc-block-authcard-fields"&gt;
-              &lt;div className="oc-field"&gt;
-                &lt;label className="oc-field-label" htmlFor="oc-signup02-name"&gt;Full name&lt;/label&gt;
-                &lt;input className="oc-input" id="oc-signup02-name" name="text" type="text" autoComplete="name" required placeholder="Contact 1" /&gt;
-              &lt;/div&gt;
-              &lt;div className="oc-field"&gt;
-                &lt;label className="oc-field-label" htmlFor="oc-signup02-email"&gt;E-mail&lt;/label&gt;
-                &lt;input className="oc-input" id="oc-signup02-email" name="email" type="email" autoComplete="email" required placeholder="name@company1.example" /&gt;
-              &lt;/div&gt;
-              &lt;div className="oc-field"&gt;
-                &lt;label className="oc-field-label" htmlFor="oc-signup02-password"&gt;Password&lt;/label&gt;
-                &lt;div className="oc-input-reveal"&gt;
-                  &lt;input className="oc-input" id="oc-signup02-password" name="oc-signup02-password" type="password" autoComplete="new-password" required /&gt;
-                  &lt;button className="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-                &lt;/div&gt;
-              &lt;/div&gt;
-              &lt;label&gt;&lt;input className="oc-checkbox" type="checkbox" name="terms" required /&gt; I agree to the &lt;a className="oc-link" href="#"&gt;terms&lt;/a&gt;&lt;/label&gt;
-              &lt;button className="oc-btn oc-block-authcard-submit" type="submit"&gt;Create account&lt;/button&gt;
-            &lt;/div&gt;
-            &lt;p className="oc-block-authcard-foot"&gt;Already registered? &lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
-          &lt;/form&gt;
+<oc-code lang="tsx">&lt;div className="oc-block-authduo oc-block-authduo--reverse"&gt;
+  &lt;div className="oc-block-authduo-grid"&gt;
+    &lt;aside className="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
+      &lt;a className="oc-block-authduo-logo" href="/"&gt;&lt;Webicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
+      &lt;blockquote className="oc-block-authduo-quote"&gt;
+        &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
+        &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
+      &lt;/blockquote&gt;
+    &lt;/aside&gt;
+    &lt;div className="oc-block-authduo-form"&gt;
+      &lt;form className="oc-block-authcard oc-block-authcard--flat" onSubmit={(e) =&gt; { e.preventDefault(); register(new FormData(e.currentTarget)); }}&gt;
+        &lt;div className="oc-block-authcard-head"&gt;
+          &lt;h1 className="oc-block-authcard-title"&gt;Create your account&lt;/h1&gt;
+          &lt;p className="oc-block-authcard-text"&gt;Free for 14 days, no card needed&lt;/p&gt;
         &lt;/div&gt;
-      &lt;/div&gt;
+        &lt;div className="oc-block-authcard-fields"&gt;
+          &lt;FormField label="Full name"&gt;&lt;Input name="name" autoComplete="name" required placeholder="Contact 1" /&gt;&lt;/FormField&gt;
+          &lt;FormField label="E-mail"&gt;&lt;Input name="email" type="email" autoComplete="email" required placeholder="name@company1.example" /&gt;&lt;/FormField&gt;
+          &lt;FormField label="Password"&gt;&lt;PasswordInput name="password" autoComplete="new-password" required /&gt;&lt;/FormField&gt;
+          &lt;Checkbox name="terms" required label={&lt;&gt;I agree to the &lt;a className="oc-link" href="/terms"&gt;terms&lt;/a&gt;&lt;/&gt;} /&gt;
+          &lt;Button type="submit" className="oc-block-authcard-submit"&gt;Create account&lt;/Button&gt;
+        &lt;/div&gt;
+        &lt;p className="oc-block-authcard-foot"&gt;Already registered? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+      &lt;/form&gt;
     &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { reactive } from 'vue'
+import { OcButton, OcCheckbox, OcFormField, OcInput, OcPasswordInput, OcWebicon } from '@birdycom/omniaui-vue'
+
+const form = reactive({ name: '', email: '', password: '', terms: false })
+const emit = defineEmits&lt;{ register: [form: typeof form] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-block-authduo oc-block-authduo--reverse"&gt;
     &lt;div class="oc-block-authduo-grid"&gt;
       &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
-        &lt;a class="oc-block-authduo-logo" href="#"&gt;&lt;svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z" /&gt;&lt;/svg&gt; Company 1&lt;/a&gt;
+        &lt;a class="oc-block-authduo-logo" href="/"&gt;&lt;OcWebicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
         &lt;blockquote class="oc-block-authduo-quote"&gt;
           &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
           &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
         &lt;/blockquote&gt;
       &lt;/aside&gt;
       &lt;div class="oc-block-authduo-form"&gt;
-        &lt;form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post"&gt;
+        &lt;form class="oc-block-authcard oc-block-authcard--flat" @submit.prevent="emit('register', form)"&gt;
           &lt;div class="oc-block-authcard-head"&gt;
             &lt;h1 class="oc-block-authcard-title"&gt;Create your account&lt;/h1&gt;
             &lt;p class="oc-block-authcard-text"&gt;Free for 14 days, no card needed&lt;/p&gt;
           &lt;/div&gt;
           &lt;div class="oc-block-authcard-fields"&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="oc-signup02-name"&gt;Full name&lt;/label&gt;
-              &lt;input class="oc-input" id="oc-signup02-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1" /&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="oc-signup02-email"&gt;E-mail&lt;/label&gt;
-              &lt;input class="oc-input" id="oc-signup02-email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example" /&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-field"&gt;
-              &lt;label class="oc-field-label" for="oc-signup02-password"&gt;Password&lt;/label&gt;
-              &lt;div class="oc-input-reveal"&gt;
-                &lt;input class="oc-input" id="oc-signup02-password" name="oc-signup02-password" type="password" autocomplete="new-password" required /&gt;
-                &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;label&gt;&lt;input class="oc-checkbox" type="checkbox" name="terms" required /&gt; I agree to the &lt;a class="oc-link" href="#"&gt;terms&lt;/a&gt;&lt;/label&gt;
-            &lt;button class="oc-btn oc-block-authcard-submit" type="submit"&gt;Create account&lt;/button&gt;
+            &lt;OcFormField label="Full name" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="form.name" name="name" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/OcFormField&gt;
+            &lt;OcFormField label="E-mail" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="form.email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/OcFormField&gt;
+            &lt;OcFormField label="Password" v-slot="f"&gt;&lt;OcPasswordInput :id="f.id" v-model="form.password" name="password" autocomplete="new-password" required /&gt;&lt;/OcFormField&gt;
+            &lt;OcCheckbox v-model="form.terms" name="terms" required&gt;I agree to the &lt;a class="oc-link" href="/terms"&gt;terms&lt;/a&gt;&lt;/OcCheckbox&gt;
+            &lt;OcButton type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/OcButton&gt;
           &lt;/div&gt;
-          &lt;p class="oc-block-authcard-foot"&gt;Already registered? &lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+          &lt;p class="oc-block-authcard-foot"&gt;Already registered? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
         &lt;/form&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-authduo oc-block-authduo--reverse"&gt;
-  &lt;div class="oc-block-authduo-grid"&gt;
-    &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
-      &lt;a class="oc-block-authduo-logo" href="#"&gt;&lt;svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/&gt;&lt;/svg&gt; Company 1&lt;/a&gt;
-      &lt;blockquote class="oc-block-authduo-quote"&gt;
-        &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
-        &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
-      &lt;/blockquote&gt;
-    &lt;/aside&gt;
-    &lt;div class="oc-block-authduo-form"&gt;
-      &lt;form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post"&gt;
-        &lt;div class="oc-block-authcard-head"&gt;
-          &lt;h1 class="oc-block-authcard-title"&gt;Create your account&lt;/h1&gt;
-          &lt;p class="oc-block-authcard-text"&gt;Free for 14 days, no card needed&lt;/p&gt;
+<oc-code lang="blade">&lt;x-oc::block.signup-02&gt;
+    &lt;div class="oc-block-authduo-grid"&gt;
+        &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
+            &lt;a class="oc-block-authduo-logo" href="/"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
+            &lt;blockquote class="oc-block-authduo-quote"&gt;
+                &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
+                &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
+            &lt;/blockquote&gt;
+        &lt;/aside&gt;
+        &lt;div class="oc-block-authduo-form"&gt;
+            &lt;form class="oc-block-authcard oc-block-authcard--flat" method="POST" action="/register"&gt;
+                @csrf
+                &lt;div class="oc-block-authcard-head"&gt;
+                    &lt;h1 class="oc-block-authcard-title"&gt;Create your account&lt;/h1&gt;
+                    &lt;p class="oc-block-authcard-text"&gt;Free for 14 days, no card needed&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="oc-block-authcard-fields"&gt;
+                    &lt;x-oc::form-field label="Full name" for="name" name="name"&gt;&lt;x-oc::input id="name" name="name" :value="old('name')" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/x-oc::form-field&gt;
+                    &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;&lt;x-oc::input id="email" name="email" type="email" :value="old('email')" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/x-oc::form-field&gt;
+                    &lt;x-oc::password-input label="Password" id="password" name="password" autocomplete="new-password" required /&gt;
+                    &lt;x-oc::checkbox name="terms" required&gt;I agree to the &lt;a class="oc-link" href="/terms"&gt;terms&lt;/a&gt;&lt;/x-oc::checkbox&gt;
+                    &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/x-oc::button&gt;
+                &lt;/div&gt;
+                &lt;p class="oc-block-authcard-foot"&gt;Already registered? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+            &lt;/form&gt;
         &lt;/div&gt;
-        &lt;div class="oc-block-authcard-fields"&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="oc-signup02-name"&gt;Full name&lt;/label&gt;
-            &lt;input class="oc-input" id="oc-signup02-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1"&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="oc-signup02-email"&gt;E-mail&lt;/label&gt;
-            &lt;input class="oc-input" id="oc-signup02-email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example"&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="oc-signup02-password"&gt;Password&lt;/label&gt;
-            &lt;div class="oc-input-reveal"&gt;
-              &lt;input class="oc-input" id="oc-signup02-password" name="oc-signup02-password" type="password" autocomplete="new-password" required&gt;
-              &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-          &lt;label&gt;&lt;input class="oc-checkbox" type="checkbox" name="terms" required&gt; I agree to the &lt;a class="oc-link" href="#"&gt;terms&lt;/a&gt;&lt;/label&gt;
-          &lt;button class="oc-btn oc-block-authcard-submit" type="submit"&gt;Create account&lt;/button&gt;
-        &lt;/div&gt;
-        &lt;p class="oc-block-authcard-foot"&gt;Already registered? &lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
-      &lt;/form&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::block.signup-02&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class Signup02SplitWithImagePanel extends Component
+class RegisterSplit extends Component
 {
+    #[Validate('required|string|max:255')]
+    public string $name = '';
+
+    #[Validate('required|email|max:255')]
+    public string $email = '';
+
+    #[Validate('required|min:8')]
+    public string $password = '';
+
+    #[Validate('accepted')]
+    public bool $terms = false;
+
+    public function register(): void
+    {
+        $this-&gt;validate();
+        // create the user and the 14-day trial, then redirect
+    }
+
     public function render()
     {
-        return view('livewire.signup02-split-with-image-panel');
+        return view('livewire.register-split');
     }
 }
 
-{{-- resources/views/livewire/signup02-split-with-image-panel.blade.php --}}
-&lt;div class="oc-block-authduo oc-block-authduo--reverse"&gt;
-  &lt;div class="oc-block-authduo-grid"&gt;
-    &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
-      &lt;a class="oc-block-authduo-logo" href="#"&gt;&lt;svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/&gt;&lt;/svg&gt; Company 1&lt;/a&gt;
-      &lt;blockquote class="oc-block-authduo-quote"&gt;
-        &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
-        &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
-      &lt;/blockquote&gt;
-    &lt;/aside&gt;
-    &lt;div class="oc-block-authduo-form"&gt;
-      &lt;form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post"&gt;
-        &lt;div class="oc-block-authcard-head"&gt;
-          &lt;h1 class="oc-block-authcard-title"&gt;Create your account&lt;/h1&gt;
-          &lt;p class="oc-block-authcard-text"&gt;Free for 14 days, no card needed&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-block-authcard-fields"&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="oc-signup02-name"&gt;Full name&lt;/label&gt;
-            &lt;input class="oc-input" id="oc-signup02-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1"&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="oc-signup02-email"&gt;E-mail&lt;/label&gt;
-            &lt;input class="oc-input" id="oc-signup02-email" name="email" type="email" autocomplete="email" required placeholder="name@company1.example"&gt;
-          &lt;/div&gt;
-          &lt;div class="oc-field"&gt;
-            &lt;label class="oc-field-label" for="oc-signup02-password"&gt;Password&lt;/label&gt;
-            &lt;div class="oc-input-reveal"&gt;
-              &lt;input class="oc-input" id="oc-signup02-password" name="oc-signup02-password" type="password" autocomplete="new-password" required&gt;
-              &lt;button class="oc-input-reveal-button" type="button" aria-pressed="false" aria-label="Toggle password visibility"&gt;Show&lt;/button&gt;
+{{-- resources/views/livewire/register-split.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.signup-02&gt;
+        &lt;div class="oc-block-authduo-grid"&gt;
+            &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
+                &lt;a class="oc-block-authduo-logo" href="/"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
+                &lt;blockquote class="oc-block-authduo-quote"&gt;
+                    &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
+                    &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
+                &lt;/blockquote&gt;
+            &lt;/aside&gt;
+            &lt;div class="oc-block-authduo-form"&gt;
+                &lt;form class="oc-block-authcard oc-block-authcard--flat" wire:submit="register"&gt;
+                    &lt;div class="oc-block-authcard-head"&gt;
+                        &lt;h1 class="oc-block-authcard-title"&gt;Create your account&lt;/h1&gt;
+                        &lt;p class="oc-block-authcard-text"&gt;Free for 14 days, no card needed&lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;div class="oc-block-authcard-fields"&gt;
+                        &lt;x-oc::form-field label="Full name" for="name" name="name"&gt;&lt;x-oc::wire.input id="name" model="name" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/x-oc::form-field&gt;
+                        &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;&lt;x-oc::wire.input id="email" model="email" blur type="email" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/x-oc::form-field&gt;
+                        &lt;x-oc::password-input label="Password" id="password" wire:model="password" autocomplete="new-password" :error="$errors-&gt;has('password')" required /&gt;
+                        &lt;x-oc::wire.checkbox model="terms" required&gt;I agree to the &lt;a class="oc-link" href="/terms"&gt;terms&lt;/a&gt;&lt;/x-oc::wire.checkbox&gt;
+                        @error('terms') &lt;p class="oc-field-error"&gt;{{ $message }}&lt;/p&gt; @enderror
+                        &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/x-oc::button&gt;
+                    &lt;/div&gt;
+                    &lt;p class="oc-block-authcard-foot"&gt;Already registered? &lt;a href="/login" wire:navigate&gt;Sign in&lt;/a&gt;&lt;/p&gt;
+                &lt;/form&gt;
             &lt;/div&gt;
-          &lt;/div&gt;
-          &lt;label&gt;&lt;input class="oc-checkbox" type="checkbox" name="terms" required&gt; I agree to the &lt;a class="oc-link" href="#"&gt;terms&lt;/a&gt;&lt;/label&gt;
-          &lt;button class="oc-btn oc-block-authcard-submit" type="submit"&gt;Create account&lt;/button&gt;
         &lt;/div&gt;
-        &lt;p class="oc-block-authcard-foot"&gt;Already registered? &lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/p&gt;
-      &lt;/form&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+    &lt;/x-oc::block.signup-02&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 

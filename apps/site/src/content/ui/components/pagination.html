@@ -20,35 +20,39 @@
   <a class="oc-pagination-item" href="#page-2" aria-current="page">2</a>
   <a class="oc-pagination-item" href="#page-3">3</a>
 </nav>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Pagination } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [page, setPage] = useState(2);
+
   return (
-    &lt;nav className="oc-pagination" aria-label="Pagination"&gt;
-      &lt;a className="oc-pagination-item" href="#page-1"&gt;1&lt;/a&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-2" aria-current="page"&gt;2&lt;/a&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-3"&gt;3&lt;/a&gt;
-    &lt;/nav&gt;
+    &lt;Pagination page={page} pageCount={3} onPageChange={setPage} hrefFor={(n) =&gt; `#page-${n}`} /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;nav class="oc-pagination" aria-label="Pagination"&gt;
-    &lt;a class="oc-pagination-item" href="#page-1"&gt;1&lt;/a&gt;
-    &lt;a class="oc-pagination-item" href="#page-2" aria-current="page"&gt;2&lt;/a&gt;
-    &lt;a class="oc-pagination-item" href="#page-3"&gt;3&lt;/a&gt;
-  &lt;/nav&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcPagination } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const page = ref(2);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcPagination v-model="page" :pages="3" :href-for="(n) =&gt; `#page-${n}`" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;nav class="oc-pagination" aria-label="Pagination"&gt;
-  &lt;a class="oc-pagination-item" href="#page-1"&gt;1&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-2" aria-current="page"&gt;2&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-3"&gt;3&lt;/a&gt;
-&lt;/nav&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::pagination :current="2" :total="3" url="#page-%d" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class Pagination extends Component
 {
+    #[Url]
+    public int $page = 2;
+
     public function render()
     {
         return view('livewire.pagination');
@@ -56,11 +60,9 @@ class Pagination extends Component
 }
 
 {{-- resources/views/livewire/pagination.blade.php --}}
-&lt;nav class="oc-pagination" aria-label="Pagination"&gt;
-  &lt;a class="oc-pagination-item" href="#page-1"&gt;1&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-2" aria-current="page"&gt;2&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-3"&gt;3&lt;/a&gt;
-&lt;/nav&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::pagination :current="$page" :total="3" url="?page=%d" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Many pages, previous and next</h3>
@@ -79,59 +81,39 @@ class Pagination extends Component
   <a class="oc-pagination-item" href="#page-24">24</a>
   <a class="oc-pagination-item" href="#page-8" aria-label="Next page">&rsaquo;</a>
 </nav>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Pagination } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [page, setPage] = useState(7);
+
   return (
-    &lt;nav className="oc-pagination" aria-label="Pagination"&gt;
-      &lt;a className="oc-pagination-item" href="#page-6" aria-label="Previous page"&gt;‹&lt;/a&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-1"&gt;1&lt;/a&gt;{" "}
-      &lt;span className="oc-pagination-item" aria-hidden="true"&gt;…&lt;/span&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-5"&gt;5&lt;/a&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-6"&gt;6&lt;/a&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-7" aria-current="page"&gt;7&lt;/a&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-8"&gt;8&lt;/a&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-9"&gt;9&lt;/a&gt;{" "}
-      &lt;span className="oc-pagination-item" aria-hidden="true"&gt;…&lt;/span&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-24"&gt;24&lt;/a&gt;{" "}
-      &lt;a className="oc-pagination-item" href="#page-8" aria-label="Next page"&gt;›&lt;/a&gt;
-    &lt;/nav&gt;
+    &lt;Pagination page={page} pageCount={24} onPageChange={setPage} hrefFor={(n) =&gt; `#page-${n}`} /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;nav class="oc-pagination" aria-label="Pagination"&gt;
-    &lt;a class="oc-pagination-item" href="#page-6" aria-label="Previous page"&gt;‹&lt;/a&gt;
-    &lt;a class="oc-pagination-item" href="#page-1"&gt;1&lt;/a&gt;
-    &lt;span class="oc-pagination-item" aria-hidden="true"&gt;…&lt;/span&gt;
-    &lt;a class="oc-pagination-item" href="#page-5"&gt;5&lt;/a&gt;
-    &lt;a class="oc-pagination-item" href="#page-6"&gt;6&lt;/a&gt;
-    &lt;a class="oc-pagination-item" href="#page-7" aria-current="page"&gt;7&lt;/a&gt;
-    &lt;a class="oc-pagination-item" href="#page-8"&gt;8&lt;/a&gt;
-    &lt;a class="oc-pagination-item" href="#page-9"&gt;9&lt;/a&gt;
-    &lt;span class="oc-pagination-item" aria-hidden="true"&gt;…&lt;/span&gt;
-    &lt;a class="oc-pagination-item" href="#page-24"&gt;24&lt;/a&gt;
-    &lt;a class="oc-pagination-item" href="#page-8" aria-label="Next page"&gt;›&lt;/a&gt;
-  &lt;/nav&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcPagination } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const page = ref(7);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcPagination v-model="page" :pages="24" :href-for="(n) =&gt; `#page-${n}`" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;nav class="oc-pagination" aria-label="Pagination"&gt;
-  &lt;a class="oc-pagination-item" href="#page-6" aria-label="Previous page"&gt;&amp;lsaquo;&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-1"&gt;1&lt;/a&gt;
-  &lt;span class="oc-pagination-item" aria-hidden="true"&gt;&amp;hellip;&lt;/span&gt;
-  &lt;a class="oc-pagination-item" href="#page-5"&gt;5&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-6"&gt;6&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-7" aria-current="page"&gt;7&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-8"&gt;8&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-9"&gt;9&lt;/a&gt;
-  &lt;span class="oc-pagination-item" aria-hidden="true"&gt;&amp;hellip;&lt;/span&gt;
-  &lt;a class="oc-pagination-item" href="#page-24"&gt;24&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-8" aria-label="Next page"&gt;&amp;rsaquo;&lt;/a&gt;
-&lt;/nav&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::pagination :current="7" :total="24" url="#page-%d" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class PaginationManyPages extends Component
 {
+    #[Url]
+    public int $page = 7;
+
     public function render()
     {
         return view('livewire.pagination-many-pages');
@@ -139,19 +121,10 @@ class PaginationManyPages extends Component
 }
 
 {{-- resources/views/livewire/pagination-many-pages.blade.php --}}
-&lt;nav class="oc-pagination" aria-label="Pagination"&gt;
-  &lt;a class="oc-pagination-item" href="#page-6" aria-label="Previous page"&gt;&amp;lsaquo;&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-1"&gt;1&lt;/a&gt;
-  &lt;span class="oc-pagination-item" aria-hidden="true"&gt;&amp;hellip;&lt;/span&gt;
-  &lt;a class="oc-pagination-item" href="#page-5"&gt;5&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-6"&gt;6&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-7" aria-current="page"&gt;7&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-8"&gt;8&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-9"&gt;9&lt;/a&gt;
-  &lt;span class="oc-pagination-item" aria-hidden="true"&gt;&amp;hellip;&lt;/span&gt;
-  &lt;a class="oc-pagination-item" href="#page-24"&gt;24&lt;/a&gt;
-  &lt;a class="oc-pagination-item" href="#page-8" aria-label="Next page"&gt;&amp;rsaquo;&lt;/a&gt;
-&lt;/nav&gt;</oc-code>
+&lt;div&gt;
+    {{-- With a Laravel paginator: &lt;x-oc::pagination :paginator="$invoices" /&gt; --}}
+    &lt;x-oc::pagination :current="$page" :total="24" url="?page=%d" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

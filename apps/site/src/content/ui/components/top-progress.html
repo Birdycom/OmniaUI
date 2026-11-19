@@ -16,23 +16,17 @@
   <progress class="oc-top-progress oc-top-progress--static" aria-label="Loading page"></progress>
   <progress class="oc-top-progress oc-top-progress--static" value="40" max="100" aria-label="Uploading, 40 percent"></progress>
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div style={{ display: "grid", gap: "1.25rem", width: "100%" }}&gt;
-      &lt;progress className="oc-top-progress oc-top-progress--static" aria-label="Loading page" /&gt;
-      &lt;progress className="oc-top-progress oc-top-progress--static" value="40" max="100" aria-label="Uploading, 40 percent" /&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
-    &lt;progress class="oc-top-progress oc-top-progress--static" aria-label="Loading page"&gt;&lt;/progress&gt;
-    &lt;progress class="oc-top-progress oc-top-progress--static" value="40" max="100" aria-label="Uploading, 40 percent"&gt;&lt;/progress&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
+<oc-code lang="tsx">&lt;div style={{ display: "grid", gap: "1.25rem", width: "100%" }}&gt;
+  &lt;TopProgress static aria-label="Loading page" /&gt;
+  &lt;TopProgress static value={40} max={100} aria-label="Uploading, 40 percent" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+  &lt;OcTopProgress static aria-label="Loading page" /&gt;
+  &lt;OcTopProgress static :value="40" :max="100" aria-label="Uploading, 40 percent" /&gt;
+&lt;/div&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static" aria-label="Loading page"&gt;&lt;/progress&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static" value="40" max="100" aria-label="Uploading, 40 percent"&gt;&lt;/progress&gt;
+    &lt;x-oc::top-progress static label="Loading page" /&gt;
+    &lt;x-oc::top-progress static :value="40" label="Uploading, 40 percent" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -40,18 +34,21 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class TopProgressIndeterminateAndDeterminate extends Component
+class UploadStatus extends Component
 {
+    public int $uploaded = 40;
+
     public function render()
     {
-        return view('livewire.top-progress-indeterminate-and-determinate');
+        return view('livewire.upload-status');
     }
 }
 
-{{-- resources/views/livewire/top-progress-indeterminate-and-determinate.blade.php --}}
+{{-- resources/views/livewire/upload-status.blade.php --}}
 &lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static" aria-label="Loading page"&gt;&lt;/progress&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static" value="40" max="100" aria-label="Uploading, 40 percent"&gt;&lt;/progress&gt;
+    {{-- indeterminate while a request runs: wire:loading shows it --}}
+    &lt;x-oc::top-progress static label="Loading page" wire:loading /&gt;
+    &lt;x-oc::top-progress static :value="$uploaded" label="Uploading, {{ $uploaded }} percent" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -96,29 +93,23 @@ class TopProgressIndeterminateAndDeterminate extends Component
   &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--danger" value="25" max="100" aria-label="Retrying, 25 percent"&gt;&lt;/progress&gt;
   &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--brand" aria-label="Loading"&gt;&lt;/progress&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div style={{ display: "grid", gap: "1.25rem", width: "100%" }}&gt;
-      &lt;progress className="oc-top-progress oc-top-progress--static oc-top-progress--success oc-top-progress--lg" value="100" max="100" aria-label="Saved" /&gt;
-      &lt;progress className="oc-top-progress oc-top-progress--static oc-top-progress--warning" value="70" max="100" aria-label="Syncing, 70 percent" /&gt;
-      &lt;progress className="oc-top-progress oc-top-progress--static oc-top-progress--danger" value="25" max="100" aria-label="Retrying, 25 percent" /&gt;
-      &lt;progress className="oc-top-progress oc-top-progress--static oc-top-progress--brand" aria-label="Loading" /&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
-    &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--success oc-top-progress--lg" value="100" max="100" aria-label="Saved"&gt;&lt;/progress&gt;
-    &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--warning" value="70" max="100" aria-label="Syncing, 70 percent"&gt;&lt;/progress&gt;
-    &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--danger" value="25" max="100" aria-label="Retrying, 25 percent"&gt;&lt;/progress&gt;
-    &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--brand" aria-label="Loading"&gt;&lt;/progress&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
+<oc-code lang="tsx">&lt;div style={{ display: "grid", gap: "1.25rem", width: "100%" }}&gt;
+  &lt;TopProgress static tone="success" large value={100} max={100} aria-label="Saved" /&gt;
+  &lt;TopProgress static tone="warning" value={70} max={100} aria-label="Syncing, 70 percent" /&gt;
+  &lt;TopProgress static tone="danger" value={25} max={100} aria-label="Retrying, 25 percent" /&gt;
+  &lt;TopProgress static tone="brand" aria-label="Loading" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+  &lt;OcTopProgress static tone="success" large :value="100" :max="100" aria-label="Saved" /&gt;
+  &lt;OcTopProgress static tone="warning" :value="70" :max="100" aria-label="Syncing, 70 percent" /&gt;
+  &lt;OcTopProgress static tone="danger" :value="25" :max="100" aria-label="Retrying, 25 percent" /&gt;
+  &lt;OcTopProgress static tone="brand" aria-label="Loading" /&gt;
+&lt;/div&gt;</oc-code>
 <oc-code lang="blade">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--success oc-top-progress--lg" value="100" max="100" aria-label="Saved"&gt;&lt;/progress&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--warning" value="70" max="100" aria-label="Syncing, 70 percent"&gt;&lt;/progress&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--danger" value="25" max="100" aria-label="Retrying, 25 percent"&gt;&lt;/progress&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--brand" aria-label="Loading"&gt;&lt;/progress&gt;
+    &lt;x-oc::top-progress static tone="success" lg :value="100" label="Saved" /&gt;
+    &lt;x-oc::top-progress static tone="warning" :value="70" label="Syncing, 70 percent" /&gt;
+    &lt;x-oc::top-progress static tone="danger" :value="25" label="Retrying, 25 percent" /&gt;
+    &lt;x-oc::top-progress static tone="brand" label="Loading" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -126,20 +117,24 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class TopProgressColors extends Component
+class SyncStatus extends Component
 {
+    public int $synced = 70;
+
+    public int $retry = 25;
+
     public function render()
     {
-        return view('livewire.top-progress-colors');
+        return view('livewire.sync-status');
     }
 }
 
-{{-- resources/views/livewire/top-progress-colors.blade.php --}}
+{{-- resources/views/livewire/sync-status.blade.php --}}
 &lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--success oc-top-progress--lg" value="100" max="100" aria-label="Saved"&gt;&lt;/progress&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--warning" value="70" max="100" aria-label="Syncing, 70 percent"&gt;&lt;/progress&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--danger" value="25" max="100" aria-label="Retrying, 25 percent"&gt;&lt;/progress&gt;
-  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--brand" aria-label="Loading"&gt;&lt;/progress&gt;
+    &lt;x-oc::top-progress static tone="success" lg :value="100" label="Saved" /&gt;
+    &lt;x-oc::top-progress static tone="warning" :value="$synced" label="Syncing, {{ $synced }} percent" /&gt;
+    &lt;x-oc::top-progress static tone="danger" :value="$retry" label="Retrying, {{ $retry }} percent" /&gt;
+    &lt;x-oc::top-progress static tone="brand" label="Loading" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 

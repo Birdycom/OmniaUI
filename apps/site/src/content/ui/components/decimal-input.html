@@ -18,43 +18,56 @@
   <label class="oc-field-label" for="oc-decimal-demo">Amount</label>
   <input class="oc-input oc-decimal-input" id="oc-decimal-demo" name="amount" type="text" inputmode="decimal" value="1.234,56" pattern="[0-9.]*(,[0-9]{1,2})?">
 </div>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-field" style={{ maxInlineSize: "16rem" }}&gt;
-      &lt;label className="oc-field-label" htmlFor="oc-decimal-demo"&gt;Amount&lt;/label&gt;
-      &lt;input className="oc-input oc-decimal-input" id="oc-decimal-demo" name="amount" type="text" inputMode="decimal" defaultValue="1.234,56" pattern="[0-9.]*(,[0-9]{1,2})?" /&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-field" style="max-inline-size:16rem"&gt;
-    &lt;label class="oc-field-label" for="oc-decimal-demo"&gt;Amount&lt;/label&gt;
-    &lt;input class="oc-input oc-decimal-input" id="oc-decimal-demo" name="amount" type="text" inputmode="decimal" value="1.234,56" pattern="[0-9.]*(,[0-9]{1,2})?" /&gt;
-  &lt;/div&gt;
+<oc-code lang="tsx">const [amount, setAmount] = useState&lt;number | null&gt;(1234.56);
+
+&lt;FormField label="Amount" style={{ maxInlineSize: "16rem" }}&gt;
+  &lt;DecimalInput name="amount" locale="nl-BE" value={amount} onValueChange={setAmount} /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcDecimalInput, OcFormField } from '@birdycom/omniaui-vue'
+
+const amount = ref&lt;number | null&gt;(1234.56)
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Amount" style="max-inline-size:16rem" v-slot="f"&gt;
+    &lt;OcDecimalInput :id="f.id" v-model="amount" name="amount" locale="nl-BE" /&gt;
+  &lt;/OcFormField&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-field" style="max-inline-size:16rem"&gt;
-  &lt;label class="oc-field-label" for="oc-decimal-demo"&gt;Amount&lt;/label&gt;
-  &lt;input class="oc-input oc-decimal-input" id="oc-decimal-demo" name="amount" type="text" inputmode="decimal" value="1.234,56" pattern="[0-9.]*(,[0-9]{1,2})?"&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Amount" for="amount" name="amount" style="max-inline-size:16rem"&gt;
+    &lt;x-oc::decimal-input id="amount" name="amount" :value="old('amount', number_format(1234.56, 2, ',', '.'))" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class DecimalInput extends Component
+class AmountField extends Component
 {
+    /** As typed: 1.234,56 */
+    public string $amount = '1.234,56';
+
+    public function save(): void
+    {
+        $this-&gt;validate(['amount' =&gt; ['required', 'regex:/^[0-9.]*(,[0-9]{1,2})?$/']]);
+        $value = (float) str_replace(['.', ','], ['', '.'], $this-&gt;amount);
+        // store $value
+    }
+
     public function render()
     {
-        return view('livewire.decimal-input');
+        return view('livewire.amount-field');
     }
 }
 
-{{-- resources/views/livewire/decimal-input.blade.php --}}
-&lt;div class="oc-field" style="max-inline-size:16rem"&gt;
-  &lt;label class="oc-field-label" for="oc-decimal-demo"&gt;Amount&lt;/label&gt;
-  &lt;input class="oc-input oc-decimal-input" id="oc-decimal-demo" name="amount" type="text" inputmode="decimal" value="1.234,56" pattern="[0-9.]*(,[0-9]{1,2})?"&gt;
-&lt;/div&gt;</oc-code>
+{{-- resources/views/livewire/amount-field.blade.php --}}
+&lt;form wire:submit="save"&gt;
+    &lt;x-oc::form-field label="Amount" for="amount" name="amount" style="max-inline-size:16rem"&gt;
+        &lt;x-oc::decimal-input id="amount" wire:model.blur="amount" :error="$errors-&gt;has('amount')" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">With a unit, and invalid</h3>
@@ -102,74 +115,64 @@ class DecimalInput extends Component
 &lt;/div&gt;
 
 &lt;input class="oc-input oc-decimal-input oc-decimal-input--start" type="text" inputmode="decimal" value="0,75" aria-label="Rate (left aligned)"&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;&gt;
-      &lt;div className="oc-decimal-field"&gt;
-        &lt;input className="oc-input oc-decimal-input" type="text" inputMode="decimal" defaultValue="42,5" pattern="[0-9.]*(,[0-9]{1,2})?" aria-label="Surface" /&gt;
-        &lt;span className="oc-decimal-field-unit"&gt;m²&lt;/span&gt;
-      &lt;/div&gt;
+<oc-code lang="tsx">&lt;DecimalInput defaultValue={42.5} decimals={1} unit="m²" aria-label="Surface" /&gt;
 
-      &lt;div className="oc-decimal-field"&gt;
-        &lt;input className="oc-input oc-decimal-input" type="text" inputMode="decimal" defaultValue="12,x" aria-invalid="true" aria-label="Weight (invalid)" /&gt;
-        &lt;span className="oc-decimal-field-unit"&gt;kg&lt;/span&gt;
-      &lt;/div&gt;
+&lt;DecimalInput unit="kg" error aria-label="Weight (invalid)" /&gt;
 
-      &lt;input className="oc-input oc-decimal-input oc-decimal-input--start" type="text" inputMode="decimal" defaultValue="0,75" aria-label="Rate (left aligned)" /&gt;
-    &lt;/&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-decimal-field"&gt;
-    &lt;input class="oc-input oc-decimal-input" type="text" inputmode="decimal" value="42,5" pattern="[0-9.]*(,[0-9]{1,2})?" aria-label="Surface" /&gt;
-    &lt;span class="oc-decimal-field-unit"&gt;m²&lt;/span&gt;
-  &lt;/div&gt;
+&lt;DecimalInput defaultValue={0.75} alignStart aria-label="Rate (left aligned)" /&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcDecimalInput } from '@birdycom/omniaui-vue'
 
-  &lt;div class="oc-decimal-field"&gt;
-    &lt;input class="oc-input oc-decimal-input" type="text" inputmode="decimal" value="12,x" aria-invalid="true" aria-label="Weight (invalid)" /&gt;
-    &lt;span class="oc-decimal-field-unit"&gt;kg&lt;/span&gt;
-  &lt;/div&gt;
+const surface = ref&lt;number | null&gt;(42.5)
+const weight = ref&lt;number | null&gt;(null)
+const rate = ref&lt;number | null&gt;(0.75)
+&lt;/script&gt;
 
-  &lt;input class="oc-input oc-decimal-input oc-decimal-input--start" type="text" inputmode="decimal" value="0,75" aria-label="Rate (left aligned)" /&gt;
+&lt;template&gt;
+  &lt;OcDecimalInput v-model="surface" :decimals="1" unit="m²" aria-label="Surface" /&gt;
+
+  &lt;OcDecimalInput v-model="weight" unit="kg" error aria-label="Weight (invalid)" /&gt;
+
+  &lt;OcDecimalInput v-model="rate" align-start aria-label="Rate (left aligned)" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-decimal-field"&gt;
-  &lt;input class="oc-input oc-decimal-input" type="text" inputmode="decimal" value="42,5" pattern="[0-9.]*(,[0-9]{1,2})?" aria-label="Surface"&gt;
-  &lt;span class="oc-decimal-field-unit"&gt;m&amp;sup2;&lt;/span&gt;
-&lt;/div&gt;
+<oc-code lang="blade">&lt;x-oc::decimal-input name="surface" value="42,5" unit="m²" aria-label="Surface" /&gt;
 
-&lt;div class="oc-decimal-field"&gt;
-  &lt;input class="oc-input oc-decimal-input" type="text" inputmode="decimal" value="12,x" aria-invalid="true" aria-label="Weight (invalid)"&gt;
-  &lt;span class="oc-decimal-field-unit"&gt;kg&lt;/span&gt;
-&lt;/div&gt;
+&lt;x-oc::decimal-input name="weight" value="12,x" unit="kg" error aria-label="Weight (invalid)" /&gt;
 
-&lt;input class="oc-input oc-decimal-input oc-decimal-input--start" type="text" inputmode="decimal" value="0,75" aria-label="Rate (left aligned)"&gt;</oc-code>
+&lt;x-oc::decimal-input name="rate" value="0,75" start aria-label="Rate (left aligned)" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class DecimalInputUnitAndStates extends Component
+class Measurements extends Component
 {
+    public string $surface = '42,5';
+
+    public string $weight = '12,x';
+
+    public string $rate = '0,75';
+
+    public function updated(string $property): void
+    {
+        $this-&gt;validateOnly($property, [$property =&gt; ['regex:/^[0-9.]*(,[0-9]{1,2})?$/']]);
+    }
+
     public function render()
     {
-        return view('livewire.decimal-input-unit-and-states');
+        return view('livewire.measurements');
     }
 }
 
-{{-- resources/views/livewire/decimal-input-unit-and-states.blade.php --}}
+{{-- resources/views/livewire/measurements.blade.php --}}
 &lt;div&gt;
-    &lt;div class="oc-decimal-field"&gt;
-      &lt;input class="oc-input oc-decimal-input" type="text" inputmode="decimal" value="42,5" pattern="[0-9.]*(,[0-9]{1,2})?" aria-label="Surface"&gt;
-      &lt;span class="oc-decimal-field-unit"&gt;m&amp;sup2;&lt;/span&gt;
-    &lt;/div&gt;
+    &lt;x-oc::decimal-input wire:model.blur="surface" unit="m²" :error="$errors-&gt;has('surface')" aria-label="Surface" /&gt;
 
-    &lt;div class="oc-decimal-field"&gt;
-      &lt;input class="oc-input oc-decimal-input" type="text" inputmode="decimal" value="12,x" aria-invalid="true" aria-label="Weight (invalid)"&gt;
-      &lt;span class="oc-decimal-field-unit"&gt;kg&lt;/span&gt;
-    &lt;/div&gt;
+    &lt;x-oc::decimal-input wire:model.blur="weight" unit="kg" :error="$errors-&gt;has('weight')" aria-label="Weight" /&gt;
 
-    &lt;input class="oc-input oc-decimal-input oc-decimal-input--start" type="text" inputmode="decimal" value="0,75" aria-label="Rate (left aligned)"&gt;
+    &lt;x-oc::decimal-input wire:model.blur="rate" start :error="$errors-&gt;has('rate')" aria-label="Rate (left aligned)" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

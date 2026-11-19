@@ -39,134 +39,117 @@
   <div class="oc-lightbox__bar"><h2 class="oc-lightbox__title">Product page with stock and documents</h2><button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-3" aria-label="Close">✕</button></div>
   <div class="oc-lightbox__track"><figure class="oc-lightbox__slide"><div class="oc-lightbox__media"><img src="/img/blocks/product-detail.jpg" alt="Product page" width="640" height="400"></div></figure></div>
 </dialog>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { Lightbox } from "@birdycom/omniaui-react";
+
+const shots = [
+  { src: "/img/blocks/dashboard-01.jpg", alt: "Dashboard", caption: "Dashboard with the figures of the day" },
+  { src: "/img/blocks/data-table.jpg", alt: "Customer list", caption: "Customer list with filters" },
+  { src: "/img/blocks/product-detail.jpg", alt: "Product page", caption: "Product page with stock and documents" },
+];
+
+export function Example() {
+  const [open, setOpen] = useState&lt;number | null&gt;(null);
   return (
     &lt;&gt;
       &lt;div className="oc-shot-grid" style={{ inlineSize: "100%" }}&gt;
-        &lt;figure className="oc-shot"&gt;
-          &lt;button type="button" command="show-modal" commandfor="oc-shot-view-1" aria-label="Open the screenshot: Dashboard"&gt;&lt;img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" loading="lazy" width="640" height="400" /&gt;&lt;/button&gt;
-          &lt;figcaption&gt;Dashboard with the figures of the day&lt;/figcaption&gt;
-        &lt;/figure&gt;
-        &lt;figure className="oc-shot"&gt;
-          &lt;button type="button" command="show-modal" commandfor="oc-shot-view-2" aria-label="Open the screenshot: Customer list"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list" loading="lazy" width="640" height="400" /&gt;&lt;/button&gt;
-          &lt;figcaption&gt;Customer list with filters&lt;/figcaption&gt;
-        &lt;/figure&gt;
-        &lt;figure className="oc-shot"&gt;
-          &lt;button type="button" command="show-modal" commandfor="oc-shot-view-3" aria-label="Open the screenshot: Product page"&gt;&lt;img src="/img/blocks/product-detail.jpg" alt="Product page" loading="lazy" width="640" height="400" /&gt;&lt;/button&gt;
-          &lt;figcaption&gt;Product page with stock and documents&lt;/figcaption&gt;
-        &lt;/figure&gt;
+        {shots.map((s, i) =&gt; (
+          &lt;figure key={s.src} className="oc-shot"&gt;
+            &lt;button type="button" aria-label={`Open the screenshot: ${s.alt}`} onClick={() =&gt; setOpen(i)}&gt;
+              &lt;img src={s.src} alt={s.alt} loading="lazy" width={640} height={400} /&gt;
+            &lt;/button&gt;
+            &lt;figcaption&gt;{s.caption}&lt;/figcaption&gt;
+          &lt;/figure&gt;
+        ))}
       &lt;/div&gt;
-      &lt;dialog className="oc-lightbox" id="oc-shot-view-1" closedby="any" aria-label="Dashboard"&gt;
-        &lt;div className="oc-lightbox__bar"&gt;&lt;h2 className="oc-lightbox__title"&gt;Dashboard with the figures of the day&lt;/h2&gt;&lt;button type="button" className="oc-lightbox__close" command="close" commandfor="oc-shot-view-1" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-        &lt;div className="oc-lightbox__track"&gt;&lt;figure className="oc-lightbox__slide"&gt;&lt;div className="oc-lightbox__media"&gt;&lt;img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" width="640" height="400" /&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-      &lt;/dialog&gt;
-      &lt;dialog className="oc-lightbox" id="oc-shot-view-2" closedby="any" aria-label="Customer list"&gt;
-        &lt;div className="oc-lightbox__bar"&gt;&lt;h2 className="oc-lightbox__title"&gt;Customer list with filters&lt;/h2&gt;&lt;button type="button" className="oc-lightbox__close" command="close" commandfor="oc-shot-view-2" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-        &lt;div className="oc-lightbox__track"&gt;&lt;figure className="oc-lightbox__slide"&gt;&lt;div className="oc-lightbox__media"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list" width="640" height="400" /&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-      &lt;/dialog&gt;
-      &lt;dialog className="oc-lightbox" id="oc-shot-view-3" closedby="any" aria-label="Product page"&gt;
-        &lt;div className="oc-lightbox__bar"&gt;&lt;h2 className="oc-lightbox__title"&gt;Product page with stock and documents&lt;/h2&gt;&lt;button type="button" className="oc-lightbox__close" command="close" commandfor="oc-shot-view-3" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-        &lt;div className="oc-lightbox__track"&gt;&lt;figure className="oc-lightbox__slide"&gt;&lt;div className="oc-lightbox__media"&gt;&lt;img src="/img/blocks/product-detail.jpg" alt="Product page" width="640" height="400" /&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-      &lt;/dialog&gt;
+      {shots.map((s, i) =&gt; (
+        &lt;Lightbox key={s.src} images={[s]} title={s.caption} aria-label={s.alt} thumbnails={false} open={open === i} onOpenChange={(o) =&gt; setOpen(o ? i : null)} /&gt;
+      ))}
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcLightbox } from '@birdycom/omniaui-vue'
+
+const shots = [
+  { src: '/img/blocks/dashboard-01.jpg', alt: 'Dashboard', caption: 'Dashboard with the figures of the day' },
+  { src: '/img/blocks/data-table.jpg', alt: 'Customer list', caption: 'Customer list with filters' },
+  { src: '/img/blocks/product-detail.jpg', alt: 'Product page', caption: 'Product page with stock and documents' },
+]
+const open = ref&lt;number | null&gt;(null)
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-shot-grid" style="inline-size:100%"&gt;
-    &lt;figure class="oc-shot"&gt;
-      &lt;button type="button" command="show-modal" commandfor="oc-shot-view-1" aria-label="Open the screenshot: Dashboard"&gt;&lt;img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" loading="lazy" width="640" height="400" /&gt;&lt;/button&gt;
-      &lt;figcaption&gt;Dashboard with the figures of the day&lt;/figcaption&gt;
-    &lt;/figure&gt;
-    &lt;figure class="oc-shot"&gt;
-      &lt;button type="button" command="show-modal" commandfor="oc-shot-view-2" aria-label="Open the screenshot: Customer list"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list" loading="lazy" width="640" height="400" /&gt;&lt;/button&gt;
-      &lt;figcaption&gt;Customer list with filters&lt;/figcaption&gt;
-    &lt;/figure&gt;
-    &lt;figure class="oc-shot"&gt;
-      &lt;button type="button" command="show-modal" commandfor="oc-shot-view-3" aria-label="Open the screenshot: Product page"&gt;&lt;img src="/img/blocks/product-detail.jpg" alt="Product page" loading="lazy" width="640" height="400" /&gt;&lt;/button&gt;
-      &lt;figcaption&gt;Product page with stock and documents&lt;/figcaption&gt;
+    &lt;figure v-for="(s, i) in shots" :key="s.src" class="oc-shot"&gt;
+      &lt;button type="button" :aria-label="`Open the screenshot: ${s.alt}`" @click="open = i"&gt;&lt;img :src="s.src" :alt="s.alt" loading="lazy" width="640" height="400" /&gt;&lt;/button&gt;
+      &lt;figcaption&gt;{{ s.caption }}&lt;/figcaption&gt;
     &lt;/figure&gt;
   &lt;/div&gt;
-  &lt;dialog class="oc-lightbox" id="oc-shot-view-1" closedby="any" aria-label="Dashboard"&gt;
-    &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Dashboard with the figures of the day&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-1" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-    &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" width="640" height="400" /&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-  &lt;/dialog&gt;
-  &lt;dialog class="oc-lightbox" id="oc-shot-view-2" closedby="any" aria-label="Customer list"&gt;
-    &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Customer list with filters&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-2" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-    &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list" width="640" height="400" /&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-  &lt;/dialog&gt;
-  &lt;dialog class="oc-lightbox" id="oc-shot-view-3" closedby="any" aria-label="Product page"&gt;
-    &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Product page with stock and documents&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-3" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-    &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/product-detail.jpg" alt="Product page" width="640" height="400" /&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-  &lt;/dialog&gt;
+  &lt;OcLightbox
+    v-for="(s, i) in shots"
+    :key="s.src"
+    :images="[s]"
+    :title="s.caption"
+    :label="s.alt"
+    :thumbnails="false"
+    :open="open === i"
+    @update:open="(o: boolean) =&gt; (open = o ? i : null)"
+  /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-shot-grid" style="inline-size:100%"&gt;
-  &lt;figure class="oc-shot"&gt;
-    &lt;button type="button" command="show-modal" commandfor="oc-shot-view-1" aria-label="Open the screenshot: Dashboard"&gt;&lt;img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" loading="lazy" width="640" height="400"&gt;&lt;/button&gt;
-    &lt;figcaption&gt;Dashboard with the figures of the day&lt;/figcaption&gt;
-  &lt;/figure&gt;
-  &lt;figure class="oc-shot"&gt;
-    &lt;button type="button" command="show-modal" commandfor="oc-shot-view-2" aria-label="Open the screenshot: Customer list"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list" loading="lazy" width="640" height="400"&gt;&lt;/button&gt;
-    &lt;figcaption&gt;Customer list with filters&lt;/figcaption&gt;
-  &lt;/figure&gt;
-  &lt;figure class="oc-shot"&gt;
-    &lt;button type="button" command="show-modal" commandfor="oc-shot-view-3" aria-label="Open the screenshot: Product page"&gt;&lt;img src="/img/blocks/product-detail.jpg" alt="Product page" loading="lazy" width="640" height="400"&gt;&lt;/button&gt;
-    &lt;figcaption&gt;Product page with stock and documents&lt;/figcaption&gt;
-  &lt;/figure&gt;
+<oc-code lang="blade">@php
+    $shots = [
+        ['src' =&gt; '/img/blocks/dashboard-01.jpg', 'alt' =&gt; 'Dashboard', 'caption' =&gt; 'Dashboard with the figures of the day'],
+        ['src' =&gt; '/img/blocks/data-table.jpg', 'alt' =&gt; 'Customer list', 'caption' =&gt; 'Customer list with filters'],
+        ['src' =&gt; '/img/blocks/product-detail.jpg', 'alt' =&gt; 'Product page', 'caption' =&gt; 'Product page with stock and documents'],
+    ];
+@endphp
+
+&lt;div class="oc-shot-grid" style="inline-size:100%"&gt;
+    @foreach ($shots as $i =&gt; $shot)
+        &lt;figure class="oc-shot"&gt;
+            &lt;button type="button" command="show-modal" commandfor="oc-shot-view-{{ $i }}" aria-label="Open the screenshot: {{ $shot['alt'] }}"&gt;&lt;img src="{{ $shot['src'] }}" alt="{{ $shot['alt'] }}" loading="lazy" width="640" height="400"&gt;&lt;/button&gt;
+            &lt;figcaption&gt;{{ $shot['caption'] }}&lt;/figcaption&gt;
+        &lt;/figure&gt;
+    @endforeach
 &lt;/div&gt;
-&lt;dialog class="oc-lightbox" id="oc-shot-view-1" closedby="any" aria-label="Dashboard"&gt;
-  &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Dashboard with the figures of the day&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-1" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-  &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" width="640" height="400"&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-&lt;/dialog&gt;
-&lt;dialog class="oc-lightbox" id="oc-shot-view-2" closedby="any" aria-label="Customer list"&gt;
-  &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Customer list with filters&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-2" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-  &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list" width="640" height="400"&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-&lt;/dialog&gt;
-&lt;dialog class="oc-lightbox" id="oc-shot-view-3" closedby="any" aria-label="Product page"&gt;
-  &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Product page with stock and documents&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-3" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-  &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/product-detail.jpg" alt="Product page" width="640" height="400"&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-&lt;/dialog&gt;</oc-code>
+@foreach ($shots as $i =&gt; $shot)
+    &lt;x-oc::lightbox id="oc-shot-view-{{ $i }}" :images="[$shot]" :title="$shot['caption']" :label="$shot['alt']" :thumbnails="false" /&gt;
+@endforeach</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class ShotGridScreenshotGridScreenshots extends Component
+class Screenshots extends Component
 {
+    public array $shots = [
+        ['src' =&gt; '/img/blocks/dashboard-01.jpg', 'alt' =&gt; 'Dashboard', 'caption' =&gt; 'Dashboard with the figures of the day'],
+        ['src' =&gt; '/img/blocks/data-table.jpg', 'alt' =&gt; 'Customer list', 'caption' =&gt; 'Customer list with filters'],
+        ['src' =&gt; '/img/blocks/product-detail.jpg', 'alt' =&gt; 'Product page', 'caption' =&gt; 'Product page with stock and documents'],
+    ];
+
     public function render()
     {
-        return view('livewire.shot-grid-screenshot-grid-screenshots');
+        return view('livewire.screenshots');
     }
 }
 
-{{-- resources/views/livewire/shot-grid-screenshot-grid-screenshots.blade.php --}}
+{{-- resources/views/livewire/screenshots.blade.php --}}
 &lt;div&gt;
     &lt;div class="oc-shot-grid" style="inline-size:100%"&gt;
-      &lt;figure class="oc-shot"&gt;
-        &lt;button type="button" command="show-modal" commandfor="oc-shot-view-1" aria-label="Open the screenshot: Dashboard"&gt;&lt;img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" loading="lazy" width="640" height="400"&gt;&lt;/button&gt;
-        &lt;figcaption&gt;Dashboard with the figures of the day&lt;/figcaption&gt;
-      &lt;/figure&gt;
-      &lt;figure class="oc-shot"&gt;
-        &lt;button type="button" command="show-modal" commandfor="oc-shot-view-2" aria-label="Open the screenshot: Customer list"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list" loading="lazy" width="640" height="400"&gt;&lt;/button&gt;
-        &lt;figcaption&gt;Customer list with filters&lt;/figcaption&gt;
-      &lt;/figure&gt;
-      &lt;figure class="oc-shot"&gt;
-        &lt;button type="button" command="show-modal" commandfor="oc-shot-view-3" aria-label="Open the screenshot: Product page"&gt;&lt;img src="/img/blocks/product-detail.jpg" alt="Product page" loading="lazy" width="640" height="400"&gt;&lt;/button&gt;
-        &lt;figcaption&gt;Product page with stock and documents&lt;/figcaption&gt;
-      &lt;/figure&gt;
+        @foreach ($shots as $i =&gt; $shot)
+            &lt;figure class="oc-shot"&gt;
+                &lt;button type="button" command="show-modal" commandfor="oc-shot-view-{{ $i }}" aria-label="Open the screenshot: {{ $shot['alt'] }}"&gt;&lt;img src="{{ $shot['src'] }}" alt="{{ $shot['alt'] }}" loading="lazy" width="640" height="400"&gt;&lt;/button&gt;
+                &lt;figcaption&gt;{{ $shot['caption'] }}&lt;/figcaption&gt;
+            &lt;/figure&gt;
+        @endforeach
     &lt;/div&gt;
-    &lt;dialog class="oc-lightbox" id="oc-shot-view-1" closedby="any" aria-label="Dashboard"&gt;
-      &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Dashboard with the figures of the day&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-1" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-      &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/dashboard-01.jpg" alt="Dashboard" width="640" height="400"&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-    &lt;/dialog&gt;
-    &lt;dialog class="oc-lightbox" id="oc-shot-view-2" closedby="any" aria-label="Customer list"&gt;
-      &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Customer list with filters&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-2" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-      &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list" width="640" height="400"&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-    &lt;/dialog&gt;
-    &lt;dialog class="oc-lightbox" id="oc-shot-view-3" closedby="any" aria-label="Product page"&gt;
-      &lt;div class="oc-lightbox__bar"&gt;&lt;h2 class="oc-lightbox__title"&gt;Product page with stock and documents&lt;/h2&gt;&lt;button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-3" aria-label="Close"&gt;✕&lt;/button&gt;&lt;/div&gt;
-      &lt;div class="oc-lightbox__track"&gt;&lt;figure class="oc-lightbox__slide"&gt;&lt;div class="oc-lightbox__media"&gt;&lt;img src="/img/blocks/product-detail.jpg" alt="Product page" width="640" height="400"&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;
-    &lt;/dialog&gt;
+    @foreach ($shots as $i =&gt; $shot)
+        &lt;x-oc::lightbox id="oc-shot-view-{{ $i }}" :images="[$shot]" :title="$shot['caption']" :label="$shot['alt']" :thumbnails="false" /&gt;
+    @endforeach
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-2">Browser frame with a product mark</h3>
@@ -177,26 +160,32 @@ class ShotGridScreenshotGridScreenshots extends Component
   <img class="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard of Product 1" width="640" height="400">
   <span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"><iconify-icon icon="mdi:chart-box-outline"></iconify-icon></span>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
     &lt;div className="oc-browser-frame oc-accent--green" style={{ inlineSize: "min(100%, 34rem)" }}&gt;
       &lt;div className="oc-browser-frame__bar"&gt;&lt;i /&gt;&lt;i /&gt;&lt;i /&gt;&lt;/div&gt;
       &lt;img className="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard of Product 1" width="640" height="400" /&gt;
-      &lt;span className="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:chart-box-outline" /&gt;&lt;/span&gt;
+      &lt;span className="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"&gt;&lt;Webicon name="mdi:chart-box-outline" /&gt;&lt;/span&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcWebicon } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-browser-frame oc-accent--green" style="inline-size:min(100%, 34rem)"&gt;
     &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
     &lt;img class="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard of Product 1" width="640" height="400" /&gt;
-    &lt;span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:chart-box-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+    &lt;span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"&gt;&lt;OcWebicon name="mdi:chart-box-outline" /&gt;&lt;/span&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-browser-frame oc-accent--green" style="inline-size:min(100%, 34rem)"&gt;
   &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
   &lt;img class="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard of Product 1" width="640" height="400"&gt;
-  &lt;span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:chart-box-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+  &lt;span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:chart-box-outline" /&gt;&lt;/span&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -216,7 +205,7 @@ class ShotGridScreenshotGridBrowserFrameWithA extends Component
 &lt;div class="oc-browser-frame oc-accent--green" style="inline-size:min(100%, 34rem)"&gt;
   &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
   &lt;img class="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard of Product 1" width="640" height="400"&gt;
-  &lt;span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:chart-box-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+  &lt;span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:chart-box-outline" /&gt;&lt;/span&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

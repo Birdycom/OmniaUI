@@ -22,42 +22,44 @@
   <div class="oc-tab-panel">Change your password here.</div>
   <div class="oc-tab-panel">Choose which e-mails you receive.</div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Tabs } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-tabset"&gt;
-      &lt;div className="oc-tab-list" role="tablist"&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line" defaultChecked /&gt; Account&lt;/label&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line" /&gt; Password&lt;/label&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line" /&gt; Notifications&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;Make changes to your account here.&lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;Change your password here.&lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;Choose which e-mails you receive.&lt;/div&gt;
-    &lt;/div&gt;
+    &lt;Tabs
+      name="oc-tabs-line"
+      tabs={[
+        { value: "account", label: "Account", content: "Make changes to your account here." },
+        { value: "password", label: "Password", content: "Change your password here." },
+        { value: "notifications", label: "Notifications", content: "Choose which e-mails you receive." },
+      ]}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-tabset"&gt;
-    &lt;div class="oc-tab-list" role="tablist"&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line" checked /&gt; Account&lt;/label&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line" /&gt; Password&lt;/label&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line" /&gt; Notifications&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;Make changes to your account here.&lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;Change your password here.&lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;Choose which e-mails you receive.&lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTabs } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const tab = ref("account");
+const tabs = [
+  { value: "account", label: "Account" },
+  { value: "password", label: "Password" },
+  { value: "notifications", label: "Notifications" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTabs v-model="tab" name="oc-tabs-line" :tabs="tabs"&gt;
+    &lt;template #account&gt;Make changes to your account here.&lt;/template&gt;
+    &lt;template #password&gt;Change your password here.&lt;/template&gt;
+    &lt;template #notifications&gt;Choose which e-mails you receive.&lt;/template&gt;
+  &lt;/OcTabs&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-tabset"&gt;
-  &lt;div class="oc-tab-list" role="tablist"&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line" checked&gt; Account&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line"&gt; Password&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line"&gt; Notifications&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Make changes to your account here.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Change your password here.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Choose which e-mails you receive.&lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tabs name="oc-tabs-line" :tabs="['Account', 'Password', 'Notifications']"&gt;
+    &lt;x-oc::tabs.panel&gt;Make changes to your account here.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Change your password here.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Choose which e-mails you receive.&lt;/x-oc::tabs.panel&gt;
+&lt;/x-oc::tabs&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -73,15 +75,12 @@ class Tabs extends Component
 }
 
 {{-- resources/views/livewire/tabs.blade.php --}}
-&lt;div class="oc-tabset"&gt;
-  &lt;div class="oc-tab-list" role="tablist"&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line" checked&gt; Account&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line"&gt; Password&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-line"&gt; Notifications&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Make changes to your account here.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Change your password here.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Choose which e-mails you receive.&lt;/div&gt;
+&lt;div&gt;
+    &lt;x-oc::tabs name="oc-tabs-line" :tabs="['Account', 'Password', 'Notifications']"&gt;
+        &lt;x-oc::tabs.panel&gt;Make changes to your account here.&lt;/x-oc::tabs.panel&gt;
+        &lt;x-oc::tabs.panel&gt;Change your password here.&lt;/x-oc::tabs.panel&gt;
+        &lt;x-oc::tabs.panel&gt;Choose which e-mails you receive.&lt;/x-oc::tabs.panel&gt;
+    &lt;/x-oc::tabs&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -124,16 +123,11 @@ class Tabs extends Component
     &lt;div class="oc-tab-panel"&gt;Reports: the monthly report is ready to download.&lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-tabset"&gt;
-  &lt;div class="oc-tab-list oc-tab-list--pill" role="tablist"&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill" checked&gt; Overview&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill"&gt; Analytics&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill"&gt; Reports&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Overview: sales are up 12% this month.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Analytics: 3,240 visits, 4.1% conversion.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Reports: the monthly report is ready to download.&lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tabs name="oc-tabs-pill" variant="pill" :tabs="['Overview', 'Analytics', 'Reports']"&gt;
+    &lt;x-oc::tabs.panel&gt;Overview: sales are up 12% this month.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Analytics: 3,240 visits, 4.1% conversion.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Reports: the monthly report is ready to download.&lt;/x-oc::tabs.panel&gt;
+&lt;/x-oc::tabs&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -149,15 +143,12 @@ class TabsPill extends Component
 }
 
 {{-- resources/views/livewire/tabs-pill.blade.php --}}
-&lt;div class="oc-tabset"&gt;
-  &lt;div class="oc-tab-list oc-tab-list--pill" role="tablist"&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill" checked&gt; Overview&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill"&gt; Analytics&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill"&gt; Reports&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Overview: sales are up 12% this month.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Analytics: 3,240 visits, 4.1% conversion.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Reports: the monthly report is ready to download.&lt;/div&gt;
+&lt;div&gt;
+    &lt;x-oc::tabs name="oc-tabs-pill" variant="pill" :tabs="['Overview', 'Analytics', 'Reports']"&gt;
+        &lt;x-oc::tabs.panel&gt;Overview: sales are up 12% this month.&lt;/x-oc::tabs.panel&gt;
+        &lt;x-oc::tabs.panel&gt;Analytics: 3,240 visits, 4.1% conversion.&lt;/x-oc::tabs.panel&gt;
+        &lt;x-oc::tabs.panel&gt;Reports: the monthly report is ready to download.&lt;/x-oc::tabs.panel&gt;
+    &lt;/x-oc::tabs&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -200,16 +191,11 @@ class TabsPill extends Component
     &lt;div class="oc-tab-panel"&gt;Members: invite people and set their role.&lt;/div&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-tabset"&gt;
-  &lt;div class="oc-tab-list oc-tab-list--vertical" role="tablist"&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical" checked&gt; General&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical"&gt; Billing&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical"&gt; Members&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;General: company name, language and time zone.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Billing: plan, invoices and payment method.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Members: invite people and set their role.&lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tabs name="oc-tabs-vertical" variant="vertical" :tabs="['General', 'Billing', 'Members']"&gt;
+    &lt;x-oc::tabs.panel&gt;General: company name, language and time zone.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Billing: plan, invoices and payment method.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Members: invite people and set their role.&lt;/x-oc::tabs.panel&gt;
+&lt;/x-oc::tabs&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -225,15 +211,12 @@ class TabsVertical extends Component
 }
 
 {{-- resources/views/livewire/tabs-vertical.blade.php --}}
-&lt;div class="oc-tabset"&gt;
-  &lt;div class="oc-tab-list oc-tab-list--vertical" role="tablist"&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical" checked&gt; General&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical"&gt; Billing&lt;/label&gt;
-    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical"&gt; Members&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;General: company name, language and time zone.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Billing: plan, invoices and payment method.&lt;/div&gt;
-  &lt;div class="oc-tab-panel"&gt;Members: invite people and set their role.&lt;/div&gt;
+&lt;div&gt;
+    &lt;x-oc::tabs name="oc-tabs-vertical" variant="vertical" :tabs="['General', 'Billing', 'Members']"&gt;
+        &lt;x-oc::tabs.panel&gt;General: company name, language and time zone.&lt;/x-oc::tabs.panel&gt;
+        &lt;x-oc::tabs.panel&gt;Billing: plan, invoices and payment method.&lt;/x-oc::tabs.panel&gt;
+        &lt;x-oc::tabs.panel&gt;Members: invite people and set their role.&lt;/x-oc::tabs.panel&gt;
+    &lt;/x-oc::tabs&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="class-toggle" class="oc-section-content__title mt-2">Class-toggle tabs (for existing scripts)</h3><p class="oc-section-content__desc">When a script already manages the state, use buttons with <code>role="tab"</code> and set <code>aria-selected="true"</code> (or <code>.is-active</code>) on the active tab and <code>.is-active</code> on its panel. The small script below does exactly that; the same classes work with <code>.oc-tab-list--pill</code>.</p>

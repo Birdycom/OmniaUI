@@ -38,53 +38,53 @@
     &lt;a class="oc-carousel-dot" href="#oc-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
   &lt;/nav&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;div className="oc-carousel" style={{ inlineSize: "min(100%, 34rem)" }}&gt;
-      &lt;div className="oc-carousel-viewport" tabIndex={0} role="region" aria-roledescription="carousel" aria-label="Highlights"&gt;
-        &lt;div className="oc-carousel-item" id="oc-slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4"&gt;&lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;Slide 1&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-        &lt;div className="oc-carousel-item" id="oc-slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4"&gt;&lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;Slide 2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-        &lt;div className="oc-carousel-item" id="oc-slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4"&gt;&lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;Slide 3&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-        &lt;div className="oc-carousel-item" id="oc-slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4"&gt;&lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;Slide 4&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+<oc-code lang="tsx">// No carousel wrapper: CSS scroll snap does the work, the markup is plain JSX
+const slides = ["Slide 1", "Slide 2", "Slide 3", "Slide 4"];
+
+&lt;div className="oc-carousel" style={{ inlineSize: "min(100%, 34rem)" }}&gt;
+  &lt;div className="oc-carousel-viewport" tabIndex={0} role="region" aria-roledescription="carousel" aria-label="Highlights"&gt;
+    {slides.map((title, i) =&gt; (
+      &lt;div key={title} className="oc-carousel-item" id={"slide-" + (i + 1)} role="group" aria-roledescription="slide" aria-label={i + 1 + " of " + slides.length}&gt;
+        &lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;{title}&lt;/span&gt;&lt;/div&gt;
       &lt;/div&gt;
-      &lt;nav className="oc-carousel-dots" aria-label="Choose a slide"&gt;
-        &lt;a className="oc-carousel-dot" href="#oc-slide-1" aria-label="Slide 1" /&gt;{" "}
-        &lt;a className="oc-carousel-dot" href="#oc-slide-2" aria-label="Slide 2" /&gt;{" "}
-        &lt;a className="oc-carousel-dot" href="#oc-slide-3" aria-label="Slide 3" /&gt;{" "}
-        &lt;a className="oc-carousel-dot" href="#oc-slide-4" aria-label="Slide 4" /&gt;
-      &lt;/nav&gt;
-    &lt;/div&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+    ))}
+  &lt;/div&gt;
+  &lt;nav className="oc-carousel-dots" aria-label="Choose a slide"&gt;
+    {slides.map((title, i) =&gt; &lt;a key={title} className="oc-carousel-dot" href={"#slide-" + (i + 1)} aria-label={title} /&gt;)}
+  &lt;/nav&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAspectRatio } from '@birdycom/omniaui-vue'
+
+const slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4']
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-carousel" style="inline-size:min(100%, 34rem)"&gt;
     &lt;div class="oc-carousel-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Highlights"&gt;
-      &lt;div class="oc-carousel-item" id="oc-slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 1&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div class="oc-carousel-item" id="oc-slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div class="oc-carousel-item" id="oc-slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 3&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div class="oc-carousel-item" id="oc-slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 4&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div v-for="(title, i) in slides" :key="title" class="oc-carousel-item" :id="'slide-' + (i + 1)" role="group" aria-roledescription="slide" :aria-label="(i + 1) + ' of ' + slides.length"&gt;
+        &lt;OcAspectRatio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ title }}&lt;/span&gt;&lt;/OcAspectRatio&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
     &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
-      &lt;a class="oc-carousel-dot" href="#oc-slide-1" aria-label="Slide 1"&gt;&lt;/a&gt;
-      &lt;a class="oc-carousel-dot" href="#oc-slide-2" aria-label="Slide 2"&gt;&lt;/a&gt;
-      &lt;a class="oc-carousel-dot" href="#oc-slide-3" aria-label="Slide 3"&gt;&lt;/a&gt;
-      &lt;a class="oc-carousel-dot" href="#oc-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
+      &lt;a v-for="(title, i) in slides" :key="title" class="oc-carousel-dot" :href="'#slide-' + (i + 1)" :aria-label="title"&gt;&lt;/a&gt;
     &lt;/nav&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-carousel" style="inline-size:min(100%, 34rem)"&gt;
-  &lt;div class="oc-carousel-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Highlights"&gt;
-    &lt;div class="oc-carousel-item" id="oc-slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 1&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 3&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 4&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-slide-1" aria-label="Slide 1"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-slide-2" aria-label="Slide 2"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-slide-3" aria-label="Slide 3"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
-  &lt;/nav&gt;
+<oc-code lang="blade">@php($slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4'])
+&lt;div class="oc-carousel" style="inline-size:min(100%, 34rem)"&gt;
+    &lt;div class="oc-carousel-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Highlights"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;div class="oc-carousel-item" id="slide-{{ $i + 1 }}" role="group" aria-roledescription="slide" aria-label="{{ $i + 1 }} of {{ count($slides) }}"&gt;
+                &lt;x-oc::aspect-ratio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ $title }}&lt;/span&gt;&lt;/x-oc::aspect-ratio&gt;
+            &lt;/div&gt;
+        @endforeach
+    &lt;/div&gt;
+    &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;a class="oc-carousel-dot" href="#slide-{{ $i + 1 }}" aria-label="{{ $title }}"&gt;&lt;/a&gt;
+        @endforeach
+    &lt;/nav&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -92,28 +92,31 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class Carousel extends Component
+class Highlights extends Component
 {
+    /** @var list&lt;string&gt; */
+    public array $slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4'];
+
     public function render()
     {
-        return view('livewire.carousel');
+        return view('livewire.highlights');
     }
 }
 
-{{-- resources/views/livewire/carousel.blade.php --}}
+{{-- resources/views/livewire/highlights.blade.php --}}
 &lt;div class="oc-carousel" style="inline-size:min(100%, 34rem)"&gt;
-  &lt;div class="oc-carousel-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Highlights"&gt;
-    &lt;div class="oc-carousel-item" id="oc-slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 1&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 3&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 4&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-slide-1" aria-label="Slide 1"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-slide-2" aria-label="Slide 2"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-slide-3" aria-label="Slide 3"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
-  &lt;/nav&gt;
+    &lt;div class="oc-carousel-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Highlights"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;div class="oc-carousel-item" id="slide-{{ $i + 1 }}" wire:key="slide-{{ $i }}" role="group" aria-roledescription="slide" aria-label="{{ $i + 1 }} of {{ count($slides) }}"&gt;
+                &lt;x-oc::aspect-ratio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ $title }}&lt;/span&gt;&lt;/x-oc::aspect-ratio&gt;
+            &lt;/div&gt;
+        @endforeach
+    &lt;/div&gt;
+    &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;a class="oc-carousel-dot" href="#slide-{{ $i + 1 }}" aria-label="{{ $title }}"&gt;&lt;/a&gt;
+        @endforeach
+    &lt;/nav&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -155,68 +158,70 @@ class Carousel extends Component
     &lt;a class="oc-carousel-dot" href="#oc-loop-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
   &lt;/nav&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;&gt;
-      {/* Once per page: the loop buttons need the carousel script (npx omniaui copy-js carousel) */}
+<oc-code lang="tsx">import { useEffect } from "react";
+import { initCarousels } from "@birdycom/omniaui/carousel.js";
 
-      &lt;div className="oc-carousel oc-carousel--loop" style={{ inlineSize: "min(100%, 34rem)" }}&gt;
-        &lt;div className="oc-carousel-viewport" id="oc-loop-carousel" tabIndex={0} role="region" aria-roledescription="carousel" aria-label="Looping highlights"&gt;
-          &lt;div className="oc-carousel-item" id="oc-loop-slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4"&gt;&lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;Slide 1&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-          &lt;div className="oc-carousel-item" id="oc-loop-slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4"&gt;&lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;Slide 2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-          &lt;div className="oc-carousel-item" id="oc-loop-slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4"&gt;&lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;Slide 3&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-          &lt;div className="oc-carousel-item" id="oc-loop-slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4"&gt;&lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;Slide 4 (next: back to 1)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;button className="oc-carousel-prev" type="button" aria-controls="oc-loop-carousel" aria-label="Previous slide"&gt;←&lt;/button&gt;
-        &lt;button className="oc-carousel-next" type="button" aria-controls="oc-loop-carousel" aria-label="Next slide"&gt;→&lt;/button&gt;
-        &lt;nav className="oc-carousel-dots" aria-label="Choose a slide"&gt;
-          &lt;a className="oc-carousel-dot" href="#oc-loop-slide-1" aria-label="Slide 1" /&gt;{" "}
-          &lt;a className="oc-carousel-dot" href="#oc-loop-slide-2" aria-label="Slide 2" /&gt;{" "}
-          &lt;a className="oc-carousel-dot" href="#oc-loop-slide-3" aria-label="Slide 3" /&gt;{" "}
-          &lt;a className="oc-carousel-dot" href="#oc-loop-slide-4" aria-label="Slide 4" /&gt;
-        &lt;/nav&gt;
+// The loop buttons need the carousel script (once per page)
+useEffect(() =&gt; { initCarousels(); }, []);
+const slides = ["Slide 1", "Slide 2", "Slide 3", "Slide 4 (next: back to 1)"];
+
+&lt;div className="oc-carousel oc-carousel--loop" style={{ inlineSize: "min(100%, 34rem)" }}&gt;
+  &lt;div className="oc-carousel-viewport" id="loop-carousel" tabIndex={0} role="region" aria-roledescription="carousel" aria-label="Looping highlights"&gt;
+    {slides.map((title, i) =&gt; (
+      &lt;div key={title} className="oc-carousel-item" id={"loop-slide-" + (i + 1)} role="group" aria-roledescription="slide" aria-label={i + 1 + " of " + slides.length}&gt;
+        &lt;div className="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;{title}&lt;/span&gt;&lt;/div&gt;
       &lt;/div&gt;
-    &lt;/&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;!-- Once per page: the loop buttons need the carousel script (npx omniaui copy-js carousel) --&gt;
+    ))}
+  &lt;/div&gt;
+  &lt;button className="oc-carousel-prev" type="button" aria-controls="loop-carousel" aria-label="Previous slide"&gt;&amp;larr;&lt;/button&gt;
+  &lt;button className="oc-carousel-next" type="button" aria-controls="loop-carousel" aria-label="Next slide"&gt;&amp;rarr;&lt;/button&gt;
+  &lt;nav className="oc-carousel-dots" aria-label="Choose a slide"&gt;
+    {slides.map((title, i) =&gt; &lt;a key={title} className="oc-carousel-dot" href={"#loop-slide-" + (i + 1)} aria-label={"Slide " + (i + 1)} /&gt;)}
+  &lt;/nav&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { onMounted } from 'vue'
+import { initCarousels } from '@birdycom/omniaui/carousel.js'
+import { OcAspectRatio } from '@birdycom/omniaui-vue'
 
+// The loop buttons need the carousel script (once per page)
+onMounted(() =&gt; initCarousels())
+const slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4 (next: back to 1)']
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-carousel oc-carousel--loop" style="inline-size:min(100%, 34rem)"&gt;
-    &lt;div class="oc-carousel-viewport" id="oc-loop-carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Looping highlights"&gt;
-      &lt;div class="oc-carousel-item" id="oc-loop-slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 1&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div class="oc-carousel-item" id="oc-loop-slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div class="oc-carousel-item" id="oc-loop-slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 3&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;div class="oc-carousel-item" id="oc-loop-slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 4 (next: back to 1)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class="oc-carousel-viewport" id="loop-carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Looping highlights"&gt;
+      &lt;div v-for="(title, i) in slides" :key="title" class="oc-carousel-item" :id="'loop-slide-' + (i + 1)" role="group" aria-roledescription="slide" :aria-label="(i + 1) + ' of ' + slides.length"&gt;
+        &lt;OcAspectRatio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ title }}&lt;/span&gt;&lt;/OcAspectRatio&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
-    &lt;button class="oc-carousel-prev" type="button" aria-controls="oc-loop-carousel" aria-label="Previous slide"&gt;←&lt;/button&gt;
-    &lt;button class="oc-carousel-next" type="button" aria-controls="oc-loop-carousel" aria-label="Next slide"&gt;→&lt;/button&gt;
+    &lt;button class="oc-carousel-prev" type="button" aria-controls="loop-carousel" aria-label="Previous slide"&gt;&amp;larr;&lt;/button&gt;
+    &lt;button class="oc-carousel-next" type="button" aria-controls="loop-carousel" aria-label="Next slide"&gt;&amp;rarr;&lt;/button&gt;
     &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
-      &lt;a class="oc-carousel-dot" href="#oc-loop-slide-1" aria-label="Slide 1"&gt;&lt;/a&gt;
-      &lt;a class="oc-carousel-dot" href="#oc-loop-slide-2" aria-label="Slide 2"&gt;&lt;/a&gt;
-      &lt;a class="oc-carousel-dot" href="#oc-loop-slide-3" aria-label="Slide 3"&gt;&lt;/a&gt;
-      &lt;a class="oc-carousel-dot" href="#oc-loop-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
+      &lt;a v-for="(title, i) in slides" :key="title" class="oc-carousel-dot" :href="'#loop-slide-' + (i + 1)" :aria-label="'Slide ' + (i + 1)"&gt;&lt;/a&gt;
     &lt;/nav&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;!-- Once per page: the loop buttons need the carousel script (npx omniaui copy-js carousel) --&gt;
+<oc-code lang="blade">{{-- Once per page: the loop buttons need the carousel script (npx omniaui copy-js carousel) --}}
 &lt;script type="module" src="/js/oc-carousel.js"&gt;&lt;/script&gt;
 
+@php($slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4 (next: back to 1)'])
 &lt;div class="oc-carousel oc-carousel--loop" style="inline-size:min(100%, 34rem)"&gt;
-  &lt;div class="oc-carousel-viewport" id="oc-loop-carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Looping highlights"&gt;
-    &lt;div class="oc-carousel-item" id="oc-loop-slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 1&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-loop-slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-loop-slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 3&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="oc-carousel-item" id="oc-loop-slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 4 (next: back to 1)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;button class="oc-carousel-prev" type="button" aria-controls="oc-loop-carousel" aria-label="Previous slide"&gt;&amp;larr;&lt;/button&gt;
-  &lt;button class="oc-carousel-next" type="button" aria-controls="oc-loop-carousel" aria-label="Next slide"&gt;&amp;rarr;&lt;/button&gt;
-  &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-loop-slide-1" aria-label="Slide 1"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-loop-slide-2" aria-label="Slide 2"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-loop-slide-3" aria-label="Slide 3"&gt;&lt;/a&gt;
-    &lt;a class="oc-carousel-dot" href="#oc-loop-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
-  &lt;/nav&gt;
+    &lt;div class="oc-carousel-viewport" id="loop-carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Looping highlights"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;div class="oc-carousel-item" id="loop-slide-{{ $i + 1 }}" role="group" aria-roledescription="slide" aria-label="{{ $i + 1 }} of {{ count($slides) }}"&gt;
+                &lt;x-oc::aspect-ratio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ $title }}&lt;/span&gt;&lt;/x-oc::aspect-ratio&gt;
+            &lt;/div&gt;
+        @endforeach
+    &lt;/div&gt;
+    &lt;button class="oc-carousel-prev" type="button" aria-controls="loop-carousel" aria-label="Previous slide"&gt;&amp;larr;&lt;/button&gt;
+    &lt;button class="oc-carousel-next" type="button" aria-controls="loop-carousel" aria-label="Next slide"&gt;&amp;rarr;&lt;/button&gt;
+    &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;a class="oc-carousel-dot" href="#loop-slide-{{ $i + 1 }}" aria-label="Slide {{ $i + 1 }}"&gt;&lt;/a&gt;
+        @endforeach
+    &lt;/nav&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -224,35 +229,34 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class CarouselLoop extends Component
+class LoopHighlights extends Component
 {
+    /** @var list&lt;string&gt; */
+    public array $slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4 (next: back to 1)'];
+
     public function render()
     {
-        return view('livewire.carousel-loop');
+        return view('livewire.loop-highlights');
     }
 }
 
-{{-- resources/views/livewire/carousel-loop.blade.php --}}
-&lt;div&gt;
-    &lt;!-- Once per page: the loop buttons need the carousel script (npx omniaui copy-js carousel) --&gt;
-    &lt;script type="module" src="/js/oc-carousel.js"&gt;&lt;/script&gt;
-
-    &lt;div class="oc-carousel oc-carousel--loop" style="inline-size:min(100%, 34rem)"&gt;
-      &lt;div class="oc-carousel-viewport" id="oc-loop-carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Looping highlights"&gt;
-        &lt;div class="oc-carousel-item" id="oc-loop-slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 1&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-        &lt;div class="oc-carousel-item" id="oc-loop-slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-        &lt;div class="oc-carousel-item" id="oc-loop-slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 3&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-        &lt;div class="oc-carousel-item" id="oc-loop-slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4"&gt;&lt;div class="oc-aspect oc-aspect--wide oc-aspect--center"&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;Slide 4 (next: back to 1)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;button class="oc-carousel-prev" type="button" aria-controls="oc-loop-carousel" aria-label="Previous slide"&gt;&amp;larr;&lt;/button&gt;
-      &lt;button class="oc-carousel-next" type="button" aria-controls="oc-loop-carousel" aria-label="Next slide"&gt;&amp;rarr;&lt;/button&gt;
-      &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
-        &lt;a class="oc-carousel-dot" href="#oc-loop-slide-1" aria-label="Slide 1"&gt;&lt;/a&gt;
-        &lt;a class="oc-carousel-dot" href="#oc-loop-slide-2" aria-label="Slide 2"&gt;&lt;/a&gt;
-        &lt;a class="oc-carousel-dot" href="#oc-loop-slide-3" aria-label="Slide 3"&gt;&lt;/a&gt;
-        &lt;a class="oc-carousel-dot" href="#oc-loop-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
-      &lt;/nav&gt;
+{{-- resources/views/livewire/loop-highlights.blade.php --}}
+{{-- once in the layout: &lt;script type="module" src="/js/oc-carousel.js"&gt;&lt;/script&gt; (npx omniaui copy-js carousel) --}}
+&lt;div class="oc-carousel oc-carousel--loop" style="inline-size:min(100%, 34rem)"&gt;
+    &lt;div class="oc-carousel-viewport" id="loop-carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Looping highlights"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;div class="oc-carousel-item" id="loop-slide-{{ $i + 1 }}" wire:key="slide-{{ $i }}" role="group" aria-roledescription="slide" aria-label="{{ $i + 1 }} of {{ count($slides) }}"&gt;
+                &lt;x-oc::aspect-ratio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ $title }}&lt;/span&gt;&lt;/x-oc::aspect-ratio&gt;
+            &lt;/div&gt;
+        @endforeach
     &lt;/div&gt;
+    &lt;button class="oc-carousel-prev" type="button" aria-controls="loop-carousel" aria-label="Previous slide"&gt;&amp;larr;&lt;/button&gt;
+    &lt;button class="oc-carousel-next" type="button" aria-controls="loop-carousel" aria-label="Next slide"&gt;&amp;rarr;&lt;/button&gt;
+    &lt;nav class="oc-carousel-dots" aria-label="Choose a slide"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;a class="oc-carousel-dot" href="#loop-slide-{{ $i + 1 }}" aria-label="Slide {{ $i + 1 }}"&gt;&lt;/a&gt;
+        @endforeach
+    &lt;/nav&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 <script type="module" src="/js/oc-carousel.js"></script>

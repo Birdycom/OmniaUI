@@ -56,16 +56,20 @@
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;span class="oc-spinner oc-spinner--sm" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-  &lt;span class="oc-spinner" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-  &lt;span class="oc-spinner oc-spinner--lg oc-spinner--primary" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-  &lt;span class="oc-spinner oc-spinner--xl oc-spinner--muted" role="status" aria-label="Loading"&gt;&lt;/span&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcSpinner } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcSpinner size="sm" label="Loading" /&gt;
+  &lt;OcSpinner label="Loading" /&gt;
+  &lt;OcSpinner size="lg" color="primary" label="Loading" /&gt;
+  &lt;OcSpinner size="xl" color="muted" label="Loading" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;span class="oc-spinner oc-spinner--sm" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-&lt;span class="oc-spinner" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-&lt;span class="oc-spinner oc-spinner--lg oc-spinner--primary" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-&lt;span class="oc-spinner oc-spinner--xl oc-spinner--muted" role="status" aria-label="Loading"&gt;&lt;/span&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::spinner size="sm" /&gt;
+&lt;x-oc::spinner /&gt;
+&lt;x-oc::spinner size="lg" color="primary" /&gt;
+&lt;x-oc::spinner size="xl" color="muted" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -82,30 +86,39 @@ class Spinner extends Component
 
 {{-- resources/views/livewire/spinner.blade.php --}}
 &lt;div&gt;
-    &lt;span class="oc-spinner oc-spinner--sm" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-    &lt;span class="oc-spinner" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-    &lt;span class="oc-spinner oc-spinner--lg oc-spinner--primary" role="status" aria-label="Loading"&gt;&lt;/span&gt;
-    &lt;span class="oc-spinner oc-spinner--xl oc-spinner--muted" role="status" aria-label="Loading"&gt;&lt;/span&gt;
+    &lt;x-oc::spinner size="sm" /&gt;
+    &lt;x-oc::spinner /&gt;
+    &lt;x-oc::spinner size="lg" color="primary" /&gt;
+    &lt;x-oc::spinner size="xl" color="muted" /&gt;
 &lt;/div&gt;</oc-code>
 </oc-demo>
         <h3 id="in-button" class="oc-section-content__title mt-2">In a button</h3><p class="oc-section-content__desc">Mark the button <code>aria-busy="true"</code> and disable it while loading: the button draws the ring itself, in its own text color, and the label stays readable. A leading icon or <code>.oc-spinner</code> in the button is hidden then, so the ring never shows twice.</p>
           <oc-demo title="In a button">
 <button class="oc-btn" type="button" disabled aria-busy="true">Saving…</button>
 <button class="oc-btn oc-btn--outline" type="button" disabled aria-busy="true">Loading</button>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Button } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // loading = disabled + aria-busy, the spinner is drawn by the CSS
   return (
     &lt;&gt;
-      &lt;button className="oc-btn" type="button" disabled aria-busy="true"&gt;Saving…&lt;/button&gt;
-      &lt;button className="oc-btn oc-btn--outline" type="button" disabled aria-busy="true"&gt;Loading&lt;/button&gt;
+      &lt;Button loading&gt;Saving…&lt;/Button&gt;{" "}
+      &lt;Button variant="outline" loading&gt;Loading&lt;/Button&gt;
     &lt;/&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;button class="oc-btn" type="button" disabled aria-busy="true"&gt;Saving…&lt;/button&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button" disabled aria-busy="true"&gt;Loading&lt;/button&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- loading = disabled + aria-busy, the spinner is drawn by the CSS --&gt;
+  &lt;OcButton loading&gt;Saving…&lt;/OcButton&gt;
+  &lt;OcButton variant="outline" loading&gt;Loading&lt;/OcButton&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn" type="button" disabled aria-busy="true"&gt;Saving…&lt;/button&gt;
-&lt;button class="oc-btn oc-btn--outline" type="button" disabled aria-busy="true"&gt;Loading&lt;/button&gt;</oc-code>
+<oc-code lang="blade">{{-- loading = disabled + aria-busy, the spinner is drawn by the CSS --}}
+&lt;x-oc::button loading&gt;Saving…&lt;/x-oc::button&gt;
+&lt;x-oc::button variant="outline" loading&gt;Loading&lt;/x-oc::button&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -122,8 +135,9 @@ class SpinnerInAButton extends Component
 
 {{-- resources/views/livewire/spinner-in-a-button.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn" type="button" disabled aria-busy="true"&gt;Saving…&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button" disabled aria-busy="true"&gt;Loading&lt;/button&gt;
+    {{-- loading = disabled + aria-busy, the spinner is drawn by the CSS --}}
+    &lt;x-oc::button loading&gt;Saving…&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline" loading&gt;Loading&lt;/x-oc::button&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

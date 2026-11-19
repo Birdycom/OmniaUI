@@ -494,37 +494,85 @@
   });
 &lt;/script&gt;</oc-code>
 <oc-code lang="tsx">import { BlockRouteSteps, Button } from "@birdycom/omniaui-react";
+import { useState } from "react";
 
-&lt;BlockRouteSteps
-  title="Steps of Route 1"
-  count="7 steps · 4 count"
-  kinds={[{ value: "step", label: "Steps" }, { value: "photo", label: "Photo tasks" }, { value: "intro finish", label: "Start and finish" }]}
-  steps={[
-    { id: "s1", name: "Welcome", kind: "intro", numbered: false, icon: "mdi:play-circle-outline", meta: ["Intro", "does not count"], status: "Ready", statusTone: "secondary" },
-    { id: "s2", name: "Old gate", kind: "step", meta: ["Question", "20 points"], status: "Ready", statusTone: "success" },
-    { id: "s4", name: "Town hall", kind: "step", meta: ["Text only"], status: "No question", statusTone: "warning" },
-  ]}
-  selected={current}
-  onSelect={setCurrent}
-  onMove={moveTo}
-  onDuplicate={duplicate}
-  onRemove={remove}
-  footer={&lt;Button variant="outline" size="sm"&gt;Add step&lt;/Button&gt;}
-/&gt;</oc-code>
+import type { RouteStep } from "@birdycom/omniaui-react";
+
+const initial: RouteStep[] = [
+  { id: "s1", name: "Welcome", kind: "intro", numbered: false, icon: "mdi:play-circle-outline", meta: ["Intro", "does not count"], status: "Ready", statusTone: "secondary" },
+  { id: "s2", name: "Old gate", kind: "step", meta: ["Question", "20 points"], status: "Ready", statusTone: "success" },
+  { id: "s4", name: "Town hall", kind: "step", meta: ["Text only"], status: "No question", statusTone: "warning" },
+];
+
+export function Example() {
+  const [steps, setSteps] = useState(initial);
+  const [current, setCurrent] = useState("s2");
+
+  const moveStep = (id: string, toIndex: number) =&gt;
+    setSteps((list) =&gt; {
+      const next = list.filter((s) =&gt; s.id !== id);
+      next.splice(toIndex, 0, list.find((s) =&gt; s.id === id)!);
+      return next;
+    });
+  const duplicateStep = (id: string) =&gt;
+    setSteps((list) =&gt; list.flatMap((s) =&gt; (s.id === id ? [s, { ...s, id: `${id}-copy` }] : [s])));
+  const removeStep = (id: string) =&gt; setSteps((list) =&gt; list.filter((s) =&gt; s.id !== id));
+
+  return (
+    &lt;BlockRouteSteps
+      title="Steps of Route 1"
+      count="7 steps · 4 count"
+      kinds={[{ value: "step", label: "Steps" }, { value: "photo", label: "Photo tasks" }, { value: "intro finish", label: "Start and finish" }]}
+      steps={steps}
+      selected={current}
+      onSelect={setCurrent}
+      onMove={moveStep}
+      onDuplicate={duplicateStep}
+      onRemove={removeStep}
+      footer={&lt;Button type="button" variant="outline" size="sm"&gt;Add step&lt;/Button&gt;}
+    /&gt;
+  );
+}</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { ref } from 'vue'
-import { OcBlockRouteSteps } from '@birdycom/omniaui-vue'
-const current = ref('s2')
-const steps = ref([
-  { id: 's1', name: 'Welcome', kind: 'intro', numbered: false, icon: 'mdi:play-circle-outline', meta: ['Intro'], status: 'Ready', statusTone: 'secondary' },
-  { id: 's2', name: 'Old gate', kind: 'step', meta: ['Question', '20 points'], status: 'Ready', statusTone: 'success' },
-])
+import { OcBlockRouteSteps, OcButton } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+import type { RouteStep } from "@birdycom/omniaui-vue";
+
+const current = ref("s2");
+const steps = ref&lt;RouteStep[]&gt;([
+  { id: "s1", name: "Welcome", kind: "intro", numbered: false, icon: "mdi:play-circle-outline", meta: ["Intro", "does not count"], status: "Ready", statusTone: "secondary" },
+  { id: "s2", name: "Old gate", kind: "step", meta: ["Question", "20 points"], status: "Ready", statusTone: "success" },
+  { id: "s4", name: "Town hall", kind: "step", meta: ["Text only"], status: "No question", statusTone: "warning" },
+]);
+
+function moveStep(id: string, toIndex: number) {
+  const step = steps.value.find((s) =&gt; s.id === id)!;
+  const next = steps.value.filter((s) =&gt; s.id !== id);
+  next.splice(toIndex, 0, step);
+  steps.value = next;
+}
+function duplicateStep(id: string) {
+  steps.value = steps.value.flatMap((s) =&gt; (s.id === id ? [s, { ...s, id: `${id}-copy` }] : [s]));
+}
+function removeStep(id: string) {
+  steps.value = steps.value.filter((s) =&gt; s.id !== id);
+}
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;OcBlockRouteSteps title="Steps of Route 1" :steps="steps" :selected="current" :kinds="[{ value: 'step', label: 'Steps' }]"
-    @select="(id) =&gt; (current = id)" @move="moveTo" @duplicate="duplicate" @remove="remove"&gt;
-    &lt;template #footer&gt;&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;Add step&lt;/button&gt;&lt;/template&gt;
+  &lt;OcBlockRouteSteps
+    title="Steps of Route 1"
+    count="7 steps · 4 count"
+    :steps="steps"
+    :selected="current"
+    :kinds="[{ value: 'step', label: 'Steps' }, { value: 'photo', label: 'Photo tasks' }, { value: 'intro finish', label: 'Start and finish' }]"
+    @select="(id) =&gt; (current = id)"
+    @move="moveStep"
+    @duplicate="duplicateStep"
+    @remove="removeStep"
+  &gt;
+    &lt;template #footer&gt;&lt;OcButton variant="outline" size="sm"&gt;Add step&lt;/OcButton&gt;&lt;/template&gt;
   &lt;/OcBlockRouteSteps&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::block.route-steps&gt;
@@ -549,6 +597,24 @@ use Livewire\Component;
 
 class RouteSteps extends Component
 {
+    public string $current = 's2';
+
+    public array $steps = [
+        ['id' =&gt; 's1', 'name' =&gt; 'Welcome', 'kind' =&gt; 'intro', 'numbered' =&gt; false, 'meta' =&gt; ['Intro', 'does not count'], 'status' =&gt; 'Ready', 'tone' =&gt; 'secondary'],
+        ['id' =&gt; 's2', 'name' =&gt; 'Old gate', 'kind' =&gt; 'step', 'numbered' =&gt; true, 'meta' =&gt; ['Question', '20 points'], 'status' =&gt; 'Ready', 'tone' =&gt; 'success'],
+        ['id' =&gt; 's4', 'name' =&gt; 'Town hall', 'kind' =&gt; 'step', 'numbered' =&gt; true, 'meta' =&gt; ['Text only'], 'status' =&gt; 'No question', 'tone' =&gt; 'warning'],
+    ];
+
+    public function select(string $id): void
+    {
+        $this-&gt;current = $id;
+    }
+
+    public function add(): void
+    {
+        $this-&gt;steps[] = ['id' =&gt; 's'.(count($this-&gt;steps) + 10), 'name' =&gt; 'New step', 'kind' =&gt; 'step', 'numbered' =&gt; true, 'meta' =&gt; ['Text only'], 'status' =&gt; 'No question', 'tone' =&gt; 'warning'];
+    }
+
     public function render()
     {
         return view('livewire.route-steps');
@@ -556,247 +622,26 @@ class RouteSteps extends Component
 }
 
 {{-- resources/views/livewire/route-steps.blade.php --}}
-&lt;div&gt;
-    &lt;section class="oc-block-route-steps" aria-labelledby="oc-rsteps-title"&gt;
-      &lt;div class="oc-block-route-steps-head"&gt;
-        &lt;h2 class="oc-block-route-steps-title" id="oc-rsteps-title"&gt;Steps of Route 1&lt;/h2&gt;
-        &lt;span class="oc-block-route-steps-count"&gt;7 steps · 4 count&lt;/span&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-route-steps-tools"&gt;
-        &lt;div class="oc-input-group oc-input-group--affix"&gt;
-          &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:magnify" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-          &lt;input class="oc-input oc-block-route-steps-search" type="search" placeholder="Search steps" aria-label="Search steps"&gt;
-        &lt;/div&gt;
-        &lt;fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-route-steps-kinds" aria-label="Kind"&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-rsteps-kind" value="all" checked&gt; All&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-rsteps-kind" value="step"&gt; Steps&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-rsteps-kind" value="photo"&gt; Photo tasks&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-rsteps-kind" value="intro finish"&gt; Start and finish&lt;/label&gt;
-        &lt;/fieldset&gt;
-      &lt;/div&gt;
-      &lt;ol class="oc-block-route-steps-list" aria-label="Steps in route order"&gt;
-        &lt;li class="oc-block-route-steps-item" data-id="s1" data-kind="intro"&gt;
-          &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Welcome" aria-pressed="false"&gt;&lt;/button&gt;
-          &lt;button class="oc-block-route-steps-main" type="button"&gt;
-            &lt;span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-indigo-60)"&gt;&lt;iconify-icon icon="mdi:play-circle-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-            &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Welcome&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Intro&lt;/span&gt;&lt;span&gt;does not count&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;/button&gt;
-          &lt;span class="oc-badge oc-badge--secondary oc-block-route-steps-status"&gt;Ready&lt;/span&gt;
-          &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-1" aria-label="Actions for Welcome"&gt;&lt;iconify-icon icon="mdi:dots-vertical" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-rsteps-menu-1" popover&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move up&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move down&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Duplicate&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
+&lt;x-oc::block.route-steps&gt;
+    &lt;x-slot:title&gt;Steps of Route 1&lt;/x-slot:title&gt;
+    &lt;x-slot:count&gt;{{ count($steps) }} steps&lt;/x-slot:count&gt;
+    @foreach ($steps as $step)
+        &lt;li class="oc-block-route-steps-item" data-id="{{ $step['id'] }}" data-kind="{{ $step['kind'] }}" wire:key="step-{{ $step['id'] }}"&gt;
+            &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move {{ $step['name'] }}" aria-pressed="false"&gt;&lt;/button&gt;
+            &lt;button class="oc-block-route-steps-main" type="button" wire:click="select('{{ $step['id'] }}')" @if ($step['id'] === $current) aria-current="true" @endif&gt;
+                &lt;span @class(['oc-block-route-steps-thumb', 'oc-block-route-steps-thumb--num' =&gt; $step['numbered']])&gt;&lt;/span&gt;
+                &lt;span class="oc-block-route-steps-text"&gt;
+                    &lt;span class="oc-block-route-steps-name"&gt;{{ $step['name'] }}&lt;/span&gt;
+                    &lt;span class="oc-block-route-steps-meta"&gt;@foreach ($step['meta'] as $meta)&lt;span&gt;{{ $meta }}&lt;/span&gt;@endforeach&lt;/span&gt;
+                &lt;/span&gt;
+            &lt;/button&gt;
+            &lt;x-oc::badge :variant="$step['tone']" class="oc-block-route-steps-status"&gt;{{ $step['status'] }}&lt;/x-oc::badge&gt;
         &lt;/li&gt;
-        &lt;li class="oc-block-route-steps-item" data-id="s2" data-kind="step"&gt;
-          &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Old gate" aria-pressed="false"&gt;&lt;/button&gt;
-          &lt;button class="oc-block-route-steps-main" type="button" aria-current="true"&gt;
-            &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-            &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Old gate&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Question&lt;/span&gt;&lt;span&gt;20 points&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;/button&gt;
-          &lt;span class="oc-badge oc-badge--success oc-block-route-steps-status"&gt;Ready&lt;/span&gt;
-          &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-2" aria-label="Actions for Old gate"&gt;&lt;iconify-icon icon="mdi:dots-vertical" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-rsteps-menu-2" popover&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move up&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move down&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Duplicate&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/li&gt;
-        &lt;li class="oc-block-route-steps-item" data-id="s3" data-kind="step"&gt;
-          &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Market square" aria-pressed="false"&gt;&lt;/button&gt;
-          &lt;button class="oc-block-route-steps-main" type="button"&gt;
-            &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;svg viewBox="0 0 40 40" aria-hidden="true"&gt;&lt;rect width="40" height="40" class="oc-block-art-sky"/&gt;&lt;circle cx="30" cy="11" r="5" class="oc-block-art-sun"/&gt;&lt;path d="M0 40V28l10-8 9 7 7-5 14 10v8z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
-            &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Market square&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Question&lt;/span&gt;&lt;span&gt;20 points&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;/button&gt;
-          &lt;span class="oc-badge oc-badge--success oc-block-route-steps-status"&gt;Ready&lt;/span&gt;
-          &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-3" aria-label="Actions for Market square"&gt;&lt;iconify-icon icon="mdi:dots-vertical" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-rsteps-menu-3" popover&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move up&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move down&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Duplicate&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/li&gt;
-        &lt;li class="oc-block-route-steps-item" data-id="s4" data-kind="step"&gt;
-          &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Town hall" aria-pressed="false"&gt;&lt;/button&gt;
-          &lt;button class="oc-block-route-steps-main" type="button"&gt;
-            &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-            &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Town hall&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Text only&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;/button&gt;
-          &lt;span class="oc-badge oc-badge--warning oc-block-route-steps-status"&gt;No question&lt;/span&gt;
-          &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-4" aria-label="Actions for Town hall"&gt;&lt;iconify-icon icon="mdi:dots-vertical" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-rsteps-menu-4" popover&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move up&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move down&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Duplicate&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/li&gt;
-        &lt;li class="oc-block-route-steps-item" data-id="s5" data-kind="step"&gt;
-          &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move River bridge" aria-pressed="false"&gt;&lt;/button&gt;
-          &lt;button class="oc-block-route-steps-main" type="button"&gt;
-            &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-            &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;River bridge&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Question&lt;/span&gt;&lt;span&gt;10 points&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;/button&gt;
-          &lt;span class="oc-badge oc-badge--outline oc-block-route-steps-status"&gt;Draft&lt;/span&gt;
-          &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-5" aria-label="Actions for River bridge"&gt;&lt;iconify-icon icon="mdi:dots-vertical" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-rsteps-menu-5" popover&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move up&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move down&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Duplicate&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/li&gt;
-        &lt;li class="oc-block-route-steps-item" data-id="s6" data-kind="photo"&gt;
-          &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Team photo" aria-pressed="false"&gt;&lt;/button&gt;
-          &lt;button class="oc-block-route-steps-main" type="button"&gt;
-            &lt;span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-teal-60)"&gt;&lt;iconify-icon icon="mdi:camera-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-            &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Team photo&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Photo task&lt;/span&gt;&lt;span&gt;does not count&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;/button&gt;
-          &lt;span class="oc-badge oc-badge--success oc-block-route-steps-status"&gt;Ready&lt;/span&gt;
-          &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-6" aria-label="Actions for Team photo"&gt;&lt;iconify-icon icon="mdi:dots-vertical" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-rsteps-menu-6" popover&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move up&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move down&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Duplicate&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/li&gt;
-        &lt;li class="oc-block-route-steps-item" data-id="s7" data-kind="finish"&gt;
-          &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Finish" aria-pressed="false"&gt;&lt;/button&gt;
-          &lt;button class="oc-block-route-steps-main" type="button"&gt;
-            &lt;span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-forestgreen-60)"&gt;&lt;iconify-icon icon="mdi:flag-checkered" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-            &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Finish&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Check-in&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;/button&gt;
-          &lt;span class="oc-badge oc-badge--success oc-block-route-steps-status"&gt;Ready&lt;/span&gt;
-          &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-7" aria-label="Actions for Finish"&gt;&lt;iconify-icon icon="mdi:dots-vertical" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
-          &lt;div class="oc-dropdown-menu" id="oc-rsteps-menu-7" popover&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move up&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Move down&lt;/button&gt;
-            &lt;button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Duplicate&lt;/button&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;Delete&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/li&gt;
-      &lt;/ol&gt;
-      &lt;p class="oc-block-route-steps-empty" hidden&gt;No step matches your search.&lt;/p&gt;
-      &lt;div class="oc-block-route-steps-foot"&gt;
-        &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button"&gt;&lt;iconify-icon icon="mdi:plus" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Add step&lt;/button&gt;
-        &lt;button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"&gt;&lt;iconify-icon icon="mdi:camera-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt; Add photo task&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;p class="oc-block-route-steps-status-line oc-visually-hidden" aria-live="polite"&gt;&lt;/p&gt;
-    &lt;/section&gt;
-    &lt;script&gt;
-      // Optional: filter, select, move (menu, drag, keyboard on the grip), duplicate and remove steps in every .oc-block-route-steps.
-      document.querySelectorAll(".oc-block-route-steps").forEach((root) =&gt; {
-        const list = root.querySelector(".oc-block-route-steps-list");
-        const items = () =&gt; [...list.children];
-        const label = (li) =&gt; li.querySelector(".oc-block-route-steps-name")?.textContent.trim() || "Step";
-        const say = (text) =&gt; { const s = root.querySelector(".oc-block-route-steps-status-line"); if (s) s.textContent = text; };
-        const fire = (type, detail) =&gt; root.dispatchEvent(new CustomEvent(type, { bubbles: true, detail }));
-        const changed = (action, li) =&gt; fire("oc-route-steps-change", { action, id: li?.dataset.id, order: items().map((x) =&gt; x.dataset.id) });
-        let moving = false;
-        const move = (li, to, focus) =&gt; {
-          const all = items();
-          if (to &lt; 0 || to &gt;= all.length || to === all.indexOf(li)) return;
-          moving = true;
-          to &gt; all.indexOf(li) ? all[to].after(li) : all[to].before(li);
-          moving = false;
-          changed("move", li);
-          say(`${label(li)}: position ${to + 1} of ${all.length}`);
-          (focus || li.querySelector(".oc-block-route-steps-main")).focus();
-        };
-        const filter = () =&gt; {
-          const q = (root.querySelector(".oc-block-route-steps-search")?.value || "").trim().toLowerCase();
-          const kinds = (root.querySelector(".oc-block-route-steps-kinds input:checked")?.value || "all").split(" ");
-          let shown = 0;
-          items().forEach((li) =&gt; {
-            const match = (kinds.includes("all") || kinds.includes(li.dataset.kind)) &amp;&amp; li.textContent.toLowerCase().includes(q);
-            li.classList.toggle("is-filtered", !match);
-            if (match) shown++;
-          });
-          const empty = root.querySelector(".oc-block-route-steps-empty");
-          if (empty) empty.hidden = shown &gt; 0;
-        };
-        root.addEventListener("input", (e) =&gt; { if (e.target.closest(".oc-block-route-steps-tools")) filter(); });
-        root.addEventListener("click", (e) =&gt; {
-          const btn = e.target.closest("button");
-          if (!btn) return;
-          const li = btn.closest(".oc-block-route-steps-item");
-          const act = btn.dataset.action;
-          if (btn.classList.contains("oc-block-route-steps-main")) {
-            root.querySelectorAll(".oc-block-route-steps-main[aria-current]").forEach((b) =&gt; b.removeAttribute("aria-current"));
-            btn.setAttribute("aria-current", "true");
-            fire("oc-route-steps-select", { id: li.dataset.id });
-          } else if (act === "up" || act === "down") move(li, items().indexOf(li) + (act === "up" ? -1 : 1));
-          else if (act === "duplicate") {
-            const copy = li.cloneNode(true);
-            const menu = copy.querySelector("[popover]"), id = `${menu.id}-${Date.now()}`;
-            copy.querySelectorAll(`[popovertarget="${menu.id}"]`).forEach((b) =&gt; b.setAttribute("popovertarget", id));
-            menu.id = id;
-            copy.dataset.id = `${li.dataset.id}-copy-${Date.now()}`;
-            copy.querySelector(".oc-block-route-steps-name").textContent = `${label(li)} (copy)`;
-            copy.querySelectorAll("[aria-label]").forEach((el) =&gt; el.setAttribute("aria-label", el.getAttribute("aria-label").replace(label(li), label(copy))));
-            copy.querySelector(".oc-block-route-steps-main").removeAttribute("aria-current");
-            li.after(copy);
-            changed("duplicate", copy);
-            say(`${label(copy)} added`);
-            copy.querySelector(".oc-block-route-steps-main").focus();
-          } else if (act === "remove") {
-            const next = li.nextElementSibling || li.previousElementSibling;
-            li.remove();
-            changed("remove", li);
-            say(`${label(li)} removed`);
-            next?.querySelector(".oc-block-route-steps-main")?.focus();
-          } else if (btn.classList.contains("oc-sortable-row-grip")) {
-            btn.setAttribute("aria-pressed", String(btn.getAttribute("aria-pressed") !== "true"));
-            if (btn.getAttribute("aria-pressed") === "true") say(`${label(li)} picked up. Use the arrow keys, then Enter.`);
-          }
-        });
-        root.addEventListener("keydown", (e) =&gt; {
-          const grip = e.target.closest('.oc-sortable-row-grip[aria-pressed="true"]');
-          if (!grip) return;
-          const li = grip.closest(".oc-block-route-steps-item");
-          if (e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); move(li, items().indexOf(li) + (e.key === "ArrowUp" ? -1 : 1), grip); }
-          else if (e.key === "Escape" || e.key === "Enter" || e.key === " ") { e.preventDefault(); grip.setAttribute("aria-pressed", "false"); say(`${label(li)} dropped`); }
-        });
-        root.addEventListener("focusout", (e) =&gt; { if (!moving &amp;&amp; e.target.matches?.(".oc-sortable-row-grip")) e.target.setAttribute("aria-pressed", "false"); });
-        // Drag with the mouse, only from the grip.
-        let dragged = null;
-        const clear = () =&gt; items().forEach((x) =&gt; x.classList.remove("is-drop-before", "is-drop-after"));
-        root.addEventListener("pointerdown", (e) =&gt; { const g = e.target.closest(".oc-sortable-row-grip"); if (g) g.parentElement.draggable = true; });
-        root.addEventListener("pointerup", () =&gt; { if (!dragged) items().forEach((x) =&gt; { x.draggable = false; }); });
-        list.addEventListener("dragstart", (e) =&gt; { dragged = e.target.closest(".oc-block-route-steps-item"); dragged?.classList.add("is-dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragged?.dataset.id || ""); });
-        list.addEventListener("dragover", (e) =&gt; {
-          const over = e.target.closest(".oc-block-route-steps-item");
-          if (!dragged || !over) return;
-          e.preventDefault();
-          clear();
-          const r = over.getBoundingClientRect();
-          if (over !== dragged) over.classList.add(e.clientY &lt; r.top + r.height / 2 ? "is-drop-before" : "is-drop-after");
-        });
-        list.addEventListener("drop", (e) =&gt; {
-          const over = list.querySelector(".is-drop-before, .is-drop-after");
-          if (!dragged || !over) return;
-          e.preventDefault();
-          const all = items(), from = all.indexOf(dragged);
-          let to = all.indexOf(over) + (over.classList.contains("is-drop-after") ? 1 : 0);
-          if (to &gt; from) to--;
-          move(dragged, to);
-        });
-        list.addEventListener("dragend", () =&gt; { clear(); dragged?.classList.remove("is-dragging"); if (dragged) dragged.draggable = false; dragged = null; });
-      });
-    &lt;/script&gt;
-&lt;/div&gt;</oc-code>
+    @endforeach
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button variant="outline" size="sm" wire:click="add"&gt;Add step&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::block.route-steps&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="status-locked">Problems, badges and a locked order <span class="oc-badge-version">v0.17.0</span></h3>

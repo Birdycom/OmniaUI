@@ -51,46 +51,39 @@
   &lt;label class="oc-label oc-label--muted" for="oc-label-phone"&gt;Phone (optional)&lt;/label&gt;
   &lt;input class="oc-input" id="oc-label-phone" type="tel" placeholder="+32 3 000 00 00"&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;&gt;
-      &lt;div className="oc-form-group"&gt;
-        &lt;label className="oc-label oc-label--required" htmlFor="oc-label-email"&gt;E-mail&lt;/label&gt;
-        &lt;input className="oc-input" id="oc-label-email" type="email" placeholder="name@example.com" required /&gt;
-      &lt;/div&gt;
-
-      &lt;label className="oc-label oc-label--inline"&gt;&lt;input className="oc-checkbox" type="checkbox" /&gt; Accept terms and conditions&lt;/label&gt;
-
-      &lt;div className="oc-form-group"&gt;
-        &lt;label className="oc-label oc-label--muted" htmlFor="oc-label-phone"&gt;Phone (optional)&lt;/label&gt;
-        &lt;input className="oc-input" id="oc-label-phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
-      &lt;/div&gt;
-    &lt;/&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-form-group"&gt;
-    &lt;label class="oc-label oc-label--required" for="oc-label-email"&gt;E-mail&lt;/label&gt;
-    &lt;input class="oc-input" id="oc-label-email" type="email" placeholder="name@example.com" required /&gt;
-  &lt;/div&gt;
-
-  &lt;label class="oc-label oc-label--inline"&gt;&lt;input class="oc-checkbox" type="checkbox" /&gt; Accept terms and conditions&lt;/label&gt;
-
-  &lt;div class="oc-form-group"&gt;
-    &lt;label class="oc-label oc-label--muted" for="oc-label-phone"&gt;Phone (optional)&lt;/label&gt;
-    &lt;input class="oc-input" id="oc-label-phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
-  &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-form-group"&gt;
-  &lt;label class="oc-label oc-label--required" for="oc-label-email"&gt;E-mail&lt;/label&gt;
-  &lt;input class="oc-input" id="oc-label-email" type="email" placeholder="name@example.com" required&gt;
+<oc-code lang="tsx">{/* No React Label wrapper: a plain label with the oc-label classes */}
+&lt;div className="oc-form-group"&gt;
+  &lt;label className="oc-label oc-label--required" htmlFor="email"&gt;E-mail&lt;/label&gt;
+  &lt;Input id="email" type="email" placeholder="name@example.com" required /&gt;
 &lt;/div&gt;
 
-&lt;label class="oc-label oc-label--inline"&gt;&lt;input class="oc-checkbox" type="checkbox"&gt; Accept terms and conditions&lt;/label&gt;
+&lt;label className="oc-label oc-label--inline"&gt;&lt;Checkbox /&gt; Accept terms and conditions&lt;/label&gt;
+
+&lt;div className="oc-form-group"&gt;
+  &lt;label className="oc-label oc-label--muted" htmlFor="phone"&gt;Phone (optional)&lt;/label&gt;
+  &lt;Input id="phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="oc-form-group"&gt;
+  &lt;OcLabel for="email" required&gt;E-mail&lt;/OcLabel&gt;
+  &lt;OcInput id="email" type="email" placeholder="name@example.com" required /&gt;
+&lt;/div&gt;
+
+&lt;OcCheckbox class="oc-label oc-label--inline" label="Accept terms and conditions" /&gt;
 
 &lt;div class="oc-form-group"&gt;
-  &lt;label class="oc-label oc-label--muted" for="oc-label-phone"&gt;Phone (optional)&lt;/label&gt;
-  &lt;input class="oc-input" id="oc-label-phone" type="tel" placeholder="+32 3 000 00 00"&gt;
+  &lt;OcLabel for="phone" muted&gt;Phone (optional)&lt;/OcLabel&gt;
+  &lt;OcInput id="phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-form-group"&gt;
+    &lt;x-oc::label for="email" required&gt;E-mail&lt;/x-oc::label&gt;
+    &lt;x-oc::input id="email" name="email" type="email" placeholder="name@example.com" required /&gt;
+&lt;/div&gt;
+
+&lt;x-oc::checkbox class="oc-label oc-label--inline" name="terms" label="Accept terms and conditions" /&gt;
+
+&lt;div class="oc-form-group"&gt;
+    &lt;x-oc::label for="phone" muted&gt;Phone (optional)&lt;/x-oc::label&gt;
+    &lt;x-oc::input id="phone" name="phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -98,26 +91,32 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class Label extends Component
+class ContactDetails extends Component
 {
+    public string $email = '';
+
+    public bool $terms = false;
+
+    public string $phone = '';
+
     public function render()
     {
-        return view('livewire.label');
+        return view('livewire.contact-details');
     }
 }
 
-{{-- resources/views/livewire/label.blade.php --}}
+{{-- resources/views/livewire/contact-details.blade.php --}}
 &lt;div&gt;
     &lt;div class="oc-form-group"&gt;
-      &lt;label class="oc-label oc-label--required" for="oc-label-email"&gt;E-mail&lt;/label&gt;
-      &lt;input class="oc-input" id="oc-label-email" type="email" placeholder="name@example.com" required&gt;
+        &lt;x-oc::label for="email" required&gt;E-mail&lt;/x-oc::label&gt;
+        &lt;x-oc::wire.input id="email" model="email" type="email" placeholder="name@example.com" required /&gt;
     &lt;/div&gt;
 
-    &lt;label class="oc-label oc-label--inline"&gt;&lt;input class="oc-checkbox" type="checkbox"&gt; Accept terms and conditions&lt;/label&gt;
+    &lt;x-oc::wire.checkbox class="oc-label oc-label--inline" model="terms" label="Accept terms and conditions" /&gt;
 
     &lt;div class="oc-form-group"&gt;
-      &lt;label class="oc-label oc-label--muted" for="oc-label-phone"&gt;Phone (optional)&lt;/label&gt;
-      &lt;input class="oc-input" id="oc-label-phone" type="tel" placeholder="+32 3 000 00 00"&gt;
+        &lt;x-oc::label for="phone" muted&gt;Phone (optional)&lt;/x-oc::label&gt;
+        &lt;x-oc::wire.input id="phone" model="phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
     &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>

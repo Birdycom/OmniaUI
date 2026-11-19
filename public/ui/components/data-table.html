@@ -16,7 +16,7 @@
   
   <link rel="preload" href="/fonts/docs/instrument-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/docs/bricolage-grotesque-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/omnia-site.css?v=192f09a61b"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
+  <link rel="stylesheet" href="/css/omnia-site.css?v=962021a627"><link rel="stylesheet" href="/css/oc-components.css?v=ca945cb9d3"><link rel="stylesheet" href="/css/oc-code-syntax.css?v=40bd0da44d"><link rel="stylesheet" href="/css/oc-blocks.css?v=c0261298b3"><link rel="stylesheet" href="/css/oc-blocks-pro.css?v=a60793ef55"><link rel="stylesheet" href="/css/oc-layout-module.css?v=0a459385b4"><link rel="stylesheet" href="/css/omnia_site.css?v=ba4a613daf"><link rel="stylesheet" href="/css/oc-docs-shell.css?v=cc3f90f5ba"><link rel="stylesheet" href="/fonts/docs/docs-fonts.css"><link rel="stylesheet" href="/css/oc-docs-v2.css?v=5c10f805d7">
   <!-- Optional progressive enhancement: only REMEMBERS the choice between pages (localStorage). The switch itself is CSS-only (:has + color-scheme). -->
   <script>
     // OmniaCSS and OmniaUI are different origins with their own localStorage: links to the sister site carry the choice as ?oc-theme=.
@@ -1098,266 +1098,52 @@
 44
 45
 46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+47</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
 
 <span class="hl-keyword">namespace</span> App\Livewire;
 
+<span class="hl-keyword">use</span> Illuminate\Support\Facades\DB;
 <span class="hl-keyword">use</span> Livewire\Component;
 
-<span class="hl-keyword">class</span> DataTableArticlesBordered <span class="hl-keyword">extends</span> Component
+<span class="hl-keyword">class</span> ArticlesBordered <span class="hl-keyword">extends</span> Component
 {
+    <span class="hl-comment">/** @return list&lt;array&lt;string, mixed&gt;&gt; */</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">columns</span>(): <span class="hl-keyword">array</span>
+    {
+        <span class="hl-keyword">return</span> [
+            [<span class="hl-string">'key'</span> =&gt; <span class="hl-string">'sku'</span>, <span class="hl-string">'header'</span> =&gt; <span class="hl-string">'Article ID'</span>, <span class="hl-string">'defaultSort'</span> =&gt; <span class="hl-string">'ascending'</span>],
+            [<span class="hl-string">'key'</span> =&gt; <span class="hl-string">'name'</span>, <span class="hl-string">'header'</span> =&gt; <span class="hl-string">'Name'</span>],
+            [<span class="hl-string">'key'</span> =&gt; <span class="hl-string">'category'</span>, <span class="hl-string">'header'</span> =&gt; <span class="hl-string">'Category'</span>],
+            [<span class="hl-string">'key'</span> =&gt; <span class="hl-string">'price'</span>, <span class="hl-string">'header'</span> =&gt; <span class="hl-string">'Price'</span>, <span class="hl-string">'numeric'</span> =&gt; <span class="hl-keyword">true</span>],
+        ];
+    }
+
+    <span class="hl-comment">/** @return list&lt;array&lt;string, mixed&gt;&gt; */</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">rows</span>(): <span class="hl-keyword">array</span>
+    {
+        <span class="hl-keyword">return</span> DB::<span class="hl-function">table</span>(<span class="hl-string">'articles'</span>)-&gt;<span class="hl-function">orderBy</span>(<span class="hl-string">'sku'</span>)-&gt;<span class="hl-function">get</span>()-&gt;<span class="hl-function">map</span>(<span class="hl-keyword">fn</span> (<span class="hl-variable">$a</span>) =&gt; [
+            <span class="hl-string">'key'</span> =&gt; <span class="hl-variable">$a</span>-&gt;id,
+            <span class="hl-string">'status'</span> =&gt; <span class="hl-function">strtolower</span>(<span class="hl-variable">$a</span>-&gt;status) === <span class="hl-string">'active'</span> ? <span class="hl-string">'active'</span> : <span class="hl-string">'deleted'</span>,
+            <span class="hl-string">'cells'</span> =&gt; [<span class="hl-string">'sku'</span> =&gt; <span class="hl-variable">$a</span>-&gt;sku, <span class="hl-string">'name'</span> =&gt; <span class="hl-variable">$a</span>-&gt;name, <span class="hl-string">'category'</span> =&gt; <span class="hl-variable">$a</span>-&gt;category ?? <span class="hl-string">'Materials'</span>, <span class="hl-string">'price'</span> =&gt; <span class="hl-function">number_format</span>((<span class="hl-keyword">float</span>) <span class="hl-variable">$a</span>-&gt;price, <span class="hl-number">2</span>, <span class="hl-string">','</span>, <span class="hl-string">'.'</span>)],
+            <span class="hl-string">'values'</span> =&gt; [<span class="hl-string">'price'</span> =&gt; (<span class="hl-keyword">string</span>) <span class="hl-variable">$a</span>-&gt;price],
+            <span class="hl-string">'href'</span> =&gt; <span class="hl-function">url</span>(<span class="hl-string">'/articles/'</span>.<span class="hl-variable">$a</span>-&gt;id.<span class="hl-string">'/edit'</span>),
+        ])-&gt;<span class="hl-function">all</span>();
+    }
+
     <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
     {
-        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.data-table-articles-bordered'</span>);
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.articles-bordered'</span>);
     }
 }
 
-<span class="hl-comment">{{-- resources/views/livewire/data-table-articles-bordered.blade.php --}}</span>
-<span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table oc-data-table--bordered"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-articles-v2"</span> <span class="hl-attr">data-page-size</span>=<span class="hl-string">"10"</span> <span class="hl-attr">data-oc-live</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-toolbar"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-articles-v2-menu"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"List actions"</span> <span class="hl-attr">title</span>=<span class="hl-string">"List actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:tune-variant"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-articles-v2-menu"</span> <span class="hl-attr">popover</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-export</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:export"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span>Export CSV<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-bulk</span>=<span class="hl-string">"duplicate"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:content-duplicate"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span>Duplicate selection<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-bulk</span>=<span class="hl-string">"archive"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span>Move selection to trash<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
+<span class="hl-comment">{{-- resources/views/livewire/articles-bordered.blade.php --}}</span>
+<span class="hl-tag">&lt;div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-comment">{{-- client-side list (search, sort, paging in data-table.js) fed by the component; wire:ignore keeps its state --}}</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-prop">wire:ignore</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::data-table</span> <span class="hl-attr">table-id</span>=<span class="hl-string">"articles-v2"</span> <span class="hl-attr">variant</span>=<span class="hl-string">"bordered"</span> <span class="hl-attr">:columns</span>=<span class="hl-string">"$this-&gt;columns()"</span> <span class="hl-attr">:rows</span>=<span class="hl-string">"$this-&gt;rows()"</span> <span class="hl-attr">:page-size</span>=<span class="hl-string">"10"</span> <span class="hl-attr">live</span>
+            <span class="hl-attr">search-placeholder</span>=<span class="hl-string">"Search by name, article ID or description…"</span>
+            <span class="hl-attr">:column-filters</span>=<span class="hl-string">"[['column' =&gt; 'category', 'label' =&gt; 'Category', 'icon' =&gt; 'mdi:filter-outline', 'options' =&gt; ['Labour' =&gt; 'Labour', 'Materials' =&gt; 'Materials', 'Transport' =&gt; 'Transport']]]"</span> <span class="hl-tag">/&gt;</span>
     <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input oc-data-table-search"</span> <span class="hl-attr">type</span>=<span class="hl-string">"search"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Search by name, article ID or description…"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Search articles"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-filter-pills"</span> <span class="hl-attr">role</span>=<span class="hl-string">"group"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Trash filter"</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-filter-pill"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-filter</span>=<span class="hl-string">"active"</span> <span class="hl-attr">aria-current</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span>Active only<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-filter-pill"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-filter</span>=<span class="hl-string">"all"</span><span class="hl-tag">&gt;</span>Including trash<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-filter-pill"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-filter</span>=<span class="hl-string">"deleted"</span><span class="hl-tag">&gt;</span>Trash only<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-filters"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-filter"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:filter-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;select</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-select"</span> <span class="hl-attr">data-oc-col-filter</span>=<span class="hl-string">"category"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Category"</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-string">""</span> <span class="hl-attr">selected</span><span class="hl-tag">&gt;</span>All categories<span class="hl-tag">&lt;/option</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-string">"Labour"</span><span class="hl-tag">&gt;</span>Labour<span class="hl-tag">&lt;/option</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-string">"Materials"</span><span class="hl-tag">&gt;</span>Materials<span class="hl-tag">&lt;/option</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-string">"Transport"</span><span class="hl-tag">&gt;</span>Transport<span class="hl-tag">&lt;/option</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;/select</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-bulk"</span> <span class="hl-attr">hidden</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;span</span> <span class="hl-attr">data-oc-selected-count</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span>0 selected<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-bulk</span>=<span class="hl-string">"archive"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:trash-can-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span>Move to trash<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--ghost oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-bulk</span>=<span class="hl-string">"clear"</span><span class="hl-tag">&gt;</span>Clear<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-frame"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-scroll"</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;table</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table oc-data-table-table"</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;thead</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"select"</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-select"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-checkbox"</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">data-oc-select-all</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Select all"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sku"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"text"</span> <span class="hl-attr">aria-sort</span>=<span class="hl-string">"ascending"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Article ID<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Name<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"category"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Category<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"supplier"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span>Supplier<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"buy"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"numeric"</span> <span class="hl-attr">data-numeric</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Purchase excl.<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"unit"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Unit<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sell"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"numeric"</span> <span class="hl-attr">data-numeric</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Sale excl.<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span> <span class="hl-attr">style</span>=<span class="hl-string">"width:5rem;text-align:center"</span><span class="hl-tag">&gt;</span>Actions<span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;/thead</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;tbody</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"art-0001"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"select"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-checkbox"</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">data-oc-select</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Select Article 1"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sku"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-code"</span><span class="hl-tag">&gt;</span>ART-0001<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Article 1<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"category"</span><span class="hl-tag">&gt;</span>Labour<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"supplier"</span><span class="hl-tag">&gt;</span>Supplier 1<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"buy"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"75.00"</span><span class="hl-tag">&gt;</span>€ 75,00<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"unit"</span><span class="hl-tag">&gt;</span>per hour<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sell"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"62.50"</span><span class="hl-tag">&gt;</span>€ 62,50<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Article 1"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:menu"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"art-0002"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"select"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-checkbox"</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">data-oc-select</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Select Article 2"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sku"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-code"</span><span class="hl-tag">&gt;</span>ART-0002<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Article 2<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"category"</span><span class="hl-tag">&gt;</span>Labour<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"supplier"</span><span class="hl-tag">&gt;</span>–<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"buy"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"300.00"</span><span class="hl-tag">&gt;</span>€ 300,00<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"unit"</span><span class="hl-tag">&gt;</span>per hour<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sell"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"300.00"</span><span class="hl-tag">&gt;</span>€ 300,00<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Article 2"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:menu"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"art-0003"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"select"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-checkbox"</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">data-oc-select</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Select Article 3"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sku"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-code"</span><span class="hl-tag">&gt;</span>ART-0003<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Article 3<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"category"</span><span class="hl-tag">&gt;</span>Labour<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"supplier"</span><span class="hl-tag">&gt;</span>–<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"buy"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"1.00"</span><span class="hl-tag">&gt;</span>€ 1,00<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"unit"</span><span class="hl-tag">&gt;</span>per meter<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sell"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"1.00"</span><span class="hl-tag">&gt;</span>€ 1,00<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Article 3"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:menu"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"art-0004"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"select"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-checkbox"</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">data-oc-select</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Select Article 4"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sku"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-code"</span><span class="hl-tag">&gt;</span>ART-0004<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Article 4<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"category"</span><span class="hl-tag">&gt;</span>Materials<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"supplier"</span><span class="hl-tag">&gt;</span>Supplier 2<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"buy"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"26.95"</span><span class="hl-tag">&gt;</span>€ 26,95<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"unit"</span><span class="hl-tag">&gt;</span>per piece<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sell"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"26.95"</span><span class="hl-tag">&gt;</span>€ 26,95<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Article 4"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:menu"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"art-0005"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"select"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-checkbox"</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">data-oc-select</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Select Article 5"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sku"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-code"</span><span class="hl-tag">&gt;</span>ART-0005<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Article 5<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"category"</span><span class="hl-tag">&gt;</span>Materials<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"supplier"</span><span class="hl-tag">&gt;</span>Supplier 1<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"buy"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"93.75"</span><span class="hl-tag">&gt;</span>€ 93,75<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"unit"</span><span class="hl-tag">&gt;</span>per m²<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sell"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"93.75"</span><span class="hl-tag">&gt;</span>€ 93,75<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Article 5"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:menu"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"art-0006"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"select"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-checkbox"</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">data-oc-select</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Select Article 6"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sku"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-code"</span><span class="hl-tag">&gt;</span>ART-0006<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Article 6<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"category"</span><span class="hl-tag">&gt;</span>Transport<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"supplier"</span><span class="hl-tag">&gt;</span>Supplier 3<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"buy"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"75.00"</span><span class="hl-tag">&gt;</span>€ 75,00<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"unit"</span><span class="hl-tag">&gt;</span>–<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sell"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"75.00"</span><span class="hl-tag">&gt;</span>€ 75,00<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Article 6"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:menu"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"art-0007"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"select"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-checkbox"</span> <span class="hl-attr">type</span>=<span class="hl-string">"checkbox"</span> <span class="hl-attr">data-oc-select</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Select Article 7"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sku"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-code"</span><span class="hl-tag">&gt;</span>ART-0007<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Article 7<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"category"</span><span class="hl-tag">&gt;</span>Labour<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"supplier"</span><span class="hl-tag">&gt;</span>Supplier 2<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"buy"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"93.75"</span><span class="hl-tag">&gt;</span>€ 93,75<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"unit"</span><span class="hl-tag">&gt;</span>per hour<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"sell"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"93.75"</span><span class="hl-tag">&gt;</span>€ 93,75<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Actions for Article 7"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:menu"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;/tbody</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;/table</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-empty"</span> <span class="hl-attr">hidden</span><span class="hl-tag">&gt;</span>No articles match these filters.<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-footer"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-summary"</span> <span class="hl-attr">data-oc-summary</span>=<span class="hl-string">"Showing {from}–{to} of {total} articles"</span><span class="hl-tag">&gt;</span>Showing 1–7 of 7 articles<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;label</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-per-page"</span><span class="hl-tag">&gt;</span>Rows per page
-      <span class="hl-tag">&lt;select</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-select"</span> <span class="hl-attr">data-oc-page-size</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Rows per page"</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-string">"10"</span> <span class="hl-attr">selected</span><span class="hl-tag">&gt;</span>10<span class="hl-tag">&lt;/option</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-string">"25"</span><span class="hl-tag">&gt;</span>25<span class="hl-tag">&lt;/option</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;option</span> <span class="hl-attr">value</span>=<span class="hl-string">"100"</span><span class="hl-tag">&gt;</span>100<span class="hl-tag">&lt;/option</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;/select</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;/label</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;nav</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-pager"</span> <span class="hl-attr">data-oc-pager</span>=<span class="hl-string">""</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Pagination"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/nav</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
           <h3 class="oc-section-content__title mt-2" id="demo-pro">Pro: column widths and row drag <span class="oc-badge-version">v0.14.2</span></h3>
           <p class="oc-section-content__desc">With <a href="../pro">OmniaUI Pro</a> (<code>data-table-pro.js</code> next to the free script): drag the edge of a column header to set its width, remembered per table id, and <b>Reset column widths</b> clears it; drag a row by its grip to change the order (the table fires <code>oc-datatable-reorder</code> with the new order of the keys). The column chooser in the actions header is the Pro <a href="column-menu">Column menu</a>.</p>
@@ -1668,95 +1454,53 @@
 45
 46
 47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
+48</pre><pre class="code-preview"><code><span class="hl-keyword">&lt;?php</span>
 
 <span class="hl-keyword">namespace</span> App\Livewire;
 
 <span class="hl-keyword">use</span> Livewire\Component;
 
-<span class="hl-keyword">class</span> DataTableLabelsAndAPlainList <span class="hl-keyword">extends</span> Component
+<span class="hl-keyword">class</span> GamesList <span class="hl-keyword">extends</span> Component
 {
+    <span class="hl-comment">/** @var list&lt;array{key: string, name: string, date: string, players: int}&gt; */</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">array</span> <span class="hl-variable">$games</span> = [
+        [<span class="hl-string">'key'</span> =&gt; <span class="hl-string">'g1'</span>, <span class="hl-string">'name'</span> =&gt; <span class="hl-string">'Route 1'</span>, <span class="hl-string">'date'</span> =&gt; <span class="hl-string">'2026-11-08'</span>, <span class="hl-string">'players'</span> =&gt; <span class="hl-number">42</span>],
+        [<span class="hl-string">'key'</span> =&gt; <span class="hl-string">'g2'</span>, <span class="hl-string">'name'</span> =&gt; <span class="hl-string">'Route 2'</span>, <span class="hl-string">'date'</span> =&gt; <span class="hl-string">'2026-11-15'</span>, <span class="hl-string">'players'</span> =&gt; <span class="hl-number">18</span>],
+    ];
+
+    <span class="hl-comment">/** @return list&lt;array&lt;string, mixed&gt;&gt; */</span>
+    <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">rows</span>(): <span class="hl-keyword">array</span>
+    {
+        <span class="hl-keyword">return</span> <span class="hl-function">collect</span>(<span class="hl-variable">$this</span>-&gt;games)-&gt;<span class="hl-function">map</span>(<span class="hl-keyword">fn</span> (<span class="hl-variable">$g</span>) =&gt; [
+            <span class="hl-string">'key'</span> =&gt; <span class="hl-variable">$g</span>[<span class="hl-string">'key'</span>],
+            <span class="hl-string">'cells'</span> =&gt; [<span class="hl-string">'name'</span> =&gt; <span class="hl-variable">$g</span>[<span class="hl-string">'name'</span>], <span class="hl-string">'date'</span> =&gt; \Carbon\Carbon::<span class="hl-function">parse</span>(<span class="hl-variable">$g</span>[<span class="hl-string">'date'</span>])-&gt;<span class="hl-function">format</span>(<span class="hl-string">'d/m/Y'</span>), <span class="hl-string">'players'</span> =&gt; <span class="hl-variable">$g</span>[<span class="hl-string">'players'</span>]],
+            <span class="hl-string">'values'</span> =&gt; [<span class="hl-string">'date'</span> =&gt; <span class="hl-variable">$g</span>[<span class="hl-string">'date'</span>]],
+            <span class="hl-string">'href'</span> =&gt; <span class="hl-function">url</span>(<span class="hl-string">'/games/'</span>.<span class="hl-variable">$g</span>[<span class="hl-string">'key'</span>]),
+        ])-&gt;<span class="hl-function">all</span>();
+    }
+
     <span class="hl-keyword">public</span> <span class="hl-keyword">function</span> <span class="hl-function">render</span>()
     {
-        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.data-table-labels-and-a-plain-list'</span>);
+        <span class="hl-keyword">return</span> <span class="hl-function">view</span>(<span class="hl-string">'livewire.games-list'</span>);
     }
 }
 
-<span class="hl-comment">{{-- resources/views/livewire/data-table-labels-and-a-plain-list.blade.php --}}</span>
-<span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-games-nl"</span> <span class="hl-attr">data-page-size</span>=<span class="hl-string">"0"</span> <span class="hl-attr">data-oc-no-grid</span> <span class="hl-attr">data-oc-labels</span>=<span class="hl-string">'{"summary":"{total} spellen","sortedBy":"Gesorteerd op {label}, {dir}","ascending":"oplopend","descending":"aflopend"}'</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-toolbar"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-heading"</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-title"</span><span class="hl-tag">&gt;</span>Spellen<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--outline oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">popovertarget</span>=<span class="hl-string">"oc-games-nl-menu"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Lijstacties"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Lijstacties"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:tune-variant"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-menu"</span> <span class="hl-attr">id</span>=<span class="hl-string">"oc-games-nl-menu"</span> <span class="hl-attr">popover</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-export</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span>CSV exporteren<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-separator"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-density</span>=<span class="hl-string">"comfortable"</span><span class="hl-tag">&gt;</span>Ruime rijen<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-dropdown-item"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">data-oc-density</span>=<span class="hl-string">"compact"</span><span class="hl-tag">&gt;</span>Compacte rijen<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
+<span class="hl-comment">{{-- resources/views/livewire/games-list.blade.php --}}</span>
+<span class="hl-tag">&lt;div</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-prop">wire:ignore</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;x-oc::data-table</span> <span class="hl-attr">title</span>=<span class="hl-string">"Spellen"</span> <span class="hl-attr">table-id</span>=<span class="hl-string">"games-nl"</span> <span class="hl-attr">:page-size</span>=<span class="hl-string">"0"</span> <span class="hl-attr">:rows</span>=<span class="hl-string">"$this-&gt;rows()"</span>
+            <span class="hl-attr">:columns</span>=<span class="hl-string">"[
+                ['key' =&gt; 'name', 'header' =&gt; 'Naam', 'defaultSort' =&gt; 'ascending'],
+                ['key' =&gt; 'date', 'header' =&gt; 'Datum'],
+                ['key' =&gt; 'players', 'header' =&gt; 'Spelers', 'numeric' =&gt; true],
+            ]"</span>
+            <span class="hl-attr">:filters</span>=<span class="hl-string">"false"</span> <span class="hl-attr">:view</span>=<span class="hl-string">"false"</span> <span class="hl-attr">:pagination</span>=<span class="hl-string">"false"</span> <span class="hl-attr">:selectable</span>=<span class="hl-string">"false"</span>
+            <span class="hl-attr">:labels</span>=<span class="hl-string">"[
+                'listActions' =&gt; 'Lijstacties', 'exportCsv' =&gt; 'CSV exporteren', 'comfortable' =&gt; 'Ruime rijen', 'compact' =&gt; 'Compacte rijen',
+                'search' =&gt; '{name} zoeken', 'actions' =&gt; 'Acties', 'edit' =&gt; '{name} bewerken', 'noResults' =&gt; 'Geen resultaten',
+                'summary' =&gt; '{total} spellen', 'sortedBy' =&gt; 'Gesorteerd op {label}, {dir}', 'ascending' =&gt; 'oplopend', 'descending' =&gt; 'aflopend',
+            ]"</span> <span class="hl-tag">/&gt;</span>
     <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-input oc-data-table-search"</span> <span class="hl-attr">type</span>=<span class="hl-string">"search"</span> <span class="hl-attr">placeholder</span>=<span class="hl-string">"Zoeken..."</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Spellen zoeken"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-sort-summary"</span> <span class="hl-attr">data-oc-sort-summary</span>=<span class="hl-string">""</span> <span class="hl-attr">role</span>=<span class="hl-string">"status"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-frame"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-scroll"</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;table</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table oc-data-table-table"</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;thead</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"text"</span> <span class="hl-attr">aria-sort</span>=<span class="hl-string">"ascending"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Naam<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"date"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"text"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Datum<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"players"</span> <span class="hl-attr">data-oc-sort</span>=<span class="hl-string">"numeric"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-table-sort"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span><span class="hl-tag">&gt;</span>Spelers<span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;th</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-th"</span><span class="hl-tag">&gt;</span>Acties<span class="hl-tag">&lt;/span</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/th</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;/thead</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;tbody</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"g1"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Route 1<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"date"</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"2026-11-08"</span><span class="hl-tag">&gt;</span>08/11/2026<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"players"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span>42<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;div</span> <span class="hl-attr">style</span>=<span class="hl-string">"display: flex; gap: 0.375rem; justify-content: flex-end"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Route 1 bewerken"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Bewerken"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:pencil-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"g2"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Route 2<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"date"</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"2026-11-15"</span><span class="hl-tag">&gt;</span>15/11/2026<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"players"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span>18<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;div</span> <span class="hl-attr">style</span>=<span class="hl-string">"display: flex; gap: 0.375rem; justify-content: flex-end"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Route 2 bewerken"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Bewerken"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:pencil-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;tr</span> <span class="hl-attr">data-oc-row</span>=<span class="hl-string">""</span> <span class="hl-attr">data-oc-key</span>=<span class="hl-string">"g3"</span> <span class="hl-attr">data-oc-status</span>=<span class="hl-string">"active"</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"name"</span><span class="hl-tag">&gt;</span>Route 3<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"date"</span> <span class="hl-attr">data-oc-value</span>=<span class="hl-string">"2026-11-22"</span><span class="hl-tag">&gt;</span>22/11/2026<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"players"</span> <span class="hl-attr">data-numeric</span>=<span class="hl-string">""</span><span class="hl-tag">&gt;</span>27<span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-            <span class="hl-tag">&lt;td</span> <span class="hl-attr">data-oc-col</span>=<span class="hl-string">"actions"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;div</span> <span class="hl-attr">style</span>=<span class="hl-string">"display: flex; gap: 0.375rem; justify-content: flex-end"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-btn oc-btn--soft-primary oc-btn--icon oc-btn--sm"</span> <span class="hl-attr">type</span>=<span class="hl-string">"button"</span> <span class="hl-attr">aria-label</span>=<span class="hl-string">"Route 3 bewerken"</span> <span class="hl-attr">title</span>=<span class="hl-string">"Bewerken"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;iconify-icon</span> <span class="hl-attr">icon</span>=<span class="hl-string">"mdi:pencil-outline"</span> <span class="hl-attr">aria-hidden</span>=<span class="hl-string">"true"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/iconify-icon</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/button</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/td</span><span class="hl-tag">&gt;</span>
-          <span class="hl-tag">&lt;/tr</span><span class="hl-tag">&gt;</span>
-        <span class="hl-tag">&lt;/tbody</span><span class="hl-tag">&gt;</span>
-      <span class="hl-tag">&lt;/table</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-empty"</span> <span class="hl-attr">hidden</span><span class="hl-tag">&gt;</span>Geen resultaten<span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-footer"</span><span class="hl-tag">&gt;</span>
-    <span class="hl-tag">&lt;p</span> <span class="hl-attr">class</span>=<span class="hl-string">"oc-data-table-summary"</span> <span class="hl-attr">data-oc-summary</span>=<span class="hl-string">"{total} spellen"</span><span class="hl-tag">&gt;</span><span class="hl-tag">&lt;/p</span><span class="hl-tag">&gt;</span>
-  <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span>
 <span class="hl-tag">&lt;/div</span><span class="hl-tag">&gt;</span></code></pre><button type="button" class="oc-code-copy" data-oc-copy="" aria-label="Copy code">Copy</button></div></div></div>
 
         </div>

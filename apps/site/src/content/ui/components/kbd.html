@@ -14,26 +14,21 @@
   <span class="oc-kbd-group"><kbd class="oc-kbd">Ctrl</kbd><kbd class="oc-kbd">K</kbd></span>
   or press <kbd class="oc-kbd">/</kbd> to search.
 </p>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;p style={{ margin: "0", display: "flex", alignItems: "center", gap: ".5rem", flexWrap: "wrap", fontSize: ".875rem" }}&gt;
-      Open the command palette with{" "}
-      &lt;span className="oc-kbd-group"&gt;&lt;kbd className="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;kbd className="oc-kbd"&gt;K&lt;/kbd&gt;&lt;/span&gt;{" "}
-      or press &lt;kbd className="oc-kbd"&gt;/&lt;/kbd&gt; to search.
-    &lt;/p&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem"&gt;
-    Open the command palette with
-    &lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;kbd class="oc-kbd"&gt;K&lt;/kbd&gt;&lt;/span&gt;
-    or press &lt;kbd class="oc-kbd"&gt;/&lt;/kbd&gt; to search.
-  &lt;/p&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem"&gt;
+<oc-code lang="tsx">{/* No React wrapper for kbd: plain markup */}
+&lt;p style={{ margin: 0, display: "flex", alignItems: "center", gap: ".5rem", flexWrap: "wrap", fontSize: ".875rem" }}&gt;
+  Open the command palette with{" "}
+  &lt;span className="oc-kbd-group"&gt;&lt;kbd className="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;kbd className="oc-kbd"&gt;K&lt;/kbd&gt;&lt;/span&gt;{" "}
+  or press &lt;kbd className="oc-kbd"&gt;/&lt;/kbd&gt; to search.
+&lt;/p&gt;</oc-code>
+<oc-code lang="vue">&lt;p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem"&gt;
   Open the command palette with
-  &lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;kbd class="oc-kbd"&gt;K&lt;/kbd&gt;&lt;/span&gt;
-  or press &lt;kbd class="oc-kbd"&gt;/&lt;/kbd&gt; to search.
+  &lt;OcKbdGroup :keys="['Ctrl', 'K']" /&gt;
+  or press &lt;OcKbd&gt;/&lt;/OcKbd&gt; to search.
+&lt;/p&gt;</oc-code>
+<oc-code lang="blade">&lt;p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem"&gt;
+    Open the command palette with
+    &lt;x-oc::kbd keys="Ctrl+K" /&gt;
+    or press &lt;x-oc::kbd&gt;/&lt;/x-oc::kbd&gt; to search.
 &lt;/p&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -41,57 +36,58 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class Kbd extends Component
+class SearchHint extends Component
 {
+    public string $shortcut = 'Ctrl+K';
+
     public function render()
     {
-        return view('livewire.kbd');
+        return view('livewire.search-hint');
     }
 }
 
-{{-- resources/views/livewire/kbd.blade.php --}}
+{{-- resources/views/livewire/search-hint.blade.php --}}
 &lt;p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem"&gt;
-  Open the command palette with
-  &lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;kbd class="oc-kbd"&gt;K&lt;/kbd&gt;&lt;/span&gt;
-  or press &lt;kbd class="oc-kbd"&gt;/&lt;/kbd&gt; to search.
+    Open the command palette with
+    &lt;x-oc::kbd :keys="$shortcut" /&gt;
+    or press &lt;x-oc::kbd&gt;/&lt;/x-oc::kbd&gt; to search.
 &lt;/p&gt;</oc-code>
           </oc-demo>
         <h3 id="in-context" class="oc-section-content__title mt-2">In buttons and menus</h3><p class="oc-section-content__desc">Keys sit next to labels; <code>.oc-dropdown-shortcut</code> and <code>.oc-command-shortcut</code> accept them too.</p>
           <oc-demo title="In buttons and menus">
 <button class="oc-btn oc-btn--outline" type="button">Save <span class="oc-kbd-group"><kbd class="oc-kbd">⌘</kbd><kbd class="oc-kbd">S</kbd></span></button>
 <span class="oc-kbd-group"><kbd class="oc-kbd">Ctrl</kbd><span class="oc-kbd-sep">+</span><kbd class="oc-kbd">Shift</kbd><span class="oc-kbd-sep">+</span><kbd class="oc-kbd">P</kbd></span>
-<oc-code lang="tsx">export function Example() {
-  return (
-    &lt;&gt;
-      &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Save &lt;span className="oc-kbd-group"&gt;&lt;kbd className="oc-kbd"&gt;⌘&lt;/kbd&gt;&lt;kbd className="oc-kbd"&gt;S&lt;/kbd&gt;&lt;/span&gt;&lt;/button&gt;
-      &lt;span className="oc-kbd-group"&gt;&lt;kbd className="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;span className="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd className="oc-kbd"&gt;Shift&lt;/kbd&gt;&lt;span className="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd className="oc-kbd"&gt;P&lt;/kbd&gt;&lt;/span&gt;
-    &lt;/&gt;
-  );
-}</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Save &lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;⌘&lt;/kbd&gt;&lt;kbd class="oc-kbd"&gt;S&lt;/kbd&gt;&lt;/span&gt;&lt;/button&gt;
-  &lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;span class="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd class="oc-kbd"&gt;Shift&lt;/kbd&gt;&lt;span class="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd class="oc-kbd"&gt;P&lt;/kbd&gt;&lt;/span&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn oc-btn--outline" type="button"&gt;Save &lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;⌘&lt;/kbd&gt;&lt;kbd class="oc-kbd"&gt;S&lt;/kbd&gt;&lt;/span&gt;&lt;/button&gt;
-&lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;span class="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd class="oc-kbd"&gt;Shift&lt;/kbd&gt;&lt;span class="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd class="oc-kbd"&gt;P&lt;/kbd&gt;&lt;/span&gt;</oc-code>
+<oc-code lang="tsx">&lt;Button variant="outline"&gt;Save &lt;span className="oc-kbd-group"&gt;&lt;kbd className="oc-kbd"&gt;⌘&lt;/kbd&gt;&lt;kbd className="oc-kbd"&gt;S&lt;/kbd&gt;&lt;/span&gt;&lt;/Button&gt;
+&lt;span className="oc-kbd-group"&gt;&lt;kbd className="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;span className="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd className="oc-kbd"&gt;Shift&lt;/kbd&gt;&lt;span className="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd className="oc-kbd"&gt;P&lt;/kbd&gt;&lt;/span&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton variant="outline"&gt;Save &lt;OcKbdGroup :keys="['⌘', 'S']" /&gt;&lt;/OcButton&gt;
+&lt;OcKbdGroup :keys="['Ctrl', 'Shift', 'P']" separator /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button variant="outline"&gt;Save &lt;x-oc::kbd keys="⌘+S" /&gt;&lt;/x-oc::button&gt;
+&lt;x-oc::kbd keys="Ctrl+Shift+P" sep /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class KbdInButtonsAndMenus extends Component
+class SaveShortcut extends Component
 {
+    public bool $saved = false;
+
+    public function save(): void
+    {
+        $this-&gt;saved = true;
+    }
+
     public function render()
     {
-        return view('livewire.kbd-in-buttons-and-menus');
+        return view('livewire.save-shortcut');
     }
 }
 
-{{-- resources/views/livewire/kbd-in-buttons-and-menus.blade.php --}}
+{{-- resources/views/livewire/save-shortcut.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Save &lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;⌘&lt;/kbd&gt;&lt;kbd class="oc-kbd"&gt;S&lt;/kbd&gt;&lt;/span&gt;&lt;/button&gt;
-    &lt;span class="oc-kbd-group"&gt;&lt;kbd class="oc-kbd"&gt;Ctrl&lt;/kbd&gt;&lt;span class="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd class="oc-kbd"&gt;Shift&lt;/kbd&gt;&lt;span class="oc-kbd-sep"&gt;+&lt;/span&gt;&lt;kbd class="oc-kbd"&gt;P&lt;/kbd&gt;&lt;/span&gt;
+    &lt;x-oc::button variant="outline" wire:click="save" wire:keydown.window.ctrl.s.prevent="save"&gt;Save &lt;x-oc::kbd keys="⌘+S" /&gt;&lt;/x-oc::button&gt;
+    &lt;x-oc::kbd keys="Ctrl+Shift+P" sep /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

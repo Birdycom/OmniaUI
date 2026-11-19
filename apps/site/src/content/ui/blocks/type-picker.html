@@ -264,6 +264,18 @@ use Livewire\Component;
 
 class TypePicker extends Component
 {
+    public string $type = 'text';
+
+    public function add(): void
+    {
+        $this-&gt;dispatch('block-added', type: $this-&gt;type);
+    }
+
+    public function cancel(): void
+    {
+        $this-&gt;dispatch('picker-closed');
+    }
+
     public function render()
     {
         return view('livewire.type-picker');
@@ -272,103 +284,70 @@ class TypePicker extends Component
 
 {{-- resources/views/livewire/type-picker.blade.php --}}
 &lt;div&gt;
-    &lt;section class="oc-block-type-picker" aria-labelledby="oc-picker-title"&gt;
-      &lt;div class="oc-block-type-picker-head"&gt;
-        &lt;h2 class="oc-block-type-picker-title" id="oc-picker-title"&gt;Add a block&lt;/h2&gt;
-        &lt;p class="oc-block-type-picker-text"&gt;Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-type-picker-tools"&gt;
-        &lt;div class="oc-input-group oc-input-group--affix"&gt;
-          &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:magnify"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-          &lt;input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks"&gt;
-        &lt;/div&gt;
-        &lt;fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category"&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat" value="all" checked&gt; All&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat" value="content"&gt; Content&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat" value="question"&gt; Questions&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat" value="media"&gt; Media&lt;/label&gt;
-        &lt;/fieldset&gt;
-      &lt;/div&gt;
-      &lt;fieldset class="oc-block-type-picker-grid"&gt;
+    &lt;x-oc::block.type-picker&gt;
+        &lt;x-slot:title&gt;Add a block&lt;/x-slot:title&gt;
+        &lt;x-slot:text&gt;Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.&lt;/x-slot:text&gt;
         &lt;legend class="oc-visually-hidden"&gt;Block type&lt;/legend&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="text" checked&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="text" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="image"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="image" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="question" disabled&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;One per step: this step has one&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="question" wire:model="type" disabled&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;One per step: this step has one&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="note"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Note&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;Info, warning or success in a frame&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="note" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Note&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Info, warning or success in a frame&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="link"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span class="oc-block-type-picker-art-btn"&gt;Open page &lt;iconify-icon icon="mdi:open-in-new"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Link&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;A button to another page&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="link" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span class="oc-block-type-picker-art-btn"&gt;Open page &lt;x-oc::webicon name="mdi:open-in-new" bare /&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Link&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A button to another page&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="countdown"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;A timer that starts when the step opens&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="countdown" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A timer that starts when the step opens&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="tip"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-row"&gt;Show a tip &lt;iconify-icon icon="mdi:chevron-down"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Tip&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;Hidden until the reader opens it&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="tip" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-row"&gt;Show a tip &lt;x-oc::webicon name="mdi:chevron-down" bare /&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Tip&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Hidden until the reader opens it&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="video"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-video"&gt;&lt;iconify-icon icon="mdi:play-circle"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Video&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;A clip from a link or an upload&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="video" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-video"&gt;&lt;x-oc::webicon name="mdi:play-circle" bare /&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Video&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A clip from a link or an upload&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="scan"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Code to scan&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;Opens the step after a scan on site&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="scan" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Code to scan&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Opens the step after a scan on site&lt;/span&gt;
         &lt;/label&gt;
         &lt;p class="oc-block-type-picker-empty" hidden&gt;No block matches your search.&lt;/p&gt;
-      &lt;/fieldset&gt;
-      &lt;div class="oc-block-type-picker-foot"&gt;
-        &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Cancel&lt;/button&gt;
-        &lt;button class="oc-btn" type="button"&gt;Add block&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
-    &lt;script&gt;
-      // Optional: filter the cards of every .oc-block-type-picker by search text and category. Without it all cards stay visible.
-      document.querySelectorAll(".oc-block-type-picker").forEach((picker) =&gt; {
-        const filter = () =&gt; {
-          const q = (picker.querySelector(".oc-block-type-picker-search")?.value || "").trim().toLowerCase();
-          const cat = picker.querySelector(".oc-block-type-picker-cats input:checked")?.value || "all";
-          let shown = 0;
-          picker.querySelectorAll(".oc-block-type-picker-item").forEach((item) =&gt; {
-            item.hidden = !((cat === "all" || item.dataset.category === cat) &amp;&amp; item.textContent.toLowerCase().includes(q));
-            if (!item.hidden) shown++;
-          });
-          const empty = picker.querySelector(".oc-block-type-picker-empty");
-          if (empty) empty.hidden = shown &gt; 0;
-        };
-        picker.addEventListener("input", (e) =&gt; { if (e.target.closest(".oc-block-type-picker-tools")) filter(); });
-      });
-    &lt;/script&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button variant="outline" wire:click="cancel"&gt;Cancel&lt;/x-oc::button&gt;
+            &lt;x-oc::button wire:click="add"&gt;Add block&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.type-picker&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -553,354 +532,304 @@ class TypePicker extends Component
   &lt;/div&gt;
 &lt;/section&gt;
 &lt;!-- + the same optional script as above --&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { useState } from "react";
+import { BlockTypePicker, Button, Webicon } from "@birdycom/omniaui-react";
+import type { TypePickerOption } from "@birdycom/omniaui-react";
+
+const categories = [{ value: "content", label: "Content" }, { value: "question", label: "Questions" }, { value: "media", label: "Media" }];
+
+const options: TypePickerOption[] = [
+  {
+    value: "text",
+    label: "Text",
+    hint: "Paragraphs with headings and links",
+    category: "content",
+    preview: &lt;&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/&gt;,
+  },
+  {
+    value: "image",
+    label: "Image",
+    hint: "A photo with an optional caption",
+    category: "media",
+    preview: &lt;&gt;&lt;svg className="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" className="oc-block-art-sky" /&gt;&lt;circle cx="122" cy="28" r="12" className="oc-block-art-sun" /&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" className="oc-block-art-land" /&gt;&lt;/svg&gt;&lt;/&gt;,
+  },
+  {
+    value: "question",
+    label: "Question",
+    hint: "One per step: this step has one",
+    category: "question",
+    disabled: true,
+    preview: &lt;&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span className="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span className="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/&gt;,
+  },
+  {
+    value: "note",
+    label: "Note",
+    hint: "Info, warning or success in a frame",
+    category: "content",
+    preview: &lt;&gt;&lt;span className="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/&gt;,
+  },
+  {
+    value: "link",
+    label: "Link",
+    hint: "A button to another page",
+    category: "content",
+    preview: &lt;&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span className="oc-block-type-picker-art-btn"&gt;Open page &lt;Webicon name="mdi:open-in-new" bare /&gt;&lt;/span&gt;&lt;/&gt;,
+  },
+  {
+    value: "countdown",
+    label: "Countdown",
+    hint: "A timer that starts when the step opens",
+    category: "content",
+    preview: &lt;&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span className="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span className="oc-block-type-picker-art-bar" /&gt;&lt;/&gt;,
+  },
+  {
+    value: "tip",
+    label: "Tip",
+    hint: "Hidden until the reader opens it",
+    category: "content",
+    preview: &lt;&gt;&lt;span className="oc-block-type-picker-art-row"&gt;Show a tip &lt;Webicon name="mdi:chevron-down" bare /&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/&gt;,
+  },
+  {
+    value: "video",
+    label: "Video",
+    hint: "A clip from a link or an upload",
+    category: "media",
+    preview: &lt;&gt;&lt;span className="oc-block-type-picker-art-video"&gt;&lt;Webicon name="mdi:play-circle" bare /&gt;&lt;/span&gt;&lt;/&gt;,
+  },
+  {
+    value: "scan",
+    label: "Code to scan",
+    hint: "Opens the step after a scan on site",
+    category: "question",
+    preview: &lt;&gt;&lt;svg className="oc-block-type-picker-art-code" viewBox="0 0 21 21" shapeRendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z" /&gt;&lt;/svg&gt;&lt;/&gt;,
+  },
+];
+
+export function Example({ onAdd, onCancel }: { onAdd: (type: string) =&gt; void; onCancel: () =&gt; void }) {
+  const [type, setType] = useState("text");
   return (
-    &lt;&gt;
-      &lt;section className="oc-block-type-picker" style={{ maxInlineSize: "22rem" }} aria-labelledby="oc-picker-title-panel"&gt;
-        &lt;div className="oc-block-type-picker-head"&gt;
-          &lt;h2 className="oc-block-type-picker-title" id="oc-picker-title-panel"&gt;Add a block&lt;/h2&gt;
-          &lt;p className="oc-block-type-picker-text"&gt;Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div className="oc-block-type-picker-tools"&gt;
-          &lt;div className="oc-input-group oc-input-group--affix"&gt;
-            &lt;span className="oc-input-addon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:magnify" /&gt;&lt;/span&gt;
-            &lt;input className="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks" /&gt;
-          &lt;/div&gt;
-          &lt;fieldset className="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category"&gt;
-            &lt;label className="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="all" defaultChecked /&gt; All&lt;/label&gt;
-            &lt;label className="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="content" /&gt; Content&lt;/label&gt;
-            &lt;label className="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="question" /&gt; Questions&lt;/label&gt;
-            &lt;label className="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="media" /&gt; Media&lt;/label&gt;
-          &lt;/fieldset&gt;
-        &lt;/div&gt;
-        &lt;fieldset className="oc-block-type-picker-grid"&gt;
-          &lt;legend className="oc-visually-hidden"&gt;Block type&lt;/legend&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="content"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="text" defaultChecked /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Text&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="media"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="image" /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg className="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" className="oc-block-art-sky" /&gt;&lt;circle cx="122" cy="28" r="12" className="oc-block-art-sun" /&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" className="oc-block-art-land" /&gt;&lt;/svg&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Image&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="question"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="question" disabled /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span className="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span className="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Question&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;One per step: this step has one&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="content"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="note" /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span className="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Note&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;Info, warning or success in a frame&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="content"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="link" /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span className="oc-block-type-picker-art-btn"&gt;Open page &lt;iconify-icon icon="mdi:open-in-new" /&gt;&lt;/span&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Link&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;A button to another page&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="content"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="countdown" /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span className="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span className="oc-block-type-picker-art-bar" /&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;A timer that starts when the step opens&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="content"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="tip" /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span className="oc-block-type-picker-art-row"&gt;Show a tip &lt;iconify-icon icon="mdi:chevron-down" /&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Tip&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;Hidden until the reader opens it&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="media"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="video" /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span className="oc-block-type-picker-art-video"&gt;&lt;iconify-icon icon="mdi:play-circle" /&gt;&lt;/span&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Video&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;A clip from a link or an upload&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;label className="oc-block-type-picker-item" data-category="question"&gt;
-            &lt;input className="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="scan" /&gt;
-            &lt;span className="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg className="oc-block-type-picker-art-code" viewBox="0 0 21 21" shapeRendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z" /&gt;&lt;/svg&gt;&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-name"&gt;Code to scan&lt;/span&gt;{" "}
-            &lt;span className="oc-block-type-picker-hint"&gt;Opens the step after a scan on site&lt;/span&gt;
-          &lt;/label&gt;
-          &lt;p className="oc-block-type-picker-empty" hidden&gt;No block matches your search.&lt;/p&gt;
-        &lt;/fieldset&gt;
-        &lt;div className="oc-block-type-picker-foot"&gt;
-          &lt;button className="oc-btn oc-btn--outline" type="button"&gt;Cancel&lt;/button&gt;
-          &lt;button className="oc-btn" type="button"&gt;Add block&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/section&gt;
-      {/* + the same optional script as above */}
-    &lt;/&gt;
+    &lt;BlockTypePicker
+      style={{ maxInlineSize: "22rem" }}
+      title="Add a block"
+      text="Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys."
+      categories={categories}
+      options={options}
+      value={type}
+      onValueChange={setType}
+      footer={
+        &lt;&gt;
+          &lt;Button variant="outline" onClick={onCancel}&gt;Cancel&lt;/Button&gt;
+          &lt;Button onClick={() =&gt; onAdd(type)}&gt;Add block&lt;/Button&gt;
+        &lt;/&gt;
+      }
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;section class="oc-block-type-picker" style="max-inline-size: 22rem" aria-labelledby="oc-picker-title-panel"&gt;
-    &lt;div class="oc-block-type-picker-head"&gt;
-      &lt;h2 class="oc-block-type-picker-title" id="oc-picker-title-panel"&gt;Add a block&lt;/h2&gt;
-      &lt;p class="oc-block-type-picker-text"&gt;Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-type-picker-tools"&gt;
-      &lt;div class="oc-input-group oc-input-group--affix"&gt;
-        &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:magnify"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-        &lt;input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks" /&gt;
-      &lt;/div&gt;
-      &lt;fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category"&gt;
-        &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="all" checked /&gt; All&lt;/label&gt;
-        &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="content" /&gt; Content&lt;/label&gt;
-        &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="question" /&gt; Questions&lt;/label&gt;
-        &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="media" /&gt; Media&lt;/label&gt;
-      &lt;/fieldset&gt;
-    &lt;/div&gt;
-    &lt;fieldset class="oc-block-type-picker-grid"&gt;
-      &lt;legend class="oc-visually-hidden"&gt;Block type&lt;/legend&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="text" checked /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="image" /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky" /&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun" /&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land" /&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="question" disabled /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;One per step: this step has one&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="note" /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Note&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;Info, warning or success in a frame&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="link" /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span class="oc-block-type-picker-art-btn"&gt;Open page &lt;iconify-icon icon="mdi:open-in-new"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Link&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;A button to another page&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="countdown" /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;A timer that starts when the step opens&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="tip" /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-row"&gt;Show a tip &lt;iconify-icon icon="mdi:chevron-down"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Tip&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;Hidden until the reader opens it&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="video" /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-video"&gt;&lt;iconify-icon icon="mdi:play-circle"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Video&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;A clip from a link or an upload&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
-        &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="scan" /&gt;
-        &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z" /&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-name"&gt;Code to scan&lt;/span&gt;
-        &lt;span class="oc-block-type-picker-hint"&gt;Opens the step after a scan on site&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;p class="oc-block-type-picker-empty" hidden&gt;No block matches your search.&lt;/p&gt;
-    &lt;/fieldset&gt;
-    &lt;div class="oc-block-type-picker-foot"&gt;
-      &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Cancel&lt;/button&gt;
-      &lt;button class="oc-btn" type="button"&gt;Add block&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
-  &lt;!-- + the same optional script as above --&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcBlockTypePicker, OcButton, OcWebicon } from '@birdycom/omniaui-vue'
+
+const type = ref('text')
+const categories = [{ value: 'content', label: 'Content' }, { value: 'question', label: 'Questions' }, { value: 'media', label: 'Media' }]
+const options = [
+  { value: 'text', label: 'Text', hint: 'Paragraphs with headings and links', category: 'content' },
+  { value: 'image', label: 'Image', hint: 'A photo with an optional caption', category: 'media' },
+  { value: 'question', label: 'Question', hint: 'One per step: this step has one', category: 'question', disabled: true },
+  { value: 'note', label: 'Note', hint: 'Info, warning or success in a frame', category: 'content' },
+  { value: 'link', label: 'Link', hint: 'A button to another page', category: 'content' },
+  { value: 'countdown', label: 'Countdown', hint: 'A timer that starts when the step opens', category: 'content' },
+  { value: 'tip', label: 'Tip', hint: 'Hidden until the reader opens it', category: 'content' },
+  { value: 'video', label: 'Video', hint: 'A clip from a link or an upload', category: 'media' },
+  { value: 'scan', label: 'Code to scan', hint: 'Opens the step after a scan on site', category: 'question' },
+]
+const emit = defineEmits&lt;{ add: [type: string]; cancel: [] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockTypePicker
+    v-model="type"
+    style="max-inline-size: 22rem"
+    title="Add a block"
+    text="Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys."
+    :categories="categories"
+    :options="options"
+  &gt;
+    &lt;template #preview="{ option }"&gt;
+      &lt;template v-if="option.value === 'text'"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'image'"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'question'"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'note'"&gt;&lt;span class="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'link'"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span class="oc-block-type-picker-art-btn"&gt;Open page &lt;OcWebicon name="mdi:open-in-new" bare /&gt;&lt;/span&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'countdown'"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'tip'"&gt;&lt;span class="oc-block-type-picker-art-row"&gt;Show a tip &lt;OcWebicon name="mdi:chevron-down" bare /&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'video'"&gt;&lt;span class="oc-block-type-picker-art-video"&gt;&lt;OcWebicon name="mdi:play-circle" bare /&gt;&lt;/span&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'scan'"&gt;&lt;svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"/&gt;&lt;/svg&gt;&lt;/template&gt;
+    &lt;/template&gt;
+    &lt;template #footer&gt;
+      &lt;OcButton variant="outline" @click="emit('cancel')"&gt;Cancel&lt;/OcButton&gt;
+      &lt;OcButton @click="emit('add', type)"&gt;Add block&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockTypePicker&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-block-type-picker" style="max-inline-size: 22rem" aria-labelledby="oc-picker-title-panel"&gt;
-  &lt;div class="oc-block-type-picker-head"&gt;
-    &lt;h2 class="oc-block-type-picker-title" id="oc-picker-title-panel"&gt;Add a block&lt;/h2&gt;
-    &lt;p class="oc-block-type-picker-text"&gt;Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-type-picker-tools"&gt;
-    &lt;div class="oc-input-group oc-input-group--affix"&gt;
-      &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:magnify"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-      &lt;input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks"&gt;
-    &lt;/div&gt;
-    &lt;fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category"&gt;
-      &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="all" checked&gt; All&lt;/label&gt;
-      &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="content"&gt; Content&lt;/label&gt;
-      &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="question"&gt; Questions&lt;/label&gt;
-      &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="media"&gt; Media&lt;/label&gt;
-    &lt;/fieldset&gt;
-  &lt;/div&gt;
-  &lt;fieldset class="oc-block-type-picker-grid"&gt;
-    &lt;legend class="oc-visually-hidden"&gt;Block type&lt;/legend&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="text" checked&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="image"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="question" disabled&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;One per step: this step has one&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="note"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Note&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;Info, warning or success in a frame&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="link"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span class="oc-block-type-picker-art-btn"&gt;Open page &lt;iconify-icon icon="mdi:open-in-new"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Link&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;A button to another page&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="countdown"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;A timer that starts when the step opens&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="tip"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-row"&gt;Show a tip &lt;iconify-icon icon="mdi:chevron-down"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Tip&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;Hidden until the reader opens it&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="video"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-video"&gt;&lt;iconify-icon icon="mdi:play-circle"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Video&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;A clip from a link or an upload&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
-      &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="scan"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Code to scan&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;Opens the step after a scan on site&lt;/span&gt;
-    &lt;/label&gt;
-    &lt;p class="oc-block-type-picker-empty" hidden&gt;No block matches your search.&lt;/p&gt;
-  &lt;/fieldset&gt;
-  &lt;div class="oc-block-type-picker-foot"&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Cancel&lt;/button&gt;
-    &lt;button class="oc-btn" type="button"&gt;Add block&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/section&gt;
-&lt;!-- + the same optional script as above --&gt;</oc-code>
+<oc-code lang="blade">&lt;form method="post" action="/steps/1/blocks"&gt;
+    @csrf
+    &lt;x-oc::block.type-picker style="max-inline-size: 22rem"&gt;
+        &lt;x-slot:title&gt;Add a block&lt;/x-slot:title&gt;
+        &lt;x-slot:text&gt;Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.&lt;/x-slot:text&gt;
+        &lt;legend class="oc-visually-hidden"&gt;Block type&lt;/legend&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="text" checked&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="image"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="question" disabled&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;One per step: this step has one&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="note"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Note&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Info, warning or success in a frame&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="link"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span class="oc-block-type-picker-art-btn"&gt;Open page &lt;x-oc::webicon name="mdi:open-in-new" bare /&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Link&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A button to another page&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="countdown"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A timer that starts when the step opens&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="tip"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-row"&gt;Show a tip &lt;x-oc::webicon name="mdi:chevron-down" bare /&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Tip&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Hidden until the reader opens it&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="video"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-video"&gt;&lt;x-oc::webicon name="mdi:play-circle" bare /&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Video&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A clip from a link or an upload&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="scan"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Code to scan&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Opens the step after a scan on site&lt;/span&gt;
+        &lt;/label&gt;
+        &lt;p class="oc-block-type-picker-empty" hidden&gt;No block matches your search.&lt;/p&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;
+            &lt;x-oc::button type="submit"&gt;Add block&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.type-picker&gt;
+&lt;/form&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class TypePickerInANarrowSidePanel extends Component
+class TypePickerPanel extends Component
 {
+    public string $type = 'text';
+
+    public function add(): void
+    {
+        $this-&gt;dispatch('block-added', type: $this-&gt;type);
+    }
+
+    public function cancel(): void
+    {
+        $this-&gt;dispatch('picker-closed');
+    }
+
     public function render()
     {
-        return view('livewire.type-picker-in-a-narrow-side-panel');
+        return view('livewire.type-picker-panel');
     }
 }
 
-{{-- resources/views/livewire/type-picker-in-a-narrow-side-panel.blade.php --}}
+{{-- resources/views/livewire/type-picker-panel.blade.php --}}
 &lt;div&gt;
-    &lt;section class="oc-block-type-picker" style="max-inline-size: 22rem" aria-labelledby="oc-picker-title-panel"&gt;
-      &lt;div class="oc-block-type-picker-head"&gt;
-        &lt;h2 class="oc-block-type-picker-title" id="oc-picker-title-panel"&gt;Add a block&lt;/h2&gt;
-        &lt;p class="oc-block-type-picker-text"&gt;Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-block-type-picker-tools"&gt;
-        &lt;div class="oc-input-group oc-input-group--affix"&gt;
-          &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:magnify"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
-          &lt;input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks"&gt;
-        &lt;/div&gt;
-        &lt;fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category"&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="all" checked&gt; All&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="content"&gt; Content&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="question"&gt; Questions&lt;/label&gt;
-          &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" name="oc-picker-cat-panel" value="media"&gt; Media&lt;/label&gt;
-        &lt;/fieldset&gt;
-      &lt;/div&gt;
-      &lt;fieldset class="oc-block-type-picker-grid"&gt;
+    &lt;x-oc::block.type-picker style="max-inline-size: 22rem"&gt;
+        &lt;x-slot:title&gt;Add a block&lt;/x-slot:title&gt;
+        &lt;x-slot:text&gt;Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.&lt;/x-slot:text&gt;
         &lt;legend class="oc-visually-hidden"&gt;Block type&lt;/legend&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="text" checked&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="text" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="image"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="image" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="question" disabled&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;One per step: this step has one&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="question" wire:model="type" disabled&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;One per step: this step has one&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="note"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Note&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;Info, warning or success in a frame&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="note" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-note"&gt;&lt;b&gt;Mind the traffic&lt;/b&gt;&lt;p&gt;Cross at the lights.&lt;/p&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Note&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Info, warning or success in a frame&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="link"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span class="oc-block-type-picker-art-btn"&gt;Open page &lt;iconify-icon icon="mdi:open-in-new"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Link&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;A button to another page&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="link" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;More about this place&lt;/p&gt;&lt;span class="oc-block-type-picker-art-btn"&gt;Open page &lt;x-oc::webicon name="mdi:open-in-new" bare /&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Link&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A button to another page&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="countdown"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;A timer that starts when the step opens&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="countdown" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A timer that starts when the step opens&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="content"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="tip"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-row"&gt;Show a tip &lt;iconify-icon icon="mdi:chevron-down"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Tip&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;Hidden until the reader opens it&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="tip" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-row"&gt;Show a tip &lt;x-oc::webicon name="mdi:chevron-down" bare /&gt;&lt;/span&gt;&lt;p&gt;Opens when the reader asks for it.&lt;/p&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Tip&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Hidden until the reader opens it&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="media"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="video"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-video"&gt;&lt;iconify-icon icon="mdi:play-circle"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Video&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;A clip from a link or an upload&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="video" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;span class="oc-block-type-picker-art-video"&gt;&lt;x-oc::webicon name="mdi:play-circle" bare /&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Video&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A clip from a link or an upload&lt;/span&gt;
         &lt;/label&gt;
         &lt;label class="oc-block-type-picker-item" data-category="question"&gt;
-          &lt;input class="oc-block-type-picker-input" type="radio" name="oc-picker-type-panel" value="scan"&gt;
-          &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-name"&gt;Code to scan&lt;/span&gt;
-          &lt;span class="oc-block-type-picker-hint"&gt;Opens the step after a scan on site&lt;/span&gt;
+            &lt;input class="oc-block-type-picker-input" type="radio" name="type" value="scan" wire:model="type"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-code" viewBox="0 0 21 21" shape-rendering="crispEdges"&gt;&lt;path fill="currentColor" d="M0 0h7v1h-7zM9 0h1v1h-1zM14 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM20 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h2v1h-2zM11 2h2v1h-2zM14 2h1v1h-1zM16 2h3v1h-3zM20 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h2v1h-2zM14 3h1v1h-1zM16 3h3v1h-3zM20 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h2v1h-2zM14 5h1v1h-1zM20 5h1v1h-1zM0 6h7v1h-7zM14 6h7v1h-7zM9 7h3v1h-3zM0 8h2v1h-2zM3 8h1v1h-1zM6 8h2v1h-2zM9 8h2v1h-2zM13 8h1v1h-1zM16 8h1v1h-1zM18 8h2v1h-2zM1 9h4v1h-4zM6 9h2v1h-2zM12 9h1v1h-1zM14 9h1v1h-1zM17 9h2v1h-2zM20 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM6 10h2v1h-2zM9 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h3v1h-3zM0 11h4v1h-4zM5 11h1v1h-1zM11 11h2v1h-2zM14 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM8 12h5v1h-5zM15 12h1v1h-1zM17 12h2v1h-2zM10 13h1v1h-1zM12 13h1v1h-1zM14 13h2v1h-2zM17 13h1v1h-1zM19 13h2v1h-2zM0 14h7v1h-7zM9 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM0 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1zM16 15h4v1h-4zM0 16h1v1h-1zM2 16h3v1h-3zM6 16h1v1h-1zM10 16h2v1h-2zM13 16h4v1h-4zM19 16h1v1h-1zM0 17h1v1h-1zM2 17h3v1h-3zM6 17h1v1h-1zM8 17h1v1h-1zM10 17h1v1h-1zM12 17h3v1h-3zM16 17h1v1h-1zM18 17h3v1h-3zM0 18h1v1h-1zM2 18h3v1h-3zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h5v1h-5zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM13 19h1v1h-1zM16 19h5v1h-5zM0 20h7v1h-7zM14 20h1v1h-1z"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Code to scan&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Opens the step after a scan on site&lt;/span&gt;
         &lt;/label&gt;
         &lt;p class="oc-block-type-picker-empty" hidden&gt;No block matches your search.&lt;/p&gt;
-      &lt;/fieldset&gt;
-      &lt;div class="oc-block-type-picker-foot"&gt;
-        &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Cancel&lt;/button&gt;
-        &lt;button class="oc-btn" type="button"&gt;Add block&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/section&gt;
-    &lt;!-- + the same optional script as above --&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button variant="outline" wire:click="cancel"&gt;Cancel&lt;/x-oc::button&gt;
+            &lt;x-oc::button wire:click="add"&gt;Add block&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.type-picker&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -965,49 +894,122 @@ class TypePickerInANarrowSidePanel extends Component
     &lt;/button&gt;
   &lt;/div&gt;
 &lt;/section&gt;</oc-code>
-<oc-code lang="tsx">&lt;BlockTypePicker
-  mode="action"
-  title="Add to Step 1"
-  search={false}
-  draggable
-  options={[
-    { value: "text", label: "Text", hint: "Paragraphs with headings and links", preview: &lt;TextPreview /&gt; },
-    { value: "question", label: "Question", hint: "Multiple choice or open", disabledReason: "This step already has a question" },
-  ]}
-  onPick={(type) =&gt; addBlock(type)}
-  onItemDragStart={(option, e) =&gt; e.dataTransfer.setData("application/x-block", option.value)}
-/&gt;</oc-code>
-<oc-code lang="vue">&lt;OcBlockTypePicker mode="action" title="Add to Step 1" :search="false" draggable :options="types"
-  @pick="(type) =&gt; addBlock(type)"
-  @item-dragstart="(option, e) =&gt; e.dataTransfer.setData('application/x-block', option.value)" /&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-block-type-picker oc-block-type-picker--action" style="max-inline-size: 26rem" aria-labelledby="oc-pick-title"&gt;
-  &lt;div class="oc-block-type-picker-head"&gt;
-    &lt;h2 class="oc-block-type-picker-title" id="oc-pick-title"&gt;Add to Step 1&lt;/h2&gt;
-    &lt;p class="oc-block-type-picker-text"&gt;Click a card to add it, or drag it into the step.&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-type-picker-grid" role="group" aria-label="Block type"&gt;
-    &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="text" draggable="true"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;button type="button" class="oc-block-type-picker-item" data-category="media" data-value="image" draggable="true"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;button type="button" class="oc-block-type-picker-item" data-category="question" data-value="question" aria-disabled="true" aria-describedby="oc-pick-question-reason"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;Multiple choice or open&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-reason" id="oc-pick-question-reason"&gt;This step already has a question&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="countdown" draggable="true"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;A timer for the step&lt;/span&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
+<oc-code lang="tsx">import { BlockTypePicker } from "@birdycom/omniaui-react";
+import type { TypePickerOption } from "@birdycom/omniaui-react";
+
+const options: TypePickerOption[] = [
+  {
+    value: "text",
+    label: "Text",
+    hint: "Paragraphs with headings and links",
+    category: "content",
+    preview: &lt;&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/&gt;,
+  },
+  {
+    value: "image",
+    label: "Image",
+    hint: "A photo with an optional caption",
+    category: "media",
+    preview: &lt;&gt;&lt;svg className="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" className="oc-block-art-sky" /&gt;&lt;circle cx="122" cy="28" r="12" className="oc-block-art-sun" /&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" className="oc-block-art-land" /&gt;&lt;/svg&gt;&lt;/&gt;,
+  },
+  {
+    value: "question",
+    label: "Question",
+    hint: "Multiple choice or open",
+    category: "question",
+    disabledReason: "This step already has a question",
+    preview: &lt;&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span className="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span className="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/&gt;,
+  },
+  {
+    value: "countdown",
+    label: "Countdown",
+    hint: "A timer for the step",
+    category: "content",
+    preview: &lt;&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span className="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span className="oc-block-type-picker-art-bar" /&gt;&lt;/&gt;,
+  },
+];
+
+export function Example({ onAdd }: { onAdd: (type: string) =&gt; void }) {
+  return (
+    &lt;BlockTypePicker
+      mode="action"
+      style={{ maxInlineSize: "26rem" }}
+      title="Add to Step 1"
+      text="Click a card to add it, or drag it into the step."
+      search={false}
+      draggable
+      options={options}
+      onPick={(type) =&gt; onAdd(type)}
+      onItemDragStart={(option, e) =&gt; e.dataTransfer.setData("application/x-block", option.value)}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockTypePicker } from '@birdycom/omniaui-vue'
+import type { TypePickerOption } from '@birdycom/omniaui-vue'
+
+const options: TypePickerOption[] = [
+  { value: 'text', label: 'Text', hint: 'Paragraphs with headings and links', category: 'content' },
+  { value: 'image', label: 'Image', hint: 'A photo with an optional caption', category: 'media' },
+  { value: 'question', label: 'Question', hint: 'Multiple choice or open', category: 'question', disabledReason: 'This step already has a question' },
+  { value: 'countdown', label: 'Countdown', hint: 'A timer for the step', category: 'content' },
+]
+const emit = defineEmits&lt;{ add: [type: string] }&gt;()
+
+function dragStart(option: TypePickerOption, e: DragEvent) {
+  e.dataTransfer?.setData('application/x-block', option.value)
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockTypePicker
+    mode="action"
+    style="max-inline-size: 26rem"
+    title="Add to Step 1"
+    text="Click a card to add it, or drag it into the step."
+    :search="false"
+    draggable
+    :options="options"
+    @pick="(type) =&gt; emit('add', type)"
+    @item-dragstart="dragStart"
+  &gt;
+    &lt;template #preview="{ option }"&gt;
+      &lt;template v-if="option.value === 'text'"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'image'"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'question'"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/template&gt;
+      &lt;template v-else-if="option.value === 'countdown'"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/template&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockTypePicker&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Action mode (every card is a button) has no Blade component: the block markup --}}
+&lt;section class="oc-block-type-picker oc-block-type-picker--action" style="max-inline-size: 26rem" aria-labelledby="oc-pick-title"&gt;
+    &lt;div class="oc-block-type-picker-head"&gt;
+        &lt;h2 class="oc-block-type-picker-title" id="oc-pick-title"&gt;Add to Step 1&lt;/h2&gt;
+        &lt;p class="oc-block-type-picker-text"&gt;Click a card to add it, or drag it into the step.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-block-type-picker-grid" role="group" aria-label="Block type"&gt;
+        &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="text" draggable="true"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button type="button" class="oc-block-type-picker-item" data-category="media" data-value="image" draggable="true"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button type="button" class="oc-block-type-picker-item" data-category="question" data-value="question" aria-disabled="true" aria-describedby="oc-pick-question-reason"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Multiple choice or open&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-reason" id="oc-pick-question-reason"&gt;This step already has a question&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="countdown" draggable="true"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A timer for the step&lt;/span&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
 &lt;/section&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -1015,43 +1017,48 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class TypePickerActionMode extends Component
+class TypePickerAction extends Component
 {
+    public function add(string $type): void
+    {
+        $this-&gt;dispatch('block-added', type: $type);
+    }
+
     public function render()
     {
-        return view('livewire.type-picker-action-mode');
+        return view('livewire.type-picker-action');
     }
 }
 
-{{-- resources/views/livewire/type-picker-action-mode.blade.php --}}
+{{-- resources/views/livewire/type-picker-action.blade.php --}}
 &lt;section class="oc-block-type-picker oc-block-type-picker--action" style="max-inline-size: 26rem" aria-labelledby="oc-pick-title"&gt;
-  &lt;div class="oc-block-type-picker-head"&gt;
-    &lt;h2 class="oc-block-type-picker-title" id="oc-pick-title"&gt;Add to Step 1&lt;/h2&gt;
-    &lt;p class="oc-block-type-picker-text"&gt;Click a card to add it, or drag it into the step.&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-block-type-picker-grid" role="group" aria-label="Block type"&gt;
-    &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="text" draggable="true"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;button type="button" class="oc-block-type-picker-item" data-category="media" data-value="image" draggable="true"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;button type="button" class="oc-block-type-picker-item" data-category="question" data-value="question" aria-disabled="true" aria-describedby="oc-pick-question-reason"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;Multiple choice or open&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-reason" id="oc-pick-question-reason"&gt;This step already has a question&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="countdown" draggable="true"&gt;
-      &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
-      &lt;span class="oc-block-type-picker-hint"&gt;A timer for the step&lt;/span&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
+    &lt;div class="oc-block-type-picker-head"&gt;
+        &lt;h2 class="oc-block-type-picker-title" id="oc-pick-title"&gt;Add to Step 1&lt;/h2&gt;
+        &lt;p class="oc-block-type-picker-text"&gt;Click a card to add it, or drag it into the step.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-block-type-picker-grid" role="group" aria-label="Block type"&gt;
+        &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="text" draggable="true" wire:click="add('text')"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button type="button" class="oc-block-type-picker-item" data-category="media" data-value="image" draggable="true" wire:click="add('image')"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button type="button" class="oc-block-type-picker-item" data-category="question" data-value="question" aria-disabled="true" aria-describedby="oc-pick-question-reason"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;Multiple choice or open&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-reason" id="oc-pick-question-reason"&gt;This step already has a question&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="countdown" draggable="true" wire:click="add('countdown')"&gt;
+            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
+            &lt;span class="oc-block-type-picker-hint"&gt;A timer for the step&lt;/span&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
 &lt;/section&gt;</oc-code>
           </oc-demo>
         </div>
