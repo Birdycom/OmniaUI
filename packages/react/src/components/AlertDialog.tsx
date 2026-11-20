@@ -26,6 +26,10 @@ export interface AlertDialogProps extends Omit<DialogHTMLAttributes<HTMLDialogEl
   message?: ReactNode;
   /** Secondary + primary buttons (`oc-modal-footer`), e.g. `<ModalClose>`s. */
   footer?: ReactNode;
+  /** Third action at the start of the footer ("Don't save", `.oc-alert-dialog-discard`); closes the dialog. */
+  discardLabel?: ReactNode;
+  /** Called when the discard button is pressed (before the dialog closes). */
+  onDiscard?: () => void;
   /** A close button (×) in the corner; on by itself when `closeRound` or `closeClassName` is set. */
   closeButton?: boolean;
   /** Accessible name of the close button (default "Close"). */
@@ -38,7 +42,7 @@ export interface AlertDialogProps extends Omit<DialogHTMLAttributes<HTMLDialogEl
 
 /** Confirmation `<dialog class="oc-modal">` with a status icon. */
 export const AlertDialog = forwardRef<HTMLDialogElement, AlertDialogProps>(function AlertDialog(
-  { open, defaultOpen, onOpenChange, type = "warning", icon, title, message, footer, closeButton, closeLabel = "Close", closeRound, closeClassName, className, children, ...rest },
+  { open, defaultOpen, onOpenChange, type = "warning", icon, title, message, footer, discardLabel, onDiscard, closeButton, closeLabel = "Close", closeRound, closeClassName, className, children, ...rest },
   forwardedRef,
 ) {
   const inner = useRef<HTMLDialogElement>(null);
@@ -63,7 +67,14 @@ export const AlertDialog = forwardRef<HTMLDialogElement, AlertDialogProps>(funct
           <span className="oc-alert-dialog-icon" aria-hidden="true">{icon ?? GLYPHS[type]}</span>
           <h2 className="oc-modal-title" id={`${id}-title`}>{title}</h2>
           <div className="oc-modal-body" id={`${id}-text`}>{message ?? children}</div>
-          {footer != null && <div className="oc-modal-footer">{footer}</div>}
+          {(footer != null || discardLabel != null) && (
+            <div className="oc-modal-footer">
+              {discardLabel != null && (
+                <button className="oc-btn oc-btn--ghost oc-alert-dialog-discard" type="button" onClick={() => { onDiscard?.(); dlg.close(); }}>{discardLabel}</button>
+              )}
+              {footer}
+            </div>
+          )}
         </div>
       </DialogContext.Provider>
     </dialog>

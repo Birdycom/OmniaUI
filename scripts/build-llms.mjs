@@ -128,3 +128,24 @@ ${sections.slice(2).map(([title, links]) => `## ${title}\n\n${links.join("\n")}`
 await fs.writeFile(path.join(root, "public/llms.txt"), llms);
 await fs.writeFile(path.join(root, "public/llms-full.txt"), full);
 console.log(`[llms] public/llms.txt (${llms.length} chars), public/llms-full.txt (${full.length} chars)`);
+
+// Local robots.txt + sitemap.xml (last step of "npm run site:build"), so sitemap coverage can be checked on Herd
+// (https://omniaui.test). Generated files, not committed; "npm run deploy" writes the live versions with the production
+// address (scripts/deploy.mjs, same rules: no redirects, no noindex pages such as 404.html, no google*.html).
+const localSite = (process.env.SEO_SITE_URL || "https://omniaui.test").replace(/\/$/, "");
+const sitemapPages = [];
+for await (const entry of fs.glob("**/*.html", { cwd: path.join(root, "public") })) {
+  const rel = entry.split(path.sep).join("/");
+  if (/(^|\/)(google[0-9a-f]+|404)\.html$/.test(rel)) continue;
+  const file = path.join(root, "public", entry);
+  const html = await fs.readFile(file, "utf8");
+  if (/http-equiv="refresh"/i.test(html) || /<meta name="robots" content="[^"]*noindex/i.test(html)) continue;
+  sitemapPages.push([rel, (await fs.stat(file)).mtime.toISOString().slice(0, 10)]);
+}
+const sortKey = (rel) => (rel === "index.html" ? "" : rel); // home first
+const sitemapUrls = sitemapPages
+  .sort(([a], [b]) => (sortKey(a) < sortKey(b) ? -1 : 1))
+  .map(([rel, lastmod]) => `  <url><loc>${localSite}/${rel.replace(/(^|\/)index\.html$/, "$1").replace(/\.html$/, "")}</loc><lastmod>${lastmod}</lastmod></url>`);
+await fs.writeFile(path.join(root, "public/robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${localSite}/sitemap.xml\n`);
+await fs.writeFile(path.join(root, "public/sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls.join("\n")}\n</urlset>\n`);
+console.log(`[seo] public/robots.txt + public/sitemap.xml (${sitemapUrls.length} pages, ${localSite})`);

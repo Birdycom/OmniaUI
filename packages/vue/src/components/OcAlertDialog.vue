@@ -15,6 +15,8 @@ const props = withDefaults(
     message?: string
     confirmLabel?: string
     cancelLabel?: string
+    /** Third action at the start of the footer ("Don't save", .oc-alert-dialog-discard); emits `discard` and closes. */
+    discardLabel?: string
     /** Variant of the confirm button; defaults to destructive for warning/error. */
     confirmVariant?: 'default' | 'destructive' | 'success'
     /** A close button (×) in the corner; also shown when closeRound or close-class is set. */
@@ -27,7 +29,7 @@ const props = withDefaults(
   }>(),
   { type: 'warning', confirmLabel: 'Confirm', cancelLabel: 'Cancel', closeLabel: 'Close' },
 )
-const emit = defineEmits<{ confirm: []; cancel: [] }>()
+const emit = defineEmits<{ confirm: []; cancel: []; discard: [] }>()
 const open = defineModel<boolean>('open', { default: false })
 const el = ref<HTMLDialogElement | null>(null)
 const { onClose } = useDialog(open, el)
@@ -44,6 +46,10 @@ function confirm() {
 }
 function cancel() {
   emit('cancel')
+  close()
+}
+function discard() {
+  emit('discard')
   close()
 }
 </script>
@@ -64,7 +70,8 @@ function cancel() {
       <h2 :id="titleId" class="oc-modal-title"><slot name="title">{{ title }}</slot></h2>
       <div :id="textId" class="oc-modal-body"><slot>{{ message }}</slot></div>
       <div class="oc-modal-footer">
-        <slot name="footer" :close="close" :confirm="confirm" :cancel="cancel">
+        <slot name="footer" :close="close" :confirm="confirm" :cancel="cancel" :discard="discard">
+          <button v-if="discardLabel" class="oc-btn oc-btn--ghost oc-alert-dialog-discard" type="button" @click="discard">{{ discardLabel }}</button>
           <button class="oc-btn oc-btn--outline" type="button" @click="cancel">{{ cancelLabel }}</button>
           <button :class="['oc-btn', variant !== 'default' && `oc-btn--${variant}`]" type="button" @click="confirm">{{ confirmLabel }}</button>
         </slot>

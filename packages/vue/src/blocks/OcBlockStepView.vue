@@ -15,6 +15,8 @@ export interface StepViewQuestion {
   options: string[]
   sendLabel?: string
   hint?: string
+  /** Name of the radio group (default: generated from the title id). */
+  name?: string
   /** After checking (0.17.0): the picked and the right answer; the answers turn green / red and lock (slot `feedback`). */
   result?: { picked: number; correct: number }
   resultLabels?: { correct?: string; wrong?: string }
@@ -47,7 +49,7 @@ const titleId = useUid('oc-stepview')
       <p :id="`${titleId}-ask`" class="oc-block-step-view-ask">{{ question.text }}</p>
       <fieldset class="oc-block-step-view-answers" :aria-labelledby="`${titleId}-ask`">
         <label v-for="(o, i) in question.options" :key="i" class="oc-radio-item oc-radio-item--card" :data-result="mark(i)">
-          <input v-model="answer" class="oc-radio" type="radio" :name="`${titleId}-answer`" :value="i" :disabled="!!question.result" :checked="question.result ? question.result.picked === i : undefined"><span>{{ o }}</span>
+          <input v-model="answer" class="oc-radio" type="radio" :name="question.name ?? `${titleId}-answer`" :value="i" :disabled="!!question.result" :checked="question.result ? question.result.picked === i : undefined"><span>{{ o }}</span>
           <span v-if="mark(i)" class="oc-visually-hidden"> {{ mark(i) === 'correct' ? (question.resultLabels?.correct ?? 'Correct') : (question.resultLabels?.wrong ?? 'Wrong') }}</span>
         </label>
       </fieldset>

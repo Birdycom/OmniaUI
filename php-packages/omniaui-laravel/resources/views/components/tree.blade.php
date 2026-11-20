@@ -1,7 +1,7 @@
-{{-- File: resources/views/components/tree.blade.php | Map: box (+ head row) -> list -> item: folder (details/summary + nested list) or leaf (div row)
+{{-- File: resources/views/components/tree.blade.php | Map: box (+ head row) -> list -> item: folder (details/summary + nested list) or leaf (div row) -> row: icon, label, count, actions
      OmniaUI tree: nested list on details / summary, no JavaScript. Needs @birdycom/omniaui CSS.
-     Props: items (nested list of ['label', 'href', 'count', 'children', 'open', 'current', 'muted']),
-            head (sticky root row label), quiet, flush, nested (internal: render only the list).
+     Props: items (nested list of ['label', 'href', 'icon' (webicon name), 'count', 'actions' (see <x-oc::tree.actions>), 'children', 'open',
+            'current', 'muted']), head (sticky root row label), quiet, flush, nested (internal: render only the list).
      Slot: head actions (shown in the head row). --}}
 @props(['items' => [], 'head' => null, 'quiet' => false, 'flush' => false, 'nested' => false])
 @if ($nested)
@@ -12,17 +12,23 @@
             <li>
                 @if (! empty($item['children']))
                     <details class="oc-tree-node" @if (! empty($item['open'])) open @endif>
-                        <summary @class(['oc-tree-row', 'is-muted' => ! empty($item['muted'])]) @if ($current) aria-current="true" @endif><span class="oc-tree-label">{{ $item['label'] }}</span>@isset($item['count'])<span class="oc-tree-count">{{ $item['count'] }}</span>@endisset</summary>
+                        <summary @class(['oc-tree-row', 'is-muted' => ! empty($item['muted'])]) @if ($current) aria-current="true" @endif>@if (! empty($item['icon']))<span class="oc-tree-icon" aria-hidden="true"><x-oc::webicon :name="$item['icon']" bare fallback="iconify" /></span>@endif<span class="oc-tree-label">{{ $item['label'] }}</span>@isset($item['count'])<span class="oc-tree-count">{{ $item['count'] }}</span>@endisset @if (! empty($item['actions']))<x-oc::tree.actions :actions="$item['actions']" />@endif</summary>
                         <x-oc::tree :items="$item['children']" nested />
                     </details>
                 @else
                     <div @class(['oc-tree-row', 'is-muted' => ! empty($item['muted'])]) @if ($current && ! $href) aria-current="true" @endif>
+                        @if (! empty($item['icon']))
+                            <span class="oc-tree-icon" aria-hidden="true"><x-oc::webicon :name="$item['icon']" bare fallback="iconify" /></span>
+                        @endif
                         @if ($href)
                             <a class="oc-tree-label" href="{{ $href }}" @if ($current) aria-current="true" @endif>{{ $item['label'] }}</a>
                         @else
                             <span class="oc-tree-label">{{ $item['label'] }}</span>
                         @endif
                         @isset($item['count'])<span class="oc-tree-count">{{ $item['count'] }}</span>@endisset
+                        @if (! empty($item['actions']))
+                            <x-oc::tree.actions :actions="$item['actions']" />
+                        @endif
                     </div>
                 @endif
             </li>

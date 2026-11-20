@@ -22,6 +22,7 @@ const SCRIPTS = [
   ["@birdycom/omniaui", "dist/combobox.js", "oc-combobox.js", "combobox: filter while typing, arrow keys, choose with Enter or a click ([data-oc-combobox])"],
   ["@birdycom/omniaui", "dist/logo.js", "oc-logo.js", "logo: a neutral plate only in the theme where the logo would disappear (.oc-logo[data-plate=auto])"],
   ["@birdycom/omniaui", "dist/theme.js","oc-theme.js", "theme: remember the choice of a .oc-theme-switch, data-theme on <html>, a light/dark toggle button"],
+  ["@birdycom/omniaui", "dist/tabs.js", "oc-tabs.js", "class-toggle tabs: aria-selected, the .is-active panel and arrow keys ([data-oc-tabs], <x-oc::tabs mode=\"buttons\">)"],
   ["@birdycom/omniaui", "dist/toc.js", "oc-toc.js", "table of contents: highlight the heading you are reading where :target-current is missing (.oc-toc)"],
   ["@birdycom/omniaui", "dist/form-extras.js", "oc-form-extras.js", "ISO week in date fields, name card rename, avatar picker preview, quantity steps, language code"],
   ["@birdycom/omniaui-pro", "dist/spotlight.js", "oc-spotlight.js", "spotlight cards (Pro)"],

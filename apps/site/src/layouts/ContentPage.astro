@@ -5,6 +5,7 @@
 import { transform } from "../lib/transform.mjs";
 import { leftSidebar, tocSidebar } from "../lib/nav.mjs";
 import { VERSION, HEADER_LINKS, PRO_LINK, GITHUB, OMNIACSS_URL, sectionOf, crossLinks } from "../lib/site.mjs";
+import { SITE, SITE_URL, plainText, canonicalUrl, jsonLd, ldScript } from "./seo.mjs";
 
 interface Props { source: string; route: string }
 const { source, route } = Astro.props;
@@ -21,6 +22,17 @@ const toc = page.toc;
 const section = sectionOf(route);
 // Every sidebar page on this site uses the UI shell (.ocd-shell).
 const isSidebar = meta.layout === "sidebar";
+// Search engines and share previews (layouts/seo.mjs): canonical + og:url on the production address, one share image
+// per site, JSON-LD. The description is decoded once (Astro escapes the attribute itself: "&lt;details&gt;" in the meta
+// becomes <details> in the text, not "<details&amp;gt;"). "robots": "noindex" in the page meta (404 page) drops the
+// canonical and the structured data.
+const title = plainText(meta.title) || SITE.name;
+const description = plainText(meta.description);
+const shareDescription = description || SITE.description;
+const noindex = /noindex/.test(meta.robots || "");
+const canonical = noindex ? null : canonicalUrl(route);
+const shareImage = SITE_URL + SITE.image.path;
+const structured = noindex ? [] : jsonLd({ route, title, description: shareDescription });
 
 // Utilities: the on-demand site build (only the classes the site uses), made by scripts/sync-site.mjs from
 // the vendored OmniaCSS copy. There is no full utility build in public/ (it is 11 MB); in "astro dev" new
@@ -41,9 +53,27 @@ const github = "M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  {meta.description && <meta name="description" content={meta.description.replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&amp;/g, "&")} />}
+  <title>{title}</title>
+  {description && <meta name="description" content={description} />}
+  {noindex && <meta name="robots" content={meta.robots} />}
+  {canonical && <link rel="canonical" href={canonical} />}
+  <meta property="og:type" content={SITE.docs(route) ? "article" : "website"} />
+  <meta property="og:site_name" content={SITE.name} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={shareDescription} />
+  {canonical && <meta property="og:url" content={canonical} />}
+  <meta property="og:image" content={shareImage} />
+  <meta property="og:image:width" content={String(SITE.image.width)} />
+  <meta property="og:image:height" content={String(SITE.image.height)} />
+  <meta property="og:image:alt" content={SITE.image.alt} />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={shareDescription} />
+  <meta name="twitter:image" content={shareImage} />
+  <meta name="twitter:image:alt" content={SITE.image.alt} />
+  {structured.map((data) => <script is:inline type="application/ld+json" set:html={ldScript(data)} />)}
   <meta name="generator" content={`OmniaUI ${VERSION}`}>
-  <title>{meta.title || "OmniaUI"}</title>
   <!-- Favicon: SVG for modern browsers, ICO/PNG as fallback (Safari, Google, /favicon.ico). "icon": "pro" in the
        page meta shows the OmniaUI Pro star instead of the OmniaUI puzzle piece. -->
   <link rel="icon" href="/favicon.ico" sizes="48x48">

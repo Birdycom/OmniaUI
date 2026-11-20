@@ -1,8 +1,8 @@
-<!-- File: packages/vue/src/components/OcLiveFrame.vue | Map: props (src, title, width, height, static, inert, device) -> div.oc-live-frame -> iframe or slot -->
+<!-- File: packages/vue/src/components/OcLiveFrame.vue | Map: props (src, title, width, height, static, inert, device) -> div.oc-live-frame -> iframe and/or slot -->
 <script setup lang="ts">
 /**
  * A live page at a virtual size (default 1280x720), scaled down to the frame width in pure CSS. Without src the slot
- * goes in (an <img>, <video> or .oc-live-frame__content). Classes: .oc-live-frame, --static, --phone, --tv, --laptop,
+ * goes in (an <img>, <video> or .oc-live-frame__content); with src the slot comes after the iframe (a watermark on top). Classes: .oc-live-frame, --static, --phone, --tv, --laptop,
  * .oc-browser-frame__view. inert: only to look at (no focus, no clicks, hidden from screen readers).
  * device: "phone" (390 x 844 unless width/height are set), "tv" or "laptop" (1440 x 900, with a base). Event frame-load;
  * exposed ref `frame` (postMessage).
@@ -37,6 +37,6 @@ const h = computed(() => props.height ?? (props.device === 'phone' ? 844 : props
       :aria-hidden="inert ? 'true' : undefined"
       @load="$emit('frame-load', $event)"
     />
-    <slot v-else />
+    <slot />
   </div>
 </template>

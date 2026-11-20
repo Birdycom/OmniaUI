@@ -55,6 +55,17 @@ export function shiftMonth(month, by) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
+/** Date picker: closes the nearest open [popover] around a calendar root (the popover wraps the calendar). */
+export function closePicker(root) {
+  const pop = root.closest?.("[popover]");
+  if (!pop) return false;
+  try {
+    if (!pop.matches(":popover-open")) return false;
+    pop.hidePopover();
+    return true;
+  } catch { return false; /* closed or no popover support */ }
+}
+
 /** Starts one calendar root. Returns a function that stops it. */
 export function bindCalendar(root) {
   if (root.dataset.ocBound != null) return () => {};
@@ -123,11 +134,8 @@ export function bindCalendar(root) {
     const b = e.target.closest(DAY);
     if (!b || !root.contains(b) || b.disabled) return;
     pick(b.dataset.date);
-    // A date picker: the calendar sits in a popover; a picked day closes it (single mode).
-    if (mode === "single") {
-      const pop = b.closest("[popover]");
-      try { if (pop && root.contains(pop) && pop.matches(":popover-open")) pop.hidePopover(); } catch { /* closed */ }
-    }
+    // A date picker: the calendar sits in a popover; a complete choice closes it (single: the day, range: the end).
+    if (mode === "single" || end) closePicker(root);
   };
   const onKey = (e) => {
     const b = e.target.closest(DAY);

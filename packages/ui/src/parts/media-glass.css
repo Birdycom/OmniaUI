@@ -1,20 +1,24 @@
 /* File: packages/ui/src/parts/media-glass.css
-   Map: tokens (light-dark) -> sheet (.oc-glass: see-through, blurred, light top edge, soft shadow) -> panel (.oc-glass-panel:
-   a lighter layer inside) -> cards inside a sheet -> --flat (desktop window, the OS draws the blur) -> --strong -> reduced
-   transparency
-   Glass: see-through surfaces in the "liquid glass" style, over a photo, a gradient or the desktop (an Electron or Tauri
-   window with Windows acrylic or macOS vibrancy behind a transparent page). Re-tint with the --oc-glass-* tokens. */
+   Map: tokens (light-dark) -> sheet (.oc-glass: clear tint, light blur, inner edge light, specular rim, fine grain, soft
+   shadow) -> panel (.oc-glass-panel: a layer inside, never denser than the sheet) -> cards inside a sheet ->
+   --strong -> --flat (desktop window, the OS draws the blur) -> reduced transparency -> no backdrop-filter -> Firefox
+   Glass: see-through surfaces over a photo, a gradient or the desktop (an Electron or Tauri window with Windows acrylic
+   or macOS vibrancy behind a transparent page). Re-tint with the --oc-glass-* tokens. It reads as glass when the backdrop
+   stays recognisable: a light tint and a modest blur, light caught on the edge, and a soft shadow underneath. */
 
 :root {
-  --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.72), oklch(from var(--oc-background) l c h / 0.62));
-  --oc-glass-panel: light-dark(oklch(100% 0 0deg / 0.5), oklch(100% 0 0deg / 0.055));
-  --oc-glass-panel-strong: light-dark(oklch(100% 0 0deg / 0.72), oklch(100% 0 0deg / 0.09));
-  --oc-glass-edge: light-dark(oklch(100% 0 0deg / 0.85), oklch(100% 0 0deg / 0.11));
-  --oc-glass-edge-hi: light-dark(oklch(100% 0 0deg / 1), oklch(100% 0 0deg / 0.16));
+  --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.4), oklch(from var(--oc-background) l c h / 0.28));
+  /* A faint light falloff from top to bottom over the tint (no glow, the sheet stays flat). */
+  --oc-glass-sheen: light-dark(oklch(100% 0 0deg / 0.14), oklch(100% 0 0deg / 0.035));
+  --oc-glass-panel: light-dark(oklch(100% 0 0deg / 0.22), oklch(100% 0 0deg / 0.05));
+  --oc-glass-panel-strong: light-dark(oklch(100% 0 0deg / 0.42), oklch(100% 0 0deg / 0.09));
+  --oc-glass-edge: light-dark(oklch(100% 0 0deg / 0.5), oklch(100% 0 0deg / 0.16));
+  --oc-glass-edge-hi: light-dark(oklch(100% 0 0deg / 0.7), oklch(100% 0 0deg / 0.22));
+  --oc-glass-edge-low: light-dark(oklch(0% 0 0deg / 0.08), oklch(0% 0 0deg / 0.25));
   --oc-glass-hairline: light-dark(oklch(from var(--oc-foreground) l c h / 0.1), oklch(100% 0 0deg / 0.08));
-  --oc-glass-shadow: 0 24px 60px -20px light-dark(oklch(25% 0.06 255deg / 0.35), oklch(0% 0 0deg / 0.7));
-  --oc-glass-panel-shadow: 0 8px 24px -16px light-dark(oklch(25% 0.06 255deg / 0.25), oklch(0% 0 0deg / 0.6));
-  --oc-glass-blur: 28px;
+  --oc-glass-shadow: 0 12px 32px -12px light-dark(oklch(25% 0.06 255deg / 0.3), oklch(0% 0 0deg / 0.55));
+  --oc-glass-panel-shadow: 0 4px 12px -8px light-dark(oklch(25% 0.06 255deg / 0.2), oklch(0% 0 0deg / 0.5));
+  --oc-glass-blur: 16px;
   --oc-glass-radius: 18px;
   --oc-glass-panel-radius: 14px;
 }
@@ -34,19 +38,45 @@
   --oc-card-background: var(--oc-glass-panel);
   --oc-card-border: var(--oc-glass-edge);
 }
+/* The lens: fine grain (5 % grey noise), the light falloff and the tint over a blurred, slightly brighter backdrop.
+   The inner edge catches light at the top and a little on the left, and darkens a hair at the bottom. */
 .oc-glass::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: var(--oc-glass-sheet);
-  box-shadow: inset 0 1px 0 var(--oc-glass-edge-hi);
-  backdrop-filter: blur(var(--oc-glass-blur)) saturate(1.5);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 .05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom, var(--oc-glass-sheen), transparent 60%),
+    var(--oc-glass-sheet);
+  box-shadow:
+    inset 0 1px 0 var(--oc-glass-edge-hi),
+    inset 1px 0 0 light-dark(oklch(100% 0 0deg / 0.25), oklch(100% 0 0deg / 0.08)),
+    inset 0 -1px 0 var(--oc-glass-edge-low);
+  backdrop-filter: blur(var(--oc-glass-blur)) saturate(1.6) brightness(1.05);
+  pointer-events: none;
+}
+/* Specular rim: light on the top-left edge, fading out, a faint return at the bottom right. Only on the border ring
+   (mask), above the backdrop but never over the content's hit area. Liquid glass and --flat draw their own edge. */
+.oc-glass:not(.oc-glass--liquid, .oc-glass--flat)::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(160deg,
+    light-dark(oklch(100% 0 0deg / 0.9), oklch(100% 0 0deg / 0.32)),
+    light-dark(oklch(100% 0 0deg / 0.2), oklch(100% 0 0deg / 0.06)) 30%,
+    oklch(100% 0 0deg / 0) 60%,
+    light-dark(oklch(100% 0 0deg / 0.35), oklch(100% 0 0deg / 0.12)));
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
   pointer-events: none;
 }
 
-/* Panel: a lighter layer inside a sheet (a group of settings, a meter, a list). */
+/* Panel: a layer inside a sheet (a group of settings, a meter, a list). Lighter than the sheet, never denser. */
 .oc-glass-panel {
   position: relative;
   background: var(--oc-glass-panel);
@@ -59,8 +89,8 @@
   box-shadow: var(--oc-glass-panel-shadow), inset 0 1px 0 var(--oc-glass-edge-hi);
 }
 
-/* Strong: more opaque, for text-heavy panels or a hovered row. */
-.oc-glass--strong::after,
+/* Strong: more opaque, for text-heavy sheets and panels or a hovered row. */
+.oc-glass.oc-glass--strong { --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.72), oklch(from var(--oc-background) l c h / 0.66)); }
 .oc-glass-panel--strong { background: var(--oc-glass-panel-strong); }
 
 /* Flat: a frameless desktop window where the OS draws the blur (acrylic, vibrancy): no own blur, no drop shadow. */
@@ -70,20 +100,34 @@
 /* Hairline divider in glass (sections, header). */
 .oc-glass-divider { block-size: 1px; margin: 0; border: 0; background: var(--oc-glass-hairline); }
 
-/* People who ask for less transparency get solid surfaces. */
+/* People who ask for less transparency get solid surfaces (also with --clear or --frost). */
 @media (prefers-reduced-transparency: reduce) {
-  :root {
+  :root,
+  .oc-glass.oc-glass--clear,
+  .oc-glass.oc-glass--frost,
+  .oc-glass.oc-glass--strong {
     --oc-glass-sheet: var(--oc-background);
     --oc-glass-panel: var(--oc-card);
     --oc-glass-panel-strong: var(--oc-muted);
   }
-  .oc-glass::after { backdrop-filter: none; }
+  .oc-glass::after { backdrop-filter: none; background-image: none; }
+}
+/* No backdrop-filter (older browsers, some embedded web views): an unblurred see-through sheet is unreadable, so the
+   tint turns nearly solid. */
+@supports not (backdrop-filter: blur(1px)) {
+  :root,
+  .oc-glass.oc-glass--clear,
+  .oc-glass.oc-glass--frost,
+  .oc-glass.oc-glass--strong {
+    --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.85), oklch(from var(--oc-background) l c h / 0.9));
+  }
 }
 /* Firefox has no "backdrop root" yet: the filter on the ::after lens only sees the inside of the isolated sheet, so
    nothing would be blurred. There the filter sits on the sheet itself (a position: fixed child is then placed
    relative to the sheet; popovers, dialogs and anchored tooltips in the top layer are not affected). */
 @supports (-moz-appearance: none) {
-  .oc-glass { backdrop-filter: blur(var(--oc-glass-blur)) saturate(1.5); }
+  .oc-glass { backdrop-filter: blur(var(--oc-glass-blur)) saturate(1.6) brightness(1.05); }
   .oc-glass::after { backdrop-filter: none; }
+  .oc-glass--flat { backdrop-filter: none; }
   @media (prefers-reduced-transparency: reduce) { .oc-glass { backdrop-filter: none; } }
 }

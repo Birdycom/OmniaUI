@@ -41,17 +41,6 @@ const CONFIG = external?.CONFIG ?? {
     ],
     default: '<main class="oc-block-shell-content"',
   },
-  "auth-split": {
-    props: "'action' => '#', 'method' => 'post'",
-    replaceLine: [['action="#" method="post">', 'action="{{ $action }}" method="{{ $method }}">@unless (strtolower($method) === \'get\') @csrf @endunless']],
-    slots: [
-      { name: "logo", match: '<a class="oc-block-authsplit-logo"', inner: true },
-      { name: "quote", match: '<blockquote class="oc-block-authsplit-quote"', inner: true },
-      { name: "title", match: '<h1 class="oc-block-authsplit-title"', inner: true },
-      { name: "subtitle", match: '<p class="oc-block-authsplit-subtitle"', inner: true },
-      { name: "fields", match: '<div class="oc-block-authsplit-fields"', inner: true },
-    ],
-  },
   auth: {
     slots: [
       { name: "footer", match: '<div class="oc-block-auth-footer"', inner: true },
@@ -112,14 +101,6 @@ const CONFIG = external?.CONFIG ?? {
       { name: "actions", match: '<div class="oc-block-modulehead-actions"', inner: true },
     ],
   },
-  "type-picker": {
-    slots: [
-      { name: "title", match: '<h2 class="oc-block-type-picker-title"', inner: true },
-      { name: "text", match: '<p class="oc-block-type-picker-text"', inner: true },
-      { name: "footer", match: '<div class="oc-block-type-picker-foot"', inner: true },
-    ],
-    default: '<fieldset class="oc-block-type-picker-grid"',
-  },
   "content-blocks": {
     slots: [
       { name: "title", match: '<h2 class="oc-block-content-blocks-title"', inner: true },
@@ -127,30 +108,6 @@ const CONFIG = external?.CONFIG ?? {
       { name: "actions", match: '<div class="oc-block-content-blocks-actions"', inner: true },
     ],
     default: '<ol class="oc-block-content-blocks-list"',
-  },
-  "route-steps": {
-    slots: [
-      { name: "title", match: '<h2 class="oc-block-route-steps-title"', inner: true },
-      { name: "count", match: '<span class="oc-block-route-steps-count"', inner: true },
-      { name: "footer", match: '<div class="oc-block-route-steps-foot"', inner: true },
-    ],
-    default: '<ol class="oc-block-route-steps-list"',
-  },
-  "route-progress": {
-    slots: [
-      { name: "title", match: '<h2 class="oc-block-route-progress-title"', inner: true },
-      { name: "meta", match: '<p class="oc-block-route-progress-meta"', inner: true },
-      { name: "next", match: '<button class="oc-block-route-progress-next"' },
-    ],
-    default: '<ol class="oc-block-route-progress-list"',
-  },
-  "step-view": {
-    slots: [
-      { name: "title", match: '<h2 class="oc-block-step-view-title"', inner: true },
-      { name: "blocks", match: '<div class="oc-block-step-view-blocks"', inner: true },
-      { name: "question", match: '<div class="oc-block-step-view-question"', inner: true },
-    ],
-    default: '<div class="oc-block-step-view-text"',
   },
   "page-hero": {
     slots: [
@@ -167,12 +124,6 @@ const CONFIG = external?.CONFIG ?? {
     ],
     default: '<div class="oc-block-pricing-grid"',
   },
-  "site-header": {
-    slots: [
-      { name: "brand", match: '<a class="oc-site-header__brand"', inner: true },
-      { name: "nav", match: '<nav class="oc-site-header__nav"', inner: true },
-    ],
-  },
   "two-factor": {
     slots: [
       { name: "qr", match: '<div class="oc-block-twofactor-qr"', inner: true },
@@ -183,23 +134,6 @@ const CONFIG = external?.CONFIG ?? {
   },
   // 0.6.0 blocks. Named regions stay slots on a full generator run; `default` is the repeating body
   // (inner), same pattern as features / pricing. Status page has no default: every region is named.
-  "about-timeline": {
-    slots: [
-      { name: "badge", match: '<span class="oc-block-about-badge"', inner: true },
-      { name: "eyebrow", match: '<p class="oc-eyebrow"', inner: true },
-      { name: "title", match: '<h2 class="oc-block-about-title"', inner: true },
-      { name: "text", match: "<p>", from: "oc-block-about-title", inner: true },
-    ],
-    default: '<ol class="oc-timeline"',
-  },
-  "contact-grid": {
-    slots: [
-      { name: "eyebrow", match: '<p class="oc-eyebrow"', inner: true },
-      { name: "title", match: '<h2 class="oc-block-contact-heading"', inner: true },
-      { name: "lead", match: '<p class="oc-block-contact-lead"', inner: true },
-    ],
-    default: '<div class="oc-block-contact-grid"',
-  },
   faq: {
     slots: [
       { name: "eyebrow", match: '<p class="oc-eyebrow"', inner: true },
@@ -208,25 +142,6 @@ const CONFIG = external?.CONFIG ?? {
       { name: "more", match: '<p class="oc-block-faq-more"', inner: true },
     ],
     default: '<div class="oc-accordion oc-block-faq-list"',
-  },
-  "hero-orbit": {
-    slots: [
-      { name: "eyebrow", match: '<p class="oc-eyebrow"', inner: true },
-      { name: "title", match: '<h1 class="oc-display"', inner: true },
-      { name: "lead", match: '<p class="oc-lead"', inner: true },
-      { name: "actions", match: '<div class="flex flex-wrap gap-1 mt-2"', inner: true },
-      { name: "center", match: '<div class="oc-code-window oc-block-orbit-center"', inner: true },
-    ],
-    default: '<div class="oc-block-orbit-ring"',
-  },
-  "portfolio-grid": {
-    slots: [
-      { name: "eyebrow", match: '<p class="oc-eyebrow"', inner: true },
-      { name: "title", match: '<h2 class="oc-display oc-display--md"', inner: true },
-      { name: "lead", match: '<p class="oc-block-portfolio-lead"', inner: true },
-      { name: "link", match: '<a class="oc-link-arrow"', inner: true },
-    ],
-    default: '<div class="oc-block-portfolio-grid"',
   },
   "profile-header": {
     slots: [
@@ -244,7 +159,13 @@ const CONFIG = external?.CONFIG ?? {
 };
 
 /** Blocks that are written by hand (multi-root markup). */
-const MANUAL = new Set(external ? external.MANUAL ?? [] : ["wizard-dialog", "contact-form"]);
+// 0.17.0: blocks with array props (rows, steps, cards) or variants the snippet cannot express are written by hand too.
+const MANUAL = new Set(external ? external.MANUAL ?? [] : [
+  "wizard-dialog", "contact-form", "site-header", "site-footer",
+  "route-progress", "step-view", "route-steps", "type-picker",
+  "showcase", "hero-code", "product-grid", "about-timeline", "portfolio-grid", "contact-grid",
+  "auth-split", "hero-orbit",
+]);
 
 const VOID = new Set(["input", "br", "img", "hr", "meta", "link", "source", "wbr", "col", "area", "base", "embed", "track", "param"]);
 

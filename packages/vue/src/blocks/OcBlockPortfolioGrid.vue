@@ -2,9 +2,10 @@
 <script setup lang="ts">
 /**
  * Portfolio section: heading, lead, "all projects" link and a grid of project cards.
- * `title` + `highlight` (gradient word). Slots: link, default (own cards). Classes: .oc-block-portfolio (--two), -head, -lead, -grid
+ * `title` + `highlight` (gradient word). `link` + `linkHref` (+ `linkTone`) renders an OcLinkArrow. Slots: link, default (own cards). Classes: .oc-block-portfolio (--two), -head, -lead, -grid
  */
 import OcProjectCard from '../components/OcProjectCard.vue'
+import OcLinkArrow from '../components/OcLinkArrow.vue'
 import { useUid } from '../composables/useUid'
 
 export interface PortfolioGridProject {
@@ -25,6 +26,9 @@ withDefaults(
     lead?: string
     projects?: PortfolioGridProject[]
     two?: boolean
+    link?: string
+    linkHref?: string
+    linkTone?: 'default' | 'accent' | 'muted'
   }>(),
   { projects: () => [] },
 )
@@ -40,7 +44,7 @@ const titleId = useUid('oc-portfolio-title')
           <h2 :id="titleId" class="oc-display oc-display--md">{{ title }} <span v-if="highlight" class="oc-text-gradient">{{ highlight }}</span></h2>
           <p v-if="lead" class="oc-block-portfolio-lead">{{ lead }}</p>
         </div>
-        <slot name="link" />
+        <slot name="link"><OcLinkArrow v-if="link && linkHref" :href="linkHref" :tone="linkTone">{{ link }}</OcLinkArrow></slot>
       </div>
       <div class="oc-block-portfolio-grid">
         <slot>

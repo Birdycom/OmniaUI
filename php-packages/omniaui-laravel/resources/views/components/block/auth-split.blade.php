@@ -11,11 +11,17 @@
      Slots: logo, quote, title, subtitle, fields, submit, footer link
      Blade: <x-oc::block.auth-split> - attributes merge onto the root element; props: action => #, method => post.
      Blade slots (each falls back to the snippet content when empty): logo, quote, title, subtitle, fields.
+     Props (0.17.0, optional): photo (image URL: .oc-block-authsplit-brand--photo with --oc-authsplit-photo), logo-href (default #),
+       form (array of extra attributes on the form, e.g. ['wire:submit' => 'login'] for Livewire; it can also override action / method).
 --}}
-@props(['action' => '#', 'method' => 'post', 'logo' => null, 'quote' => null, 'title' => null, 'subtitle' => null, 'fields' => null])
+@props(['action' => '#', 'method' => 'post', 'logo' => null, 'quote' => null, 'title' => null, 'subtitle' => null, 'fields' => null, 'photo' => null, 'logoHref' => '#', 'form' => null])
+@php
+    $ocAuthSplitForm = (new \Illuminate\View\ComponentAttributeBag(is_array($form) ? $form : []))
+        ->merge(['class' => 'oc-block-authsplit-card', 'action' => $action, 'method' => $method]);
+@endphp
 <div {{ $attributes->merge(['class' => 'oc-block-authsplit']) }}>
-  <aside class="oc-block-authsplit-brand">
-    <a class="oc-block-authsplit-logo" href="#">
+  <aside class="oc-block-authsplit-brand{{ $photo ? ' oc-block-authsplit-brand--photo' : '' }}"@if ($photo) style="--oc-authsplit-photo: url('{{ $photo }}')"@endif>
+    <a class="oc-block-authsplit-logo" href="{{ $logoHref }}">
         @if (isset($logo) && trim((string) $logo) !== '')
             {{ $logo }}
         @else
@@ -32,7 +38,7 @@
     </blockquote>
   </aside>
   <div class="oc-block-authsplit-form">
-    <form class="oc-block-authsplit-card" action="{{ $action }}" method="{{ $method }}">@unless (strtolower($method) === 'get') @csrf @endunless
+    <form {{ $ocAuthSplitForm }}>@unless (strtolower((string) $ocAuthSplitForm->get('method', $method)) === 'get') @csrf @endunless
       <h1 class="oc-block-authsplit-title">
           @if (isset($title) && trim((string) $title) !== '')
               {{ $title }}

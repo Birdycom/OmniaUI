@@ -1,5 +1,5 @@
 import { forwardRef, useId } from "react";
-import type { FormEvent, HTMLAttributes, ReactNode } from "react";
+import type { CSSProperties, FormEvent, FormHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
 import { PasswordInput } from "../components/PasswordInput";
 
@@ -16,6 +16,10 @@ export interface BlockAuthSplitProps extends Omit<HTMLAttributes<HTMLDivElement>
   forgotLabel?: ReactNode;
   rememberLabel?: ReactNode;
   onSubmit?: (values: { email: string; password: string; remember: boolean }) => void;
+  /** 0.17.0: photo URL for the brand panel (`.oc-block-authsplit-brand--photo`, under a dark layer). */
+  photo?: string;
+  /** 0.17.0: extra attributes on the form (action, method, data-*, aria-*). */
+  formProps?: Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "className">;
 }
 
 /** `.oc-block-authsplit`: brand panel (logo, quote) next to the sign-in form. */
@@ -32,6 +36,8 @@ export const BlockAuthSplit = forwardRef<HTMLDivElement, BlockAuthSplitProps>(fu
     forgotLabel = "Forgot password?",
     rememberLabel = "Remember me",
     onSubmit,
+    photo,
+    formProps,
     className,
     ...rest
   },
@@ -49,7 +55,8 @@ export const BlockAuthSplit = forwardRef<HTMLDivElement, BlockAuthSplitProps>(fu
   };
   return (
     <div ref={ref} className={cx("oc-block-authsplit", className)} {...rest}>
-      <aside className="oc-block-authsplit-brand">
+      <aside className={cx("oc-block-authsplit-brand", photo && "oc-block-authsplit-brand--photo")}
+        style={photo ? ({ "--oc-authsplit-photo": `url("${photo}")` } as CSSProperties) : undefined}>
         {logo != null && <a className="oc-block-authsplit-logo" href={logoHref}>{logo}</a>}
         {quote != null && (
           <blockquote className="oc-block-authsplit-quote">
@@ -59,7 +66,7 @@ export const BlockAuthSplit = forwardRef<HTMLDivElement, BlockAuthSplitProps>(fu
         )}
       </aside>
       <div className="oc-block-authsplit-form">
-        <form className="oc-block-authsplit-card" onSubmit={submit}>
+        <form {...formProps} className="oc-block-authsplit-card" onSubmit={submit}>
           <h1 className="oc-block-authsplit-title">{title}</h1>
           {subtitle != null && <p className="oc-block-authsplit-subtitle">{subtitle}</p>}
           <div className="oc-block-authsplit-fields">

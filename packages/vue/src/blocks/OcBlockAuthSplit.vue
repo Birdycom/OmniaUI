@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 /**
  * Sign-in with a brand panel (logo, quote) next to the form. Emits `submit` (the native submit event).
  * Slots: logo, quote (or `quote` + `quoteAuthor` props), default (fields), row (remember me / forgot password),
  * submit (default: a full-width primary button with `submitLabel`), footer.
+ * 0.17.0: `photo` (brand panel with a photo, .oc-block-authsplit-brand--photo), `logoHref`, `formAttrs` (extra form attributes).
  * Classes: .oc-block-authsplit, -brand, -logo, -quote, -form, -card, -title, -subtitle, -fields, -row
  */
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title?: string
     subtitle?: string
@@ -14,16 +16,20 @@ withDefaults(
     submitLabel?: string
     action?: string
     method?: string
+    photo?: string
+    logoHref?: string
+    formAttrs?: Record<string, string | number | boolean>
   }>(),
-  { submitLabel: 'Sign in', action: '#', method: 'post' },
+  { submitLabel: 'Sign in', action: '#', method: 'post', logoHref: '/' },
 )
+const brandStyle = computed(() => (props.photo ? `--oc-authsplit-photo: url("${props.photo}")` : undefined))
 defineEmits<{ submit: [event: SubmitEvent] }>()
 </script>
 
 <template>
   <div class="oc-block-authsplit">
-    <aside class="oc-block-authsplit-brand">
-      <a v-if="$slots.logo" class="oc-block-authsplit-logo" href="/"><slot name="logo" /></a>
+    <aside :class="['oc-block-authsplit-brand', photo && 'oc-block-authsplit-brand--photo']" :style="brandStyle">
+      <a v-if="$slots.logo" class="oc-block-authsplit-logo" :href="logoHref"><slot name="logo" /></a>
       <blockquote v-if="quote || $slots.quote" class="oc-block-authsplit-quote">
         <slot name="quote">
           <p>{{ quote }}</p>
@@ -32,7 +38,7 @@ defineEmits<{ submit: [event: SubmitEvent] }>()
       </blockquote>
     </aside>
     <div class="oc-block-authsplit-form">
-      <form class="oc-block-authsplit-card" :action="action" :method="method" @submit="$emit('submit', $event)">
+      <form class="oc-block-authsplit-card" :action="action" :method="method" v-bind="formAttrs" @submit="$emit('submit', $event)">
         <h1 v-if="title" class="oc-block-authsplit-title">{{ title }}</h1>
         <p v-if="subtitle" class="oc-block-authsplit-subtitle">{{ subtitle }}</p>
         <div class="oc-block-authsplit-fields">

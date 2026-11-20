@@ -1,9 +1,10 @@
 {{-- File: resources/views/components/table-compact.blade.php | Map: wrapper div -> table.oc-table (thead from columns, tbody from rows, tfoot from footer) OR default slot
      OmniaUI table compact: small striped table for inside cards. Needs @birdycom/omniaui CSS.
      Props: columns (['key' => 'Label'] or ['key' => ['label' => 'Qty', 'numeric' => true, 'wrap' => false]]),
-            rows (list of ['key' => value]), footer (['key' => value] total row), bordered, plain.
+            rows (list of ['key' => value]), footer (['key' => value] total row), footer-span (the first footer cell spans that many
+            columns, e.g. 2 for "Total" under Item + Qty), bordered, plain.
      Slot: your own <table class="oc-table"> when no columns are given. --}}
-@props(['columns' => [], 'rows' => [], 'footer' => null, 'bordered' => false, 'plain' => false])
+@props(['columns' => [], 'rows' => [], 'footer' => null, 'footerSpan' => 1, 'bordered' => false, 'plain' => false])
 @php
     // Normalise columns to ['label' => ..., 'numeric' => bool, 'wrap' => bool].
     $cols = collect($columns)->map(fn ($c) => is_array($c) ? $c + ['numeric' => false, 'wrap' => false] : ['label' => $c, 'numeric' => false, 'wrap' => false]);
@@ -19,7 +20,7 @@
                 @endforeach
             </tbody>
             @if ($footer)
-                <tfoot><tr>@foreach ($cols as $key => $c)<td{!! $cell($c) !!}>{{ $footer[$key] ?? '' }}</td>@endforeach</tr></tfoot>
+                <tfoot><tr>@foreach ($cols->keys() as $i => $key)@if ($i === 0 || $i >= (int) $footerSpan)<td{!! $cell($cols[$key]) !!}@if ($i === 0 && (int) $footerSpan > 1) colspan="{{ (int) $footerSpan }}"@endif>{{ $footer[$key] ?? '' }}</td>@endif @endforeach</tr></tfoot>
             @endif
         </table>
     @else

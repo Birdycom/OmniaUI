@@ -20,11 +20,14 @@ export interface ThemeToggleProps extends Omit<ButtonHTMLAttributes<HTMLButtonEl
   ghost?: boolean;
   /** Tooltip and accessible name: what a click does (default "Dark theme" / "Light theme"). */
   labels?: { toDark?: string; toLight?: string };
+  /** Icon and text (the name of the theme a click gives) instead of an icon with a tooltip. */
+  text?: boolean;
 }
 
-/** `button.oc-btn--icon` that switches between light and dark (`aria-pressed` is true in dark); the name in a tooltip. */
+/** `button.oc-btn--icon` that switches between light and dark (`aria-pressed` is true in dark); the name in a tooltip,
+ *  or next to the icon with `text`. */
 export const ThemeToggle = forwardRef<HTMLButtonElement, ThemeToggleProps>(function ThemeToggle(
-  { value, onChange, ghost = true, labels, className, onClick, ...rest },
+  { value, onChange, ghost = true, labels, text = false, className, onClick, ...rest },
   ref,
 ) {
   const name = value === "dark" ? labels?.toLight ?? "Light theme" : labels?.toDark ?? "Dark theme";
@@ -32,14 +35,15 @@ export const ThemeToggle = forwardRef<HTMLButtonElement, ThemeToggleProps>(funct
     <button
       ref={ref}
       type="button"
-      className={cx("oc-btn oc-btn--icon oc-tooltip oc-tooltip--bottom", ghost ? "oc-btn--ghost" : "oc-btn--outline", className)}
-      aria-label={name}
+      className={cx("oc-btn", !text && "oc-btn--icon oc-tooltip oc-tooltip--bottom", ghost ? "oc-btn--ghost" : "oc-btn--outline", className)}
+      aria-label={text ? undefined : name}
       aria-pressed={value === "dark"}
-      data-tooltip={name}
+      data-tooltip={text ? undefined : name}
       onClick={(e) => { onClick?.(e); if (!e.defaultPrevented) onChange?.(value === "dark" ? "light" : "dark"); }}
       {...rest}
     >
       {webiconNode(value === "dark" ? "mdi:white-balance-sunny" : "mdi:weather-night")}
+      {text && <span>{name}</span>}
     </button>
   );
 });

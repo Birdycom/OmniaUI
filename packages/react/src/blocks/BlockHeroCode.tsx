@@ -1,3 +1,4 @@
+// File: packages/react/src/blocks/BlockHeroCode.tsx | Map: types -> BlockHeroCode (copy: eyebrow, title, lead, actions -> code window with floating tiles)
 import { forwardRef } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
@@ -25,13 +26,15 @@ export interface BlockHeroCodeProps extends Omit<HTMLAttributes<HTMLElement>, "t
   codeTitle?: ReactNode;
   /** Code shown in the window. */
   code: string;
-  /** Floating icon tiles (accent name from the accent palette + position style). */
+  /** Floating icon tiles (accent name from the accent palette + position style); `[]` for none. */
   tiles?: HeroTile[];
+  /** Dark code window (`oc-code-window--dark`, as in the snippet). */
+  codeDark?: boolean;
 }
 
 /** Landing hero: eyebrow, display title, lead, buttons and a code window with floating icon tiles. */
 export const BlockHeroCode = forwardRef<HTMLElement, BlockHeroCodeProps>(function BlockHeroCode(
-  { eyebrow, title, lead, actions, codeTitle, code, tiles = DEFAULT_TILES, className, ...rest },
+  { eyebrow, title, lead, actions, codeTitle, code, tiles = DEFAULT_TILES, codeDark = false, className, ...rest },
   ref,
 ) {
   return (
@@ -49,7 +52,7 @@ export const BlockHeroCode = forwardRef<HTMLElement, BlockHeroCodeProps>(functio
               {tile.glyph}
             </span>
           ))}
-          <div className="oc-code-window">
+          <div className={cx("oc-code-window", codeDark && "oc-code-window--dark")}>
             <div className="oc-code-window__bar">
               <i /><i /><i />
               {codeTitle != null && <span className="oc-code-window__title">{codeTitle}</span>}

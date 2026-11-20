@@ -102,6 +102,7 @@ async function main() {
   await fs.copyFile(r("packages/ui/src/calendar.js"), r("public/js/oc-calendar.js"));
   await fs.copyFile(r("packages/ui/src/countdown.js"), r("public/js/oc-countdown.js"));
   await fs.copyFile(r("packages/ui/src/logo.js"), r("public/js/oc-logo.js"));
+  await fs.copyFile(r("packages/ui/src/tabs.js"), r("public/js/oc-tabs.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
 

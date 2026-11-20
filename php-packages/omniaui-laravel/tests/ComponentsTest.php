@@ -217,8 +217,9 @@ class ComponentsTest extends TestCase
             }
             $key = str_replace(['/', '\\'], '.', substr(substr($file->getPathname(), strlen($root) + 1), 0, -10));
             // Components that need slot/prop context are covered by dedicated tests above (webicon: needs a known
-            // icon name and renders nothing for an unknown one, see V0161Test).
-            if (in_array($key, ['table.sort', 'table.empty', 'sidebar.item', 'webicon'], true)) {
+            // icon name and renders nothing for an unknown one, see V0161Test; menubar.entries: internal item list of
+            // menubar/context-menu that renders nothing without items, see V0170W1Test).
+            if (in_array($key, ['table.sort', 'table.empty', 'sidebar.item', 'webicon', 'menubar.entries'], true)) {
                 continue;
             }
             $out[$key] = ["x-oc::{$key}"];

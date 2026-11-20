@@ -10,18 +10,20 @@ export interface VersionBannerProps extends HTMLAttributes<HTMLDivElement> {
   version?: string | null;
   /** Long text; default "New version (vX) available - reload the page". */
   text?: ReactNode;
-  /** Short text below 40rem; default "New version". */
+  /** Short text below 40rem; default "New version". Empty (`""` or `null`): no short text, the long text stays. */
   short?: ReactNode;
   actionLabel?: ReactNode;
   /** Custom reload; without it the action is a plain link to the current page. */
   onReload?: () => void;
+  /** Link for the action instead of the current page (e.g. the release notes); ignored with `onReload`. */
+  href?: string;
   tone?: "warning" | "info" | "success";
   floating?: boolean;
 }
 
 /** `.oc-version-banner`: "new version available - reload" chip. */
 export const VersionBanner = forwardRef<HTMLDivElement, VersionBannerProps>(function VersionBanner(
-  { version, text, short = "New version", actionLabel = "Reload", onReload, tone = "warning", floating, className, ...rest },
+  { version, text, short = "New version", actionLabel = "Reload", onReload, href = "", tone = "warning", floating, className, ...rest },
   ref,
 ) {
   if (!version) return null;
@@ -30,11 +32,11 @@ export const VersionBanner = forwardRef<HTMLDivElement, VersionBannerProps>(func
     <div ref={ref} className={cls} role="status" {...rest}>
       <span className="oc-version-banner-dot" aria-hidden="true" />
       <span className="oc-version-banner-text">{text ?? `New version (${version}) available - reload the page`}</span>
-      <span className="oc-version-banner-short">{short}</span>
+      {short != null && short !== "" && short !== false && <span className="oc-version-banner-short">{short}</span>}
       {onReload ? (
         <button className="oc-version-banner-action" type="button" onClick={onReload}>{actionLabel}</button>
       ) : (
-        <a className="oc-version-banner-action" href="">{actionLabel}</a>
+        <a className="oc-version-banner-action" href={href}>{actionLabel}</a>
       )}
     </div>
   );

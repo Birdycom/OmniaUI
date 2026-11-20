@@ -30,6 +30,10 @@ class OmniacssServiceProvider extends ServiceProvider
         // @omniacss  or  @omniacss('cdn')
         Blade::directive('omniacss', fn (string $expression): string => "<?php echo \\Omniacss\\Laravel\\Assets::render({$expression}); ?>");
 
+        // <x-slot:icon>...</x-slot:icon>Dashboard: Blade turns the closing tag into " @endslot", and a word right after it
+        // makes "@endslotDashboard", which is no directive, so the slot never closes (an open output buffer, broken page).
+        Blade::precompiler(self::closeSlotsBeforeText(...));
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/omniacss.php' => config_path('omniacss.php'),
@@ -49,5 +53,11 @@ class OmniacssServiceProvider extends ServiceProvider
     public static function componentsPath(): string
     {
         return dirname(__DIR__).'/resources/views/components';
+    }
+
+    /** Ends " @endslot" before a word that follows it directly with an empty PHP tag (no extra space in the output). */
+    public static function closeSlotsBeforeText(string $value): string
+    {
+        return (string) preg_replace('/(?<=\s)@endslot(?=[\w@])/', '@endslot<?php /* slot end */ ?>', $value);
     }
 }

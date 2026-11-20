@@ -9,6 +9,8 @@
      column-filters (column, label, icon, options: value => label), summary ("Showing {from}–{to} of {total} customers").
      A cell or row['actions'] may be an Illuminate\Support\HtmlString (or a rendered <x-oc::data-table-name>) for rich
      content; give such a cell a plain values[key] for sorting, filtering and search. Slot "pageActions": toolbar buttons.
+     Badge per cell: a cell ['badge' => 'Active', 'variant' => 'success'], or a column 'badge' => true (every cell a badge) or
+     'badge' => ['Active' => 'success', 'Deleted' => 'secondary'] (variant per text); the text is the sort/search value.
      0.17.0: labels (texts in another language, any subset of the keys in \$en below; the script texts selected, summary,
      firstPage, previousPage, nextPage, lastPage, sortedBy, ascending, descending go to data-oc-labels), view (false: no
      table / cards switch), pagination (false: every row on one page), bulk (selection bar; default: as filters). --}}
@@ -58,6 +60,17 @@
     $scriptKeys = ['selected', 'summary', 'firstPage', 'previousPage', 'nextPage', 'lastPage', 'sortedBy', 'ascending', 'descending'];
     $scriptLabels = array_intersect_key((array) $labels, array_flip($scriptKeys));
     $label = fn ($row) => $row['values']['name'] ?? (is_string($row['cells']['name'] ?? null) ? $row['cells']['name'] : $row['key']);
+    // [text, variant] when the cell is a badge: a cell ['badge' => …, 'variant' => …] or a column with 'badge' (true or text => variant).
+    $badgeOf = function (array $column, $cell): ?array {
+        if (is_array($cell) && isset($cell['badge'])) {
+            return [(string) $cell['badge'], $cell['variant'] ?? 'default'];
+        }
+        if (empty($column['badge']) || ! is_scalar($cell) || (string) $cell === '') {
+            return null;
+        }
+
+        return [(string) $cell, is_array($column['badge']) ? ($column['badge'][(string) $cell] ?? 'default') : 'default'];
+    };
 @endphp
 <div @class(['oc-data-table', 'oc-data-table--bordered' => $variant === 'bordered', 'oc-data-table--plain' => ! $striped, 'oc-column-menu-scope' => $columnMenu]) id="{{ $tableId }}" data-page-size="{{ $pagination ? $pageSize : 0 }}" @if($scriptLabels) data-oc-labels="{{ json_encode($scriptLabels, JSON_UNESCAPED_UNICODE) }}" @endif @unless($view) data-oc-no-grid @endunless @if($live) data-oc-live="true" @endif>
     @if ($tabs)
@@ -189,7 +202,8 @@
                             @endif
                             @foreach ($columns as $column)
                                 @php($cell = $row['cells'][$column['key']] ?? '')
-                                <td data-oc-col="{{ $column['key'] }}" @if(!empty($column['numeric'])) data-numeric @endif @if(isset($row['values'][$column['key']])) data-oc-value="{{ $row['values'][$column['key']] }}" @endif>@if (!empty($column['truncate']) && is_string($cell))<span class="oc-data-table-truncate" style="--oc-data-table-truncate: {{ $column['truncate'] }}" title="{{ $cell }}">{{ $cell }}</span>@else{{ $cell }}@endif</td>
+                                @php($badge = $badgeOf($column, $cell))
+                                <td data-oc-col="{{ $column['key'] }}" @if(!empty($column['numeric'])) data-numeric @endif @if(isset($row['values'][$column['key']])) data-oc-value="{{ $row['values'][$column['key']] }}" @elseif($badge) data-oc-value="{{ $badge[0] }}" @endif>@if ($badge)<span @class(['oc-badge', 'oc-badge--'.$badge[1] => ! in_array($badge[1], ['default', 'primary', null, ''], true)])>{{ $badge[0] }}</span>@elseif (!empty($column['truncate']) && is_string($cell))<span class="oc-data-table-truncate" style="--oc-data-table-truncate: {{ $column['truncate'] }}" title="{{ $cell }}">{{ $cell }}</span>@else{{ $cell }}@endif</td>
                             @endforeach
                             <td data-oc-col="actions"><div style="display: flex; gap: 0.375rem; justify-content: flex-end">
                                 @if (isset($row['actions']))

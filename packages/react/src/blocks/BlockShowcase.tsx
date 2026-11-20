@@ -1,3 +1,4 @@
+// File: packages/react/src/blocks/BlockShowcase.tsx | Map: types -> BlockShowcase (eyebrow, title -> card grid of browser-framed projects)
 import { forwardRef } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
@@ -44,7 +45,7 @@ export const BlockShowcase = forwardRef<HTMLElement, BlockShowcaseProps>(functio
                 </span>
               </span>
               <span className="grid gap-0.5 p-1.5 pt-0">
-                {p.pill != null && <span className="oc-pill oc-pill--accent">{p.pill}</span>}
+                {p.pill != null && <span className="oc-pill oc-pill--accent justify-self-start">{p.pill}</span>}
                 <span className="oc-product-card__name">{p.name}</span>
                 {p.summary != null && <span className="oc-product-card__summary">{p.summary}</span>}
                 {p.more != null && <span className="oc-product-card__more">{p.more}</span>}

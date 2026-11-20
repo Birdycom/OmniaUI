@@ -7,6 +7,8 @@ export function shiftDate(iso: string, days: number): string;
 export function dayState(iso: string, start?: string, end?: string): { selected: boolean; cls: string[] };
 /** Starts one [data-oc-calendar] root; returns a function that stops it. Event: oc-calendar-change. */
 export function bindCalendar(root: HTMLElement): () => void;
+/** Date picker: hides the nearest open [popover] around a calendar root; true when it closed one. */
+export function closePicker(root: Element): boolean;
 /** Starts every [data-oc-calendar] in scope. */
 export function initCalendar(scope?: ParentNode): Array<() => void>;
 /** 6 weeks of 7 days for a month grid ("2026-10"), Monday first (1) or Sunday first (0); outside = another month. */

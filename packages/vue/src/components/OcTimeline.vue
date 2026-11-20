@@ -17,15 +17,20 @@ withDefaults(
     items?: TimelineEntry[]
     size?: 'default' | 'lg'
     accent?: boolean
+    /** Compact rows: <li><strong>date</strong><span>text</span></li> (no dot, no title). */
+    compact?: boolean
   }>(),
-  { items: () => [], size: 'default', accent: false },
+  { items: () => [], size: 'default', accent: false, compact: false },
 )
 </script>
 
 <template>
   <ol :class="['oc-timeline', size === 'lg' && 'oc-timeline--lg', accent && 'oc-timeline--accent']">
     <slot>
-      <li v-for="(item, i) in items" :key="i" :class="['oc-timeline__item', item.current && 'oc-timeline__item--current']">
+      <template v-if="compact">
+        <li v-for="(item, i) in items" :key="i"><strong>{{ item.date }}</strong><span>{{ item.text ?? item.title }}</span></li>
+      </template>
+      <li v-for="(item, i) in compact ? [] : items" :key="i" :class="['oc-timeline__item', item.current && 'oc-timeline__item--current']">
         <time v-if="item.dateTime" class="oc-timeline__date" :datetime="item.dateTime">{{ item.date }}</time>
         <span v-else class="oc-timeline__date">{{ item.date }}</span>
         <h3 v-if="item.title" class="oc-timeline__title">{{ item.title }}</h3>

@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const src = path.join(root, 'src')
 
-const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+// Login01 -> login-01: a letter followed by a digit also gets a dash (existing names have none).
+const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/([a-zA-Z])([0-9])/g, '$1-$2').toLowerCase()
 
 // Sub-parts that render markup of another snippet.
 const snippetAlias = {
@@ -40,6 +41,16 @@ const snippetAlias = {
   'card-band': 'card',
   'sidebar-meta': 'sidebar',
   'language-menu': 'language-select',
+  'paper-lift': 'paper',
+  footerbar: 'site-footer',
+  'show-more': 'expandable-table',
+  'product-card': 'fly-in',
+  'badge-source': 'badge',
+  'tag-list': 'feature-card',
+  'carousel-item': 'carousel',
+  'resizable-panel': 'resizable',
+  'menu-entries': 'menubar',
+  topbar: 'site-header',
 }
 
 const entries = []

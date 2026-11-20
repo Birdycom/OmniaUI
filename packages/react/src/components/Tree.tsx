@@ -4,14 +4,31 @@
 import { forwardRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "./Webicon";
+import { TableActionIcon } from "./TableActions";
+import type { TableActionTone } from "./TableActions";
+
+/** One icon action of a row (`button.oc-table-actions-icon`, or a link with `href`). */
+export interface TreeAction {
+  /** Accessible name and hover title, e.g. "Rename Quote v2.pdf". */
+  label: string;
+  /** Webicon name ("mdi:pencil-outline") or any node; `text` is shown when there is no icon. */
+  icon?: ReactNode;
+  text?: ReactNode;
+  href?: string;
+  tone?: TableActionTone;
+  onClick?: () => void;
+}
 
 export interface TreeItem {
   label: ReactNode;
   /** Leaf link target (renders the label as `a.oc-tree-label`). */
   href?: string;
+  /** Webicon name ("mdi:folder-outline", inline SVG) or any node. */
   icon?: ReactNode;
   count?: ReactNode;
-  actions?: ReactNode;
+  /** Any node, or a list of icon actions (`button.oc-table-actions-icon`). */
+  actions?: ReactNode | TreeAction[];
   /** Child items: makes this item a folder. */
   children?: TreeItem[];
   /** Folder starts open. */
@@ -37,14 +54,34 @@ function RowContent({ item }: { item: TreeItem }) {
   const isLink = item.href !== undefined;
   return (
     <>
-      {item.icon != null && <span className="oc-tree-icon" aria-hidden="true">{item.icon}</span>}
+      {item.icon != null && <span className="oc-tree-icon" aria-hidden="true">{webiconNode(item.icon)}</span>}
       {isLink ? (
         <a className="oc-tree-label" href={item.href} aria-current={item.current ? "true" : undefined}>{item.label}</a>
       ) : (
         <span className="oc-tree-label">{item.label}</span>
       )}
       {item.count != null && <span className="oc-tree-count">{item.count}</span>}
-      {item.actions != null && <span className="oc-tree-actions">{item.actions}</span>}
+      {item.actions != null && <span className="oc-tree-actions">{isActionList(item.actions) ? <TreeActions actions={item.actions as TreeAction[]} /> : item.actions}</span>}
+    </>
+  );
+}
+
+/** A TreeAction[] (plain objects with a label), not an array of React nodes. */
+function isActionList(value: unknown): value is TreeAction[] {
+  return Array.isArray(value) && value.length > 0 && value.every((a) => a != null && typeof a === "object" && !("$$typeof" in a) && typeof (a as TreeAction).label === "string");
+}
+
+/** A list of icon actions; a click does not toggle the folder (the button sits inside its summary). */
+function TreeActions({ actions }: { actions: TreeAction[] }) {
+  return (
+    <>
+      {actions.map((a, i) =>
+        a.href !== undefined ? (
+          <TableActionIcon key={i} label={a.label} tone={a.tone} href={a.href}>{a.icon != null ? webiconNode(a.icon) : a.text}</TableActionIcon>
+        ) : (
+          <TableActionIcon key={i} label={a.label} tone={a.tone} onClick={(e) => { e.preventDefault(); a.onClick?.(); }}>{a.icon != null ? webiconNode(a.icon) : a.text}</TableActionIcon>
+        ),
+      )}
     </>
   );
 }

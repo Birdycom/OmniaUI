@@ -1,6 +1,8 @@
 {{-- OmniaCSS alert dialog (confirmation modal on <dialog>).
      Props: id (required), type (success|error|warning|info|question), title, icon (glyph, default per type),
-            cancel (label), confirm (label), confirmVariant (button variant), closedby.
+            cancel (label), confirm (label), confirmVariant (button variant), closedby,
+            discard (label of a third action at the start of the footer, e.g. "Don't save"; .oc-alert-dialog-discard, closes the dialog),
+            discard-attributes (extra attributes for it, e.g. ['wire:click' => 'leave']).
      Slots: default = message, footer = replaces both buttons. Open it with a button: command="show-modal" commandfor="{id}". --}}
 @props([
     'id',
@@ -11,6 +13,8 @@
     'confirm' => 'Confirm',
     'confirmVariant' => 'destructive',
     'closedby' => 'closerequest',
+    'discard' => null,
+    'discardAttributes' => [],
 ])
 @php
     $glyph = $icon ?? match ($type) {
@@ -31,6 +35,9 @@
             @if (isset($footer) && trim((string) $footer) !== '')
                 {{ $footer }}
             @else
+                @if ($discard)
+                    <button {{ (new \Illuminate\View\ComponentAttributeBag((array) $discardAttributes))->class(['oc-btn oc-btn--ghost oc-alert-dialog-discard'])->merge(['type' => 'button', 'command' => 'close', 'commandfor' => $id]) }}>{{ $discard }}</button>
+                @endif
                 <button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="{{ $id }}">{{ $cancel }}</button>
                 <button class="{{ $confirmClass }}" type="button" command="close" commandfor="{{ $id }}">{{ $confirm }}</button>
             @endif

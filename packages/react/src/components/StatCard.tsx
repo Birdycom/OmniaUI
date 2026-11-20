@@ -1,6 +1,6 @@
 // File: packages/react/src/components/StatCard.tsx
 // Map: StatCardGrid (row of cards) -> StatCard = card (div, a or button) -> icon -> body (value + trend, label)
-// With `href` the card is a link, with `onClick` a button; otherwise a plain div.
+// With `href` the card is a link, with `onClick` (or `button`) a button; otherwise a plain div.
 import { forwardRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
@@ -25,10 +25,14 @@ export interface StatCardProps extends Omit<HTMLAttributes<HTMLElement>, "onClic
   stripe?: boolean;
   href?: string;
   onClick?: () => void;
+  /** A button also without `onClick` (e.g. a popover trigger through `popoverTarget`, or your own data attributes). */
+  button?: boolean;
+  /** With a button: popover to open. */
+  popoverTarget?: string;
 }
 
 /** `.oc-stat-card`: compact KPI tile. */
-export function StatCard({ value, label, icon, trend, trendDirection = "up", tone = "default", stripe, href, onClick, className, ...rest }: StatCardProps) {
+export function StatCard({ value, label, icon, trend, trendDirection = "up", tone = "default", stripe, href, onClick, button, popoverTarget, className, ...rest }: StatCardProps) {
   const cls = cx("oc-stat-card", tone !== "default" && `oc-stat-card--${tone}`, stripe && "oc-stat-card--stripe", className);
   // Spans only inside the body, so the markup is also valid inside a link or button.
   const content = (
@@ -44,6 +48,6 @@ export function StatCard({ value, label, icon, trend, trendDirection = "up", ton
     </>
   );
   if (href !== undefined) return <a className={cls} href={href} {...rest}>{content}</a>;
-  if (onClick) return <button className={cls} type="button" onClick={onClick} {...rest}>{content}</button>;
+  if (onClick || button) return <button className={cls} type="button" onClick={onClick} popoverTarget={popoverTarget} {...rest}>{content}</button>;
   return <div className={cls} {...rest}>{content}</div>;
 }

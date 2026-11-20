@@ -5,11 +5,21 @@ import { Button } from "./Button";
 import type { ButtonProps } from "./Button";
 import { webiconNode } from "./Webicon";
 
+export interface DropdownTriggerArgs {
+  /** Id of the menu: put it on your trigger as `popoverTarget` (already in `props`). */
+  id: string;
+  /** Props for your trigger element: `{ popoverTarget }`. */
+  props: { popoverTarget: string };
+}
+
 export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
   /** Content of the trigger button. */
-  trigger: ReactNode;
+  trigger?: ReactNode;
   /** Props for the trigger button (default variant `outline`). */
   triggerProps?: ButtonProps;
+  /** Your own trigger instead of the outline button (an icon button, a breadcrumb ellipsis, an avatar):
+   *  `renderTrigger={({ props }) => <button className="oc-breadcrumb-ellipsis" {...props}>…</button>}`. */
+  renderTrigger?: (args: DropdownTriggerArgs) => ReactNode;
 }
 
 /**
@@ -17,14 +27,14 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
  * (native popover and anchor positioning, no state needed).
  */
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropdown(
-  { trigger, triggerProps, className, id, children, ...rest },
+  { trigger, triggerProps, renderTrigger, className, id, children, ...rest },
   ref,
 ) {
   const auto = useId();
   const menuId = id ?? `oc-menu-${auto.replace(/:/g, "")}`;
   return (
     <>
-      <Button variant="outline" {...triggerProps} popoverTarget={menuId}>{trigger}</Button>
+      {renderTrigger ? renderTrigger({ id: menuId, props: { popoverTarget: menuId } }) : <Button variant="outline" {...triggerProps} popoverTarget={menuId}>{trigger}</Button>}
       <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...attrs({ popover: "" })} {...rest}>
         {children}
       </div>

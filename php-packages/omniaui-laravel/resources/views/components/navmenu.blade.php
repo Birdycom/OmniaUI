@@ -1,8 +1,9 @@
 {{-- OmniaCSS navmenu. Props: items (list of ['label', 'href', 'current', 'children' => [['label', 'href'] | ['group' => ...]]]), label.
-     Items with children render a caret button that opens a dropdown menu (popover). Slot: extra <li> entries. --}}
-@props(['items' => [], 'label' => 'Navigation'])
+     Items with children render a caret button that opens a dropdown menu (popover). variant: site (outlined pill links,
+     .oc-navmenu--site). Slot: extra <li> entries. --}}
+@props(['items' => [], 'label' => 'Navigation', 'variant' => null])
 <nav {{ $attributes->merge(['aria-label' => $label]) }}>
-    <ul class="oc-navmenu">
+    <ul @class(['oc-navmenu', 'oc-navmenu--'.$variant => $variant])>
         @foreach ($items as $i => $item)
             <li>
                 @if (! empty($item['children']))

@@ -1,10 +1,11 @@
 <!-- File: packages/vue/src/blocks/OcBlockContactGrid.vue | Map: props -> head -> grid -> cards (mark, title, lines) -->
 <script setup lang="ts">
 /**
- * Contact info cards (e-mail, phone, address, hours). A card with `address: true` renders as <address>.
+ * Contact info cards (e-mail, phone, address, hours). A card with `address: true` renders as <address>; `icon` is a glyph or a webicon name.
  * Slot: default (own cards). Classes: .oc-block-contact (--plain), -head, -heading, -lead, -grid, -card, -title, -line
  */
 import { useUid } from '../composables/useUid'
+import OcWebicon from '../components/OcWebicon.vue'
 
 export interface ContactGridLine {
   text: string
@@ -40,7 +41,7 @@ const titleId = useUid('oc-contact-title')
     <div class="oc-block-contact-grid">
       <slot>
         <component :is="card.address ? 'address' : 'article'" v-for="(card, i) in cards" :key="i" class="oc-block-contact-card">
-          <span v-if="card.icon" :class="['oc-product-mark oc-product-mark--sm oc-product-mark--soft', card.accent && `oc-accent--${card.accent}`]" aria-hidden="true">{{ card.icon }}</span>
+          <span v-if="card.icon" :class="['oc-product-mark oc-product-mark--sm oc-product-mark--soft', card.accent && `oc-accent--${card.accent}`]" aria-hidden="true"><OcWebicon v-if="card.icon.includes(':')" :name="card.icon" bare fallback="iconify" /><template v-else>{{ card.icon }}</template></span>
           <component :is="card.address ? 'span' : 'h3'" class="oc-block-contact-title">{{ card.title }}</component>
           <template v-for="(line, j) in card.lines" :key="j">
             <a v-if="line.href" class="oc-block-contact-line" :href="line.href">{{ line.text }}</a>

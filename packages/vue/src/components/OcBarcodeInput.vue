@@ -3,6 +3,7 @@
 /**
  * Barcode / EAN field with a preview. v-model: string (digits only).
  * Slot `preview`: your own <svg>/<canvas> barcode; default = decorative placeholder bars.
+ * errorText (with error): the text in the preview instead of the code ("Use 8 or 13 digits"). hidePreview: only the field.
  * Same markup as packages/ui/snippets/barcode-input.html. class/style on the wrapper, other attributes on the input.
  */
 import { computed } from 'vue'
@@ -10,11 +11,12 @@ import { useAttrsSplit } from '../composables/useAttrsSplit'
 import { useUid } from '../composables/useUid'
 
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(defineProps<{ label?: string; id?: string; emptyText?: string; error?: boolean }>(), { emptyText: 'No code yet' })
+const props = withDefaults(defineProps<{ label?: string; id?: string; emptyText?: string; error?: boolean; errorText?: string; hidePreview?: boolean }>(), { emptyText: 'No code yet', hidePreview: false })
 const model = defineModel<string>({ default: '' })
 const { root, control } = useAttrsSplit()
 const auto = useUid('oc-barcode')
 const inputId = computed(() => props.id ?? auto)
+const message = computed(() => (props.error && props.errorText ? props.errorText : ''))
 
 function onInput(e: Event) {
   const input = e.target as HTMLInputElement
@@ -43,9 +45,10 @@ function onInput(e: Event) {
         @input="onInput"
       />
     </div>
-    <figure :class="['oc-barcode-preview', !model && 'oc-barcode-preview--empty']" aria-label="Barcode preview">
-      <slot name="preview"><div class="oc-barcode-preview-bars" aria-hidden="true"></div></slot>
-      <figcaption class="oc-barcode-preview-code">{{ model || emptyText }}</figcaption>
+    <figure v-if="!hidePreview" :class="['oc-barcode-preview', (!model || message) && 'oc-barcode-preview--empty']" aria-label="Barcode preview">
+      <div v-if="message" class="oc-barcode-preview-bars" aria-hidden="true"></div>
+      <slot v-else name="preview"><div class="oc-barcode-preview-bars" aria-hidden="true"></div></slot>
+      <figcaption class="oc-barcode-preview-code">{{ message || model || emptyText }}</figcaption>
     </figure>
   </div>
 </template>

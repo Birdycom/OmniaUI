@@ -22,6 +22,9 @@ export interface TintCardProps extends Omit<AnchorHTMLAttributes<HTMLElement>, "
   noArrow?: boolean;
   /** Pro shape (`.oc-tint-card--fill`, needs OmniaUI Pro CSS): the icon inside the card fills up on hover. */
   fill?: boolean;
+  /** Link on the title (`.oc-tint-card__link`, covers the card) while the card stays an `<article>`: for a card with
+   *  more than one link. */
+  titleHref?: string;
 }
 
 const webicon = (icon: ReactNode, className?: string) =>
@@ -30,7 +33,7 @@ const webicon = (icon: ReactNode, className?: string) =>
 /** Link card tinted in one color, with a large drifting webicon in the corner (`.oc-tint-card`); children = the text.
  *  With `href` the card is an `<a>`, without it an `<article>`. */
 export const TintCard = forwardRef<HTMLElement, TintCardProps>(function TintCard(
-  { title, icon, tone, meta, size, headingLevel = 3, noArrow, fill, href, className, children, ...rest },
+  { title, icon, tone, meta, size, headingLevel = 3, noArrow, fill, titleHref, href, className, children, ...rest },
   ref,
 ) {
   const H = `h${headingLevel}` as "h3";
@@ -39,7 +42,7 @@ export const TintCard = forwardRef<HTMLElement, TintCardProps>(function TintCard
     <>
       {icon != null && (typeof icon === "string" ? webicon(icon, "oc-tint-card__art") : <span className="oc-tint-card__art" aria-hidden="true">{icon}</span>)}
       <div className="oc-tint-card__head">
-        <H className="oc-tint-card__title">{title}</H>
+        <H className="oc-tint-card__title">{titleHref != null && href == null ? <a className="oc-tint-card__link" href={titleHref}>{title}</a> : title}</H>
         {!noArrow && <span className="oc-tint-card__go" aria-hidden="true">{webicon("material-symbols:arrow-outward-rounded")}</span>}
       </div>
       {children != null && <p className="oc-tint-card__text">{children}</p>}

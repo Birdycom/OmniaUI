@@ -65,5 +65,14 @@ export const CardTitle = part<HTMLHeadingElement>("h3", "oc-card-title", "CardTi
 export const CardDescription = part<HTMLParagraphElement>("p", "oc-card-description", "CardDescription");
 /** `.oc-card-content` */
 export const CardContent = part<HTMLDivElement>("div", "oc-card-content", "CardContent");
-/** `.oc-card-footer` */
-export const CardFooter = part<HTMLDivElement>("div", "oc-card-footer", "CardFooter");
+export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
+  /** A line above the footer (`oc-card-footer--divider`). */
+  divider?: boolean;
+  /** The actions on the end side (`oc-card-footer--end`). */
+  end?: boolean;
+}
+
+/** `.oc-card-footer` (`divider`: a line above it, `end`: actions on the end side) */
+export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(function CardFooter({ divider, end, className, ...rest }, ref) {
+  return <div ref={ref} className={cx("oc-card-footer", divider && "oc-card-footer--divider", end && "oc-card-footer--end", className)} {...rest} />;
+});

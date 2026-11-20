@@ -16,19 +16,37 @@
      Without the script the steps are plain buttons and the menu opens (popover); nothing moves or filters.
      The script filters, selects, moves, duplicates and removes, and fires "oc-route-steps-change" ({ action, id, order })
      and "oc-route-steps-select" ({ id }) on the frame.
-     Blade: <x-oc::block.route-steps> - attributes merge onto the root element.
-     Blade slots (each falls back to the snippet content when empty): title, count, footer, default.
+     Blade: <x-oc::block.route-steps> - attributes merge onto the root element. Written by hand (0.17.0), prop names as in the React block.
+     Props: title, count, locked (the order cannot change: class --locked, a lock line, grips disabled, no move items), locked-label
+       ('Order locked'), steps (array of rows: id, name, meta (list), kind, numbered (default true; false: icon thumb), icon, color,
+       image (img or svg in the thumb), status, statusTone, statusTooltip, badges (list of strings or ['label', 'tone']), attributes
+       (extra attributes on the main button, e.g. wire:click)), selected (id: aria-current), search (default true with steps),
+       search-label, kinds (array of ['value', 'label'], "All" first), actions (menu per step, default true), empty-text, title-id.
+       Without steps the snippet rows, tools and add buttons show (the default slot replaces the rows).
+     Blade slots (they win over the props; each falls back to the snippet content when empty): title, count, footer, default.
 --}}
-@props(['title' => null, 'count' => null, 'footer' => null])
-<section {{ $attributes->merge(['class' => 'oc-block-route-steps', 'aria-labelledby' => 'oc-rsteps-title']) }}>
+@props([
+    'title' => null, 'count' => null, 'footer' => null, 'locked' => false, 'lockedLabel' => 'Order locked', 'steps' => null,
+    'selected' => null, 'search' => null, 'searchLabel' => 'Search steps', 'kinds' => null, 'actions' => true,
+    'emptyText' => 'No step matches your search.', 'titleId' => 'oc-rsteps-title',
+])
+@php
+    $rows = is_array($steps);
+    $data = $rows || $search !== null || $kinds !== null;
+    $useSearch = $search ?? true;
+    $kindList = is_array($kinds) ? $kinds : [];
+    $bag = fn ($a) => new \Illuminate\View\ComponentAttributeBag(is_array($a) ? $a : []);
+@endphp
+<section {{ $attributes->merge(['class' => 'oc-block-route-steps'.($locked ? ' oc-block-route-steps--locked' : ''), 'aria-labelledby' => $titleId]) }}>
   <div class="oc-block-route-steps-head">
-    <h2 class="oc-block-route-steps-title" id="oc-rsteps-title">
+    <h2 class="oc-block-route-steps-title" id="{{ $titleId }}">
         @if (isset($title) && trim((string) $title) !== '')
             {{ $title }}
         @else
         Steps of Route 1
         @endif
     </h2>
+    @if (! $rows || (isset($count) && trim((string) $count) !== ''))
     <span class="oc-block-route-steps-count">
         @if (isset($count) && trim((string) $count) !== '')
             {{ $count }}
@@ -36,7 +54,30 @@
         7 steps · 4 count
         @endif
     </span>
+    @endif
+    @if ($locked)
+    <span class="oc-block-route-steps-lock">{{ $lockedLabel }}</span>
+    @endif
   </div>
+  @if ($data)
+  @if ($useSearch || count($kindList) > 0)
+  <div class="oc-block-route-steps-tools">
+    @if ($useSearch)
+    <div class="oc-input-group oc-input-group--affix">
+      <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify" aria-hidden="true"></iconify-icon></span>
+      <input class="oc-input oc-block-route-steps-search" type="search" placeholder="{{ $searchLabel }}" aria-label="{{ $searchLabel }}">
+    </div>
+    @endif
+    @if (count($kindList) > 0)
+    <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-route-steps-kinds" aria-label="Kind">
+      @foreach ([['value' => 'all', 'label' => 'All'], ...$kindList] as $k)
+      <label class="oc-chip-filter-item"><input type="radio" name="{{ $titleId }}-kind" value="{{ $k['value'] }}" @checked($loop->first)> {{ $k['label'] }}</label>
+      @endforeach
+    </fieldset>
+    @endif
+  </div>
+  @endif
+  @else
   <div class="oc-block-route-steps-tools">
     <div class="oc-input-group oc-input-group--affix">
       <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify" aria-hidden="true"></iconify-icon></span>
@@ -49,9 +90,49 @@
       <label class="oc-chip-filter-item"><input type="radio" name="oc-rsteps-kind" value="intro finish"> Start and finish</label>
     </fieldset>
   </div>
+  @endif
   <ol class="oc-block-route-steps-list" aria-label="Steps in route order">
       @if (! $slot->isEmpty())
           {{ $slot }}
+      @elseif ($rows)
+          @foreach ($steps as $i => $s)
+              @php
+                  $n = (string) ($s['name'] ?? '');
+                  $menuId = $titleId.'-menu-'.$loop->iteration;
+                  $tone = $s['statusTone'] ?? $s['tone'] ?? null;
+                  $image = $s['image'] ?? null;
+              @endphp
+    <li class="oc-block-route-steps-item" data-id="{{ $s['id'] ?? $i }}" @isset($s['kind']) data-kind="{{ $s['kind'] }}" @endisset>
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move {{ $n }}" @if ($locked) disabled @else aria-pressed="false" @endif></button>
+      <button {{ $bag($s['attributes'] ?? [])->merge(['class' => 'oc-block-route-steps-main', 'type' => 'button', 'aria-current' => $selected !== null && (string) $selected === (string) ($s['id'] ?? $i) ? 'true' : null]) }}>
+        @if ($s['numbered'] ?? true)
+        <span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num">{{ $image }}</span>
+        @else
+        <span class="oc-block-route-steps-thumb" @isset($s['color']) style="--oc-step-color: {{ $s['color'] }}" @endisset>@if ($image){{ $image }}@elseif (isset($s['icon']))<x-oc::webicon :name="$s['icon']" bare fallback="iconify" />@endif</span>
+        @endif
+        <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">{{ $n }}</span>@if (! empty($s['meta']))<span class="oc-block-route-steps-meta">@foreach ($s['meta'] as $m)<span>{{ $m }}</span>@endforeach</span>@endif @if (! empty($s['badges']))<span class="oc-block-route-steps-badges">@foreach ($s['badges'] as $b)<span @class(['oc-badge', 'oc-badge--'.(is_array($b) ? ($b['tone'] ?? 'outline') : 'outline')])>{{ is_array($b) ? $b['label'] : $b }}</span>@endforeach</span>@endif</span>
+      </button>
+      @isset($s['status'])
+      @if (! empty($s['statusTooltip']))
+      <span class="oc-block-route-steps-status oc-tooltip oc-tooltip--left" data-tooltip="{{ $s['statusTooltip'] }}" tabindex="0"><span @class(['oc-badge', 'oc-badge--'.$tone => $tone])>{{ $s['status'] }}</span></span>
+      @else
+      <span @class(['oc-badge', 'oc-badge--'.$tone => $tone, 'oc-block-route-steps-status'])>{{ $s['status'] }}</span>
+      @endif
+      @endisset
+      @if ($actions)
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="{{ $menuId }}" aria-label="Actions for {{ $n }}"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <div class="oc-dropdown-menu" id="{{ $menuId }}" popover>
+        @unless ($locked)
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="{{ $menuId }}" popovertargetaction="hide" @disabled($loop->first)><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="{{ $menuId }}" popovertargetaction="hide" @disabled($loop->last)><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
+        @endunless
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="{{ $menuId }}" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <div class="oc-dropdown-separator"></div>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="{{ $menuId }}" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+      </div>
+      @endif
+    </li>
+          @endforeach
       @else
     <li class="oc-block-route-steps-item" data-id="s1" data-kind="intro">
       <button class="oc-sortable-row-grip" type="button" aria-label="Move Welcome" aria-pressed="false"></button>
@@ -167,7 +248,12 @@
     </li>
       @endif
   </ol>
+  @if ($rows)
+  <p class="oc-block-route-steps-empty" @if (count($steps) > 0 || ! $slot->isEmpty()) hidden @endif>{{ $emptyText }}</p>
+  @else
   <p class="oc-block-route-steps-empty" hidden>No step matches your search.</p>
+  @endif
+  @if (! $rows || (isset($footer) && trim((string) $footer) !== ''))
   <div class="oc-block-route-steps-foot">
       @if (isset($footer) && trim((string) $footer) !== '')
           {{ $footer }}
@@ -176,6 +262,7 @@
     <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"><iconify-icon icon="mdi:camera-outline" aria-hidden="true"></iconify-icon> Add photo task</button>
       @endif
   </div>
+  @endif
   <p class="oc-block-route-steps-status-line oc-visually-hidden" aria-live="polite"></p>
 </section>
 @once

@@ -16,26 +16,29 @@ export interface NameCardProps extends Omit<DetailsHTMLAttributes<HTMLDetailsEle
   actions?: ReactNode;
   /** Show the rename pencil; onRename gets the new name. */
   onRename?: (name: string) => void;
+  /** Show the rename pencil also without `onRename` (listen to the `oc-namecard-rename` event yourself, or for a demo). */
+  renamable?: boolean;
   /** Amount in the primary color (a total). */
   total?: boolean;
 }
 
 /** `<details class="oc-name-card">`: name, rename pencil, amount and actions in the header; children are the content. */
 export const NameCard = forwardRef<HTMLDetailsElement, NameCardProps>(function NameCard(
-  { name, amount, meta, actions, onRename, total, className, children, ...rest },
+  { name, amount, meta, actions, onRename, renamable, total, className, children, ...rest },
   ref,
 ) {
   const own = useRef<HTMLDetailsElement | null>(null);
   const renameRef = useRef(onRename);
   renameRef.current = onRename;
+  const canRename = Boolean(onRename) || Boolean(renamable);
   useEffect(() => {
     const el = own.current;
-    if (!el || !onRename) return;
+    if (!el || !canRename) return;
     bindNameCard(el);
     const handler = (event: Event) => renameRef.current?.((event as CustomEvent<{ name: string }>).detail.name);
     el.addEventListener("oc-namecard-rename", handler);
     return () => el.removeEventListener("oc-namecard-rename", handler);
-  }, [Boolean(onRename)]);
+  }, [canRename]);
   return (
     <details
       ref={(node) => { own.current = node; if (typeof ref === "function") ref(node); else if (ref) ref.current = node; }}
@@ -44,7 +47,7 @@ export const NameCard = forwardRef<HTMLDetailsElement, NameCardProps>(function N
     >
       <summary className="oc-name-card__head">
         <span className="oc-name-card__title">{name}</span>
-        {onRename && (
+        {canRename && (
           <button type="button" className="oc-btn oc-btn--plain" data-oc-rename="" aria-label={`Rename ${name}`} title="Rename">
             <Icon d="m14.06 9l.94.94L5.92 19H5v-.92zm3.6-6c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 3.75l1.83-1.83c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z" />
           </button>

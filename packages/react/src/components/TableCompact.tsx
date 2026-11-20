@@ -19,6 +19,8 @@ export interface TableCompactProps extends HTMLAttributes<HTMLDivElement> {
   rows?: Array<Record<string, ReactNode>>;
   /** Total row: one value per column key (missing keys stay empty). */
   footer?: Record<string, ReactNode>;
+  /** The first footer cell spans this many columns (`colspan`), e.g. 2 for "Total" under Item + Qty. Default 1. */
+  footerSpan?: number;
   bordered?: boolean;
   plain?: boolean;
 }
@@ -31,7 +33,7 @@ const cellAttrs = (c: TableCompactColumn) => ({
 
 /** `.oc-table-compact`: small striped table for inside cards. */
 export const TableCompact = forwardRef<HTMLDivElement, TableCompactProps>(function TableCompact(
-  { columns, rows = [], footer, bordered, plain, className, children, ...rest },
+  { columns, rows = [], footer, footerSpan = 1, bordered, plain, className, children, ...rest },
   ref,
 ) {
   const cls = cx("oc-table-compact", bordered && "oc-table-compact--bordered", plain && "oc-table-compact--plain", className);
@@ -49,7 +51,15 @@ export const TableCompact = forwardRef<HTMLDivElement, TableCompactProps>(functi
           </tbody>
           {footer && (
             <tfoot>
-              <tr>{columns.map((c) => <td key={c.key} {...cellAttrs(c)}>{footer[c.key]}</td>)}</tr>
+              <tr>
+                {columns.map((c, i) =>
+                  i === 0 && footerSpan > 1 ? (
+                    <td key={c.key} colSpan={footerSpan} {...cellAttrs(c)}>{footer[c.key]}</td>
+                  ) : i > 0 && i < footerSpan ? null : (
+                    <td key={c.key} {...cellAttrs(c)}>{footer[c.key]}</td>
+                  ),
+                )}
+              </tr>
             </tfoot>
           )}
         </table>
