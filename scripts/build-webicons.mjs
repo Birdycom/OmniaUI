@@ -14,7 +14,7 @@ const root = process.cwd();
 /** Icons OmniaUI's components use by default (check marks, chevrons, close, arrows, the theme switch …) and the
  *  flags of the language menu demos. Keep it small: everything else an app registers itself. */
 export const BUILTIN = [
-  "mdi:check", "mdi:check-all", "mdi:close", "mdi:menu", "mdi:magnify", "mdi:dots-vertical", "mdi:content-copy",
+  "mdi:check", "mdi:check-all", "mdi:close", "mdi:menu", "mdi:magnify", "mdi:calendar", "mdi:dots-vertical", "mdi:content-copy",
   "mdi:chevron-down", "mdi:chevron-up", "mdi:chevron-left", "mdi:chevron-right",
   "mdi:arrow-up", "mdi:arrow-down", "mdi:arrow-left", "mdi:arrow-right", "mdi:trash-can-outline",
   "mdi:walk", "mdi:flag-checkered", "mdi:map-marker-outline", "mdi:target", "mdi:text",

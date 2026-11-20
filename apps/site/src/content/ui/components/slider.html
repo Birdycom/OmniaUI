@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Slider", "category": "Forms", "description": "Native range input with themed track, fill and thumb.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Slider", "category": "Forms", "description": "Slider on a native range input with a themed track, fill and thumb. Examples with the value shown, a scale, a step, disabled and vertical.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Slider</h1>
         <p class="oc-hero-text">A styled native <code>&lt;input type="range"&gt;</code>. Min, max, step, value, keyboard handling and form submission come from the browser; the CSS draws the track, fill and thumb in theme colors. <a href="../components.html">All components</a>.</p>
@@ -8,21 +8,24 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/slider.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React component <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Slider">
 <div class="oc-field" style="max-inline-size:20rem">
   <label class="oc-field-label" for="oc-slider-volume">Volume</label>
   <input class="oc-slider" id="oc-slider-volume" type="range" min="0" max="100" value="40" style="--oc-slider-progress: 40%" oninput="this.style.setProperty('--oc-slider-progress', (this.value - this.min) / (this.max - this.min) * 100 + '%')">
 </div>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { useState } from "react";
+import { FormField, Slider } from "@birdycom/omniaui-react";
 
-// No React Slider wrapper: a range input with the oc-slider class; --oc-slider-progress draws the fill
-const [volume, setVolume] = useState(40);
-
-&lt;FormField label="Volume" style={{ maxInlineSize: "20rem" }}&gt;
-  &lt;input className="oc-slider" type="range" min={0} max={100} value={volume}
-    onChange={(e) =&gt; setVolume(Number(e.target.value))}
-    style={{ "--oc-slider-progress": volume + "%" } as CSSProperties} /&gt;
-&lt;/FormField&gt;</oc-code>
+export function Example() {
+  // Slider keeps --oc-slider-progress (the fill) in sync with the value
+  const [volume, setVolume] = useState(40);
+  return (
+    &lt;FormField label="Volume" style={{ maxInlineSize: "20rem" }}&gt;
+      &lt;Slider value={volume} onValueChange={setVolume} /&gt;
+    &lt;/FormField&gt;
+  );
+}</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
 import { ref } from 'vue'
 import { OcFormField, OcSlider } from '@birdycom/omniaui-vue'
@@ -117,32 +120,32 @@ class VolumeSetting extends Component
     &lt;label class="oc-field-label" for="oc-slider-level"&gt;Level&lt;/label&gt;
   &lt;/div&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { useState } from "react";
+import { FormField, Slider } from "@birdycom/omniaui-react";
 
-const [rating, setRating] = useState(3);
-const [level, setLevel] = useState(70);
-
-&lt;div style={{ display: "flex", alignItems: "center", gap: "2.5rem", flexWrap: "wrap" }}&gt;
-  &lt;div className="oc-field" style={{ inlineSize: "100%" }}&gt;
-    &lt;div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}&gt;
-      &lt;label className="oc-field-label" htmlFor="rating"&gt;Rating&lt;/label&gt;
-      &lt;output htmlFor="rating" style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums" }}&gt;{rating} / 10&lt;/output&gt;
+export function Example() {
+  const [rating, setRating] = useState(3);
+  const [level, setLevel] = useState(70);
+  return (
+    &lt;div style={{ display: "flex", alignItems: "center", gap: "2.5rem", flexWrap: "wrap" }}&gt;
+      &lt;div className="oc-field" style={{ inlineSize: "100%" }}&gt;
+        &lt;div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}&gt;
+          &lt;label className="oc-field-label" htmlFor="rating"&gt;Rating&lt;/label&gt;
+          &lt;output htmlFor="rating" style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums" }}&gt;{rating} / 10&lt;/output&gt;
+        &lt;/div&gt;
+        &lt;Slider id="rating" value={rating} onValueChange={setRating} max={10} step={1} /&gt;
+        &lt;div className="oc-slider-scale" aria-hidden="true"&gt;&lt;span&gt;0&lt;/span&gt;&lt;span /&gt;&lt;span /&gt;&lt;span /&gt;&lt;span /&gt;&lt;span&gt;5&lt;/span&gt;&lt;span /&gt;&lt;span /&gt;&lt;span /&gt;&lt;span /&gt;&lt;span&gt;10&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;FormField label="Disabled" style={{ inlineSize: "100%" }}&gt;
+        &lt;Slider defaultValue={60} disabled /&gt;
+      &lt;/FormField&gt;
+      &lt;div className="oc-field" style={{ justifyItems: "center" }}&gt;
+        &lt;Slider id="level" value={level} onValueChange={setLevel} vertical /&gt;
+        &lt;label className="oc-field-label" htmlFor="level"&gt;Level&lt;/label&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
-    &lt;input className="oc-slider" id="rating" type="range" min={0} max={10} step={1} value={rating}
-      onChange={(e) =&gt; setRating(Number(e.target.value))}
-      style={{ "--oc-slider-progress": rating * 10 + "%" } as CSSProperties} /&gt;
-    &lt;div className="oc-slider-scale" aria-hidden="true"&gt;&lt;span&gt;0&lt;/span&gt;&lt;span /&gt;&lt;span /&gt;&lt;span /&gt;&lt;span /&gt;&lt;span&gt;5&lt;/span&gt;&lt;span /&gt;&lt;span /&gt;&lt;span /&gt;&lt;span /&gt;&lt;span&gt;10&lt;/span&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;FormField label="Disabled" style={{ inlineSize: "100%" }}&gt;
-    &lt;input className="oc-slider" type="range" defaultValue={60} disabled style={{ "--oc-slider-progress": "60%" } as CSSProperties} /&gt;
-  &lt;/FormField&gt;
-  &lt;div className="oc-field" style={{ justifyItems: "center" }}&gt;
-    &lt;input className="oc-slider oc-slider--vertical" id="level" type="range" value={level}
-      onChange={(e) =&gt; setLevel(Number(e.target.value))}
-      style={{ "--oc-slider-progress": level + "%" } as CSSProperties} /&gt;
-    &lt;label className="oc-field-label" htmlFor="level"&gt;Level&lt;/label&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+  );
+}</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
 import { ref } from 'vue'
 import { OcFormField, OcSlider } from '@birdycom/omniaui-vue'

@@ -123,7 +123,7 @@ export function Example() {
             &lt;tr key={p.sku}&gt;
               &lt;td&gt;
                 &lt;div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}&gt;
-                  &lt;LazyImage className="oc-lazy--thumb" src={p.img} alt="" width={40} height={40} /&gt;
+                  &lt;LazyImage thumb src={p.img} alt="" width={40} height={40} /&gt;
                   &lt;span style={{ whiteSpace: "nowrap" }}&gt;&lt;strong&gt;{p.name}&lt;/strong&gt;&lt;br /&gt;&lt;small className="oc-text-muted"&gt;{p.sku}&lt;/small&gt;&lt;/span&gt;
                 &lt;/div&gt;
               &lt;/td&gt;
@@ -167,7 +167,7 @@ const loading = ref(true); // while the next page is on its way
         &lt;tr v-for="p in products" :key="p.sku"&gt;
           &lt;td&gt;
             &lt;div style="display:flex;align-items:center;gap:0.75rem"&gt;
-              &lt;OcLazyImage class="oc-lazy--thumb" :src="p.img" alt="" :width="40" :height="40" /&gt;
+              &lt;OcLazyImage thumb :src="p.img" alt="" :width="40" :height="40" /&gt;
               &lt;span style="white-space:nowrap"&gt;&lt;strong&gt;{{ p.name }}&lt;/strong&gt;&lt;br&gt;&lt;small class="oc-text-muted"&gt;{{ p.sku }}&lt;/small&gt;&lt;/span&gt;
             &lt;/div&gt;
           &lt;/td&gt;
@@ -200,7 +200,7 @@ const loading = ref(true); // while the next page is on its way
             &lt;tr&gt;
                 &lt;td&gt;
                     &lt;div style="display:flex;align-items:center;gap:0.75rem"&gt;
-                        &lt;x-oc::lazy-image class="oc-lazy--thumb" :src="$product['img']" alt="" :width="40" :height="40" /&gt;
+                        &lt;x-oc::lazy-image thumb :src="$product['img']" alt="" :width="40" :height="40" /&gt;
                         &lt;span style="white-space:nowrap"&gt;&lt;strong&gt;{{ $product['name'] }}&lt;/strong&gt;&lt;br&gt;&lt;small class="oc-text-muted"&gt;{{ $product['sku'] }}&lt;/small&gt;&lt;/span&gt;
                     &lt;/div&gt;
                 &lt;/td&gt;
@@ -263,7 +263,7 @@ class LazyLoadingLazyTable extends Component
             &lt;tr&gt;
                 &lt;td&gt;
                     &lt;div style="display:flex;align-items:center;gap:0.75rem"&gt;
-                        &lt;x-oc::lazy-image class="oc-lazy--thumb" :src="$product['img']" alt="" :width="40" :height="40" /&gt;
+                        &lt;x-oc::lazy-image thumb :src="$product['img']" alt="" :width="40" :height="40" /&gt;
                         &lt;span style="white-space:nowrap"&gt;&lt;strong&gt;{{ $product['name'] }}&lt;/strong&gt;&lt;br&gt;&lt;small class="oc-text-muted"&gt;{{ $product['sku'] }}&lt;/small&gt;&lt;/span&gt;
                     &lt;/div&gt;
                 &lt;/td&gt;
@@ -286,25 +286,32 @@ class LazyLoadingLazyTable extends Component
   <figure class="oc-lazy" role="img" aria-label="Loading"></figure>
   <figure class="oc-lazy" style="--oc-lazy-preview: url(/img/blocks/shop-cart.jpg)" role="img" aria-label="Loading"></figure>
 </div>
-<oc-code lang="tsx">import type { CSSProperties } from "react";
+<oc-code lang="tsx">import { LazyImage } from "@birdycom/omniaui-react";
 
+// Without src only the placeholder shows (role="img", alt as its name): the shimmer, or the blurred preview
 export function Example() {
   return (
     &lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,13rem),1fr))", gap: "1rem", inlineSize: "100%" }}&gt;
-      &lt;figure className="oc-lazy" role="img" aria-label="Loading" /&gt;
-      &lt;figure className="oc-lazy" style={{ "--oc-lazy-preview": "url(/img/blocks/shop-cart.jpg)" } as CSSProperties} role="img" aria-label="Loading" /&gt;
+      &lt;LazyImage alt="Loading" /&gt;
+      &lt;LazyImage alt="Loading" preview="/img/blocks/shop-cart.jpg" /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcLazyImage } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Without src only the placeholder shows (role="img", alt as its name): the shimmer, or the blurred preview --&gt;
   &lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr));gap:1rem;inline-size:100%"&gt;
-    &lt;figure class="oc-lazy" role="img" aria-label="Loading"&gt;&lt;/figure&gt;
-    &lt;figure class="oc-lazy" style="--oc-lazy-preview: url(/img/blocks/shop-cart.jpg)" role="img" aria-label="Loading"&gt;&lt;/figure&gt;
+    &lt;OcLazyImage alt="Loading" /&gt;
+    &lt;OcLazyImage alt="Loading" preview="/img/blocks/shop-cart.jpg" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr));gap:1rem;inline-size:100%"&gt;
-  &lt;figure class="oc-lazy" role="img" aria-label="Loading"&gt;&lt;/figure&gt;
-  &lt;figure class="oc-lazy" style="--oc-lazy-preview: url(/img/blocks/shop-cart.jpg)" role="img" aria-label="Loading"&gt;&lt;/figure&gt;
+<oc-code lang="blade">{{-- Without src only the placeholder shows (role="img", alt as its name): the shimmer, or the blurred preview --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr));gap:1rem;inline-size:100%"&gt;
+    &lt;x-oc::lazy-image alt="Loading" /&gt;
+    &lt;x-oc::lazy-image alt="Loading" preview="/img/blocks/shop-cart.jpg" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -314,6 +321,9 @@ use Livewire\Component;
 
 class LazyLoadingPlaceholderWhileLoading extends Component
 {
+    /** Empty until the photo is known; the placeholder keeps its place meanwhile. */
+    public string $photo = '';
+
     public function render()
     {
         return view('livewire.lazy-loading-placeholder-while-loading');
@@ -322,8 +332,9 @@ class LazyLoadingPlaceholderWhileLoading extends Component
 
 {{-- resources/views/livewire/lazy-loading-placeholder-while-loading.blade.php --}}
 &lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr));gap:1rem;inline-size:100%"&gt;
-  &lt;figure class="oc-lazy" role="img" aria-label="Loading"&gt;&lt;/figure&gt;
-  &lt;figure class="oc-lazy" style="--oc-lazy-preview: url(/img/blocks/shop-cart.jpg)" role="img" aria-label="Loading"&gt;&lt;/figure&gt;
+    {{-- Without src only the placeholder shows (role="img", alt as its name): the shimmer, or the blurred preview --}}
+    &lt;x-oc::lazy-image :src="$photo" alt="Loading" /&gt;
+    &lt;x-oc::lazy-image :src="$photo" alt="Loading" preview="/img/blocks/shop-cart.jpg" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

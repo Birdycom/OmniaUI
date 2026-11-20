@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Barcode input", "category": "Forms", "description": "Monospace EAN or article code field with a preview area.", "nav": "Barcode input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Barcode input", "category": "Forms", "description": "Monospace field for an EAN-13 or internal article code, with a preview of placeholder bars or your own barcode graphic, an empty and an error state.", "nav": "Barcode input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/barcode-input.html | Map: hero -> demo (with code, empty + invalid) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Barcode input</h1>
@@ -23,24 +23,17 @@
   </div>
   <p class="oc-field-description">13 digits is an EAN-13. Anything else is an internal code.</p>
 </div>
-<oc-code lang="tsx">// The field on its own (no preview): an input group with the barcode glyph
+<oc-code lang="tsx">// The field on its own: hidePreview leaves out the preview figure
 &lt;FormField label="Our barcode" description="13 digits is an EAN-13. Anything else is an internal code." style={{ maxInlineSize: "22rem" }}&gt;
-  &lt;InputGroup className="oc-input-group--affix" prefix={&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z" /&gt;&lt;/svg&gt;}&gt;
-    &lt;Input className="oc-barcode-input-field" name="ean" maxLength={80} placeholder="EAN-13 or internal code" autoComplete="off" spellCheck={false} /&gt;
-  &lt;/InputGroup&gt;
+  &lt;BarcodeInput hidePreview name="ean" /&gt;
 &lt;/FormField&gt;</oc-code>
-<oc-code lang="vue">&lt;OcFormField label="Our barcode" description="13 digits is an EAN-13. Anything else is an internal code." style="max-inline-size:22rem" v-slot="f"&gt;
-  &lt;OcInputGroup class="oc-input-group--affix"&gt;
-    &lt;template #prefix&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/template&gt;
-    &lt;OcInput :id="f.id" class="oc-barcode-input-field" name="ean" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false" :aria-describedby="f.describedBy" /&gt;
-  &lt;/OcInputGroup&gt;
+<oc-code lang="vue">&lt;!-- The field on its own: hide-preview leaves out the preview figure --&gt;
+&lt;OcFormField label="Our barcode" description="13 digits is an EAN-13. Anything else is an internal code." style="max-inline-size:22rem" v-slot="f"&gt;
+  &lt;OcBarcodeInput :id="f.id" hide-preview name="ean" :aria-describedby="f.describedBy" /&gt;
 &lt;/OcFormField&gt;</oc-code>
-<oc-code lang="blade">{{-- x-oc::input-group takes text addons; the barcode glyph is markup, so the group is written out --}}
+<oc-code lang="blade">{{-- The field on its own: hide-preview leaves out the preview figure --}}
 &lt;x-oc::form-field label="Our barcode" for="ean" name="ean" description="13 digits is an EAN-13. Anything else is an internal code." style="max-inline-size:22rem"&gt;
-    &lt;div class="oc-input-group oc-input-group--affix"&gt;
-        &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-        &lt;x-oc::input id="ean" name="ean" class="oc-barcode-input-field" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false" /&gt;
-    &lt;/div&gt;
+    &lt;x-oc::barcode-input id="ean" name="ean" hide-preview aria-describedby="ean-help" /&gt;
 &lt;/x-oc::form-field&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -66,10 +59,7 @@ class ArticleBarcode extends Component
 {{-- resources/views/livewire/article-barcode.blade.php --}}
 &lt;form wire:submit="save"&gt;
     &lt;x-oc::form-field label="Our barcode" for="ean" name="ean" description="13 digits is an EAN-13. Anything else is an internal code." style="max-inline-size:22rem"&gt;
-        &lt;div class="oc-input-group oc-input-group--affix"&gt;
-            &lt;span class="oc-input-addon" aria-hidden="true"&gt;&lt;svg viewBox="0 0 16 16"&gt;&lt;path fill="currentColor" d="M1 1h1.4v14H1zm2.2 0h.7v14h-.7zm1.6 0h1.5v14H4.8zm2.4 0h.7v14H7.2zm1.6 0h.7v14H8.8zm1.5 0h1.4v14h-1.4zm2.2 0H15v14h-.9z"/&gt;&lt;/svg&gt;&lt;/span&gt;
-            &lt;x-oc::wire.input id="ean" model="ean" class="oc-barcode-input-field" maxlength="80" placeholder="EAN-13 or internal code" autocomplete="off" spellcheck="false" /&gt;
-        &lt;/div&gt;
+        &lt;x-oc::barcode-input id="ean" name="ean" hide-preview wire:model="ean" :error="$errors-&gt;has('ean')" aria-describedby="ean-help" /&gt;
     &lt;/x-oc::form-field&gt;
 &lt;/form&gt;</oc-code>
           </oc-demo>
@@ -170,8 +160,8 @@ class ArticleBarcode extends Component
 {/* Empty */}
 &lt;BarcodeInput aria-label="Barcode (empty)" /&gt;
 
-{/* Invalid */}
-&lt;BarcodeInput defaultValue="54123" error aria-label="Barcode (invalid)" /&gt;</oc-code>
+{/* Invalid: errorText goes in the preview instead of the code */}
+&lt;BarcodeInput defaultValue="54123" error errorText="Use 8 or 13 digits" aria-label="Barcode (invalid)" /&gt;</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
 import { ref } from 'vue'
 import { OcBarcodeInput } from '@birdycom/omniaui-vue'
@@ -184,7 +174,8 @@ const invalid = ref('54123')
 &lt;template&gt;
   &lt;OcBarcodeInput v-model="valid" aria-label="Barcode" /&gt;
   &lt;OcBarcodeInput v-model="empty" aria-label="Barcode (empty)" /&gt;
-  &lt;OcBarcodeInput v-model="invalid" error aria-label="Barcode (invalid)" /&gt;
+  &lt;!-- error-text goes in the preview instead of the code --&gt;
+  &lt;OcBarcodeInput v-model="invalid" error error-text="Use 8 or 13 digits" aria-label="Barcode (invalid)" /&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">{{-- Valid --}}
 &lt;x-oc::barcode-input name="barcode" value="5412345678908" aria-label="Barcode" /&gt;
@@ -192,8 +183,8 @@ const invalid = ref('54123')
 {{-- Empty --}}
 &lt;x-oc::barcode-input name="barcode_empty" aria-label="Barcode (empty)" /&gt;
 
-{{-- Invalid --}}
-&lt;x-oc::barcode-input name="barcode_invalid" value="54123" error empty="Use 8 or 13 digits" aria-label="Barcode (invalid)" /&gt;</oc-code>
+{{-- Invalid: error-text goes in the preview instead of the code --}}
+&lt;x-oc::barcode-input name="barcode_invalid" value="54123" error error-text="Use 8 or 13 digits" aria-label="Barcode (invalid)" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -217,8 +208,8 @@ class BarcodeCheck extends Component
 
 {{-- resources/views/livewire/barcode-check.blade.php --}}
 &lt;div&gt;
-    &lt;x-oc::barcode-input name="barcode" :value="$barcode" wire:model.live.debounce.400ms="barcode" :error="$errors-&gt;has('barcode')" aria-label="Barcode" /&gt;
-    @error('barcode') &lt;p class="oc-field-error"&gt;{{ $message }}&lt;/p&gt; @enderror
+    {{-- error-text: the validation message goes in the preview instead of the code --}}
+    &lt;x-oc::barcode-input name="barcode" :value="$barcode" wire:model.live.debounce.400ms="barcode" :error="$errors-&gt;has('barcode')" :error-text="$errors-&gt;first('barcode')" aria-label="Barcode" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

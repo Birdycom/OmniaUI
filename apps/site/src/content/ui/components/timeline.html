@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Timeline", "category": "Marketing", "description": "Vertical timeline for history, release notes or a project log.", "nav": "Timeline", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Timeline", "category": "Marketing", "description": "Vertical timeline for company history, release notes or a project log: dates, titles and text, a current item, accent line and a compact list.", "nav": "Timeline", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/timeline.html | Map: hero -> demos (detailed, simple + accent) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Timeline</h1>
@@ -98,6 +98,11 @@ class CompanyHistory extends Component
 </div>
 <oc-code lang="tsx">import { Timeline } from "@birdycom/omniaui-react";
 
+const history = [
+  { date: "2012", text: "Company founded" },
+  { date: "2019", text: "First own product" },
+  { date: "2026", text: "Version 2.0" },
+];
 const releases = [
   { date: "v1.0", text: "Public release." },
   { date: "v1.4", text: "Dark mode and exports." },
@@ -107,12 +112,8 @@ const releases = [
 export function Example() {
   return (
     &lt;div className="oc-split w-full align-items-start"&gt;
-      {/* The compact list (strong + span per row) is plain markup */}
-      &lt;ol className="oc-timeline"&gt;
-        &lt;li&gt;&lt;strong&gt;2012&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;2019&lt;/strong&gt;&lt;span&gt;First own product&lt;/span&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;Version 2.0&lt;/span&gt;&lt;/li&gt;
-      &lt;/ol&gt;
+      {/* compact: one row per item (date in strong, text in a span), no dot and no title */}
+      &lt;Timeline compact items={history} /&gt;
       &lt;Timeline accent size="lg" className="oc-accent--green" items={releases} /&gt;
     &lt;/div&gt;
   );
@@ -120,6 +121,11 @@ export function Example() {
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
 import { OcTimeline } from '@birdycom/omniaui-vue'
 
+const history = [
+  { date: '2012', text: 'Company founded' },
+  { date: '2019', text: 'First own product' },
+  { date: '2026', text: 'Version 2.0' },
+]
 const releases = [
   { date: 'v1.0', text: 'Public release.' },
   { date: 'v1.4', text: 'Dark mode and exports.' },
@@ -129,22 +135,18 @@ const releases = [
 
 &lt;template&gt;
   &lt;div class="oc-split w-full align-items-start"&gt;
-    &lt;!-- The compact list (strong + span per row) is plain markup --&gt;
-    &lt;ol class="oc-timeline"&gt;
-      &lt;li&gt;&lt;strong&gt;2012&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;2019&lt;/strong&gt;&lt;span&gt;First own product&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;Version 2.0&lt;/span&gt;&lt;/li&gt;
-    &lt;/ol&gt;
+    &lt;!-- compact: one row per item (date in strong, text in a span), no dot and no title --&gt;
+    &lt;OcTimeline compact :items="history" /&gt;
     &lt;OcTimeline accent size="lg" class="oc-accent--green" :items="releases" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-split w-full align-items-start"&gt;
-    {{-- The compact list (strong + span per row) is plain markup --}}
-    &lt;ol class="oc-timeline"&gt;
-      &lt;li&gt;&lt;strong&gt;2012&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;2019&lt;/strong&gt;&lt;span&gt;First own product&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;Version 2.0&lt;/span&gt;&lt;/li&gt;
-    &lt;/ol&gt;
+    {{-- compact: one row per item (date in strong, text in a span), no dot and no title --}}
+    &lt;x-oc::timeline compact :items="[
+        ['date' =&gt; '2012', 'text' =&gt; 'Company founded'],
+        ['date' =&gt; '2019', 'text' =&gt; 'First own product'],
+        ['date' =&gt; '2026', 'text' =&gt; 'Version 2.0'],
+    ]" /&gt;
     &lt;x-oc::timeline accent size="lg" class="oc-accent--green" :items="[
         ['date' =&gt; 'v1.0', 'text' =&gt; 'Public release.'],
         ['date' =&gt; 'v1.4', 'text' =&gt; 'Dark mode and exports.'],
@@ -159,6 +161,18 @@ use Livewire\Component;
 
 class ReleaseTimeline extends Component
 {
+    public array $history = [
+        ['date' =&gt; '2012', 'text' =&gt; 'Company founded'],
+        ['date' =&gt; '2019', 'text' =&gt; 'First own product'],
+        ['date' =&gt; '2026', 'text' =&gt; 'Version 2.0'],
+    ];
+
+    public array $releases = [
+        ['date' =&gt; 'v1.0', 'text' =&gt; 'Public release.'],
+        ['date' =&gt; 'v1.4', 'text' =&gt; 'Dark mode and exports.'],
+        ['date' =&gt; 'v2.0', 'text' =&gt; 'New editor, in beta.', 'current' =&gt; true],
+    ];
+
     public function render()
     {
         return view('livewire.release-timeline');
@@ -167,17 +181,9 @@ class ReleaseTimeline extends Component
 
 {{-- resources/views/livewire/release-timeline.blade.php --}}
 &lt;div class="oc-split w-full align-items-start"&gt;
-    {{-- The compact list (strong + span per row) is plain markup --}}
-    &lt;ol class="oc-timeline"&gt;
-      &lt;li&gt;&lt;strong&gt;2012&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;2019&lt;/strong&gt;&lt;span&gt;First own product&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;Version 2.0&lt;/span&gt;&lt;/li&gt;
-    &lt;/ol&gt;
-    &lt;x-oc::timeline accent size="lg" class="oc-accent--green" :items="[
-        ['date' =&gt; 'v1.0', 'text' =&gt; 'Public release.'],
-        ['date' =&gt; 'v1.4', 'text' =&gt; 'Dark mode and exports.'],
-        ['date' =&gt; 'v2.0', 'text' =&gt; 'New editor, in beta.', 'current' =&gt; true],
-    ]" /&gt;
+    {{-- compact: one row per item (date in strong, text in a span), no dot and no title --}}
+    &lt;x-oc::timeline compact :items="$history" /&gt;
+    &lt;x-oc::timeline accent size="lg" class="oc-accent--green" :items="$releases" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

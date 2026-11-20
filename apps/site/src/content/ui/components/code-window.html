@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Code window", "category": "Docs UI", "description": "Window frame around code with a copy button (<code>.oc-code-window</code>).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Code window", "category": "Docs UI", "description": "Code window: a window frame with three dots, a file name and a copy button around highlighted code. Follows the page theme, or stays dark on a light page.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Code window</h1>
         <p class="oc-hero-text"><strong>Code window</strong>: a code sample in a window frame with traffic-light dots, a file name and a <strong>copy button</strong>. The syntax colors come from the <a href="code.html">Code block</a>; the window and the button are the pieces the docs and the homepage use. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/code-window.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React, Vue and Blade component <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Press Copy: the code goes to your clipboard and the button says Copied for a moment. This one example needs the few lines of script in the HTML tab for the copy button.</p>
           <oc-demo title="Code window">
 <div class="oc-code-window">
@@ -49,68 +50,38 @@ document.addEventListener("click", async (e) => {
     setTimeout(() =&gt; { b.classList.remove("is-copied"); b.textContent = "Copy"; }, 1500);
   });
 &lt;/script&gt;</oc-code>
-<oc-code lang="tsx">import { useRef, useState } from "react";
+<oc-code lang="tsx">import { CodeWindow } from "@birdycom/omniaui-react";
 
 export function Example() {
-  // no CodeWindow component: the frame is markup, the copy button a few lines of state
-  const code = useRef&lt;HTMLPreElement&gt;(null);
-  const [copied, setCopied] = useState(false);
-  const copy = async () =&gt; {
-    await navigator.clipboard.writeText(code.current?.textContent ?? "");
-    setCopied(true);
-    setTimeout(() =&gt; setCopied(false), 1500);
-  };
+  // The copy button copies the text of the body and says "Copied" for 1.5 s
   return (
-    &lt;div className="oc-code-window"&gt;
-      &lt;div className="oc-code-window__bar"&gt;
-        &lt;i /&gt;&lt;i /&gt;&lt;i /&gt;
-        &lt;span className="oc-code-window__title"&gt;index.html&lt;/span&gt;
-        &lt;button type="button" className={`oc-code-copy${copied ? " is-copied" : ""}`} onClick={copy}&gt;{copied ? "Copied" : "Copy"}&lt;/button&gt;
-      &lt;/div&gt;
+    &lt;CodeWindow title="index.html"&gt;
       {/* Highlighted code: an .oc-code-block (or pre.code-preview) with .hl-tag, .hl-attr, .hl-string … spans */}
       &lt;div className="oc-code-block"&gt;
-        &lt;pre className="code-preview" ref={code}&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
+        &lt;pre className="code-preview"&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
       &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;/CodeWindow&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { ref } from "vue";
-
-// no OcCodeWindow component: the frame is markup, the copy button a few lines of state
-const code = ref&lt;HTMLPreElement | null&gt;(null);
-const copied = ref(false);
-async function copy() {
-  await navigator.clipboard.writeText(code.value?.textContent ?? "");
-  copied.value = true;
-  setTimeout(() =&gt; (copied.value = false), 1500);
-}
+import { OcCodeWindow } from "@birdycom/omniaui-vue";
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;div class="oc-code-window"&gt;
-    &lt;div class="oc-code-window__bar"&gt;
-      &lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;
-      &lt;span class="oc-code-window__title"&gt;index.html&lt;/span&gt;
-      &lt;button type="button" :class="['oc-code-copy', copied &amp;&amp; 'is-copied']" @click="copy"&gt;{{ copied ? "Copied" : "Copy" }}&lt;/button&gt;
-    &lt;/div&gt;
+  &lt;!-- The copy button copies the text of the body and says "Copied" for 1.5 s --&gt;
+  &lt;OcCodeWindow title="index.html"&gt;
     &lt;!-- Highlighted code: an .oc-code-block (or pre.code-preview) with .hl-tag, .hl-attr, .hl-string … spans --&gt;
     &lt;div class="oc-code-block"&gt;
-      &lt;pre ref="code" class="code-preview"&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
+      &lt;pre class="code-preview"&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;/OcCodeWindow&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">{{-- no Blade component: the frame is markup; the copy button needs the script from the HTML tab --}}
-&lt;div class="oc-code-window"&gt;
-    &lt;div class="oc-code-window__bar"&gt;
-        &lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;
-        &lt;span class="oc-code-window__title"&gt;index.html&lt;/span&gt;
-        &lt;button type="button" class="oc-code-copy" data-copy-target="#sample .code-preview"&gt;Copy&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-code-block" id="sample"&gt;
+<oc-code lang="blade">{{-- The component brings the copy script along (once per page) --}}
+&lt;x-oc::code-window title="index.html"&gt;
+    &lt;div class="oc-code-block"&gt;
         &lt;pre class="code-preview"&gt;&lt;code&gt;{{ $code ?? '…' }}&lt;/code&gt;&lt;/pre&gt;
     &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::code-window&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -130,16 +101,9 @@ class CodeSample extends Component
 }
 
 {{-- resources/views/livewire/code-sample.blade.php --}}
-&lt;div class="oc-code-window" x-data="{ copied: false }"&gt;
-    &lt;div class="oc-code-window__bar"&gt;
-        &lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;
-        &lt;span class="oc-code-window__title"&gt;{{ $file }}&lt;/span&gt;
-        {{-- copying happens in the browser: Alpine, no round trip --}}
-        &lt;button type="button" class="oc-code-copy" :class="copied &amp;&amp; 'is-copied'" x-on:click="navigator.clipboard.writeText($refs.code.textContent); copied = true; setTimeout(() =&gt; copied = false, 1500)" x-text="copied ? 'Copied' : 'Copy'"&gt;Copy&lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-code-block"&gt;
-        &lt;pre class="code-preview" x-ref="code"&gt;&lt;code&gt;{{ $code }}&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
+{{-- copying happens in the browser (the script of the component), no round trip --}}
+&lt;div&gt;
+    &lt;x-oc::code-window :title="$file" :code="$code" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -169,20 +133,24 @@ class CodeSample extends Component
 }&lt;/code&gt;&lt;/pre&gt;
   &lt;/div&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { CodeWindow } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-code-window oc-code-window--dark"&gt;
-      &lt;div className="oc-code-window__bar"&gt;&lt;i /&gt;&lt;i /&gt;&lt;i /&gt;&lt;span className="oc-code-window__title"&gt;omnia.config.json&lt;/span&gt;&lt;/div&gt;
+    &lt;CodeWindow title="omnia.config.json" dark copy={false}&gt;
       &lt;div className="oc-code-block"&gt;
         &lt;pre className="oc-code-block__gutter" aria-hidden="true"&gt;{"1\n2\n3\n4\n5"}&lt;/pre&gt;
         &lt;pre className="code-preview"&gt;&lt;code&gt;{"{\n  "}&lt;span className="hl-string"&gt;{"\"content\""}&lt;/span&gt;{": ["}&lt;span className="hl-string"&gt;{"\"resources/**/*.blade.php\""}&lt;/span&gt;{", "}&lt;span className="hl-string"&gt;{"\"resources/js/**/*.vue\""}&lt;/span&gt;{"],\n  "}&lt;span className="hl-string"&gt;{"\"pro\""}&lt;/span&gt;{": "}&lt;span className="hl-keyword"&gt;{"true"}&lt;/span&gt;{",\n  "}&lt;span className="hl-string"&gt;{"\"theme\""}&lt;/span&gt;{": { "}&lt;span className="hl-string"&gt;{"\"primary\""}&lt;/span&gt;{": "}&lt;span className="hl-string"&gt;{"\"vividblue\""}&lt;/span&gt;{" }\n}"}&lt;/code&gt;&lt;/pre&gt;
       &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;/CodeWindow&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-code-window oc-code-window--dark"&gt;
-    &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;omnia.config.json&lt;/span&gt;&lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCodeWindow } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCodeWindow title="omnia.config.json" dark :copy="false"&gt;
     &lt;div class="oc-code-block"&gt;
       &lt;pre class="oc-code-block__gutter" aria-hidden="true"&gt;1
 2
@@ -195,10 +163,9 @@ class CodeSample extends Component
   &lt;span class="hl-string"&gt;"theme"&lt;/span&gt;: { &lt;span class="hl-string"&gt;"primary"&lt;/span&gt;: &lt;span class="hl-string"&gt;"vividblue"&lt;/span&gt; }
 }&lt;/code&gt;&lt;/pre&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;/OcCodeWindow&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-code-window oc-code-window--dark"&gt;
-  &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;omnia.config.json&lt;/span&gt;&lt;/div&gt;
+<oc-code lang="blade">&lt;x-oc::code-window title="omnia.config.json" dark :copy="false"&gt;
   &lt;div class="oc-code-block"&gt;
     &lt;pre class="oc-code-block__gutter" aria-hidden="true"&gt;1
 2
@@ -211,7 +178,7 @@ class CodeSample extends Component
   &lt;span class="hl-string"&gt;"theme"&lt;/span&gt;: { &lt;span class="hl-string"&gt;"primary"&lt;/span&gt;: &lt;span class="hl-string"&gt;"vividblue"&lt;/span&gt; }
 }&lt;/code&gt;&lt;/pre&gt;
   &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::code-window&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -227,8 +194,8 @@ class CodeWindowDark extends Component
 }
 
 {{-- resources/views/livewire/code-window-dark.blade.php --}}
-&lt;div class="oc-code-window oc-code-window--dark"&gt;
-  &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;omnia.config.json&lt;/span&gt;&lt;/div&gt;
+&lt;div&gt;
+&lt;x-oc::code-window title="omnia.config.json" dark :copy="false"&gt;
   &lt;div class="oc-code-block"&gt;
     &lt;pre class="oc-code-block__gutter" aria-hidden="true"&gt;1
 2
@@ -241,6 +208,7 @@ class CodeWindowDark extends Component
   &lt;span class="hl-string"&gt;"theme"&lt;/span&gt;: { &lt;span class="hl-string"&gt;"primary"&lt;/span&gt;: &lt;span class="hl-string"&gt;"vividblue"&lt;/span&gt; }
 }&lt;/code&gt;&lt;/pre&gt;
   &lt;/div&gt;
+&lt;/x-oc::code-window&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Price card", "category": "Marketing", "description": "One plan with monthly/yearly (or lifetime) switch, discount badge and feature list.", "nav": "Price card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Price card", "category": "Marketing", "description": "One plan with a monthly, yearly or lifetime switch in CSS only, a discount badge, an old price, a feature list and a call to action; featured variant.", "nav": "Price card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/price-card.html | Map: hero -> demos (single card, basic + featured pair) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Price card</h1>
@@ -41,6 +41,7 @@ export function Example() {
   return (
     &lt;PriceCard
       name="Pro"
+      group="oc-price-pro"
       discount="Save 20%"
       description="For small teams that send invoices every week."
       monthly={{ amount: "€12", period: "/month" }}
@@ -64,6 +65,7 @@ import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
   &lt;!-- the period switch is a radio group + :has(): no state, no JavaScript --&gt;
   &lt;OcPriceCard
     name="Pro"
+    group="oc-price-pro"
     discount="Save 20%"
     description="For small teams that send invoices every week."
     :monthly="{ amount: '€12', period: '/month' }"
@@ -83,7 +85,7 @@ import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">{{-- the period switch is a radio group + :has(): no JavaScript --}}
 &lt;x-oc::price-card
-    name="Pro"
+    name="Pro" group="oc-price-pro"
     discount="Save 20%"
     description="For small teams that send invoices every week."
     :monthly="['amount' =&gt; '€12', 'period' =&gt; '/month']"
@@ -116,7 +118,7 @@ class PriceCardWithPeriodSwitch extends Component
 &lt;div&gt;
     {{-- the period switch is a radio group + :has(): no JavaScript --}}
     &lt;x-oc::price-card
-        name="Pro"
+        name="Pro" group="oc-price-pro"
         discount="Save 20%"
         description="For small teams that send invoices every week."
         :monthly="['amount' =&gt; '€12', 'period' =&gt; '/month']"
@@ -175,6 +177,8 @@ export function Example() {
     &lt;div className="oc-card-grid w-full"&gt;
       &lt;PriceCard
         name="Starter"
+        group="oc-price-starter"
+        groupLabel="Billing period, Starter"
         description="For freelancers."
         monthly={{ amount: "€5", period: "/month" }}
         yearly={{ amount: "€50", period: "/year" }}
@@ -185,6 +189,8 @@ export function Example() {
         featured
         className="oc-accent--violet"
         name="Business"
+        group="oc-price-business"
+        groupLabel="Billing period, Business"
         discount="2 months free"
         description="For growing companies."
         defaultPeriod="yearly"
@@ -204,6 +210,8 @@ import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
   &lt;div class="oc-card-grid w-full"&gt;
     &lt;OcPriceCard
       name="Starter"
+      group="oc-price-starter"
+      group-label="Billing period, Starter"
       description="For freelancers."
       :monthly="{ amount: '€5', period: '/month' }"
       :yearly="{ amount: '€50', period: '/year' }"
@@ -215,6 +223,8 @@ import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
       featured
       class="oc-accent--violet"
       name="Business"
+      group="oc-price-business"
+      group-label="Billing period, Business"
       discount="2 months free"
       description="For growing companies."
       default-period="yearly"
@@ -227,13 +237,13 @@ import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-card-grid w-full"&gt;
-    &lt;x-oc::price-card name="Starter" description="For freelancers."
+    &lt;x-oc::price-card name="Starter" group="oc-price-starter" group-label="Billing period, Starter" description="For freelancers."
         :monthly="['amount' =&gt; '€5', 'period' =&gt; '/month']"
         :yearly="['amount' =&gt; '€50', 'period' =&gt; '/year']"
         :features="['50 invoices a month', ['label' =&gt; 'Team members', 'excluded' =&gt; true]]"&gt;
         &lt;x-oc::button variant="outline" class="oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/x-oc::button&gt;
     &lt;/x-oc::price-card&gt;
-    &lt;x-oc::price-card featured class="oc-accent--violet" name="Business" discount="2 months free" description="For growing companies." default-period="yearly"
+    &lt;x-oc::price-card featured class="oc-accent--violet" name="Business" group="oc-price-business" group-label="Billing period, Business" discount="2 months free" description="For growing companies." default-period="yearly"
         :monthly="['amount' =&gt; '€29', 'period' =&gt; '/month']"
         :yearly="['amount' =&gt; '€290', 'period' =&gt; '/year', 'was' =&gt; '€348']"
         :features="['Unlimited invoices', 'Unlimited team members', 'Priority support']"&gt;
@@ -257,13 +267,13 @@ class PriceCardBasicAndFeaturedSideBySide extends Component
 {{-- resources/views/livewire/price-card-basic-and-featured-side-by-side.blade.php --}}
 &lt;div&gt;
     &lt;div class="oc-card-grid w-full"&gt;
-        &lt;x-oc::price-card name="Starter" description="For freelancers."
+        &lt;x-oc::price-card name="Starter" group="oc-price-starter" group-label="Billing period, Starter" description="For freelancers."
             :monthly="['amount' =&gt; '€5', 'period' =&gt; '/month']"
             :yearly="['amount' =&gt; '€50', 'period' =&gt; '/year']"
             :features="['50 invoices a month', ['label' =&gt; 'Team members', 'excluded' =&gt; true]]"&gt;
             &lt;x-oc::button variant="outline" class="oc-price-card__cta" href="#starter"&gt;Choose Starter&lt;/x-oc::button&gt;
         &lt;/x-oc::price-card&gt;
-        &lt;x-oc::price-card featured class="oc-accent--violet" name="Business" discount="2 months free" description="For growing companies." default-period="yearly"
+        &lt;x-oc::price-card featured class="oc-accent--violet" name="Business" group="oc-price-business" group-label="Billing period, Business" discount="2 months free" description="For growing companies." default-period="yearly"
             :monthly="['amount' =&gt; '€29', 'period' =&gt; '/month']"
             :yearly="['amount' =&gt; '€290', 'period' =&gt; '/year', 'was' =&gt; '€348']"
             :features="['Unlimited invoices', 'Unlimited team members', 'Priority support']"&gt;
@@ -294,6 +304,8 @@ export function Example() {
   return (
     &lt;PriceCard
       name="Studio"
+      group="oc-price-studio"
+      groupLabel="Billing period, Studio"
       description={&lt;&gt;A third radio with &lt;code&gt;value="lifetime"&lt;/code&gt; shows a one-time price.&lt;/&gt;}
       monthly={{ amount: "€9", period: "/month" }}
       yearly={{ amount: "€90", period: "/year" }}
@@ -310,6 +322,8 @@ import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
   &lt;!-- lifetime adds a third option to the switch (it needs a yearly price) --&gt;
   &lt;OcPriceCard
     name="Studio"
+    group="oc-price-studio"
+    group-label="Billing period, Studio"
     description='A third radio with value="lifetime" shows a one-time price.'
     :monthly="{ amount: '€9', period: '/month' }"
     :yearly="{ amount: '€90', period: '/year' }"
@@ -319,7 +333,7 @@ import { OcButton, OcPriceCard } from "@birdycom/omniaui-vue";
   &lt;/OcPriceCard&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">{{-- lifetime adds a third option to the switch (it needs a yearly price) --}}
-&lt;x-oc::price-card name="Studio" description='A third radio with value="lifetime" shows a one-time price.'
+&lt;x-oc::price-card name="Studio" group="oc-price-studio" group-label="Billing period, Studio" description='A third radio with value="lifetime" shows a one-time price.'
     :monthly="['amount' =&gt; '€9', 'period' =&gt; '/month']"
     :yearly="['amount' =&gt; '€90', 'period' =&gt; '/year']"
     :lifetime="['amount' =&gt; '€249', 'period' =&gt; 'once', 'note' =&gt; 'All future updates']"&gt;
@@ -342,7 +356,7 @@ class PriceCardMonthlyYearlyOrLifetime extends Component
 {{-- resources/views/livewire/price-card-monthly-yearly-or-lifetime.blade.php --}}
 &lt;div&gt;
     {{-- lifetime adds a third option to the switch (it needs a yearly price) --}}
-    &lt;x-oc::price-card name="Studio" description='A third radio with value="lifetime" shows a one-time price.'
+    &lt;x-oc::price-card name="Studio" group="oc-price-studio" group-label="Billing period, Studio" description='A third radio with value="lifetime" shows a one-time price.'
         :monthly="['amount' =&gt; '€9', 'period' =&gt; '/month']"
         :yearly="['amount' =&gt; '€90', 'period' =&gt; '/year']"
         :lifetime="['amount' =&gt; '€249', 'period' =&gt; 'once', 'note' =&gt; 'All future updates']"&gt;
@@ -370,6 +384,8 @@ class PriceCardMonthlyYearlyOrLifetime extends Component
               <tr><td><code>__amount / __period / __was / __note</code></td><td>Number, "/month", old price (<code>s</code>), small note</td></tr>
               <tr><td><code>__features / __feature(--excluded)</code></td><td>Feature list with ✓, or ✕ and muted text</td></tr>
               <tr><td><code>.oc-price-card__cta</code></td><td>Full-width button</td></tr>
+              <tr><td><code>group</code> / <code>groupLabel</code> (Vue, Blade: <code>group-label</code>)</td><td>Radio name and <code>aria-label</code> of the switch: give every card on a page its own name and a label with the plan (&quot;Billing period, Starter&quot;)</td></tr>
+              <tr><td><code>monthlyLabel</code> / <code>yearlyLabel</code> / <code>lifetimeLabel</code> (Blade: <code>monthly-label</code> …)</td><td>Texts of the switch, for another language (default Monthly, Yearly, Lifetime)</td></tr>
             </tbody>
           </table>
         </div>

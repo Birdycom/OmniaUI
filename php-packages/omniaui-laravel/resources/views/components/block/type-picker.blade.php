@@ -60,7 +60,7 @@
   <div class="oc-block-type-picker-tools">
     @if ($useSearch)
     <div class="oc-input-group oc-input-group--affix">
-      <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify"></iconify-icon></span>
+      <span class="oc-input-addon" aria-hidden="true"><x-oc::webicon name="mdi:magnify" bare fallback="iconify" /></span>
       <input class="oc-input oc-block-type-picker-search" type="search" placeholder="{{ $searchLabel }}" aria-label="{{ $searchLabel }}">
     </div>
     @endif
@@ -76,7 +76,7 @@
   @else
   <div class="oc-block-type-picker-tools">
     <div class="oc-input-group oc-input-group--affix">
-      <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify"></iconify-icon></span>
+      <span class="oc-input-addon" aria-hidden="true"><x-oc::webicon name="mdi:magnify" bare fallback="iconify" /></span>
       <input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks">
     </div>
     <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category">
@@ -160,7 +160,7 @@
     </label>
     <label class="oc-block-type-picker-item" data-category="content">
       <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="link">
-      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>More about this place</p><span class="oc-block-type-picker-art-btn">Open page <iconify-icon icon="mdi:open-in-new"></iconify-icon></span></span>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>More about this place</p><span class="oc-block-type-picker-art-btn">Open page <x-oc::webicon name="mdi:open-in-new" bare fallback="iconify" /></span></span>
       <span class="oc-block-type-picker-name">Link</span>
       <span class="oc-block-type-picker-hint">A button to another page</span>
     </label>
@@ -172,13 +172,13 @@
     </label>
     <label class="oc-block-type-picker-item" data-category="content">
       <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="tip">
-      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-row">Show a tip <iconify-icon icon="mdi:chevron-down"></iconify-icon></span><p>Opens when the reader asks for it.</p></span>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-row">Show a tip <x-oc::webicon name="mdi:chevron-down" bare fallback="iconify" /></span><p>Opens when the reader asks for it.</p></span>
       <span class="oc-block-type-picker-name">Tip</span>
       <span class="oc-block-type-picker-hint">Hidden until the reader opens it</span>
     </label>
     <label class="oc-block-type-picker-item" data-category="media">
       <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="video">
-      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-video"><iconify-icon icon="mdi:play-circle"></iconify-icon></span></span>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-video"><x-oc::webicon name="mdi:play-circle" bare fallback="iconify" /></span></span>
       <span class="oc-block-type-picker-name">Video</span>
       <span class="oc-block-type-picker-hint">A clip from a link or an upload</span>
     </label>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Item", "category": "Layout", "description": "List row with media, content and actions.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Item", "category": "Layout", "description": "Item: a list row with media, a title, a description and actions. Outline and muted variants, a small size, link rows and groups with separators.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Item</h1>
         <p class="oc-hero-text">A flexible row for lists of things: media on the left, title and description in the middle, actions on the right. Use it for settings rows, file lists, notifications and search results. It can be a <code>div</code>, <code>li</code> or a link. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/item.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React component <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Item">
 <div class="oc-item oc-item--outline">
   <div class="oc-item-media oc-item-media--icon"><svg data-icon="mdi:shield-outline" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M21 11c0 5.55-3.84 10.74-9 12c-5.16-1.26-9-6.45-9-12V5l9-4l9 4zm-9 10c3.75-1 7-5.46 7-9.78V6.3l-7-3.12L5 6.3v4.92C5 15.54 8.25 20 12 21"/></svg></div>
@@ -17,18 +18,18 @@
   </div>
   <div class="oc-item-actions"><button class="oc-btn oc-btn--outline oc-btn--sm" type="button">Enable</button></div>
 </div>
-<oc-code lang="tsx">import { Button, Webicon } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { Button, Item, Webicon } from "@birdycom/omniaui-react";
 
 export function Example({ onEnable }: { onEnable: () =&gt; void }) {
   return (
-    &lt;div className="oc-item oc-item--outline"&gt;
-      &lt;div className="oc-item-media oc-item-media--icon"&gt;&lt;Webicon name="mdi:shield-outline" /&gt;&lt;/div&gt;
-      &lt;div className="oc-item-content"&gt;
-        &lt;p className="oc-item-title"&gt;Two-factor authentication&lt;/p&gt;
-        &lt;p className="oc-item-description"&gt;Verify sign-ins with an authenticator app.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-item-actions"&gt;&lt;Button variant="outline" size="sm" onClick={onEnable}&gt;Enable&lt;/Button&gt;&lt;/div&gt;
-    &lt;/div&gt;
+    &lt;Item
+      variant="outline"
+      icon
+      media={&lt;Webicon name="mdi:shield-outline" /&gt;}
+      title="Two-factor authentication"
+      description="Verify sign-ins with an authenticator app."
+      actions={&lt;Button variant="outline" size="sm" onClick={onEnable}&gt;Enable&lt;/Button&gt;}
+    /&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
@@ -82,7 +83,7 @@ class TwoFactorItem extends Component
     &lt;/x-oc::item&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
-        <h3 id="list" class="oc-section-content__title mt-2">Group, links and sizes</h3><p class="oc-section-content__desc">Wrap items in <code>.oc-item-group</code>; a link item gets a hover background.</p>
+        <h3 id="list" class="oc-section-content__title mt-2">Group, links and sizes <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">Wrap items in <code>.oc-item-group</code>; a link item gets a hover background.</p>
           <oc-demo title="Group, links and sizes">
 <div class="oc-eg">
   <div class="oc-eg__panels" style="--eg-min: 18rem">
@@ -117,21 +118,20 @@ class TwoFactorItem extends Component
 &lt;div class="oc-item oc-item--muted"&gt;
   &lt;div class="oc-item-content"&gt;&lt;p class="oc-item-title"&gt;Invoices are sent at 08:00&lt;/p&gt;&lt;p class="oc-item-description"&gt;Change the time in the settings of your company.&lt;/p&gt;&lt;/div&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">import { Webicon } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { Item, ItemGroup, ItemSeparator, Webicon } from "@birdycom/omniaui-react";
 
-// No Item component in React: the .oc-item markup, with Webicon.
 export function Example() {
   return (
     &lt;&gt;
-      &lt;div className="oc-item-group oc-item--outline" style={{ border: "1px solid var(--oc-border)", borderRadius: "var(--oc-radius)", padding: ".25rem" }}&gt;
-        &lt;a className="oc-item oc-item--sm" href="/files/invoice-2026-014.pdf"&gt;&lt;div className="oc-item-media oc-item-media--icon"&gt;&lt;Webicon name="mdi:file-document-outline" /&gt;&lt;/div&gt;&lt;div className="oc-item-content"&gt;&lt;p className="oc-item-title"&gt;invoice-2026-014.pdf&lt;/p&gt;&lt;p className="oc-item-description"&gt;128 KB · today&lt;/p&gt;&lt;/div&gt;&lt;div className="oc-item-actions"&gt;&lt;Webicon name="mdi:chevron-right" /&gt;&lt;/div&gt;&lt;/a&gt;
-        &lt;hr className="oc-item-separator" /&gt;
-        &lt;a className="oc-item oc-item--sm" href="/files/contracts"&gt;&lt;div className="oc-item-media oc-item-media--icon"&gt;&lt;Webicon name="mdi:folder-outline" /&gt;&lt;/div&gt;&lt;div className="oc-item-content"&gt;&lt;p className="oc-item-title"&gt;Contracts&lt;/p&gt;&lt;p className="oc-item-description"&gt;12 files&lt;/p&gt;&lt;/div&gt;&lt;div className="oc-item-actions"&gt;&lt;Webicon name="mdi:chevron-right" /&gt;&lt;/div&gt;&lt;/a&gt;
-      &lt;/div&gt;
+      &lt;ItemGroup className="oc-item--outline" style={{ border: "1px solid var(--oc-border)", borderRadius: "var(--oc-radius)", padding: ".25rem" }}&gt;
+        &lt;Item size="sm" href="/files/invoice-2026-014.pdf" icon media={&lt;Webicon name="mdi:file-document-outline" /&gt;}
+          title="invoice-2026-014.pdf" description="128 KB · today" actions={&lt;Webicon name="mdi:chevron-right" /&gt;} /&gt;
+        &lt;ItemSeparator /&gt;
+        &lt;Item size="sm" href="/files/contracts" icon media={&lt;Webicon name="mdi:folder-outline" /&gt;}
+          title="Contracts" description="12 files" actions={&lt;Webicon name="mdi:chevron-right" /&gt;} /&gt;
+      &lt;/ItemGroup&gt;
 
-      &lt;div className="oc-item oc-item--muted"&gt;
-        &lt;div className="oc-item-content"&gt;&lt;p className="oc-item-title"&gt;Invoices are sent at 08:00&lt;/p&gt;&lt;p className="oc-item-description"&gt;Change the time in the settings of your company.&lt;/p&gt;&lt;/div&gt;
-      &lt;/div&gt;
+      &lt;Item variant="muted" title="Invoices are sent at 08:00" description="Change the time in the settings of your company." /&gt;
     &lt;/&gt;
   );
 }</oc-code>
@@ -163,7 +163,7 @@ import { OcItem, OcItemGroup, OcItemSeparator, OcWebicon } from '@birdycom/omnia
             &lt;x-oc::webicon name="mdi:chevron-right" /&gt;
         &lt;/x-slot:actions&gt;
     &lt;/x-oc::item&gt;
-    &lt;hr class="oc-item-separator"&gt;
+    &lt;x-oc::item.separator /&gt;
     &lt;x-oc::item size="sm" href="/files/contracts" title="Contracts" description="12 files"&gt;
         &lt;x-slot:media&gt;
             &lt;div class="oc-item-media oc-item-media--icon"&gt;&lt;x-oc::webicon name="mdi:folder-outline" /&gt;&lt;/div&gt;
@@ -200,7 +200,7 @@ class FileItems extends Component
                 &lt;x-oc::webicon name="mdi:chevron-right" /&gt;
             &lt;/x-slot:actions&gt;
         &lt;/x-oc::item&gt;
-        &lt;hr class="oc-item-separator"&gt;
+        &lt;x-oc::item.separator /&gt;
         &lt;x-oc::item size="sm" href="/files/contracts" title="Contracts" description="12 files"&gt;
             &lt;x-slot:media&gt;
                 &lt;div class="oc-item-media oc-item-media--icon"&gt;&lt;x-oc::webicon name="mdi:folder-outline" /&gt;&lt;/div&gt;
@@ -228,7 +228,7 @@ class FileItems extends Component
               <tr><td><code>.oc-item-media</code></td><td>Left slot; --icon, --image</td></tr>
               <tr><td><code>.oc-item-content / -title / -description</code></td><td>Text column</td></tr>
               <tr><td><code>.oc-item-actions</code></td><td>Right slot</td></tr>
-              <tr><td><code>.oc-item-group / .oc-item-separator</code></td><td>List and divider</td></tr>
+              <tr><td><code>.oc-item-group / .oc-item-separator</code></td><td>List and divider (Blade <code>&lt;x-oc::item.group&gt;</code> and <code>&lt;x-oc::item.separator&gt;</code>)</td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>

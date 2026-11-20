@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Filter counts", "category": "Forms", "description": "View tiles (Active, Deleted, All) that show how many items each holds.", "nav": "Filter counts", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Filter counts", "category": "Forms", "description": "View tiles such as Active, Deleted and All that show how many items each holds, on radio buttons, with tones, a hint line and a compact size.", "nav": "Filter counts", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/filter-counts.html | Map: hero -> demo (tiles, compact pills) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Filter counts</h1>
@@ -97,19 +97,10 @@ class TransactionFilter extends Component
 }
 
 {{-- resources/views/livewire/transaction-filter.blade.php --}}
-{{-- wire:model goes on the radios, so the tiles are written out (&lt;x-oc::filter-counts&gt; passes attributes to the fieldset) --}}
-&lt;fieldset class="oc-filter-counts" aria-label="Show transactions"&gt;
-    @foreach ($options as $option)
-        &lt;label @class(['oc-filter-counts-item', 'oc-filter-counts-item--'.($option['tone'] ?? '') =&gt; isset($option['tone'])])&gt;
-            &lt;input type="radio" value="{{ $option['value'] }}" wire:model.live="view"&gt;
-            &lt;span class="oc-filter-counts-value"&gt;{{ $option['count'] }}&lt;/span&gt;
-            &lt;span class="oc-filter-counts-label"&gt;{{ $option['label'] }}&lt;/span&gt;
-            @isset($option['hint'])
-                &lt;span class="oc-filter-counts-hint"&gt;{{ $option['hint'] }}&lt;/span&gt;
-            @endisset
-        &lt;/label&gt;
-    @endforeach
-&lt;/fieldset&gt;</oc-code>
+&lt;div&gt;
+    {{-- attributes go to the fieldset: the change of a tile bubbles up and sets $view --}}
+    &lt;x-oc::filter-counts name="view" label="Show transactions" :options="$options" :value="$view" wire:change="$set('view', $event.target.value)" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Compact</h3>
@@ -153,7 +144,7 @@ const status = ref('open')
 &lt;template&gt;
   &lt;OcFilterCounts v-model="status" compact name="inv" label="Show invoices" :options="options" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">{{-- &lt;x-oc::filter-counts&gt; has no disabled tile: Draft (0) is left out --}}
+<oc-code lang="blade">{{-- Draft has no invoices: 'disabled' =&gt; true shows the tile but it cannot be chosen --}}
 &lt;x-oc::filter-counts
     name="inv"
     label="Show invoices"
@@ -163,6 +154,7 @@ const status = ref('open')
         ['value' =&gt; 'open', 'label' =&gt; 'Open', 'count' =&gt; 12],
         ['value' =&gt; 'paid', 'label' =&gt; 'Paid', 'count' =&gt; 87, 'tone' =&gt; 'success'],
         ['value' =&gt; 'late', 'label' =&gt; 'Overdue', 'count' =&gt; 3, 'tone' =&gt; 'destructive'],
+        ['value' =&gt; 'draft', 'label' =&gt; 'Draft', 'count' =&gt; 0, 'tone' =&gt; 'muted', 'disabled' =&gt; true],
     ]"
 /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -179,7 +171,7 @@ class InvoiceFilter extends Component
         ['value' =&gt; 'open', 'label' =&gt; 'Open', 'count' =&gt; 12],
         ['value' =&gt; 'paid', 'label' =&gt; 'Paid', 'count' =&gt; 87, 'tone' =&gt; 'success'],
         ['value' =&gt; 'late', 'label' =&gt; 'Overdue', 'count' =&gt; 3, 'tone' =&gt; 'destructive'],
-        ['value' =&gt; 'draft', 'label' =&gt; 'Draft', 'count' =&gt; 0, 'tone' =&gt; 'muted'],
+        ['value' =&gt; 'draft', 'label' =&gt; 'Draft', 'count' =&gt; 0, 'tone' =&gt; 'muted', 'disabled' =&gt; true],
     ];
 
     public function render()
@@ -189,16 +181,10 @@ class InvoiceFilter extends Component
 }
 
 {{-- resources/views/livewire/invoice-filter.blade.php --}}
-{{-- wire:model goes on the radios, so the tiles are written out (&lt;x-oc::filter-counts&gt; passes attributes to the fieldset) --}}
-&lt;fieldset class="oc-filter-counts oc-filter-counts--compact" aria-label="Show invoices"&gt;
-    @foreach ($options as $option)
-        &lt;label @class(['oc-filter-counts-item', 'oc-filter-counts-item--'.($option['tone'] ?? '') =&gt; isset($option['tone'])])&gt;
-            &lt;input type="radio" value="{{ $option['value'] }}" wire:model.live="status" @disabled($option['count'] === 0)&gt;
-            &lt;span class="oc-filter-counts-value"&gt;{{ $option['count'] }}&lt;/span&gt;
-            &lt;span class="oc-filter-counts-label"&gt;{{ $option['label'] }}&lt;/span&gt;
-        &lt;/label&gt;
-    @endforeach
-&lt;/fieldset&gt;</oc-code>
+&lt;div&gt;
+    {{-- attributes go to the fieldset: the change of a tile bubbles up and sets $status --}}
+    &lt;x-oc::filter-counts name="inv" label="Show invoices" compact :options="$options" :value="$status" wire:change="$set('status', $event.target.value)" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Date picker", "category": "Forms", "description": "Trigger button with a calendar popover, or a native date input.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Date picker", "category": "Forms", "description": "Date picker: a trigger button that opens a month calendar in a popover, with keyboard navigation; a pick closes it. Shown next to a native date input.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Date picker</h1>
         <p class="oc-hero-text">A button that opens a calendar in a popover and shows the chosen date. Zero-JavaScript alternative: a native date input with the themed <code>.oc-input</code>. The popover gives top layer, light dismiss and <kbd>Esc</kbd>; the date logic is yours. The demo includes a small script that renders the month, steps months, picks a day and handles the calendar keys. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">HTML and CSS, plus a small script that runs the calendar. The markup is also available as the snippet <code>packages/ui/snippets/date-picker.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React, Vue and Blade component <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Date picker" size="tall">
 <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
   <button class="oc-btn oc-btn--outline oc-date-picker-trigger" type="button" popovertarget="oc-dp-pop" aria-haspopup="dialog">
@@ -126,62 +127,35 @@
 })();
 </script>
 <oc-code lang="tsx">import { useState } from "react";
-import { Calendar, Input, Popover, Webicon } from "@birdycom/omniaui-react";
-
-const long = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" });
+import { DatePicker, Input } from "@birdycom/omniaui-react";
 
 export function Example() {
   const [date, setDate] = useState("2026-10-16");
   return (
     &lt;div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}&gt;
-      {/* Popover = trigger button + popover panel; Calendar handles months, keys and the pick */}
-      &lt;Popover
-        id="oc-dp-pop"
-        className="oc-popover--calendar"
-        trigger={&lt;&gt;&lt;span&gt;{long.format(new Date(date))}&lt;/span&gt; &lt;Webicon name="mdi:calendar-blank-outline" size="sm" /&gt;&lt;/&gt;}
-        triggerProps={{ className: "oc-date-picker-trigger", "aria-haspopup": "dialog" }}
-      &gt;
-        &lt;Calendar
-          value={date}
-          onChange={(d) =&gt; {
-            setDate(d);
-            document.getElementById("oc-dp-pop")?.hidePopover();
-          }}
-        /&gt;
-      &lt;/Popover&gt;
+      {/* Trigger + calendar in a popover; a pick closes it */}
+      &lt;DatePicker value={date} onChange={setDate} locale="en-GB" /&gt;
       &lt;Input type="date" value={date} onChange={(e) =&gt; setDate(e.target.value)} aria-label="Date (native)" /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { computed, ref } from "vue";
-import { OcCalendar, OcInput, OcPopover, OcWebicon } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+import { OcDatePicker, OcInput } from "@birdycom/omniaui-vue";
 
 const date = ref&lt;string | undefined&gt;("2026-10-16");
-const label = computed(() =&gt; (date.value ? new Intl.DateTimeFormat("en-GB", { dateStyle: "long" }).format(new Date(date.value)) : "Pick a date"));
-// close the open calendar popover after a pick
-const close = () =&gt; document.querySelector&lt;HTMLElement&gt;(".oc-popover--calendar:popover-open")?.hidePopover();
 &lt;/script&gt;
 
 &lt;template&gt;
   &lt;div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center"&gt;
-    &lt;OcPopover class="oc-popover--calendar"&gt;
-      &lt;template #trigger="{ id }"&gt;
-        &lt;button class="oc-btn oc-btn--outline oc-date-picker-trigger" type="button" :popovertarget="id" aria-haspopup="dialog"&gt;
-          &lt;span&gt;{{ label }}&lt;/span&gt; &lt;OcWebicon name="mdi:calendar-blank-outline" size="sm" /&gt;
-        &lt;/button&gt;
-      &lt;/template&gt;
-      &lt;OcCalendar v-model="date" @update:model-value="close" /&gt;
-    &lt;/OcPopover&gt;
+    &lt;!-- Trigger + calendar in a popover; a pick closes it --&gt;
+    &lt;OcDatePicker v-model="date" locale="en-GB" /&gt;
     &lt;OcInput v-model="date" type="date" aria-label="Date (native)" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">{{-- the calendar is rendered on the server; picking and the keys come from oc-calendar.js (npx omniaui copy-js calendar) --}}
 &lt;div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center"&gt;
-    &lt;x-oc::popover id="oc-dp-pop" class="oc-popover--calendar"&gt;
-        &lt;x-slot:trigger&gt;&lt;span&gt;16 October 2026&lt;/span&gt; &lt;x-oc::webicon name="mdi:calendar-blank-outline" size="sm" /&gt;&lt;/x-slot:trigger&gt;
-        &lt;x-oc::calendar name="date" value="2026-10-16" /&gt;
-    &lt;/x-oc::popover&gt;
+    &lt;x-oc::date-picker name="date" value="2026-10-16" locale="en" /&gt;
     &lt;x-oc::input type="date" name="date_native" value="2026-10-16" aria-label="Date (native)" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -202,13 +176,10 @@ class DeliveryDate extends Component
 
 {{-- resources/views/livewire/delivery-date.blade.php --}}
 &lt;div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center"&gt;
-    &lt;x-oc::popover id="oc-dp-pop" class="oc-popover--calendar"&gt;
-        &lt;x-slot:trigger&gt;&lt;span&gt;{{ \Illuminate\Support\Carbon::parse($date)-&gt;translatedFormat('j F Y') }}&lt;/span&gt; &lt;x-oc::webicon name="mdi:calendar-blank-outline" size="sm" /&gt;&lt;/x-slot:trigger&gt;
-        {{-- the calendar writes the pick to its hidden input: wire:ignore keeps the picker as it is between requests --}}
-        &lt;div wire:ignore x-on:change="$wire.set('date', $event.target.value)"&gt;
-            &lt;x-oc::calendar name="date" :value="$date" :nav="false" /&gt;
-        &lt;/div&gt;
-    &lt;/x-oc::popover&gt;
+    {{-- the calendar writes the pick to its hidden input: wire:ignore keeps the picker as it is between requests --}}
+    &lt;div wire:ignore x-on:change="$wire.set('date', $event.target.value)"&gt;
+        &lt;x-oc::date-picker name="date" :value="$date" :nav="false" /&gt;
+    &lt;/div&gt;
     &lt;x-oc::input type="date" wire:model.live="date" aria-label="Date (native)" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -237,7 +208,7 @@ class DeliveryDate extends Component
           </table>
         <h3 id="anatomy" class="oc-section-content__title mt-2">Anatomy</h3>
 <ul>
-<li><strong>Trigger</strong> an outline button; show the selected date (or a placeholder with <code>data-empty</code>).</li>
+<li><strong>Trigger</strong> an outline button; show the selected date (or a placeholder with <code>data-empty</code>). The components draw the built-in webicon <code>mdi:calendar</code> after it, no extra setup.</li>
 <li><strong>Panel</strong> the popover component with <code>--calendar</code>, so the calendar is the panel.</li>
 <li><strong>Native option</strong> <code>input[type=date]</code> uses the platform picker; it inherits <code>color-scheme</code>, so text and picker follow the page theme.</li>
 </ul>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Demo panel", "category": "Docs UI", "description": "Live preview plus code, stacked or as CSS-only tabs (<code>.oc-demo</code>).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Demo panel", "category": "Docs UI", "description": "Live preview with its code below it, or Preview and Code as two CSS-only tabs on radio buttons; the panel these docs use for every demo.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Demo panel</h1>
         <p class="oc-hero-text"><strong>Demo panel</strong>: the frame every example on this site lives in. A live preview on top, the code below, or both behind tabs. <code>.oc-demo</code> works without any build step; the docs build only fills in the code block for you. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/demo-panel.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Preview and code in tabs <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Demo panel" size="tall">
 <div class="oc-demo oc-demo--tabs">
   <div class="oc-demo__tablist" role="radiogroup" aria-label="View">
@@ -23,47 +24,38 @@
 &lt;button class="oc-btn oc-btn--outline"&gt;Cancel&lt;/button&gt;</code></pre>
   </div>
 </div>
-<oc-code lang="tsx">{/* No wrapper for the demo panel: plain markup with the oc-demo classes; the radios switch the views in CSS */}
-&lt;div className="oc-demo oc-demo--tabs"&gt;
-  &lt;div className="oc-demo__tablist" role="radiogroup" aria-label="View"&gt;
-    &lt;label className="oc-demo__tab"&gt;&lt;input type="radio" name="demo-view" defaultChecked /&gt; Preview&lt;/label&gt;
-    &lt;label className="oc-demo__tab"&gt;&lt;input type="radio" name="demo-view" /&gt; Code&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div className="oc-demo__preview"&gt;
-    &lt;Button&gt;Save&lt;/Button&gt;
-    &lt;Button variant="outline"&gt;Cancel&lt;/Button&gt;
-  &lt;/div&gt;
-  &lt;div className="oc-demo__code"&gt;
-    &lt;pre className="oc-code-window__body"&gt;&lt;code&gt;{'&lt;button class="oc-btn"&gt;Save&lt;/button&gt;\n&lt;button class="oc-btn oc-btn--outline"&gt;Cancel&lt;/button&gt;'}&lt;/code&gt;&lt;/pre&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
-<oc-code lang="vue">&lt;div class="oc-demo oc-demo--tabs"&gt;
-  &lt;div class="oc-demo__tablist" role="radiogroup" aria-label="View"&gt;
-    &lt;label class="oc-demo__tab"&gt;&lt;input type="radio" name="demo-view" checked&gt; Preview&lt;/label&gt;
-    &lt;label class="oc-demo__tab"&gt;&lt;input type="radio" name="demo-view"&gt; Code&lt;/label&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-demo__preview"&gt;
+<oc-code lang="tsx">import { Button, DemoPanel } from "@birdycom/omniaui-react";
+
+const code = '&lt;button class="oc-btn"&gt;Save&lt;/button&gt;\n&lt;button class="oc-btn oc-btn--outline"&gt;Cancel&lt;/button&gt;';
+
+export function Example() {
+  // Preview / Code are two radios: CSS shows one of the two views, no JavaScript.
+  return (
+    &lt;DemoPanel name="demo-view" code={code}&gt;
+      &lt;Button&gt;Save&lt;/Button&gt;
+      &lt;Button variant="outline"&gt;Cancel&lt;/Button&gt;
+    &lt;/DemoPanel&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcDemoPanel } from "@birdycom/omniaui-vue";
+
+const code = '&lt;button class="oc-btn"&gt;Save&lt;/button&gt;\n&lt;button class="oc-btn oc-btn--outline"&gt;Cancel&lt;/button&gt;';
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Preview / Code are two radios: CSS shows one of the two views, no JavaScript. --&gt;
+  &lt;OcDemoPanel name="demo-view" :code="code"&gt;
     &lt;OcButton&gt;Save&lt;/OcButton&gt;
     &lt;OcButton variant="outline"&gt;Cancel&lt;/OcButton&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-demo__code"&gt;
-    &lt;pre class="oc-code-window__body"&gt;&lt;code v-pre&gt;&amp;lt;button class="oc-btn"&amp;gt;Save&amp;lt;/button&amp;gt;
-&amp;lt;button class="oc-btn oc-btn--outline"&amp;gt;Cancel&amp;lt;/button&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-demo oc-demo--tabs"&gt;
-    &lt;div class="oc-demo__tablist" role="radiogroup" aria-label="View"&gt;
-        &lt;label class="oc-demo__tab"&gt;&lt;input type="radio" name="demo-view" checked&gt; Preview&lt;/label&gt;
-        &lt;label class="oc-demo__tab"&gt;&lt;input type="radio" name="demo-view"&gt; Code&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-demo__preview"&gt;
-        &lt;x-oc::button&gt;Save&lt;/x-oc::button&gt;
-        &lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-demo__code"&gt;
-        &lt;pre class="oc-code-window__body"&gt;&lt;code&gt;{{ '&lt;button class="oc-btn"&gt;Save&lt;/button&gt;'."\n".'&lt;button class="oc-btn oc-btn--outline"&gt;Cancel&lt;/button&gt;' }}&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+  &lt;/OcDemoPanel&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Preview / Code are two radios: CSS shows one of the two views, no JavaScript. --}}
+@php($code = '&lt;button class="oc-btn"&gt;Save&lt;/button&gt;'."\n".'&lt;button class="oc-btn oc-btn--outline"&gt;Cancel&lt;/button&gt;')
+&lt;x-oc::demo-panel name="demo-view" :code="$code"&gt;
+    &lt;x-oc::button&gt;Save&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;
+&lt;/x-oc::demo-panel&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -81,18 +73,12 @@ class ButtonDemo extends Component
 }
 
 {{-- resources/views/livewire/button-demo.blade.php --}}
-&lt;div class="oc-demo oc-demo--tabs"&gt;
-    &lt;div class="oc-demo__tablist" role="radiogroup" aria-label="View"&gt;
-        &lt;label class="oc-demo__tab"&gt;&lt;input type="radio" name="demo-view" checked&gt; Preview&lt;/label&gt;
-        &lt;label class="oc-demo__tab"&gt;&lt;input type="radio" name="demo-view"&gt; Code&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-demo__preview"&gt;
+&lt;div&gt;
+    {{-- Preview / Code are two radios: CSS shows one of the two views, no JavaScript. --}}
+    &lt;x-oc::demo-panel name="demo-view" :code="$code"&gt;
         &lt;x-oc::button&gt;Save&lt;/x-oc::button&gt;
         &lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-demo__code"&gt;
-        &lt;pre class="oc-code-window__body"&gt;&lt;code&gt;{{ $code }}&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
+    &lt;/x-oc::demo-panel&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

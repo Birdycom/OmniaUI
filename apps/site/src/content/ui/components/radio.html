@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Radio group", "category": "Forms", "description": "Native inputs, stacked or row, descriptions, card style.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Radio group", "category": "Forms", "description": "Radio group on native inputs in a fieldset with a legend: stacked or in a row, a disabled option, a second line of description and a bordered card style.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Radio group</h1>
         <p class="oc-hero-text">Native radio inputs with the theme accent. <code>.oc-radio</code> styles the input; <code>.oc-radio-group</code> and <code>.oc-radio-item</code> lay out the choices, optionally as selectable cards using <code>:has(:checked)</code>. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/radio.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React component <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Click a plan or use the arrow keys. Team is disabled.</p>
           <oc-demo title="Radio group">
 <fieldset class="oc-radio-group">
@@ -16,14 +17,10 @@
   <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-plan" value="pro"> Pro</label>
   <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-plan" value="team" disabled> Team (soon)</label>
 </fieldset>
-<oc-code lang="tsx">&lt;fieldset className="oc-radio-group"&gt;
-  &lt;legend className="oc-label"&gt;Plan&lt;/legend&gt;
-  {[["free", "Free"], ["pro", "Pro"], ["team", "Team (soon)"]].map(([value, label]) =&gt; (
-    &lt;label className="oc-radio-item" key={value}&gt;
-      &lt;input className="oc-radio" type="radio" name="plan" value={value} checked={plan === value} disabled={value === "team"} onChange={() =&gt; setPlan(value)} /&gt; {label}
-    &lt;/label&gt;
-  ))}
-&lt;/fieldset&gt;</oc-code>
+<oc-code lang="tsx">const [plan, setPlan] = useState&lt;string | number&gt;("free");
+
+&lt;RadioGroup value={plan} onValueChange={setPlan} legend="Plan" name="plan"
+  options={[{ value: "free", label: "Free" }, { value: "pro", label: "Pro" }, { value: "team", label: "Team (soon)", disabled: true }]} /&gt;</oc-code>
 <oc-code lang="vue">&lt;OcRadioGroup v-model="plan" legend="Plan" name="plan"
   :options="[{ value: 'free', label: 'Free' }, { value: 'pro', label: 'Pro' }, { value: 'team', label: 'Team (soon)', disabled: true }]" /&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::radio name="plan" legend="Plan" value="free" :options="['free' =&gt; 'Free', 'pro' =&gt; 'Pro', 'team' =&gt; ['label' =&gt; 'Team (soon)', 'disabled' =&gt; true]]" /&gt;</oc-code>
@@ -44,12 +41,14 @@ class ChoosePlan extends Component
 }
 
 {{-- resources/views/livewire/choose-plan.blade.php --}}
-&lt;fieldset class="oc-radio-group"&gt;
-    &lt;legend class="oc-label"&gt;Plan&lt;/legend&gt;
-    &lt;x-oc::wire.checkbox radio model="plan" value="free" label="Free" class="oc-radio-item" /&gt;
-    &lt;x-oc::wire.checkbox radio model="plan" value="pro" label="Pro" class="oc-radio-item" /&gt;
-    &lt;x-oc::wire.checkbox radio model="plan" value="team" label="Team (soon)" class="oc-radio-item" disabled /&gt;
-&lt;/fieldset&gt;</oc-code>
+{{-- x-oc::radio draws the fieldset and legend; the Livewire-bound radios go in its slot --}}
+&lt;div&gt;
+    &lt;x-oc::radio name="plan" legend="Plan"&gt;
+        &lt;x-oc::wire.checkbox radio model="plan" value="free" label="Free" class="oc-radio-item" /&gt;
+        &lt;x-oc::wire.checkbox radio model="plan" value="pro" label="Pro" class="oc-radio-item" /&gt;
+        &lt;x-oc::wire.checkbox radio model="plan" value="team" label="Team (soon)" class="oc-radio-item" disabled /&gt;
+    &lt;/x-oc::radio&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="cards" class="oc-section-content__title mt-2">Descriptions and card style</h3><p class="oc-section-content__desc">Put a <code>&lt;small&gt;</code> in the label for a description; <code>--card</code> turns each option into a selectable card.</p>
           <oc-demo title="Descriptions and card style">
@@ -57,16 +56,12 @@ class ChoosePlan extends Component
   <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-bill" value="month" checked><span>Monthly<small>Billed every month, cancel anytime.</small></span></label>
   <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-bill" value="year"><span>Yearly<small>Two months free.</small></span></label>
 </div>
-<oc-code lang="tsx">&lt;div className="oc-radio-group"&gt;
-  &lt;label className="oc-radio-item oc-radio-item--card"&gt;
-    &lt;input className="oc-radio" type="radio" name="billing" checked={billing === "month"} onChange={() =&gt; setBilling("month")} /&gt;
-    &lt;span&gt;Monthly&lt;small&gt;Billed every month, cancel anytime.&lt;/small&gt;&lt;/span&gt;
-  &lt;/label&gt;
-  &lt;label className="oc-radio-item oc-radio-item--card"&gt;
-    &lt;input className="oc-radio" type="radio" name="billing" checked={billing === "year"} onChange={() =&gt; setBilling("year")} /&gt;
-    &lt;span&gt;Yearly&lt;small&gt;Two months free.&lt;/small&gt;&lt;/span&gt;
-  &lt;/label&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">const [billing, setBilling] = useState&lt;string | number&gt;("month");
+
+&lt;RadioGroup value={billing} onValueChange={setBilling} name="billing" card&gt;
+  &lt;Radio value="month" description="Billed every month, cancel anytime."&gt;Monthly&lt;/Radio&gt;
+  &lt;Radio value="year" description="Two months free."&gt;Yearly&lt;/Radio&gt;
+&lt;/RadioGroup&gt;</oc-code>
 <oc-code lang="vue">&lt;OcRadioGroup v-model="billing" card
   :options="[{ value: 'month', label: 'Monthly', description: 'Billed every month, cancel anytime.' }, { value: 'year', label: 'Yearly', description: 'Two months free.' }]" /&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::radio name="billing" card value="month" :options="[
@@ -90,9 +85,12 @@ class Billing extends Component
 }
 
 {{-- resources/views/livewire/billing.blade.php --}}
-&lt;div class="oc-radio-group"&gt;
-    &lt;x-oc::wire.checkbox radio model="billing" value="month" class="oc-radio-item oc-radio-item--card"&gt;&lt;span&gt;Monthly&lt;small&gt;Billed every month, cancel anytime.&lt;/small&gt;&lt;/span&gt;&lt;/x-oc::wire.checkbox&gt;
-    &lt;x-oc::wire.checkbox radio model="billing" value="year" class="oc-radio-item oc-radio-item--card"&gt;&lt;span&gt;Yearly&lt;small&gt;Two months free.&lt;/small&gt;&lt;/span&gt;&lt;/x-oc::wire.checkbox&gt;
+{{-- x-oc::radio draws the group; the Livewire-bound radios go in its slot --}}
+&lt;div&gt;
+    &lt;x-oc::radio name="billing"&gt;
+        &lt;x-oc::wire.checkbox radio model="billing" value="month" class="oc-radio-item oc-radio-item--card"&gt;&lt;span&gt;Monthly&lt;small&gt;Billed every month, cancel anytime.&lt;/small&gt;&lt;/span&gt;&lt;/x-oc::wire.checkbox&gt;
+        &lt;x-oc::wire.checkbox radio model="billing" value="year" class="oc-radio-item oc-radio-item--card"&gt;&lt;span&gt;Yearly&lt;small&gt;Two months free.&lt;/small&gt;&lt;/span&gt;&lt;/x-oc::wire.checkbox&gt;
+    &lt;/x-oc::radio&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

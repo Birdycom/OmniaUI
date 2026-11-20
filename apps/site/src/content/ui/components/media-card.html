@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Media card", "category": "Media", "description": "Feed card for a video: thumb, title, channel and menu.", "nav": "Media card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Media card", "category": "Media", "description": "Feed card for a video: a thumb with duration and watch progress, the title, an avatar, the channel line and a menu, plus a compact size for grids.", "nav": "Media card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/media-card.html | Map: hero -> demo -> grid (compact, no avatar) -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Media card</h1>
@@ -35,7 +35,7 @@
     <a class="oc-dropdown-item" href="#demo">Not interested</a>
   </div>
 </article>
-<oc-code lang="tsx">import { MediaCard } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { DropdownItem, DropdownSeparator, MediaCard } from "@birdycom/omniaui-react";
 
 export function Example() {
   return (
@@ -48,17 +48,17 @@ export function Example() {
       thumb={{ art: 2, duration: "18:32", progress: 65 }}
       menu={
         &lt;&gt;
-          &lt;a className="oc-dropdown-item" href="#demo"&gt;Save to playlist&lt;/a&gt;
-          &lt;a className="oc-dropdown-item" href="#demo"&gt;Share&lt;/a&gt;
-          &lt;div className="oc-dropdown-separator" /&gt;
-          &lt;a className="oc-dropdown-item" href="#demo"&gt;Not interested&lt;/a&gt;
+          &lt;DropdownItem href="#demo"&gt;Save to playlist&lt;/DropdownItem&gt;
+          &lt;DropdownItem href="#demo"&gt;Share&lt;/DropdownItem&gt;
+          &lt;DropdownSeparator /&gt;
+          &lt;DropdownItem href="#demo"&gt;Not interested&lt;/DropdownItem&gt;
         &lt;/&gt;
       }
     /&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { OcMediaCard } from "@birdycom/omniaui-vue";
+import { OcDropdownItem, OcDropdownSeparator, OcMediaCard } from "@birdycom/omniaui-vue";
 &lt;/script&gt;
 
 &lt;template&gt;
@@ -71,23 +71,24 @@ import { OcMediaCard } from "@birdycom/omniaui-vue";
   &gt;
     &lt;template #meta&gt;&lt;a href="#demo"&gt;North Studio&lt;/a&gt; · 24K views · 3 days ago&lt;/template&gt;
     &lt;template #menu&gt;
-      &lt;a class="oc-dropdown-item" href="#demo"&gt;Save to playlist&lt;/a&gt;
-      &lt;a class="oc-dropdown-item" href="#demo"&gt;Share&lt;/a&gt;
-      &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-      &lt;a class="oc-dropdown-item" href="#demo"&gt;Not interested&lt;/a&gt;
+      &lt;OcDropdownItem href="#demo"&gt;Save to playlist&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownItem href="#demo"&gt;Share&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownSeparator /&gt;
+      &lt;OcDropdownItem href="#demo"&gt;Not interested&lt;/OcDropdownItem&gt;
     &lt;/template&gt;
   &lt;/OcMediaCard&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::media-card style="max-inline-size:20rem" id="oc-media-card" href="#demo"
+<oc-code lang="blade">{{-- Slot meta: a channel link · views · date (the link stays clickable above the card link) --}}
+&lt;x-oc::media-card style="max-inline-size:20rem" id="oc-media-card" href="#demo"
     title="Building a cabin by the lake, part 3: the roof goes on"
-    meta="North Studio · 24K views · 3 days ago"
     avatar="NS"
     :thumb="['art' =&gt; 2, 'duration' =&gt; '18:32', 'progress' =&gt; 65]"&gt;
+    &lt;x-slot:meta&gt;&lt;a href="#demo"&gt;North Studio&lt;/a&gt; · 24K views · 3 days ago&lt;/x-slot:meta&gt;
     &lt;x-slot:menu&gt;
-        &lt;a class="oc-dropdown-item" href="#demo"&gt;Save to playlist&lt;/a&gt;
-        &lt;a class="oc-dropdown-item" href="#demo"&gt;Share&lt;/a&gt;
-        &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-        &lt;a class="oc-dropdown-item" href="#demo"&gt;Not interested&lt;/a&gt;
+        &lt;x-oc::dropdown.item href="#demo"&gt;Save to playlist&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item href="#demo"&gt;Share&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.item href="#demo"&gt;Not interested&lt;/x-oc::dropdown.item&gt;
     &lt;/x-slot:menu&gt;
 &lt;/x-oc::media-card&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -98,6 +99,15 @@ use Livewire\Component;
 
 class MediaCard extends Component
 {
+    public string $channel = 'North Studio';
+
+    public bool $saved = false;
+
+    public function save(): void
+    {
+        $this-&gt;saved = true;
+    }
+
     public function render()
     {
         return view('livewire.media-card');
@@ -108,14 +118,14 @@ class MediaCard extends Component
 &lt;div&gt;
     &lt;x-oc::media-card style="max-inline-size:20rem" id="oc-media-card" href="#demo"
         title="Building a cabin by the lake, part 3: the roof goes on"
-        meta="North Studio · 24K views · 3 days ago"
         avatar="NS"
         :thumb="['art' =&gt; 2, 'duration' =&gt; '18:32', 'progress' =&gt; 65]"&gt;
+        &lt;x-slot:meta&gt;&lt;a href="#demo"&gt;{{ $channel }}&lt;/a&gt; · 24K views · 3 days ago&lt;/x-slot:meta&gt;
         &lt;x-slot:menu&gt;
-            &lt;a class="oc-dropdown-item" href="#demo"&gt;Save to playlist&lt;/a&gt;
-            &lt;a class="oc-dropdown-item" href="#demo"&gt;Share&lt;/a&gt;
-            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
-            &lt;a class="oc-dropdown-item" href="#demo"&gt;Not interested&lt;/a&gt;
+            &lt;x-oc::dropdown.item wire:click="save"&gt;{{ $saved ? 'Saved to playlist' : 'Save to playlist' }}&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.item href="#demo"&gt;Share&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.separator /&gt;
+            &lt;x-oc::dropdown.item href="#demo"&gt;Not interested&lt;/x-oc::dropdown.item&gt;
         &lt;/x-slot:menu&gt;
     &lt;/x-oc::media-card&gt;
 &lt;/div&gt;</oc-code>

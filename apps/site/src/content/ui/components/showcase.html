@@ -145,7 +145,7 @@ class ShowcaseIconTilesInEveryAccent extends Component
   &lt;span class="oc-pill oc-pill--accent oc-accent--green"&gt;&lt;span class="oc-status-dot oc-status-dot--strong"&gt;&lt;/span&gt;Live (strong)&lt;/span&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
-        <h3 id="product-card" class="oc-section-content__title mt-2">Product card</h3><p class="oc-section-content__desc">Hover: the card lifts, the border takes the accent color and a soft glow fades in (an animated <code>@property</code>, no JavaScript).</p>
+        <h3 id="product-card" class="oc-section-content__title mt-2">Product card <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">Hover: the card lifts, the border takes the accent color and a soft glow fades in (an animated <code>@property</code>, no JavaScript).</p>
           <oc-demo title="Product cards">
             <div class="oc-card-grid w-full">
               <a class="oc-product-card oc-accent--green" href="#product-card">
@@ -170,80 +170,52 @@ class ShowcaseIconTilesInEveryAccent extends Component
                 <span class="oc-product-card__more">Discover</span>
               </a>
             </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { ProductCard } from "@birdycom/omniaui-react";
+
+const products = [
+  { accent: "green", glyph: "◆", pill: "Own product", name: "Product 1", tagline: "Modular ERP for small businesses", summary: "CRM, sales, invoicing, bookkeeping and stock in one application." },
+  { accent: "violet", glyph: "◉", pill: "Framework", name: "OmniaCSS", tagline: "Design system behind our apps", summary: "Utilities, components, blocks and 10,000+ icons." },
+  { accent: "orange", glyph: "⚒", pill: "Custom work", name: "Product 2", tagline: "Platform for interior builders", summary: "Projects, quotes, stock, planning and HR in one app." },
+];
+
+export function Example() {
   return (
     &lt;div className="oc-card-grid w-full"&gt;
-      &lt;a className="oc-product-card oc-accent--green" href="#product-card"&gt;
-        &lt;div className="oc-product-card__top"&gt;&lt;span className="oc-icon-tile" aria-hidden="true"&gt;◆&lt;/span&gt;&lt;span className="oc-pill"&gt;Own product&lt;/span&gt;&lt;/div&gt;
-        &lt;h3 className="oc-product-card__name"&gt;Product 1&lt;/h3&gt;
-        &lt;p className="oc-product-card__tagline"&gt;Modular ERP for small businesses&lt;/p&gt;
-        &lt;p className="oc-product-card__summary"&gt;CRM, sales, invoicing, bookkeeping and stock in one application.&lt;/p&gt;
-        &lt;span className="oc-product-card__more"&gt;Discover&lt;/span&gt;
-      &lt;/a&gt;{" "}
-      &lt;a className="oc-product-card oc-accent--violet" href="#product-card"&gt;
-        &lt;div className="oc-product-card__top"&gt;&lt;span className="oc-icon-tile" aria-hidden="true"&gt;◉&lt;/span&gt;&lt;span className="oc-pill"&gt;Framework&lt;/span&gt;&lt;/div&gt;
-        &lt;h3 className="oc-product-card__name"&gt;OmniaCSS&lt;/h3&gt;
-        &lt;p className="oc-product-card__tagline"&gt;Design system behind our apps&lt;/p&gt;
-        &lt;p className="oc-product-card__summary"&gt;Utilities, components, blocks and 10,000+ icons.&lt;/p&gt;
-        &lt;span className="oc-product-card__more"&gt;Discover&lt;/span&gt;
-      &lt;/a&gt;{" "}
-      &lt;a className="oc-product-card oc-accent--orange" href="#product-card"&gt;
-        &lt;div className="oc-product-card__top"&gt;&lt;span className="oc-icon-tile" aria-hidden="true"&gt;⚒&lt;/span&gt;&lt;span className="oc-pill"&gt;Custom work&lt;/span&gt;&lt;/div&gt;
-        &lt;h3 className="oc-product-card__name"&gt;Product 2&lt;/h3&gt;
-        &lt;p className="oc-product-card__tagline"&gt;Platform for interior builders&lt;/p&gt;
-        &lt;p className="oc-product-card__summary"&gt;Projects, quotes, stock, planning and HR in one app.&lt;/p&gt;
-        &lt;span className="oc-product-card__more"&gt;Discover&lt;/span&gt;
-      &lt;/a&gt;
+      {products.map((p) =&gt; (
+        &lt;ProductCard key={p.name} href="#product-card" accent={p.accent} name={p.name} tagline={p.tagline} summary={p.summary} more="Discover"
+          top={&lt;&gt;&lt;span className="oc-icon-tile" aria-hidden="true"&gt;{p.glyph}&lt;/span&gt;&lt;span className="oc-pill"&gt;{p.pill}&lt;/span&gt;&lt;/&gt;} /&gt;
+      ))}
     &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcProductCard } from '@birdycom/omniaui-vue'
+
+const products = [
+  { accent: 'green', glyph: '◆', pill: 'Own product', name: 'Product 1', tagline: 'Modular ERP for small businesses', summary: 'CRM, sales, invoicing, bookkeeping and stock in one application.' },
+  { accent: 'violet', glyph: '◉', pill: 'Framework', name: 'OmniaCSS', tagline: 'Design system behind our apps', summary: 'Utilities, components, blocks and 10,000+ icons.' },
+  { accent: 'orange', glyph: '⚒', pill: 'Custom work', name: 'Product 2', tagline: 'Platform for interior builders', summary: 'Projects, quotes, stock, planning and HR in one app.' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-card-grid w-full"&gt;
-    &lt;a class="oc-product-card oc-accent--green" href="#product-card"&gt;
-      &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;◆&lt;/span&gt;&lt;span class="oc-pill"&gt;Own product&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class="oc-product-card__name"&gt;Product 1&lt;/h3&gt;
-      &lt;p class="oc-product-card__tagline"&gt;Modular ERP for small businesses&lt;/p&gt;
-      &lt;p class="oc-product-card__summary"&gt;CRM, sales, invoicing, bookkeeping and stock in one application.&lt;/p&gt;
-      &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-    &lt;/a&gt;
-    &lt;a class="oc-product-card oc-accent--violet" href="#product-card"&gt;
-      &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;◉&lt;/span&gt;&lt;span class="oc-pill"&gt;Framework&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class="oc-product-card__name"&gt;OmniaCSS&lt;/h3&gt;
-      &lt;p class="oc-product-card__tagline"&gt;Design system behind our apps&lt;/p&gt;
-      &lt;p class="oc-product-card__summary"&gt;Utilities, components, blocks and 10,000+ icons.&lt;/p&gt;
-      &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-    &lt;/a&gt;
-    &lt;a class="oc-product-card oc-accent--orange" href="#product-card"&gt;
-      &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;⚒&lt;/span&gt;&lt;span class="oc-pill"&gt;Custom work&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class="oc-product-card__name"&gt;Product 2&lt;/h3&gt;
-      &lt;p class="oc-product-card__tagline"&gt;Platform for interior builders&lt;/p&gt;
-      &lt;p class="oc-product-card__summary"&gt;Projects, quotes, stock, planning and HR in one app.&lt;/p&gt;
-      &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-    &lt;/a&gt;
+    &lt;OcProductCard v-for="p in products" :key="p.name" href="#product-card" :accent="p.accent" :name="p.name" :tagline="p.tagline" :summary="p.summary" more="Discover"&gt;
+      &lt;template #top&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;{{ p.glyph }}&lt;/span&gt;&lt;span class="oc-pill"&gt;{{ p.pill }}&lt;/span&gt;&lt;/template&gt;
+    &lt;/OcProductCard&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-card-grid w-full"&gt;
-  &lt;a class="oc-product-card oc-accent--green" href="#product-card"&gt;
-    &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;◆&lt;/span&gt;&lt;span class="oc-pill"&gt;Own product&lt;/span&gt;&lt;/div&gt;
-    &lt;h3 class="oc-product-card__name"&gt;Product 1&lt;/h3&gt;
-    &lt;p class="oc-product-card__tagline"&gt;Modular ERP for small businesses&lt;/p&gt;
-    &lt;p class="oc-product-card__summary"&gt;CRM, sales, invoicing, bookkeeping and stock in one application.&lt;/p&gt;
-    &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-  &lt;/a&gt;
-  &lt;a class="oc-product-card oc-accent--violet" href="#product-card"&gt;
-    &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;◉&lt;/span&gt;&lt;span class="oc-pill"&gt;Framework&lt;/span&gt;&lt;/div&gt;
-    &lt;h3 class="oc-product-card__name"&gt;OmniaCSS&lt;/h3&gt;
-    &lt;p class="oc-product-card__tagline"&gt;Design system behind our apps&lt;/p&gt;
-    &lt;p class="oc-product-card__summary"&gt;Utilities, components, blocks and 10,000+ icons.&lt;/p&gt;
-    &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-  &lt;/a&gt;
-  &lt;a class="oc-product-card oc-accent--orange" href="#product-card"&gt;
-    &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;⚒&lt;/span&gt;&lt;span class="oc-pill"&gt;Custom work&lt;/span&gt;&lt;/div&gt;
-    &lt;h3 class="oc-product-card__name"&gt;Product 2&lt;/h3&gt;
-    &lt;p class="oc-product-card__tagline"&gt;Platform for interior builders&lt;/p&gt;
-    &lt;p class="oc-product-card__summary"&gt;Projects, quotes, stock, planning and HR in one app.&lt;/p&gt;
-    &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-  &lt;/a&gt;
+<oc-code lang="blade">@php($products = [
+    ['accent' =&gt; 'green', 'glyph' =&gt; '◆', 'pill' =&gt; 'Own product', 'name' =&gt; 'Product 1', 'tagline' =&gt; 'Modular ERP for small businesses', 'summary' =&gt; 'CRM, sales, invoicing, bookkeeping and stock in one application.'],
+    ['accent' =&gt; 'violet', 'glyph' =&gt; '◉', 'pill' =&gt; 'Framework', 'name' =&gt; 'OmniaCSS', 'tagline' =&gt; 'Design system behind our apps', 'summary' =&gt; 'Utilities, components, blocks and 10,000+ icons.'],
+    ['accent' =&gt; 'orange', 'glyph' =&gt; '⚒', 'pill' =&gt; 'Custom work', 'name' =&gt; 'Product 2', 'tagline' =&gt; 'Platform for interior builders', 'summary' =&gt; 'Projects, quotes, stock, planning and HR in one app.'],
+])
+&lt;div class="oc-card-grid w-full"&gt;
+    @foreach ($products as $p)
+        &lt;x-oc::product-card href="#product-card" :accent="$p['accent']" :name="$p['name']" :tagline="$p['tagline']" :summary="$p['summary']" more="Discover"&gt;
+            &lt;x-slot:top&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;{{ $p['glyph'] }}&lt;/span&gt;&lt;span class="oc-pill"&gt;{{ $p['pill'] }}&lt;/span&gt;&lt;/x-slot:top&gt;
+        &lt;/x-oc::product-card&gt;
+    @endforeach
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -253,6 +225,13 @@ use Livewire\Component;
 
 class ShowcaseProductCards extends Component
 {
+    /** @var list&lt;array&lt;string, string&gt;&gt; */
+    public array $products = [
+        ['href' =&gt; '/products/product-1', 'accent' =&gt; 'green', 'glyph' =&gt; '◆', 'pill' =&gt; 'Own product', 'name' =&gt; 'Product 1', 'tagline' =&gt; 'Modular ERP for small businesses', 'summary' =&gt; 'CRM, sales, invoicing, bookkeeping and stock in one application.'],
+        ['href' =&gt; '/products/omniacss', 'accent' =&gt; 'violet', 'glyph' =&gt; '◉', 'pill' =&gt; 'Framework', 'name' =&gt; 'OmniaCSS', 'tagline' =&gt; 'Design system behind our apps', 'summary' =&gt; 'Utilities, components, blocks and 10,000+ icons.'],
+        ['href' =&gt; '/products/product-2', 'accent' =&gt; 'orange', 'glyph' =&gt; '⚒', 'pill' =&gt; 'Custom work', 'name' =&gt; 'Product 2', 'tagline' =&gt; 'Platform for interior builders', 'summary' =&gt; 'Projects, quotes, stock, planning and HR in one app.'],
+    ];
+
     public function render()
     {
         return view('livewire.showcase-product-cards');
@@ -261,27 +240,11 @@ class ShowcaseProductCards extends Component
 
 {{-- resources/views/livewire/showcase-product-cards.blade.php --}}
 &lt;div class="oc-card-grid w-full"&gt;
-  &lt;a class="oc-product-card oc-accent--green" href="#product-card"&gt;
-    &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;◆&lt;/span&gt;&lt;span class="oc-pill"&gt;Own product&lt;/span&gt;&lt;/div&gt;
-    &lt;h3 class="oc-product-card__name"&gt;Product 1&lt;/h3&gt;
-    &lt;p class="oc-product-card__tagline"&gt;Modular ERP for small businesses&lt;/p&gt;
-    &lt;p class="oc-product-card__summary"&gt;CRM, sales, invoicing, bookkeeping and stock in one application.&lt;/p&gt;
-    &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-  &lt;/a&gt;
-  &lt;a class="oc-product-card oc-accent--violet" href="#product-card"&gt;
-    &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;◉&lt;/span&gt;&lt;span class="oc-pill"&gt;Framework&lt;/span&gt;&lt;/div&gt;
-    &lt;h3 class="oc-product-card__name"&gt;OmniaCSS&lt;/h3&gt;
-    &lt;p class="oc-product-card__tagline"&gt;Design system behind our apps&lt;/p&gt;
-    &lt;p class="oc-product-card__summary"&gt;Utilities, components, blocks and 10,000+ icons.&lt;/p&gt;
-    &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-  &lt;/a&gt;
-  &lt;a class="oc-product-card oc-accent--orange" href="#product-card"&gt;
-    &lt;div class="oc-product-card__top"&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;⚒&lt;/span&gt;&lt;span class="oc-pill"&gt;Custom work&lt;/span&gt;&lt;/div&gt;
-    &lt;h3 class="oc-product-card__name"&gt;Product 2&lt;/h3&gt;
-    &lt;p class="oc-product-card__tagline"&gt;Platform for interior builders&lt;/p&gt;
-    &lt;p class="oc-product-card__summary"&gt;Projects, quotes, stock, planning and HR in one app.&lt;/p&gt;
-    &lt;span class="oc-product-card__more"&gt;Discover&lt;/span&gt;
-  &lt;/a&gt;
+    @foreach ($products as $p)
+        &lt;x-oc::product-card :href="$p['href']" :accent="$p['accent']" :name="$p['name']" :tagline="$p['tagline']" :summary="$p['summary']" more="Discover" wire:key="product-{{ $loop-&gt;index }}"&gt;
+            &lt;x-slot:top&gt;&lt;span class="oc-icon-tile" aria-hidden="true"&gt;{{ $p['glyph'] }}&lt;/span&gt;&lt;span class="oc-pill"&gt;{{ $p['pill'] }}&lt;/span&gt;&lt;/x-slot:top&gt;
+        &lt;/x-oc::product-card&gt;
+    @endforeach
 &lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="code-window" class="oc-section-content__title mt-2">Code window &amp; browser frame</h3>
@@ -294,66 +257,77 @@ class ShowcaseProductCards extends Component
   'design' =&gt; OmniaCSS::class,
 ];</pre>
               </div>
-              <div class="oc-browser-frame oc-accent--blue"><div class="oc-browser-frame__bar"><i></i><i></i><i></i></div><div class="oc-browser-frame__body" style="background: linear-gradient(135deg, var(--color-vividblue-60), var(--color-purple-40));"></div></div>
+              <div class="oc-browser-frame oc-accent--blue"><div class="oc-browser-frame__bar"><i></i><i></i><i></i></div><div class="oc-browser-frame__body" style="background: color-mix(in oklab, var(--oc-accent-from) 16%, transparent);"></div></div>
             </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { BrowserFrame, CodeWindow } from "@birdycom/omniaui-react";
+
+const code = `return [
+  'erp'    =&gt; Erp::class,
+  'design' =&gt; OmniaCSS::class,
+];`;
+
+export function Example() {
   return (
     &lt;div className="oc-split w-full"&gt;
-                  &lt;div className="oc-code-window"&gt;
-                    &lt;div className="oc-code-window__bar"&gt;&lt;i /&gt;&lt;i /&gt;&lt;i /&gt;&lt;span className="oc-code-window__title"&gt;projects.php&lt;/span&gt;&lt;/div&gt;
-    &lt;pre className="oc-code-window__body"&gt;{"return [\n  'erp'    =&gt; Erp::class,\n  'design' =&gt; OmniaCSS::class,\n];"}&lt;/pre&gt;
-                  &lt;/div&gt;
-                  &lt;div className="oc-browser-frame oc-accent--blue"&gt;&lt;div className="oc-browser-frame__bar"&gt;&lt;i /&gt;&lt;i /&gt;&lt;i /&gt;&lt;/div&gt;&lt;div className="oc-browser-frame__body" style={{ background: "linear-gradient(135deg, var(--color-vividblue-60), var(--color-purple-40))" }} /&gt;&lt;/div&gt;
-                &lt;/div&gt;
+      &lt;CodeWindow title="projects.php" code={code} copy={false} /&gt;
+      &lt;BrowserFrame body className="oc-accent--blue" bodyStyle={{ background: "color-mix(in oklab, var(--oc-accent-from) 16%, transparent)" }} /&gt;
+    &lt;/div&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBrowserFrame, OcCodeWindow } from '@birdycom/omniaui-vue'
+
+const code = `return [
+  'erp'    =&gt; Erp::class,
+  'design' =&gt; OmniaCSS::class,
+];`
+&lt;/script&gt;
+
+&lt;template&gt;
   &lt;div class="oc-split w-full"&gt;
-                &lt;div class="oc-code-window"&gt;
-                  &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;projects.php&lt;/span&gt;&lt;/div&gt;
-  &lt;pre class="oc-code-window__body"&gt;return [
-  'erp'    =&amp;gt; Erp::class,
-  'design' =&amp;gt; OmniaCSS::class,
-];&lt;/pre&gt;
-                &lt;/div&gt;
-                &lt;div class="oc-browser-frame oc-accent--blue"&gt;&lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class="oc-browser-frame__body" style="background: linear-gradient(135deg, var(--color-vividblue-60), var(--color-purple-40));"&gt;&lt;/div&gt;&lt;/div&gt;
-              &lt;/div&gt;
+    &lt;OcCodeWindow title="projects.php" :code="code" :copy="false" /&gt;
+    &lt;OcBrowserFrame body class="oc-accent--blue" body-style="background: color-mix(in oklab, var(--oc-accent-from) 16%, transparent)" /&gt;
+  &lt;/div&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">            &lt;div class="oc-split w-full"&gt;
-              &lt;div class="oc-code-window"&gt;
-                &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;projects.php&lt;/span&gt;&lt;/div&gt;
-&lt;pre class="oc-code-window__body"&gt;return [
-  'erp'    =&amp;gt; Erp::class,
-  'design' =&amp;gt; OmniaCSS::class,
-];&lt;/pre&gt;
-              &lt;/div&gt;
-              &lt;div class="oc-browser-frame oc-accent--blue"&gt;&lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class="oc-browser-frame__body" style="background: linear-gradient(135deg, var(--color-vividblue-60), var(--color-purple-40));"&gt;&lt;/div&gt;&lt;/div&gt;
-            &lt;/div&gt;</oc-code>
+<oc-code lang="blade">@php
+    $code = &lt;&lt;&lt;'PHP'
+    return [
+      'erp'    =&gt; Erp::class,
+      'design' =&gt; OmniaCSS::class,
+    ];
+    PHP;
+@endphp
+&lt;div class="oc-split w-full"&gt;
+    &lt;x-oc::code-window title="projects.php" :code="$code" :copy="false" /&gt;
+    &lt;x-oc::browser-frame body class="oc-accent--blue" body-style="background: color-mix(in oklab, var(--oc-accent-from) 16%, transparent)" /&gt;
+&lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class ShowcaseCodeWindowAndBrowserFrame extends Component
+class ShowcaseCodeWindow extends Component
 {
+    public string $code = &lt;&lt;&lt;'PHP'
+        return [
+          'erp'    =&gt; Erp::class,
+          'design' =&gt; OmniaCSS::class,
+        ];
+        PHP;
+
     public function render()
     {
-        return view('livewire.showcase-code-window-and-browser-frame');
+        return view('livewire.showcase-code-window');
     }
 }
 
-{{-- resources/views/livewire/showcase-code-window-and-browser-frame.blade.php --}}
-            &lt;div class="oc-split w-full"&gt;
-              &lt;div class="oc-code-window"&gt;
-                &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;projects.php&lt;/span&gt;&lt;/div&gt;
-&lt;pre class="oc-code-window__body"&gt;return [
-  'erp'    =&amp;gt; Erp::class,
-  'design' =&amp;gt; OmniaCSS::class,
-];&lt;/pre&gt;
-              &lt;/div&gt;
-              &lt;div class="oc-browser-frame oc-accent--blue"&gt;&lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class="oc-browser-frame__body" style="background: linear-gradient(135deg, var(--color-vividblue-60), var(--color-purple-40));"&gt;&lt;/div&gt;&lt;/div&gt;
-            &lt;/div&gt;</oc-code>
+{{-- resources/views/livewire/showcase-code-window.blade.php --}}
+&lt;div class="oc-split w-full"&gt;
+    {{-- the copy button copies $code --}}
+    &lt;x-oc::code-window title="projects.php" :code="$code" /&gt;
+    &lt;x-oc::browser-frame body class="oc-accent--blue" body-style="background: color-mix(in oklab, var(--oc-accent-from) 16%, transparent)" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="stat-strip" class="oc-section-content__title mt-2">Stat strip (with counters)</h3><p class="oc-section-content__desc">Numbers count up with the CSS-only <a href="counter.html">counter</a> component when they scroll into view.</p>
           <oc-demo title="Stat strip">
@@ -580,47 +554,35 @@ class ShowcaseSteps extends Component
               <ul class="oc-tag-list oc-accent--violet"><li>PHP</li><li>MySQL</li><li>OmniaCSS</li></ul>
               <ul class="oc-check-list"><li>No JavaScript needed</li><li>Light and dark mode</li><li>Omnia colors only</li></ul>
             </div>
-<oc-code lang="tsx">import { FactList } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { Checklist, FactList, TagList, Timeline } from "@birdycom/omniaui-react";
 
 export function Example() {
   return (
     &lt;div className="oc-split w-full align-items-start"&gt;
-      &lt;ol className="oc-timeline"&gt;
-        &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
-      &lt;/ol&gt;
+      &lt;Timeline compact items={[{ date: "2001", text: "Company founded" }, { date: "2015", text: "First own ERP" }, { date: "2026", text: "OmniaCSS 0.4" }]} /&gt;
       &lt;FactList items={[{ label: "Platform", value: "Web" }, { label: "Language", value: "PHP 8.4" }, { label: "License", value: "MIT" }]} /&gt;
-      &lt;ul className="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
-      &lt;ul className="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
+      &lt;TagList className="oc-accent--violet" items={["PHP", "MySQL", "OmniaCSS"]} /&gt;
+      &lt;Checklist variant="check" items={["No JavaScript needed", "Light and dark mode", "Omnia colors only"]} /&gt;
     &lt;/div&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { OcFactList } from "@birdycom/omniaui-vue";
+import { OcChecklist, OcFactList, OcTagList, OcTimeline } from "@birdycom/omniaui-vue";
 &lt;/script&gt;
 
 &lt;template&gt;
   &lt;div class="oc-split w-full align-items-start"&gt;
-    &lt;ol class="oc-timeline"&gt;
-      &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
-    &lt;/ol&gt;
+    &lt;OcTimeline compact :items="[{ date: '2001', text: 'Company founded' }, { date: '2015', text: 'First own ERP' }, { date: '2026', text: 'OmniaCSS 0.4' }]" /&gt;
     &lt;OcFactList :items="[{ label: 'Platform', value: 'Web' }, { label: 'Language', value: 'PHP 8.4' }, { label: 'License', value: 'MIT' }]" /&gt;
-    &lt;ul class="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
-    &lt;ul class="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
+    &lt;OcTagList class="oc-accent--violet" :items="['PHP', 'MySQL', 'OmniaCSS']" /&gt;
+    &lt;OcChecklist variant="check" :items="['No JavaScript needed', 'Light and dark mode', 'Omnia colors only']" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-split w-full align-items-start"&gt;
-    &lt;ol class="oc-timeline"&gt;
-        &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
-    &lt;/ol&gt;
+    &lt;x-oc::timeline compact :items="[['date' =&gt; '2001', 'text' =&gt; 'Company founded'], ['date' =&gt; '2015', 'text' =&gt; 'First own ERP'], ['date' =&gt; '2026', 'text' =&gt; 'OmniaCSS 0.4']]" /&gt;
     &lt;x-oc::fact-list :items="['Platform' =&gt; 'Web', 'Language' =&gt; 'PHP 8.4', 'License' =&gt; 'MIT']" /&gt;
-    &lt;ul class="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
-    &lt;ul class="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
+    &lt;x-oc::tag-list class="oc-accent--violet" :items="['PHP', 'MySQL', 'OmniaCSS']" /&gt;
+    &lt;x-oc::checklist variant="check" :items="['No JavaScript needed', 'Light and dark mode', 'Omnia colors only']" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -639,14 +601,10 @@ class ShowcaseTimelineFactListTagListAnd extends Component
 {{-- resources/views/livewire/showcase-timeline-fact-list-tag-list-and.blade.php --}}
 &lt;div&gt;
     &lt;div class="oc-split w-full align-items-start"&gt;
-        &lt;ol class="oc-timeline"&gt;
-            &lt;li&gt;&lt;strong&gt;2001&lt;/strong&gt;&lt;span&gt;Company founded&lt;/span&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;strong&gt;2015&lt;/strong&gt;&lt;span&gt;First own ERP&lt;/span&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;strong&gt;2026&lt;/strong&gt;&lt;span&gt;OmniaCSS 0.4&lt;/span&gt;&lt;/li&gt;
-        &lt;/ol&gt;
+        &lt;x-oc::timeline compact :items="[['date' =&gt; '2001', 'text' =&gt; 'Company founded'], ['date' =&gt; '2015', 'text' =&gt; 'First own ERP'], ['date' =&gt; '2026', 'text' =&gt; 'OmniaCSS 0.4']]" /&gt;
         &lt;x-oc::fact-list :items="['Platform' =&gt; 'Web', 'Language' =&gt; 'PHP 8.4', 'License' =&gt; 'MIT']" /&gt;
-        &lt;ul class="oc-tag-list oc-accent--violet"&gt;&lt;li&gt;PHP&lt;/li&gt;&lt;li&gt;MySQL&lt;/li&gt;&lt;li&gt;OmniaCSS&lt;/li&gt;&lt;/ul&gt;
-        &lt;ul class="oc-check-list"&gt;&lt;li&gt;No JavaScript needed&lt;/li&gt;&lt;li&gt;Light and dark mode&lt;/li&gt;&lt;li&gt;Omnia colors only&lt;/li&gt;&lt;/ul&gt;
+        &lt;x-oc::tag-list class="oc-accent--violet" :items="['PHP', 'MySQL', 'OmniaCSS']" /&gt;
+        &lt;x-oc::checklist variant="check" :items="['No JavaScript needed', 'Light and dark mode', 'Omnia colors only']" /&gt;
     &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -839,52 +797,62 @@ class ShowcaseSplitWithAProductMark extends Component
   weeks: <span class="oc-tok-c">6</span>, <span class="oc-tok-m">// from idea to launch</span>
 });</pre>
             </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { CodeWindow } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-code-window" style={{ inlineSize: "min(100%, 30rem)" }}&gt;
-                  &lt;div className="oc-code-window__bar"&gt;&lt;i /&gt;&lt;i /&gt;&lt;i /&gt;&lt;span className="oc-code-window__title"&gt;project.ts&lt;/span&gt;&lt;/div&gt;
-    &lt;pre className="oc-code-window__body"&gt;&lt;span className="oc-tok-k"&gt;{"const"}&lt;/span&gt;{" project = "}&lt;span className="oc-tok-f"&gt;{"plan"}&lt;/span&gt;{"({\n  customer: "}&lt;span className="oc-tok-s"&gt;{"\"Customer 1\""}&lt;/span&gt;{",\n  weeks: "}&lt;span className="oc-tok-c"&gt;{"6"}&lt;/span&gt;{", "}&lt;span className="oc-tok-m"&gt;{"// from idea to launch"}&lt;/span&gt;{"\n});"}&lt;/pre&gt;
-                &lt;/div&gt;
+    &lt;CodeWindow title="project.ts" copy={false} style={{ inlineSize: "min(100%, 30rem)" }}&gt;
+      &lt;pre className="oc-code-window__body"&gt;&lt;span className="oc-tok-k"&gt;const&lt;/span&gt; project = &lt;span className="oc-tok-f"&gt;plan&lt;/span&gt;({"{"}{"\n"}  customer: &lt;span className="oc-tok-s"&gt;"Customer 1"&lt;/span&gt;,{"\n"}  weeks: &lt;span className="oc-tok-c"&gt;6&lt;/span&gt;, &lt;span className="oc-tok-m"&gt;// from idea to launch&lt;/span&gt;{"\n"}{"});"}&lt;/pre&gt;
+    &lt;/CodeWindow&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-code-window" style="inline-size:min(100%, 30rem)"&gt;
-                &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;project.ts&lt;/span&gt;&lt;/div&gt;
-  &lt;pre class="oc-code-window__body"&gt;&lt;span class="oc-tok-k"&gt;const&lt;/span&gt; project = &lt;span class="oc-tok-f"&gt;plan&lt;/span&gt;({
-  customer: &lt;span class="oc-tok-s"&gt;"Customer 1"&lt;/span&gt;,
-  weeks: &lt;span class="oc-tok-c"&gt;6&lt;/span&gt;, &lt;span class="oc-tok-m"&gt;// from idea to launch&lt;/span&gt;
-});&lt;/pre&gt;
-              &lt;/div&gt;
-&lt;/template&gt;</oc-code>
-<oc-code lang="blade">            &lt;div class="oc-code-window" style="inline-size:min(100%, 30rem)"&gt;
-              &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;project.ts&lt;/span&gt;&lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCodeWindow } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- the default slot replaces the body: hand-written tokens --&gt;
+  &lt;OcCodeWindow title="project.ts" :copy="false" style="inline-size:min(100%, 30rem)"&gt;
 &lt;pre class="oc-code-window__body"&gt;&lt;span class="oc-tok-k"&gt;const&lt;/span&gt; project = &lt;span class="oc-tok-f"&gt;plan&lt;/span&gt;({
   customer: &lt;span class="oc-tok-s"&gt;"Customer 1"&lt;/span&gt;,
   weeks: &lt;span class="oc-tok-c"&gt;6&lt;/span&gt;, &lt;span class="oc-tok-m"&gt;// from idea to launch&lt;/span&gt;
 });&lt;/pre&gt;
-            &lt;/div&gt;</oc-code>
+  &lt;/OcCodeWindow&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- the slot replaces the body: hand-written tokens --}}
+&lt;x-oc::code-window title="project.ts" :copy="false" style="inline-size:min(100%, 30rem)"&gt;
+&lt;pre class="oc-code-window__body"&gt;&lt;span class="oc-tok-k"&gt;const&lt;/span&gt; project = &lt;span class="oc-tok-f"&gt;plan&lt;/span&gt;({
+  customer: &lt;span class="oc-tok-s"&gt;"Customer 1"&lt;/span&gt;,
+  weeks: &lt;span class="oc-tok-c"&gt;6&lt;/span&gt;, &lt;span class="oc-tok-m"&gt;// from idea to launch&lt;/span&gt;
+});&lt;/pre&gt;
+&lt;/x-oc::code-window&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class ShowcaseCodeWindowWithTokenClasses extends Component
+class ShowcaseCodeTokens extends Component
 {
+    public string $customer = 'Customer 1';
+
+    public int $weeks = 6;
+
     public function render()
     {
-        return view('livewire.showcase-code-window-with-token-classes');
+        return view('livewire.showcase-code-tokens');
     }
 }
 
-{{-- resources/views/livewire/showcase-code-window-with-token-classes.blade.php --}}
-            &lt;div class="oc-code-window" style="inline-size:min(100%, 30rem)"&gt;
-              &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;project.ts&lt;/span&gt;&lt;/div&gt;
+{{-- resources/views/livewire/showcase-code-tokens.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::code-window title="project.ts" :copy="false" style="inline-size:min(100%, 30rem)"&gt;
 &lt;pre class="oc-code-window__body"&gt;&lt;span class="oc-tok-k"&gt;const&lt;/span&gt; project = &lt;span class="oc-tok-f"&gt;plan&lt;/span&gt;({
-  customer: &lt;span class="oc-tok-s"&gt;"Customer 1"&lt;/span&gt;,
-  weeks: &lt;span class="oc-tok-c"&gt;6&lt;/span&gt;, &lt;span class="oc-tok-m"&gt;// from idea to launch&lt;/span&gt;
+  customer: &lt;span class="oc-tok-s"&gt;"{{ $customer }}"&lt;/span&gt;,
+  weeks: &lt;span class="oc-tok-c"&gt;{{ $weeks }}&lt;/span&gt;, &lt;span class="oc-tok-m"&gt;// from idea to launch&lt;/span&gt;
 });&lt;/pre&gt;
-            &lt;/div&gt;</oc-code>
+    &lt;/x-oc::code-window&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="backdrop-colors" class="oc-section-content__title mt-2">Backdrop in your own colors <span class="oc-badge-version">v0.13.0</span></h3><p class="oc-section-content__desc">A theme sets the blobs and the grid with tokens: <code>--oc-backdrop-1</code>, <code>-2</code>, <code>-3</code>, <code>--oc-backdrop-3-opacity</code> and <code>--oc-backdrop-grid</code>, on <code>:root</code> or on the backdrop itself.</p>
           <oc-demo title="Backdrop with theme colors">

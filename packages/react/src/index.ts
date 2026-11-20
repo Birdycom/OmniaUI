@@ -135,6 +135,7 @@ export * from "./components/Result";
 export * from "./components/Ribbon";
 export * from "./components/ScrollArea";
 export * from "./components/Search";
+export * from "./components/SectionBlock";
 export * from "./components/Segmented";
 export * from "./components/Select";
 export * from "./components/Separator";

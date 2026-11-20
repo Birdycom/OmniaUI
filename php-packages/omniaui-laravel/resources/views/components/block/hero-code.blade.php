@@ -1,13 +1,15 @@
 {{-- OmniaUI block: hero-code — Landing hero: eyebrow, display title with gradient word, lead, two buttons and a code window with floating icon tiles. Needs @birdycom/omniaui.
      File: packages/blocks/blocks/hero-code.html | Map: section -> container.oc-split -> copy (eyebrow, title, lead, actions) -> visual (tiles + code window)
      Blade: <x-oc::block.hero-code> - attributes merge onto the root element. Written by hand (array props).
-     Props (same names as BlockHeroCode in React): eyebrow, title, lead, code-title, code, tiles, code-dark (default true, as in the snippet).
+     Props (same names as BlockHeroCode in React): eyebrow, title, lead, code-title, code, tiles, code-dark (default true, as in the snippet),
+       heading-level (0.17.0: 1 default; 2 renders the title as an h2 with the same look).
        tiles: list of ['glyph', 'accent', 'style' (CSS string)]; :tiles="[]" shows no tiles.
        Left out (null), every prop shows the snippet content; :eyebrow="false" / :lead="false" hide that line.
      Blade slots: title, lead, actions (buttons), default (replaces the whole inside of the section).
 --}}
-@props(['eyebrow' => null, 'title' => null, 'lead' => null, 'actions' => null, 'codeTitle' => null, 'code' => null, 'tiles' => null, 'codeDark' => true])
+@props(['eyebrow' => null, 'title' => null, 'lead' => null, 'actions' => null, 'codeTitle' => null, 'code' => null, 'tiles' => null, 'codeDark' => true, 'headingLevel' => 1])
 @php($filled = fn ($v) => $v !== null && $v !== false && trim((string) $v) !== '')
+@php($ocHeading = (int) $headingLevel === 2 ? 'h2' : 'h1')
 <section {{ $attributes->merge(['class' => 'oc-section-pad']) }}>
     @if (! $slot->isEmpty())
         {{ $slot }}
@@ -17,7 +19,7 @@
       @if ($eyebrow !== false)
       <p class="oc-eyebrow">@if ($filled($eyebrow)){{ $eyebrow }}@else Software development &middot; for small companies @endif</p>
       @endif
-      <h1 class="oc-display">@if ($filled($title)){{ $title }}@else One app for quotes, orders and <span class="oc-text-gradient">invoices</span>. @endif</h1>
+      <{{ $ocHeading }} class="oc-display">@if ($filled($title)){{ $title }}@else One app for quotes, orders and <span class="oc-text-gradient">invoices</span>. @endif</{{ $ocHeading }}>
       @if ($lead !== false)
       <p class="oc-lead">@if ($filled($lead)){{ $lead }}@else From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins. @endif</p>
       @endif

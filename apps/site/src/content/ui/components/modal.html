@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Modal / Dialog", "category": "Overlays", "description": "Modal on native <dialog>: focus trap, Esc and backdrop for free; sizes sm to full.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Modal / Dialog", "category": "Overlays", "description": "Modal on the native dialog element: focus trap, Esc and backdrop for free, sizes from small to full screen, a form inside and a round close button.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/modal.html | Map: hero -> demo (native dialog, form with body, sizes, class toggle) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Modal / Dialog</h1>
@@ -47,10 +47,10 @@
   &lt;/template&gt;
 &lt;/OcModal&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::modal id="confirm-delete" title="Are you sure?" description="This action cannot be undone."&gt;
-    &lt;x-slot:trigger&gt;&lt;button class="oc-btn" type="button" command="show-modal" commandfor="confirm-delete"&gt;Open modal&lt;/button&gt;&lt;/x-slot:trigger&gt;
+    &lt;x-slot:trigger&gt;&lt;x-oc::button command="show-modal" commandfor="confirm-delete"&gt;Open modal&lt;/x-oc::button&gt;&lt;/x-slot:trigger&gt;
     &lt;x-slot:footer&gt;
-        &lt;button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="confirm-delete"&gt;Cancel&lt;/button&gt;
-        &lt;button class="oc-btn oc-btn--destructive" type="button" command="close" commandfor="confirm-delete"&gt;Delete&lt;/button&gt;
+        &lt;x-oc::button variant="outline" command="close" commandfor="confirm-delete"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="destructive" command="close" commandfor="confirm-delete"&gt;Delete&lt;/x-oc::button&gt;
     &lt;/x-slot:footer&gt;
 &lt;/x-oc::modal&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -78,11 +78,11 @@ class Contacts extends Component
 
 {{-- resources/views/livewire/contacts.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn" type="button" wire:click="openOcModal('delete')"&gt;Open modal&lt;/button&gt;
+    &lt;x-oc::button wire:click="openOcModal('delete')"&gt;Open modal&lt;/x-oc::button&gt;
     &lt;x-oc::wire.modal name="delete" title="Are you sure?" description="This action cannot be undone."&gt;
         &lt;x-slot:footer&gt;
-            &lt;button class="oc-btn oc-btn--outline" type="button" x-on:click="open = false"&gt;Cancel&lt;/button&gt;
-            &lt;button class="oc-btn oc-btn--destructive" type="button" wire:click="delete"&gt;Delete&lt;/button&gt;
+            &lt;x-oc::button variant="outline" x-on:click="open = false"&gt;Cancel&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="destructive" wire:click="delete"&gt;Delete&lt;/x-oc::button&gt;
         &lt;/x-slot:footer&gt;
     &lt;/x-oc::wire.modal&gt;
 &lt;/div&gt;</oc-code>
@@ -143,15 +143,15 @@ class Contacts extends Component
   &lt;/template&gt;
 &lt;/OcModal&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::modal id="edit-profile" close-button title="Edit profile" description="Make changes to your profile here."&gt;
-    &lt;x-slot:trigger&gt;&lt;button class="oc-btn" type="button" command="show-modal" commandfor="edit-profile"&gt;Edit profile&lt;/button&gt;&lt;/x-slot:trigger&gt;
+    &lt;x-slot:trigger&gt;&lt;x-oc::button command="show-modal" commandfor="edit-profile"&gt;Edit profile&lt;/x-oc::button&gt;&lt;/x-slot:trigger&gt;
     &lt;form id="profile-form" method="post" action="{{ route('profile.update') }}"&gt;
         @csrf
         &lt;x-oc::form-field label="Name" for="profile-name" name="name"&gt;&lt;x-oc::input id="profile-name" name="name" value="Customer 7" /&gt;&lt;/x-oc::form-field&gt;
         &lt;x-oc::form-field label="Username" for="profile-username" name="username"&gt;&lt;x-oc::input id="profile-username" name="username" value="@anna" /&gt;&lt;/x-oc::form-field&gt;
     &lt;/form&gt;
     &lt;x-slot:footer&gt;
-        &lt;button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="edit-profile"&gt;Cancel&lt;/button&gt;
-        &lt;button class="oc-btn" type="submit" form="profile-form"&gt;Save changes&lt;/button&gt;
+        &lt;x-oc::button variant="outline" command="close" commandfor="edit-profile"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button type="submit" form="profile-form"&gt;Save changes&lt;/x-oc::button&gt;
     &lt;/x-slot:footer&gt;
 &lt;/x-oc::modal&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -187,13 +187,13 @@ class EditProfile extends Component
 
 {{-- resources/views/livewire/edit-profile.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn" type="button" wire:click="openOcModal('profile')"&gt;Edit profile&lt;/button&gt;
+    &lt;x-oc::button wire:click="openOcModal('profile')"&gt;Edit profile&lt;/x-oc::button&gt;
     &lt;x-oc::wire.modal name="profile" title="Edit profile" description="Make changes to your profile here."&gt;
         &lt;x-oc::form-field label="Name" for="profile-name" name="name"&gt;&lt;x-oc::wire.input id="profile-name" model="name" /&gt;&lt;/x-oc::form-field&gt;
         &lt;x-oc::form-field label="Username" for="profile-username" name="username"&gt;&lt;x-oc::wire.input id="profile-username" model="username" /&gt;&lt;/x-oc::form-field&gt;
         &lt;x-slot:footer&gt;
-            &lt;button class="oc-btn oc-btn--outline" type="button" x-on:click="open = false"&gt;Cancel&lt;/button&gt;
-            &lt;button class="oc-btn" type="button" wire:click="save"&gt;Save changes&lt;/button&gt;
+            &lt;x-oc::button variant="outline" x-on:click="open = false"&gt;Cancel&lt;/x-oc::button&gt;
+            &lt;x-oc::button wire:click="save"&gt;Save changes&lt;/x-oc::button&gt;
         &lt;/x-slot:footer&gt;
     &lt;/x-oc::wire.modal&gt;
 &lt;/div&gt;</oc-code>
@@ -246,18 +246,18 @@ class EditProfile extends Component
 &lt;OcModal v-model:open="full" size="full" title="Full" description="Fills the screen, for editors and previews."&gt;
   &lt;template #footer="{ close }"&gt;&lt;OcButton @click="close"&gt;OK&lt;/OcButton&gt;&lt;/template&gt;
 &lt;/OcModal&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="modal-sm"&gt;Small&lt;/button&gt;
-&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="modal-lg"&gt;Large&lt;/button&gt;
-&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="modal-full"&gt;Full&lt;/button&gt;
+<oc-code lang="blade">&lt;x-oc::button variant="outline" command="show-modal" commandfor="modal-sm"&gt;Small&lt;/x-oc::button&gt;
+&lt;x-oc::button variant="outline" command="show-modal" commandfor="modal-lg"&gt;Large&lt;/x-oc::button&gt;
+&lt;x-oc::button variant="outline" command="show-modal" commandfor="modal-full"&gt;Full&lt;/x-oc::button&gt;
 
 &lt;x-oc::modal id="modal-sm" size="sm" title="Small" description="For a short confirmation."&gt;
-    &lt;x-slot:footer&gt;&lt;button class="oc-btn" type="button" command="close" commandfor="modal-sm"&gt;OK&lt;/button&gt;&lt;/x-slot:footer&gt;
+    &lt;x-slot:footer&gt;&lt;x-oc::button command="close" commandfor="modal-sm"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
 &lt;/x-oc::modal&gt;
 &lt;x-oc::modal id="modal-lg" size="lg" title="Large" description="For forms with more fields."&gt;
-    &lt;x-slot:footer&gt;&lt;button class="oc-btn" type="button" command="close" commandfor="modal-lg"&gt;OK&lt;/button&gt;&lt;/x-slot:footer&gt;
+    &lt;x-slot:footer&gt;&lt;x-oc::button command="close" commandfor="modal-lg"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
 &lt;/x-oc::modal&gt;
 &lt;x-oc::modal id="modal-full" size="full" title="Full" description="Fills the screen, for editors and previews."&gt;
-    &lt;x-slot:footer&gt;&lt;button class="oc-btn" type="button" command="close" commandfor="modal-full"&gt;OK&lt;/button&gt;&lt;/x-slot:footer&gt;
+    &lt;x-slot:footer&gt;&lt;x-oc::button command="close" commandfor="modal-full"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
 &lt;/x-oc::modal&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -278,18 +278,18 @@ class ModalSizes extends Component
 
 {{-- resources/views/livewire/modal-sizes.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('small')"&gt;Small&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('large')"&gt;Large&lt;/button&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('full')"&gt;Full&lt;/button&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('small')"&gt;Small&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('large')"&gt;Large&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('full')"&gt;Full&lt;/x-oc::button&gt;
 
     &lt;x-oc::wire.modal name="small" size="sm" title="Small" description="For a short confirmation."&gt;
-        &lt;x-slot:footer&gt;&lt;button class="oc-btn" type="button" x-on:click="open = false"&gt;OK&lt;/button&gt;&lt;/x-slot:footer&gt;
+        &lt;x-slot:footer&gt;&lt;x-oc::button x-on:click="open = false"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
     &lt;/x-oc::wire.modal&gt;
     &lt;x-oc::wire.modal name="large" size="lg" title="Large" description="For forms with more fields."&gt;
-        &lt;x-slot:footer&gt;&lt;button class="oc-btn" type="button" x-on:click="open = false"&gt;OK&lt;/button&gt;&lt;/x-slot:footer&gt;
+        &lt;x-slot:footer&gt;&lt;x-oc::button x-on:click="open = false"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
     &lt;/x-oc::wire.modal&gt;
     &lt;x-oc::wire.modal name="full" size="full" title="Full" description="Fills the screen, for editors and previews."&gt;
-        &lt;x-slot:footer&gt;&lt;button class="oc-btn" type="button" x-on:click="open = false"&gt;OK&lt;/button&gt;&lt;/x-slot:footer&gt;
+        &lt;x-slot:footer&gt;&lt;x-oc::button x-on:click="open = false"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
     &lt;/x-oc::wire.modal&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -345,7 +345,7 @@ const open = ref(false);
   &lt;OcModal v-model:open="open" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::modal id="notice" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved."&gt;
-    &lt;x-slot:trigger&gt;&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="notice"&gt;Open the notice&lt;/button&gt;&lt;/x-slot:trigger&gt;
+    &lt;x-slot:trigger&gt;&lt;x-oc::button variant="outline" command="show-modal" commandfor="notice"&gt;Open the notice&lt;/x-oc::button&gt;&lt;/x-slot:trigger&gt;
 &lt;/x-oc::modal&gt;
 {{-- also: &lt;x-oc::sheet close-round close-class="my-close"&gt;, &lt;x-oc::confirm-dialog close-round&gt; --}}</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -353,9 +353,14 @@ const open = ref(false);
 namespace App\Livewire;
 
 use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
 
 class ModalRoundCloseButton extends Component
 {
+    use WithOcModal;
+
+    public string $version = '2.5.0';
+
     public function render()
     {
         return view('livewire.modal-round-close-button');
@@ -364,10 +369,10 @@ class ModalRoundCloseButton extends Component
 
 {{-- resources/views/livewire/modal-round-close-button.blade.php --}}
 &lt;div&gt;
-    &lt;x-oc::modal id="notice" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved."&gt;
-        &lt;x-slot:trigger&gt;&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="notice"&gt;Open the notice&lt;/button&gt;&lt;/x-slot:trigger&gt;
-    &lt;/x-oc::modal&gt;
-    {{-- also: &lt;x-oc::sheet close-round close-class="my-close"&gt;, &lt;x-oc::confirm-dialog close-round&gt; --}}
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('notice')"&gt;Open the notice&lt;/x-oc::button&gt;
+    {{-- close-round: the × in the corner is a round button; it sets the open state back to false --}}
+    &lt;x-oc::wire.modal name="notice" size="sm" close-round title="New version" :description="'App 1 '.$version.' is ready. Your work is saved.'" /&gt;
+    {{-- also: close-button (a plain ×), close-class="my-close", and close-round on the sheet and the confirm dialog --}}
 &lt;/div&gt;</oc-code>
           </oc-demo>
 

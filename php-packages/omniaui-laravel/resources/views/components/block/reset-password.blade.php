@@ -15,19 +15,42 @@
        .oc-block-authmin: Minimal centered column without a card
        .oc-separator-text: Divider with centered text (separator component)
      Blade: <x-oc::block.reset-password> - attributes merge onto the root element.
-     Blade slots (each falls back to the snippet content when empty): default.
+     Blade slots (each falls back to the snippet content when empty): title, text, fields, footer, default.
+     The default slot replaces the whole content; each named slot replaces one region (a plain string works too).
+     Props (0.17.0, optional): form (array of attributes merged onto the <form>, e.g. ['wire:submit' => 'login']; it can override action / method; with it a non-GET form gets @csrf); heading-level (1 default; 2 renders the title as an h2 with the same look).
 --}}
+@props(['form' => null, 'headingLevel' => 1, 'title' => null, 'text' => null, 'fields' => null, 'footer' => null])
+@php
+    $ocForm = (new \Illuminate\View\ComponentAttributeBag(is_array($form) ? $form : []))->merge(['class' => 'oc-block-authcard', 'action' => '#', 'method' => 'post']);
+    $ocHeading = (int) $headingLevel === 2 ? 'h2' : 'h1';
+@endphp
 <div {{ $attributes->merge(['class' => 'oc-block-authpage oc-block-authpage--plain']) }}>
     @if (! $slot->isEmpty())
         {{ $slot }}
     @else
-  <form class="oc-block-authcard" action="#" method="post">
+  <form {{ $ocForm }}>
+      @if (is_array($form) && strtolower((string) $ocForm->get('method', 'get')) !== 'get') @csrf @endif
     <span class="oc-block-authcard-logo"><svg data-icon="mdi:lock-outline" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17a2 2 0 0 1-2-2c0-1.11.89-2 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2m6 3V10H6v10zm0-12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h1V6a5 5 0 0 1 5-5a5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"/></svg></span>
     <div class="oc-block-authcard-head">
-      <h1 class="oc-block-authcard-title">Set a new password</h1>
-      <p class="oc-block-authcard-text">Your new password must differ from earlier ones</p>
+      <{{ $ocHeading }} class="oc-block-authcard-title">
+          @if (isset($title) && trim((string) $title) !== '')
+              {{ $title }}
+          @else
+          Set a new password
+          @endif
+      </{{ $ocHeading }}>
+      <p class="oc-block-authcard-text">
+          @if (isset($text) && trim((string) $text) !== '')
+              {{ $text }}
+          @else
+          Your new password must differ from earlier ones
+          @endif
+      </p>
     </div>
     <div class="oc-block-authcard-fields">
+        @if (isset($fields) && trim((string) $fields) !== '')
+            {{ $fields }}
+        @else
       <div class="oc-field">
         <label class="oc-field-label" for="oc-reset-password">New password</label>
         <div class="oc-input-reveal">
@@ -44,8 +67,15 @@
       </div>
       <p class="oc-block-authcard-hint">At least 8 characters, with a number and a symbol.</p>
       <button class="oc-btn oc-block-authcard-submit" type="submit">Reset password</button>
+        @endif
     </div>
-    <p class="oc-block-authcard-foot"><a href="#">Back to sign in</a></p>
+    <p class="oc-block-authcard-foot">
+        @if (isset($footer) && trim((string) $footer) !== '')
+            {{ $footer }}
+        @else
+        <a href="#">Back to sign in</a>
+        @endif
+    </p>
   </form>
     @endif
 </div>

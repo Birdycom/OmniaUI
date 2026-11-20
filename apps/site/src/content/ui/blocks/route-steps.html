@@ -575,20 +575,17 @@ function removeStep(id: string) {
     &lt;template #footer&gt;&lt;OcButton variant="outline" size="sm"&gt;Add step&lt;/OcButton&gt;&lt;/template&gt;
   &lt;/OcBlockRouteSteps&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::block.route-steps&gt;
-  &lt;x-slot:title&gt;Steps of {{ $route-&gt;name }}&lt;/x-slot:title&gt;
-  &lt;x-slot:count&gt;{{ $route-&gt;steps-&gt;count() }} steps&lt;/x-slot:count&gt;
-  @foreach ($route-&gt;steps as $step)
-    &lt;li class="oc-block-route-steps-item" data-id="{{ $step-&gt;id }}" data-kind="{{ $step-&gt;kind }}"&gt;
-      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move {{ $step-&gt;name }}" aria-pressed="false"&gt;&lt;/button&gt;
-      &lt;button class="oc-block-route-steps-main" type="button" @if ($step-&gt;is($current)) aria-current="true" @endif&gt;
-        &lt;span @class(['oc-block-route-steps-thumb', 'oc-block-route-steps-thumb--num' =&gt; $step-&gt;counts])&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;{{ $step-&gt;name }}&lt;/span&gt;&lt;/span&gt;
-      &lt;/button&gt;
-      &lt;span class="oc-badge oc-badge--success oc-block-route-steps-status"&gt;{{ $step-&gt;status }}&lt;/span&gt;
-    &lt;/li&gt;
-  @endforeach
-&lt;/x-oc::block.route-steps&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.route-steps :title="'Steps of '.$route-&gt;name" :count="$route-&gt;steps-&gt;count().' steps'" :selected="$current-&gt;id"
+    :kinds="[['value' =&gt; 'step', 'label' =&gt; 'Steps'], ['value' =&gt; 'photo', 'label' =&gt; 'Photo tasks'], ['value' =&gt; 'intro finish', 'label' =&gt; 'Start and finish']]"
+    :steps="$route-&gt;steps-&gt;map(fn ($step) =&gt; [
+        'id' =&gt; $step-&gt;id,
+        'name' =&gt; $step-&gt;name,
+        'kind' =&gt; $step-&gt;kind,
+        'numbered' =&gt; $step-&gt;counts,
+        'meta' =&gt; [$step-&gt;type, $step-&gt;points.' points'],
+        'status' =&gt; $step-&gt;status,
+        'statusTone' =&gt; $step-&gt;ready ? 'success' : 'warning',
+    ])-&gt;all()" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -600,9 +597,9 @@ class RouteSteps extends Component
     public string $current = 's2';
 
     public array $steps = [
-        ['id' =&gt; 's1', 'name' =&gt; 'Welcome', 'kind' =&gt; 'intro', 'numbered' =&gt; false, 'meta' =&gt; ['Intro', 'does not count'], 'status' =&gt; 'Ready', 'tone' =&gt; 'secondary'],
-        ['id' =&gt; 's2', 'name' =&gt; 'Old gate', 'kind' =&gt; 'step', 'numbered' =&gt; true, 'meta' =&gt; ['Question', '20 points'], 'status' =&gt; 'Ready', 'tone' =&gt; 'success'],
-        ['id' =&gt; 's4', 'name' =&gt; 'Town hall', 'kind' =&gt; 'step', 'numbered' =&gt; true, 'meta' =&gt; ['Text only'], 'status' =&gt; 'No question', 'tone' =&gt; 'warning'],
+        ['id' =&gt; 's1', 'name' =&gt; 'Welcome', 'kind' =&gt; 'intro', 'numbered' =&gt; false, 'icon' =&gt; 'mdi:play-circle-outline', 'meta' =&gt; ['Intro', 'does not count'], 'status' =&gt; 'Ready', 'statusTone' =&gt; 'secondary'],
+        ['id' =&gt; 's2', 'name' =&gt; 'Old gate', 'kind' =&gt; 'step', 'meta' =&gt; ['Question', '20 points'], 'status' =&gt; 'Ready', 'statusTone' =&gt; 'success'],
+        ['id' =&gt; 's4', 'name' =&gt; 'Town hall', 'kind' =&gt; 'step', 'meta' =&gt; ['Text only'], 'status' =&gt; 'No question', 'statusTone' =&gt; 'warning'],
     ];
 
     public function select(string $id): void
@@ -612,7 +609,13 @@ class RouteSteps extends Component
 
     public function add(): void
     {
-        $this-&gt;steps[] = ['id' =&gt; 's'.(count($this-&gt;steps) + 10), 'name' =&gt; 'New step', 'kind' =&gt; 'step', 'numbered' =&gt; true, 'meta' =&gt; ['Text only'], 'status' =&gt; 'No question', 'tone' =&gt; 'warning'];
+        $this-&gt;steps[] = ['id' =&gt; 's'.(count($this-&gt;steps) + 10), 'name' =&gt; 'New step', 'kind' =&gt; 'step', 'meta' =&gt; ['Text only'], 'status' =&gt; 'No question', 'statusTone' =&gt; 'warning'];
+    }
+
+    /** The steps with a wire:click on the main button of each row. */
+    public function rows(): array
+    {
+        return array_map(fn (array $step) =&gt; $step + ['attributes' =&gt; ['wire:click' =&gt; "select('{$step['id']}')"]], $this-&gt;steps);
     }
 
     public function render()
@@ -622,26 +625,14 @@ class RouteSteps extends Component
 }
 
 {{-- resources/views/livewire/route-steps.blade.php --}}
-&lt;x-oc::block.route-steps&gt;
-    &lt;x-slot:title&gt;Steps of Route 1&lt;/x-slot:title&gt;
-    &lt;x-slot:count&gt;{{ count($steps) }} steps&lt;/x-slot:count&gt;
-    @foreach ($steps as $step)
-        &lt;li class="oc-block-route-steps-item" data-id="{{ $step['id'] }}" data-kind="{{ $step['kind'] }}" wire:key="step-{{ $step['id'] }}"&gt;
-            &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move {{ $step['name'] }}" aria-pressed="false"&gt;&lt;/button&gt;
-            &lt;button class="oc-block-route-steps-main" type="button" wire:click="select('{{ $step['id'] }}')" @if ($step['id'] === $current) aria-current="true" @endif&gt;
-                &lt;span @class(['oc-block-route-steps-thumb', 'oc-block-route-steps-thumb--num' =&gt; $step['numbered']])&gt;&lt;/span&gt;
-                &lt;span class="oc-block-route-steps-text"&gt;
-                    &lt;span class="oc-block-route-steps-name"&gt;{{ $step['name'] }}&lt;/span&gt;
-                    &lt;span class="oc-block-route-steps-meta"&gt;@foreach ($step['meta'] as $meta)&lt;span&gt;{{ $meta }}&lt;/span&gt;@endforeach&lt;/span&gt;
-                &lt;/span&gt;
-            &lt;/button&gt;
-            &lt;x-oc::badge :variant="$step['tone']" class="oc-block-route-steps-status"&gt;{{ $step['status'] }}&lt;/x-oc::badge&gt;
-        &lt;/li&gt;
-    @endforeach
-    &lt;x-slot:footer&gt;
-        &lt;x-oc::button variant="outline" size="sm" wire:click="add"&gt;Add step&lt;/x-oc::button&gt;
-    &lt;/x-slot:footer&gt;
-&lt;/x-oc::block.route-steps&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::block.route-steps title="Steps of Route 1" :count="count($steps).' steps'" :steps="$this-&gt;rows()" :selected="$current"
+        :kinds="[['value' =&gt; 'step', 'label' =&gt; 'Steps'], ['value' =&gt; 'intro finish', 'label' =&gt; 'Start and finish']]"&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button variant="outline" size="sm" wire:click="add"&gt;Add step&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.route-steps&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="status-locked">Problems, badges and a locked order <span class="oc-badge-version">v0.17.0</span></h3>
@@ -713,54 +704,50 @@ class RouteSteps extends Component
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/section&gt;</oc-code>
-<oc-code lang="tsx">&lt;BlockRouteSteps
+<oc-code lang="tsx">import { Badge, BlockRouteSteps } from "@birdycom/omniaui-react";
+
+&lt;BlockRouteSteps
   title="Steps of Route 1"
   count="3 steps"
   locked={round.live}
   lockedLabel="Order locked during the live round"
+  search={false}
+  style={{ maxInlineSize: "30rem" }}
   steps={[
-    { id: "l1", name: "Old gate", meta: ["Question", "20 points"], badges: [&lt;Badge variant="outline"&gt;Counts&lt;/Badge&gt;, &lt;Badge variant="outline"&gt;Team&lt;/Badge&gt;],
+    { id: "l1", name: "Old gate", meta: ["Question", "20 points"], badges: [&lt;Badge key="counts" variant="outline"&gt;Counts&lt;/Badge&gt;, &lt;Badge key="team" variant="outline"&gt;Team&lt;/Badge&gt;],
       status: "2 problems", statusTone: "destructive", statusTooltip: "No location set. The photo is missing." },
+    { id: "l2", name: "Town hall clock", meta: ["Scan", "10 points"], badges: [&lt;Badge key="counts" variant="outline"&gt;Counts&lt;/Badge&gt;],
+      status: "1 warning", statusTone: "warning", statusTooltip: "The text is longer than 600 characters." },
     { id: "l3", name: "Market square", meta: ["Text"], status: "Ready", statusTone: "success" },
   ]}
 /&gt;</oc-code>
-<oc-code lang="vue">&lt;OcBlockRouteSteps title="Steps of Route 1" :locked="round.live" locked-label="Order locked during the live round" :steps="[
-  { id: 'l1', name: 'Old gate', meta: ['Question', '20 points'], badges: [{ label: 'Counts', tone: 'outline' }],
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockRouteSteps, type RouteStep } from '@birdycom/omniaui-vue'
+
+defineProps&lt;{ live: boolean }&gt;()
+
+const steps: RouteStep[] = [
+  { id: 'l1', name: 'Old gate', meta: ['Question', '20 points'], badges: [{ label: 'Counts', tone: 'outline' }, { label: 'Team', tone: 'outline' }],
     status: '2 problems', statusTone: 'destructive', statusTooltip: 'No location set. The photo is missing.' },
-]" /&gt;</oc-code>
-<oc-code lang="blade">&lt;section class="oc-block-route-steps oc-block-route-steps--locked" style="max-inline-size: 30rem" aria-labelledby="oc-rsteps-live-title"&gt;
-  &lt;div class="oc-block-route-steps-head"&gt;
-    &lt;h2 class="oc-block-route-steps-title" id="oc-rsteps-live-title"&gt;Steps of Route 1&lt;/h2&gt;
-    &lt;span class="oc-block-route-steps-count"&gt;3 steps&lt;/span&gt;
-    &lt;span class="oc-block-route-steps-lock"&gt;Order locked during the live round&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;ol class="oc-block-route-steps-list" aria-label="Steps in route order"&gt;
-    &lt;li class="oc-block-route-steps-item" data-id="l1"&gt;
-      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Old gate" disabled&gt;&lt;/button&gt;
-      &lt;button class="oc-block-route-steps-main" type="button"&gt;
-        &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Old gate&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Question&lt;/span&gt;&lt;span&gt;20 points&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-block-route-steps-badges"&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Counts&lt;/span&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Team&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;/button&gt;
-      &lt;span class="oc-block-route-steps-status oc-tooltip oc-tooltip--left" data-tooltip="No location set. The photo is missing." tabindex="0"&gt;&lt;span class="oc-badge oc-badge--destructive"&gt;2 problems&lt;/span&gt;&lt;/span&gt;
-    &lt;/li&gt;
-    &lt;li class="oc-block-route-steps-item" data-id="l2"&gt;
-      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Town hall clock" disabled&gt;&lt;/button&gt;
-      &lt;button class="oc-block-route-steps-main" type="button"&gt;
-        &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Town hall clock&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Scan&lt;/span&gt;&lt;span&gt;10 points&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-block-route-steps-badges"&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Counts&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;/button&gt;
-      &lt;span class="oc-block-route-steps-status oc-tooltip oc-tooltip--left" data-tooltip="The text is longer than 600 characters." tabindex="0"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;1 warning&lt;/span&gt;&lt;/span&gt;
-    &lt;/li&gt;
-    &lt;li class="oc-block-route-steps-item" data-id="l3"&gt;
-      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Market square" disabled&gt;&lt;/button&gt;
-      &lt;button class="oc-block-route-steps-main" type="button"&gt;
-        &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Market square&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Text&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;/button&gt;
-      &lt;span class="oc-badge oc-badge--success oc-block-route-steps-status"&gt;Ready&lt;/span&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/section&gt;</oc-code>
+  { id: 'l2', name: 'Town hall clock', meta: ['Scan', '10 points'], badges: [{ label: 'Counts', tone: 'outline' }],
+    status: '1 warning', statusTone: 'warning', statusTooltip: 'The text is longer than 600 characters.' },
+  { id: 'l3', name: 'Market square', meta: ['Text'], status: 'Ready', statusTone: 'success' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockRouteSteps title="Steps of Route 1" count="3 steps" :locked="live" locked-label="Order locked during the live round"
+    :search="false" :actions="false" :steps="steps" style="max-inline-size: 30rem" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.route-steps title="Steps of Route 1" count="3 steps" locked locked-label="Order locked during the live round"
+    :search="false" :actions="false" title-id="oc-rsteps-live-title" style="max-inline-size: 30rem"
+    :steps="[
+        ['id' =&gt; 'l1', 'name' =&gt; 'Old gate', 'meta' =&gt; ['Question', '20 points'], 'badges' =&gt; ['Counts', 'Team'],
+            'status' =&gt; '2 problems', 'statusTone' =&gt; 'destructive', 'statusTooltip' =&gt; 'No location set. The photo is missing.'],
+        ['id' =&gt; 'l2', 'name' =&gt; 'Town hall clock', 'meta' =&gt; ['Scan', '10 points'], 'badges' =&gt; ['Counts'],
+            'status' =&gt; '1 warning', 'statusTone' =&gt; 'warning', 'statusTooltip' =&gt; 'The text is longer than 600 characters.'],
+        ['id' =&gt; 'l3', 'name' =&gt; 'Market square', 'meta' =&gt; ['Text'], 'status' =&gt; 'Ready', 'statusTone' =&gt; 'success'],
+    ]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -769,6 +756,28 @@ use Livewire\Component;
 
 class RouteStepsProblemsAndLocked extends Component
 {
+    public bool $live = true;
+
+    public ?string $current = null;
+
+    public array $steps = [
+        ['id' =&gt; 'l1', 'name' =&gt; 'Old gate', 'meta' =&gt; ['Question', '20 points'], 'badges' =&gt; ['Counts', 'Team'],
+            'status' =&gt; '2 problems', 'statusTone' =&gt; 'destructive', 'statusTooltip' =&gt; 'No location set. The photo is missing.'],
+        ['id' =&gt; 'l2', 'name' =&gt; 'Town hall clock', 'meta' =&gt; ['Scan', '10 points'], 'badges' =&gt; ['Counts'],
+            'status' =&gt; '1 warning', 'statusTone' =&gt; 'warning', 'statusTooltip' =&gt; 'The text is longer than 600 characters.'],
+        ['id' =&gt; 'l3', 'name' =&gt; 'Market square', 'meta' =&gt; ['Text'], 'status' =&gt; 'Ready', 'statusTone' =&gt; 'success'],
+    ];
+
+    public function select(string $id): void
+    {
+        $this-&gt;current = $id;
+    }
+
+    public function rows(): array
+    {
+        return array_map(fn (array $step) =&gt; $step + ['attributes' =&gt; ['wire:click' =&gt; "select('{$step['id']}')"]], $this-&gt;steps);
+    }
+
     public function render()
     {
         return view('livewire.route-steps-problems-and-locked');
@@ -776,39 +785,10 @@ class RouteStepsProblemsAndLocked extends Component
 }
 
 {{-- resources/views/livewire/route-steps-problems-and-locked.blade.php --}}
-&lt;section class="oc-block-route-steps oc-block-route-steps--locked" style="max-inline-size: 30rem" aria-labelledby="oc-rsteps-live-title"&gt;
-  &lt;div class="oc-block-route-steps-head"&gt;
-    &lt;h2 class="oc-block-route-steps-title" id="oc-rsteps-live-title"&gt;Steps of Route 1&lt;/h2&gt;
-    &lt;span class="oc-block-route-steps-count"&gt;3 steps&lt;/span&gt;
-    &lt;span class="oc-block-route-steps-lock"&gt;Order locked during the live round&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;ol class="oc-block-route-steps-list" aria-label="Steps in route order"&gt;
-    &lt;li class="oc-block-route-steps-item" data-id="l1"&gt;
-      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Old gate" disabled&gt;&lt;/button&gt;
-      &lt;button class="oc-block-route-steps-main" type="button"&gt;
-        &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Old gate&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Question&lt;/span&gt;&lt;span&gt;20 points&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-block-route-steps-badges"&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Counts&lt;/span&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Team&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;/button&gt;
-      &lt;span class="oc-block-route-steps-status oc-tooltip oc-tooltip--left" data-tooltip="No location set. The photo is missing." tabindex="0"&gt;&lt;span class="oc-badge oc-badge--destructive"&gt;2 problems&lt;/span&gt;&lt;/span&gt;
-    &lt;/li&gt;
-    &lt;li class="oc-block-route-steps-item" data-id="l2"&gt;
-      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Town hall clock" disabled&gt;&lt;/button&gt;
-      &lt;button class="oc-block-route-steps-main" type="button"&gt;
-        &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Town hall clock&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Scan&lt;/span&gt;&lt;span&gt;10 points&lt;/span&gt;&lt;/span&gt;&lt;span class="oc-block-route-steps-badges"&gt;&lt;span class="oc-badge oc-badge--outline"&gt;Counts&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;/button&gt;
-      &lt;span class="oc-block-route-steps-status oc-tooltip oc-tooltip--left" data-tooltip="The text is longer than 600 characters." tabindex="0"&gt;&lt;span class="oc-badge oc-badge--warning"&gt;1 warning&lt;/span&gt;&lt;/span&gt;
-    &lt;/li&gt;
-    &lt;li class="oc-block-route-steps-item" data-id="l3"&gt;
-      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Market square" disabled&gt;&lt;/button&gt;
-      &lt;button class="oc-block-route-steps-main" type="button"&gt;
-        &lt;span class="oc-block-route-steps-thumb oc-block-route-steps-thumb--num"&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-steps-text"&gt;&lt;span class="oc-block-route-steps-name"&gt;Market square&lt;/span&gt;&lt;span class="oc-block-route-steps-meta"&gt;&lt;span&gt;Text&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
-      &lt;/button&gt;
-      &lt;span class="oc-badge oc-badge--success oc-block-route-steps-status"&gt;Ready&lt;/span&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/section&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::block.route-steps title="Steps of Route 1" :count="count($steps).' steps'" :locked="$live" locked-label="Order locked during the live round"
+        :search="false" :actions="false" :selected="$current" title-id="oc-rsteps-live-title" style="max-inline-size: 30rem" :steps="$this-&gt;rows()" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

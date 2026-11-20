@@ -19,6 +19,8 @@ export interface BlockHeroCodeProps extends Omit<HTMLAttributes<HTMLElement>, "t
   eyebrow?: ReactNode;
   /** Display title; wrap a word in `<span className="oc-text-gradient">`. */
   title: ReactNode;
+  /** 0.17.0: heading level of the title (default 1; 2 for a block lower on the page, same look). */
+  headingLevel?: 1 | 2;
   lead?: ReactNode;
   /** Buttons (usually two `oc-btn--gradient` / `oc-btn--glass` links). */
   actions?: ReactNode;
@@ -34,15 +36,16 @@ export interface BlockHeroCodeProps extends Omit<HTMLAttributes<HTMLElement>, "t
 
 /** Landing hero: eyebrow, display title, lead, buttons and a code window with floating icon tiles. */
 export const BlockHeroCode = forwardRef<HTMLElement, BlockHeroCodeProps>(function BlockHeroCode(
-  { eyebrow, title, lead, actions, codeTitle, code, tiles = DEFAULT_TILES, codeDark = false, className, ...rest },
+  { eyebrow, title, headingLevel = 1, lead, actions, codeTitle, code, tiles = DEFAULT_TILES, codeDark = false, className, ...rest },
   ref,
 ) {
+  const Heading = headingLevel === 2 ? "h2" : "h1";
   return (
     <section ref={ref} className={cx("oc-section-pad", className)} {...rest}>
       <div className="oc-container oc-split">
         <div>
           {eyebrow != null && <p className="oc-eyebrow">{eyebrow}</p>}
-          <h1 className="oc-display">{title}</h1>
+          <Heading className="oc-display">{title}</Heading>
           {lead != null && <p className="oc-lead">{lead}</p>}
           {actions != null && <div className="flex flex-wrap gap-1 mt-2">{actions}</div>}
         </div>

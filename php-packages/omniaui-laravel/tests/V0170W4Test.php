@@ -93,6 +93,14 @@ BLADE);
         $this->assertStringContainsString('<div style="margin-block-start:1.25rem"><ul class="oc-site-footer__social"', $html);
     }
 
+    public function test_site_footer_newsletter_takes_form_and_input_attributes(): void
+    {
+        $html = $this->render('<x-oc::block.site-footer brand="Company 1" :newsletter="[\'attributes\' => [\'wire:submit\' => \'subscribe\'], \'inputAttributes\' => [\'wire:model\' => \'email\']]" />');
+        $this->assertElement($html, 'form', 'oc-site-footer__signup', ['wire:submit' => 'subscribe']);
+        $this->assertElement($html, 'input', 'oc-input', ['type' => 'email', 'wire:model' => 'email']);
+        $this->assertStringNotContainsString('name="_token"', $html);
+    }
+
     public function test_topbar(): void
     {
         $html = $this->render('<x-oc::topbar id="tb" brand="Company 1" logo="mdi:lightning-bolt" :links="[[\'label\' => \'Product\', \'href\' => \'#\', \'current\' => true], [\'label\' => \'GitHub\', \'href\' => \'#\', \'icon\' => \'mdi:github\']]"><x-slot:actions><a class="oc-btn oc-btn--sm" href="#">Get started</a></x-slot:actions></x-oc::topbar>');
@@ -155,7 +163,7 @@ BLADE);
             :question="[\'kicker\' => \'Question\', \'text\' => \'Which year?\', \'options\' => [\'1890\', \'1910\'], \'value\' => 1, \'name\' => \'answer\', \'hint\' => \'One try\', \'inputAttributes\' => [\'wire:model\' => \'picked\'], \'sendAttributes\' => [\'wire:click\' => \'send\']]"><p>Text</p></x-oc::block.step-view>');
 
         $this->assertElement($html, 'figure', 'oc-block-step-view-picture oc-block-step-view-picture--empty', ['data-number' => '3']);
-        $this->assertStringNotContainsString('<svg', $html);
+        $this->assertStringNotContainsString('viewBox="0 0 320 180"', $html); // no picture (icons are inline SVG webicons)
         $this->assertElement($html, 'figcaption', 'oc-block-step-view-badges');
         $this->assertStringNotContainsString('oc-block-step-view-blocks', $html);
         $this->assertStringContainsString('Find the year.', $html);
@@ -461,6 +469,16 @@ BLADE);
 
         $this->assertStringContainsString('<div class="oc-code-window oc-block-orbit-center"> Mine </div>', $html);
         $this->assertStringNotContainsString('oc-product-mark--xl', $html);
+    }
+
+    public function test_hero_orbit_false_leaves_out_eyebrow_lead_and_actions(): void
+    {
+        $html = $this->render('<x-oc::block.hero-orbit :eyebrow="false" :lead="false" :actions="false"><x-slot:title>Every module</x-slot:title></x-oc::block.hero-orbit>');
+
+        $this->assertStringNotContainsString('oc-eyebrow', $html);
+        $this->assertStringNotContainsString('oc-lead', $html);
+        $this->assertStringNotContainsString('oc-btn', $html);
+        $this->assertStringContainsString('Every module', $html);
     }
 
     public function test_auth_split_photo_and_logo_href(): void

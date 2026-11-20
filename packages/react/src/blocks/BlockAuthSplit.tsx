@@ -10,6 +10,8 @@ export interface BlockAuthSplitProps extends Omit<HTMLAttributes<HTMLDivElement>
   quote?: ReactNode;
   quoteAuthor?: ReactNode;
   title?: ReactNode;
+  /** 0.17.0: heading level of the title (default 1; 2 for a block lower on the page, same look). */
+  headingLevel?: 1 | 2;
   subtitle?: ReactNode;
   submitLabel?: ReactNode;
   forgotHref?: string;
@@ -30,6 +32,7 @@ export const BlockAuthSplit = forwardRef<HTMLDivElement, BlockAuthSplitProps>(fu
     quote,
     quoteAuthor,
     title = "Welcome back",
+    headingLevel = 1,
     subtitle,
     submitLabel = "Sign in",
     forgotHref = "#",
@@ -43,6 +46,7 @@ export const BlockAuthSplit = forwardRef<HTMLDivElement, BlockAuthSplitProps>(fu
   },
   ref,
 ) {
+  const Heading = headingLevel === 2 ? "h2" : "h1";
   const id = useId().replace(/:/g, "");
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,7 +71,7 @@ export const BlockAuthSplit = forwardRef<HTMLDivElement, BlockAuthSplitProps>(fu
       </aside>
       <div className="oc-block-authsplit-form">
         <form {...formProps} className="oc-block-authsplit-card" onSubmit={submit}>
-          <h1 className="oc-block-authsplit-title">{title}</h1>
+          <Heading className="oc-block-authsplit-title">{title}</Heading>
           {subtitle != null && <p className="oc-block-authsplit-subtitle">{subtitle}</p>}
           <div className="oc-block-authsplit-fields">
             <div className="oc-field">

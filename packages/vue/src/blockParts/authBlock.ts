@@ -31,6 +31,8 @@ export interface AuthBlockBaseProps {
   /** Icon tile above the title (webicon name); null hides it. Split layouts have none by default. */
   icon?: string | null
   title?: string
+  /** 0.17.0: heading level of the title (default 1; 2 when the form sits lower on a page). */
+  headingLevel?: 1 | 2
   text?: string
   /** Social button labels; empty hides them with the divider. Emits `social` (index). */
   social?: string[]

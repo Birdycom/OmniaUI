@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Color field", "category": "Forms", "description": "Native color picker next to a hex text input.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Color field", "category": "Forms", "description": "Native color picker next to a hex text input, with an optional contrast check: text on the color and the color on the light and the dark page.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Color field</h1>
         <p class="oc-hero-text">The native <code>&lt;input type="color"&gt;</code> plus a text field for the value. Keeping both in sync is the wrapper's job. <a href="../components.html">All components</a>.</p>
@@ -139,31 +139,12 @@ class ColorField extends Component
 // Pick the text color for a button in that color:
 const ink = pickOnColor(brand); // "#ffffff" or "#0b1020"</oc-code>
 <oc-code lang="vue">&lt;OcColorField v-model="brand" :contrast-against="[{ name: 'the light page', color: '#ffffff' }, { name: 'the dark page', color: '#0b1020' }]" /&gt;</oc-code>
-<oc-code lang="blade">&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;inline-size:100%"&gt;
-&lt;div class="oc-field"&gt;
-  &lt;label class="oc-field-label" for="oc-color-c1"&gt;Brand color&lt;/label&gt;
-  &lt;div class="oc-color-field"&gt;
-    &lt;input type="color" value="#2f80ed" aria-label="Pick a color"&gt;
-    &lt;input class="oc-input" type="text" id="oc-color-c1" value="#2f80ed" aria-label="Color value"&gt;
-    &lt;ul class="oc-color-field-report" aria-live="polite"&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #2f80ed; color: #0b1020"&gt;Aa&lt;/span&gt;&lt;span&gt;Text on this color&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;4.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #ffffff"&gt;&lt;i style="background: #2f80ed"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the light page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;3.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #0b1020"&gt;&lt;i style="background: #2f80ed"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the dark page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;4.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="oc-field"&gt;
-  &lt;label class="oc-field-label" for="oc-color-c2"&gt;Brand color&lt;/label&gt;
-  &lt;div class="oc-color-field"&gt;
-    &lt;input type="color" value="#f2c94c" aria-label="Pick a color"&gt;
-    &lt;input class="oc-input" type="text" id="oc-color-c2" value="#f2c94c" aria-label="Color value"&gt;
-    &lt;ul class="oc-color-field-report" aria-live="polite"&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #f2c94c; color: #0b1020"&gt;Aa&lt;/span&gt;&lt;span&gt;Text on this color&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;11.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-color-field-check" data-ok="false"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #ffffff"&gt;&lt;i style="background: #f2c94c"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the light page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;1.6:1 · Too low&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #0b1020"&gt;&lt;i style="background: #f2c94c"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the dark page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;11.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+<oc-code lang="blade">{{-- contrast-against: the color on each background (at least 3:1), plus text on the color (at least 4.5:1).
+     The server measures the first value; the script of the component measures again while the customer picks. --}}
+@php($pages = [['name' =&gt; 'the light page', 'color' =&gt; '#ffffff'], ['name' =&gt; 'the dark page', 'color' =&gt; '#0b1020']])
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;inline-size:100%"&gt;
+    &lt;x-oc::color-field label="Brand color" id="oc-color-c1" name="brand" value="#2f80ed" :contrast-against="$pages" /&gt;
+    &lt;x-oc::color-field label="Brand color" id="oc-color-c2" name="brand_alt" value="#f2c94c" :contrast-against="$pages" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -173,6 +154,19 @@ use Livewire\Component;
 
 class ColorFieldContrastCheck extends Component
 {
+    public string $brand = '#2f80ed';
+
+    /** The backgrounds the brand color must stand out on (at least 3:1). */
+    public array $pages = [
+        ['name' =&gt; 'the light page', 'color' =&gt; '#ffffff'],
+        ['name' =&gt; 'the dark page', 'color' =&gt; '#0b1020'],
+    ];
+
+    public function save(): void
+    {
+        $this-&gt;validate(['brand' =&gt; ['required', 'regex:/^#[0-9a-fA-F]{6}$/']]);
+    }
+
     public function render()
     {
         return view('livewire.color-field-contrast-check');
@@ -180,32 +174,11 @@ class ColorFieldContrastCheck extends Component
 }
 
 {{-- resources/views/livewire/color-field-contrast-check.blade.php --}}
-&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;inline-size:100%"&gt;
-&lt;div class="oc-field"&gt;
-  &lt;label class="oc-field-label" for="oc-color-c1"&gt;Brand color&lt;/label&gt;
-  &lt;div class="oc-color-field"&gt;
-    &lt;input type="color" value="#2f80ed" aria-label="Pick a color"&gt;
-    &lt;input class="oc-input" type="text" id="oc-color-c1" value="#2f80ed" aria-label="Color value"&gt;
-    &lt;ul class="oc-color-field-report" aria-live="polite"&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #2f80ed; color: #0b1020"&gt;Aa&lt;/span&gt;&lt;span&gt;Text on this color&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;4.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #ffffff"&gt;&lt;i style="background: #2f80ed"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the light page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;3.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #0b1020"&gt;&lt;i style="background: #2f80ed"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the dark page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;4.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="oc-field"&gt;
-  &lt;label class="oc-field-label" for="oc-color-c2"&gt;Brand color&lt;/label&gt;
-  &lt;div class="oc-color-field"&gt;
-    &lt;input type="color" value="#f2c94c" aria-label="Pick a color"&gt;
-    &lt;input class="oc-input" type="text" id="oc-color-c2" value="#f2c94c" aria-label="Color value"&gt;
-    &lt;ul class="oc-color-field-report" aria-live="polite"&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #f2c94c; color: #0b1020"&gt;Aa&lt;/span&gt;&lt;span&gt;Text on this color&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;11.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-color-field-check" data-ok="false"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #ffffff"&gt;&lt;i style="background: #f2c94c"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the light page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;1.6:1 · Too low&lt;/span&gt;&lt;/li&gt;
-      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #0b1020"&gt;&lt;i style="background: #f2c94c"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the dark page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;11.9:1 · OK&lt;/span&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;</oc-code>
+&lt;form wire:submit="save" style="display:grid;gap:1rem;max-inline-size:20rem"&gt;
+    {{-- wire:model.blur: the server measures the contrast again when the field loses focus --}}
+    &lt;x-oc::color-field label="Brand color" id="brand" name="brand" :value="$brand" :contrast-against="$pages" wire:model.blur="brand" /&gt;
+    &lt;x-oc::button type="submit"&gt;Save&lt;/x-oc::button&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

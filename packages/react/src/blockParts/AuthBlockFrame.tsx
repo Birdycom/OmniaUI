@@ -32,6 +32,8 @@ export interface AuthBlockBaseProps extends Omit<HTMLAttributes<HTMLDivElement>,
   /** Icon tile above the title: a webicon name or a node; `false` hides it. */
   icon?: ReactNode | false;
   title?: ReactNode;
+  /** 0.17.0: heading level of the title (default 1; 2 renders an `h2` when the form sits lower on a page). */
+  headingLevel?: 1 | 2;
   text?: ReactNode;
   /** Social buttons (labels); empty hides them with the divider. */
   social?: ReactNode[];
@@ -72,6 +74,7 @@ export const AuthBlockFrame = forwardRef<HTMLDivElement, FrameProps>(function Au
     icon,
     defaultIcon,
     title,
+    headingLevel = 1,
     text,
     social,
     socialPosition = "top",
@@ -91,6 +94,7 @@ export const AuthBlockFrame = forwardRef<HTMLDivElement, FrameProps>(function Au
   },
   ref,
 ) {
+  const Heading = headingLevel === 2 ? "h2" : "h1";
   const tile = icon === false ? null : icon !== undefined ? icon : layout === "split" ? null : defaultIcon;
   const socialRow = social && social.length > 0 ? (
     <div className="oc-block-authsocial">
@@ -111,7 +115,7 @@ export const AuthBlockFrame = forwardRef<HTMLDivElement, FrameProps>(function Au
       {tile != null && <span className="oc-block-authcard-logo">{webiconNode(tile)}</span>}
       {(title != null || text != null) && (
         <div className="oc-block-authcard-head">
-          {title != null && <h1 className="oc-block-authcard-title">{title}</h1>}
+          {title != null && <Heading className="oc-block-authcard-title">{title}</Heading>}
           {text != null && <p className="oc-block-authcard-text">{text}</p>}
         </div>
       )}

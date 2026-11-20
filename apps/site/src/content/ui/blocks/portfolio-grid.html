@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Portfolio grid Block", "category": "Marketing", "description": "\"Our work\" section with heading, lead and a grid of project cards.", "nav": "Portfolio grid", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Portfolio grid Block", "category": "Marketing", "description": "An \"Our work\" section for a company site: heading, short lead, a link to all projects and a responsive grid of project cards with a preview each.", "nav": "Portfolio grid", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/blocks/portfolio-grid.html | Map: hero -> demos (three cards, two wide cards) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Portfolio grid</h1>
@@ -73,40 +73,37 @@ const projects = [
     &lt;template #link&gt;&lt;OcLinkArrow href="#projects"&gt;All projects&lt;/OcLinkArrow&gt;&lt;/template&gt;
   &lt;/OcBlockPortfolioGrid&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::block.portfolio-grid&gt;
-    &lt;x-slot:eyebrow&gt;Our work&lt;/x-slot:eyebrow&gt;
-    &lt;x-slot:title&gt;Selected projects&lt;/x-slot:title&gt;
-    &lt;x-slot:lead&gt;Websites and apps we designed, built and still maintain.&lt;/x-slot:lead&gt;
-    &lt;x-slot:link&gt;All projects&lt;/x-slot:link&gt;
-    &lt;x-oc::project-card class="oc-accent--green" href="#p1" name="Customer 1" type="Website" meta="Food &amp;amp; retail &amp;middot; Antwerp" image-alt="Customer 1, screenshot" /&gt;
-    &lt;x-oc::project-card class="oc-accent--violet" href="#p2" name="Customer 2" type="Web app" meta="Interior design &amp;middot; Ghent" image-alt="Customer 2, screenshot" /&gt;
-    &lt;x-oc::project-card class="oc-accent--orange" href="#p3" name="Customer 3" type="Desktop tool" meta="Transport &amp;middot; Rotterdam" image-alt="Customer 3, screenshot" /&gt;
-&lt;/x-oc::block.portfolio-grid&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.portfolio-grid eyebrow="Our work" title="Selected projects" lead="Websites and apps we designed, built and still maintain."
+    link="All projects" link-href="#projects" :projects="[
+        ['href' =&gt; '#p1', 'name' =&gt; 'Customer 1', 'type' =&gt; 'Website', 'meta' =&gt; 'Food &amp; retail · Antwerp', 'accent' =&gt; 'green', 'imageAlt' =&gt; 'Customer 1, screenshot'],
+        ['href' =&gt; '#p2', 'name' =&gt; 'Customer 2', 'type' =&gt; 'Web app', 'meta' =&gt; 'Interior design · Ghent', 'accent' =&gt; 'violet', 'imageAlt' =&gt; 'Customer 2, screenshot'],
+        ['href' =&gt; '#p3', 'name' =&gt; 'Customer 3', 'type' =&gt; 'Desktop tool', 'meta' =&gt; 'Transport · Rotterdam', 'accent' =&gt; 'orange', 'imageAlt' =&gt; 'Customer 3, screenshot'],
+    ]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
 use Livewire\Component;
 
-class PortfolioGrid extends Component
+class PortfolioGridSelected extends Component
 {
+    /** @var list&lt;array&lt;string, string&gt;&gt; */
+    public array $projects = [
+        ['href' =&gt; '/work/customer-1', 'name' =&gt; 'Customer 1', 'type' =&gt; 'Website', 'meta' =&gt; 'Food &amp; retail · Antwerp', 'accent' =&gt; 'green', 'imageAlt' =&gt; 'Customer 1, screenshot'],
+        ['href' =&gt; '/work/customer-2', 'name' =&gt; 'Customer 2', 'type' =&gt; 'Web app', 'meta' =&gt; 'Interior design · Ghent', 'accent' =&gt; 'violet', 'imageAlt' =&gt; 'Customer 2, screenshot'],
+        ['href' =&gt; '/work/customer-3', 'name' =&gt; 'Customer 3', 'type' =&gt; 'Desktop tool', 'meta' =&gt; 'Transport · Rotterdam', 'accent' =&gt; 'orange', 'imageAlt' =&gt; 'Customer 3, screenshot'],
+    ];
+
     public function render()
     {
-        return view('livewire.portfolio-grid');
+        return view('livewire.portfolio-grid-selected');
     }
 }
 
-{{-- resources/views/livewire/portfolio-grid.blade.php --}}
+{{-- resources/views/livewire/portfolio-grid-selected.blade.php --}}
 &lt;div&gt;
-    &lt;x-oc::block.portfolio-grid&gt;
-        &lt;x-slot:eyebrow&gt;Our work&lt;/x-slot:eyebrow&gt;
-        &lt;x-slot:title&gt;Selected projects&lt;/x-slot:title&gt;
-        &lt;x-slot:lead&gt;Websites and apps we designed, built and still maintain.&lt;/x-slot:lead&gt;
-        &lt;x-slot:link&gt;All projects&lt;/x-slot:link&gt;
-        &lt;x-oc::project-card class="oc-accent--green" href="#p1" name="Customer 1" type="Website" meta="Food &amp;amp; retail &amp;middot; Antwerp" image-alt="Customer 1, screenshot" /&gt;
-        &lt;x-oc::project-card class="oc-accent--violet" href="#p2" name="Customer 2" type="Web app" meta="Interior design &amp;middot; Ghent" image-alt="Customer 2, screenshot" /&gt;
-        &lt;x-oc::project-card class="oc-accent--orange" href="#p3" name="Customer 3" type="Desktop tool" meta="Transport &amp;middot; Rotterdam" image-alt="Customer 3, screenshot" /&gt;
-    &lt;/x-oc::block.portfolio-grid&gt;
+    &lt;x-oc::block.portfolio-grid eyebrow="Our work" title="Selected projects" lead="Websites and apps we designed, built and still maintain."
+        link="All projects" link-href="/work" :projects="$projects" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc"><code>--two</code>: bigger cards, two per row, for a few important projects.</p>
@@ -160,19 +157,11 @@ const projects = [
     &lt;template #link&gt;&lt;OcLinkArrow href="#cases" tone="muted"&gt;All cases&lt;/OcLinkArrow&gt;&lt;/template&gt;
   &lt;/OcBlockPortfolioGrid&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">{{-- Without eyebrow and lead, with a muted link: the block markup, with the components inside --}}
-&lt;section class="oc-block-portfolio oc-block-portfolio--two oc-section-pad" aria-labelledby="oc-portfolio-two-title"&gt;
-    &lt;div class="oc-container"&gt;
-        &lt;div class="oc-block-portfolio-head"&gt;
-            &lt;h2 class="oc-display oc-display--md" id="oc-portfolio-two-title"&gt;Case studies&lt;/h2&gt;
-            &lt;x-oc::link-arrow href="#cases" tone="muted"&gt;All cases&lt;/x-oc::link-arrow&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-block-portfolio-grid"&gt;
-            &lt;x-oc::project-card class="oc-accent--cyan" href="#c1" name="Customer 4" type="Platform" meta="Healthcare &amp;middot; 14 locations" image-alt="Customer 4, screenshot" more="Read the case" /&gt;
-            &lt;x-oc::project-card class="oc-accent--red" href="#c2" name="Customer 5" type="Mobile + web" meta="Events &amp;middot; Brussels" image-alt="Customer 5, screenshot" more="Read the case" /&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.portfolio-grid two :eyebrow="false" title="Case studies" :lead="false" link="All cases" link-href="#cases" link-tone="muted"
+    title-id="oc-portfolio-two-title" :projects="[
+        ['href' =&gt; '#c1', 'name' =&gt; 'Customer 4', 'type' =&gt; 'Platform', 'meta' =&gt; 'Healthcare · 14 locations', 'accent' =&gt; 'cyan', 'imageAlt' =&gt; 'Customer 4, screenshot', 'more' =&gt; 'Read the case'],
+        ['href' =&gt; '#c2', 'name' =&gt; 'Customer 5', 'type' =&gt; 'Mobile + web', 'meta' =&gt; 'Events · Brussels', 'accent' =&gt; 'red', 'imageAlt' =&gt; 'Customer 5, screenshot', 'more' =&gt; 'Read the case'],
+    ]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -181,6 +170,12 @@ use Livewire\Component;
 
 class PortfolioGridTwo extends Component
 {
+    /** @var list&lt;array&lt;string, string&gt;&gt; */
+    public array $cases = [
+        ['href' =&gt; '/cases/customer-4', 'name' =&gt; 'Customer 4', 'type' =&gt; 'Platform', 'meta' =&gt; 'Healthcare · 14 locations', 'accent' =&gt; 'cyan', 'imageAlt' =&gt; 'Customer 4, screenshot', 'more' =&gt; 'Read the case'],
+        ['href' =&gt; '/cases/customer-5', 'name' =&gt; 'Customer 5', 'type' =&gt; 'Mobile + web', 'meta' =&gt; 'Events · Brussels', 'accent' =&gt; 'red', 'imageAlt' =&gt; 'Customer 5, screenshot', 'more' =&gt; 'Read the case'],
+    ];
+
     public function render()
     {
         return view('livewire.portfolio-grid-two');
@@ -188,19 +183,10 @@ class PortfolioGridTwo extends Component
 }
 
 {{-- resources/views/livewire/portfolio-grid-two.blade.php --}}
-{{-- Without eyebrow and lead, with a muted link: the block markup, with the components inside --}}
-&lt;section class="oc-block-portfolio oc-block-portfolio--two oc-section-pad" aria-labelledby="oc-portfolio-two-title"&gt;
-    &lt;div class="oc-container"&gt;
-        &lt;div class="oc-block-portfolio-head"&gt;
-            &lt;h2 class="oc-display oc-display--md" id="oc-portfolio-two-title"&gt;Case studies&lt;/h2&gt;
-            &lt;x-oc::link-arrow href="#cases" tone="muted"&gt;All cases&lt;/x-oc::link-arrow&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-block-portfolio-grid"&gt;
-            &lt;x-oc::project-card class="oc-accent--cyan" href="#c1" name="Customer 4" type="Platform" meta="Healthcare &amp;middot; 14 locations" image-alt="Customer 4, screenshot" more="Read the case" /&gt;
-            &lt;x-oc::project-card class="oc-accent--red" href="#c2" name="Customer 5" type="Mobile + web" meta="Events &amp;middot; Brussels" image-alt="Customer 5, screenshot" more="Read the case" /&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::block.portfolio-grid two :eyebrow="false" title="Case studies" :lead="false" link="All cases" link-href="/cases" link-tone="muted"
+        title-id="oc-portfolio-two-title" :projects="$cases" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

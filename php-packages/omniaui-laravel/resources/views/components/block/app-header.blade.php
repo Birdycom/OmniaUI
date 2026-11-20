@@ -5,15 +5,15 @@
        .oc-block-appbar-actions: Right-aligned actions (theme switch, switchers, user menu)
        .oc-block-appbar-title: Optional page title
      Slots: toggle, module nav, actions (theme switch, workspace select, user dropdown)
-     Blade: <x-oc::block.app-header> - attributes merge onto the root element.
+     Blade: <x-oc::block.app-header> - attributes merge onto the root element; props: toggleFor => oc-appbar-toggle.
      Blade slots (each falls back to the snippet content when empty): toggle, nav, actions.
 --}}
-@props(['toggle' => null, 'nav' => null, 'actions' => null])
+@props(['toggleFor' => 'oc-appbar-toggle', 'toggle' => null, 'nav' => null, 'actions' => null])
 <header {{ $attributes->merge(['class' => 'oc-block-appbar']) }}>
   @if (isset($toggle) && trim((string) $toggle) !== '')
       {{ $toggle }}
   @else
-  <label class="oc-btn oc-btn--ghost oc-btn--icon" for="oc-appbar-toggle" title="Toggle sidebar"><svg data-icon="mdi:menu" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg><span class="oc-visually-hidden">Toggle sidebar</span></label>
+  <label class="oc-btn oc-btn--ghost oc-btn--icon" for="{{ $toggleFor }}" title="Toggle sidebar"><svg data-icon="mdi:menu" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg><span class="oc-visually-hidden">Toggle sidebar</span></label>
   @endif
   <nav class="oc-block-appbar-nav" aria-label="Module navigation">
       @if (isset($nav) && trim((string) $nav) !== '')

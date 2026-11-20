@@ -2,13 +2,14 @@ import { forwardRef, useId } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
 import type { BreadcrumbItemData } from "../components/Breadcrumb";
+import { webiconNode } from "../components/Webicon";
 
 export interface BlockAppShellProps extends HTMLAttributes<HTMLDivElement> {
   /** A `<Sidebar>`; rendered as the first grid child. */
   sidebar: ReactNode;
   /** A `<BlockAppHeader toggleFor={toggleId}>`. */
   header?: ReactNode;
-  /** Breadcrumb strip under the header bar. */
+  /** Breadcrumb strip under the header bar; `icon` (a webicon name or a node) is drawn before the label, as in the snippet. */
   breadcrumbs?: BreadcrumbItemData[];
   /** Id of the collapse checkbox; pass the same value to `BlockAppHeader`'s `toggleFor`. */
   toggleId?: string;
@@ -40,9 +41,9 @@ export const BlockAppShell = forwardRef<HTMLDivElement, BlockAppShellProps>(func
               <ol className="oc-breadcrumb oc-breadcrumb--chevron">
                 {breadcrumbs.map((item, i) =>
                   item.href && i < breadcrumbs.length - 1 ? (
-                    <li className="oc-breadcrumb-item" key={i}><a href={item.href}>{item.label}</a></li>
+                    <li className="oc-breadcrumb-item" key={i}><a href={item.href}>{webiconNode(item.icon)}{item.label}</a></li>
                   ) : (
-                    <li className="oc-breadcrumb-item" aria-current="page" key={i}>{item.label}</li>
+                    <li className="oc-breadcrumb-item" aria-current="page" key={i}>{webiconNode(item.icon)}{item.label}</li>
                   ),
                 )}
               </ol>

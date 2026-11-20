@@ -18,7 +18,7 @@
   <div class="oc-container oc-split">
     <div>
       <p class="oc-eyebrow">Software development &middot; for small companies</p>
-      <h1 class="oc-display">One app for quotes, orders and <span class="oc-text-gradient">invoices</span>.</h1>
+      <h2 class="oc-display">One app for quotes, orders and <span class="oc-text-gradient">invoices</span>.</h2>
       <p class="oc-lead">From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins.</p>
       <div class="flex flex-wrap gap-1 mt-2">
         <a class="oc-btn oc-btn--gradient oc-btn--lg" href="#software">View our software &rarr;</a>
@@ -45,7 +45,7 @@
   &lt;div class="oc-container oc-split"&gt;
     &lt;div&gt;
       &lt;p class="oc-eyebrow"&gt;Software development &amp;middot; for small companies&lt;/p&gt;
-      &lt;h1 class="oc-display"&gt;One app for quotes, orders and &lt;span class="oc-text-gradient"&gt;invoices&lt;/span&gt;.&lt;/h1&gt;
+      &lt;h2 class="oc-display"&gt;One app for quotes, orders and &lt;span class="oc-text-gradient"&gt;invoices&lt;/span&gt;.&lt;/h2&gt;
       &lt;p class="oc-lead"&gt;From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins.&lt;/p&gt;
       &lt;div class="flex flex-wrap gap-1 mt-2"&gt;
         &lt;a class="oc-btn oc-btn--gradient oc-btn--lg" href="#software"&gt;View our software &amp;rarr;&lt;/a&gt;
@@ -77,7 +77,7 @@ const code = `return [
 
 export function Example() {
   return (
-    &lt;BlockHeroCode
+    &lt;BlockHeroCode headingLevel={2}
       eyebrow="Software development · for small companies"
       title={&lt;&gt;One app for quotes, orders and &lt;span className="oc-text-gradient"&gt;invoices&lt;/span&gt;.&lt;/&gt;}
       lead="From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins."
@@ -101,7 +101,7 @@ const code = `return [
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;OcBlockHeroCode
+  &lt;OcBlockHeroCode :heading-level="2"
     eyebrow="Software development · for small companies"
     title="One app for quotes, orders and"
     highlight="invoices"
@@ -116,29 +116,23 @@ const code = `return [
     &lt;/template&gt;
   &lt;/OcBlockHeroCode&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">{{-- the default slot replaces the inside of the section (empty: the snippet content) --}}
-&lt;x-oc::block.hero-code&gt;
-    &lt;div class="oc-container oc-split"&gt;
-        &lt;div&gt;
-            &lt;p class="oc-eyebrow"&gt;Software development · for small companies&lt;/p&gt;
-            &lt;h1 class="oc-display"&gt;One app for quotes, orders and &lt;span class="oc-text-gradient"&gt;invoices&lt;/span&gt;.&lt;/h1&gt;
-            &lt;p class="oc-lead"&gt;From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins.&lt;/p&gt;
-            &lt;div class="flex flex-wrap gap-1 mt-2"&gt;
-                &lt;x-oc::button variant="gradient" size="lg" href="#software"&gt;View our software →&lt;/x-oc::button&gt;
-                &lt;x-oc::button variant="glass" size="lg" href="#contact"&gt;Discuss your project&lt;/x-oc::button&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="relative p-2"&gt;
-            &lt;div class="oc-code-window oc-code-window--dark"&gt;
-                &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;projects.php&lt;/span&gt;&lt;/div&gt;
-&lt;pre class="oc-code-window__body"&gt;return [
-  'erp'    =&gt; Erp::class,
-  'design' =&gt; OmniaCSS::class,
-  'next'   =&gt; YourProject::class,
-];&lt;/pre&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
+<oc-code lang="blade">@php
+    $code = &lt;&lt;&lt;'PHP'
+    return [
+      'erp'    =&gt; Erp::class,
+      'design' =&gt; OmniaCSS::class,
+      'next'   =&gt; YourProject::class,
+    ];
+    PHP;
+@endphp
+&lt;x-oc::block.hero-code heading-level="2" eyebrow="Software development · for small companies"
+    lead="From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins."
+    code-title="projects.php" :code="$code"&gt;
+    &lt;x-slot:title&gt;One app for quotes, orders and &lt;span class="oc-text-gradient"&gt;invoices&lt;/span&gt;.&lt;/x-slot:title&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button variant="gradient" size="lg" href="#software"&gt;View our software →&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="glass" size="lg" href="#contact"&gt;Discuss your project&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
 &lt;/x-oc::block.hero-code&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -148,6 +142,14 @@ use Livewire\Component;
 
 class HeroCodeHeroWithCodeWindow extends Component
 {
+    public string $code = &lt;&lt;&lt;'PHP'
+        return [
+          'erp'    =&gt; Erp::class,
+          'design' =&gt; OmniaCSS::class,
+          'next'   =&gt; YourProject::class,
+        ];
+        PHP;
+
     public function render()
     {
         return view('livewire.hero-code-hero-with-code-window');
@@ -156,29 +158,14 @@ class HeroCodeHeroWithCodeWindow extends Component
 
 {{-- resources/views/livewire/hero-code-hero-with-code-window.blade.php --}}
 &lt;div&gt;
-    {{-- the default slot replaces the inside of the section (empty: the snippet content) --}}
-    &lt;x-oc::block.hero-code&gt;
-        &lt;div class="oc-container oc-split"&gt;
-            &lt;div&gt;
-                &lt;p class="oc-eyebrow"&gt;Software development · for small companies&lt;/p&gt;
-                &lt;h1 class="oc-display"&gt;One app for quotes, orders and &lt;span class="oc-text-gradient"&gt;invoices&lt;/span&gt;.&lt;/h1&gt;
-                &lt;p class="oc-lead"&gt;From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins.&lt;/p&gt;
-                &lt;div class="flex flex-wrap gap-1 mt-2"&gt;
-                    &lt;x-oc::button variant="gradient" size="lg" href="#software"&gt;View our software →&lt;/x-oc::button&gt;
-                    &lt;x-oc::button variant="glass" size="lg" href="#contact"&gt;Discuss your project&lt;/x-oc::button&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class="relative p-2"&gt;
-                &lt;div class="oc-code-window oc-code-window--dark"&gt;
-                    &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;projects.php&lt;/span&gt;&lt;/div&gt;
-    &lt;pre class="oc-code-window__body"&gt;return [
-      'erp'    =&gt; Erp::class,
-      'design' =&gt; OmniaCSS::class,
-      'next'   =&gt; YourProject::class,
-    ];&lt;/pre&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
+    &lt;x-oc::block.hero-code heading-level="2" eyebrow="Software development · for small companies"
+        lead="From a modular ERP to a custom app for a single customer: we design, build and maintain web applications, desktop tools and plugins."
+        code-title="projects.php" :code="$code"&gt;
+        &lt;x-slot:title&gt;One app for quotes, orders and &lt;span class="oc-text-gradient"&gt;invoices&lt;/span&gt;.&lt;/x-slot:title&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button variant="gradient" size="lg" href="#software"&gt;View our software →&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="glass" size="lg" href="#contact"&gt;Discuss your project&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
     &lt;/x-oc::block.hero-code&gt;
 &lt;/div&gt;</oc-code>
 </oc-demo>

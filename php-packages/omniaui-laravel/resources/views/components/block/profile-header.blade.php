@@ -5,11 +5,15 @@
        -tabs, -tab: links (aria-current="page" marks the active one) or, for tabs on the page itself, labels with a
        radio; then -panels holds one -panel per tab (same order) and the checked tab shows its panel (CSS only).
        -grid / -thumb: the cards in the demo panels.
-     Blade: <x-oc::block.profile-header> - attributes merge onto the root element.
+     Blade: <x-oc::block.profile-header> - attributes merge onto the root element; props: nameId => oc-profile-name.
      Blade slots (each falls back to the snippet content when empty): avatar, name, meta, bio, actions, tabs, default.
+     Props (0.17.0, optional): heading-level (1 default; 2 renders the title as an h2 with the same look).
 --}}
-@props(['avatar' => null, 'name' => null, 'meta' => null, 'bio' => null, 'actions' => null, 'tabs' => null])
-<section {{ $attributes->merge(['class' => 'oc-block-profile oc-accent--violet', 'aria-labelledby' => 'oc-profile-name']) }}>
+@props(['nameId' => 'oc-profile-name', 'headingLevel' => 1, 'avatar' => null, 'name' => null, 'meta' => null, 'bio' => null, 'actions' => null, 'tabs' => null])
+@php
+    $ocHeading = (int) $headingLevel === 2 ? 'h2' : 'h1';
+@endphp
+<section {{ $attributes->merge(['class' => 'oc-block-profile oc-accent--violet', 'aria-labelledby' => $nameId]) }}>
   <div class="oc-block-profile-banner" aria-hidden="true"></div>
   <div class="oc-block-profile-bar">
     <span class="oc-avatar oc-block-profile-avatar" aria-hidden="true">
@@ -20,13 +24,13 @@
         @endif
     </span>
     <div class="oc-block-profile-info">
-      <h1 class="oc-block-profile-name" id="oc-profile-name">
+      <{{ $ocHeading }} class="oc-block-profile-name" id="{{ $nameId }}">
           @if (isset($name) && trim((string) $name) !== '')
               {{ $name }}
           @else
           Company 1
           @endif
-      </h1>
+      </{{ $ocHeading }}>
       <p class="oc-block-profile-meta">
           @if (isset($meta) && trim((string) $meta) !== '')
               {{ $meta }}

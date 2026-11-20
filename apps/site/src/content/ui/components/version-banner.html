@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Version banner", "category": "App UX", "description": "\"New version available - reload\" chip for long-running apps.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Version banner", "category": "App UX", "description": "\"New version available - reload\" chip for long-running apps, in a warning, info or success tone, with a reload link, a button or a link of your own.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/version-banner.html | Map: hero -> chip in a header demo -> tones demo -> usage -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Version banner</h1>
@@ -103,13 +103,10 @@ class VersionBanner extends Component
 export function Example() {
   return (
     &lt;&gt;
-      &lt;VersionBanner version="v0.6.0" tone="info" text="Update ready" actionLabel="Install" onReload={() =&gt; location.reload()} /&gt;
-      {/* the action is a reload (link or onReload button): for a link elsewhere, write the markup */}
-      &lt;div className="oc-version-banner oc-version-banner--success" role="status"&gt;
-        &lt;span className="oc-version-banner-dot" aria-hidden="true" /&gt;
-        &lt;span className="oc-version-banner-text"&gt;Updated to v0.6.0&lt;/span&gt;
-        &lt;a className="oc-version-banner-action" href="/changelog"&gt;What's new&lt;/a&gt;
-      &lt;/div&gt;
+      {/* onReload: the action is a button */}
+      &lt;VersionBanner version="v0.6.0" tone="info" text="Update ready" short="" actionLabel="Install" onReload={() =&gt; location.reload()} /&gt;
+      {/* href: the action links elsewhere, here to the release notes */}
+      &lt;VersionBanner version="v0.6.0" tone="success" text="Updated to v0.6.0" short="" actionLabel="What's new" href="/changelog" /&gt;
     &lt;/&gt;
   );
 }</oc-code>
@@ -120,21 +117,15 @@ const install = () =&gt; location.reload();
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;OcVersionBanner version="v0.6.0" tone="info" action-label="Install" :on-reload="install"&gt;Update ready&lt;/OcVersionBanner&gt;
-  &lt;!-- the action is a reload (link or on-reload button): for a link elsewhere, write the markup --&gt;
-  &lt;div class="oc-version-banner oc-version-banner--success" role="status"&gt;
-    &lt;span class="oc-version-banner-dot" aria-hidden="true"&gt;&lt;/span&gt;
-    &lt;span class="oc-version-banner-text"&gt;Updated to v0.6.0&lt;/span&gt;
-    &lt;a class="oc-version-banner-action" href="/changelog"&gt;What's new&lt;/a&gt;
-  &lt;/div&gt;
+  &lt;!-- on-reload: the action is a button --&gt;
+  &lt;OcVersionBanner version="v0.6.0" tone="info" short="" action-label="Install" :on-reload="install"&gt;Update ready&lt;/OcVersionBanner&gt;
+  &lt;!-- href: the action links elsewhere, here to the release notes --&gt;
+  &lt;OcVersionBanner version="v0.6.0" tone="success" short="" action-label="What's new" href="/changelog"&gt;Updated to v0.6.0&lt;/OcVersionBanner&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::version-banner version="v0.6.0" tone="info" action="Install"&gt;Update ready&lt;/x-oc::version-banner&gt;
-{{-- the action is a reload link: for a link elsewhere, write the markup --}}
-&lt;div class="oc-version-banner oc-version-banner--success" role="status"&gt;
-    &lt;span class="oc-version-banner-dot" aria-hidden="true"&gt;&lt;/span&gt;
-    &lt;span class="oc-version-banner-text"&gt;Updated to v0.6.0&lt;/span&gt;
-    &lt;a class="oc-version-banner-action" href="/changelog"&gt;What's new&lt;/a&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- button: the action is a &lt;button&gt;; action-attributes go on it (here an onclick) --}}
+&lt;x-oc::version-banner version="v0.6.0" tone="info" short="" action="Install" button :action-attributes="['onclick' =&gt; 'location.reload()']"&gt;Update ready&lt;/x-oc::version-banner&gt;
+{{-- href: the action links elsewhere, here to the release notes --}}
+&lt;x-oc::version-banner version="v0.6.0" tone="success" short="" action="What's new" href="/changelog"&gt;Updated to v0.6.0&lt;/x-oc::version-banner&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -143,6 +134,16 @@ use Livewire\Component;
 
 class VersionBannerTones extends Component
 {
+    public string $version = 'v0.6.0';
+
+    public bool $installed = false;
+
+    public function install(): void
+    {
+        // Install the update here; afterwards the banner turns green and links to the release notes.
+        $this-&gt;installed = true;
+    }
+
     public function render()
     {
         return view('livewire.version-banner-tones');
@@ -151,13 +152,11 @@ class VersionBannerTones extends Component
 
 {{-- resources/views/livewire/version-banner-tones.blade.php --}}
 &lt;div&gt;
-    &lt;x-oc::version-banner version="v0.6.0" tone="info" :action="'Install'"&gt;Update ready&lt;/x-oc::version-banner&gt;
-    {{-- the action is a reload link: for a link elsewhere, write the markup --}}
-    &lt;div class="oc-version-banner oc-version-banner--success" role="status"&gt;
-        &lt;span class="oc-version-banner-dot" aria-hidden="true"&gt;&lt;/span&gt;
-        &lt;span class="oc-version-banner-text"&gt;Updated to v0.6.0&lt;/span&gt;
-        &lt;a class="oc-version-banner-action" href="/changelog"&gt;What's new&lt;/a&gt;
-    &lt;/div&gt;
+    @if (! $installed)
+        &lt;x-oc::version-banner :version="$version" tone="info" short="" :action="'Install'" button :action-attributes="['wire:click' =&gt; 'install']"&gt;Update ready&lt;/x-oc::version-banner&gt;
+    @else
+        &lt;x-oc::version-banner :version="$version" tone="success" short="" action="What's new" href="/changelog"&gt;Updated to {{ $version }}&lt;/x-oc::version-banner&gt;
+    @endif
 &lt;/div&gt;</oc-code>
 </oc-demo>
 

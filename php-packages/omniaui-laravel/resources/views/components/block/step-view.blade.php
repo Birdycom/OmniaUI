@@ -18,10 +18,11 @@
        result ['picked' => i, 'correct' => i] (locks the answers and marks them), feedback (shown in place of the send button once
        there is a result), resultLabels ['correct' => .., 'wrong' => ..], inputAttributes (on every radio, e.g. wire:model),
        sendAttributes (on the send button, e.g. wire:click). Default slot: the text of the step.
+       feedback slot (0.17.0): the feedback once there is a result (an <x-oc::alert>); wins over question['feedback'].
 --}}
 @props([
     'title' => null, 'blocks' => null, 'question' => null, 'back' => null, 'distance' => null, 'picture' => null, 'number' => null,
-    'badges' => null, 'place' => null, 'task' => null, 'titleId' => 'oc-stepview-title',
+    'badges' => null, 'place' => null, 'task' => null, 'titleId' => 'oc-stepview-title', 'feedback' => null,
 ])
 @php
     $filled = fn ($v) => $v !== null && $v !== false && trim((string) $v) !== '';
@@ -31,12 +32,12 @@
   @if ($back === false && $distance === false)
   @elseif ($back !== null || $distance !== null)
   <div class="oc-block-step-view-top">
-    @if ($filled($back)){{ $back }}@elseif ($back === false)<span></span>@else<button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"><iconify-icon icon="mdi:arrow-left" aria-hidden="true"></iconify-icon> All steps</button>@endif
+    @if ($filled($back)){{ $back }}@elseif ($back === false)<span></span>@else<button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"><x-oc::webicon name="mdi:arrow-left" bare fallback="iconify" /> All steps</button>@endif
     @if ($filled($distance)){{ $distance }}@elseif ($distance !== false)<span class="oc-badge oc-badge--outline">12 m away</span>@endif
   </div>
   @else
   <div class="oc-block-step-view-top">
-    <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"><iconify-icon icon="mdi:arrow-left" aria-hidden="true"></iconify-icon> All steps</button>
+    <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"><x-oc::webicon name="mdi:arrow-left" bare fallback="iconify" /> All steps</button>
     <span class="oc-badge oc-badge--outline">12 m away</span>
   </div>
   @endif
@@ -60,7 +61,7 @@
       @endif
   </h2>
   @if ($place !== false)
-  <p class="oc-block-step-view-place"><iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"></iconify-icon> {{ $filled($place) ? $place : 'Market street 1' }}</p>
+  <p class="oc-block-step-view-place"><x-oc::webicon name="mdi:map-marker-outline" bare fallback="iconify" /> {{ $filled($place) ? $place : 'Market street 1' }}</p>
   @endif
   <div class="oc-block-step-view-text">
       @if (! $slot->isEmpty())
@@ -70,7 +71,7 @@
       @endif
   </div>
   @if ($task !== false)
-  <p class="oc-block-step-view-task"><iconify-icon icon="mdi:target" aria-hidden="true"></iconify-icon> {{ $filled($task) ? $task : 'Find the year carved above the door.' }}</p>
+  <p class="oc-block-step-view-task"><x-oc::webicon name="mdi:target" bare fallback="iconify" /> {{ $filled($task) ? $task : 'Find the year carved above the door.' }}</p>
   @endif
   @if ($blocks !== false)
   <div class="oc-block-step-view-blocks">
@@ -82,7 +83,7 @@
       <div class="oc-collapsible-content">The year is written in Roman numerals.</div>
     </details>
     <div class="oc-alert oc-alert--warning" role="note"><p class="oc-alert-description">Mind the traffic when you cross to the door.</p></div>
-    <a class="oc-btn oc-btn--outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer">More about the town hall <iconify-icon icon="mdi:open-in-new" aria-hidden="true"></iconify-icon></a>
+    <a class="oc-btn oc-btn--outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer">More about the town hall <x-oc::webicon name="mdi:open-in-new" bare fallback="iconify" /></a>
     <div class="oc-block-step-view-countdown" role="timer" aria-label="Time left" style="--oc-step-view-left: 62%"><span class="oc-block-step-view-countdown-label">Time left</span><b class="oc-block-step-view-countdown-time">0:56</b></div>
       @endif
   </div>
@@ -111,7 +112,7 @@
       @endforeach
     </fieldset>
     @if (is_array($result))
-    {{ $question['feedback'] ?? '' }}
+    @if ($filled($feedback)){{ $feedback }}@else{{ $question['feedback'] ?? '' }}@endif
     @else
     <button {{ $bag($question['sendAttributes'] ?? [])->merge(['class' => 'oc-btn oc-btn--lg oc-block-step-view-send', 'type' => 'button']) }}>{{ $question['sendLabel'] ?? 'Send answer' }}</button>
     @endif

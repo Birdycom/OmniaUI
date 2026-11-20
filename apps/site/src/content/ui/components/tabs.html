@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Tabs", "category": "Navigation", "description": "Tabs without JavaScript: radio inputs and :has(). Line, pill and vertical variants, plus a class-toggle version for existing scripts.", "nav": "Tabs", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Tabs", "category": "Navigation", "description": "Tabs without JavaScript: radio inputs and :has(). Line, pill and vertical variants, plus a class-toggle version for existing scripts.", "nav": "Tabs", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/tabs.html | Map: hero -> demo (line, pill, vertical) -> class-toggle tabs (script) -> tabs with icons and counts -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Tabs</h1>
@@ -97,31 +97,39 @@ class Tabs extends Component
   <div class="oc-tab-panel">Analytics: 3,240 visits, 4.1% conversion.</div>
   <div class="oc-tab-panel">Reports: the monthly report is ready to download.</div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Tabs } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-tabset"&gt;
-      &lt;div className="oc-tab-list oc-tab-list--pill" role="tablist"&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill" defaultChecked /&gt; Overview&lt;/label&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill" /&gt; Analytics&lt;/label&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill" /&gt; Reports&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;Overview: sales are up 12% this month.&lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;Analytics: 3,240 visits, 4.1% conversion.&lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;Reports: the monthly report is ready to download.&lt;/div&gt;
-    &lt;/div&gt;
+    &lt;Tabs
+      name="oc-tabs-pill"
+      variant="pill"
+      tabs={[
+        { value: "overview", label: "Overview", content: "Overview: sales are up 12% this month." },
+        { value: "analytics", label: "Analytics", content: "Analytics: 3,240 visits, 4.1% conversion." },
+        { value: "reports", label: "Reports", content: "Reports: the monthly report is ready to download." },
+      ]}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-tabset"&gt;
-    &lt;div class="oc-tab-list oc-tab-list--pill" role="tablist"&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill" checked /&gt; Overview&lt;/label&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill" /&gt; Analytics&lt;/label&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-pill" /&gt; Reports&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;Overview: sales are up 12% this month.&lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;Analytics: 3,240 visits, 4.1% conversion.&lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;Reports: the monthly report is ready to download.&lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTabs } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const tab = ref("overview");
+const tabs = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTabs v-model="tab" name="oc-tabs-pill" variant="pill" :tabs="tabs"&gt;
+    &lt;template #overview&gt;Overview: sales are up 12% this month.&lt;/template&gt;
+    &lt;template #analytics&gt;Analytics: 3,240 visits, 4.1% conversion.&lt;/template&gt;
+    &lt;template #reports&gt;Reports: the monthly report is ready to download.&lt;/template&gt;
+  &lt;/OcTabs&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::tabs name="oc-tabs-pill" variant="pill" :tabs="['Overview', 'Analytics', 'Reports']"&gt;
     &lt;x-oc::tabs.panel&gt;Overview: sales are up 12% this month.&lt;/x-oc::tabs.panel&gt;
@@ -165,31 +173,39 @@ class TabsPill extends Component
   <div class="oc-tab-panel">Billing: plan, invoices and payment method.</div>
   <div class="oc-tab-panel">Members: invite people and set their role.</div>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Tabs } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;div className="oc-tabset"&gt;
-      &lt;div className="oc-tab-list oc-tab-list--vertical" role="tablist"&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical" defaultChecked /&gt; General&lt;/label&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical" /&gt; Billing&lt;/label&gt;
-        &lt;label className="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical" /&gt; Members&lt;/label&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;General: company name, language and time zone.&lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;Billing: plan, invoices and payment method.&lt;/div&gt;
-      &lt;div className="oc-tab-panel"&gt;Members: invite people and set their role.&lt;/div&gt;
-    &lt;/div&gt;
+    &lt;Tabs
+      name="oc-tabs-vertical"
+      variant="vertical"
+      tabs={[
+        { value: "general", label: "General", content: "General: company name, language and time zone." },
+        { value: "billing", label: "Billing", content: "Billing: plan, invoices and payment method." },
+        { value: "members", label: "Members", content: "Members: invite people and set their role." },
+      ]}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-tabset"&gt;
-    &lt;div class="oc-tab-list oc-tab-list--vertical" role="tablist"&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical" checked /&gt; General&lt;/label&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical" /&gt; Billing&lt;/label&gt;
-      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-vertical" /&gt; Members&lt;/label&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;General: company name, language and time zone.&lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;Billing: plan, invoices and payment method.&lt;/div&gt;
-    &lt;div class="oc-tab-panel"&gt;Members: invite people and set their role.&lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTabs } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const tab = ref("general");
+const tabs = [
+  { value: "general", label: "General" },
+  { value: "billing", label: "Billing" },
+  { value: "members", label: "Members" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTabs v-model="tab" name="oc-tabs-vertical" variant="vertical" :tabs="tabs"&gt;
+    &lt;template #general&gt;General: company name, language and time zone.&lt;/template&gt;
+    &lt;template #billing&gt;Billing: plan, invoices and payment method.&lt;/template&gt;
+    &lt;template #members&gt;Members: invite people and set their role.&lt;/template&gt;
+  &lt;/OcTabs&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::tabs name="oc-tabs-vertical" variant="vertical" :tabs="['General', 'Billing', 'Members']"&gt;
     &lt;x-oc::tabs.panel&gt;General: company name, language and time zone.&lt;/x-oc::tabs.panel&gt;
@@ -219,7 +235,7 @@ class TabsVertical extends Component
     &lt;/x-oc::tabs&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
-        <h3 id="class-toggle" class="oc-section-content__title mt-2">Class-toggle tabs (for existing scripts)</h3><p class="oc-section-content__desc">When a script already manages the state, use buttons with <code>role="tab"</code> and set <code>aria-selected="true"</code> (or <code>.is-active</code>) on the active tab and <code>.is-active</code> on its panel. The script <code>oc-tabs.js</code> does exactly that, with arrow keys, Home and End between the tabs (<code>npx omniaui copy-js tabs</code>, or <code>import { initTabs } from "@birdycom/omniaui/tabs.js"</code>); it also drives <code>&lt;x-oc::tabs mode="buttons"&gt;</code>. Or write the few lines below yourself; the same classes work with <code>.oc-tab-list--pill</code>.</p>
+        <h3 id="class-toggle" class="oc-section-content__title mt-2">Class-toggle tabs (for existing scripts) <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">When a script already manages the state, use buttons with <code>role="tab"</code> and set <code>aria-selected="true"</code> (or <code>.is-active</code>) on the active tab and <code>.is-active</code> on its panel. The script <code>oc-tabs.js</code> does exactly that, with arrow keys, Home and End between the tabs (<code>npx omniaui copy-js tabs</code>, or <code>import { initTabs } from "@birdycom/omniaui/tabs.js"</code>); it also drives <code>&lt;x-oc::tabs mode="buttons"&gt;</code>. In React and Vue, <code>mode="buttons"</code> on <code>Tabs</code> / <code>OcTabs</code> renders the same markup and holds the state itself. Or write the few lines below yourself; the same classes work with <code>.oc-tab-list--pill</code>.</p>
           <oc-demo title="Tabs - class toggle">
 <div class="oc-tab-list oc-tab-list--pill" role="tablist" data-oc-tabs="">
   <button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-js-1">Omnia palette</button>
@@ -229,38 +245,51 @@ class TabsVertical extends Component
 <div class="oc-tab-panel is-active" id="oc-tabs-js-1" role="tabpanel">The Omnia scale: every color in steps of 10.</div>
 <div class="oc-tab-panel" id="oc-tabs-js-2" role="tabpanel">The 148 named HTML colors.</div>
 <div class="oc-tab-panel" id="oc-tabs-js-3" role="tabpanel">The RAL Classic colors.</div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Tabs } from "@birdycom/omniaui-react";
+
+// mode="buttons": button[role=tab] with aria-selected and .is-active on the panel; the component holds the state.
+export function Example() {
   return (
-    &lt;&gt;
-      &lt;div className="oc-tab-list oc-tab-list--pill" role="tablist" data-oc-tabs=""&gt;
-        &lt;button className="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-js-1"&gt;Omnia palette&lt;/button&gt;
-        &lt;button className="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-js-2"&gt;HTML palette&lt;/button&gt;
-        &lt;button className="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-js-3" disabled&gt;RAL palette&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-tab-panel is-active" id="oc-tabs-js-1" role="tabpanel"&gt;The Omnia scale: every color in steps of 10.&lt;/div&gt;
-      &lt;div className="oc-tab-panel" id="oc-tabs-js-2" role="tabpanel"&gt;The 148 named HTML colors.&lt;/div&gt;
-      &lt;div className="oc-tab-panel" id="oc-tabs-js-3" role="tabpanel"&gt;The RAL Classic colors.&lt;/div&gt;
-    &lt;/&gt;
+    &lt;Tabs
+      name="oc-tabs-js"
+      mode="buttons"
+      variant="pill"
+      tabs={[
+        { value: "omnia", label: "Omnia palette", content: "The Omnia scale: every color in steps of 10." },
+        { value: "html", label: "HTML palette", content: "The 148 named HTML colors." },
+        { value: "ral", label: "RAL palette", content: "The RAL Classic colors.", disabled: true },
+      ]}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-tab-list oc-tab-list--pill" role="tablist" data-oc-tabs=""&gt;
-    &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-js-1"&gt;Omnia palette&lt;/button&gt;
-    &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-js-2"&gt;HTML palette&lt;/button&gt;
-    &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-js-3" disabled&gt;RAL palette&lt;/button&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-tab-panel is-active" id="oc-tabs-js-1" role="tabpanel"&gt;The Omnia scale: every color in steps of 10.&lt;/div&gt;
-  &lt;div class="oc-tab-panel" id="oc-tabs-js-2" role="tabpanel"&gt;The 148 named HTML colors.&lt;/div&gt;
-  &lt;div class="oc-tab-panel" id="oc-tabs-js-3" role="tabpanel"&gt;The RAL Classic colors.&lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTabs } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+// mode="buttons": button[role=tab] with aria-selected and .is-active on the panel; the component holds the state.
+const palette = ref("omnia");
+const tabs = [
+  { value: "omnia", label: "Omnia palette" },
+  { value: "html", label: "HTML palette" },
+  { value: "ral", label: "RAL palette", disabled: true },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTabs v-model="palette" name="oc-tabs-js" mode="buttons" variant="pill" :tabs="tabs"&gt;
+    &lt;template #omnia&gt;The Omnia scale: every color in steps of 10.&lt;/template&gt;
+    &lt;template #html&gt;The 148 named HTML colors.&lt;/template&gt;
+    &lt;template #ral&gt;The RAL Classic colors.&lt;/template&gt;
+  &lt;/OcTabs&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-tab-list oc-tab-list--pill" role="tablist" data-oc-tabs=""&gt;
-  &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-js-1"&gt;Omnia palette&lt;/button&gt;
-  &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-js-2"&gt;HTML palette&lt;/button&gt;
-  &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-js-3" disabled&gt;RAL palette&lt;/button&gt;
-&lt;/div&gt;
-&lt;div class="oc-tab-panel is-active" id="oc-tabs-js-1" role="tabpanel"&gt;The Omnia scale: every color in steps of 10.&lt;/div&gt;
-&lt;div class="oc-tab-panel" id="oc-tabs-js-2" role="tabpanel"&gt;The 148 named HTML colors.&lt;/div&gt;
-&lt;div class="oc-tab-panel" id="oc-tabs-js-3" role="tabpanel"&gt;The RAL Classic colors.&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- mode="buttons": the panels carry id="{name}-1", "{name}-2", ...; oc-tabs.js handles clicks and arrow keys. --}}
+&lt;x-oc::tabs name="oc-tabs-js" mode="buttons" variant="pill" :tabs="['Omnia palette', 'HTML palette', ['label' =&gt; 'RAL palette', 'disabled' =&gt; true]]"&gt;
+    &lt;x-oc::tabs.panel id="oc-tabs-js-1" active&gt;The Omnia scale: every color in steps of 10.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel id="oc-tabs-js-2"&gt;The 148 named HTML colors.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel id="oc-tabs-js-3"&gt;The RAL Classic colors.&lt;/x-oc::tabs.panel&gt;
+&lt;/x-oc::tabs&gt;
+
+&lt;script type="module" src="/js/oc-tabs.js"&gt;&lt;/script&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -277,14 +306,15 @@ class TabsClassToggle extends Component
 
 {{-- resources/views/livewire/tabs-class-toggle.blade.php --}}
 &lt;div&gt;
-    &lt;div class="oc-tab-list oc-tab-list--pill" role="tablist" data-oc-tabs=""&gt;
-      &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-js-1"&gt;Omnia palette&lt;/button&gt;
-      &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-js-2"&gt;HTML palette&lt;/button&gt;
-      &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-js-3" disabled&gt;RAL palette&lt;/button&gt;
+    {{-- oc-tabs.js switches the tabs in the browser; wire:ignore keeps the chosen tab when Livewire redraws. --}}
+    &lt;div wire:ignore&gt;
+        &lt;x-oc::tabs name="oc-tabs-js" mode="buttons" variant="pill" :tabs="['Omnia palette', 'HTML palette', ['label' =&gt; 'RAL palette', 'disabled' =&gt; true]]"&gt;
+            &lt;x-oc::tabs.panel id="oc-tabs-js-1" active&gt;The Omnia scale: every color in steps of 10.&lt;/x-oc::tabs.panel&gt;
+            &lt;x-oc::tabs.panel id="oc-tabs-js-2"&gt;The 148 named HTML colors.&lt;/x-oc::tabs.panel&gt;
+            &lt;x-oc::tabs.panel id="oc-tabs-js-3"&gt;The RAL Classic colors.&lt;/x-oc::tabs.panel&gt;
+        &lt;/x-oc::tabs&gt;
     &lt;/div&gt;
-    &lt;div class="oc-tab-panel is-active" id="oc-tabs-js-1" role="tabpanel"&gt;The Omnia scale: every color in steps of 10.&lt;/div&gt;
-    &lt;div class="oc-tab-panel" id="oc-tabs-js-2" role="tabpanel"&gt;The 148 named HTML colors.&lt;/div&gt;
-    &lt;div class="oc-tab-panel" id="oc-tabs-js-3" role="tabpanel"&gt;The RAL Classic colors.&lt;/div&gt;
+    &lt;script type="module" src="/js/oc-tabs.js"&gt;&lt;/script&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <oc-code lang="html">&lt;script&gt;
@@ -304,53 +334,69 @@ class TabsClassToggle extends Component
           <p class="oc-section-content__desc">The type tabs of a list (as in the <a href="data-table.html">Data table</a> and the Pro block <a href="../blocks/relations-list.html">Relations list</a>): an icon, the label and a count. Add <code>.oc-data-table-tabs</code> to the tab list and a <code>.oc-data-table-tab-count</code> to every tab; <code>--success</code>, <code>--info</code> and <code>--warning</code> color the count like the type badge in the table. In a data table the tabs filter a column (<code>data-oc-col-filter</code>); here they switch panels with the script above.</p>
           <oc-demo title="Tabs - icons and counts">
 <div class="oc-tab-list oc-data-table-tabs" role="tablist" aria-label="Relation type" data-oc-tabs="">
-  <button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-count-1"><iconify-icon icon="mdi:account-group-outline" aria-hidden="true"></iconify-icon>All<span class="oc-data-table-tab-count">11</span></button>
-  <button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-2"><iconify-icon icon="mdi:account-outline" aria-hidden="true"></iconify-icon>Customers<span class="oc-data-table-tab-count oc-data-table-tab-count--success">5</span></button>
-  <button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-3"><iconify-icon icon="mdi:domain" aria-hidden="true"></iconify-icon>Companies<span class="oc-data-table-tab-count oc-data-table-tab-count--info">4</span></button>
-  <button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-4"><iconify-icon icon="mdi:truck-outline" aria-hidden="true"></iconify-icon>Suppliers<span class="oc-data-table-tab-count oc-data-table-tab-count--warning">2</span></button>
+  <button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-count-1"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" data-webicon="mdi:account-group-outline" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 5a3.5 3.5 0 0 0-3.5 3.5A3.5 3.5 0 0 0 12 12a3.5 3.5 0 0 0 3.5-3.5A3.5 3.5 0 0 0 12 5m0 2a1.5 1.5 0 0 1 1.5 1.5A1.5 1.5 0 0 1 12 10a1.5 1.5 0 0 1-1.5-1.5A1.5 1.5 0 0 1 12 7M5.5 8A2.5 2.5 0 0 0 3 10.5c0 .94.53 1.75 1.29 2.18c.36.2.77.32 1.21.32s.85-.12 1.21-.32c.37-.21.68-.51.91-.87A5.42 5.42 0 0 1 6.5 8.5v-.28c-.3-.14-.64-.22-1-.22m13 0c-.36 0-.7.08-1 .22v.28c0 1.2-.39 2.36-1.12 3.31c.12.19.25.34.4.49a2.48 2.48 0 0 0 1.72.7c.44 0 .85-.12 1.21-.32c.76-.43 1.29-1.24 1.29-2.18A2.5 2.5 0 0 0 18.5 8M12 14c-2.34 0-7 1.17-7 3.5V19h14v-1.5c0-2.33-4.66-3.5-7-3.5m-7.29.55C2.78 14.78 0 15.76 0 17.5V19h3v-1.93c0-1.01.69-1.85 1.71-2.52m14.58 0c1.02.67 1.71 1.51 1.71 2.52V19h3v-1.5c0-1.74-2.78-2.72-4.71-2.95M12 16c1.53 0 3.24.5 4.23 1H7.77c.99-.5 2.7-1 4.23-1"/></svg>All<span class="oc-data-table-tab-count">11</span></button>
+  <button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-2"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" data-webicon="mdi:account-outline" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2m0 7c2.67 0 8 1.33 8 4v3H4v-3c0-2.67 5.33-4 8-4m0 1.9c-2.97 0-6.1 1.46-6.1 2.1v1.1h12.2V17c0-.64-3.13-2.1-6.1-2.1"/></svg>Customers<span class="oc-data-table-tab-count oc-data-table-tab-count--success">5</span></button>
+  <button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-3"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" data-webicon="mdi:domain" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18 15h-2v2h2m0-6h-2v2h2m2 6h-8v-2h2v-2h-2v-2h2v-2h-2V9h8M10 7H8V5h2m0 6H8V9h2m0 6H8v-2h2m0 6H8v-2h2M6 7H4V5h2m0 6H4V9h2m0 6H4v-2h2m0 6H4v-2h2m6-10V3H2v18h20V7z"/></svg>Companies<span class="oc-data-table-tab-count oc-data-table-tab-count--info">4</span></button>
+  <button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-4"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" data-webicon="mdi:truck-outline" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18 18.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5s.67 1.5 1.5 1.5m1.5-9H17V12h4.46zM6 18.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5s.67 1.5 1.5 1.5M20 8l3 4v5h-2c0 1.66-1.34 3-3 3s-3-1.34-3-3H9c0 1.66-1.34 3-3 3s-3-1.34-3-3H1V6c0-1.11.89-2 2-2h14v4zM3 6v9h.76c.55-.61 1.35-1 2.24-1s1.69.39 2.24 1H15V6z"/></svg>Suppliers<span class="oc-data-table-tab-count oc-data-table-tab-count--warning">2</span></button>
 </div>
 <div class="oc-tab-panel is-active" id="oc-tabs-count-1" role="tabpanel">All 11 relations: customers, companies and suppliers.</div>
 <div class="oc-tab-panel" id="oc-tabs-count-2" role="tabpanel">5 customers: Customer 1 to Customer 5.</div>
 <div class="oc-tab-panel" id="oc-tabs-count-3" role="tabpanel">4 companies: Company 1 to Company 4.</div>
 <div class="oc-tab-panel" id="oc-tabs-count-4" role="tabpanel">2 suppliers: Supplier 1 and Supplier 2.</div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Tabs } from "@birdycom/omniaui-react";
+
+// A count gives the tab list .oc-data-table-tabs; countTone colors it like the type badge in a data table.
+export function Example() {
   return (
-    &lt;&gt;
-      &lt;div className="oc-tab-list oc-data-table-tabs" role="tablist" aria-label="Relation type" data-oc-tabs=""&gt;
-        &lt;button className="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-count-1"&gt;&lt;iconify-icon icon="mdi:account-group-outline" aria-hidden="true" /&gt;All&lt;span className="oc-data-table-tab-count"&gt;11&lt;/span&gt;&lt;/button&gt;
-        &lt;button className="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-2"&gt;&lt;iconify-icon icon="mdi:account-outline" aria-hidden="true" /&gt;Customers&lt;span className="oc-data-table-tab-count oc-data-table-tab-count--success"&gt;5&lt;/span&gt;&lt;/button&gt;
-        &lt;button className="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-3"&gt;&lt;iconify-icon icon="mdi:domain" aria-hidden="true" /&gt;Companies&lt;span className="oc-data-table-tab-count oc-data-table-tab-count--info"&gt;4&lt;/span&gt;&lt;/button&gt;
-        &lt;button className="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-4"&gt;&lt;iconify-icon icon="mdi:truck-outline" aria-hidden="true" /&gt;Suppliers&lt;span className="oc-data-table-tab-count oc-data-table-tab-count--warning"&gt;2&lt;/span&gt;&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;div className="oc-tab-panel is-active" id="oc-tabs-count-1" role="tabpanel"&gt;All 11 relations: customers, companies and suppliers.&lt;/div&gt;
-      &lt;div className="oc-tab-panel" id="oc-tabs-count-2" role="tabpanel"&gt;5 customers: Customer 1 to Customer 5.&lt;/div&gt;
-      &lt;div className="oc-tab-panel" id="oc-tabs-count-3" role="tabpanel"&gt;4 companies: Company 1 to Company 4.&lt;/div&gt;
-      &lt;div className="oc-tab-panel" id="oc-tabs-count-4" role="tabpanel"&gt;2 suppliers: Supplier 1 and Supplier 2.&lt;/div&gt;
-    &lt;/&gt;
+    &lt;Tabs
+      name="oc-tabs-count"
+      mode="buttons"
+      listLabel="Relation type"
+      tabs={[
+        { value: "all", label: "All", icon: "mdi:account-group-outline", count: 11, content: "All 11 relations: customers, companies and suppliers." },
+        { value: "customers", label: "Customers", icon: "mdi:account-outline", count: 5, countTone: "success", content: "5 customers: Customer 1 to Customer 5." },
+        { value: "companies", label: "Companies", icon: "mdi:domain", count: 4, countTone: "info", content: "4 companies: Company 1 to Company 4." },
+        { value: "suppliers", label: "Suppliers", icon: "mdi:truck-outline", count: 2, countTone: "warning", content: "2 suppliers: Supplier 1 and Supplier 2." },
+      ]}
+    /&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-tab-list oc-data-table-tabs" role="tablist" aria-label="Relation type" data-oc-tabs=""&gt;
-    &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-count-1"&gt;&lt;iconify-icon icon="mdi:account-group-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;All&lt;span class="oc-data-table-tab-count"&gt;11&lt;/span&gt;&lt;/button&gt;
-    &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-2"&gt;&lt;iconify-icon icon="mdi:account-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Customers&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--success"&gt;5&lt;/span&gt;&lt;/button&gt;
-    &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-3"&gt;&lt;iconify-icon icon="mdi:domain" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Companies&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--info"&gt;4&lt;/span&gt;&lt;/button&gt;
-    &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-4"&gt;&lt;iconify-icon icon="mdi:truck-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Suppliers&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--warning"&gt;2&lt;/span&gt;&lt;/button&gt;
-  &lt;/div&gt;
-  &lt;div class="oc-tab-panel is-active" id="oc-tabs-count-1" role="tabpanel"&gt;All 11 relations: customers, companies and suppliers.&lt;/div&gt;
-  &lt;div class="oc-tab-panel" id="oc-tabs-count-2" role="tabpanel"&gt;5 customers: Customer 1 to Customer 5.&lt;/div&gt;
-  &lt;div class="oc-tab-panel" id="oc-tabs-count-3" role="tabpanel"&gt;4 companies: Company 1 to Company 4.&lt;/div&gt;
-  &lt;div class="oc-tab-panel" id="oc-tabs-count-4" role="tabpanel"&gt;2 suppliers: Supplier 1 and Supplier 2.&lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTabs } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+// A count gives the tab list .oc-data-table-tabs; countTone colors it like the type badge in a data table.
+const type = ref("all");
+const tabs = [
+  { value: "all", label: "All", icon: "mdi:account-group-outline", count: 11 },
+  { value: "customers", label: "Customers", icon: "mdi:account-outline", count: 5, countTone: "success" as const },
+  { value: "companies", label: "Companies", icon: "mdi:domain", count: 4, countTone: "info" as const },
+  { value: "suppliers", label: "Suppliers", icon: "mdi:truck-outline", count: 2, countTone: "warning" as const },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTabs v-model="type" name="oc-tabs-count" mode="buttons" list-label="Relation type" :tabs="tabs"&gt;
+    &lt;template #all&gt;All 11 relations: customers, companies and suppliers.&lt;/template&gt;
+    &lt;template #customers&gt;5 customers: Customer 1 to Customer 5.&lt;/template&gt;
+    &lt;template #companies&gt;4 companies: Company 1 to Company 4.&lt;/template&gt;
+    &lt;template #suppliers&gt;2 suppliers: Supplier 1 and Supplier 2.&lt;/template&gt;
+  &lt;/OcTabs&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-tab-list oc-data-table-tabs" role="tablist" aria-label="Relation type" data-oc-tabs=""&gt;
-  &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-count-1"&gt;&lt;iconify-icon icon="mdi:account-group-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;All&lt;span class="oc-data-table-tab-count"&gt;11&lt;/span&gt;&lt;/button&gt;
-  &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-2"&gt;&lt;iconify-icon icon="mdi:account-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Customers&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--success"&gt;5&lt;/span&gt;&lt;/button&gt;
-  &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-3"&gt;&lt;iconify-icon icon="mdi:domain" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Companies&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--info"&gt;4&lt;/span&gt;&lt;/button&gt;
-  &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-4"&gt;&lt;iconify-icon icon="mdi:truck-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Suppliers&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--warning"&gt;2&lt;/span&gt;&lt;/button&gt;
-&lt;/div&gt;
-&lt;div class="oc-tab-panel is-active" id="oc-tabs-count-1" role="tabpanel"&gt;All 11 relations: customers, companies and suppliers.&lt;/div&gt;
-&lt;div class="oc-tab-panel" id="oc-tabs-count-2" role="tabpanel"&gt;5 customers: Customer 1 to Customer 5.&lt;/div&gt;
-&lt;div class="oc-tab-panel" id="oc-tabs-count-3" role="tabpanel"&gt;4 companies: Company 1 to Company 4.&lt;/div&gt;
-&lt;div class="oc-tab-panel" id="oc-tabs-count-4" role="tabpanel"&gt;2 suppliers: Supplier 1 and Supplier 2.&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- Every tab: label, icon (webicon name), count and tone (success|info|warning). oc-tabs.js switches the panels. --}}
+&lt;x-oc::tabs name="oc-tabs-count" mode="buttons" label="Relation type" :tabs="[
+    ['label' =&gt; 'All', 'icon' =&gt; 'mdi:account-group-outline', 'count' =&gt; 11],
+    ['label' =&gt; 'Customers', 'icon' =&gt; 'mdi:account-outline', 'count' =&gt; 5, 'tone' =&gt; 'success'],
+    ['label' =&gt; 'Companies', 'icon' =&gt; 'mdi:domain', 'count' =&gt; 4, 'tone' =&gt; 'info'],
+    ['label' =&gt; 'Suppliers', 'icon' =&gt; 'mdi:truck-outline', 'count' =&gt; 2, 'tone' =&gt; 'warning'],
+]"&gt;
+    &lt;x-oc::tabs.panel id="oc-tabs-count-1" active&gt;All 11 relations: customers, companies and suppliers.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel id="oc-tabs-count-2"&gt;5 customers: Customer 1 to Customer 5.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel id="oc-tabs-count-3"&gt;4 companies: Company 1 to Company 4.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel id="oc-tabs-count-4"&gt;2 suppliers: Supplier 1 and Supplier 2.&lt;/x-oc::tabs.panel&gt;
+&lt;/x-oc::tabs&gt;
+
+&lt;script type="module" src="/js/oc-tabs.js"&gt;&lt;/script&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -359,6 +405,9 @@ use Livewire\Component;
 
 class TabsIconsAndCounts extends Component
 {
+    /** Relations per type (from the database in a real app). */
+    public array $counts = ['customers' =&gt; 5, 'companies' =&gt; 4, 'suppliers' =&gt; 2];
+
     public function render()
     {
         return view('livewire.tabs-icons-and-counts');
@@ -367,16 +416,21 @@ class TabsIconsAndCounts extends Component
 
 {{-- resources/views/livewire/tabs-icons-and-counts.blade.php --}}
 &lt;div&gt;
-    &lt;div class="oc-tab-list oc-data-table-tabs" role="tablist" aria-label="Relation type" data-oc-tabs=""&gt;
-      &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="true" aria-controls="oc-tabs-count-1"&gt;&lt;iconify-icon icon="mdi:account-group-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;All&lt;span class="oc-data-table-tab-count"&gt;11&lt;/span&gt;&lt;/button&gt;
-      &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-2"&gt;&lt;iconify-icon icon="mdi:account-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Customers&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--success"&gt;5&lt;/span&gt;&lt;/button&gt;
-      &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-3"&gt;&lt;iconify-icon icon="mdi:domain" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Companies&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--info"&gt;4&lt;/span&gt;&lt;/button&gt;
-      &lt;button class="oc-tab-trigger" type="button" role="tab" aria-selected="false" aria-controls="oc-tabs-count-4"&gt;&lt;iconify-icon icon="mdi:truck-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Suppliers&lt;span class="oc-data-table-tab-count oc-data-table-tab-count--warning"&gt;2&lt;/span&gt;&lt;/button&gt;
+    {{-- oc-tabs.js switches the tabs in the browser; wire:ignore keeps the chosen tab when Livewire redraws. --}}
+    &lt;div wire:ignore&gt;
+        &lt;x-oc::tabs name="oc-tabs-count" mode="buttons" label="Relation type" :tabs="[
+            ['label' =&gt; 'All', 'icon' =&gt; 'mdi:account-group-outline', 'count' =&gt; array_sum($counts)],
+            ['label' =&gt; 'Customers', 'icon' =&gt; 'mdi:account-outline', 'count' =&gt; $counts['customers'], 'tone' =&gt; 'success'],
+            ['label' =&gt; 'Companies', 'icon' =&gt; 'mdi:domain', 'count' =&gt; $counts['companies'], 'tone' =&gt; 'info'],
+            ['label' =&gt; 'Suppliers', 'icon' =&gt; 'mdi:truck-outline', 'count' =&gt; $counts['suppliers'], 'tone' =&gt; 'warning'],
+        ]"&gt;
+            &lt;x-oc::tabs.panel id="oc-tabs-count-1" active&gt;All {{ array_sum($counts) }} relations: customers, companies and suppliers.&lt;/x-oc::tabs.panel&gt;
+            &lt;x-oc::tabs.panel id="oc-tabs-count-2"&gt;{{ $counts['customers'] }} customers: Customer 1 to Customer 5.&lt;/x-oc::tabs.panel&gt;
+            &lt;x-oc::tabs.panel id="oc-tabs-count-3"&gt;{{ $counts['companies'] }} companies: Company 1 to Company 4.&lt;/x-oc::tabs.panel&gt;
+            &lt;x-oc::tabs.panel id="oc-tabs-count-4"&gt;{{ $counts['suppliers'] }} suppliers: Supplier 1 and Supplier 2.&lt;/x-oc::tabs.panel&gt;
+        &lt;/x-oc::tabs&gt;
     &lt;/div&gt;
-    &lt;div class="oc-tab-panel is-active" id="oc-tabs-count-1" role="tabpanel"&gt;All 11 relations: customers, companies and suppliers.&lt;/div&gt;
-    &lt;div class="oc-tab-panel" id="oc-tabs-count-2" role="tabpanel"&gt;5 customers: Customer 1 to Customer 5.&lt;/div&gt;
-    &lt;div class="oc-tab-panel" id="oc-tabs-count-3" role="tabpanel"&gt;4 companies: Company 1 to Company 4.&lt;/div&gt;
-    &lt;div class="oc-tab-panel" id="oc-tabs-count-4" role="tabpanel"&gt;2 suppliers: Supplier 1 and Supplier 2.&lt;/div&gt;
+    &lt;script type="module" src="/js/oc-tabs.js"&gt;&lt;/script&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
@@ -410,17 +464,17 @@ class TabsIconsAndCounts extends Component
       <section class="oc-docs-section" id="frameworks">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Framework wrappers</h2>
-          <p class="oc-section-header__desc">All three render the CSS-only tab set (radio inputs), so tabs also work before JavaScript has loaded.</p>
+          <p class="oc-section-header__desc">By default all three render the CSS-only tab set (radio inputs), so tabs also work before JavaScript has loaded. With <code>mode="buttons"</code> they render the class-toggle tabs.</p>
         </div>
         <div class="oc-section-content">
-          <oc-code lang="html">&lt;!-- React --&gt;
+          <oc-code lang="html">&lt;!-- React (variant: pill or vertical; mode="buttons": class-toggle tabs; items take icon, count, countTone, disabled) --&gt;
 &lt;Tabs name="account" tabs={[{ value: "account", label: "Account", content: &lt;AccountForm /&gt; }, { value: "password", label: "Password", content: &lt;PasswordForm /&gt; }]} /&gt;
 &lt;!-- Vue: one named slot per tab value --&gt;
 &lt;OcTabs name="account" :tabs="[{ label: 'Account', value: 'account' }, { label: 'Password', value: 'password' }]"&gt;
   &lt;template #account&gt;…&lt;/template&gt;
   &lt;template #password&gt;…&lt;/template&gt;
 &lt;/OcTabs&gt;
-&lt;!-- Laravel Blade (variant: pill or vertical) --&gt;
+&lt;!-- Laravel Blade (variant: pill or vertical; mode="buttons" + /js/oc-tabs.js; a tab may be [label, icon, count, tone, disabled]) --&gt;
 &lt;x-oc::tabs name="account" :tabs="['Account', 'Password']" variant="pill"&gt;
   &lt;x-oc::tabs.panel&gt;…&lt;/x-oc::tabs.panel&gt;
   &lt;x-oc::tabs.panel&gt;…&lt;/x-oc::tabs.panel&gt;

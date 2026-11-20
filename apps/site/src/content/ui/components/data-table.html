@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Data table", "category": "Data", "description": "Search, sort, pages, trash filter and bulk actions.", "nav": "Data table", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"], "pro": "some"}-->
+<!--oc-page {"title": "OmniaUI - Data table", "category": "Data", "description": "Data table with search, sorting, pages, column filters, a trash filter, row selection and bulk actions, row actions and texts in your own language.", "nav": "Data table", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"], "pro": "some"}-->
 <!-- File: apps/site/src/content/ui/components/data-table.html | Map: hero -> live demos (article list, version 2 bordered) -> reference -> frameworks -> browser support -> source -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Data table</h1>
@@ -171,8 +171,10 @@ const rows: DataTableRow[] = articles.map((a) =&gt; ({
 <oc-code lang="blade">&lt;x-oc::data-table title="Articles" :columns="$columns" :rows="$rows" :page-size="3" live archive search-placeholder="Search articles..."&gt;
     &lt;x-slot:pageActions&gt;&lt;x-oc::button size="sm"&gt;New article&lt;/x-oc::button&gt;&lt;/x-slot:pageActions&gt;
 &lt;/x-oc::data-table&gt;
-{{-- $columns = [['key' =&gt; 'sku', 'header' =&gt; 'Article ID', 'defaultSort' =&gt; 'ascending'], ['key' =&gt; 'price', 'header' =&gt; 'Price', 'numeric' =&gt; true], …]
-     $rows = [['key' =&gt; 'hinge', 'status' =&gt; 'active', 'cells' =&gt; ['sku' =&gt; 'SET-HINGE-1105', 'name' =&gt; 'Hinge 1105', 'price' =&gt; '5,15', …], 'values' =&gt; ['price' =&gt; '5.15']], …] --}}</oc-code>
+{{-- $columns = [['key' =&gt; 'sku', 'header' =&gt; 'Article ID', 'defaultSort' =&gt; 'ascending'], ['key' =&gt; 'price', 'header' =&gt; 'Price', 'numeric' =&gt; true], …,
+                ['key' =&gt; 'status', 'header' =&gt; 'Status', 'badge' =&gt; ['Active' =&gt; 'success', 'Deleted' =&gt; 'secondary']]]
+     $rows = [['key' =&gt; 'hinge', 'status' =&gt; 'active', 'cells' =&gt; ['sku' =&gt; 'SET-HINGE-1105', 'name' =&gt; 'Hinge 1105', 'price' =&gt; '5,15', …, 'status' =&gt; 'Active'], 'values' =&gt; ['price' =&gt; '5.15']], …]
+     'badge' on a column shows every cell as a badge (variant per text); one cell can also be ['badge' =&gt; 'Active', 'variant' =&gt; 'success']. --}}</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -622,6 +624,8 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
+// Client-side list fed by the component. On a server-side table (extends Omniacss\Livewire\DataTable), return the texts
+// from labels() (e.g. ['actions' =&gt; 'Acties', 'rowsPerPage' =&gt; 'Rijen per pagina']) and the table look from variant() ('striped', 'compact').
 class GamesList extends Component
 {
     /** @var list&lt;array{key: string, name: string, date: string, players: int}&gt; */

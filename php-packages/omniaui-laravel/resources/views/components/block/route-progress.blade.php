@@ -78,7 +78,7 @@
       {{ $next }}
   @else
   <button class="oc-block-route-progress-next" type="button">
-    <span class="oc-block-route-progress-next-icon" aria-hidden="true"><iconify-icon icon="mdi:walk"></iconify-icon></span>
+    <span class="oc-block-route-progress-next-icon" aria-hidden="true"><x-oc::webicon name="mdi:walk" bare fallback="iconify" /></span>
     <span class="oc-block-route-progress-next-text">
       <span class="oc-block-route-progress-next-label">Now</span>
       <span class="oc-block-route-progress-next-title">Walk to step 3 · Town hall</span>
@@ -115,7 +115,7 @@
       <button class="oc-block-route-progress-link" type="button"><span class="oc-block-route-progress-marker">2</span><span class="oc-block-route-progress-text"><span class="oc-block-route-progress-name">Market square</span><span class="oc-block-route-progress-sub">Wrong answer</span></span><span class="oc-block-route-progress-value">0</span></button>
     </li>
     <li class="oc-block-route-progress-item oc-block-route-progress-item--done">
-      <button class="oc-block-route-progress-link" type="button"><span class="oc-block-route-progress-marker"><iconify-icon icon="mdi:camera-outline" aria-label="Photo task"></iconify-icon></span><span class="oc-block-route-progress-text"><span class="oc-block-route-progress-name">Team photo</span><span class="oc-block-route-progress-sub">Photo sent</span></span><span class="oc-block-route-progress-value">+20</span></button>
+      <button class="oc-block-route-progress-link" type="button"><span class="oc-block-route-progress-marker"><x-oc::webicon name="mdi:camera-outline" label="Photo task" bare fallback="iconify" /></span><span class="oc-block-route-progress-text"><span class="oc-block-route-progress-name">Team photo</span><span class="oc-block-route-progress-sub">Photo sent</span></span><span class="oc-block-route-progress-value">+20</span></button>
     </li>
     <li class="oc-block-route-progress-item oc-block-route-progress-item--current">
       <button class="oc-block-route-progress-link" type="button" aria-current="step"><span class="oc-block-route-progress-marker">3</span><span class="oc-block-route-progress-text"><span class="oc-block-route-progress-name">Town hall</span><span class="oc-block-route-progress-sub">Market street 1</span></span><span class="oc-block-route-progress-value">240 m</span></button>
@@ -124,7 +124,7 @@
       <button class="oc-block-route-progress-link" type="button"><span class="oc-block-route-progress-marker">4</span><span class="oc-block-route-progress-text"><span class="oc-block-route-progress-name">River bridge</span><span class="oc-block-route-progress-sub">Quay 1</span></span><span class="oc-block-route-progress-value">680 m</span></button>
     </li>
     <li class="oc-block-route-progress-item oc-block-route-progress-item--locked">
-      <button class="oc-block-route-progress-link" type="button"><span class="oc-block-route-progress-marker"><iconify-icon icon="mdi:flag-checkered" aria-label="Finish"></iconify-icon></span><span class="oc-block-route-progress-text"><span class="oc-block-route-progress-name">Finish</span><span class="oc-block-route-progress-sub">Opens after 4 steps</span></span><span class="oc-block-route-progress-value">1.1 km</span></button>
+      <button class="oc-block-route-progress-link" type="button"><span class="oc-block-route-progress-marker"><x-oc::webicon name="mdi:flag-checkered" label="Finish" bare fallback="iconify" /></span><span class="oc-block-route-progress-text"><span class="oc-block-route-progress-name">Finish</span><span class="oc-block-route-progress-sub">Opens after 4 steps</span></span><span class="oc-block-route-progress-value">1.1 km</span></button>
     </li>
       @endif
   </ol>

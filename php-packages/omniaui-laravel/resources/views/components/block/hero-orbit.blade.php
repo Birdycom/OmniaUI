@@ -9,7 +9,7 @@
        .oc-split--lead), float (.oc-block-orbit-visual--float: up to eight marks float around the window), duration ("30s"),
        marks (array of ['glyph' => ..., 'accent' => 'green', 'angle' => 45]; spread evenly from start-angle when angle is empty),
        start-angle (degrees, default 0), mark-size (sm|md|lg, default sm), soft-marks (.oc-product-mark--soft),
-       code-title + code (the code window), center-mark (['glyph' => ..., 'accent' => 'blue']: a big product mark instead of the window).
+       code-title + code (the code window), :eyebrow / :lead / :actions="false" (leave that part out), center-mark (['glyph' => ..., 'accent' => 'blue']: a big product mark instead of the window).
 --}}
 @props(['eyebrow' => null, 'title' => null, 'lead' => null, 'actions' => null, 'center' => null, 'headingLevel' => 1, 'splitLead' => false, 'float' => false, 'duration' => null, 'marks' => null, 'startAngle' => 0, 'markSize' => 'sm', 'softMarks' => false, 'codeTitle' => null, 'code' => null, 'centerMark' => null])
 @php
@@ -20,6 +20,7 @@
 <section {{ $attributes->merge(['class' => 'oc-block-orbit oc-section-pad']) }}>
   <div class="oc-container oc-split{{ $splitLead ? ' oc-split--lead' : '' }}">
     <div>
+      @if ($eyebrow !== false)
       <p class="oc-eyebrow">
           @if (isset($eyebrow) && trim((string) $eyebrow) !== '')
               {{ $eyebrow }}
@@ -27,6 +28,7 @@
           Software studio &middot; since 2012
           @endif
       </p>
+      @endif
       <{{ $ocOrbitH }} class="oc-display{{ $ocOrbitH === 'h2' ? ' oc-display--md' : '' }}">
           @if (isset($title) && trim((string) $title) !== '')
               {{ $title }}
@@ -34,6 +36,7 @@
           One team for all your <span class="oc-text-gradient">software</span>.
           @endif
       </{{ $ocOrbitH }}>
+      @if ($lead !== false)
       <p class="oc-lead">
           @if (isset($lead) && trim((string) $lead) !== '')
               {{ $lead }}
@@ -41,6 +44,8 @@
           Business apps, websites and desktop tools. We design, build and maintain them, and stay your single point of contact.
           @endif
       </p>
+      @endif
+      @if ($actions !== false)
       <div class="flex flex-wrap gap-1 mt-2">
           @if (isset($actions) && trim((string) $actions) !== '')
               {{ $actions }}
@@ -49,6 +54,7 @@
         <a class="oc-btn oc-btn--glass oc-btn--lg" href="#contact">Start a project</a>
           @endif
       </div>
+      @endif
     </div>
     <div class="oc-block-orbit-visual{{ $float ? ' oc-block-orbit-visual--float' : '' }}"@if ($duration) style="--oc-orbit-duration: {{ $duration }};"@endif>
       <div class="oc-block-orbit-ring" aria-hidden="true">

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Phone input", "category": "Forms", "description": "Country dial code select joined to a phone number field.", "nav": "Phone input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Phone input", "category": "Forms", "description": "Country dial code select joined to a phone number field, with an error state and a small size; the code and the number post as two fields.", "nav": "Phone input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/phone-input.html | Map: hero -> demo (default, invalid + small) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Phone input</h1>
@@ -56,11 +56,17 @@ use Livewire\Component;
 
 class MobileNumber extends Component
 {
+    public string $dial = '+32';
+
     public string $phone = '';
 
     public function save(): void
     {
-        $this-&gt;validate(['phone' =&gt; ['required', 'regex:/^[0-9 ]{8,14}$/']]);
+        $this-&gt;validate([
+            'dial' =&gt; ['required', 'in:+32,+31,+33,+49'],
+            'phone' =&gt; ['required', 'regex:/^[0-9 ]{8,14}$/'],
+        ]);
+        // store the full number: $this-&gt;dial.' '.$this-&gt;phone
     }
 
     public function render()
@@ -71,9 +77,9 @@ class MobileNumber extends Component
 
 {{-- resources/views/livewire/mobile-number.blade.php --}}
 &lt;form wire:submit="save"&gt;
-    {{-- the dial select posts as phone_dial; wire:model binds the number --}}
+    {{-- dial-model binds the country code (wire:model on the select); wire:model binds the number --}}
     &lt;x-oc::form-field label="Mobile number" for="phone" name="phone" description="Digits only; spaces are fine." style="max-inline-size:22rem"&gt;
-        &lt;x-oc::phone-input id="phone" wire:model.blur="phone" :error="$errors-&gt;has('phone')" placeholder="470 12 34 56" /&gt;
+        &lt;x-oc::phone-input id="phone" dial-model="dial" wire:model.blur="phone" :error="$errors-&gt;has('phone')" placeholder="470 12 34 56" /&gt;
     &lt;/x-oc::form-field&gt;
 &lt;/form&gt;</oc-code>
           </oc-demo>

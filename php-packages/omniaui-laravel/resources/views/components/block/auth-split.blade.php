@@ -12,12 +12,14 @@
      Blade: <x-oc::block.auth-split> - attributes merge onto the root element; props: action => #, method => post.
      Blade slots (each falls back to the snippet content when empty): logo, quote, title, subtitle, fields.
      Props (0.17.0, optional): photo (image URL: .oc-block-authsplit-brand--photo with --oc-authsplit-photo), logo-href (default #),
-       form (array of extra attributes on the form, e.g. ['wire:submit' => 'login'] for Livewire; it can also override action / method).
+       form (array of extra attributes on the form, e.g. ['wire:submit' => 'login'] for Livewire; it can also override action / method),
+       heading-level (1 default; 2 renders the title as an h2 with the same look).
 --}}
-@props(['action' => '#', 'method' => 'post', 'logo' => null, 'quote' => null, 'title' => null, 'subtitle' => null, 'fields' => null, 'photo' => null, 'logoHref' => '#', 'form' => null])
+@props(['action' => '#', 'method' => 'post', 'logo' => null, 'quote' => null, 'title' => null, 'subtitle' => null, 'fields' => null, 'photo' => null, 'logoHref' => '#', 'form' => null, 'headingLevel' => 1])
 @php
     $ocAuthSplitForm = (new \Illuminate\View\ComponentAttributeBag(is_array($form) ? $form : []))
         ->merge(['class' => 'oc-block-authsplit-card', 'action' => $action, 'method' => $method]);
+    $ocHeading = (int) $headingLevel === 2 ? 'h2' : 'h1';
 @endphp
 <div {{ $attributes->merge(['class' => 'oc-block-authsplit']) }}>
   <aside class="oc-block-authsplit-brand{{ $photo ? ' oc-block-authsplit-brand--photo' : '' }}"@if ($photo) style="--oc-authsplit-photo: url('{{ $photo }}')"@endif>
@@ -39,13 +41,13 @@
   </aside>
   <div class="oc-block-authsplit-form">
     <form {{ $ocAuthSplitForm }}>@unless (strtolower((string) $ocAuthSplitForm->get('method', $method)) === 'get') @csrf @endunless
-      <h1 class="oc-block-authsplit-title">
+      <{{ $ocHeading }} class="oc-block-authsplit-title">
           @if (isset($title) && trim((string) $title) !== '')
               {{ $title }}
           @else
           Welcome back
           @endif
-      </h1>
+      </{{ $ocHeading }}>
       <p class="oc-block-authsplit-subtitle">
           @if (isset($subtitle) && trim((string) $subtitle) !== '')
               {{ $subtitle }}

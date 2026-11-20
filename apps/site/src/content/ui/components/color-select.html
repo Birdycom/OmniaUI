@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Color select", "category": "Forms", "description": "Pick one color from a fixed set of swatches (radio inputs).", "nav": "Color select", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Color select", "category": "Forms", "description": "Pick one color from a fixed set of swatches on radio inputs, with names, colors that are in use and cannot be chosen, and a list for a popover.", "nav": "Color select", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/color-select.html | Map: hero -> demo (swatch grid, list in a popover) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Color select</h1>
@@ -57,16 +57,15 @@ const color = ref("blue");
 &lt;template&gt;
   &lt;OcColorSelect v-model="color" name="color" label="Label color" :options="colors" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::color-select name="color" label="Label color" :value="old('color', 'blue')" :options="[
+<oc-code lang="blade">{{-- Purple is taken: 'disabled' =&gt; true shows it, but it cannot be chosen --}}
+&lt;x-oc::color-select name="color" label="Label color" :value="old('color', 'blue')" :options="[
     'blue' =&gt; ['Blue', 'var(--color-vividblue-95)'],
     'teal' =&gt; ['Teal', 'var(--color-teal-80)'],
     'green' =&gt; ['Green', 'var(--color-green-60)'],
     'orange' =&gt; ['Orange', 'var(--color-orange-95)'],
     'red' =&gt; ['Red', 'var(--color-red-70)'],
-]"&gt;
-    {{-- options have no disabled flag: a color that is taken goes in the slot --}}
-    &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-purple-40)" title="Purple, in use"&gt;&lt;input type="radio" name="color" value="purple" disabled&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Purple (in use)&lt;/span&gt;&lt;/label&gt;
-&lt;/x-oc::color-select&gt;</oc-code>
+    'purple' =&gt; ['label' =&gt; 'Purple (in use)', 'color' =&gt; 'var(--color-purple-40)', 'disabled' =&gt; true, 'title' =&gt; 'Purple, in use'],
+]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -92,9 +91,8 @@ class LabelColor extends Component
         'green' =&gt; ['Green', 'var(--color-green-60)'],
         'orange' =&gt; ['Orange', 'var(--color-orange-95)'],
         'red' =&gt; ['Red', 'var(--color-red-70)'],
-    ]"&gt;
-        &lt;label class="oc-color-select-option" style="--oc-swatch: var(--color-purple-40)" title="Purple, in use"&gt;&lt;input type="radio" name="color" value="purple" disabled&gt;&lt;span class="oc-color-select-swatch"&gt;&lt;/span&gt;&lt;span class="oc-color-select-name"&gt;Purple (in use)&lt;/span&gt;&lt;/label&gt;
-    &lt;/x-oc::color-select&gt;
+        'purple' =&gt; ['label' =&gt; 'Purple (in use)', 'color' =&gt; 'var(--color-purple-40)', 'disabled' =&gt; true, 'title' =&gt; 'Purple, in use'],
+    ]" /&gt;
     &lt;p class="text-muted"&gt;Chosen: {{ $color }}&lt;/p&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Meter row", "category": "Data", "description": "Usage line with a label, the amount as text, a colored bar and when it resets.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Meter row", "category": "Data", "description": "Usage line with a label, the percentage and amount as text, a colored bar that turns warn or critical, a reset time and an optional sub-line.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/meter-row.html | Map: hero -> demo -> reference -> frameworks -> browser support -> source -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Meter row</h1>
@@ -134,19 +134,27 @@ export function Example() {
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { OcMeterRow } from '@birdycom/omniaui-vue'
+import { OcMeterRow, OcReading } from '@birdycom/omniaui-vue'
 &lt;/script&gt;
 
 &lt;template&gt;
   &lt;div class="oc-meter-list oc-meter-list--dense" style="inline-size:min(100%,24rem)"&gt;
-    &lt;OcMeterRow label="CPU" :percent="34" value="52 °C" /&gt;
-    &lt;OcMeterRow label="GPU" :percent="81" value="74 °C" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34" /&gt;
+    &lt;OcMeterRow label="CPU" :percent="34"&gt;
+      &lt;template #value&gt;&lt;OcReading&gt;52 °C&lt;/OcReading&gt;&lt;/template&gt;
+    &lt;/OcMeterRow&gt;
+    &lt;OcMeterRow label="GPU" :percent="81" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34"&gt;
+      &lt;template #value&gt;&lt;OcReading level="warm"&gt;74 °C&lt;/OcReading&gt;&lt;/template&gt;
+    &lt;/OcMeterRow&gt;
     &lt;OcMeterRow label="Memory" :percent="58" value="18.6 / 32 GB" sub="Swap 1.2 / 4 GB" :sub-percent="30" /&gt;
   &lt;/div&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-meter-list oc-meter-list--dense" style="inline-size:min(100%,24rem)"&gt;
-    &lt;x-oc::meter-row label="CPU" :percent="34" value="52 °C" /&gt;
-    &lt;x-oc::meter-row label="GPU" :percent="81" value="74 °C" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34" /&gt;
+    &lt;x-oc::meter-row label="CPU" :percent="34"&gt;
+        &lt;x-slot:value&gt;&lt;x-oc::reading&gt;52 °C&lt;/x-oc::reading&gt;&lt;/x-slot:value&gt;
+    &lt;/x-oc::meter-row&gt;
+    &lt;x-oc::meter-row label="GPU" :percent="81" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34"&gt;
+        &lt;x-slot:value&gt;&lt;x-oc::reading level="warm"&gt;74 °C&lt;/x-oc::reading&gt;&lt;/x-slot:value&gt;
+    &lt;/x-oc::meter-row&gt;
     &lt;x-oc::meter-row label="Memory" :percent="58" value="18.6 / 32 GB" sub="Swap 1.2 / 4 GB" :sub-percent="30" /&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -165,14 +173,19 @@ class SystemMeters extends Component
 
     public function render()
     {
+        // Fill the numbers from your monitoring here; wire:poll asks for them again every 5 seconds.
         return view('livewire.system-meters');
     }
 }
 
 {{-- resources/views/livewire/system-meters.blade.php --}}
 &lt;div wire:poll.5s class="oc-meter-list oc-meter-list--dense" style="inline-size:min(100%,24rem)"&gt;
-    &lt;x-oc::meter-row label="CPU" :percent="$cpu" value="52 °C" /&gt;
-    &lt;x-oc::meter-row label="GPU" :percent="$gpu" value="74 °C" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34" /&gt;
+    &lt;x-oc::meter-row label="CPU" :percent="$cpu"&gt;
+        &lt;x-slot:value&gt;&lt;x-oc::reading&gt;52 °C&lt;/x-oc::reading&gt;&lt;/x-slot:value&gt;
+    &lt;/x-oc::meter-row&gt;
+    &lt;x-oc::meter-row label="GPU" :percent="$gpu" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34"&gt;
+        &lt;x-slot:value&gt;&lt;x-oc::reading level="warm"&gt;74 °C&lt;/x-oc::reading&gt;&lt;/x-slot:value&gt;
+    &lt;/x-oc::meter-row&gt;
     &lt;x-oc::meter-row label="Memory" :percent="$memory" value="18.6 / 32 GB" sub="Swap 1.2 / 4 GB" :sub-percent="30" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>

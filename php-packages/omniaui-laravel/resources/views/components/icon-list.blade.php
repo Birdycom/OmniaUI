@@ -1,8 +1,15 @@
 {{-- File: resources/views/components/icon-list.blade.php | Map: variant -> ul.oc-icon-list (icon rows | --points: tile + title + text) | ul.oc-list--accent
      OmniaUI icon list for a company site (packages/ui/snippets/icon-list.html). Needs @birdycom/omniaui CSS.
      Props: items (list of ['icon' => webicon name, 'text', 'title' (points), 'accent' (tile)]), variant (icons|points|accent), accent (every tile).
+     pills (list of texts: div.oc-badge-row of span.oc-pill) and tagline (p.oc-tagline--accent) above the list, note (p.oc-note) under it.
      Slot: extra <li> rows. --}}
-@props(['items' => [], 'variant' => 'icons', 'accent' => null])
+@props(['items' => [], 'variant' => 'icons', 'accent' => null, 'pills' => [], 'tagline' => null, 'note' => null])
+@if (! empty($pills))
+    <div class="oc-badge-row">@foreach ($pills as $pill)<span class="oc-pill">{{ $pill }}</span>@endforeach</div>
+@endif
+@if ($tagline)
+    <p class="oc-tagline--accent">{{ $tagline }}</p>
+@endif
 @if ($variant === 'accent')
     <ul {{ $attributes->class(['oc-list--accent']) }}>
         @foreach ($items as $item)
@@ -21,4 +28,7 @@
         @endforeach
         {{ $slot }}
     </ul>
+@endif
+@if ($note)
+    <p class="oc-note">{{ $note }}</p>
 @endif

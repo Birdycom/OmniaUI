@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Chip filter", "category": "Forms", "description": "Rounded filter chips above a list, single or multiple choice.", "nav": "Chip filter", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Chip filter", "category": "Forms", "description": "Rounded filter chips above a list, with single or multiple choice, counts per chip, disabled options, a small size and a scrolling row.", "nav": "Chip filter", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/chip-filter.html | Map: hero -> demo (multi with counts, single + small + scroll) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Chip filter</h1>
@@ -51,12 +51,17 @@ const types = ref(['video', 'image'])
 &lt;template&gt;
   &lt;OcChipFilter v-model="types" multiple name="type" label="Filter by type" :options="options" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">{{-- &lt;x-oc::chip-filter&gt; has no disabled option: Documents (0 items) is left out --}}
+<oc-code lang="blade">{{-- Documents has no items yet: 'disabled' =&gt; true shows the chip but it cannot be chosen --}}
 &lt;x-oc::chip-filter
     name="type"
     multiple
     label="Filter by type"
-    :options="['video' =&gt; ['Video', 24], 'audio' =&gt; ['Audio', 8], 'image' =&gt; ['Images', 112]]"
+    :options="[
+        'video' =&gt; ['Video', 24],
+        'audio' =&gt; ['Audio', 8],
+        'image' =&gt; ['Images', 112],
+        'docs' =&gt; ['label' =&gt; 'Documents', 'count' =&gt; 0, 'disabled' =&gt; true],
+    ]"
     :value="request('type', ['video', 'image'])"
 /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -69,7 +74,19 @@ class TypeFilter extends Component
 {
     public array $types = ['video', 'image'];
 
-    public array $options = ['video' =&gt; ['Video', 24], 'audio' =&gt; ['Audio', 8], 'image' =&gt; ['Images', 112], 'docs' =&gt; ['Documents', 0]];
+    public array $options = [
+        'video' =&gt; ['Video', 24],
+        'audio' =&gt; ['Audio', 8],
+        'image' =&gt; ['Images', 112],
+        'docs' =&gt; ['label' =&gt; 'Documents', 'count' =&gt; 0, 'disabled' =&gt; true],
+    ];
+
+    public function toggle(string $type): void
+    {
+        $this-&gt;types = in_array($type, $this-&gt;types, true)
+            ? array_values(array_diff($this-&gt;types, [$type]))
+            : [...$this-&gt;types, $type];
+    }
 
     public function render()
     {
@@ -78,15 +95,10 @@ class TypeFilter extends Component
 }
 
 {{-- resources/views/livewire/type-filter.blade.php --}}
-{{-- wire:model goes on the inputs, so the chips are written out (&lt;x-oc::chip-filter&gt; passes attributes to the group) --}}
-&lt;fieldset class="oc-chip-filter" aria-label="Filter by type"&gt;
-    @foreach ($options as $value =&gt; [$label, $count])
-        &lt;label class="oc-chip-filter-item"&gt;
-            &lt;input type="checkbox" value="{{ $value }}" wire:model.live="types" @disabled($count === 0)&gt; {{ $label }}
-            &lt;span class="oc-chip-filter-count"&gt;{{ $count }}&lt;/span&gt;
-        &lt;/label&gt;
-    @endforeach
-&lt;/fieldset&gt;</oc-code>
+&lt;div&gt;
+    {{-- attributes go to the group: the change of a chip bubbles up and toggles its value in $types --}}
+    &lt;x-oc::chip-filter name="type" multiple label="Filter by type" :options="$options" :value="$types" wire:change="toggle($event.target.value)" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">One choice, small, scrolling</h3>
@@ -170,11 +182,10 @@ class ScanMode extends Component
 }
 
 {{-- resources/views/livewire/scan-mode.blade.php --}}
-{{-- wire:model goes on the inputs, so the chips are written out (&lt;x-oc::chip-filter&gt; passes attributes to the group) --}}
-&lt;div class="oc-chip-filter oc-chip-filter--sm oc-chip-filter--scroll" role="radiogroup" aria-label="Scan mode" style="max-inline-size:20rem"&gt;
-    @foreach ($modes as $value =&gt; $label)
-        &lt;label class="oc-chip-filter-item"&gt;&lt;input type="radio" value="{{ $value }}" wire:model.live="mode"&gt; {{ $label }}&lt;/label&gt;
-    @endforeach
+&lt;div&gt;
+    {{-- attributes go to the group: the change of a radio bubbles up and sets $mode --}}
+    &lt;x-oc::chip-filter name="mode" label="Scan mode" size="sm" scroll :options="$modes" :value="$mode"
+        wire:change="$set('mode', $event.target.value)" style="max-inline-size:20rem" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

@@ -2,6 +2,8 @@
 /**
  * Data table: sortable header (v-model:sort), row selection (v-model:selected), row actions, empty state,
  * density modifiers. Slots: `cell-<key>` (scoped: { row, value }), `actions` (scoped: { row }), `empty`.
+ * Free slot (0.17.0): without `columns` the default slot is the inside of the table (your own thead / tbody / rows,
+ * e.g. OcSortableRow), with the same wrapper and modifiers.
  * Classes: .oc-table-wrap > .oc-table(--striped/--compact/--borderless/--sticky), .oc-table-sort,
  * .oc-table-actions, .oc-table-empty; aria-sort / aria-selected / data-numeric attributes.
  */
@@ -23,8 +25,8 @@ export interface TableSort {
 
 const props = withDefaults(
   defineProps<{
-    columns: TableColumn[]
-    rows: Record<string, any>[]
+    columns?: TableColumn[]
+    rows?: Record<string, any>[]
     rowKey?: string
     caption?: string
     striped?: boolean
@@ -37,7 +39,7 @@ const props = withDefaults(
     /** 'auto': columns sized by their content. */
     layout?: 'fixed' | 'auto'
   }>(),
-  { rowKey: 'id', actionsLabel: 'Actions', selectAllLabel: 'Select all' },
+  { columns: () => [], rows: () => [], rowKey: 'id', actionsLabel: 'Actions', selectAllLabel: 'Select all' },
 )
 const selected = defineModel<(string | number)[]>('selected', { default: () => [] })
 const sort = defineModel<TableSort | null>('sort', { default: null })
@@ -72,6 +74,8 @@ function rowLabel(row: Record<string, any>) {
       :class="['oc-table', striped && 'oc-table--striped', compact && 'oc-table--compact', borderless && 'oc-table--borderless', sticky && 'oc-table--sticky', layout === 'auto' && 'oc-table--auto']"
     >
       <caption v-if="caption">{{ caption }}</caption>
+      <slot v-if="!columns.length && $slots.default" />
+      <template v-else>
       <thead>
         <tr>
           <th v-if="selectable" style="width: 2.5rem">
@@ -115,6 +119,7 @@ function rowLabel(row: Record<string, any>) {
           <td :colspan="colspan"><slot name="empty" :row="{}" /></td>
         </tr>
       </tbody>
+      </template>
     </table>
   </div>
 </template>

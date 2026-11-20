@@ -1,5 +1,5 @@
 // File: packages/react/src/components/IconList.tsx
-// Map: types -> IconList (ul.oc-icon-list: icon rows | --points: tile + title + text | ul.oc-list--accent: plain points)
+// Map: types -> IconList (pills + tagline -> ul.oc-icon-list: icon rows | --points: tile + title + text | ul.oc-list--accent: plain points -> note)
 // Same markup as packages/ui/snippets/icon-list.html.
 import { forwardRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
@@ -23,22 +23,25 @@ export interface IconListProps extends HTMLAttributes<HTMLUListElement> {
   variant?: "icons" | "points" | "accent";
   /** Accent preset for every tile of a points list. */
   accent?: string;
+  /** Pills above the list (`div.oc-badge-row` of `span.oc-pill`). */
+  pills?: ReactNode[];
+  /** Tagline above the list, in the accent color (`p.oc-tagline--accent`). */
+  tagline?: ReactNode;
+  /** Small muted note under the list (`p.oc-note`). */
+  note?: ReactNode;
 }
 
 /** `ul.oc-icon-list` (rows or points) or `ul.oc-list--accent`: lists for a company site. */
 export const IconList = forwardRef<HTMLUListElement, IconListProps>(function IconList(
-  { items, variant = "icons", accent, className, ...rest },
+  { items, variant = "icons", accent, pills, tagline, note, className, ...rest },
   ref,
 ) {
-  if (variant === "accent") {
-    return (
-      <ul ref={ref} className={cx("oc-list--accent", className)} {...rest}>
-        {items.map((item, i) => <li key={i}>{item.text}</li>)}
-      </ul>
-    );
-  }
   const points = variant === "points";
-  return (
+  const list = variant === "accent" ? (
+    <ul ref={ref} className={cx("oc-list--accent", className)} {...rest}>
+      {items.map((item, i) => <li key={i}>{item.text}</li>)}
+    </ul>
+  ) : (
     <ul ref={ref} className={cx("oc-icon-list", points && "oc-icon-list--points", className)} {...rest}>
       {items.map((item, i) => {
         const tone = item.accent ?? accent;
@@ -55,5 +58,15 @@ export const IconList = forwardRef<HTMLUListElement, IconListProps>(function Ico
         );
       })}
     </ul>
+  );
+  // Pills and tagline above the list, a note under it (0.17.0); without them the list stands alone as before.
+  if (!pills?.length && tagline == null && note == null) return list;
+  return (
+    <>
+      {pills?.length ? <div className="oc-badge-row">{pills.map((pill, i) => <span key={i} className="oc-pill">{pill}</span>)}</div> : null}
+      {tagline != null && <p className="oc-tagline--accent">{tagline}</p>}
+      {list}
+      {note != null && <p className="oc-note">{note}</p>}
+    </>
   );
 });

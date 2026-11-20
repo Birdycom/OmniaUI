@@ -18,6 +18,7 @@ import type { AuthBlockAllProps, AuthBlockPanel } from './authBlock'
 const props = withDefaults(defineProps<AuthBlockAllProps & { defaultPanel?: AuthBlockPanel }>(), {
   layout: 'card',
   socialPosition: 'top',
+  headingLevel: 1,
   action: '#',
   method: 'post',
   emailLabel: 'E-mail',
@@ -70,7 +71,7 @@ const onCode = (v: string) => {
         <form :class="formClass" :action="action" :method="method" @submit="emit('submit', $event as SubmitEvent)">
           <span v-if="tile" class="oc-block-authcard-logo"><OcWebicon :name="tile" bare fallback="iconify" /></span>
           <div v-if="title || text" class="oc-block-authcard-head">
-            <h1 v-if="title" class="oc-block-authcard-title">{{ title }}</h1>
+            <component :is="headingLevel === 2 ? 'h2' : 'h1'" v-if="title" class="oc-block-authcard-title">{{ title }}</component>
             <p v-if="text" class="oc-block-authcard-text">{{ text }}</p>
           </div>
           <template v-if="hasSocial && socialPosition === 'top'">

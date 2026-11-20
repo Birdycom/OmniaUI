@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Dropdown menu extras", "category": "Overlays", "description": "Sub-menus, checkbox and radio items, shortcuts, destructive/disabled items.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Dropdown menu extras", "category": "Overlays", "description": "Dropdown menu extras: sub-menus, checkbox and radio items, keyboard shortcuts, icons, a second line of description and destructive or disabled items.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Dropdown menu extras</h1>
         <p class="oc-hero-text">Sub-menus, checkbox items, radio items, shortcuts, destructive and disabled items for the <a href="dropdown.html">dropdown</a>. The same classes work in the menubar and the context menu. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,8 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/dropdown-menu.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="extras">Sub-menu, check items and a destructive item <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Check and radio items, a key hint, a sub-menu that opens on hover and focus, a disabled and a red item. As components: <code>DropdownSub</code> / <code>OcDropdownSub</code> / <code>&lt;x-oc::dropdown.sub&gt;</code>, and <code>checked</code>, <code>radio</code> and <code>destructive</code> on the item.</p>
           <oc-demo title="Dropdown menu extras" size="tall">
 <button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-dd-extras">Open menu</button>
 <div class="oc-dropdown-menu" id="oc-dd-extras" popover="" role="menu">
@@ -39,23 +41,19 @@ const [panel, setPanel] = useState&lt;"top" | "bottom"&gt;("bottom");
   &lt;DropdownItem checked={activityBar} onClick={() =&gt; setActivityBar(!activityBar)}&gt;Activity bar&lt;/DropdownItem&gt;
   &lt;DropdownSeparator role="separator" /&gt;
   &lt;DropdownLabel&gt;Panel position&lt;/DropdownLabel&gt;
-  &lt;DropdownItem checked={panel === "top"} role="menuitemradio" onClick={() =&gt; setPanel("top")}&gt;Top&lt;/DropdownItem&gt;
-  &lt;DropdownItem checked={panel === "bottom"} role="menuitemradio" onClick={() =&gt; setPanel("bottom")}&gt;Bottom&lt;/DropdownItem&gt;
+  &lt;DropdownItem checked={panel === "top"} radio onClick={() =&gt; setPanel("top")}&gt;Top&lt;/DropdownItem&gt;
+  &lt;DropdownItem checked={panel === "bottom"} radio onClick={() =&gt; setPanel("bottom")}&gt;Bottom&lt;/DropdownItem&gt;
   &lt;DropdownSeparator role="separator" /&gt;
-  {/* Submenu: no wrapper, plain markup */}
-  &lt;div className="oc-dropdown-sub"&gt;
-    &lt;DropdownItem role="menuitem" aria-haspopup="menu" keepOpen&gt;More tools&lt;/DropdownItem&gt;
-    &lt;div className="oc-dropdown-submenu" role="menu"&gt;
-      &lt;DropdownItem role="menuitem" onClick={savePage}&gt;Save page as…&lt;/DropdownItem&gt;
-      &lt;DropdownItem role="menuitem" onClick={openDevTools}&gt;Developer tools&lt;/DropdownItem&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;DropdownSub label="More tools"&gt;
+    &lt;DropdownItem role="menuitem" onClick={savePage}&gt;Save page as…&lt;/DropdownItem&gt;
+    &lt;DropdownItem role="menuitem" onClick={openDevTools}&gt;Developer tools&lt;/DropdownItem&gt;
+  &lt;/DropdownSub&gt;
   &lt;DropdownItem role="menuitem" aria-disabled="true"&gt;Disabled item&lt;/DropdownItem&gt;
-  &lt;DropdownItem role="menuitem" className="oc-dropdown-item--destructive" onClick={remove}&gt;Delete&lt;/DropdownItem&gt;
+  &lt;DropdownItem role="menuitem" destructive onClick={remove}&gt;Delete&lt;/DropdownItem&gt;
 &lt;/Dropdown&gt;</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
 import { ref } from 'vue'
-import { OcDropdown, OcDropdownItem, OcDropdownLabel, OcDropdownSeparator } from '@birdycom/omniaui-vue'
+import { OcDropdown, OcDropdownItem, OcDropdownLabel, OcDropdownSeparator, OcDropdownSub } from '@birdycom/omniaui-vue'
 
 const statusBar = ref(true)
 const activityBar = ref(false)
@@ -70,39 +68,32 @@ const emit = defineEmits&lt;{ savePage: []; devTools: []; remove: [] }&gt;()
     &lt;OcDropdownItem :checked="activityBar" @click="activityBar = !activityBar"&gt;Activity bar&lt;/OcDropdownItem&gt;
     &lt;OcDropdownSeparator role="separator" /&gt;
     &lt;OcDropdownLabel&gt;Panel position&lt;/OcDropdownLabel&gt;
-    &lt;OcDropdownItem :checked="panel === 'top'" role="menuitemradio" @click="panel = 'top'"&gt;Top&lt;/OcDropdownItem&gt;
-    &lt;OcDropdownItem :checked="panel === 'bottom'" role="menuitemradio" @click="panel = 'bottom'"&gt;Bottom&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem :checked="panel === 'top'" radio @click="panel = 'top'"&gt;Top&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem :checked="panel === 'bottom'" radio @click="panel = 'bottom'"&gt;Bottom&lt;/OcDropdownItem&gt;
     &lt;OcDropdownSeparator role="separator" /&gt;
-    &lt;!-- Submenu: no wrapper, plain markup --&gt;
-    &lt;div class="oc-dropdown-sub"&gt;
-      &lt;OcDropdownItem role="menuitem" aria-haspopup="menu" keep-open&gt;More tools&lt;/OcDropdownItem&gt;
-      &lt;div class="oc-dropdown-submenu" role="menu"&gt;
-        &lt;OcDropdownItem role="menuitem" @click="emit('savePage')"&gt;Save page as…&lt;/OcDropdownItem&gt;
-        &lt;OcDropdownItem role="menuitem" @click="emit('devTools')"&gt;Developer tools&lt;/OcDropdownItem&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;OcDropdownSub label="More tools"&gt;
+      &lt;OcDropdownItem role="menuitem" @click="emit('savePage')"&gt;Save page as…&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownItem role="menuitem" @click="emit('devTools')"&gt;Developer tools&lt;/OcDropdownItem&gt;
+    &lt;/OcDropdownSub&gt;
     &lt;OcDropdownItem role="menuitem" aria-disabled="true"&gt;Disabled item&lt;/OcDropdownItem&gt;
-    &lt;OcDropdownItem role="menuitem" class="oc-dropdown-item--destructive" @click="emit('remove')"&gt;Delete&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem role="menuitem" destructive @click="emit('remove')"&gt;Delete&lt;/OcDropdownItem&gt;
   &lt;/OcDropdown&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::dropdown label="Open menu" id="dd-extras" role="menu"&gt;
-    &lt;div class="oc-dropdown-label"&gt;Appearance&lt;/div&gt;
-    &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Status bar&lt;span class="oc-dropdown-hint"&gt;Ctrl B&lt;/span&gt;&lt;/button&gt;
-    &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Activity bar&lt;/button&gt;
-    &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-    &lt;div class="oc-dropdown-label"&gt;Panel position&lt;/div&gt;
-    &lt;button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="false"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Top&lt;/button&gt;
-    &lt;button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="true"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Bottom&lt;/button&gt;
-    &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-    &lt;div class="oc-dropdown-sub"&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitem" aria-haspopup="menu"&gt;More tools&lt;/button&gt;
-        &lt;div class="oc-dropdown-submenu" role="menu"&gt;
-            &lt;a class="oc-dropdown-item" role="menuitem" href="/page/save"&gt;Save page as…&lt;/a&gt;
-            &lt;a class="oc-dropdown-item" role="menuitem" href="/tools/developer"&gt;Developer tools&lt;/a&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;button class="oc-dropdown-item" type="button" role="menuitem" aria-disabled="true"&gt;Disabled item&lt;/button&gt;
-    &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem"&gt;Delete&lt;/button&gt;
+    &lt;x-oc::dropdown.label&gt;Appearance&lt;/x-oc::dropdown.label&gt;
+    &lt;x-oc::dropdown.item :checked="true" hint="Ctrl B"&gt;Status bar&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item :checked="false"&gt;Activity bar&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.separator /&gt;
+    &lt;x-oc::dropdown.label&gt;Panel position&lt;/x-oc::dropdown.label&gt;
+    &lt;x-oc::dropdown.item :checked="false" radio&gt;Top&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item :checked="true" radio&gt;Bottom&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.separator /&gt;
+    &lt;x-oc::dropdown.sub label="More tools"&gt;
+        &lt;x-oc::dropdown.item role="menuitem" href="/page/save"&gt;Save page as…&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" href="/tools/developer"&gt;Developer tools&lt;/x-oc::dropdown.item&gt;
+    &lt;/x-oc::dropdown.sub&gt;
+    &lt;x-oc::dropdown.item role="menuitem" disabled&gt;Disabled item&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item role="menuitem" destructive&gt;Delete&lt;/x-oc::dropdown.item&gt;
 &lt;/x-oc::dropdown&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -147,23 +138,20 @@ class ViewMenu extends Component
 {{-- resources/views/livewire/view-menu.blade.php --}}
 &lt;div&gt;
     &lt;x-oc::dropdown label="Open menu" id="dd-extras" role="menu"&gt;
-        &lt;div class="oc-dropdown-label"&gt;Appearance&lt;/div&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="{{ $statusBar ? 'true' : 'false' }}" wire:click="toggleStatusBar"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Status bar&lt;span class="oc-dropdown-hint"&gt;Ctrl B&lt;/span&gt;&lt;/button&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitemcheckbox" aria-checked="{{ $activityBar ? 'true' : 'false' }}" wire:click="toggleActivityBar"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Activity bar&lt;/button&gt;
-        &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-        &lt;div class="oc-dropdown-label"&gt;Panel position&lt;/div&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="{{ $panel === 'top' ? 'true' : 'false' }}" wire:click="setPanel('top')"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Top&lt;/button&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="{{ $panel === 'bottom' ? 'true' : 'false' }}" wire:click="setPanel('bottom')"&gt;&lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Bottom&lt;/button&gt;
-        &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-        &lt;div class="oc-dropdown-sub"&gt;
-            &lt;button class="oc-dropdown-item" type="button" role="menuitem" aria-haspopup="menu"&gt;More tools&lt;/button&gt;
-            &lt;div class="oc-dropdown-submenu" role="menu"&gt;
-                &lt;a class="oc-dropdown-item" role="menuitem" href="/page/save" wire:navigate&gt;Save page as…&lt;/a&gt;
-                &lt;a class="oc-dropdown-item" role="menuitem" href="/tools/developer" wire:navigate&gt;Developer tools&lt;/a&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitem" aria-disabled="true"&gt;Disabled item&lt;/button&gt;
-        &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem" wire:click="delete" wire:confirm="Delete this item?"&gt;Delete&lt;/button&gt;
+        &lt;x-oc::dropdown.label&gt;Appearance&lt;/x-oc::dropdown.label&gt;
+        &lt;x-oc::dropdown.item :checked="$statusBar" hint="Ctrl B" wire:click="toggleStatusBar"&gt;Status bar&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item :checked="$activityBar" wire:click="toggleActivityBar"&gt;Activity bar&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.label&gt;Panel position&lt;/x-oc::dropdown.label&gt;
+        &lt;x-oc::dropdown.item :checked="$panel === 'top'" radio wire:click="setPanel('top')"&gt;Top&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item :checked="$panel === 'bottom'" radio wire:click="setPanel('bottom')"&gt;Bottom&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.sub label="More tools"&gt;
+            &lt;x-oc::dropdown.item role="menuitem" href="/page/save" wire:navigate&gt;Save page as…&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.item role="menuitem" href="/tools/developer" wire:navigate&gt;Developer tools&lt;/x-oc::dropdown.item&gt;
+        &lt;/x-oc::dropdown.sub&gt;
+        &lt;x-oc::dropdown.item role="menuitem" disabled&gt;Disabled item&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" destructive wire:click="delete" wire:confirm="Delete this item?"&gt;Delete&lt;/x-oc::dropdown.item&gt;
     &lt;/x-oc::dropdown&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -198,7 +186,7 @@ class ViewMenu extends Component
   &lt;DropdownItem icon="mdi:email-outline"&gt;Send to Customer 1&lt;/DropdownItem&gt;
   &lt;DropdownItem&gt;Mark as paid&lt;/DropdownItem&gt;
   &lt;DropdownSeparator /&gt;
-  &lt;DropdownItem icon="mdi:delete-outline" className="oc-dropdown-item--destructive"&gt;Delete&lt;/DropdownItem&gt;
+  &lt;DropdownItem icon="mdi:delete-outline" destructive&gt;Delete&lt;/DropdownItem&gt;
 &lt;/Dropdown&gt;</oc-code>
 <oc-code lang="vue">&lt;OcDropdown label="Actions"&gt;
   &lt;OcDropdownLabel&gt;Invoice 1&lt;/OcDropdownLabel&gt;
@@ -207,7 +195,7 @@ class ViewMenu extends Component
   &lt;OcDropdownItem icon="mdi:email-outline"&gt;Send to Customer 1&lt;/OcDropdownItem&gt;
   &lt;OcDropdownItem&gt;Mark as paid&lt;/OcDropdownItem&gt;
   &lt;OcDropdownSeparator /&gt;
-  &lt;OcDropdownItem icon="mdi:delete-outline" class="oc-dropdown-item--destructive"&gt;Delete&lt;/OcDropdownItem&gt;
+  &lt;OcDropdownItem icon="mdi:delete-outline" destructive&gt;Delete&lt;/OcDropdownItem&gt;
 &lt;/OcDropdown&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::dropdown label="Actions" :items="[
     ['group' =&gt; 'Invoice 1'],
@@ -220,7 +208,7 @@ class ViewMenu extends Component
     &lt;form method="POST" action="/invoices/1" style="display:contents"&gt;
         @csrf
         @method('DELETE')
-        &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="submit"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:delete-outline" bare /&gt;&lt;/span&gt;Delete&lt;/button&gt;
+        &lt;x-oc::dropdown.item type="submit" icon="mdi:delete-outline" destructive&gt;Delete&lt;/x-oc::dropdown.item&gt;
     &lt;/form&gt;
 &lt;/x-oc::dropdown&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
@@ -264,13 +252,13 @@ class InvoiceActions extends Component
 {{-- resources/views/livewire/invoice-actions.blade.php --}}
 &lt;div&gt;
     &lt;x-oc::dropdown label="Actions" role="menu"&gt;
-        &lt;div class="oc-dropdown-label"&gt;Invoice {{ $invoice }}&lt;/div&gt;
-        &lt;a class="oc-dropdown-item" role="menuitem" href="/invoices/{{ $invoice }}/edit" wire:navigate&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" bare /&gt;&lt;/span&gt;Edit&lt;span class="oc-dropdown-hint"&gt;E&lt;/span&gt;&lt;/a&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitem" wire:click="duplicate"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:content-copy" bare /&gt;&lt;/span&gt;Duplicate&lt;/button&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitem" wire:click="send"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:email-outline" bare /&gt;&lt;/span&gt;Send to {{ $customer }}&lt;/button&gt;
-        &lt;button class="oc-dropdown-item" type="button" role="menuitem" wire:click="markPaid"&gt;Mark as paid&lt;/button&gt;
-        &lt;div class="oc-dropdown-separator" role="separator"&gt;&lt;/div&gt;
-        &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem" wire:click="delete" wire:confirm="Delete invoice {{ $invoice }}?"&gt;&lt;span class="oc-dropdown-icon" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:delete-outline" bare /&gt;&lt;/span&gt;Delete&lt;/button&gt;
+        &lt;x-oc::dropdown.label&gt;Invoice {{ $invoice }}&lt;/x-oc::dropdown.label&gt;
+        &lt;x-oc::dropdown.item role="menuitem" href="/invoices/{{ $invoice }}/edit" icon="mdi:pencil-outline" hint="E" wire:navigate&gt;Edit&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" icon="mdi:content-copy" wire:click="duplicate"&gt;Duplicate&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" icon="mdi:email-outline" wire:click="send"&gt;Send to {{ $customer }}&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" wire:click="markPaid"&gt;Mark as paid&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.item role="menuitem" icon="mdi:delete-outline" destructive wire:click="delete" wire:confirm="Delete invoice {{ $invoice }}?"&gt;Delete&lt;/x-oc::dropdown.item&gt;
     &lt;/x-oc::dropdown&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -342,10 +330,7 @@ class NewStepMenu extends Component
 &lt;div&gt;
     &lt;x-oc::dropdown label="New step" role="menu"&gt;
         @foreach ($types as $type =&gt; $step)
-            &lt;button class="oc-dropdown-item" type="button" role="menuitem" wire:click="add('{{ $type }}')"&gt;
-                &lt;span class="oc-dropdown-icon oc-dropdown-icon--{{ $step['tone'] }}" aria-hidden="true"&gt;&lt;x-oc::webicon :name="$step['icon']" bare /&gt;&lt;/span&gt;
-                &lt;span class="oc-dropdown-text"&gt;&lt;span&gt;{{ $step['label'] }}&lt;/span&gt;&lt;span class="oc-dropdown-desc"&gt;{{ $step['description'] }}&lt;/span&gt;&lt;/span&gt;
-            &lt;/button&gt;
+            &lt;x-oc::dropdown.item role="menuitem" :icon="$step['icon']" :tone="$step['tone']" :description="$step['description']" wire:click="add('{{ $type }}')"&gt;{{ $step['label'] }}&lt;/x-oc::dropdown.item&gt;
         @endforeach
     &lt;/x-oc::dropdown&gt;
 &lt;/div&gt;</oc-code>
@@ -369,6 +354,7 @@ class NewStepMenu extends Component
               <tr><td><code>.oc-dropdown-text &gt; span + .oc-dropdown-desc</code></td><td>Label with a muted second line under it. React / Vue: <code>description</code>; Blade: <code>'description'</code></td></tr>
               <tr><td>React <code>&lt;DropdownItem&gt;</code>, Vue <code>&lt;OcDropdownItem&gt;</code></td><td>A click closes the menu around the item (<code>hidePopover()</code>). <code>keepOpen</code> / <code>keep-open</code> keeps it open; a check item (<code>checked</code>) stays open by default, and <code>event.preventDefault()</code> in your click handler also keeps it open.</td></tr>
               <tr><td><code>.oc-dropdown-item[aria-disabled=true]</code></td><td>Disabled item</td></tr>
+              <tr><td>Components (0.17.0)</td><td>React <code>&lt;DropdownSub label&gt;</code>, Vue <code>&lt;OcDropdownSub&gt;</code>, Blade <code>&lt;x-oc::dropdown.sub&gt;</code> for a sub-menu; <code>destructive</code> and <code>radio</code> (with <code>checked</code>) on the item. Blade <code>&lt;x-oc::dropdown.item&gt;</code> takes <code>href</code>, <code>icon</code>, <code>tone</code>, <code>description</code>, <code>hint</code>, <code>checked</code>, <code>radio</code>, <code>destructive</code> and <code>disabled</code>; other attributes (<code>wire:click</code>) go to the item</td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>

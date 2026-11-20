@@ -6,7 +6,8 @@
        tagline, label = aria-label; small .oc-brand-mark as the logo link, slot brand-icon for its svg), about,
        columns (array of ['title', 'links' => [['label', 'href']], 'lines' => address lines [['label', 'href'?]], 'more' => [['title', 'links']]]),
        contact (['title', 'lines' => [['label', 'href'?]]]), row (links of the centred variant), social ([['label', 'href', 'icon' => webicon]]),
-       social-label ('Social media'), newsletter (['action', 'method' = post, 'label', 'placeholder', 'name', 'button', 'id']),
+       social-label ('Social media'), newsletter (['action', 'method' = post, 'label', 'placeholder', 'name', 'button', 'id',
+       'attributes' (extra on the form, e.g. wire:submit), 'inputAttributes' (extra on the e-mail field, e.g. wire:model)]),
        copyright, legal ([['label', 'href']]), build, credit.
      Hand-written (MANUAL in tools/build-blocks.mjs): keep the default output equal to packages/blocks/blocks/site-footer.html.
 --}}
@@ -19,6 +20,7 @@
     $hasLegal = ! empty($legal) || $filled($build);
     $mailId = is_array($newsletter) ? ($newsletter['id'] ?? 'oc-ft-mail') : null;
     $mailMethod = is_array($newsletter) ? strtolower($newsletter['method'] ?? 'post') : 'post';
+    $bag = fn ($a) => new \Illuminate\View\ComponentAttributeBag(is_array($a) ? $a : []);
 @endphp
 <footer {{ $attributes->merge(['class' => 'oc-site-footer'.($variant ? ' oc-site-footer--'.$variant : '')]) }}>
     @if (! $slot->isEmpty())
@@ -62,9 +64,9 @@
         <p>{{ $about }}</p>
         @endif
         @if (is_array($newsletter))
-        <form class="oc-site-footer__signup" @if (isset($newsletter['action'])) action="{{ $newsletter['action'] }}" method="{{ $mailMethod }}" @endif>
+        <form {{ $bag($newsletter['attributes'] ?? [])->merge(['class' => 'oc-site-footer__signup']) }} @if (isset($newsletter['action'])) action="{{ $newsletter['action'] }}" method="{{ $mailMethod }}" @endif>
             @if (isset($newsletter['action']) && $mailMethod !== 'get') @csrf @endif
-            <label class="oc-visually-hidden" for="{{ $mailId }}">{{ $newsletter['label'] ?? 'E-mail' }}</label><input class="oc-input" id="{{ $mailId }}" type="email" name="{{ $newsletter['name'] ?? 'email' }}" @if (isset($newsletter['placeholder'])) placeholder="{{ $newsletter['placeholder'] }}" @endif autocomplete="email" required><button class="oc-btn" type="submit">{{ $newsletter['button'] ?? 'Subscribe' }}</button>
+            <label class="oc-visually-hidden" for="{{ $mailId }}">{{ $newsletter['label'] ?? 'E-mail' }}</label><input class="oc-input" id="{{ $mailId }}" type="email" name="{{ $newsletter['name'] ?? 'email' }}" @if (isset($newsletter['placeholder'])) placeholder="{{ $newsletter['placeholder'] }}" @endif autocomplete="email" required {{ $bag($newsletter['inputAttributes'] ?? []) }}><button class="oc-btn" type="submit">{{ $newsletter['button'] ?? 'Subscribe' }}</button>
         </form>
             @if (! empty($social))
         <div style="margin-block-start:1.25rem"><ul class="oc-site-footer__social" aria-label="{{ $socialLabel }}">@foreach ($social as $s)<li><a href="{{ $s['href'] ?? '#' }}" aria-label="{{ $s['label'] ?? '' }}"><x-oc::webicon :name="$s['icon']" bare fallback="iconify" /></a></li>@endforeach</ul></div>

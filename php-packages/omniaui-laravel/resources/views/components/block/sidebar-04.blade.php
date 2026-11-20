@@ -9,12 +9,17 @@
        .oc-block-sb-tile / -sub: Square brand tile and small secondary line inside a menu button
        .oc-sidebar: The sidebar component (modifiers --collapsed, --right, --floating); see Sidebar
      Blade: <x-oc::block.sidebar-04> - attributes merge onto the root element.
-     Blade slots (each falls back to the snippet content when empty): default.
+     Blade slots (each falls back to the snippet content when empty): sidebar, breadcrumbs, bar, body, default.
+     The default slot replaces the whole content; each named slot replaces one region (a plain string works too).
 --}}
+@props(['sidebar' => null, 'breadcrumbs' => null, 'bar' => null, 'body' => null])
 <div {{ $attributes->merge(['class' => 'oc-block-sb oc-block-sb--floating']) }}>
     @if (! $slot->isEmpty())
         {{ $slot }}
     @else
+  @if (isset($sidebar) && trim((string) $sidebar) !== '')
+      {{ $sidebar }}
+  @else
   <aside class="oc-sidebar oc-sidebar--floating" aria-label="Main navigation">
     <div class="oc-sidebar-header">
       <a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#">
@@ -47,15 +52,28 @@
       </div>
     </div>
   </aside>
+  @endif
   <div class="oc-block-sb-main">
     <header class="oc-block-sb-bar">
+        @if (isset($bar) && trim((string) $bar) !== '')
+            {{ $bar }}
+        @else
       <span class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" aria-hidden="true"><svg data-icon="mdi:dock-left" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 14H9V6h11Z"/></svg></span>
       <span class="oc-block-sb-sep"></span>
+      @if (isset($breadcrumbs) && trim((string) $breadcrumbs) !== '')
+          {{ $breadcrumbs }}
+      @else
       <nav aria-label="Breadcrumb"><ol class="oc-breadcrumb oc-breadcrumb--chevron"><li class="oc-breadcrumb-item"><a href="#"><svg data-icon="mdi:home-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3"/></svg>Building</a></li><li class="oc-breadcrumb-item" aria-current="page">Overview</li></ol></nav>
+      @endif
+        @endif
     </header>
     <div class="oc-block-sb-body">
+        @if (isset($body) && trim((string) $body) !== '')
+            {{ $body }}
+        @else
       <div class="oc-block-sb-ph"></div><div class="oc-block-sb-ph"></div><div class="oc-block-sb-ph"></div>
       <div class="oc-block-sb-ph oc-block-sb-ph--wide"></div>
+        @endif
     </div>
   </div>
     @endif

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Site footer bar", "category": "Navigation", "description": "Slim footer bar with version line and links (<code>.oc-footerbar</code>).", "nav": "Site footer", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Site footer bar", "category": "Navigation", "description": "Slim footer bar for a site or app: a version or copyright line with optional links, split left and right, a dark band and a fixed bottom variant.", "nav": "Site footer", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Site footer bar</h1>
         <p class="oc-hero-text">Slim <strong>footer bar</strong> with a version line and links, as at the bottom of every OmniaCSS page. For a large footer with link columns, a newsletter field or social icons, use the <a href="../blocks/site-footer.html">Site footer block</a>. <a href="../components.html">All components</a>.</p>
@@ -8,25 +8,32 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/site-footer.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Version line <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Site footer bar">
 <footer class="oc-footerbar">
   OmniaCSS v1 — modern CSS, utilities, components and blocks · <a href="#">Docs</a> · <a href="#">GitHub</a>
 </footer>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Footerbar } from "@birdycom/omniaui-react";
+
+export function Example() {
   return (
-    &lt;footer className="oc-footerbar"&gt;
+    &lt;Footerbar&gt;
       OmniaCSS v1 — modern CSS, utilities, components and blocks · &lt;a href="#"&gt;Docs&lt;/a&gt; · &lt;a href="#"&gt;GitHub&lt;/a&gt;
-    &lt;/footer&gt;
+    &lt;/Footerbar&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;footer class="oc-footerbar"&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcFooterbar } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFooterbar&gt;
     OmniaCSS v1 — modern CSS, utilities, components and blocks · &lt;a href="#"&gt;Docs&lt;/a&gt; · &lt;a href="#"&gt;GitHub&lt;/a&gt;
-  &lt;/footer&gt;
+  &lt;/OcFooterbar&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;footer class="oc-footerbar"&gt;
+<oc-code lang="blade">&lt;x-oc::footerbar&gt;
   OmniaCSS v1 — modern CSS, utilities, components and blocks · &lt;a href="#"&gt;Docs&lt;/a&gt; · &lt;a href="#"&gt;GitHub&lt;/a&gt;
-&lt;/footer&gt;</oc-code>
+&lt;/x-oc::footerbar&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -35,6 +42,8 @@ use Livewire\Component;
 
 class SiteFooterBar extends Component
 {
+    public string $version = 'v1';
+
     public function render()
     {
         return view('livewire.site-footer-bar');
@@ -42,23 +51,43 @@ class SiteFooterBar extends Component
 }
 
 {{-- resources/views/livewire/site-footer-bar.blade.php --}}
-&lt;footer class="oc-footerbar"&gt;
-  OmniaCSS v1 — modern CSS, utilities, components and blocks · &lt;a href="#"&gt;Docs&lt;/a&gt; · &lt;a href="#"&gt;GitHub&lt;/a&gt;
-&lt;/footer&gt;</oc-code>
+&lt;x-oc::footerbar&gt;
+    OmniaCSS {{ $version }} — modern CSS, utilities, components and blocks · &lt;a href="#"&gt;Docs&lt;/a&gt; · &lt;a href="#"&gt;GitHub&lt;/a&gt;
+&lt;/x-oc::footerbar&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-split">Split with links <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc"><code>--split</code>: the copyright left, a <code>.oc-footerbar-links</code> list right; <code>--tall</code> lets it grow and wrap on a phone.</p>
           <oc-demo title="Site footer bar - split">
 <footer class="oc-footerbar oc-footerbar--split oc-footerbar--tall"><span>&copy; 2026 Company 1</span><ul class="oc-footerbar-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Cookies</a></li><li><a href="#">Contact</a></li></ul></footer>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Footerbar } from "@birdycom/omniaui-react";
+
+const links = [
+  { href: "#", label: "Privacy" },
+  { href: "#", label: "Terms" },
+  { href: "#", label: "Cookies" },
+  { href: "#", label: "Contact" },
+];
+
+export function Example() {
   return (
-    &lt;footer className="oc-footerbar oc-footerbar--split oc-footerbar--tall"&gt;&lt;span&gt;© 2026 Company 1&lt;/span&gt;&lt;ul className="oc-footerbar-links"&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Cookies&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/footer&gt;
+    &lt;Footerbar split tall links={links}&gt;© 2026 Company 1&lt;/Footerbar&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;footer class="oc-footerbar oc-footerbar--split oc-footerbar--tall"&gt;&lt;span&gt;© 2026 Company 1&lt;/span&gt;&lt;ul class="oc-footerbar-links"&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Cookies&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/footer&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcFooterbar } from "@birdycom/omniaui-vue";
+
+const links = [
+  { href: "#", label: "Privacy" },
+  { href: "#", label: "Terms" },
+  { href: "#", label: "Cookies" },
+  { href: "#", label: "Contact" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFooterbar split tall :links="links"&gt;© 2026 Company 1&lt;/OcFooterbar&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;footer class="oc-footerbar oc-footerbar--split oc-footerbar--tall"&gt;&lt;span&gt;&amp;copy; 2026 Company 1&lt;/span&gt;&lt;ul class="oc-footerbar-links"&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Cookies&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/footer&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::footerbar split tall :links="['#privacy' =&gt; 'Privacy', '#terms' =&gt; 'Terms', '#cookies' =&gt; 'Cookies', '#contact' =&gt; 'Contact']"&gt;&amp;copy; 2026 Company 1&lt;/x-oc::footerbar&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -67,6 +96,13 @@ use Livewire\Component;
 
 class SiteFooterBarSplit extends Component
 {
+    public array $links = [
+        ['href' =&gt; '/privacy', 'label' =&gt; 'Privacy'],
+        ['href' =&gt; '/terms', 'label' =&gt; 'Terms'],
+        ['href' =&gt; '/cookies', 'label' =&gt; 'Cookies'],
+        ['href' =&gt; '/contact', 'label' =&gt; 'Contact'],
+    ];
+
     public function render()
     {
         return view('livewire.site-footer-bar-split');
@@ -74,21 +110,41 @@ class SiteFooterBarSplit extends Component
 }
 
 {{-- resources/views/livewire/site-footer-bar-split.blade.php --}}
-&lt;footer class="oc-footerbar oc-footerbar--split oc-footerbar--tall"&gt;&lt;span&gt;&amp;copy; 2026 Company 1&lt;/span&gt;&lt;ul class="oc-footerbar-links"&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Cookies&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/footer&gt;</oc-code>
+&lt;x-oc::footerbar split tall :links="$links"&gt;&amp;copy; {{ now()-&gt;year }} Company 1&lt;/x-oc::footerbar&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-dark">Dark <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc"><code>--dark</code>: light text on a dark bar, under a dark page or a dark header.</p>
           <oc-demo title="Site footer bar - dark">
 <footer class="oc-footerbar oc-footerbar--dark oc-footerbar--split oc-footerbar--tall"><span>&copy; 2026 Company 1 · Made with OmniaCSS</span><ul class="oc-footerbar-links"><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Cookies</a></li><li><a href="#">Contact</a></li></ul></footer>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { Footerbar } from "@birdycom/omniaui-react";
+
+const links = [
+  { href: "#", label: "Privacy" },
+  { href: "#", label: "Terms" },
+  { href: "#", label: "Cookies" },
+  { href: "#", label: "Contact" },
+];
+
+export function Example() {
   return (
-    &lt;footer className="oc-footerbar oc-footerbar--dark oc-footerbar--split oc-footerbar--tall"&gt;&lt;span&gt;© 2026 Company 1 · Made with OmniaCSS&lt;/span&gt;&lt;ul className="oc-footerbar-links"&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Cookies&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/footer&gt;
+    &lt;Footerbar dark split tall links={links}&gt;© 2026 Company 1 · Made with OmniaCSS&lt;/Footerbar&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;footer class="oc-footerbar oc-footerbar--dark oc-footerbar--split oc-footerbar--tall"&gt;&lt;span&gt;© 2026 Company 1 · Made with OmniaCSS&lt;/span&gt;&lt;ul class="oc-footerbar-links"&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Cookies&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/footer&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcFooterbar } from "@birdycom/omniaui-vue";
+
+const links = [
+  { href: "#", label: "Privacy" },
+  { href: "#", label: "Terms" },
+  { href: "#", label: "Cookies" },
+  { href: "#", label: "Contact" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFooterbar dark split tall :links="links"&gt;© 2026 Company 1 · Made with OmniaCSS&lt;/OcFooterbar&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;footer class="oc-footerbar oc-footerbar--dark oc-footerbar--split oc-footerbar--tall"&gt;&lt;span&gt;&amp;copy; 2026 Company 1 · Made with OmniaCSS&lt;/span&gt;&lt;ul class="oc-footerbar-links"&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Cookies&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/footer&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::footerbar dark split tall :links="['#privacy' =&gt; 'Privacy', '#terms' =&gt; 'Terms', '#cookies' =&gt; 'Cookies', '#contact' =&gt; 'Contact']"&gt;&amp;copy; 2026 Company 1 · Made with OmniaCSS&lt;/x-oc::footerbar&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -97,6 +153,13 @@ use Livewire\Component;
 
 class SiteFooterBarDark extends Component
 {
+    public array $links = [
+        ['href' =&gt; '/privacy', 'label' =&gt; 'Privacy'],
+        ['href' =&gt; '/terms', 'label' =&gt; 'Terms'],
+        ['href' =&gt; '/cookies', 'label' =&gt; 'Cookies'],
+        ['href' =&gt; '/contact', 'label' =&gt; 'Contact'],
+    ];
+
     public function render()
     {
         return view('livewire.site-footer-bar-dark');
@@ -104,7 +167,7 @@ class SiteFooterBarDark extends Component
 }
 
 {{-- resources/views/livewire/site-footer-bar-dark.blade.php --}}
-&lt;footer class="oc-footerbar oc-footerbar--dark oc-footerbar--split oc-footerbar--tall"&gt;&lt;span&gt;&amp;copy; 2026 Company 1 · Made with OmniaCSS&lt;/span&gt;&lt;ul class="oc-footerbar-links"&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Cookies&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/footer&gt;</oc-code>
+&lt;x-oc::footerbar dark split tall :links="$links"&gt;&amp;copy; {{ now()-&gt;year }} Company 1 · Made with OmniaCSS&lt;/x-oc::footerbar&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc mt-2">For a full footer with link columns, a newsletter field or social icons see the <a href="../blocks/site-footer.html">Site footer block</a>.</p>
         </div>

@@ -11,7 +11,7 @@
     $text = $value ? \Carbon\CarbonImmutable::createFromFormat('Y-m-d', $value)->locale($locale)->isoFormat('D MMMM YYYY') : $placeholder;
 @endphp
 <button {{ $attributes->class(['oc-btn', 'oc-btn--outline', 'oc-date-picker-trigger'])->merge(['id' => $id, 'type' => 'button', 'popovertarget' => $popId, 'aria-haspopup' => 'dialog']) }} @if (! $value) data-empty @endif>
-    <span>{{ $text }}</span> <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+    <span>{{ $text }}</span> <x-oc::webicon name="mdi:calendar" size="sm" />
 </button>
 <div class="oc-popover oc-popover--calendar" id="{{ $popId }}" popover>
     <x-oc::calendar :value="$value" :name="$name" :min="$min" :max="$max" :today="$today" :locale="$locale" :nav="$nav" />

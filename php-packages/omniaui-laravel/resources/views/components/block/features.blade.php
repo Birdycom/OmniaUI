@@ -23,12 +23,12 @@
           {{ $slot }}
       @else
     <div class="oc-block-feature-card">
-      <div class="oc-block-feature-icon"><iconify-icon icon="mdi:application-cog-outline" aria-hidden="true"></iconify-icon></div>
+      <div class="oc-block-feature-icon"><x-oc::webicon name="mdi:application-cog-outline" bare fallback="iconify" /></div>
       <h3>Business apps</h3>
       <p>Software built around how your company works.</p>
     </div>
     <div class="oc-block-feature-card">
-      <div class="oc-block-feature-icon"><iconify-icon icon="mdi:web" aria-hidden="true"></iconify-icon></div>
+      <div class="oc-block-feature-icon"><x-oc::webicon name="mdi:web" bare fallback="iconify" /></div>
       <h3>Websites</h3>
       <p>Fast sites that you edit yourself, without a developer.</p>
     </div>

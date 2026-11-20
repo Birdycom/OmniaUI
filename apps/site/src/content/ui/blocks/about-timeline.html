@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - About with timeline Block", "category": "Marketing", "description": "Picture with badge, company story and a timeline.", "nav": "About timeline", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - About with timeline Block", "category": "Marketing", "description": "About-us section: a picture with a floating badge, the story of the company and a timeline of milestones, with a reverse layout and an accent color.", "nav": "About timeline", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/blocks/about-timeline.html | Map: hero -> demos (default, reverse) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">About with timeline</h1>
@@ -36,7 +36,7 @@
 export function Example() {
   return (
     &lt;BlockAboutTimeline
-      className="oc-accent--blue"
+      accent="blue"
       eyebrow="About us"
       title="Software for everyone. Since 2012."
       badge={&lt;&gt;&lt;strong&gt;12+&lt;/strong&gt;years of building software&lt;/&gt;}
@@ -62,23 +62,22 @@ const timeline = [
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;OcBlockAboutTimeline class="oc-accent--blue" eyebrow="About us" title="Software for everyone. Since 2012." :timeline="timeline"&gt;
+  &lt;OcBlockAboutTimeline accent="blue" eyebrow="About us" title="Software for everyone. Since 2012." :timeline="timeline"&gt;
     &lt;template #badge&gt;&lt;strong&gt;12+&lt;/strong&gt;years of building software&lt;/template&gt;
     &lt;p&gt;Company 1 started as an IT partner for local businesses. That practical experience is in every line of code we write today.&lt;/p&gt;
     &lt;p&gt;You talk directly to the people who build your software. No layers in between.&lt;/p&gt;
   &lt;/OcBlockAboutTimeline&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::block.about-timeline eyebrow="About us" title="Software for everyone. Since 2012."&gt;
+<oc-code lang="blade">&lt;x-oc::block.about-timeline eyebrow="About us" title="Software for everyone. Since 2012." :timeline="[
+    ['date' =&gt; '2012', 'text' =&gt; 'Company 1 is founded by two developers.'],
+    ['date' =&gt; '2019', 'text' =&gt; 'New office and a first own product.'],
+    ['date' =&gt; 'Today', 'text' =&gt; 'Own products and custom work, from web apps to desktop tools.', 'current' =&gt; true],
+]"&gt;
     &lt;x-slot:badge&gt;&lt;strong&gt;12+&lt;/strong&gt;years of building software&lt;/x-slot:badge&gt;
     &lt;x-slot:text&gt;
         &lt;p&gt;Company 1 started as an IT partner for local businesses. That practical experience is in every line of code we write today.&lt;/p&gt;
         &lt;p&gt;You talk directly to the people who build your software. No layers in between.&lt;/p&gt;
     &lt;/x-slot:text&gt;
-    &lt;x-oc::timeline :items="[
-        ['date' =&gt; '2012', 'text' =&gt; 'Company 1 is founded by two developers.'],
-        ['date' =&gt; '2019', 'text' =&gt; 'New office and a first own product.'],
-        ['date' =&gt; 'Today', 'text' =&gt; 'Own products and custom work, from web apps to desktop tools.', 'current' =&gt; true],
-    ]" /&gt;
 &lt;/x-oc::block.about-timeline&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -88,6 +87,13 @@ use Livewire\Component;
 
 class AboutTimelineAboutWithTimeline extends Component
 {
+    /** @var list&lt;array&lt;string, mixed&gt;&gt; */
+    public array $milestones = [
+        ['date' =&gt; '2012', 'text' =&gt; 'Company 1 is founded by two developers.'],
+        ['date' =&gt; '2019', 'text' =&gt; 'New office and a first own product.'],
+        ['date' =&gt; 'Today', 'text' =&gt; 'Own products and custom work, from web apps to desktop tools.', 'current' =&gt; true],
+    ];
+
     public function render()
     {
         return view('livewire.about-timeline-about-with-timeline');
@@ -96,17 +102,12 @@ class AboutTimelineAboutWithTimeline extends Component
 
 {{-- resources/views/livewire/about-timeline-about-with-timeline.blade.php --}}
 &lt;div&gt;
-    &lt;x-oc::block.about-timeline eyebrow="About us" title="Software for everyone. Since 2012."&gt;
+    &lt;x-oc::block.about-timeline eyebrow="About us" title="Software for everyone. Since 2012." :timeline="$milestones"&gt;
         &lt;x-slot:badge&gt;&lt;strong&gt;12+&lt;/strong&gt;years of building software&lt;/x-slot:badge&gt;
         &lt;x-slot:text&gt;
             &lt;p&gt;Company 1 started as an IT partner for local businesses. That practical experience is in every line of code we write today.&lt;/p&gt;
             &lt;p&gt;You talk directly to the people who build your software. No layers in between.&lt;/p&gt;
         &lt;/x-slot:text&gt;
-        &lt;x-oc::timeline :items="[
-            ['date' =&gt; '2012', 'text' =&gt; 'Company 1 is founded by two developers.'],
-            ['date' =&gt; '2019', 'text' =&gt; 'New office and a first own product.'],
-            ['date' =&gt; 'Today', 'text' =&gt; 'Own products and custom work, from web apps to desktop tools.', 'current' =&gt; true],
-        ]" /&gt;
     &lt;/x-oc::block.about-timeline&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -134,7 +135,8 @@ export function Example() {
   return (
     &lt;BlockAboutTimeline
       reverse
-      className="oc-accent--green"
+      accent="green"
+      timelineAccent
       eyebrow="Our story"
       title="Small team, long relations."
       badge={&lt;&gt;&lt;strong&gt;40&lt;/strong&gt;projects delivered&lt;/&gt;}
@@ -157,18 +159,17 @@ const timeline = [
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;OcBlockAboutTimeline reverse class="oc-accent--green" eyebrow="Our story" title="Small team, long relations." :timeline="timeline"&gt;
+  &lt;OcBlockAboutTimeline reverse accent="green" timeline-accent eyebrow="Our story" title="Small team, long relations." :timeline="timeline"&gt;
     &lt;template #badge&gt;&lt;strong&gt;40&lt;/strong&gt;projects delivered&lt;/template&gt;
     &lt;p&gt;Most of our clients have been with us for more than five years.&lt;/p&gt;
   &lt;/OcBlockAboutTimeline&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::block.about-timeline class="oc-block-about--reverse oc-accent--green" aria-labelledby="oc-about-rev-title" eyebrow="Our story" title="Small team, long relations."&gt;
+<oc-code lang="blade">&lt;x-oc::block.about-timeline reverse accent="green" timeline-accent title-id="oc-about-rev-title" eyebrow="Our story" title="Small team, long relations." :timeline="[
+    ['date' =&gt; '2016', 'title' =&gt; 'First client', 'text' =&gt; 'A web shop for a local bakery.'],
+    ['date' =&gt; '2026', 'title' =&gt; 'Team of eight', 'text' =&gt; 'Design, development and support under one roof.', 'current' =&gt; true],
+]"&gt;
     &lt;x-slot:badge&gt;&lt;strong&gt;40&lt;/strong&gt;projects delivered&lt;/x-slot:badge&gt;
     &lt;x-slot:text&gt;&lt;p&gt;Most of our clients have been with us for more than five years.&lt;/p&gt;&lt;/x-slot:text&gt;
-    &lt;x-oc::timeline accent class="oc-accent--green" :items="[
-        ['date' =&gt; '2016', 'title' =&gt; 'First client', 'text' =&gt; 'A web shop for a local bakery.'],
-        ['date' =&gt; '2026', 'title' =&gt; 'Team of eight', 'text' =&gt; 'Design, development and support under one roof.', 'current' =&gt; true],
-    ]" /&gt;
 &lt;/x-oc::block.about-timeline&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
@@ -178,6 +179,12 @@ use Livewire\Component;
 
 class AboutTimelineReversePictureRightGreenAccent extends Component
 {
+    /** @var list&lt;array&lt;string, mixed&gt;&gt; */
+    public array $milestones = [
+        ['date' =&gt; '2016', 'title' =&gt; 'First client', 'text' =&gt; 'A web shop for a local bakery.'],
+        ['date' =&gt; '2026', 'title' =&gt; 'Team of eight', 'text' =&gt; 'Design, development and support under one roof.', 'current' =&gt; true],
+    ];
+
     public function render()
     {
         return view('livewire.about-timeline-reverse-picture-right-green-accent');
@@ -186,13 +193,9 @@ class AboutTimelineReversePictureRightGreenAccent extends Component
 
 {{-- resources/views/livewire/about-timeline-reverse-picture-right-green-accent.blade.php --}}
 &lt;div&gt;
-    &lt;x-oc::block.about-timeline class="oc-block-about--reverse oc-accent--green" aria-labelledby="oc-about-rev-title" eyebrow="Our story" title="Small team, long relations."&gt;
+    &lt;x-oc::block.about-timeline reverse accent="green" timeline-accent title-id="oc-about-rev-title" eyebrow="Our story" title="Small team, long relations." :timeline="$milestones"&gt;
         &lt;x-slot:badge&gt;&lt;strong&gt;40&lt;/strong&gt;projects delivered&lt;/x-slot:badge&gt;
         &lt;x-slot:text&gt;&lt;p&gt;Most of our clients have been with us for more than five years.&lt;/p&gt;&lt;/x-slot:text&gt;
-        &lt;x-oc::timeline accent class="oc-accent--green" :items="[
-            ['date' =&gt; '2016', 'title' =&gt; 'First client', 'text' =&gt; 'A web shop for a local bakery.'],
-            ['date' =&gt; '2026', 'title' =&gt; 'Team of eight', 'text' =&gt; 'Design, development and support under one roof.', 'current' =&gt; true],
-        ]" /&gt;
     &lt;/x-oc::block.about-timeline&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>

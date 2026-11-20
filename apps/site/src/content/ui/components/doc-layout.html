@@ -45,26 +45,23 @@
   </div>
 </div>
 </div>
-<oc-code lang="tsx">import { DocLayout, Prose } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { DocLayout, Prose, Toc } from "@birdycom/omniaui-react";
+
+const groups = [
+  {
+    label: "Articles",
+    items: [
+      { href: "#doc-who", label: "1. Who we are", current: true },
+      { href: "#doc-data", label: "2. What data we keep" },
+      { href: "#doc-rights", label: "3. Your rights" },
+    ],
+  },
+  { label: "Annexes", items: [{ href: "#doc-cookies", label: "A. Cookies" }] },
+];
 
 export function Example() {
   return (
-    &lt;DocLayout
-      aside={
-        &lt;nav className="oc-toc" aria-label="On this page"&gt;
-          &lt;p className="oc-toc-group-label"&gt;Articles&lt;/p&gt;
-          &lt;ul className="oc-toc-list"&gt;
-            &lt;li&gt;&lt;a className="oc-toc-link" href="#doc-who" aria-current="true"&gt;1. Who we are&lt;/a&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;a className="oc-toc-link" href="#doc-data"&gt;2. What data we keep&lt;/a&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;a className="oc-toc-link" href="#doc-rights"&gt;3. Your rights&lt;/a&gt;&lt;/li&gt;
-          &lt;/ul&gt;
-          &lt;p className="oc-toc-group-label"&gt;Annexes&lt;/p&gt;
-          &lt;ul className="oc-toc-list"&gt;
-            &lt;li&gt;&lt;a className="oc-toc-link" href="#doc-cookies"&gt;A. Cookies&lt;/a&gt;&lt;/li&gt;
-          &lt;/ul&gt;
-        &lt;/nav&gt;
-      }
-    &gt;
+    &lt;DocLayout aside={&lt;Toc groups={groups} /&gt;}&gt;
       &lt;Prose as="div" className="oc-prose--legal oc-prose--ruled"&gt;
         &lt;h2 id="doc-who"&gt;1. Who we are&lt;/h2&gt;
         &lt;p&gt;Company 1 builds and maintains software for small teams. You can reach us at info@company1.example.&lt;/p&gt;
@@ -80,24 +77,25 @@ export function Example() {
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { OcDocLayout, OcProse } from '@birdycom/omniaui-vue'
+import { OcDocLayout, OcProse, OcToc } from '@birdycom/omniaui-vue'
+
+const groups = [
+  {
+    label: 'Articles',
+    items: [
+      { href: '#doc-who', label: '1. Who we are', current: true },
+      { href: '#doc-data', label: '2. What data we keep' },
+      { href: '#doc-rights', label: '3. Your rights' },
+    ],
+  },
+  { label: 'Annexes', items: [{ href: '#doc-cookies', label: 'A. Cookies' }] },
+]
 &lt;/script&gt;
 
 &lt;template&gt;
   &lt;OcDocLayout&gt;
     &lt;template #aside&gt;
-      &lt;nav class="oc-toc" aria-label="On this page"&gt;
-        &lt;p class="oc-toc-group-label"&gt;Articles&lt;/p&gt;
-        &lt;ul class="oc-toc-list"&gt;
-          &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-who" aria-current="true"&gt;1. Who we are&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-data"&gt;2. What data we keep&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-rights"&gt;3. Your rights&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;p class="oc-toc-group-label"&gt;Annexes&lt;/p&gt;
-        &lt;ul class="oc-toc-list"&gt;
-          &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-cookies"&gt;A. Cookies&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/nav&gt;
+      &lt;OcToc :groups="groups" /&gt;
     &lt;/template&gt;
     &lt;OcProse as="div" class="oc-prose--legal oc-prose--ruled"&gt;
       &lt;h2 id="doc-who"&gt;1. Who we are&lt;/h2&gt;
@@ -114,18 +112,16 @@ import { OcDocLayout, OcProse } from '@birdycom/omniaui-vue'
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::doc-layout&gt;
     &lt;x-slot:aside&gt;
-        &lt;nav class="oc-toc" aria-label="On this page"&gt;
-          &lt;p class="oc-toc-group-label"&gt;Articles&lt;/p&gt;
-          &lt;ul class="oc-toc-list"&gt;
-            &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-who" aria-current="true"&gt;1. Who we are&lt;/a&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-data"&gt;2. What data we keep&lt;/a&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-rights"&gt;3. Your rights&lt;/a&gt;&lt;/li&gt;
-          &lt;/ul&gt;
-          &lt;p class="oc-toc-group-label"&gt;Annexes&lt;/p&gt;
-          &lt;ul class="oc-toc-list"&gt;
-            &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-cookies"&gt;A. Cookies&lt;/a&gt;&lt;/li&gt;
-          &lt;/ul&gt;
-        &lt;/nav&gt;
+        &lt;x-oc::toc :groups="[
+            ['label' =&gt; 'Articles', 'items' =&gt; [
+                ['href' =&gt; '#doc-who', 'label' =&gt; '1. Who we are', 'current' =&gt; true],
+                ['href' =&gt; '#doc-data', 'label' =&gt; '2. What data we keep'],
+                ['href' =&gt; '#doc-rights', 'label' =&gt; '3. Your rights'],
+            ]],
+            ['label' =&gt; 'Annexes', 'items' =&gt; [
+                ['href' =&gt; '#doc-cookies', 'label' =&gt; 'A. Cookies'],
+            ]],
+        ]" /&gt;
     &lt;/x-slot:aside&gt;
     &lt;x-oc::prose as="div" class="oc-prose--legal oc-prose--ruled"&gt;
         &lt;h2 id="doc-who"&gt;1. Who we are&lt;/h2&gt;
@@ -147,6 +143,18 @@ use Livewire\Component;
 
 class PrivacyPage extends Component
 {
+    /** @var list&lt;array{label: string, items: list&lt;array{href: string, label: string}&gt;}&gt; */
+    public array $groups = [
+        ['label' =&gt; 'Articles', 'items' =&gt; [
+            ['href' =&gt; '#doc-who', 'label' =&gt; '1. Who we are', 'current' =&gt; true],
+            ['href' =&gt; '#doc-data', 'label' =&gt; '2. What data we keep'],
+            ['href' =&gt; '#doc-rights', 'label' =&gt; '3. Your rights'],
+        ]],
+        ['label' =&gt; 'Annexes', 'items' =&gt; [
+            ['href' =&gt; '#doc-cookies', 'label' =&gt; 'A. Cookies'],
+        ]],
+    ];
+
     public function render()
     {
         return view('livewire.privacy-page');
@@ -157,18 +165,7 @@ class PrivacyPage extends Component
 &lt;div&gt;
     &lt;x-oc::doc-layout&gt;
         &lt;x-slot:aside&gt;
-            &lt;nav class="oc-toc" aria-label="On this page"&gt;
-              &lt;p class="oc-toc-group-label"&gt;Articles&lt;/p&gt;
-              &lt;ul class="oc-toc-list"&gt;
-                &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-who" aria-current="true"&gt;1. Who we are&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-data"&gt;2. What data we keep&lt;/a&gt;&lt;/li&gt;
-                &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-rights"&gt;3. Your rights&lt;/a&gt;&lt;/li&gt;
-              &lt;/ul&gt;
-              &lt;p class="oc-toc-group-label"&gt;Annexes&lt;/p&gt;
-              &lt;ul class="oc-toc-list"&gt;
-                &lt;li&gt;&lt;a class="oc-toc-link" href="#doc-cookies"&gt;A. Cookies&lt;/a&gt;&lt;/li&gt;
-              &lt;/ul&gt;
-            &lt;/nav&gt;
+            &lt;x-oc::toc :groups="$groups" /&gt;
         &lt;/x-slot:aside&gt;
         &lt;x-oc::prose as="div" class="oc-prose--legal oc-prose--ruled"&gt;
             &lt;h2 id="doc-who"&gt;1. Who we are&lt;/h2&gt;

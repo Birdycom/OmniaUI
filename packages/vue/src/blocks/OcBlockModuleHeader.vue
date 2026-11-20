@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /**
  * Page header with icon tile, title, intro, meta badges and an action row.
- * Slots: icon, meta (badges), actions. Classes: .oc-block-modulehead, -band, -icon, -body, -title, -intro, -meta, -actions
+ * headingLevel 2 renders the title as h2 (same look). Slots: icon, meta (badges), actions. Classes: .oc-block-modulehead, -band, -icon, -body, -title, -intro, -meta, -actions
  */
-defineProps<{ title: string; intro?: string }>()
+withDefaults(defineProps<{ title: string; intro?: string; headingLevel?: 1 | 2 }>(), { headingLevel: 1 })
 </script>
 
 <template>
@@ -11,7 +11,7 @@ defineProps<{ title: string; intro?: string }>()
     <div class="oc-block-modulehead-band">
       <span v-if="$slots.icon" class="oc-block-modulehead-icon" aria-hidden="true"><slot name="icon" /></span>
       <div class="oc-block-modulehead-body">
-        <h1 class="oc-block-modulehead-title">{{ title }}</h1>
+        <component :is="headingLevel === 2 ? 'h2' : 'h1'" class="oc-block-modulehead-title">{{ title }}</component>
         <p v-if="intro" class="oc-block-modulehead-intro">{{ intro }}</p>
         <div v-if="$slots.meta" class="oc-block-modulehead-meta"><slot name="meta" /></div>
       </div>

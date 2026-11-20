@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Live frame", "category": "Media", "description": "A live page at a virtual size such as 1280x720, scaled down to the frame width without JavaScript.", "nav": "Live frame", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Live frame", "category": "Media", "description": "A live page at a virtual size such as 1280x720, scaled down to the frame width without JavaScript, in a browser frame, a phone, a tv or a laptop.", "nav": "Live frame", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/live-frame.html | Map: hero -> demos (browser frame, other size + static, phone and tv + inert, laptop, with a watermark, any content) -> how it scales -> reference -> frameworks -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Live frame</h1>
@@ -234,23 +234,22 @@ class LaptopPreview extends Component
 </div>
 <oc-code lang="tsx">&lt;div className="oc-browser-frame"&gt;
   &lt;div className="oc-browser-frame__bar"&gt;&lt;i /&gt;&lt;i /&gt;&lt;i /&gt;&lt;span className="oc-browser-frame__address"&gt;new.example.com&lt;/span&gt;&lt;/div&gt;
-  {/* With src the frame renders only the iframe: pass the iframe yourself to add a watermark on top */}
-  &lt;LiveFrame inBrowserFrame static&gt;
-    &lt;iframe src="/samples/company-1.html" title="New site, preview" loading="lazy" scrolling="no" tabIndex={-1} /&gt;
+  {/* With src and children: the children come after the iframe, here a watermark on top of the page */}
+  &lt;LiveFrame inBrowserFrame static src="/samples/company-1.html" title="New site, preview"&gt;
     &lt;Watermark text="Concept" /&gt;
   &lt;/LiveFrame&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="vue">&lt;div class="oc-browser-frame"&gt;
   &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-browser-frame__address"&gt;new.example.com&lt;/span&gt;&lt;/div&gt;
-  &lt;OcLiveFrame in-browser-frame static&gt;
-    &lt;iframe src="/samples/company-1.html" title="New site, preview" loading="lazy" scrolling="no" tabindex="-1"&gt;&lt;/iframe&gt;
+  &lt;!-- With src and a slot: the slot comes after the iframe, here a watermark on top of the page --&gt;
+  &lt;OcLiveFrame in-browser-frame static src="/samples/company-1.html" title="New site, preview"&gt;
     &lt;OcWatermark text="Concept" /&gt;
   &lt;/OcLiveFrame&gt;
 &lt;/div&gt;</oc-code>
 <oc-code lang="blade">&lt;div class="oc-browser-frame"&gt;
     &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-browser-frame__address"&gt;new.example.com&lt;/span&gt;&lt;/div&gt;
-    &lt;x-oc::live-frame in-browser-frame static&gt;
-        &lt;iframe src="/samples/company-1.html" title="New site, preview" loading="lazy" scrolling="no" tabindex="-1"&gt;&lt;/iframe&gt;
+    {{-- With src and a slot: the slot comes after the iframe, here a watermark on top of the page --}}
+    &lt;x-oc::live-frame in-browser-frame static src="/samples/company-1.html" title="New site, preview"&gt;
         &lt;x-oc::watermark text="Concept" /&gt;
     &lt;/x-oc::live-frame&gt;
 &lt;/div&gt;</oc-code>
@@ -266,6 +265,11 @@ class ConceptPreview extends Component
 
     public bool $approved = false;
 
+    public function approve(): void
+    {
+        $this-&gt;approved = true;
+    }
+
     public function render()
     {
         return view('livewire.concept-preview');
@@ -273,14 +277,19 @@ class ConceptPreview extends Component
 }
 
 {{-- resources/views/livewire/concept-preview.blade.php --}}
-&lt;div class="oc-browser-frame"&gt;
-    &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-browser-frame__address"&gt;{{ $domain }}&lt;/span&gt;&lt;/div&gt;
-    &lt;x-oc::live-frame in-browser-frame static&gt;
-        &lt;iframe src="/samples/company-1.html" title="New site, preview" loading="lazy" scrolling="no" tabindex="-1"&gt;&lt;/iframe&gt;
-        @unless ($approved)
-            &lt;x-oc::watermark text="Concept" /&gt;
-        @endunless
-    &lt;/x-oc::live-frame&gt;
+&lt;div&gt;
+    &lt;div class="oc-browser-frame"&gt;
+        &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-browser-frame__address"&gt;{{ $domain }}&lt;/span&gt;&lt;/div&gt;
+        {{-- With src and a slot: the slot comes after the iframe; the watermark goes once the concept is approved --}}
+        &lt;x-oc::live-frame in-browser-frame static src="/samples/company-1.html" title="New site, preview"&gt;
+            @unless ($approved)
+                &lt;x-oc::watermark text="Concept" /&gt;
+            @endunless
+        &lt;/x-oc::live-frame&gt;
+    &lt;/div&gt;
+    @unless ($approved)
+        &lt;x-oc::button wire:click="approve"&gt;Approve the concept&lt;/x-oc::button&gt;
+    @endunless
 &lt;/div&gt;</oc-code>
           </oc-demo>
 

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Breadcrumb", "category": "Navigation", "description": "Breadcrumb trail: where the page sits in the site, with the current page marked by aria-current.", "nav": "Breadcrumb", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Breadcrumb", "category": "Navigation", "description": "Breadcrumb trail that shows where the page sits in the site, with icons, a chevron separator, a menu for hidden levels and the current page marked.", "nav": "Breadcrumb", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/breadcrumb.html | Map: hero -> demo (trail, icons + chevron, collapsed, above a page title) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Breadcrumb</h1>
@@ -147,16 +147,21 @@ class CustomersTrail extends Component
   &lt;a class="oc-breadcrumb-item" href="/projects"&gt;&lt;iconify-icon icon="mdi:folder-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Projects&lt;/a&gt;
   &lt;span class="oc-breadcrumb-item" aria-current="page"&gt;&lt;iconify-icon icon="mdi:file-document-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Kitchen – ground floor&lt;/span&gt;
 &lt;/nav&gt;</oc-code>
-<oc-code lang="tsx">{/* Breadcrumb without items: the children are the trail, with a menu for the hidden levels in the middle */}
+<oc-code lang="tsx">{/* Breadcrumb without items: the children are the trail; a Dropdown with renderTrigger holds the hidden levels in the middle */}
 &lt;Breadcrumb separator="chevron"&gt;
   &lt;a className="oc-breadcrumb-item" href="/"&gt;&lt;Webicon name="mdi:home-outline" bare /&gt;Dashboard&lt;/a&gt;
   &lt;span className="oc-breadcrumb-item"&gt;
-    &lt;button type="button" className="oc-breadcrumb-ellipsis" popoverTarget="bc-more" aria-label="Show 3 more levels"&gt;&lt;Webicon name="mdi:dots-horizontal" bare /&gt;&lt;/button&gt;
-    &lt;div className="oc-dropdown-menu" id="bc-more" popover="auto" role="menu"&gt;
-      &lt;DropdownItem href="/relations"&gt;Relations&lt;/DropdownItem&gt;
-      &lt;DropdownItem href="/customers"&gt;Customers&lt;/DropdownItem&gt;
-      &lt;DropdownItem href="/customers/1"&gt;Company 1&lt;/DropdownItem&gt;
-    &lt;/div&gt;
+    &lt;Dropdown
+      id="bc-more"
+      role="menu"
+      renderTrigger={({ props }) =&gt; (
+        &lt;button type="button" className="oc-breadcrumb-ellipsis" aria-label="Show 3 more levels" {...props}&gt;&lt;Webicon name="mdi:dots-horizontal" bare /&gt;&lt;/button&gt;
+      )}
+    &gt;
+      &lt;DropdownItem href="/relations" role="menuitem"&gt;Relations&lt;/DropdownItem&gt;
+      &lt;DropdownItem href="/customers" role="menuitem"&gt;Customers&lt;/DropdownItem&gt;
+      &lt;DropdownItem href="/customers/1" role="menuitem"&gt;Company 1&lt;/DropdownItem&gt;
+    &lt;/Dropdown&gt;
   &lt;/span&gt;
   &lt;a className="oc-breadcrumb-item" href="/projects"&gt;&lt;Webicon name="mdi:folder-outline" bare /&gt;Projects&lt;/a&gt;
   &lt;span className="oc-breadcrumb-item" aria-current="page"&gt;&lt;Webicon name="mdi:file-document-outline" bare /&gt;Kitchen – ground floor&lt;/span&gt;

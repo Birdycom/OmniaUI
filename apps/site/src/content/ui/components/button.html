@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Button", "category": "Actions", "description": "Variants (primary, secondary, outline, ghost, link, destructive, success), sizes, icon, group.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Button", "category": "Actions", "description": "Buttons in primary, secondary, outline, ghost, link, destructive and success variants, with sizes, icons, a loading state, toggles and groups.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/button.html | Map: hero -> demo (variants, sizes, icons, loading, row actions, plain, disabled, showcase, toggle, group) -> reference (classes, which buttons OmniaCSS uses) -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Button</h1>
@@ -1064,27 +1064,36 @@ class SessionExpired extends Component
   <p class="oc-showmore__extra">This one appears after pressing the button.</p>
   <label class="oc-btn oc-btn--secondary oc-btn--toggle"><input type="checkbox"><span class="oc-btn-toggle__off">Show more</span><span class="oc-btn-toggle__on">Show less</span></label>
 </div>
-<oc-code lang="tsx">export function Example() {
+<oc-code lang="tsx">import { ShowMore } from "@birdycom/omniaui-react";
+
+// CSS only: the checkbox in the toggle button shows the extra text
+export function Example() {
   return (
-    &lt;div className="oc-showmore"&gt;
+    &lt;ShowMore buttonVariant="secondary" extra={&lt;p&gt;This one appears after pressing the button.&lt;/p&gt;}&gt;
       &lt;p&gt;This sentence is always visible.&lt;/p&gt;
-      &lt;p className="oc-showmore__extra"&gt;This one appears after pressing the button.&lt;/p&gt;
-      &lt;label className="oc-btn oc-btn--secondary oc-btn--toggle"&gt;&lt;input type="checkbox" /&gt;&lt;span className="oc-btn-toggle__off"&gt;Show more&lt;/span&gt;&lt;span className="oc-btn-toggle__on"&gt;Show less&lt;/span&gt;&lt;/label&gt;
-    &lt;/div&gt;
+    &lt;/ShowMore&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-showmore"&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcShowMore } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- CSS only: the checkbox in the toggle button shows the extra text --&gt;
+  &lt;OcShowMore button-variant="secondary"&gt;
     &lt;p&gt;This sentence is always visible.&lt;/p&gt;
-    &lt;p class="oc-showmore__extra"&gt;This one appears after pressing the button.&lt;/p&gt;
-    &lt;label class="oc-btn oc-btn--secondary oc-btn--toggle"&gt;&lt;input type="checkbox" /&gt;&lt;span class="oc-btn-toggle__off"&gt;Show more&lt;/span&gt;&lt;span class="oc-btn-toggle__on"&gt;Show less&lt;/span&gt;&lt;/label&gt;
-  &lt;/div&gt;
+    &lt;template #extra&gt;
+      &lt;p&gt;This one appears after pressing the button.&lt;/p&gt;
+    &lt;/template&gt;
+  &lt;/OcShowMore&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-showmore"&gt;
-  &lt;p&gt;This sentence is always visible.&lt;/p&gt;
-  &lt;p class="oc-showmore__extra"&gt;This one appears after pressing the button.&lt;/p&gt;
-  &lt;label class="oc-btn oc-btn--secondary oc-btn--toggle"&gt;&lt;input type="checkbox"&gt;&lt;span class="oc-btn-toggle__off"&gt;Show more&lt;/span&gt;&lt;span class="oc-btn-toggle__on"&gt;Show less&lt;/span&gt;&lt;/label&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- CSS only: the checkbox in the toggle button shows the extra text --}}
+&lt;x-oc::show-more button-variant="secondary"&gt;
+    &lt;p&gt;This sentence is always visible.&lt;/p&gt;
+    &lt;x-slot:extra&gt;
+        &lt;p&gt;This one appears after pressing the button.&lt;/p&gt;
+    &lt;/x-slot:extra&gt;
+&lt;/x-oc::show-more&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -1100,11 +1109,14 @@ class ShowMore extends Component
 }
 
 {{-- resources/views/livewire/show-more.blade.php --}}
-{{-- CSS only: the checkbox in the label shows the extra text, no round trip to the server --}}
-&lt;div class="oc-showmore"&gt;
-  &lt;p&gt;This sentence is always visible.&lt;/p&gt;
-  &lt;p class="oc-showmore__extra"&gt;This one appears after pressing the button.&lt;/p&gt;
-  &lt;label class="oc-btn oc-btn--secondary oc-btn--toggle"&gt;&lt;input type="checkbox"&gt;&lt;span class="oc-btn-toggle__off"&gt;Show more&lt;/span&gt;&lt;span class="oc-btn-toggle__on"&gt;Show less&lt;/span&gt;&lt;/label&gt;
+{{-- CSS only: the checkbox in the toggle button shows the extra text, no round trip to the server --}}
+&lt;div&gt;
+    &lt;x-oc::show-more button-variant="secondary"&gt;
+        &lt;p&gt;This sentence is always visible.&lt;/p&gt;
+        &lt;x-slot:extra&gt;
+            &lt;p&gt;This one appears after pressing the button.&lt;/p&gt;
+        &lt;/x-slot:extra&gt;
+    &lt;/x-oc::show-more&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -1116,16 +1128,15 @@ class ShowMore extends Component
   <button type="button" class="oc-btn oc-btn--outline">Center</button>
   <button type="button" class="oc-btn oc-btn--outline">Right</button>
 </div>
-<oc-code lang="tsx">import { Button } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { Button, ButtonGroup } from "@birdycom/omniaui-react";
 
-// No ButtonGroup in React: the .oc-btn-group class on a div.
 export function Example() {
   return (
-    &lt;div className="oc-btn-group" role="group" aria-label="Alignment"&gt;
+    &lt;ButtonGroup label="Alignment"&gt;
       &lt;Button variant="outline"&gt;Left&lt;/Button&gt;
       &lt;Button variant="outline"&gt;Center&lt;/Button&gt;
       &lt;Button variant="outline"&gt;Right&lt;/Button&gt;
-    &lt;/div&gt;
+    &lt;/ButtonGroup&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;

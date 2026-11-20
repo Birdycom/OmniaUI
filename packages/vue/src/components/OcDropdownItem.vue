@@ -4,17 +4,22 @@
  * icon a webicon name ("mdi:pencil") in front of the label (slot `icon` for any other icon), icon-tone puts it in a soft
  * tinted square, description (or slot `description`) a muted second line under the label.
  * A click closes the popover menu around it; `keep-open` stops that (a check item stays open by default).
+ * destructive: a red item (.oc-dropdown-item--destructive); radio (with checked): role menuitemradio.
  */
+import { inject } from 'vue'
 import OcWebicon from './OcWebicon.vue'
 const props = withDefaults(defineProps<{
   href?: string; checked?: boolean; hint?: string; icon?: string; keepOpen?: boolean
   description?: string; iconTone?: 'primary' | 'success' | 'warning' | 'destructive' | 'muted'
+  destructive?: boolean; radio?: boolean
 }>(), { checked: undefined, keepOpen: undefined })
 const emit = defineEmits<{ click: [event: MouseEvent] }>()
+const closeToggle = inject<(() => void) | null>('oc-dropdown-close', null)
 
 function onClick(event: MouseEvent) {
   emit('click', event)
   if (event.defaultPrevented || (props.keepOpen ?? props.checked !== undefined)) return
+  if (closeToggle) return closeToggle()
   try { (event.currentTarget as HTMLElement).closest<HTMLElement>('[popover]')?.hidePopover?.() } catch { /* already closed */ }
 }
 </script>
@@ -22,10 +27,10 @@ function onClick(event: MouseEvent) {
 <template>
   <component
     :is="href ? 'a' : 'button'"
-    class="oc-dropdown-item"
+    :class="['oc-dropdown-item', destructive && 'oc-dropdown-item--destructive']"
     :href="href"
     :type="href ? undefined : 'button'"
-    :role="checked !== undefined ? 'menuitemcheckbox' : undefined"
+    :role="checked !== undefined ? (radio ? 'menuitemradio' : 'menuitemcheckbox') : undefined"
     :aria-checked="checked !== undefined ? String(checked) : undefined"
     @click="onClick"
   >

@@ -17,6 +17,8 @@ withDefaults(
   defineProps<{
     eyebrow?: string
     title?: string
+    /** 0.17.0: heading level of the title (default 1; 2 for a hero lower on the page, same look). */
+    headingLevel?: 1 | 2
     highlight?: string
     titleEnd?: string
     lead?: string
@@ -26,6 +28,7 @@ withDefaults(
     codeDark?: boolean
   }>(),
   {
+    headingLevel: 1,
     tiles: () => [
       { glyph: '◆', accent: 'green', style: 'inset: -0.5rem auto auto 8%' },
       { glyph: '◉', accent: 'violet', style: 'inset: 0 6% auto auto; animation-delay: -2s' },
@@ -41,9 +44,9 @@ withDefaults(
     <div class="oc-container oc-split">
       <div>
         <p v-if="eyebrow" class="oc-eyebrow">{{ eyebrow }}</p>
-        <h1 class="oc-display">
+        <component :is="headingLevel === 2 ? 'h2' : 'h1'" class="oc-display">
           <slot name="title">{{ title }} <span v-if="highlight" class="oc-text-gradient">{{ highlight }}</span>{{ titleEnd }}</slot>
-        </h1>
+        </component>
         <p v-if="lead || $slots.lead" class="oc-lead"><slot name="lead">{{ lead }}</slot></p>
         <div v-if="$slots.actions" class="flex flex-wrap gap-1 mt-2"><slot name="actions" /></div>
       </div>

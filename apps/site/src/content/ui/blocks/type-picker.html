@@ -981,47 +981,57 @@ function dragStart(option: TypePickerOption, e: DragEvent) {
     &lt;/template&gt;
   &lt;/OcBlockTypePicker&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">{{-- Action mode (every card is a button) has no Blade component: the block markup --}}
-&lt;section class="oc-block-type-picker oc-block-type-picker--action" style="max-inline-size: 26rem" aria-labelledby="oc-pick-title"&gt;
-    &lt;div class="oc-block-type-picker-head"&gt;
-        &lt;h2 class="oc-block-type-picker-title" id="oc-pick-title"&gt;Add to Step 1&lt;/h2&gt;
-        &lt;p class="oc-block-type-picker-text"&gt;Click a card to add it, or drag it into the step.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-type-picker-grid" role="group" aria-label="Block type"&gt;
-        &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="text" draggable="true"&gt;
-            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type="button" class="oc-block-type-picker-item" data-category="media" data-value="image" draggable="true"&gt;
-            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type="button" class="oc-block-type-picker-item" data-category="question" data-value="question" aria-disabled="true" aria-describedby="oc-pick-question-reason"&gt;
-            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-hint"&gt;Multiple choice or open&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-reason" id="oc-pick-question-reason"&gt;This step already has a question&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="countdown" draggable="true"&gt;
-            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-hint"&gt;A timer for the step&lt;/span&gt;
-        &lt;/button&gt;
-    &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+<oc-code lang="blade">{{-- mode="action": every card is a button (a click adds that type); a disabled card says why with disabledReason --}}
+@php
+    $options = [
+        ['value' =&gt; 'text', 'label' =&gt; 'Text', 'hint' =&gt; 'Paragraphs with headings and links', 'category' =&gt; 'content',
+            'preview' =&gt; new \Illuminate\Support\HtmlString('&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;')],
+        ['value' =&gt; 'image', 'label' =&gt; 'Image', 'hint' =&gt; 'A photo with an optional caption', 'category' =&gt; 'media',
+            'preview' =&gt; new \Illuminate\Support\HtmlString('&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;')],
+        ['value' =&gt; 'question', 'label' =&gt; 'Question', 'hint' =&gt; 'Multiple choice or open', 'category' =&gt; 'question', 'disabled' =&gt; true, 'disabledReason' =&gt; 'This step already has a question',
+            'preview' =&gt; new \Illuminate\Support\HtmlString('&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;')],
+        ['value' =&gt; 'countdown', 'label' =&gt; 'Countdown', 'hint' =&gt; 'A timer for the step', 'category' =&gt; 'content',
+            'preview' =&gt; new \Illuminate\Support\HtmlString('&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;')],
+    ];
+@endphp
+&lt;x-oc::block.type-picker mode="action" draggable title="Add to Step 1" text="Click a card to add it, or drag it into the step."
+    :search="false" :options="$options" title-id="oc-pick-title" style="max-inline-size: 26rem" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
+use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
 class TypePickerAction extends Component
 {
+    public bool $hasQuestion = true;
+
     public function add(string $type): void
     {
         $this-&gt;dispatch('block-added', type: $type);
+    }
+
+    /** The cards: a wire:click on every available card, the question card disabled with its reason. */
+    public function options(): array
+    {
+        $cards = [
+            ['value' =&gt; 'text', 'label' =&gt; 'Text', 'hint' =&gt; 'Paragraphs with headings and links', 'category' =&gt; 'content',
+                'preview' =&gt; '&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;'],
+            ['value' =&gt; 'image', 'label' =&gt; 'Image', 'hint' =&gt; 'A photo with an optional caption', 'category' =&gt; 'media',
+                'preview' =&gt; '&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;'],
+            ['value' =&gt; 'question', 'label' =&gt; 'Question', 'hint' =&gt; 'Multiple choice or open', 'category' =&gt; 'question',
+                'preview' =&gt; '&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;'],
+            ['value' =&gt; 'countdown', 'label' =&gt; 'Countdown', 'hint' =&gt; 'A timer for the step', 'category' =&gt; 'content',
+                'preview' =&gt; '&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;'],
+        ];
+
+        return array_map(function (array $card) {
+            $off = $card['value'] === 'question' &amp;&amp; $this-&gt;hasQuestion;
+
+            return ['preview' =&gt; new HtmlString($card['preview']), 'disabled' =&gt; $off, 'disabledReason' =&gt; $off ? 'This step already has a question' : null,
+                'attributes' =&gt; $off ? [] : ['wire:click' =&gt; "add('{$card['value']}')"]] + $card;
+        }, $cards);
     }
 
     public function render()
@@ -1031,35 +1041,10 @@ class TypePickerAction extends Component
 }
 
 {{-- resources/views/livewire/type-picker-action.blade.php --}}
-&lt;section class="oc-block-type-picker oc-block-type-picker--action" style="max-inline-size: 26rem" aria-labelledby="oc-pick-title"&gt;
-    &lt;div class="oc-block-type-picker-head"&gt;
-        &lt;h2 class="oc-block-type-picker-title" id="oc-pick-title"&gt;Add to Step 1&lt;/h2&gt;
-        &lt;p class="oc-block-type-picker-text"&gt;Click a card to add it, or drag it into the step.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-type-picker-grid" role="group" aria-label="Block type"&gt;
-        &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="text" draggable="true" wire:click="add('text')"&gt;
-            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Welcome&lt;/b&gt;&lt;p&gt;Walk to the old gate and look up at the clock.&lt;/p&gt;&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-name"&gt;Text&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-hint"&gt;Paragraphs with headings and links&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type="button" class="oc-block-type-picker-item" data-category="media" data-value="image" draggable="true" wire:click="add('image')"&gt;
-            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;svg class="oc-block-type-picker-art-img" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"&gt;&lt;rect width="160" height="100" class="oc-block-art-sky"/&gt;&lt;circle cx="122" cy="28" r="12" class="oc-block-art-sun"/&gt;&lt;path d="M0 100 L0 70 L40 42 L78 72 L104 54 L160 86 L160 100Z" class="oc-block-art-land"/&gt;&lt;/svg&gt;&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-name"&gt;Image&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-hint"&gt;A photo with an optional caption&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type="button" class="oc-block-type-picker-item" data-category="question" data-value="question" aria-disabled="true" aria-describedby="oc-pick-question-reason"&gt;
-            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;b&gt;Which year?&lt;/b&gt;&lt;span class="oc-block-type-picker-art-option"&gt;1890&lt;/span&gt;&lt;span class="oc-block-type-picker-art-option oc-block-type-picker-art-option--on"&gt;1910&lt;/span&gt;&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-name"&gt;Question&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-hint"&gt;Multiple choice or open&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-reason" id="oc-pick-question-reason"&gt;This step already has a question&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;button type="button" class="oc-block-type-picker-item" data-category="content" data-value="countdown" draggable="true" wire:click="add('countdown')"&gt;
-            &lt;span class="oc-block-type-picker-preview" aria-hidden="true"&gt;&lt;p&gt;Time left&lt;/p&gt;&lt;span class="oc-block-type-picker-art-time"&gt;1:30&lt;/span&gt;&lt;span class="oc-block-type-picker-art-bar"&gt;&lt;/span&gt;&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-name"&gt;Countdown&lt;/span&gt;
-            &lt;span class="oc-block-type-picker-hint"&gt;A timer for the step&lt;/span&gt;
-        &lt;/button&gt;
-    &lt;/div&gt;
-&lt;/section&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::block.type-picker mode="action" draggable title="Add to Step 1" text="Click a card to add it, or drag it into the step."
+        :search="false" :options="$this-&gt;options()" title-id="oc-pick-title" style="max-inline-size: 26rem" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

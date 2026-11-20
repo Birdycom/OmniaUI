@@ -9,6 +9,7 @@
 import { computed, ref, useAttrs } from 'vue'
 import { useUid } from '../composables/useUid'
 import OcCalendar from './OcCalendar.vue'
+import OcWebicon from './OcWebicon.vue'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(
@@ -49,7 +50,7 @@ function pick(date: string | undefined) {
     aria-haspopup="dialog"
     :data-empty="model ? undefined : ''"
   >
-    <span>{{ text }}</span> <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M8 3v4M16 3v4M3 10h18" /></svg>
+    <span>{{ text }}</span> <OcWebicon name="mdi:calendar" size="sm" />
   </button>
   <div :id="popId" ref="pop" class="oc-popover oc-popover--calendar" popover>
     <OcCalendar

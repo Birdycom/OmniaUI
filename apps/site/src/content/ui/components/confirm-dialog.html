@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Confirm dialog", "category": "App UX", "description": "Alert dialog variant that asks to confirm a (destructive) action.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Confirm dialog", "category": "App UX", "description": "Alert dialog variant that asks to confirm a destructive action, with typed confirmation, or offers Save, Don't save and Cancel for unsaved changes.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/confirm-dialog.html | Map: hero -> typed confirm demo -> discard (three buttons) demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Confirm dialog</h1>
@@ -47,7 +47,7 @@
 &lt;OcConfirmDialog v-model:open="open" type="error" title='Delete "Kitchen renovation"?'
   message="This removes the project, its quotes and all files. This cannot be undone."
   confirm-word="DELETE" confirm-label="Delete project" @confirm="removeProject" /&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn oc-btn--destructive" type="button" command="show-modal" commandfor="delete-project"&gt;Delete project&lt;/button&gt;
+<oc-code lang="blade">&lt;x-oc::button variant="destructive" command="show-modal" commandfor="delete-project"&gt;Delete project&lt;/x-oc::button&gt;
 &lt;x-oc::confirm-dialog id="delete-project" type="error" title='Delete "Kitchen renovation"?' word="DELETE" confirm="Delete project"
     action="{{ route('projects.destroy', $project) }}" method="post"&gt;
     This removes the project, its quotes and all files. This cannot be undone.
@@ -133,7 +133,7 @@ class DeleteProject extends Component
 &lt;OcConfirmDialog v-model:open="open" type="question" title="Save your changes?"
   message="You changed the quote. Leaving now loses those changes."
   confirm-label="Save" discard-label="Don't save" @confirm="save" @discard="leave" /&gt;</oc-code>
-<oc-code lang="blade">&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="unsaved"&gt;Leave page&lt;/button&gt;
+<oc-code lang="blade">&lt;x-oc::button variant="outline" command="show-modal" commandfor="unsaved"&gt;Leave page&lt;/x-oc::button&gt;
 &lt;x-oc::confirm-dialog id="unsaved" type="question" title="Save your changes?" confirm="Save" discard="Don't save"&gt;
     You changed the quote. Leaving now loses those changes.
 &lt;/x-oc::confirm-dialog&gt;
@@ -143,20 +143,13 @@ class DeleteProject extends Component
 namespace App\Livewire;
 
 use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
 
 class QuoteEditor extends Component
 {
-    public bool $dirty = true;
+    use WithOcModal;
 
-    /** The button the user chose: save, cancel or discard (dialog.returnValue). */
-    public function choose(string $choice): void
-    {
-        match ($choice) {
-            'save' =&gt; $this-&gt;save(),
-            'discard' =&gt; $this-&gt;leave(),
-            default =&gt; null,
-        };
-    }
+    public bool $dirty = true;
 
     public function save(): void
     {
@@ -177,12 +170,12 @@ class QuoteEditor extends Component
 
 {{-- resources/views/livewire/quote-editor.blade.php --}}
 &lt;div&gt;
-    &lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="unsaved"&gt;Leave page&lt;/button&gt;
-    {{-- method="dialog": the chosen button is dialog.returnValue; pass it to the component when the dialog closes --}}
-    &lt;x-oc::confirm-dialog id="unsaved" type="question" title="Save your changes?" confirm="Save" discard="Don't save"
-        wire:ignore.self x-data x-on:close="$event.target.returnValue &amp;&amp; $wire.choose($event.target.returnValue)"&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('unsaved')"&gt;Leave page&lt;/x-oc::button&gt;
+    {{-- confirm runs save(); discard ("Don't save", at the start of the footer) runs leave(); every button closes the dialog --}}
+    &lt;x-oc::wire.alert-dialog name="unsaved" type="question" title="Save your changes?" confirm="Save" confirm-variant="primary" action="save"
+        discard="Don't save" discard-action="leave"&gt;
         You changed the quote. Leaving now loses those changes.
-    &lt;/x-oc::confirm-dialog&gt;
+    &lt;/x-oc::wire.alert-dialog&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

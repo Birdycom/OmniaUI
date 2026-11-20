@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Tree", "category": "Data", "description": "Nested list of folders and items on native details/summary.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Tree", "category": "Data", "description": "Nested list of folders and items on native details and summary, with icons, counts, row actions, a current item, a sticky head row and a quiet look.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/tree.html | Map: hero -> tree demo (sticky actions) -> quiet + flush variant -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Tree</h1>
@@ -66,66 +66,52 @@ export function Example() {
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { OcButton, OcTree, OcWebicon } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+import { OcButton, OcTree } from "@birdycom/omniaui-vue";
+import type { OcTreeAction, OcTreeItem } from "@birdycom/omniaui-vue";
 
-import type { OcTreeItem } from "@birdycom/omniaui-vue";
+const folder = "mdi:folder-outline";
+const file = "mdi:file-document-outline";
 
 const items: OcTreeItem[] = [
   {
-    label: "Kitchen renovation - Main street 12", count: 2, open: true,
+    label: "Kitchen renovation - Main street 12", icon: folder, count: 2, open: true,
+    actions: [{ label: "Add to Kitchen renovation", text: "+", name: "add" }],
     children: [
-      { label: "Quote v2.pdf", href: "#demo", current: true },
-      { label: "Floor plan with a very long file name that scrolls.dwg", href: "#demo" },
+      { label: "Quote v2.pdf", href: "#demo", icon: file, current: true, actions: [{ label: "Rename Quote v2.pdf", text: "✎", name: "rename" }] },
+      { label: "Floor plan with a very long file name that scrolls.dwg", href: "#demo", icon: file, actions: [{ label: "Rename Floor plan", text: "✎", name: "rename" }] },
     ],
   },
-  { label: "Bathroom", count: 1, children: [{ label: "Photos (archived)", muted: true }] },
+  { label: "Bathroom", icon: folder, count: 1, children: [{ label: "Photos (archived)", muted: true }] },
 ];
-const actions: Record&lt;string, { label: string; title: string; glyph: string }&gt; = {
-  "Kitchen renovation - Main street 12": { label: "Add to Kitchen renovation", title: "Add", glyph: "+" },
-  "Quote v2.pdf": { label: "Rename Quote v2.pdf", title: "Rename", glyph: "✎" },
-  "Floor plan with a very long file name that scrolls.dwg": { label: "Rename Floor plan", title: "Rename", glyph: "✎" },
-};
+
+// A button in a folder row does not open or close the folder; the tree reports it with @action.
+const status = ref("");
+function onAction(action: OcTreeAction, item: OcTreeItem) {
+  status.value = `${action.name}: ${item.label}`;
+}
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;OcTree :items="items" head="All projects" aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem"&gt;
+  &lt;OcTree :items="items" head="All projects" aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem" @action="onAction"&gt;
     &lt;template #head-actions&gt;&lt;OcButton variant="ghost" size="xs"&gt;New&lt;/OcButton&gt;&lt;/template&gt;
-    &lt;template #icon="{ item }"&gt;
-      &lt;OcWebicon v-if="item.label !== 'Photos (archived)'" :name="item.children ? 'mdi:folder-outline' : 'mdi:file-document-outline'" /&gt;
-    &lt;/template&gt;
-    &lt;template #actions="{ item }"&gt;
-      &lt;button v-if="actions[item.label]" class="oc-table-actions-icon" type="button" :aria-label="actions[item.label].label" :title="actions[item.label].title"&gt;
-        {{ actions[item.label].glyph }}
-      &lt;/button&gt;
-    &lt;/template&gt;
   &lt;/OcTree&gt;
+  &lt;p class="oc-note" aria-live="polite"&gt;{{ status }}&lt;/p&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-tree" aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem"&gt;
-  &lt;div class="oc-tree-row oc-tree-head"&gt;&lt;span class="oc-tree-label"&gt;All projects&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-btn oc-btn--ghost oc-btn--xs" type="button"&gt;New&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;
-  &lt;ul class="oc-tree-list"&gt;
-    &lt;li&gt;
-      &lt;details class="oc-tree-node" open&gt;
-        &lt;summary class="oc-tree-row"&gt;
-          &lt;span class="oc-tree-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;span class="oc-tree-label"&gt;Kitchen renovation - Main street 12&lt;/span&gt;&lt;span class="oc-tree-count"&gt;2&lt;/span&gt;
-          &lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Add to Kitchen renovation" title="Add"&gt;+&lt;/button&gt;&lt;/span&gt;
-        &lt;/summary&gt;
-        &lt;ul class="oc-tree-list"&gt;
-          &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;a class="oc-tree-label" href="#demo" aria-current="true"&gt;Quote v2.pdf&lt;/a&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Quote v2.pdf" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;a class="oc-tree-label" href="#demo"&gt;Floor plan with a very long file name that scrolls.dwg&lt;/a&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Floor plan" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/details&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-      &lt;details class="oc-tree-node"&gt;
-        &lt;summary class="oc-tree-row"&gt;&lt;span class="oc-tree-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;span class="oc-tree-label"&gt;Bathroom&lt;/span&gt;&lt;span class="oc-tree-count"&gt;1&lt;/span&gt;&lt;/summary&gt;
-        &lt;ul class="oc-tree-list"&gt;
-          &lt;li&gt;&lt;div class="oc-tree-row is-muted"&gt;&lt;span class="oc-tree-label"&gt;Photos (archived)&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/details&gt;
-    &lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tree head="All projects" aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem" :items="[
+    [
+        'label' =&gt; 'Kitchen renovation - Main street 12', 'icon' =&gt; 'mdi:folder-outline', 'count' =&gt; 2, 'open' =&gt; true,
+        'actions' =&gt; [['label' =&gt; 'Add to Kitchen renovation', 'text' =&gt; '+']],
+        'children' =&gt; [
+            ['label' =&gt; 'Quote v2.pdf', 'href' =&gt; '#demo', 'icon' =&gt; 'mdi:file-document-outline', 'current' =&gt; true, 'actions' =&gt; [['label' =&gt; 'Rename Quote v2.pdf', 'text' =&gt; '✎']]],
+            ['label' =&gt; 'Floor plan with a very long file name that scrolls.dwg', 'href' =&gt; '#demo', 'icon' =&gt; 'mdi:file-document-outline', 'actions' =&gt; [['label' =&gt; 'Rename Floor plan', 'text' =&gt; '✎']]],
+        ],
+    ],
+    ['label' =&gt; 'Bathroom', 'icon' =&gt; 'mdi:folder-outline', 'count' =&gt; 1, 'children' =&gt; [['label' =&gt; 'Photos (archived)', 'muted' =&gt; true]]],
+]"&gt;
+    {{-- the slot: actions in the head row --}}
+    &lt;x-oc::button variant="ghost" size="xs"&gt;New&lt;/x-oc::button&gt;
+&lt;/x-oc::tree&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -134,6 +120,41 @@ use Livewire\Component;
 
 class Tree extends Component
 {
+    public string $status = '';
+
+    public function items(): array
+    {
+        // 'attributes' go on the action button; a button in a folder row does not open or close the folder.
+        $rename = fn (string $file, string $label) =&gt; [['label' =&gt; $label, 'text' =&gt; '✎', 'attributes' =&gt; ['wire:click' =&gt; "rename('{$file}')"]]];
+
+        return [
+            [
+                'label' =&gt; 'Kitchen renovation - Main street 12', 'icon' =&gt; 'mdi:folder-outline', 'count' =&gt; 2, 'open' =&gt; true,
+                'actions' =&gt; [['label' =&gt; 'Add to Kitchen renovation', 'text' =&gt; '+', 'attributes' =&gt; ['wire:click' =&gt; "add('Kitchen renovation')"]]],
+                'children' =&gt; [
+                    ['label' =&gt; 'Quote v2.pdf', 'href' =&gt; '#demo', 'icon' =&gt; 'mdi:file-document-outline', 'current' =&gt; true, 'actions' =&gt; $rename('Quote v2.pdf', 'Rename Quote v2.pdf')],
+                    ['label' =&gt; 'Floor plan with a very long file name that scrolls.dwg', 'href' =&gt; '#demo', 'icon' =&gt; 'mdi:file-document-outline', 'actions' =&gt; $rename('Floor plan.dwg', 'Rename Floor plan')],
+                ],
+            ],
+            ['label' =&gt; 'Bathroom', 'icon' =&gt; 'mdi:folder-outline', 'count' =&gt; 1, 'children' =&gt; [['label' =&gt; 'Photos (archived)', 'muted' =&gt; true]]],
+        ];
+    }
+
+    public function newProject(): void
+    {
+        $this-&gt;status = 'New project';
+    }
+
+    public function add(string $folder): void
+    {
+        $this-&gt;status = "Add a file to {$folder}";
+    }
+
+    public function rename(string $file): void
+    {
+        $this-&gt;status = "Rename {$file}";
+    }
+
     public function render()
     {
         return view('livewire.tree');
@@ -141,31 +162,11 @@ class Tree extends Component
 }
 
 {{-- resources/views/livewire/tree.blade.php --}}
-&lt;div class="oc-tree" aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem"&gt;
-  &lt;div class="oc-tree-row oc-tree-head"&gt;&lt;span class="oc-tree-label"&gt;All projects&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-btn oc-btn--ghost oc-btn--xs" type="button"&gt;New&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;
-  &lt;ul class="oc-tree-list"&gt;
-    &lt;li&gt;
-      &lt;details class="oc-tree-node" open&gt;
-        &lt;summary class="oc-tree-row"&gt;
-          &lt;span class="oc-tree-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;/span&gt;
-          &lt;span class="oc-tree-label"&gt;Kitchen renovation - Main street 12&lt;/span&gt;&lt;span class="oc-tree-count"&gt;2&lt;/span&gt;
-          &lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Add to Kitchen renovation" title="Add"&gt;+&lt;/button&gt;&lt;/span&gt;
-        &lt;/summary&gt;
-        &lt;ul class="oc-tree-list"&gt;
-          &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;a class="oc-tree-label" href="#demo" aria-current="true"&gt;Quote v2.pdf&lt;/a&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Quote v2.pdf" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;a class="oc-tree-label" href="#demo"&gt;Floor plan with a very long file name that scrolls.dwg&lt;/a&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Floor plan" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/details&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-      &lt;details class="oc-tree-node"&gt;
-        &lt;summary class="oc-tree-row"&gt;&lt;span class="oc-tree-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;span class="oc-tree-label"&gt;Bathroom&lt;/span&gt;&lt;span class="oc-tree-count"&gt;1&lt;/span&gt;&lt;/summary&gt;
-        &lt;ul class="oc-tree-list"&gt;
-          &lt;li&gt;&lt;div class="oc-tree-row is-muted"&gt;&lt;span class="oc-tree-label"&gt;Photos (archived)&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/details&gt;
-    &lt;/li&gt;
-  &lt;/ul&gt;
+&lt;div&gt;
+    &lt;x-oc::tree head="All projects" aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem" :items="$this-&gt;items()"&gt;
+        &lt;x-oc::button variant="ghost" size="xs" wire:click="newProject"&gt;New&lt;/x-oc::button&gt;
+    &lt;/x-oc::tree&gt;
+    &lt;p class="oc-note" aria-live="polite"&gt;{{ $status }}&lt;/p&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -212,40 +213,41 @@ export function Example() {
     &lt;/Card&gt;
   );
 }</oc-code>
-<oc-code lang="vue">&lt;template&gt;
-  &lt;div class="oc-card" style="max-width:20rem"&gt;
-    &lt;div class="oc-tree oc-tree--quiet oc-tree--flush" aria-label="Categories"&gt;
-      &lt;ul class="oc-tree-list"&gt;
-        &lt;li&gt;
-          &lt;details class="oc-tree-node" open&gt;
-            &lt;summary class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Furniture&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Add to Furniture" title="Add"&gt;+&lt;/button&gt;&lt;/span&gt;&lt;/summary&gt;
-            &lt;ul class="oc-tree-list"&gt;
-              &lt;li&gt;&lt;div class="oc-tree-row is-selected"&gt;&lt;span class="oc-tree-label"&gt;Tables&lt;/span&gt;&lt;span class="oc-tree-count"&gt;12&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Tables" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Chairs&lt;/span&gt;&lt;span class="oc-tree-count"&gt;8&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Chairs" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-            &lt;/ul&gt;
-          &lt;/details&gt;
-        &lt;/li&gt;
-        &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Lighting&lt;/span&gt;&lt;span class="oc-tree-count"&gt;5&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Lighting" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCard, OcTree } from "@birdycom/omniaui-vue";
+import type { OcTreeItem } from "@birdycom/omniaui-vue";
+
+const items: OcTreeItem[] = [
+  {
+    label: "Furniture", open: true,
+    actions: [{ label: "Add to Furniture", text: "+" }],
+    children: [
+      { label: "Tables", count: 12, current: true, actions: [{ label: "Rename Tables", text: "✎" }] },
+      { label: "Chairs", count: 8, actions: [{ label: "Rename Chairs", text: "✎" }] },
+    ],
+  },
+  { label: "Lighting", count: 5, actions: [{ label: "Rename Lighting", text: "✎" }] },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCard style="max-width:20rem"&gt;
+    &lt;OcTree quiet flush aria-label="Categories" :items="items" /&gt;
+  &lt;/OcCard&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-card" style="max-width:20rem"&gt;
-  &lt;div class="oc-tree oc-tree--quiet oc-tree--flush" aria-label="Categories"&gt;
-    &lt;ul class="oc-tree-list"&gt;
-      &lt;li&gt;
-        &lt;details class="oc-tree-node" open&gt;
-          &lt;summary class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Furniture&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Add to Furniture" title="Add"&gt;+&lt;/button&gt;&lt;/span&gt;&lt;/summary&gt;
-          &lt;ul class="oc-tree-list"&gt;
-            &lt;li&gt;&lt;div class="oc-tree-row is-selected"&gt;&lt;span class="oc-tree-label"&gt;Tables&lt;/span&gt;&lt;span class="oc-tree-count"&gt;12&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Tables" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Chairs&lt;/span&gt;&lt;span class="oc-tree-count"&gt;8&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Chairs" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-          &lt;/ul&gt;
-        &lt;/details&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Lighting&lt;/span&gt;&lt;span class="oc-tree-count"&gt;5&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Lighting" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::card style="max-width:20rem"&gt;
+    &lt;x-oc::tree quiet flush aria-label="Categories" :items="[
+        [
+            'label' =&gt; 'Furniture', 'open' =&gt; true,
+            'actions' =&gt; [['label' =&gt; 'Add to Furniture', 'text' =&gt; '+']],
+            'children' =&gt; [
+                ['label' =&gt; 'Tables', 'count' =&gt; 12, 'current' =&gt; true, 'actions' =&gt; [['label' =&gt; 'Rename Tables', 'text' =&gt; '✎']]],
+                ['label' =&gt; 'Chairs', 'count' =&gt; 8, 'actions' =&gt; [['label' =&gt; 'Rename Chairs', 'text' =&gt; '✎']]],
+            ],
+        ],
+        ['label' =&gt; 'Lighting', 'count' =&gt; 5, 'actions' =&gt; [['label' =&gt; 'Rename Lighting', 'text' =&gt; '✎']]],
+    ]" /&gt;
+&lt;/x-oc::card&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -254,6 +256,31 @@ use Livewire\Component;
 
 class TreeQuietFlushTreeInACard extends Component
 {
+    /** @var array&lt;string, int&gt; category =&gt; number of products */
+    public array $furniture = ['Tables' =&gt; 12, 'Chairs' =&gt; 8];
+
+    public string $current = 'Tables';
+
+    public function items(): array
+    {
+        $rename = fn (string $name) =&gt; [['label' =&gt; "Rename {$name}", 'text' =&gt; '✎', 'attributes' =&gt; ['wire:click' =&gt; "rename('{$name}')"]]];
+        $children = [];
+        foreach ($this-&gt;furniture as $name =&gt; $count) {
+            $children[] = ['label' =&gt; $name, 'count' =&gt; $count, 'current' =&gt; $name === $this-&gt;current, 'actions' =&gt; $rename($name)];
+        }
+
+        return [
+            ['label' =&gt; 'Furniture', 'open' =&gt; true, 'actions' =&gt; [['label' =&gt; 'Add to Furniture', 'text' =&gt; '+']], 'children' =&gt; $children],
+            ['label' =&gt; 'Lighting', 'count' =&gt; 5, 'current' =&gt; $this-&gt;current === 'Lighting', 'actions' =&gt; $rename('Lighting')],
+        ];
+    }
+
+    /** The row you rename becomes the current one (open your rename form here). */
+    public function rename(string $name): void
+    {
+        $this-&gt;current = $name;
+    }
+
     public function render()
     {
         return view('livewire.tree-quiet-flush-tree-in-a-card');
@@ -261,21 +288,10 @@ class TreeQuietFlushTreeInACard extends Component
 }
 
 {{-- resources/views/livewire/tree-quiet-flush-tree-in-a-card.blade.php --}}
-&lt;div class="oc-card" style="max-width:20rem"&gt;
-  &lt;div class="oc-tree oc-tree--quiet oc-tree--flush" aria-label="Categories"&gt;
-    &lt;ul class="oc-tree-list"&gt;
-      &lt;li&gt;
-        &lt;details class="oc-tree-node" open&gt;
-          &lt;summary class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Furniture&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Add to Furniture" title="Add"&gt;+&lt;/button&gt;&lt;/span&gt;&lt;/summary&gt;
-          &lt;ul class="oc-tree-list"&gt;
-            &lt;li&gt;&lt;div class="oc-tree-row is-selected"&gt;&lt;span class="oc-tree-label"&gt;Tables&lt;/span&gt;&lt;span class="oc-tree-count"&gt;12&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Tables" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Chairs&lt;/span&gt;&lt;span class="oc-tree-count"&gt;8&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Chairs" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-          &lt;/ul&gt;
-        &lt;/details&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;div class="oc-tree-row"&gt;&lt;span class="oc-tree-label"&gt;Lighting&lt;/span&gt;&lt;span class="oc-tree-count"&gt;5&lt;/span&gt;&lt;span class="oc-tree-actions"&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Rename Lighting" title="Rename"&gt;✎&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/div&gt;
+&lt;div&gt;
+    &lt;x-oc::card style="max-width:20rem"&gt;
+        &lt;x-oc::tree quiet flush aria-label="Categories" :items="$this-&gt;items()" /&gt;
+    &lt;/x-oc::card&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

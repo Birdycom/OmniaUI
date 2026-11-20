@@ -35,7 +35,7 @@
                 @if (isset($success) && trim((string) $success) !== '')
                     {{ $success }}
                 @else
-                    <span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><iconify-icon icon="mdi:check"></iconify-icon></span>
+                    <span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><x-oc::webicon name="mdi:check" bare fallback="iconify" /></span>
                     <h2 class="oc-result__title">{{ $successTitle }}</h2>
                     @if ($successText)
                         <p class="oc-result__text">{{ $successText }}</p>

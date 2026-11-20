@@ -6,6 +6,7 @@
  * (name, id, listeners) go to the input. Classes: .oc-search, -icon, -input, -hint
  */
 import { useAttrsSplit } from '../composables/useAttrsSplit'
+import OcWebicon from './OcWebicon.vue'
 
 defineOptions({ inheritAttrs: false })
 defineProps<{ placeholder?: string; hint?: string }>()
@@ -15,7 +16,7 @@ const { root, control } = useAttrsSplit()
 
 <template>
   <label class="oc-search" v-bind="root">
-    <svg class="oc-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+    <OcWebicon name="mdi:magnify" bare class="oc-search-icon" />
     <input v-model="model" class="oc-search-input" type="search" :placeholder="placeholder" :aria-label="placeholder" v-bind="control" />
     <kbd v-if="hint" class="oc-search-hint">{{ hint }}</kbd>
   </label>

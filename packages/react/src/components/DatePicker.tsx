@@ -10,6 +10,7 @@ import { attrs, cx } from "../utils";
 import { useControllable } from "../hooks";
 import { Calendar } from "./Calendar";
 import type { CalendarProps } from "./Calendar";
+import { Webicon } from "./Webicon";
 
 export interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue" | "onChange"> {
   /** The picked day ("2026-10-16"). */
@@ -36,9 +37,7 @@ export interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
 const longDate = (date: string, locale?: string) =>
   new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${date}T12:00:00`));
 
-const calendarIcon = (
-  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M8 3v4M16 3v4M3 10h18" /></svg>
-);
+const calendarIcon = <Webicon name="mdi:calendar" size="sm" />;
 
 /** Trigger button with a calendar in a popover (`.oc-date-picker-trigger` + `.oc-popover--calendar`). A pick closes it. */
 export const DatePicker = forwardRef<HTMLButtonElement, DatePickerProps>(function DatePicker(

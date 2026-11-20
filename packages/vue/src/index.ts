@@ -32,6 +32,8 @@ import OcCalendar from './components/OcCalendar.vue'
 import OcCallout from './components/OcCallout.vue'
 import OcCard from './components/OcCard.vue'
 import OcCardBand from './components/OcCardBand.vue'
+import OcCardGrid from './components/OcCardGrid.vue'
+import OcCardLink from './components/OcCardLink.vue'
 import OcCarousel from './components/OcCarousel.vue'
 import OcCarouselItem from './components/OcCarouselItem.vue'
 import OcChartLine from './components/OcChartLine.vue'
@@ -66,6 +68,7 @@ import OcDropdown from './components/OcDropdown.vue'
 import OcDropdownItem from './components/OcDropdownItem.vue'
 import OcDropdownLabel from './components/OcDropdownLabel.vue'
 import OcDropdownSeparator from './components/OcDropdownSeparator.vue'
+import OcDropdownSub from './components/OcDropdownSub.vue'
 import OcDropzone from './components/OcDropzone.vue'
 import OcEmojiPicker from './components/OcEmojiPicker.vue'
 import OcEmptyState from './components/OcEmptyState.vue'
@@ -158,6 +161,8 @@ import OcRibbon from './components/OcRibbon.vue'
 import OcSaveStatus from './components/OcSaveStatus.vue'
 import OcScrollArea from './components/OcScrollArea.vue'
 import OcSearch from './components/OcSearch.vue'
+import OcSectionBlock from './components/OcSectionBlock.vue'
+import OcSectionHeader from './components/OcSectionHeader.vue'
 import OcSegmented from './components/OcSegmented.vue'
 import OcSelect from './components/OcSelect.vue'
 import OcSeparator from './components/OcSeparator.vue'
@@ -215,6 +220,7 @@ import OcTopbar from './components/OcTopbar.vue'
 import OcTree from './components/OcTree.vue'
 import OcUpgradeBanner from './components/OcUpgradeBanner.vue'
 import OcUser from './components/OcUser.vue'
+import OcVersionBadge from './components/OcVersionBadge.vue'
 import OcVersionBanner from './components/OcVersionBanner.vue'
 import OcWatermark from './components/OcWatermark.vue'
 import OcWebicon from './components/OcWebicon.vue'
@@ -303,6 +309,8 @@ export {
   OcCallout,
   OcCard,
   OcCardBand,
+  OcCardGrid,
+  OcCardLink,
   OcCarousel,
   OcCarouselItem,
   OcChartLine,
@@ -337,6 +345,7 @@ export {
   OcDropdownItem,
   OcDropdownLabel,
   OcDropdownSeparator,
+  OcDropdownSub,
   OcDropzone,
   OcEmojiPicker,
   OcEmptyState,
@@ -429,6 +438,8 @@ export {
   OcSaveStatus,
   OcScrollArea,
   OcSearch,
+  OcSectionBlock,
+  OcSectionHeader,
   OcSegmented,
   OcSelect,
   OcSeparator,
@@ -486,6 +497,7 @@ export {
   OcTree,
   OcUpgradeBanner,
   OcUser,
+  OcVersionBadge,
   OcVersionBanner,
   OcWatermark,
   OcWebicon,
@@ -654,6 +666,8 @@ export const components: Record<string, Component> = {
   OcCallout,
   OcCard,
   OcCardBand,
+  OcCardGrid,
+  OcCardLink,
   OcCarousel,
   OcCarouselItem,
   OcChartLine,
@@ -688,6 +702,7 @@ export const components: Record<string, Component> = {
   OcDropdownItem,
   OcDropdownLabel,
   OcDropdownSeparator,
+  OcDropdownSub,
   OcDropzone,
   OcEmojiPicker,
   OcEmptyState,
@@ -780,6 +795,8 @@ export const components: Record<string, Component> = {
   OcSaveStatus,
   OcScrollArea,
   OcSearch,
+  OcSectionBlock,
+  OcSectionHeader,
   OcSegmented,
   OcSelect,
   OcSeparator,
@@ -837,6 +854,7 @@ export const components: Record<string, Component> = {
   OcTree,
   OcUpgradeBanner,
   OcUser,
+  OcVersionBadge,
   OcVersionBanner,
   OcWatermark,
   OcWebicon,

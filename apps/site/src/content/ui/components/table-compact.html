@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Table compact", "category": "Data", "description": "Dense table variant with smaller rows and padding.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Table compact", "category": "Data", "description": "Dense striped table for inside cards: smaller rows and padding, numeric columns, a bold total row with a colspan, and bordered or plain variants.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/table-compact.html | Map: hero -> table in a card demo -> bordered + plain demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Table compact</h1>
@@ -45,7 +45,7 @@ export function Example() {
   return (
     &lt;Card style={{ maxWidth: "28rem", width: "100%" }}&gt;
       &lt;CardHeader&gt;&lt;CardTitle&gt;Materials&lt;/CardTitle&gt;&lt;/CardHeader&gt;
-      &lt;TableCompact columns={columns} rows={rows} footer={{ item: "Total", price: "€ 1,325.00" }} /&gt;
+      &lt;TableCompact columns={columns} rows={rows} footer={{ item: "Total", price: "€ 1,325.00" }} footerSpan={2} /&gt;
     &lt;/Card&gt;
   );
 }</oc-code>
@@ -67,7 +67,7 @@ const rows = [
 
 &lt;template&gt;
   &lt;OcCard title="Materials" style="max-width:28rem;width:100%"&gt;
-    &lt;OcTableCompact :columns="columns" :rows="rows" :footer="{ item: 'Total', price: '€ 1,325.00' }"&gt;
+    &lt;OcTableCompact :columns="columns" :rows="rows" :footer="{ item: 'Total', price: '€ 1,325.00' }" :footer-span="2"&gt;
       &lt;template #cell="{ row, column }"&gt;
         &lt;template v-if="column.key === 'item'"&gt;{{ row.item }} &lt;span v-if="row.note" class="oc-table-compact-muted"&gt;{{ row.note }}&lt;/span&gt;&lt;/template&gt;
         &lt;template v-else&gt;{{ row[column.key] }}&lt;/template&gt;
@@ -75,26 +75,59 @@ const rows = [
     &lt;/OcTableCompact&gt;
   &lt;/OcCard&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::card title="Materials" style="max-width:28rem;width:100%"&gt;
+<oc-code lang="blade">@php
+    // An HtmlString cell renders as markup: the muted note after the item.
+    $worktop = new Illuminate\Support\HtmlString('Oak worktop &lt;span class="oc-table-compact-muted"&gt;(3 m)&lt;/span&gt;');
+@endphp
+&lt;x-oc::card title="Materials" style="max-width:28rem;width:100%"&gt;
     &lt;x-oc::table-compact
         :columns="['item' =&gt; 'Item', 'qty' =&gt; ['label' =&gt; 'Qty', 'numeric' =&gt; true], 'price' =&gt; ['label' =&gt; 'Price', 'numeric' =&gt; true]]"
         :rows="[
-            ['item' =&gt; 'Oak worktop (3 m)', 'qty' =&gt; 1, 'price' =&gt; '€ 640.00'],
+            ['item' =&gt; $worktop, 'qty' =&gt; 1, 'price' =&gt; '€ 640.00'],
             ['item' =&gt; 'Cabinet 60 cm', 'qty' =&gt; 2, 'price' =&gt; '€ 380.00'],
             ['item' =&gt; 'Sink', 'qty' =&gt; 1, 'price' =&gt; '€ 210.00'],
             ['item' =&gt; 'Tap', 'qty' =&gt; 1, 'price' =&gt; '€ 95.00'],
         ]"
         :footer="['item' =&gt; 'Total', 'price' =&gt; '€ 1,325.00']"
+        :footer-span="2"
     /&gt;
 &lt;/x-oc::card&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
 
+use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
 class MaterialsTable extends Component
 {
+    /** @var list&lt;array{item: string, note?: string, qty: int, price: float}&gt; */
+    public array $materials = [
+        ['item' =&gt; 'Oak worktop', 'note' =&gt; '(3 m)', 'qty' =&gt; 1, 'price' =&gt; 640.00],
+        ['item' =&gt; 'Cabinet 60 cm', 'qty' =&gt; 2, 'price' =&gt; 380.00],
+        ['item' =&gt; 'Sink', 'qty' =&gt; 1, 'price' =&gt; 210.00],
+        ['item' =&gt; 'Tap', 'qty' =&gt; 1, 'price' =&gt; 95.00],
+    ];
+
+    public function rows(): array
+    {
+        return array_map(fn ($m) =&gt; [
+            'item' =&gt; isset($m['note']) ? new HtmlString(e($m['item']).' &lt;span class="oc-table-compact-muted"&gt;'.e($m['note']).'&lt;/span&gt;') : $m['item'],
+            'qty' =&gt; $m['qty'],
+            'price' =&gt; $this-&gt;euro($m['price']),
+        ], $this-&gt;materials);
+    }
+
+    public function total(): string
+    {
+        return $this-&gt;euro(array_sum(array_column($this-&gt;materials, 'price')));
+    }
+
+    private function euro(float $amount): string
+    {
+        return '€ '.number_format($amount, 2);
+    }
+
     public function render()
     {
         return view('livewire.materials-table');
@@ -104,15 +137,12 @@ class MaterialsTable extends Component
 {{-- resources/views/livewire/materials-table.blade.php --}}
 &lt;div&gt;
     &lt;x-oc::card title="Materials" style="max-width:28rem;width:100%"&gt;
+        {{-- footer-span="2": "Total" spans the Item and Qty columns --}}
         &lt;x-oc::table-compact
             :columns="['item' =&gt; 'Item', 'qty' =&gt; ['label' =&gt; 'Qty', 'numeric' =&gt; true], 'price' =&gt; ['label' =&gt; 'Price', 'numeric' =&gt; true]]"
-            :rows="[
-                ['item' =&gt; 'Oak worktop (3 m)', 'qty' =&gt; 1, 'price' =&gt; '€ 640.00'],
-                ['item' =&gt; 'Cabinet 60 cm', 'qty' =&gt; 2, 'price' =&gt; '€ 380.00'],
-                ['item' =&gt; 'Sink', 'qty' =&gt; 1, 'price' =&gt; '€ 210.00'],
-                ['item' =&gt; 'Tap', 'qty' =&gt; 1, 'price' =&gt; '€ 95.00'],
-            ]"
-            :footer="['item' =&gt; 'Total', 'price' =&gt; '€ 1,325.00']"
+            :rows="$this-&gt;rows()"
+            :footer="['item' =&gt; 'Total', 'price' =&gt; $this-&gt;total()]"
+            :footer-span="2"
         /&gt;
     &lt;/x-oc::card&gt;
 &lt;/div&gt;</oc-code>

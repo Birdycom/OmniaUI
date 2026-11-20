@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Drawer", "category": "Overlays", "description": "Bottom sheet on dialog with drag handle look, no JavaScript.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Drawer", "category": "Overlays", "description": "Drawer: a bottom sheet on a native dialog with a handle, title, description, body and stacked footer buttons. Opens with an invoker command, no JavaScript.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Drawer</h1>
         <p class="oc-hero-text">A bottom sheet on <code>&lt;dialog&gt;</code> with a drag-handle look, for mobile-style actions and forms. Opens with an invoker command, no JavaScript. On wide screens use <code>--center</code> for a centered panel. For side panels use the <a href="sheet.html">sheet</a>. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/drawer.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React, Vue and Blade component <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Drawer" size="tall">
 <button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="oc-drawer-demo">Open drawer</button>
 
@@ -30,87 +31,56 @@
     </div>
   </div>
 </dialog>
-<oc-code lang="tsx">import { useState, type CSSProperties } from "react";
-import { Button } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { useState } from "react";
+import { Drawer, DrawerClose, FormField, Slider } from "@birdycom/omniaui-react";
 
 export function Example() {
-  // no Drawer component: a &lt;dialog class="oc-drawer"&gt; opened with invoker commands (command / commandfor)
   const [goal, setGoal] = useState(350);
-  const progress = `${((goal - 100) / (600 - 100)) * 100}%`;
   return (
-    &lt;&gt;
-      &lt;Button variant="outline" command="show-modal" commandfor="oc-drawer-demo"&gt;Open drawer&lt;/Button&gt;
-      &lt;dialog className="oc-drawer" id="oc-drawer-demo" closedby="any" aria-labelledby="oc-drawer-demo-title"&gt;
-        &lt;div className="oc-drawer-content"&gt;
-          &lt;div className="oc-drawer-handle" aria-hidden="true" /&gt;
-          &lt;div className="oc-drawer-header"&gt;
-            &lt;h2 className="oc-drawer-title" id="oc-drawer-demo-title"&gt;Move goal&lt;/h2&gt;
-            &lt;p className="oc-drawer-description"&gt;Set your daily activity goal.&lt;/p&gt;
-          &lt;/div&gt;
-          &lt;div className="oc-drawer-body"&gt;
-            &lt;div className="oc-field"&gt;
-              &lt;label className="oc-field-label" htmlFor="oc-drawer-goal"&gt;Calories per day&lt;/label&gt;
-              &lt;input className="oc-slider" id="oc-drawer-goal" type="range" min={100} max={600} value={goal} onChange={(e) =&gt; setGoal(Number(e.target.value))} style={{ "--oc-slider-progress": progress } as CSSProperties} /&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-          &lt;div className="oc-drawer-footer"&gt;
-            &lt;Button command="close" commandfor="oc-drawer-demo" onClick={() =&gt; console.log("goal", goal)}&gt;Submit&lt;/Button&gt;
-            &lt;Button variant="outline" command="close" commandfor="oc-drawer-demo"&gt;Cancel&lt;/Button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/dialog&gt;
-    &lt;/&gt;
+    &lt;Drawer
+      id="oc-drawer-demo"
+      trigger="Open drawer"
+      title="Move goal"
+      description="Set your daily activity goal."
+      footer={
+        &lt;&gt;
+          &lt;DrawerClose onClick={() =&gt; console.log("goal", goal)}&gt;Submit&lt;/DrawerClose&gt;
+          &lt;DrawerClose variant="outline"&gt;Cancel&lt;/DrawerClose&gt;
+        &lt;/&gt;
+      }
+    &gt;
+      &lt;FormField label="Calories per day"&gt;
+        &lt;Slider min={100} max={600} value={goal} onValueChange={setGoal} /&gt;
+      &lt;/FormField&gt;
+    &lt;/Drawer&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
 import { ref } from "vue";
-import { OcButton, OcSlider } from "@birdycom/omniaui-vue";
+import { OcButton, OcDrawer, OcFormField, OcSlider } from "@birdycom/omniaui-vue";
 
-// no OcDrawer component: a &lt;dialog class="oc-drawer"&gt; opened with invoker commands (command / commandfor)
 const goal = ref(350);
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;OcButton variant="outline" command="show-modal" commandfor="oc-drawer-demo"&gt;Open drawer&lt;/OcButton&gt;
-  &lt;dialog class="oc-drawer" id="oc-drawer-demo" closedby="any" aria-labelledby="oc-drawer-demo-title"&gt;
-    &lt;div class="oc-drawer-content"&gt;
-      &lt;div class="oc-drawer-handle" aria-hidden="true"&gt;&lt;/div&gt;
-      &lt;div class="oc-drawer-header"&gt;
-        &lt;h2 class="oc-drawer-title" id="oc-drawer-demo-title"&gt;Move goal&lt;/h2&gt;
-        &lt;p class="oc-drawer-description"&gt;Set your daily activity goal.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-drawer-body"&gt;
-        &lt;div class="oc-field"&gt;
-          &lt;label class="oc-field-label" for="oc-drawer-goal"&gt;Calories per day&lt;/label&gt;
-          &lt;OcSlider id="oc-drawer-goal" v-model="goal" :min="100" :max="600" /&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class="oc-drawer-footer"&gt;
-        &lt;OcButton command="close" commandfor="oc-drawer-demo"&gt;Submit&lt;/OcButton&gt;
-        &lt;OcButton variant="outline" command="close" commandfor="oc-drawer-demo"&gt;Cancel&lt;/OcButton&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/dialog&gt;
+  &lt;OcDrawer id="oc-drawer-demo" label="Open drawer" title="Move goal" description="Set your daily activity goal."&gt;
+    &lt;OcFormField label="Calories per day" v-slot="f"&gt;
+      &lt;OcSlider :id="f.id" v-model="goal" :min="100" :max="600" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;template #footer="{ close }"&gt;
+      &lt;OcButton @click="close"&gt;Submit&lt;/OcButton&gt;
+      &lt;OcButton variant="outline" @click="close"&gt;Cancel&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcDrawer&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">{{-- no drawer component: a &lt;dialog class="oc-drawer"&gt; opened with invoker commands (command / commandfor) --}}
-&lt;x-oc::button variant="outline" command="show-modal" commandfor="oc-drawer-demo"&gt;Open drawer&lt;/x-oc::button&gt;
-
-&lt;dialog class="oc-drawer" id="oc-drawer-demo" closedby="any" aria-labelledby="oc-drawer-demo-title"&gt;
-    &lt;form class="oc-drawer-content" method="dialog"&gt;
-        &lt;div class="oc-drawer-handle" aria-hidden="true"&gt;&lt;/div&gt;
-        &lt;div class="oc-drawer-header"&gt;
-            &lt;h2 class="oc-drawer-title" id="oc-drawer-demo-title"&gt;Move goal&lt;/h2&gt;
-            &lt;p class="oc-drawer-description"&gt;Set your daily activity goal.&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-drawer-body"&gt;
-            &lt;x-oc::slider id="oc-drawer-goal" name="goal" label="Calories per day" :min="100" :max="600" :value="350" /&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-drawer-footer"&gt;
-            &lt;x-oc::button command="close" commandfor="oc-drawer-demo"&gt;Submit&lt;/x-oc::button&gt;
-            &lt;x-oc::button variant="outline" command="close" commandfor="oc-drawer-demo"&gt;Cancel&lt;/x-oc::button&gt;
-        &lt;/div&gt;
-    &lt;/form&gt;
-&lt;/dialog&gt;</oc-code>
+<oc-code lang="blade">{{-- No JavaScript: the trigger opens the dialog with command="show-modal", the footer buttons close it with command="close" --}}
+&lt;x-oc::drawer id="oc-drawer-demo" label="Open drawer" title="Move goal" description="Set your daily activity goal."&gt;
+    &lt;x-oc::slider id="oc-drawer-goal" name="goal" label="Calories per day" :min="100" :max="600" :value="350" /&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button command="close" commandfor="oc-drawer-demo"&gt;Submit&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline" command="close" commandfor="oc-drawer-demo"&gt;Cancel&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::drawer&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -135,24 +105,15 @@ class MoveGoal extends Component
 
 {{-- resources/views/livewire/move-goal.blade.php --}}
 &lt;div&gt;
-    &lt;x-oc::button variant="outline" command="show-modal" commandfor="oc-drawer-demo"&gt;Open drawer&lt;/x-oc::button&gt;
-    &lt;dialog class="oc-drawer" id="oc-drawer-demo" closedby="any" aria-labelledby="oc-drawer-demo-title" wire:ignore.self&gt;
-        &lt;div class="oc-drawer-content"&gt;
-            &lt;div class="oc-drawer-handle" aria-hidden="true"&gt;&lt;/div&gt;
-            &lt;div class="oc-drawer-header"&gt;
-                &lt;h2 class="oc-drawer-title" id="oc-drawer-demo-title"&gt;Move goal&lt;/h2&gt;
-                &lt;p class="oc-drawer-description"&gt;Set your daily activity goal.&lt;/p&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-drawer-body"&gt;
-                {{-- attributes such as wire:model go to the range input --}}
-                &lt;x-oc::slider id="oc-drawer-goal" label="Calories per day" :min="100" :max="600" :value="$goal" wire:model="goal" /&gt;
-            &lt;/div&gt;
-            &lt;div class="oc-drawer-footer"&gt;
-                &lt;x-oc::button command="close" commandfor="oc-drawer-demo" wire:click="save"&gt;Submit&lt;/x-oc::button&gt;
-                &lt;x-oc::button variant="outline" command="close" commandfor="oc-drawer-demo"&gt;Cancel&lt;/x-oc::button&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/dialog&gt;
+    {{-- wire:ignore.self lands on the dialog, so a re-render does not close it --}}
+    &lt;x-oc::drawer id="oc-drawer-demo" label="Open drawer" title="Move goal" description="Set your daily activity goal." wire:ignore.self&gt;
+        {{-- attributes such as wire:model go to the range input --}}
+        &lt;x-oc::slider id="oc-drawer-goal" label="Calories per day" :min="100" :max="600" :value="$goal" wire:model="goal" /&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button command="close" commandfor="oc-drawer-demo" wire:click="save"&gt;Submit&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="outline" command="close" commandfor="oc-drawer-demo"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::drawer&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

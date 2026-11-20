@@ -132,19 +132,16 @@ const emit = defineEmits&lt;{ open: [step: number] }&gt;()
     :next="{ title: 'Walk to step 2 · Town hall', meta: '240 m' }" :steps="steps"
     @next="emit('open', 1)" @step="(index: number) =&gt; emit('open', index)" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::block.route-progress&gt;
-  &lt;x-slot:title&gt;{{ $route-&gt;name }}&lt;/x-slot:title&gt;
-  &lt;x-slot:meta&gt;{{ $team-&gt;name }} · started at {{ $team-&gt;started_at-&gt;format('H:i') }}&lt;/x-slot:meta&gt;
-  @foreach ($steps as $step)
-    &lt;li @class(['oc-block-route-progress-item', 'oc-block-route-progress-item--done' =&gt; $step-&gt;done, 'oc-block-route-progress-item--current' =&gt; $step-&gt;is($next)])&gt;
-      &lt;button class="oc-block-route-progress-link" type="button"&gt;
-        &lt;span class="oc-block-route-progress-marker"&gt;{{ $step-&gt;number }}&lt;/span&gt;
-        &lt;span class="oc-block-route-progress-text"&gt;&lt;span class="oc-block-route-progress-name"&gt;{{ $step-&gt;name }}&lt;/span&gt;&lt;span class="oc-block-route-progress-sub"&gt;{{ $step-&gt;address }}&lt;/span&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-progress-value"&gt;{{ $step-&gt;done ? '+'.$step-&gt;points : $step-&gt;distance }}&lt;/span&gt;
-      &lt;/button&gt;
-    &lt;/li&gt;
-  @endforeach
-&lt;/x-oc::block.route-progress&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.route-progress :title="$route-&gt;name" :meta="$team-&gt;name.' · started at '.$team-&gt;started_at-&gt;format('H:i')"
+    :score="$team-&gt;score" :done="$team-&gt;steps_done" :total="$route-&gt;steps-&gt;count()"
+    :next="['title' =&gt; 'Walk to step '.$next-&gt;number.' · '.$next-&gt;name, 'sub' =&gt; $next-&gt;address, 'meta' =&gt; $next-&gt;distance]"
+    :steps="$route-&gt;steps-&gt;map(fn ($step) =&gt; [
+        'name' =&gt; $step-&gt;name,
+        'sub' =&gt; $step-&gt;address,
+        'marker' =&gt; $step-&gt;number,
+        'value' =&gt; $step-&gt;done ? '+'.$step-&gt;points : $step-&gt;distance,
+        'state' =&gt; $step-&gt;done ? 'done' : ($step-&gt;is($next) ? 'current' : 'todo'),
+    ])-&gt;all()" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -157,6 +154,8 @@ class TeamRoute extends Component
 
     public string $team = 'Team 1';
 
+    public int $score = 40;
+
     public ?int $opened = null;
 
     /** @var list&lt;array&lt;string, mixed&gt;&gt; */
@@ -165,6 +164,7 @@ class TeamRoute extends Component
         ['name' =&gt; 'Market square', 'sub' =&gt; 'Wrong answer', 'value' =&gt; '0', 'state' =&gt; 'wrong', 'marker' =&gt; 2],
         ['name' =&gt; 'Team photo', 'sub' =&gt; 'Photo sent', 'value' =&gt; '+20', 'state' =&gt; 'done', 'marker' =&gt; 'mdi:camera-outline', 'markerLabel' =&gt; 'Photo task'],
         ['name' =&gt; 'Town hall', 'sub' =&gt; 'Market street 1', 'value' =&gt; '240 m', 'state' =&gt; 'current', 'marker' =&gt; 3],
+        ['name' =&gt; 'River bridge', 'sub' =&gt; 'Quay 1', 'value' =&gt; '680 m', 'state' =&gt; 'todo', 'marker' =&gt; 4],
         ['name' =&gt; 'Finish', 'sub' =&gt; 'Opens after 4 steps', 'value' =&gt; '1.1 km', 'state' =&gt; 'locked', 'marker' =&gt; 'mdi:flag-checkered', 'markerLabel' =&gt; 'Finish'],
     ];
 
@@ -173,38 +173,29 @@ class TeamRoute extends Component
         $this-&gt;opened = (int) $index;
     }
 
+    /** The steps with a wire:click per row (a locked step stays without one). */
+    public function rows(): array
+    {
+        return collect($this-&gt;steps)-&gt;map(fn (array $step, int $i) =&gt; $step['state'] === 'locked' ? $step : $step + ['attributes' =&gt; ['wire:click' =&gt; "open({$i})"]])-&gt;all();
+    }
+
     public function render()
     {
-        return view('livewire.team-route');
+        return view('livewire.team-route', [
+            'done' =&gt; collect($this-&gt;steps)-&gt;whereIn('state', ['done', 'wrong'])-&gt;count(),
+        ]);
     }
 }
 
 {{-- resources/views/livewire/team-route.blade.php --}}
 &lt;div&gt;
-    {{-- the block draws the score and the bar from its own markup; title, meta, next and the steps come from the component --}}
-    &lt;x-oc::block.route-progress&gt;
-        &lt;x-slot:title&gt;{{ $route }}&lt;/x-slot:title&gt;
-        &lt;x-slot:meta&gt;{{ $team }} · started at 10:05&lt;/x-slot:meta&gt;
-        @foreach ($steps as $i =&gt; $step)
-            &lt;li @class([
-                'oc-block-route-progress-item',
-                'oc-block-route-progress-item--done' =&gt; in_array($step['state'], ['done', 'wrong'], true),
-                'oc-block-route-progress-item--wrong' =&gt; $step['state'] === 'wrong',
-                'oc-block-route-progress-item--current' =&gt; $step['state'] === 'current',
-                'oc-block-route-progress-item--locked' =&gt; $step['state'] === 'locked',
-            ])&gt;
-                &lt;button class="oc-block-route-progress-link" type="button" wire:click="open({{ $i }})" @if ($step['state'] === 'current') aria-current="step" @endif @disabled($step['state'] === 'locked')&gt;
-                    &lt;span class="oc-block-route-progress-marker"&gt;@if (is_string($step['marker']))&lt;x-oc::webicon :name="$step['marker']" :label="$step['markerLabel'] ?? null" /&gt;@else{{ $step['marker'] }}@endif&lt;/span&gt;
-                    &lt;span class="oc-block-route-progress-text"&gt;&lt;span class="oc-block-route-progress-name"&gt;{{ $step['name'] }}&lt;/span&gt;&lt;span class="oc-block-route-progress-sub"&gt;{{ $step['sub'] }}&lt;/span&gt;&lt;/span&gt;
-                    &lt;span class="oc-block-route-progress-value"&gt;{{ $step['value'] }}&lt;/span&gt;
-                &lt;/button&gt;
-            &lt;/li&gt;
-        @endforeach
-    &lt;/x-oc::block.route-progress&gt;
+    &lt;x-oc::block.route-progress :title="$route" :meta="$team.' · started at 10:05'" :score="$score" :done="$done" :total="count($steps)"
+        :next="['title' =&gt; 'Walk to step 3 · Town hall', 'sub' =&gt; 'Market street 1', 'meta' =&gt; '240 m', 'attributes' =&gt; ['wire:click' =&gt; 'open(3)']]"
+        :steps="$this-&gt;rows()" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
-          <h3 class="oc-section-content__title mt-2" id="demo-2">Finish open <span class="oc-badge-version">v0.16.0</span></h3>
+          <h3 class="oc-section-content__title mt-2" id="demo-2">Finish open <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">The same block near the end of the route: <code>.oc-block-route-progress-next--finish</code> turns the next-step card green and the finish is the current step. <code>--over</code> (red) is for when the time is up.</p>
           <oc-demo title="Finish open" size="tall">
 <section class="oc-block-route-progress" aria-labelledby="oc-rprogress-title-finish">
@@ -326,54 +317,16 @@ const emit = defineEmits&lt;{ finish: [] }&gt;()
     :next="{ tone: 'finish', icon: 'mdi:flag-checkered', title: 'The finish is open', sub: 'Check in at the finish to end the route', meta: '350 m' }"
     :steps="steps" @next="emit('finish')" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">{{-- x-oc::block.route-progress has no props for the score and the bar (it shows its own 40 points, 3 of 6): this state is written out --}}
-@php($steps = [
-    ['name' =&gt; 'Old gate', 'sub' =&gt; 'Right answer', 'value' =&gt; '+20', 'state' =&gt; 'done', 'marker' =&gt; 1],
-    ['name' =&gt; 'Market square', 'sub' =&gt; 'Wrong answer', 'value' =&gt; '0', 'state' =&gt; 'wrong', 'marker' =&gt; 2],
-    ['name' =&gt; 'Team photo', 'sub' =&gt; 'Photo sent', 'value' =&gt; '+20', 'state' =&gt; 'done', 'marker' =&gt; 'mdi:camera-outline', 'markerLabel' =&gt; 'Photo task'],
-    ['name' =&gt; 'Town hall', 'sub' =&gt; 'Right answer', 'value' =&gt; '+20', 'state' =&gt; 'done', 'marker' =&gt; 3],
-    ['name' =&gt; 'River bridge', 'sub' =&gt; 'Right answer', 'value' =&gt; '+20', 'state' =&gt; 'done', 'marker' =&gt; 4],
-    ['name' =&gt; 'Finish', 'sub' =&gt; 'Open now', 'value' =&gt; '350 m', 'state' =&gt; 'current', 'marker' =&gt; 'mdi:flag-checkered', 'markerLabel' =&gt; 'Finish'],
-])
-&lt;section class="oc-block-route-progress" aria-labelledby="rprogress-finish"&gt;
-    &lt;div class="oc-block-route-progress-head"&gt;
-        &lt;div&gt;
-            &lt;h2 class="oc-block-route-progress-title" id="rprogress-finish"&gt;Route 1&lt;/h2&gt;
-            &lt;p class="oc-block-route-progress-meta"&gt;Team 1 · started at 10:05&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-block-route-progress-score"&gt;&lt;b&gt;80&lt;/b&gt;&lt;span&gt;points&lt;/span&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-route-progress-bar"&gt;
-        &lt;div class="oc-block-route-progress-bar-label"&gt;&lt;span&gt;5 of 6 steps done&lt;/span&gt;&lt;span&gt;83%&lt;/span&gt;&lt;/div&gt;
-        &lt;x-oc::progress :value="5" :max="6" label="Steps done" /&gt;
-    &lt;/div&gt;
-    &lt;button class="oc-block-route-progress-next oc-block-route-progress-next--finish" type="button"&gt;
-        &lt;span class="oc-block-route-progress-next-icon" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:flag-checkered" /&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-progress-next-text"&gt;
-            &lt;span class="oc-block-route-progress-next-label"&gt;Now&lt;/span&gt;
-            &lt;span class="oc-block-route-progress-next-title"&gt;The finish is open&lt;/span&gt;
-            &lt;span class="oc-block-route-progress-next-sub"&gt;Check in at the finish to end the route&lt;/span&gt;
-        &lt;/span&gt;
-        &lt;span class="oc-block-route-progress-next-meta"&gt;350 m&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;ol class="oc-block-route-progress-list" aria-label="Steps"&gt;
-        @foreach ($steps as $i =&gt; $step)
-            &lt;li @class([
-                'oc-block-route-progress-item',
-                'oc-block-route-progress-item--done' =&gt; in_array($step['state'], ['done', 'wrong'], true),
-                'oc-block-route-progress-item--wrong' =&gt; $step['state'] === 'wrong',
-                'oc-block-route-progress-item--current' =&gt; $step['state'] === 'current',
-                'oc-block-route-progress-item--locked' =&gt; $step['state'] === 'locked',
-            ])&gt;
-                &lt;button class="oc-block-route-progress-link" type="button" @if ($step['state'] === 'current') aria-current="step" @endif @disabled($step['state'] === 'locked')&gt;
-                    &lt;span class="oc-block-route-progress-marker"&gt;@if (is_string($step['marker']))&lt;x-oc::webicon :name="$step['marker']" :label="$step['markerLabel'] ?? null" /&gt;@else{{ $step['marker'] }}@endif&lt;/span&gt;
-                    &lt;span class="oc-block-route-progress-text"&gt;&lt;span class="oc-block-route-progress-name"&gt;{{ $step['name'] }}&lt;/span&gt;&lt;span class="oc-block-route-progress-sub"&gt;{{ $step['sub'] }}&lt;/span&gt;&lt;/span&gt;
-                    &lt;span class="oc-block-route-progress-value"&gt;{{ $step['value'] }}&lt;/span&gt;
-                &lt;/button&gt;
-            &lt;/li&gt;
-        @endforeach
-    &lt;/ol&gt;
-&lt;/section&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.route-progress title="Route 1" meta="Team 1 · started at 10:05" :score="80" :done="5" :total="6" title-id="rprogress-finish"
+    :next="['tone' =&gt; 'finish', 'icon' =&gt; 'mdi:flag-checkered', 'title' =&gt; 'The finish is open', 'sub' =&gt; 'Check in at the finish to end the route', 'meta' =&gt; '350 m']"
+    :steps="[
+        ['name' =&gt; 'Old gate', 'sub' =&gt; 'Right answer', 'value' =&gt; '+20', 'state' =&gt; 'done'],
+        ['name' =&gt; 'Market square', 'sub' =&gt; 'Wrong answer', 'value' =&gt; '0', 'state' =&gt; 'wrong'],
+        ['name' =&gt; 'Team photo', 'sub' =&gt; 'Photo sent', 'value' =&gt; '+20', 'state' =&gt; 'done', 'marker' =&gt; 'mdi:camera-outline', 'markerLabel' =&gt; 'Photo task'],
+        ['name' =&gt; 'Town hall', 'sub' =&gt; 'Right answer', 'value' =&gt; '+20', 'state' =&gt; 'done', 'marker' =&gt; 3],
+        ['name' =&gt; 'River bridge', 'sub' =&gt; 'Right answer', 'value' =&gt; '+20', 'state' =&gt; 'done', 'marker' =&gt; 4],
+        ['name' =&gt; 'Finish', 'sub' =&gt; 'Open now', 'value' =&gt; '350 m', 'state' =&gt; 'current', 'marker' =&gt; 'mdi:flag-checkered', 'markerLabel' =&gt; 'Finish'],
+    ]" /&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -411,45 +364,11 @@ class RouteFinish extends Component
 }
 
 {{-- resources/views/livewire/route-finish.blade.php --}}
-&lt;section class="oc-block-route-progress" aria-labelledby="rprogress-finish"&gt;
-    &lt;div class="oc-block-route-progress-head"&gt;
-        &lt;div&gt;
-            &lt;h2 class="oc-block-route-progress-title" id="rprogress-finish"&gt;Route 1&lt;/h2&gt;
-            &lt;p class="oc-block-route-progress-meta"&gt;Team 1 · started at 10:05&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="oc-block-route-progress-score"&gt;&lt;b&gt;{{ $score }}&lt;/b&gt;&lt;span&gt;points&lt;/span&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="oc-block-route-progress-bar"&gt;
-        &lt;div class="oc-block-route-progress-bar-label"&gt;&lt;span&gt;{{ $this-&gt;done() }} of {{ count($steps) }} steps done&lt;/span&gt;&lt;span&gt;{{ round($this-&gt;done() / count($steps) * 100) }}%&lt;/span&gt;&lt;/div&gt;
-        &lt;x-oc::progress :value="$this-&gt;done()" :max="count($steps)" label="Steps done" /&gt;
-    &lt;/div&gt;
-    &lt;button class="oc-block-route-progress-next oc-block-route-progress-next--finish" type="button" wire:click="checkIn"&gt;
-        &lt;span class="oc-block-route-progress-next-icon" aria-hidden="true"&gt;&lt;x-oc::webicon name="mdi:flag-checkered" /&gt;&lt;/span&gt;
-        &lt;span class="oc-block-route-progress-next-text"&gt;
-            &lt;span class="oc-block-route-progress-next-label"&gt;Now&lt;/span&gt;
-            &lt;span class="oc-block-route-progress-next-title"&gt;The finish is open&lt;/span&gt;
-            &lt;span class="oc-block-route-progress-next-sub"&gt;Check in at the finish to end the route&lt;/span&gt;
-        &lt;/span&gt;
-        &lt;span class="oc-block-route-progress-next-meta"&gt;350 m&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;ol class="oc-block-route-progress-list" aria-label="Steps"&gt;
-        @foreach ($steps as $i =&gt; $step)
-            &lt;li @class([
-                'oc-block-route-progress-item',
-                'oc-block-route-progress-item--done' =&gt; in_array($step['state'], ['done', 'wrong'], true),
-                'oc-block-route-progress-item--wrong' =&gt; $step['state'] === 'wrong',
-                'oc-block-route-progress-item--current' =&gt; $step['state'] === 'current',
-                'oc-block-route-progress-item--locked' =&gt; $step['state'] === 'locked',
-            ])&gt;
-                &lt;button class="oc-block-route-progress-link" type="button" @if ($step['state'] === 'current') aria-current="step" @endif @disabled($step['state'] === 'locked')&gt;
-                    &lt;span class="oc-block-route-progress-marker"&gt;@if (is_string($step['marker']))&lt;x-oc::webicon :name="$step['marker']" :label="$step['markerLabel'] ?? null" /&gt;@else{{ $step['marker'] }}@endif&lt;/span&gt;
-                    &lt;span class="oc-block-route-progress-text"&gt;&lt;span class="oc-block-route-progress-name"&gt;{{ $step['name'] }}&lt;/span&gt;&lt;span class="oc-block-route-progress-sub"&gt;{{ $step['sub'] }}&lt;/span&gt;&lt;/span&gt;
-                    &lt;span class="oc-block-route-progress-value"&gt;{{ $step['value'] }}&lt;/span&gt;
-                &lt;/button&gt;
-            &lt;/li&gt;
-        @endforeach
-    &lt;/ol&gt;
-&lt;/section&gt;</oc-code>
+&lt;div&gt;
+    &lt;x-oc::block.route-progress title="Route 1" meta="Team 1 · started at 10:05" :score="$score" :done="$this-&gt;done()" :total="count($steps)" title-id="rprogress-finish"
+        :next="['tone' =&gt; 'finish', 'icon' =&gt; 'mdi:flag-checkered', 'title' =&gt; 'The finish is open', 'sub' =&gt; 'Check in at the finish to end the route', 'meta' =&gt; '350 m', 'attributes' =&gt; ['wire:click' =&gt; 'checkIn']]"
+        :steps="$steps" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

@@ -56,179 +56,117 @@
     </div>
   </div>
 </div>
-<oc-code lang="tsx">import { useState } from "react";
-import { Breadcrumb, Button, Sidebar, SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, User, Webicon } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { BlockSidebar01, type SidebarBlockGroup } from "@birdycom/omniaui-react";
 
-export function Example() {
-  const [collapsed, setCollapsed] = useState(false);
+/** The groups of the sidebar; `current` follows the route of the page (/docs/introduction here). */
+const groupsFor = (pathname: string): SidebarBlockGroup[] =&gt; [
+  {
+    label: "Getting started",
+    items: [
+      { label: "Introduction", icon: "mdi:book-open-variant-outline", href: "/docs/introduction", current: pathname === "/docs/introduction" },
+      { label: "Installation", icon: "mdi:code-tags", href: "/docs/installation", current: pathname === "/docs/installation" },
+      { label: "Configuration", icon: "mdi:cog-outline", href: "/docs/configuration", current: pathname === "/docs/configuration" },
+    ],
+  },
+  {
+    label: "Building",
+    items: [
+      { label: "Components", icon: "mdi:layers-outline", href: "/docs/components", badge: "24", current: pathname === "/docs/components" },
+      { label: "Blocks", icon: "mdi:file-document-outline", href: "/docs/blocks", current: pathname === "/docs/blocks" },
+      { label: "Charts", icon: "mdi:chart-bar", href: "/docs/charts", current: pathname === "/docs/charts" },
+    ],
+  },
+];
+
+export function Example({ pathname = "/docs/introduction" }: { pathname?: string }) {
   return (
-    &lt;div className="oc-block-sb"&gt;
-      &lt;Sidebar
-        aria-label="Main navigation"
-        collapsed={collapsed}
-        header={
-          &lt;SidebarMenuButton href="#" size="lg" icon={&lt;span className="oc-block-sb-tile"&gt;&lt;Webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;}&gt;
-            &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span className="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-          &lt;/SidebarMenuButton&gt;
-        }
-        footer={&lt;User name="User 1" email="user1@company1.example" initials="U1" avatarSize="sm" /&gt;}
-      &gt;
-        &lt;SidebarGroup label="Getting started"&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:book-open-variant-outline" className="oc-sidebar-menu-icon" /&gt;} current&gt;Introduction&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:code-tags" className="oc-sidebar-menu-icon" /&gt;}&gt;Installation&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:cog-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Configuration&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/SidebarGroup&gt;
-        &lt;SidebarGroup label="Building"&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:layers-outline" className="oc-sidebar-menu-icon" /&gt;} badge={24}&gt;Components&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:file-document-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Blocks&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:chart-bar" className="oc-sidebar-menu-icon" /&gt;}&gt;Charts&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/SidebarGroup&gt;
-      &lt;/Sidebar&gt;
-      &lt;div className="oc-block-sb-main"&gt;
-        &lt;header className="oc-block-sb-bar"&gt;
-          &lt;Button variant="ghost" size="sm" icon aria-label="Toggle sidebar" aria-pressed={collapsed} onClick={() =&gt; setCollapsed(!collapsed)}&gt;
-            &lt;Webicon name="mdi:dock-left" /&gt;
-          &lt;/Button&gt;
-          &lt;span className="oc-block-sb-sep" /&gt;
-          &lt;Breadcrumb separator="chevron" items={[{ label: "Building", href: "#", icon: "mdi:home-outline" }, { label: "Overview" }]} /&gt;
-        &lt;/header&gt;
-        &lt;div className="oc-block-sb-body"&gt;{/* page content */}&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;BlockSidebar01
+      brand={{ title: "Documentation", sub: "v1.0.0", icon: "mdi:layers-outline", href: "/docs" }}
+      groups={groupsFor(pathname)}
+      user={{ name: "User 1", email: "user1@company1.example", initials: "U1" }}
+      breadcrumbs={[{ label: "Building", href: "/docs", icon: "mdi:home-outline" }, { label: "Overview" }]}
+    /&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { ref } from 'vue'
-import { OcBreadcrumb, OcButton, OcSidebar, OcSidebarGroup, OcSidebarMenu, OcSidebarMenuButton, OcUser, OcWebicon } from '@birdycom/omniaui-vue'
+import { computed } from 'vue'
+import { OcBlockSidebar01 } from '@birdycom/omniaui-vue'
 
-const collapsed = ref(false)
-const crumbs = [{ label: 'Building', href: '#', icon: 'mdi:home-outline' }, { label: 'Overview' }]
+const props = withDefaults(defineProps&lt;{ pathname?: string }&gt;(), { pathname: '/docs/introduction' })
+
+// current follows the route of the page
+const groups = computed(() =&gt; [
+  {
+    label: 'Getting started',
+    items: [
+      { label: 'Introduction', icon: 'mdi:book-open-variant-outline', href: '/docs/introduction', current: props.pathname === '/docs/introduction' },
+      { label: 'Installation', icon: 'mdi:code-tags', href: '/docs/installation', current: props.pathname === '/docs/installation' },
+      { label: 'Configuration', icon: 'mdi:cog-outline', href: '/docs/configuration', current: props.pathname === '/docs/configuration' },
+    ],
+  },
+  {
+    label: 'Building',
+    items: [
+      { label: 'Components', icon: 'mdi:layers-outline', href: '/docs/components', badge: '24', current: props.pathname === '/docs/components' },
+      { label: 'Blocks', icon: 'mdi:file-document-outline', href: '/docs/blocks', current: props.pathname === '/docs/blocks' },
+      { label: 'Charts', icon: 'mdi:chart-bar', href: '/docs/charts', current: props.pathname === '/docs/charts' },
+    ],
+  },
+])
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;div class="oc-block-sb"&gt;
-    &lt;OcSidebar label="Main navigation" :collapsed="collapsed"&gt;
-      &lt;template #header&gt;
-        &lt;OcSidebarMenuButton href="#" large&gt;
-          &lt;template #icon&gt;&lt;span class="oc-block-sb-tile"&gt;&lt;OcWebicon name="mdi:layers-outline" /&gt;&lt;/span&gt;&lt;/template&gt;
-          &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-        &lt;/OcSidebarMenuButton&gt;
-      &lt;/template&gt;
-      &lt;OcSidebarGroup label="Getting started"&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#" current&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Introduction
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Installation
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Configuration
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/OcSidebarGroup&gt;
-      &lt;OcSidebarGroup label="Building"&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#" :badge="24"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Components
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Blocks
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Charts
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/OcSidebarGroup&gt;
-      &lt;template #footer&gt;
-        &lt;OcUser name="User 1" email="user1@company1.example" initials="U1" avatar-size="sm" /&gt;
-      &lt;/template&gt;
-    &lt;/OcSidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-      &lt;header class="oc-block-sb-bar"&gt;
-        &lt;OcButton variant="ghost" size="sm" icon aria-label="Toggle sidebar" :aria-pressed="collapsed" @click="collapsed = !collapsed"&gt;
-          &lt;OcWebicon name="mdi:dock-left" /&gt;
-        &lt;/OcButton&gt;
-        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-        &lt;OcBreadcrumb separator="chevron" :items="crumbs" /&gt;
-      &lt;/header&gt;
-      &lt;div class="oc-block-sb-body"&gt;&lt;!-- page content --&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;OcBlockSidebar01 :brand="{ title: 'Documentation', sub: 'v1.0.0', icon: 'mdi:layers-outline', href: '/docs' }" :groups="groups" :user="{ name: 'User 1', email: 'user1@company1.example', initials: 'U1' }"
+    :breadcrumbs="[{ label: 'Building', href: '/docs', icon: 'mdi:home-outline' }, { label: 'Overview' }]" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-sb"&gt;
-    &lt;x-oc::sidebar label="Main navigation"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;x-oc::sidebar.group label="Getting started"&gt;
-            &lt;x-oc::sidebar.item href="#" current&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Introduction
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Installation
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Configuration
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-        &lt;x-oc::sidebar.group label="Building"&gt;
-            &lt;x-oc::sidebar.item href="#" badge="24"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Components
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Blocks
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Charts
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-        &lt;x-slot:footer&gt;
-            &lt;x-oc::user name="User 1" email="user1@company1.example" initials="U1" size="sm" /&gt;
-        &lt;/x-slot:footer&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- x-oc::block.sidebar-01: the frame (.oc-block-sb); the sidebar, breadcrumbs and body slots fill its regions --}}
+&lt;x-oc::block.sidebar-01&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;x-oc::sidebar.group label="Getting started"&gt;
+                &lt;x-oc::sidebar.item href="#" current&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Introduction
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Installation
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Configuration
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+            &lt;x-oc::sidebar.group label="Building"&gt;
+                &lt;x-oc::sidebar.item href="#" badge="24"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Components
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Blocks
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Charts
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+            &lt;x-slot:footer&gt;
+                &lt;x-oc::user name="User 1" email="user1@company1.example" initials="U1" size="sm" /&gt;
+            &lt;/x-slot:footer&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:breadcrumbs&gt;&lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;&lt;/x-slot:breadcrumbs&gt;
+    &lt;x-slot:body&gt;
+        @yield('content')
+    &lt;/x-slot:body&gt;
+&lt;/x-oc::block.sidebar-01&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -239,9 +177,30 @@ class SidebarGrouped extends Component
 {
     public bool $collapsed = false;
 
+    public string $page = 'introduction';
+
+    /** @var array&lt;string, list&lt;array{key: string, label: string, icon: string, badge?: string}&gt;&gt; */
+    public array $groups = [
+        'Getting started' =&gt; [
+            ['key' =&gt; 'introduction', 'label' =&gt; 'Introduction', 'icon' =&gt; 'mdi:book-open-variant-outline'],
+            ['key' =&gt; 'installation', 'label' =&gt; 'Installation', 'icon' =&gt; 'mdi:code-tags'],
+            ['key' =&gt; 'configuration', 'label' =&gt; 'Configuration', 'icon' =&gt; 'mdi:cog-outline'],
+        ],
+        'Building' =&gt; [
+            ['key' =&gt; 'components', 'label' =&gt; 'Components', 'icon' =&gt; 'mdi:layers-outline', 'badge' =&gt; '24'],
+            ['key' =&gt; 'blocks', 'label' =&gt; 'Blocks', 'icon' =&gt; 'mdi:file-document-outline'],
+            ['key' =&gt; 'charts', 'label' =&gt; 'Charts', 'icon' =&gt; 'mdi:chart-bar'],
+        ],
+    ];
+
     public function toggleSidebar(): void
     {
         $this-&gt;collapsed = ! $this-&gt;collapsed;
+    }
+
+    public function open(string $page): void
+    {
+        $this-&gt;page = $page;
     }
 
     public function render()
@@ -251,57 +210,40 @@ class SidebarGrouped extends Component
 }
 
 {{-- resources/views/livewire/sidebar-grouped.blade.php --}}
-&lt;div class="oc-block-sb"&gt;
-    &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;x-oc::sidebar.group label="Getting started"&gt;
-            &lt;x-oc::sidebar.item href="#" current&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Introduction
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Installation
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Configuration
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-        &lt;x-oc::sidebar.group label="Building"&gt;
-            &lt;x-oc::sidebar.item href="#" badge="24"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Components
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Blocks
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Charts
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-        &lt;x-slot:footer&gt;
-            &lt;x-oc::user name="User 1" email="user1@company1.example" initials="U1" size="sm" /&gt;
-        &lt;/x-slot:footer&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+{{-- x-oc::block.sidebar-01: the frame (.oc-block-sb); the sidebar, bar and body slots fill its regions --}}
+&lt;x-oc::block.sidebar-01&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            @foreach ($groups as $label =&gt; $items)
+                &lt;x-oc::sidebar.group :label="$label" wire:key="group-{{ $loop-&gt;index }}"&gt;
+                    @foreach ($items as $item)
+                        &lt;x-oc::sidebar.item href="#" :current="$page === $item['key']" :badge="$item['badge'] ?? null" wire:click.prevent="open('{{ $item['key'] }}')" wire:key="item-{{ $item['key'] }}"&gt;
+                            &lt;x-slot:icon&gt;&lt;x-oc::webicon :name="$item['icon']" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                            {{ $item['label'] }}
+                        &lt;/x-oc::sidebar.item&gt;
+                    @endforeach
+                &lt;/x-oc::sidebar.group&gt;
+            @endforeach
+            &lt;x-slot:footer&gt;
+                &lt;x-oc::user name="User 1" email="user1@company1.example" initials="U1" size="sm" /&gt;
+            &lt;/x-slot:footer&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:bar&gt;
+        &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
+            &lt;x-oc::webicon name="mdi:dock-left" /&gt;
+        &lt;/x-oc::button&gt;
+        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
+        &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
+    &lt;/x-slot:bar&gt;
+    {{-- the body slot takes the page content --}}
+&lt;/x-oc::block.sidebar-01&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="sidebar-02">Sidebar 02 - Collapsible groups</h3>
@@ -351,197 +293,136 @@ class SidebarGrouped extends Component
     </div>
   </div>
 </div>
-<oc-code lang="tsx">import { useState } from "react";
-import { Breadcrumb, Button, Sidebar, SidebarMenu, SidebarMenuButton, SidebarMenuItem, Webicon } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { BlockSidebar02, type SidebarBlockGroup } from "@birdycom/omniaui-react";
 
-export function Example() {
-  const [collapsed, setCollapsed] = useState(false);
+/** The groups of the sidebar; `current` follows the route of the page (/docs/introduction here). */
+const groupsFor = (pathname: string): SidebarBlockGroup[] =&gt; [
+  {
+    label: "Getting started",
+    items: [
+      { label: "Introduction", icon: "mdi:book-open-variant-outline", href: "/docs/introduction", current: pathname === "/docs/introduction" },
+      { label: "Installation", icon: "mdi:code-tags", href: "/docs/installation", current: pathname === "/docs/installation" },
+    ],
+  },
+  {
+    label: "Building",
+    items: [
+      { label: "Components", icon: "mdi:layers-outline", href: "/docs/components", current: pathname === "/docs/components" },
+      { label: "Blocks", icon: "mdi:file-document-outline", href: "/docs/blocks", current: pathname === "/docs/blocks" },
+    ],
+  },
+  {
+    label: "Reference",
+    open: false,
+    items: [
+      { label: "Configuration", icon: "mdi:cog-outline", href: "/docs/configuration", current: pathname === "/docs/configuration" },
+      { label: "Charts", icon: "mdi:chart-bar", href: "/docs/charts", current: pathname === "/docs/charts" },
+    ],
+  },
+];
+
+export function Example({ pathname = "/docs/introduction" }: { pathname?: string }) {
   return (
-    &lt;div className="oc-block-sb"&gt;
-      &lt;Sidebar
-        aria-label="Main navigation"
-        collapsed={collapsed}
-        header={
-          &lt;SidebarMenuButton href="#" size="lg" icon={&lt;span className="oc-block-sb-tile"&gt;&lt;Webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;}&gt;
-            &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span className="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-          &lt;/SidebarMenuButton&gt;
-        }
-      &gt;
-        &lt;details className="oc-block-sb-group" open&gt;
-          &lt;summary&gt;Getting started&lt;/summary&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:book-open-variant-outline" className="oc-sidebar-menu-icon" /&gt;} current&gt;Introduction&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:code-tags" className="oc-sidebar-menu-icon" /&gt;}&gt;Installation&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/details&gt;
-        &lt;details className="oc-block-sb-group" open&gt;
-          &lt;summary&gt;Building&lt;/summary&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:layers-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Components&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:file-document-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Blocks&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/details&gt;
-        &lt;details className="oc-block-sb-group"&gt;
-          &lt;summary&gt;Reference&lt;/summary&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:cog-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Configuration&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:chart-bar" className="oc-sidebar-menu-icon" /&gt;}&gt;Charts&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/details&gt;
-      &lt;/Sidebar&gt;
-      &lt;div className="oc-block-sb-main"&gt;
-        &lt;header className="oc-block-sb-bar"&gt;
-          &lt;Button variant="ghost" size="sm" icon aria-label="Toggle sidebar" aria-pressed={collapsed} onClick={() =&gt; setCollapsed(!collapsed)}&gt;
-            &lt;Webicon name="mdi:dock-left" /&gt;
-          &lt;/Button&gt;
-          &lt;span className="oc-block-sb-sep" /&gt;
-          &lt;Breadcrumb separator="chevron" items={[{ label: "Building", href: "#", icon: "mdi:home-outline" }, { label: "Overview" }]} /&gt;
-        &lt;/header&gt;
-        &lt;div className="oc-block-sb-body"&gt;{/* page content */}&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;BlockSidebar02
+      brand={{ title: "Documentation", sub: "v1.0.0", icon: "mdi:layers-outline", href: "/docs" }}
+      groups={groupsFor(pathname)}
+      breadcrumbs={[{ label: "Building", href: "/docs", icon: "mdi:home-outline" }, { label: "Overview" }]}
+    /&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { ref } from 'vue'
-import { OcBreadcrumb, OcButton, OcSidebar, OcSidebarMenu, OcSidebarMenuButton, OcWebicon } from '@birdycom/omniaui-vue'
+import { computed } from 'vue'
+import { OcBlockSidebar02 } from '@birdycom/omniaui-vue'
 
-const collapsed = ref(false)
-const crumbs = [{ label: 'Building', href: '#', icon: 'mdi:home-outline' }, { label: 'Overview' }]
+const props = withDefaults(defineProps&lt;{ pathname?: string }&gt;(), { pathname: '/docs/introduction' })
+
+// current follows the route of the page
+const groups = computed(() =&gt; [
+  {
+    label: 'Getting started',
+    items: [
+      { label: 'Introduction', icon: 'mdi:book-open-variant-outline', href: '/docs/introduction', current: props.pathname === '/docs/introduction' },
+      { label: 'Installation', icon: 'mdi:code-tags', href: '/docs/installation', current: props.pathname === '/docs/installation' },
+    ],
+  },
+  {
+    label: 'Building',
+    items: [
+      { label: 'Components', icon: 'mdi:layers-outline', href: '/docs/components', current: props.pathname === '/docs/components' },
+      { label: 'Blocks', icon: 'mdi:file-document-outline', href: '/docs/blocks', current: props.pathname === '/docs/blocks' },
+    ],
+  },
+  {
+    label: 'Reference',
+    open: false,
+    items: [
+      { label: 'Configuration', icon: 'mdi:cog-outline', href: '/docs/configuration', current: props.pathname === '/docs/configuration' },
+      { label: 'Charts', icon: 'mdi:chart-bar', href: '/docs/charts', current: props.pathname === '/docs/charts' },
+    ],
+  },
+])
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;div class="oc-block-sb"&gt;
-    &lt;OcSidebar label="Main navigation" :collapsed="collapsed"&gt;
-      &lt;template #header&gt;
-        &lt;OcSidebarMenuButton href="#" large&gt;
-          &lt;template #icon&gt;&lt;span class="oc-block-sb-tile"&gt;&lt;OcWebicon name="mdi:layers-outline" /&gt;&lt;/span&gt;&lt;/template&gt;
-          &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-        &lt;/OcSidebarMenuButton&gt;
-      &lt;/template&gt;
-      &lt;details class="oc-block-sb-group" open&gt;
-        &lt;summary&gt;Getting started&lt;/summary&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#" current&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Introduction
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Installation
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/details&gt;
-      &lt;details class="oc-block-sb-group" open&gt;
-        &lt;summary&gt;Building&lt;/summary&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Components
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Blocks
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/details&gt;
-      &lt;details class="oc-block-sb-group"&gt;
-        &lt;summary&gt;Reference&lt;/summary&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Configuration
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Charts
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/details&gt;
-    &lt;/OcSidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-      &lt;header class="oc-block-sb-bar"&gt;
-        &lt;OcButton variant="ghost" size="sm" icon aria-label="Toggle sidebar" :aria-pressed="collapsed" @click="collapsed = !collapsed"&gt;
-          &lt;OcWebicon name="mdi:dock-left" /&gt;
-        &lt;/OcButton&gt;
-        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-        &lt;OcBreadcrumb separator="chevron" :items="crumbs" /&gt;
-      &lt;/header&gt;
-      &lt;div class="oc-block-sb-body"&gt;&lt;!-- page content --&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;OcBlockSidebar02 :brand="{ title: 'Documentation', sub: 'v1.0.0', icon: 'mdi:layers-outline', href: '/docs' }" :groups="groups"
+    :breadcrumbs="[{ label: 'Building', href: '/docs', icon: 'mdi:home-outline' }, { label: 'Overview' }]" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-sb"&gt;
-    &lt;x-oc::sidebar label="Main navigation"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;details class="oc-block-sb-group" open&gt;
-            &lt;summary&gt;Getting started&lt;/summary&gt;
-            &lt;ul class="oc-sidebar-menu"&gt;
-                &lt;x-oc::sidebar.item href="#" current&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Introduction
-                &lt;/x-oc::sidebar.item&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Installation
-                &lt;/x-oc::sidebar.item&gt;
-            &lt;/ul&gt;
-        &lt;/details&gt;
-        &lt;details class="oc-block-sb-group" open&gt;
-            &lt;summary&gt;Building&lt;/summary&gt;
-            &lt;ul class="oc-sidebar-menu"&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Components
-                &lt;/x-oc::sidebar.item&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Blocks
-                &lt;/x-oc::sidebar.item&gt;
-            &lt;/ul&gt;
-        &lt;/details&gt;
-        &lt;details class="oc-block-sb-group"&gt;
-            &lt;summary&gt;Reference&lt;/summary&gt;
-            &lt;ul class="oc-sidebar-menu"&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Configuration
-                &lt;/x-oc::sidebar.item&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Charts
-                &lt;/x-oc::sidebar.item&gt;
-            &lt;/ul&gt;
-        &lt;/details&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- x-oc::block.sidebar-02: the frame (.oc-block-sb); the sidebar, breadcrumbs and body slots fill its regions --}}
+&lt;x-oc::block.sidebar-02&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;details class="oc-block-sb-group" open&gt;
+                &lt;summary&gt;Getting started&lt;/summary&gt;
+                &lt;ul class="oc-sidebar-menu"&gt;
+                    &lt;x-oc::sidebar.item href="#" current&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Introduction
+                    &lt;/x-oc::sidebar.item&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Installation
+                    &lt;/x-oc::sidebar.item&gt;
+                &lt;/ul&gt;
+            &lt;/details&gt;
+            &lt;details class="oc-block-sb-group" open&gt;
+                &lt;summary&gt;Building&lt;/summary&gt;
+                &lt;ul class="oc-sidebar-menu"&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Components
+                    &lt;/x-oc::sidebar.item&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Blocks
+                    &lt;/x-oc::sidebar.item&gt;
+                &lt;/ul&gt;
+            &lt;/details&gt;
+            &lt;details class="oc-block-sb-group"&gt;
+                &lt;summary&gt;Reference&lt;/summary&gt;
+                &lt;ul class="oc-sidebar-menu"&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Configuration
+                    &lt;/x-oc::sidebar.item&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Charts
+                    &lt;/x-oc::sidebar.item&gt;
+                &lt;/ul&gt;
+            &lt;/details&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:breadcrumbs&gt;&lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;&lt;/x-slot:breadcrumbs&gt;
+    &lt;x-slot:body&gt;
+        @yield('content')
+    &lt;/x-slot:body&gt;
+&lt;/x-oc::block.sidebar-02&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -564,65 +445,66 @@ class SidebarCollapsibleGroups extends Component
 }
 
 {{-- resources/views/livewire/sidebar-collapsible-groups.blade.php --}}
-&lt;div class="oc-block-sb"&gt;
-    &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;details class="oc-block-sb-group" open&gt;
-            &lt;summary&gt;Getting started&lt;/summary&gt;
-            &lt;ul class="oc-sidebar-menu"&gt;
-                &lt;x-oc::sidebar.item href="#" current&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Introduction
-                &lt;/x-oc::sidebar.item&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Installation
-                &lt;/x-oc::sidebar.item&gt;
-            &lt;/ul&gt;
-        &lt;/details&gt;
-        &lt;details class="oc-block-sb-group" open&gt;
-            &lt;summary&gt;Building&lt;/summary&gt;
-            &lt;ul class="oc-sidebar-menu"&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Components
-                &lt;/x-oc::sidebar.item&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Blocks
-                &lt;/x-oc::sidebar.item&gt;
-            &lt;/ul&gt;
-        &lt;/details&gt;
-        &lt;details class="oc-block-sb-group"&gt;
-            &lt;summary&gt;Reference&lt;/summary&gt;
-            &lt;ul class="oc-sidebar-menu"&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Configuration
-                &lt;/x-oc::sidebar.item&gt;
-                &lt;x-oc::sidebar.item href="#"&gt;
-                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                    Charts
-                &lt;/x-oc::sidebar.item&gt;
-            &lt;/ul&gt;
-        &lt;/details&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+{{-- x-oc::block.sidebar-02: the frame (.oc-block-sb); the sidebar, bar and body slots fill its regions --}}
+&lt;x-oc::block.sidebar-02&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;details class="oc-block-sb-group" open&gt;
+                &lt;summary&gt;Getting started&lt;/summary&gt;
+                &lt;ul class="oc-sidebar-menu"&gt;
+                    &lt;x-oc::sidebar.item href="#" current&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Introduction
+                    &lt;/x-oc::sidebar.item&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Installation
+                    &lt;/x-oc::sidebar.item&gt;
+                &lt;/ul&gt;
+            &lt;/details&gt;
+            &lt;details class="oc-block-sb-group" open&gt;
+                &lt;summary&gt;Building&lt;/summary&gt;
+                &lt;ul class="oc-sidebar-menu"&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Components
+                    &lt;/x-oc::sidebar.item&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Blocks
+                    &lt;/x-oc::sidebar.item&gt;
+                &lt;/ul&gt;
+            &lt;/details&gt;
+            &lt;details class="oc-block-sb-group"&gt;
+                &lt;summary&gt;Reference&lt;/summary&gt;
+                &lt;ul class="oc-sidebar-menu"&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Configuration
+                    &lt;/x-oc::sidebar.item&gt;
+                    &lt;x-oc::sidebar.item href="#"&gt;
+                        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                        Charts
+                    &lt;/x-oc::sidebar.item&gt;
+                &lt;/ul&gt;
+            &lt;/details&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:bar&gt;
+        &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
+            &lt;x-oc::webicon name="mdi:dock-left" /&gt;
+        &lt;/x-oc::button&gt;
+        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
+        &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
+    &lt;/x-slot:bar&gt;
+    {{-- the body slot takes the page content --}}
+&lt;/x-oc::block.sidebar-02&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="sidebar-03">Sidebar 03 - With submenus</h3>
@@ -670,150 +552,85 @@ class SidebarCollapsibleGroups extends Component
     </div>
   </div>
 </div>
-<oc-code lang="tsx">import { useState } from "react";
-import { Breadcrumb, Button, Sidebar, SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, Webicon } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { BlockSidebar03, type SidebarBlockGroup } from "@birdycom/omniaui-react";
 
-export function Example() {
-  const [collapsed, setCollapsed] = useState(false);
+/** The groups of the sidebar; `current` follows the route of the page (/docs/introduction here). */
+const groupsFor = (pathname: string): SidebarBlockGroup[] =&gt; [
+  {
+    label: "Getting started",
+    items: [
+      { label: "Introduction", icon: "mdi:book-open-variant-outline", href: "/docs/introduction", current: pathname === "/docs/introduction", items: [{ label: "Overview", href: "/docs/introduction/overview", current: pathname === "/docs/introduction/overview" }, { label: "Quick start", href: "/docs/introduction/quick-start", current: pathname === "/docs/introduction/quick-start" }, { label: "Tokens", href: "/docs/introduction/tokens", current: pathname === "/docs/introduction/tokens" }] },
+      { label: "Components", icon: "mdi:layers-outline", href: "/docs/components", current: pathname === "/docs/components", items: [{ label: "Buttons", href: "/docs/components/buttons", current: pathname === "/docs/components/buttons" }, { label: "Forms", href: "/docs/components/forms", current: pathname === "/docs/components/forms" }, { label: "Navigation", href: "/docs/components/navigation", current: pathname === "/docs/components/navigation" }] },
+    ],
+  },
+];
+
+export function Example({ pathname = "/docs/introduction" }: { pathname?: string }) {
   return (
-    &lt;div className="oc-block-sb"&gt;
-      &lt;Sidebar
-        aria-label="Main navigation"
-        collapsed={collapsed}
-        header={
-          &lt;SidebarMenuButton href="#" size="lg" icon={&lt;span className="oc-block-sb-tile"&gt;&lt;Webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;}&gt;
-            &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span className="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-          &lt;/SidebarMenuButton&gt;
-        }
-      &gt;
-        &lt;SidebarGroup label="Getting started"&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;
-              &lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:book-open-variant-outline" className="oc-sidebar-menu-icon" /&gt;} current&gt;Introduction&lt;/SidebarMenuButton&gt;
-              &lt;ul className="oc-sidebar-menu-sub"&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Overview&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Quick start&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Tokens&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-              &lt;/ul&gt;
-            &lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;
-              &lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:layers-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Components&lt;/SidebarMenuButton&gt;
-              &lt;ul className="oc-sidebar-menu-sub"&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Buttons&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Forms&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Navigation&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-              &lt;/ul&gt;
-            &lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/SidebarGroup&gt;
-      &lt;/Sidebar&gt;
-      &lt;div className="oc-block-sb-main"&gt;
-        &lt;header className="oc-block-sb-bar"&gt;
-          &lt;Button variant="ghost" size="sm" icon aria-label="Toggle sidebar" aria-pressed={collapsed} onClick={() =&gt; setCollapsed(!collapsed)}&gt;
-            &lt;Webicon name="mdi:dock-left" /&gt;
-          &lt;/Button&gt;
-          &lt;span className="oc-block-sb-sep" /&gt;
-          &lt;Breadcrumb separator="chevron" items={[{ label: "Building", href: "#", icon: "mdi:home-outline" }, { label: "Overview" }]} /&gt;
-        &lt;/header&gt;
-        &lt;div className="oc-block-sb-body"&gt;{/* page content */}&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;BlockSidebar03
+      brand={{ title: "Documentation", sub: "v1.0.0", icon: "mdi:layers-outline", href: "/docs" }}
+      groups={groupsFor(pathname)}
+      breadcrumbs={[{ label: "Building", href: "/docs", icon: "mdi:home-outline" }, { label: "Overview" }]}
+    /&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { ref } from 'vue'
-import { OcBreadcrumb, OcButton, OcSidebar, OcSidebarGroup, OcSidebarMenu, OcSidebarMenuButton, OcWebicon } from '@birdycom/omniaui-vue'
+import { computed } from 'vue'
+import { OcBlockSidebar03 } from '@birdycom/omniaui-vue'
 
-const collapsed = ref(false)
-const crumbs = [{ label: 'Building', href: '#', icon: 'mdi:home-outline' }, { label: 'Overview' }]
+const props = withDefaults(defineProps&lt;{ pathname?: string }&gt;(), { pathname: '/docs/introduction' })
+
+// current follows the route of the page
+const groups = computed(() =&gt; [
+  {
+    label: 'Getting started',
+    items: [
+      { label: 'Introduction', icon: 'mdi:book-open-variant-outline', href: '/docs/introduction', current: props.pathname === '/docs/introduction', items: [{ label: 'Overview', href: '/docs/introduction/overview', current: props.pathname === '/docs/introduction/overview' }, { label: 'Quick start', href: '/docs/introduction/quick-start', current: props.pathname === '/docs/introduction/quick-start' }, { label: 'Tokens', href: '/docs/introduction/tokens', current: props.pathname === '/docs/introduction/tokens' }] },
+      { label: 'Components', icon: 'mdi:layers-outline', href: '/docs/components', current: props.pathname === '/docs/components', items: [{ label: 'Buttons', href: '/docs/components/buttons', current: props.pathname === '/docs/components/buttons' }, { label: 'Forms', href: '/docs/components/forms', current: props.pathname === '/docs/components/forms' }, { label: 'Navigation', href: '/docs/components/navigation', current: props.pathname === '/docs/components/navigation' }] },
+    ],
+  },
+])
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;div class="oc-block-sb"&gt;
-    &lt;OcSidebar label="Main navigation" :collapsed="collapsed"&gt;
-      &lt;template #header&gt;
-        &lt;OcSidebarMenuButton href="#" large&gt;
-          &lt;template #icon&gt;&lt;span class="oc-block-sb-tile"&gt;&lt;OcWebicon name="mdi:layers-outline" /&gt;&lt;/span&gt;&lt;/template&gt;
-          &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-        &lt;/OcSidebarMenuButton&gt;
-      &lt;/template&gt;
-      &lt;OcSidebarGroup label="Getting started"&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#" current&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Introduction
-            &lt;/OcSidebarMenuButton&gt;
-            &lt;ul class="oc-sidebar-menu-sub"&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Overview&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Quick start&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Tokens&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-            &lt;/ul&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Components
-            &lt;/OcSidebarMenuButton&gt;
-            &lt;ul class="oc-sidebar-menu-sub"&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Buttons&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Forms&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Navigation&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-            &lt;/ul&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/OcSidebarGroup&gt;
-    &lt;/OcSidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-      &lt;header class="oc-block-sb-bar"&gt;
-        &lt;OcButton variant="ghost" size="sm" icon aria-label="Toggle sidebar" :aria-pressed="collapsed" @click="collapsed = !collapsed"&gt;
-          &lt;OcWebicon name="mdi:dock-left" /&gt;
-        &lt;/OcButton&gt;
-        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-        &lt;OcBreadcrumb separator="chevron" :items="crumbs" /&gt;
-      &lt;/header&gt;
-      &lt;div class="oc-block-sb-body"&gt;&lt;!-- page content --&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;OcBlockSidebar03 :brand="{ title: 'Documentation', sub: 'v1.0.0', icon: 'mdi:layers-outline', href: '/docs' }" :groups="groups"
+    :breadcrumbs="[{ label: 'Building', href: '/docs', icon: 'mdi:home-outline' }, { label: 'Overview' }]" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-sb"&gt;
-    &lt;x-oc::sidebar label="Main navigation"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;x-oc::sidebar.group label="Getting started"&gt;
-            &lt;li&gt;
-                &lt;a class="oc-sidebar-menu-button" href="#" aria-current="page"&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;Introduction&lt;/span&gt;&lt;/a&gt;
-                &lt;ul class="oc-sidebar-menu-sub"&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Overview&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Quick start&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Tokens&lt;/x-oc::sidebar.item&gt;
-                &lt;/ul&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-                &lt;a class="oc-sidebar-menu-button" href="#"&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;Components&lt;/span&gt;&lt;/a&gt;
-                &lt;ul class="oc-sidebar-menu-sub"&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Buttons&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Forms&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Navigation&lt;/x-oc::sidebar.item&gt;
-                &lt;/ul&gt;
-            &lt;/li&gt;
-        &lt;/x-oc::sidebar.group&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- x-oc::block.sidebar-03: the frame (.oc-block-sb); the sidebar, breadcrumbs and body slots fill its regions --}}
+&lt;x-oc::block.sidebar-03&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;x-oc::sidebar.group label="Getting started"&gt;
+                &lt;li&gt;
+                    &lt;a class="oc-sidebar-menu-button" href="#" aria-current="page"&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;Introduction&lt;/span&gt;&lt;/a&gt;
+                    &lt;ul class="oc-sidebar-menu-sub"&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Overview&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Quick start&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Tokens&lt;/x-oc::sidebar.item&gt;
+                    &lt;/ul&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                    &lt;a class="oc-sidebar-menu-button" href="#"&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;Components&lt;/span&gt;&lt;/a&gt;
+                    &lt;ul class="oc-sidebar-menu-sub"&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Buttons&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Forms&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Navigation&lt;/x-oc::sidebar.item&gt;
+                    &lt;/ul&gt;
+                &lt;/li&gt;
+            &lt;/x-oc::sidebar.group&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:breadcrumbs&gt;&lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;&lt;/x-slot:breadcrumbs&gt;
+    &lt;x-slot:body&gt;
+        @yield('content')
+    &lt;/x-slot:body&gt;
+&lt;/x-oc::block.sidebar-03&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -836,44 +653,45 @@ class SidebarSubmenus extends Component
 }
 
 {{-- resources/views/livewire/sidebar-submenus.blade.php --}}
-&lt;div class="oc-block-sb"&gt;
-    &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;x-oc::sidebar.group label="Getting started"&gt;
-            &lt;li&gt;
-                &lt;a class="oc-sidebar-menu-button" href="#" aria-current="page"&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;Introduction&lt;/span&gt;&lt;/a&gt;
-                &lt;ul class="oc-sidebar-menu-sub"&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Overview&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Quick start&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Tokens&lt;/x-oc::sidebar.item&gt;
-                &lt;/ul&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-                &lt;a class="oc-sidebar-menu-button" href="#"&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;Components&lt;/span&gt;&lt;/a&gt;
-                &lt;ul class="oc-sidebar-menu-sub"&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Buttons&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Forms&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Navigation&lt;/x-oc::sidebar.item&gt;
-                &lt;/ul&gt;
-            &lt;/li&gt;
-        &lt;/x-oc::sidebar.group&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+{{-- x-oc::block.sidebar-03: the frame (.oc-block-sb); the sidebar, bar and body slots fill its regions --}}
+&lt;x-oc::block.sidebar-03&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;x-oc::sidebar.group label="Getting started"&gt;
+                &lt;li&gt;
+                    &lt;a class="oc-sidebar-menu-button" href="#" aria-current="page"&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;Introduction&lt;/span&gt;&lt;/a&gt;
+                    &lt;ul class="oc-sidebar-menu-sub"&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Overview&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Quick start&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Tokens&lt;/x-oc::sidebar.item&gt;
+                    &lt;/ul&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                    &lt;a class="oc-sidebar-menu-button" href="#"&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;Components&lt;/span&gt;&lt;/a&gt;
+                    &lt;ul class="oc-sidebar-menu-sub"&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Buttons&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Forms&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Navigation&lt;/x-oc::sidebar.item&gt;
+                    &lt;/ul&gt;
+                &lt;/li&gt;
+            &lt;/x-oc::sidebar.group&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:bar&gt;
+        &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
+            &lt;x-oc::webicon name="mdi:dock-left" /&gt;
+        &lt;/x-oc::button&gt;
+        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
+        &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
+    &lt;/x-slot:bar&gt;
+    {{-- the body slot takes the page content --}}
+&lt;/x-oc::block.sidebar-03&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="sidebar-04">Sidebar 04 - Floating</h3>
@@ -924,180 +742,117 @@ class SidebarSubmenus extends Component
     </div>
   </div>
 </div>
-<oc-code lang="tsx">import { useState } from "react";
-import { Breadcrumb, Button, Sidebar, SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, User, Webicon } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { BlockSidebar04, type SidebarBlockGroup } from "@birdycom/omniaui-react";
 
-export function Example() {
-  const [collapsed, setCollapsed] = useState(false);
+/** The groups of the sidebar; `current` follows the route of the page (/docs/introduction here). */
+const groupsFor = (pathname: string): SidebarBlockGroup[] =&gt; [
+  {
+    label: "Getting started",
+    items: [
+      { label: "Introduction", icon: "mdi:book-open-variant-outline", href: "/docs/introduction", current: pathname === "/docs/introduction" },
+      { label: "Installation", icon: "mdi:code-tags", href: "/docs/installation", current: pathname === "/docs/installation" },
+      { label: "Configuration", icon: "mdi:cog-outline", href: "/docs/configuration", current: pathname === "/docs/configuration" },
+    ],
+  },
+  {
+    label: "Building",
+    items: [
+      { label: "Components", icon: "mdi:layers-outline", href: "/docs/components", badge: "24", current: pathname === "/docs/components" },
+      { label: "Blocks", icon: "mdi:file-document-outline", href: "/docs/blocks", current: pathname === "/docs/blocks" },
+      { label: "Charts", icon: "mdi:chart-bar", href: "/docs/charts", current: pathname === "/docs/charts" },
+    ],
+  },
+];
+
+export function Example({ pathname = "/docs/introduction" }: { pathname?: string }) {
   return (
-    &lt;div className="oc-block-sb oc-block-sb--floating"&gt;
-      &lt;Sidebar
-        aria-label="Main navigation"
-        collapsed={collapsed}
-        floating
-        header={
-          &lt;SidebarMenuButton href="#" size="lg" icon={&lt;span className="oc-block-sb-tile"&gt;&lt;Webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;}&gt;
-            &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span className="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-          &lt;/SidebarMenuButton&gt;
-        }
-        footer={&lt;User name="User 1" email="user1@company1.example" initials="U1" avatarSize="sm" /&gt;}
-      &gt;
-        &lt;SidebarGroup label="Getting started"&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:book-open-variant-outline" className="oc-sidebar-menu-icon" /&gt;} current&gt;Introduction&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:code-tags" className="oc-sidebar-menu-icon" /&gt;}&gt;Installation&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:cog-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Configuration&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/SidebarGroup&gt;
-        &lt;SidebarGroup label="Building"&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:layers-outline" className="oc-sidebar-menu-icon" /&gt;} badge={24}&gt;Components&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:file-document-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Blocks&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" icon={&lt;Webicon name="mdi:chart-bar" className="oc-sidebar-menu-icon" /&gt;}&gt;Charts&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/SidebarGroup&gt;
-      &lt;/Sidebar&gt;
-      &lt;div className="oc-block-sb-main"&gt;
-        &lt;header className="oc-block-sb-bar"&gt;
-          &lt;Button variant="ghost" size="sm" icon aria-label="Toggle sidebar" aria-pressed={collapsed} onClick={() =&gt; setCollapsed(!collapsed)}&gt;
-            &lt;Webicon name="mdi:dock-left" /&gt;
-          &lt;/Button&gt;
-          &lt;span className="oc-block-sb-sep" /&gt;
-          &lt;Breadcrumb separator="chevron" items={[{ label: "Building", href: "#", icon: "mdi:home-outline" }, { label: "Overview" }]} /&gt;
-        &lt;/header&gt;
-        &lt;div className="oc-block-sb-body"&gt;{/* page content */}&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;BlockSidebar04
+      brand={{ title: "Documentation", sub: "v1.0.0", icon: "mdi:layers-outline", href: "/docs" }}
+      groups={groupsFor(pathname)}
+      user={{ name: "User 1", email: "user1@company1.example", initials: "U1" }}
+      breadcrumbs={[{ label: "Building", href: "/docs", icon: "mdi:home-outline" }, { label: "Overview" }]}
+    /&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { ref } from 'vue'
-import { OcBreadcrumb, OcButton, OcSidebar, OcSidebarGroup, OcSidebarMenu, OcSidebarMenuButton, OcUser, OcWebicon } from '@birdycom/omniaui-vue'
+import { computed } from 'vue'
+import { OcBlockSidebar04 } from '@birdycom/omniaui-vue'
 
-const collapsed = ref(false)
-const crumbs = [{ label: 'Building', href: '#', icon: 'mdi:home-outline' }, { label: 'Overview' }]
+const props = withDefaults(defineProps&lt;{ pathname?: string }&gt;(), { pathname: '/docs/introduction' })
+
+// current follows the route of the page
+const groups = computed(() =&gt; [
+  {
+    label: 'Getting started',
+    items: [
+      { label: 'Introduction', icon: 'mdi:book-open-variant-outline', href: '/docs/introduction', current: props.pathname === '/docs/introduction' },
+      { label: 'Installation', icon: 'mdi:code-tags', href: '/docs/installation', current: props.pathname === '/docs/installation' },
+      { label: 'Configuration', icon: 'mdi:cog-outline', href: '/docs/configuration', current: props.pathname === '/docs/configuration' },
+    ],
+  },
+  {
+    label: 'Building',
+    items: [
+      { label: 'Components', icon: 'mdi:layers-outline', href: '/docs/components', badge: '24', current: props.pathname === '/docs/components' },
+      { label: 'Blocks', icon: 'mdi:file-document-outline', href: '/docs/blocks', current: props.pathname === '/docs/blocks' },
+      { label: 'Charts', icon: 'mdi:chart-bar', href: '/docs/charts', current: props.pathname === '/docs/charts' },
+    ],
+  },
+])
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;div class="oc-block-sb oc-block-sb--floating"&gt;
-    &lt;OcSidebar label="Main navigation" :collapsed="collapsed" floating&gt;
-      &lt;template #header&gt;
-        &lt;OcSidebarMenuButton href="#" large&gt;
-          &lt;template #icon&gt;&lt;span class="oc-block-sb-tile"&gt;&lt;OcWebicon name="mdi:layers-outline" /&gt;&lt;/span&gt;&lt;/template&gt;
-          &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-        &lt;/OcSidebarMenuButton&gt;
-      &lt;/template&gt;
-      &lt;OcSidebarGroup label="Getting started"&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#" current&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Introduction
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Installation
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Configuration
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/OcSidebarGroup&gt;
-      &lt;OcSidebarGroup label="Building"&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#" :badge="24"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Components
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Blocks
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarMenuButton href="#"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              Charts
-            &lt;/OcSidebarMenuButton&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/OcSidebarGroup&gt;
-      &lt;template #footer&gt;
-        &lt;OcUser name="User 1" email="user1@company1.example" initials="U1" avatar-size="sm" /&gt;
-      &lt;/template&gt;
-    &lt;/OcSidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-      &lt;header class="oc-block-sb-bar"&gt;
-        &lt;OcButton variant="ghost" size="sm" icon aria-label="Toggle sidebar" :aria-pressed="collapsed" @click="collapsed = !collapsed"&gt;
-          &lt;OcWebicon name="mdi:dock-left" /&gt;
-        &lt;/OcButton&gt;
-        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-        &lt;OcBreadcrumb separator="chevron" :items="crumbs" /&gt;
-      &lt;/header&gt;
-      &lt;div class="oc-block-sb-body"&gt;&lt;!-- page content --&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;OcBlockSidebar04 :brand="{ title: 'Documentation', sub: 'v1.0.0', icon: 'mdi:layers-outline', href: '/docs' }" :groups="groups" :user="{ name: 'User 1', email: 'user1@company1.example', initials: 'U1' }"
+    :breadcrumbs="[{ label: 'Building', href: '/docs', icon: 'mdi:home-outline' }, { label: 'Overview' }]" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-sb oc-block-sb--floating"&gt;
-    &lt;x-oc::sidebar label="Main navigation" floating&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;x-oc::sidebar.group label="Getting started"&gt;
-            &lt;x-oc::sidebar.item href="#" current&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Introduction
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Installation
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Configuration
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-        &lt;x-oc::sidebar.group label="Building"&gt;
-            &lt;x-oc::sidebar.item href="#" badge="24"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Components
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Blocks
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Charts
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-        &lt;x-slot:footer&gt;
-            &lt;x-oc::user name="User 1" email="user1@company1.example" initials="U1" size="sm" /&gt;
-        &lt;/x-slot:footer&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- x-oc::block.sidebar-04: the frame (.oc-block-sb oc-block-sb--floating); its default slot takes the sidebar and the main column --}}
+&lt;x-oc::block.sidebar-04&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation" floating&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;x-oc::sidebar.group label="Getting started"&gt;
+                &lt;x-oc::sidebar.item href="#" current&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Introduction
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Installation
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Configuration
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+            &lt;x-oc::sidebar.group label="Building"&gt;
+                &lt;x-oc::sidebar.item href="#" badge="24"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Components
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Blocks
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Charts
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+            &lt;x-slot:footer&gt;
+                &lt;x-oc::user name="User 1" email="user1@company1.example" initials="U1" size="sm" /&gt;
+            &lt;/x-slot:footer&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:breadcrumbs&gt;&lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;&lt;/x-slot:breadcrumbs&gt;
+    &lt;x-slot:body&gt;
+        @yield('content')
+    &lt;/x-slot:body&gt;
+&lt;/x-oc::block.sidebar-04&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -1120,57 +875,58 @@ class SidebarFloating extends Component
 }
 
 {{-- resources/views/livewire/sidebar-floating.blade.php --}}
-&lt;div class="oc-block-sb oc-block-sb--floating"&gt;
-    &lt;x-oc::sidebar label="Main navigation" floating :collapsed="$collapsed"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;x-oc::sidebar.group label="Getting started"&gt;
-            &lt;x-oc::sidebar.item href="#" current&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Introduction
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Installation
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Configuration
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-        &lt;x-oc::sidebar.group label="Building"&gt;
-            &lt;x-oc::sidebar.item href="#" badge="24"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Components
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Blocks
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item href="#"&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Charts
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-        &lt;x-slot:footer&gt;
-            &lt;x-oc::user name="User 1" email="user1@company1.example" initials="U1" size="sm" /&gt;
-        &lt;/x-slot:footer&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+{{-- x-oc::block.sidebar-04: the frame (.oc-block-sb oc-block-sb--floating); its default slot takes the sidebar and the main column --}}
+&lt;x-oc::block.sidebar-04&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation" floating :collapsed="$collapsed"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;x-oc::sidebar.group label="Getting started"&gt;
+                &lt;x-oc::sidebar.item href="#" current&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:book-open-variant-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Introduction
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:code-tags" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Installation
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:cog-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Configuration
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+            &lt;x-oc::sidebar.group label="Building"&gt;
+                &lt;x-oc::sidebar.item href="#" badge="24"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:layers-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Components
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Blocks
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="#"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:chart-bar" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Charts
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+            &lt;x-slot:footer&gt;
+                &lt;x-oc::user name="User 1" email="user1@company1.example" initials="U1" size="sm" /&gt;
+            &lt;/x-slot:footer&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:bar&gt;
+        &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
+            &lt;x-oc::webicon name="mdi:dock-left" /&gt;
+        &lt;/x-oc::button&gt;
+        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
+        &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
+    &lt;/x-slot:bar&gt;
+    {{-- the body slot takes the page content --}}
+&lt;/x-oc::block.sidebar-04&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="sidebar-05">Sidebar 05 - Collapsible submenus</h3>
@@ -1233,165 +989,97 @@ class SidebarFloating extends Component
     </div>
   </div>
 </div>
-<oc-code lang="tsx">import { useState } from "react";
-import { Breadcrumb, Button, Sidebar, SidebarCollapsible, SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, Webicon } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { BlockSidebar05, type SidebarBlockGroup } from "@birdycom/omniaui-react";
 
-export function Example() {
-  const [collapsed, setCollapsed] = useState(false);
+/** The groups of the sidebar; `current` follows the route of the page (/dashboard/overview here). */
+const groupsFor = (pathname: string): SidebarBlockGroup[] =&gt; [
+  {
+    label: "Platform",
+    items: [
+      { label: "Dashboard", icon: "mdi:home-outline", open: pathname.startsWith("/dashboard"), items: [{ label: "Overview", href: "/dashboard/overview", current: pathname === "/dashboard/overview" }, { label: "Analytics", href: "/dashboard/analytics", current: pathname === "/dashboard/analytics" }, { label: "Reports", href: "/dashboard/reports", current: pathname === "/dashboard/reports" }] },
+      { label: "Projects", icon: "mdi:folder-outline", open: pathname.startsWith("/projects"), items: [{ label: "Active", href: "/projects/active", current: pathname === "/projects/active" }, { label: "Archived", href: "/projects/archived", current: pathname === "/projects/archived" }] },
+      { label: "Team", icon: "mdi:account-outline", open: pathname.startsWith("/team"), items: [{ label: "Members", href: "/team/members", current: pathname === "/team/members" }, { label: "Roles", href: "/team/roles", current: pathname === "/team/roles" }, { label: "Invitations", href: "/team/invitations", current: pathname === "/team/invitations" }] },
+    ],
+  },
+];
+
+export function Example({ pathname = "/dashboard/overview" }: { pathname?: string }) {
   return (
-    &lt;div className="oc-block-sb"&gt;
-      &lt;Sidebar
-        aria-label="Main navigation"
-        collapsed={collapsed}
-        header={
-          &lt;SidebarMenuButton href="#" size="lg" icon={&lt;span className="oc-block-sb-tile"&gt;&lt;Webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;}&gt;
-            &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span className="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-          &lt;/SidebarMenuButton&gt;
-        }
-      &gt;
-        &lt;SidebarGroup label="Platform"&gt;
-          &lt;SidebarMenu&gt;
-            &lt;SidebarMenuItem&gt;
-              &lt;SidebarCollapsible icon={&lt;Webicon name="mdi:home-outline" className="oc-sidebar-menu-icon" /&gt;} label="Dashboard" defaultOpen&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Overview&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Analytics&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Reports&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-              &lt;/SidebarCollapsible&gt;
-            &lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;
-              &lt;SidebarCollapsible icon={&lt;Webicon name="mdi:folder-outline" className="oc-sidebar-menu-icon" /&gt;} label="Projects"&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Active&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Archived&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-              &lt;/SidebarCollapsible&gt;
-            &lt;/SidebarMenuItem&gt;
-            &lt;SidebarMenuItem&gt;
-              &lt;SidebarCollapsible icon={&lt;Webicon name="mdi:account-outline" className="oc-sidebar-menu-icon" /&gt;} label="Team"&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Members&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Roles&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-                &lt;SidebarMenuItem&gt;&lt;SidebarMenuButton href="#" label={false}&gt;Invitations&lt;/SidebarMenuButton&gt;&lt;/SidebarMenuItem&gt;
-              &lt;/SidebarCollapsible&gt;
-            &lt;/SidebarMenuItem&gt;
-          &lt;/SidebarMenu&gt;
-        &lt;/SidebarGroup&gt;
-      &lt;/Sidebar&gt;
-      &lt;div className="oc-block-sb-main"&gt;
-        &lt;header className="oc-block-sb-bar"&gt;
-          &lt;Button variant="ghost" size="sm" icon aria-label="Toggle sidebar" aria-pressed={collapsed} onClick={() =&gt; setCollapsed(!collapsed)}&gt;
-            &lt;Webicon name="mdi:dock-left" /&gt;
-          &lt;/Button&gt;
-          &lt;span className="oc-block-sb-sep" /&gt;
-          &lt;Breadcrumb separator="chevron" items={[{ label: "Building", href: "#", icon: "mdi:home-outline" }, { label: "Overview" }]} /&gt;
-        &lt;/header&gt;
-        &lt;div className="oc-block-sb-body"&gt;{/* page content */}&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;BlockSidebar05
+      brand={{ title: "Documentation", sub: "v1.0.0", icon: "mdi:layers-outline", href: "/docs" }}
+      groups={groupsFor(pathname)}
+      breadcrumbs={[{ label: "Building", href: "/docs", icon: "mdi:home-outline" }, { label: "Overview" }]}
+    /&gt;
   );
 }</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { ref } from 'vue'
-import { OcBreadcrumb, OcButton, OcSidebar, OcSidebarCollapsible, OcSidebarGroup, OcSidebarMenu, OcSidebarMenuButton, OcWebicon } from '@birdycom/omniaui-vue'
+import { computed } from 'vue'
+import { OcBlockSidebar05 } from '@birdycom/omniaui-vue'
 
-const collapsed = ref(false)
-const crumbs = [{ label: 'Building', href: '#', icon: 'mdi:home-outline' }, { label: 'Overview' }]
+const props = withDefaults(defineProps&lt;{ pathname?: string }&gt;(), { pathname: '/dashboard/overview' })
+
+// current follows the route of the page
+const groups = computed(() =&gt; [
+  {
+    label: 'Platform',
+    items: [
+      { label: 'Dashboard', icon: 'mdi:home-outline', open: props.pathname.startsWith('/dashboard'), items: [{ label: 'Overview', href: '/dashboard/overview', current: props.pathname === '/dashboard/overview' }, { label: 'Analytics', href: '/dashboard/analytics', current: props.pathname === '/dashboard/analytics' }, { label: 'Reports', href: '/dashboard/reports', current: props.pathname === '/dashboard/reports' }] },
+      { label: 'Projects', icon: 'mdi:folder-outline', open: props.pathname.startsWith('/projects'), items: [{ label: 'Active', href: '/projects/active', current: props.pathname === '/projects/active' }, { label: 'Archived', href: '/projects/archived', current: props.pathname === '/projects/archived' }] },
+      { label: 'Team', icon: 'mdi:account-outline', open: props.pathname.startsWith('/team'), items: [{ label: 'Members', href: '/team/members', current: props.pathname === '/team/members' }, { label: 'Roles', href: '/team/roles', current: props.pathname === '/team/roles' }, { label: 'Invitations', href: '/team/invitations', current: props.pathname === '/team/invitations' }] },
+    ],
+  },
+])
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;div class="oc-block-sb"&gt;
-    &lt;OcSidebar label="Main navigation" :collapsed="collapsed"&gt;
-      &lt;template #header&gt;
-        &lt;OcSidebarMenuButton href="#" large&gt;
-          &lt;template #icon&gt;&lt;span class="oc-block-sb-tile"&gt;&lt;OcWebicon name="mdi:layers-outline" /&gt;&lt;/span&gt;&lt;/template&gt;
-          &lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;
-        &lt;/OcSidebarMenuButton&gt;
-      &lt;/template&gt;
-      &lt;OcSidebarGroup label="Platform"&gt;
-        &lt;OcSidebarMenu&gt;
-          &lt;li&gt;
-            &lt;OcSidebarCollapsible label="Dashboard" :open="true"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:home-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Overview&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Analytics&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Reports&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-            &lt;/OcSidebarCollapsible&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarCollapsible label="Projects"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:folder-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Active&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Archived&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-            &lt;/OcSidebarCollapsible&gt;
-          &lt;/li&gt;
-          &lt;li&gt;
-            &lt;OcSidebarCollapsible label="Team"&gt;
-              &lt;template #icon&gt;&lt;OcWebicon name="mdi:account-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Members&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Roles&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-              &lt;li&gt;&lt;OcSidebarMenuButton href="#"&gt;Invitations&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
-            &lt;/OcSidebarCollapsible&gt;
-          &lt;/li&gt;
-        &lt;/OcSidebarMenu&gt;
-      &lt;/OcSidebarGroup&gt;
-    &lt;/OcSidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-      &lt;header class="oc-block-sb-bar"&gt;
-        &lt;OcButton variant="ghost" size="sm" icon aria-label="Toggle sidebar" :aria-pressed="collapsed" @click="collapsed = !collapsed"&gt;
-          &lt;OcWebicon name="mdi:dock-left" /&gt;
-        &lt;/OcButton&gt;
-        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-        &lt;OcBreadcrumb separator="chevron" :items="crumbs" /&gt;
-      &lt;/header&gt;
-      &lt;div class="oc-block-sb-body"&gt;&lt;!-- page content --&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;OcBlockSidebar05 :brand="{ title: 'Documentation', sub: 'v1.0.0', icon: 'mdi:layers-outline', href: '/docs' }" :groups="groups"
+    :breadcrumbs="[{ label: 'Building', href: '/docs', icon: 'mdi:home-outline' }, { label: 'Overview' }]" /&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-block-sb"&gt;
-    &lt;x-oc::sidebar label="Main navigation"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;x-oc::sidebar.group label="Platform"&gt;
-            &lt;x-oc::sidebar.item current&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:home-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Dashboard
-                &lt;x-slot:sub&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Overview&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Analytics&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Reports&lt;/x-oc::sidebar.item&gt;
-                &lt;/x-slot:sub&gt;
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Projects
-                &lt;x-slot:sub&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Active&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Archived&lt;/x-oc::sidebar.item&gt;
-                &lt;/x-slot:sub&gt;
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:account-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Team
-                &lt;x-slot:sub&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Members&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Roles&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Invitations&lt;/x-oc::sidebar.item&gt;
-                &lt;/x-slot:sub&gt;
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- x-oc::block.sidebar-05: the frame (.oc-block-sb); the sidebar, breadcrumbs and body slots fill its regions --}}
+&lt;x-oc::block.sidebar-05&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;x-oc::sidebar.group label="Platform"&gt;
+                &lt;x-oc::sidebar.item current&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:home-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Dashboard
+                    &lt;x-slot:sub&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Overview&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Analytics&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Reports&lt;/x-oc::sidebar.item&gt;
+                    &lt;/x-slot:sub&gt;
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Projects
+                    &lt;x-slot:sub&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Active&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Archived&lt;/x-oc::sidebar.item&gt;
+                    &lt;/x-slot:sub&gt;
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:account-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Team
+                    &lt;x-slot:sub&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Members&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Roles&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Invitations&lt;/x-oc::sidebar.item&gt;
+                    &lt;/x-slot:sub&gt;
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:breadcrumbs&gt;&lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;&lt;/x-slot:breadcrumbs&gt;
+    &lt;x-slot:body&gt;
+        @yield('content')
+    &lt;/x-slot:body&gt;
+&lt;/x-oc::block.sidebar-05&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -1414,54 +1102,55 @@ class SidebarCollapsibleSubmenus extends Component
 }
 
 {{-- resources/views/livewire/sidebar-collapsible-submenus.blade.php --}}
-&lt;div class="oc-block-sb"&gt;
-    &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
-        &lt;x-slot:header&gt;
-            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
-                &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
-                &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
-            &lt;/a&gt;
-        &lt;/x-slot:header&gt;
-        &lt;x-oc::sidebar.group label="Platform"&gt;
-            &lt;x-oc::sidebar.item current&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:home-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Dashboard
-                &lt;x-slot:sub&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Overview&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Analytics&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Reports&lt;/x-oc::sidebar.item&gt;
-                &lt;/x-slot:sub&gt;
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Projects
-                &lt;x-slot:sub&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Active&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Archived&lt;/x-oc::sidebar.item&gt;
-                &lt;/x-slot:sub&gt;
-            &lt;/x-oc::sidebar.item&gt;
-            &lt;x-oc::sidebar.item&gt;
-                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:account-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
-                Team
-                &lt;x-slot:sub&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Members&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Roles&lt;/x-oc::sidebar.item&gt;
-                    &lt;x-oc::sidebar.item href="#"&gt;Invitations&lt;/x-oc::sidebar.item&gt;
-                &lt;/x-slot:sub&gt;
-            &lt;/x-oc::sidebar.item&gt;
-        &lt;/x-oc::sidebar.group&gt;
-    &lt;/x-oc::sidebar&gt;
-    &lt;div class="oc-block-sb-main"&gt;
-        &lt;header class="oc-block-sb-bar"&gt;
-            &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
-                &lt;x-oc::webicon name="mdi:dock-left" /&gt;
-            &lt;/x-oc::button&gt;
-            &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
-            &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
-        &lt;/header&gt;
-        &lt;div class="oc-block-sb-body"&gt;{{-- page content --}}&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</oc-code>
+{{-- x-oc::block.sidebar-05: the frame (.oc-block-sb); the sidebar, bar and body slots fill its regions --}}
+&lt;x-oc::block.sidebar-05&gt;
+    &lt;x-slot:sidebar&gt;
+        &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
+            &lt;x-slot:header&gt;
+                &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+                    &lt;span class="oc-block-sb-tile"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt;&lt;/span&gt;
+                    &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;span class="oc-block-sb-sub"&gt;v1.0.0&lt;/span&gt;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/x-slot:header&gt;
+            &lt;x-oc::sidebar.group label="Platform"&gt;
+                &lt;x-oc::sidebar.item current&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:home-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Dashboard
+                    &lt;x-slot:sub&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Overview&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Analytics&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Reports&lt;/x-oc::sidebar.item&gt;
+                    &lt;/x-slot:sub&gt;
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Projects
+                    &lt;x-slot:sub&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Active&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Archived&lt;/x-oc::sidebar.item&gt;
+                    &lt;/x-slot:sub&gt;
+                &lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:account-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Team
+                    &lt;x-slot:sub&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Members&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Roles&lt;/x-oc::sidebar.item&gt;
+                        &lt;x-oc::sidebar.item href="#"&gt;Invitations&lt;/x-oc::sidebar.item&gt;
+                    &lt;/x-slot:sub&gt;
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+        &lt;/x-oc::sidebar&gt;
+    &lt;/x-slot:sidebar&gt;
+    &lt;x-slot:bar&gt;
+        &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Toggle sidebar" wire:click="toggleSidebar" aria-pressed="{{ $collapsed ? 'true' : 'false' }}"&gt;
+            &lt;x-oc::webicon name="mdi:dock-left" /&gt;
+        &lt;/x-oc::button&gt;
+        &lt;span class="oc-block-sb-sep"&gt;&lt;/span&gt;
+        &lt;x-oc::breadcrumb separator="chevron" :items="[['label' =&gt; 'Building', 'href' =&gt; '#', 'icon' =&gt; 'mdi:home-outline'], ['label' =&gt; 'Overview']]" /&gt;
+    &lt;/x-slot:bar&gt;
+    {{-- the body slot takes the page content --}}
+&lt;/x-oc::block.sidebar-05&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="sidebar-06">Sidebar 06 - User footer with dropdown menu</h3>

@@ -9,8 +9,12 @@
      Slots: icon, title, intro, meta, actions
      Blade: <x-oc::block.module-header> - attributes merge onto the root element.
      Blade slots (each falls back to the snippet content when empty): icon, title, intro, meta, actions.
+     Props (0.17.0, optional): heading-level (1 default; 2 renders the title as an h2 with the same look).
 --}}
-@props(['icon' => null, 'title' => null, 'intro' => null, 'meta' => null, 'actions' => null])
+@props(['headingLevel' => 1, 'icon' => null, 'title' => null, 'intro' => null, 'meta' => null, 'actions' => null])
+@php
+    $ocHeading = (int) $headingLevel === 2 ? 'h2' : 'h1';
+@endphp
 <header {{ $attributes->merge(['class' => 'oc-block-modulehead']) }}>
   <div class="oc-block-modulehead-band">
     <span class="oc-block-modulehead-icon" aria-hidden="true">
@@ -21,13 +25,13 @@
         @endif
     </span>
     <div class="oc-block-modulehead-body">
-      <h1 class="oc-block-modulehead-title">
+      <{{ $ocHeading }} class="oc-block-modulehead-title">
           @if (isset($title) && trim((string) $title) !== '')
               {{ $title }}
           @else
           Contacts
           @endif
-      </h1>
+      </{{ $ocHeading }}>
       <p class="oc-block-modulehead-intro">
           @if (isset($intro) && trim((string) $intro) !== '')
               {{ $intro }}

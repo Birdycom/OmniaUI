@@ -3,6 +3,8 @@
 /**
  * Lists for a company site (snippets/icon-list.html). items: { icon? (webicon name), text?, title? (points), accent? (tile) }[].
  * variant: icons (rows with an icon in a frame), points (icon tile, title, text), accent (disc list with accent markers). accent: tile accent.
+ * 0.17.0: pills (div.oc-badge-row of span.oc-pill) and tagline (p.oc-tagline--accent) above the list, note (p.oc-note) under it.
+ * Attributes (class, style) go to the ul; without extras the ul is the only root, as before.
  */
 import OcWebicon from './OcWebicon.vue'
 
@@ -12,11 +14,17 @@ export interface IconListItem {
   title?: string
   accent?: string
 }
-withDefaults(defineProps<{ items: IconListItem[]; variant?: 'icons' | 'points' | 'accent'; accent?: string }>(), { variant: 'icons' })
+withDefaults(defineProps<{ items: IconListItem[]; variant?: 'icons' | 'points' | 'accent'; accent?: string; pills?: string[]; tagline?: string; note?: string }>(), { variant: 'icons' })
 </script>
 
 <template>
-  <ul v-if="variant === 'accent'" class="oc-list--accent">
+  <template v-if="pills?.length || tagline || note">
+    <div v-if="pills?.length" class="oc-badge-row"><span v-for="(pill, i) in pills" :key="i" class="oc-pill">{{ pill }}</span></div>
+    <p v-if="tagline" class="oc-tagline--accent">{{ tagline }}</p>
+    <OcIconList :items="items" :variant="variant" :accent="accent" v-bind="$attrs" />
+    <p v-if="note" class="oc-note">{{ note }}</p>
+  </template>
+  <ul v-else-if="variant === 'accent'" class="oc-list--accent">
     <li v-for="(item, i) in items" :key="i">{{ item.text }}</li>
   </ul>
   <ul v-else :class="['oc-icon-list', variant === 'points' && 'oc-icon-list--points']">

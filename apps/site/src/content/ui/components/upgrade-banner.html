@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Upgrade banner", "category": "App UX", "description": "Soft free-plan callout with usage meter and upgrade action.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Upgrade banner", "category": "App UX", "description": "Soft free-plan callout with the plan, a usage meter, upgrade and compare actions and a dismiss button, plus a premium and a compact variant.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/upgrade-banner.html | Map: hero -> free plan demo (meter) -> premium + compact demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Upgrade banner</h1>
@@ -79,7 +79,9 @@ const shown = ref(true)
     &lt;/template&gt;
   &lt;/OcUpgradeBanner&gt;
 &lt;/template&gt;</oc-code>
-<oc-code lang="blade">&lt;x-oc::upgrade-banner title="You are on the free plan" plan="Free" usage="Projects" :used="4" :max="5" dismissible style="width:100%"&gt;
+<oc-code lang="blade">{{-- dismiss-attributes: what the × does; here it removes the banner (Alpine), or use dismiss="method" in Livewire --}}
+&lt;x-oc::upgrade-banner title="You are on the free plan" plan="Free" usage="Projects" :used="4" :max="5" style="width:100%"
+    :dismiss-attributes="['x-data' =&gt; '', 'x-on:click' =&gt; '$el.closest(\'aside\').remove()']"&gt;
     &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:creation-outline" /&gt;&lt;/x-slot:icon&gt;
     Free accounts keep up to 5 projects. Groups, exports and unlimited history come with &lt;a href="/pricing"&gt;Premium&lt;/a&gt;.
     &lt;x-slot:actions&gt;
@@ -112,9 +114,9 @@ class PlanLimits extends Component
 
 {{-- resources/views/livewire/plan-limits.blade.php --}}
 &lt;div&gt;
-    {{-- The × of the component has no wire:click hook: a "Not now" button sets the property --}}
+    {{-- dismiss="dismiss": the × runs dismiss() (wire:click); "Not now" does the same --}}
     @unless ($dismissed)
-        &lt;x-oc::upgrade-banner title="You are on the free plan" plan="Free" usage="Projects" :used="$projects" :max="5" style="width:100%"&gt;
+        &lt;x-oc::upgrade-banner title="You are on the free plan" plan="Free" usage="Projects" :used="$projects" :max="5" dismiss="dismiss" style="width:100%"&gt;
             &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:creation-outline" /&gt;&lt;/x-slot:icon&gt;
             Free accounts keep up to 5 projects. Groups, exports and unlimited history come with &lt;a href="/pricing"&gt;Premium&lt;/a&gt;.
             &lt;x-slot:actions&gt;

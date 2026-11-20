@@ -64,7 +64,7 @@
   <div class="oc-block-route-steps-tools">
     @if ($useSearch)
     <div class="oc-input-group oc-input-group--affix">
-      <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify" aria-hidden="true"></iconify-icon></span>
+      <span class="oc-input-addon" aria-hidden="true"><x-oc::webicon name="mdi:magnify" bare fallback="iconify" /></span>
       <input class="oc-input oc-block-route-steps-search" type="search" placeholder="{{ $searchLabel }}" aria-label="{{ $searchLabel }}">
     </div>
     @endif
@@ -80,7 +80,7 @@
   @else
   <div class="oc-block-route-steps-tools">
     <div class="oc-input-group oc-input-group--affix">
-      <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify" aria-hidden="true"></iconify-icon></span>
+      <span class="oc-input-addon" aria-hidden="true"><x-oc::webicon name="mdi:magnify" bare fallback="iconify" /></span>
       <input class="oc-input oc-block-route-steps-search" type="search" placeholder="Search steps" aria-label="Search steps">
     </div>
     <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-route-steps-kinds" aria-label="Kind">
@@ -120,15 +120,15 @@
       @endif
       @endisset
       @if ($actions)
-      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="{{ $menuId }}" aria-label="Actions for {{ $n }}"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="{{ $menuId }}" aria-label="Actions for {{ $n }}"><x-oc::webicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
       <div class="oc-dropdown-menu" id="{{ $menuId }}" popover>
         @unless ($locked)
-        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="{{ $menuId }}" popovertargetaction="hide" @disabled($loop->first)><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
-        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="{{ $menuId }}" popovertargetaction="hide" @disabled($loop->last)><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="{{ $menuId }}" popovertargetaction="hide" @disabled($loop->first)><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="{{ $menuId }}" popovertargetaction="hide" @disabled($loop->last)><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
         @endunless
-        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="{{ $menuId }}" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="{{ $menuId }}" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
         <div class="oc-dropdown-separator"></div>
-        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="{{ $menuId }}" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="{{ $menuId }}" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
       </div>
       @endif
     </li>
@@ -137,17 +137,17 @@
     <li class="oc-block-route-steps-item" data-id="s1" data-kind="intro">
       <button class="oc-sortable-row-grip" type="button" aria-label="Move Welcome" aria-pressed="false"></button>
       <button class="oc-block-route-steps-main" type="button">
-        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-indigo-60)"><iconify-icon icon="mdi:play-circle-outline" aria-hidden="true"></iconify-icon></span>
+        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-indigo-60)"><x-oc::webicon name="mdi:play-circle-outline" bare fallback="iconify" /></span>
         <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Welcome</span><span class="oc-block-route-steps-meta"><span>Intro</span><span>does not count</span></span></span>
       </button>
       <span class="oc-badge oc-badge--secondary oc-block-route-steps-status">Ready</span>
-      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-1" aria-label="Actions for Welcome"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-1" aria-label="Actions for Welcome"><x-oc::webicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
       <div class="oc-dropdown-menu" id="oc-rsteps-menu-1" popover>
-        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
-        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
-        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
         <div class="oc-dropdown-separator"></div>
-        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-1" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
       </div>
     </li>
     <li class="oc-block-route-steps-item" data-id="s2" data-kind="step">
@@ -157,13 +157,13 @@
         <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Old gate</span><span class="oc-block-route-steps-meta"><span>Question</span><span>20 points</span></span></span>
       </button>
       <span class="oc-badge oc-badge--success oc-block-route-steps-status">Ready</span>
-      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-2" aria-label="Actions for Old gate"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-2" aria-label="Actions for Old gate"><x-oc::webicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
       <div class="oc-dropdown-menu" id="oc-rsteps-menu-2" popover>
-        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
-        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
-        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
         <div class="oc-dropdown-separator"></div>
-        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-2" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
       </div>
     </li>
     <li class="oc-block-route-steps-item" data-id="s3" data-kind="step">
@@ -173,13 +173,13 @@
         <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Market square</span><span class="oc-block-route-steps-meta"><span>Question</span><span>20 points</span></span></span>
       </button>
       <span class="oc-badge oc-badge--success oc-block-route-steps-status">Ready</span>
-      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-3" aria-label="Actions for Market square"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-3" aria-label="Actions for Market square"><x-oc::webicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
       <div class="oc-dropdown-menu" id="oc-rsteps-menu-3" popover>
-        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
-        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
-        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
         <div class="oc-dropdown-separator"></div>
-        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-3" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
       </div>
     </li>
     <li class="oc-block-route-steps-item" data-id="s4" data-kind="step">
@@ -189,13 +189,13 @@
         <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Town hall</span><span class="oc-block-route-steps-meta"><span>Text only</span></span></span>
       </button>
       <span class="oc-badge oc-badge--warning oc-block-route-steps-status">No question</span>
-      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-4" aria-label="Actions for Town hall"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-4" aria-label="Actions for Town hall"><x-oc::webicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
       <div class="oc-dropdown-menu" id="oc-rsteps-menu-4" popover>
-        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
-        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
-        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
         <div class="oc-dropdown-separator"></div>
-        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-4" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
       </div>
     </li>
     <li class="oc-block-route-steps-item" data-id="s5" data-kind="step">
@@ -205,45 +205,45 @@
         <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">River bridge</span><span class="oc-block-route-steps-meta"><span>Question</span><span>10 points</span></span></span>
       </button>
       <span class="oc-badge oc-badge--outline oc-block-route-steps-status">Draft</span>
-      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-5" aria-label="Actions for River bridge"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-5" aria-label="Actions for River bridge"><x-oc::webicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
       <div class="oc-dropdown-menu" id="oc-rsteps-menu-5" popover>
-        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
-        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
-        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
         <div class="oc-dropdown-separator"></div>
-        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-5" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
       </div>
     </li>
     <li class="oc-block-route-steps-item" data-id="s6" data-kind="photo">
       <button class="oc-sortable-row-grip" type="button" aria-label="Move Team photo" aria-pressed="false"></button>
       <button class="oc-block-route-steps-main" type="button">
-        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-teal-60)"><iconify-icon icon="mdi:camera-outline" aria-hidden="true"></iconify-icon></span>
+        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-teal-60)"><x-oc::webicon name="mdi:camera-outline" bare fallback="iconify" /></span>
         <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Team photo</span><span class="oc-block-route-steps-meta"><span>Photo task</span><span>does not count</span></span></span>
       </button>
       <span class="oc-badge oc-badge--success oc-block-route-steps-status">Ready</span>
-      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-6" aria-label="Actions for Team photo"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-6" aria-label="Actions for Team photo"><x-oc::webicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
       <div class="oc-dropdown-menu" id="oc-rsteps-menu-6" popover>
-        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
-        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
-        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
         <div class="oc-dropdown-separator"></div>
-        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-6" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
       </div>
     </li>
     <li class="oc-block-route-steps-item" data-id="s7" data-kind="finish">
       <button class="oc-sortable-row-grip" type="button" aria-label="Move Finish" aria-pressed="false"></button>
       <button class="oc-block-route-steps-main" type="button">
-        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-forestgreen-60)"><iconify-icon icon="mdi:flag-checkered" aria-hidden="true"></iconify-icon></span>
+        <span class="oc-block-route-steps-thumb" style="--oc-step-color: var(--color-forestgreen-60)"><x-oc::webicon name="mdi:flag-checkered" bare fallback="iconify" /></span>
         <span class="oc-block-route-steps-text"><span class="oc-block-route-steps-name">Finish</span><span class="oc-block-route-steps-meta"><span>Check-in</span></span></span>
       </button>
       <span class="oc-badge oc-badge--success oc-block-route-steps-status">Ready</span>
-      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-7" aria-label="Actions for Finish"><iconify-icon icon="mdi:dots-vertical" aria-hidden="true"></iconify-icon></button>
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popovertarget="oc-rsteps-menu-7" aria-label="Actions for Finish"><x-oc::webicon name="mdi:dots-vertical" bare fallback="iconify" /></button>
       <div class="oc-dropdown-menu" id="oc-rsteps-menu-7" popover>
-        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></span>Move up</button>
-        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></span>Move down</button>
-        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon></span>Duplicate</button>
+        <button class="oc-dropdown-item" type="button" data-action="up" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-up" bare fallback="iconify" /></span>Move up</button>
+        <button class="oc-dropdown-item" type="button" data-action="down" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:arrow-down" bare fallback="iconify" /></span>Move down</button>
+        <button class="oc-dropdown-item" type="button" data-action="duplicate" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:content-copy" bare fallback="iconify" /></span>Duplicate</button>
         <div class="oc-dropdown-separator"></div>
-        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></span>Delete</button>
+        <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" data-action="remove" popovertarget="oc-rsteps-menu-7" popovertargetaction="hide"><span class="oc-dropdown-icon" aria-hidden="true"><x-oc::webicon name="mdi:trash-can-outline" bare fallback="iconify" /></span>Delete</button>
       </div>
     </li>
       @endif
@@ -258,8 +258,8 @@
       @if (isset($footer) && trim((string) $footer) !== '')
           {{ $footer }}
       @else
-    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button"><iconify-icon icon="mdi:plus" aria-hidden="true"></iconify-icon> Add step</button>
-    <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"><iconify-icon icon="mdi:camera-outline" aria-hidden="true"></iconify-icon> Add photo task</button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button"><x-oc::webicon name="mdi:plus" bare fallback="iconify" /> Add step</button>
+    <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button"><x-oc::webicon name="mdi:camera-outline" bare fallback="iconify" /> Add photo task</button>
       @endif
   </div>
   @endif

@@ -15,13 +15,23 @@
        .oc-block-authmin: Minimal centered column without a card
        .oc-separator-text: Divider with centered text (separator component)
      Blade: <x-oc::block.signup-02> - attributes merge onto the root element.
-     Blade slots (each falls back to the snippet content when empty): default.
+     Blade slots (each falls back to the snippet content when empty): panel, title, text, fields, footer, default.
+     The default slot replaces the whole content; each named slot replaces one region (a plain string works too).
+     Props (0.17.0, optional): form (array of attributes merged onto the <form>, e.g. ['wire:submit' => 'login']; it can override action / method; with it a non-GET form gets @csrf); heading-level (1 default; 2 renders the title as an h2 with the same look).
 --}}
+@props(['form' => null, 'headingLevel' => 1, 'panel' => null, 'title' => null, 'text' => null, 'fields' => null, 'footer' => null])
+@php
+    $ocForm = (new \Illuminate\View\ComponentAttributeBag(is_array($form) ? $form : []))->merge(['class' => 'oc-block-authcard oc-block-authcard--flat', 'action' => '#', 'method' => 'post']);
+    $ocHeading = (int) $headingLevel === 2 ? 'h2' : 'h1';
+@endphp
 <div {{ $attributes->merge(['class' => 'oc-block-authduo oc-block-authduo--reverse']) }}>
     @if (! $slot->isEmpty())
         {{ $slot }}
     @else
   <div class="oc-block-authduo-grid">
+    @if (isset($panel) && trim((string) $panel) !== '')
+        {{ $panel }}
+    @else
     <aside class="oc-block-authduo-panel oc-block-authduo-panel--image">
       <a class="oc-block-authduo-logo" href="#"><svg data-icon="mdi:layers-outline" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/></svg> Company 1</a>
       <blockquote class="oc-block-authduo-quote">
@@ -29,13 +39,30 @@
         <footer>Customer 3, product manager</footer>
       </blockquote>
     </aside>
+    @endif
     <div class="oc-block-authduo-form">
-      <form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post">
+      <form {{ $ocForm }}>
+          @if (is_array($form) && strtolower((string) $ocForm->get('method', 'get')) !== 'get') @csrf @endif
         <div class="oc-block-authcard-head">
-          <h1 class="oc-block-authcard-title">Create your account</h1>
-          <p class="oc-block-authcard-text">Free for 14 days, no card needed</p>
+          <{{ $ocHeading }} class="oc-block-authcard-title">
+              @if (isset($title) && trim((string) $title) !== '')
+                  {{ $title }}
+              @else
+              Create your account
+              @endif
+          </{{ $ocHeading }}>
+          <p class="oc-block-authcard-text">
+              @if (isset($text) && trim((string) $text) !== '')
+                  {{ $text }}
+              @else
+              Free for 14 days, no card needed
+              @endif
+          </p>
         </div>
         <div class="oc-block-authcard-fields">
+            @if (isset($fields) && trim((string) $fields) !== '')
+                {{ $fields }}
+            @else
           <div class="oc-field">
             <label class="oc-field-label" for="oc-signup02-name">Full name</label>
             <input class="oc-input" id="oc-signup02-name" name="text" type="text" autocomplete="name" required placeholder="Contact 1">
@@ -53,8 +80,15 @@
           </div>
           <label><input class="oc-checkbox" type="checkbox" name="terms" required> I agree to the <a class="oc-link" href="#">terms</a></label>
           <button class="oc-btn oc-block-authcard-submit" type="submit">Create account</button>
+            @endif
         </div>
-        <p class="oc-block-authcard-foot">Already registered? <a href="#">Sign in</a></p>
+        <p class="oc-block-authcard-foot">
+            @if (isset($footer) && trim((string) $footer) !== '')
+                {{ $footer }}
+            @else
+            Already registered? <a href="#">Sign in</a>
+            @endif
+        </p>
       </form>
     </div>
   </div>

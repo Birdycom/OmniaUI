@@ -51,6 +51,12 @@ const snippetAlias = {
   'resizable-panel': 'resizable',
   'menu-entries': 'menubar',
   topbar: 'site-header',
+  'section-block': 'page-sections',
+  'section-header': 'page-sections',
+  'card-grid': 'page-sections',
+  'card-link': 'card',
+  'dropdown-sub': 'dropdown-menu',
+  'version-badge': 'badge',
 }
 
 const entries = []

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Message", "category": "Media", "description": "Incoming and outgoing, sender, avatar, time, read receipt, hover actions, grouping, reply quote and date divider.", "nav": "Message", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Message", "category": "Media", "description": "Chat bubbles, incoming and outgoing: sender, avatar, time, read receipt, hover actions, grouping, a reply quote and a date or system divider in the list.", "nav": "Message", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/message.html | Map: hero -> demo -> grouping -> a11y -> reference -> platform features -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Message</h1>
@@ -141,11 +141,32 @@ class Conversation extends Component
 
     public string $reply = '';
 
+    /** Index of the message the reply quotes, or null. */
+    public ?int $quoting = null;
+
     public function send(): void
     {
         $this-&gt;validate(['reply' =&gt; 'required|string|max:2000']);
-        $this-&gt;messages[] = ['direction' =&gt; 'out', 'avatar' =&gt; 'C6', 'time' =&gt; now()-&gt;format('H:i'), 'datetime' =&gt; now()-&gt;toIso8601String(), 'status' =&gt; 'sent', 'text' =&gt; $this-&gt;reply];
-        $this-&gt;reset('reply');
+        $quoted = $this-&gt;quoting !== null ? $this-&gt;messages[$this-&gt;quoting] ?? null : null;
+        $this-&gt;messages[] = array_filter([
+            'direction' =&gt; 'out', 'avatar' =&gt; 'C6', 'time' =&gt; now()-&gt;format('H:i'), 'datetime' =&gt; now()-&gt;toIso8601String(), 'status' =&gt; 'sent', 'text' =&gt; $this-&gt;reply,
+            'quote' =&gt; $quoted ? ['sender' =&gt; $quoted['sender'] ?? 'You', 'text' =&gt; $quoted['text']] : null,
+        ]);
+        $this-&gt;reset('reply', 'quoting');
+    }
+
+    /** Message action "Reply": the next message quotes this one. */
+    public function quote(int $index): void
+    {
+        $this-&gt;quoting = $index;
+    }
+
+    /** Message action "Delete". */
+    public function remove(int $index): void
+    {
+        unset($this-&gt;messages[$index]);
+        $this-&gt;messages = array_values($this-&gt;messages);
+        $this-&gt;quoting = null;
     }
 
     public function render()
@@ -159,14 +180,20 @@ class Conversation extends Component
     &lt;x-oc::message.list label="Conversation with Customer 1"&gt;
         &lt;x-oc::message.divider&gt;Tuesday 14 October&lt;/x-oc::message.divider&gt;
         @foreach ($messages as $i =&gt; $message)
+            {{-- 'wire' on an action becomes wire:click on its button --}}
             &lt;x-oc::message wire:key="message-{{ $i }}" :label="($message['sender'] ?? 'You').', '.$message['time']"
                 :direction="$message['direction'] ?? 'in'" :sender="$message['sender'] ?? null" :avatar="$message['avatar']"
                 :time="$message['time']" :datetime="$message['datetime']" :status="$message['status'] ?? null"
-                :status-icon="$message['statusIcon'] ?? false" :continued="$message['continued'] ?? false" :text="$message['text']" /&gt;
+                :status-icon="$message['statusIcon'] ?? false" :continued="$message['continued'] ?? false"
+                :quote="$message['quote'] ?? null" :text="$message['text']"
+                :actions="array_values(array_filter([
+                    ['name' =&gt; 'reply', 'label' =&gt; 'Reply to this message', 'icon' =&gt; 'reply', 'wire' =&gt; 'quote('.$i.')'],
+                    ($message['direction'] ?? 'in') === 'out' ? ['name' =&gt; 'delete', 'label' =&gt; 'Delete this message', 'icon' =&gt; 'delete', 'destructive' =&gt; true, 'wire' =&gt; 'remove('.$i.')'] : null,
+                ]))" /&gt;
         @endforeach
     &lt;/x-oc::message.list&gt;
     &lt;form wire:submit="send" class="mt-1" style="display:flex;gap:.5rem"&gt;
-        &lt;x-oc::wire.input model="reply" aria-label="Reply" placeholder="Write a reply" /&gt;
+        &lt;x-oc::wire.input model="reply" aria-label="Reply" :placeholder="$quoting !== null ? 'Write a reply to the quoted message' : 'Write a reply'" /&gt;
         &lt;x-oc::button type="submit"&gt;Send&lt;/x-oc::button&gt;
     &lt;/form&gt;
 &lt;/div&gt;</oc-code>
