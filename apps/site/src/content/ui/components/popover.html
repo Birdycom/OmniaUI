@@ -11,7 +11,7 @@
         </div>
         <div class="oc-section-content">
           <p class="oc-section-content__desc">Click Dimensions: a small panel with fields opens next to the button. Escape or a click outside closes it.</p>
-          <oc-demo title="Popover" size="tall">
+          <oc-demo title="Popover" size="tall" hint="Click the button: the popover opens below it.">
 <button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-popover-demo">Dimensions</button>
 <div class="oc-popover" id="oc-popover-demo" popover>
   <h3 class="oc-popover-title">Dimensions</h3>
@@ -79,6 +79,84 @@ class LayerDimensions extends Component
     &lt;/x-oc::popover&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="compound">Compound API, side and align <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Leave out <code>trigger</code> and build the popover from parts: <code>PopoverTrigger</code> opens it (it is also the anchor), <code>PopoverContent</code> is the panel with <code>side</code> (top, right, bottom, left), <code>align</code> (start, center, end) and <code>sideOffset</code>, and <code>PopoverAnchor</code> positions the panel against another element. The open state can be controlled with <code>open</code> + <code>onOpenChange</code> (Vue <code>v-model:open</code>); Escape and a click outside report back. In the HTML, <code>data-side</code> and <code>data-align</code> set the position. Blade: <code>&lt;x-oc::popover id&gt;</code> with <code>.trigger</code> and <code>.content</code>; <code>model</code> ties the open state to a Livewire property.</p>
+          <oc-demo title="Popover - compound" size="tall" hint="Click the button: the popover opens below it.">
+<button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-popover-filters" aria-controls="oc-popover-filters" aria-haspopup="dialog">Filter</button>
+<div class="oc-popover" id="oc-popover-filters" role="dialog" data-side="right" data-align="start" style="--oc-popover-offset: 8px" popover>
+  <h3 class="oc-popover-title">Filters</h3>
+  <p class="oc-popover-text">Show customers of Company 1 only.</p>
+  <label style="display:flex;gap:.5rem;align-items:center;margin-top:.75rem"><input class="oc-checkbox" type="checkbox" checked> Active customers</label>
+</div>
+<oc-code lang="tsx">import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(true);
+  return (
+    &lt;Popover open={open} onOpenChange={setOpen}&gt;
+      &lt;PopoverTrigger&gt;Filter&lt;/PopoverTrigger&gt;
+      &lt;PopoverContent side="right" align="start" sideOffset={8} title="Filters" text="Show customers of Company 1 only."&gt;
+        &lt;label style={{ display: "flex", gap: ".5rem", alignItems: "center", marginTop: ".75rem" }}&gt;
+          &lt;input className="oc-checkbox" type="checkbox" checked={active} onChange={(e) =&gt; setActive(e.target.checked)} /&gt; Active customers
+        &lt;/label&gt;
+      &lt;/PopoverContent&gt;
+    &lt;/Popover&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcPopover, OcPopoverContent, OcPopoverTrigger } from '@birdycom/omniaui-vue'
+
+const open = ref(false)
+const active = ref(true)
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcPopover id="oc-popover-filters" v-model:open="open"&gt;
+    &lt;OcPopoverTrigger&gt;Filter&lt;/OcPopoverTrigger&gt;
+    &lt;OcPopoverContent side="right" align="start" :side-offset="8" title="Filters" text="Show customers of Company 1 only."&gt;
+      &lt;label style="display:flex;gap:.5rem;align-items:center;margin-top:.75rem"&gt;&lt;input class="oc-checkbox" v-model="active" type="checkbox"&gt; Active customers&lt;/label&gt;
+    &lt;/OcPopoverContent&gt;
+  &lt;/OcPopover&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::popover id="oc-popover-filters"&gt;
+    &lt;x-oc::popover.trigger&gt;Filter&lt;/x-oc::popover.trigger&gt;
+    &lt;x-oc::popover.content side="right" align="start" offset="8" title="Filters" text="Show customers of Company 1 only."&gt;
+        &lt;label style="display:flex;gap:.5rem;align-items:center;margin-top:.75rem"&gt;&lt;input class="oc-checkbox" type="checkbox" name="active" checked&gt; Active customers&lt;/label&gt;
+    &lt;/x-oc::popover.content&gt;
+&lt;/x-oc::popover&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CustomerFilters extends Component
+{
+    public bool $filtersOpen = false;
+
+    public bool $active = true;
+
+    public function render()
+    {
+        return view('livewire.customer-filters');
+    }
+}
+
+{{-- resources/views/livewire/customer-filters.blade.php --}}
+&lt;div&gt;
+    {{-- model: the open state follows $filtersOpen (and the other way round), so the panel stays open while Livewire redraws. --}}
+    &lt;x-oc::popover id="oc-popover-filters" model="filtersOpen"&gt;
+        &lt;x-oc::popover.trigger&gt;Filter&lt;/x-oc::popover.trigger&gt;
+        &lt;x-oc::popover.content side="right" align="start" offset="8" title="Filters" text="Show customers of Company 1 only."&gt;
+            &lt;label style="display:flex;gap:.5rem;align-items:center;margin-top:.75rem"&gt;&lt;input class="oc-checkbox" type="checkbox" wire:model.live="active"&gt; Active customers&lt;/label&gt;
+        &lt;/x-oc::popover.content&gt;
+    &lt;/x-oc::popover&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -94,6 +172,8 @@ class LayerDimensions extends Component
               <tr><td><code>.oc-popover[popover]</code></td><td>The panel. Sizes: <code>--sm</code>, <code>--lg</code>.</td></tr>
               <tr><td><code>.oc-popover-title / -text</code></td><td>Optional heading and body text</td></tr>
               <tr><td><code>button[popovertarget]</code></td><td>Trigger</td></tr>
+              <tr><td><code>[data-side]</code> / <code>[data-align]</code></td><td>Position of the panel (0.17.0): <code>top</code>, <code>right</code>, <code>bottom</code> (default), <code>left</code>; <code>start</code> (default), <code>center</code>, <code>end</code>. <code>--oc-popover-offset</code> sets the gap (default 4px). Styles in <code>parts/app-compound-overlays.css</code>.</td></tr>
+              <tr><td>React <code>PopoverTrigger</code>, <code>PopoverContent</code>, <code>PopoverAnchor</code>, <code>PopoverClose</code></td><td>Compound popover (0.17.0) inside <code>&lt;Popover&gt;</code> without <code>trigger</code>: <code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code> on the root, <code>asChild</code> on trigger and anchor, <code>side</code>, <code>align</code>, <code>sideOffset</code> on the content. The anchor uses CSS anchor positioning (<code>anchor-name</code> / <code>position-anchor</code>), with a measured fallback in browsers without it. Vue: <code>OcPopoverTrigger</code>, <code>OcPopoverContent</code>, <code>OcPopoverAnchor</code> in <code>OcPopover</code> (<code>v-model:open</code>). Blade: <code>&lt;x-oc::popover.trigger&gt;</code> and <code>.content</code> (<code>side</code>, <code>align</code>, <code>offset</code>), <code>model</code> on the root for Livewire.</td></tr>
             </tbody>
           </table>
         </div>

@@ -89,9 +89,23 @@
   inset-inline-end: 0;
   z-index: 2;
   background: var(--oc-card);
-  box-shadow: -1px 0 0 var(--oc-border);
+  /* A line plus a short soft edge: columns that scroll under it read as "more to the side", not as cut-off text. */
+  box-shadow: -1px 0 0 var(--oc-border), -10px 0 8px -8px oklch(from var(--oc-foreground) l c h / 0.14);
 }
 .oc-data-table .oc-table thead th[data-oc-col="actions"] { z-index: 3; background: var(--oc-card); }
+/* Scroll hint: where scroll-driven animations work, the soft edge is clearly visible only while columns are hidden
+   under the actions column (a table that fits, or one scrolled to the end, keeps just the line). */
+@supports (animation-timeline: scroll()) {
+  .oc-data-table .oc-table :is(th, td)[data-oc-col="actions"] {
+    box-shadow: -1px 0 0 var(--oc-border);
+    animation: oc-data-table-edge linear both;
+    animation-timeline: scroll(nearest inline);
+  }
+  @keyframes oc-data-table-edge {
+    0%, 96% { box-shadow: -1px 0 0 var(--oc-border), -16px 0 14px -10px light-dark(oklch(from var(--oc-foreground) l c h / 0.3), oklch(0% 0 0deg / 0.7)); }
+    100% { box-shadow: -1px 0 0 var(--oc-border); }
+  }
+}
 .oc-data-table .oc-table tbody tr:is(:nth-child(even of :not([hidden])), :hover) > td[data-oc-col="actions"] { background: inherit; }
 
 /* Trash and archive rows stay readable but quieter than active rows. */

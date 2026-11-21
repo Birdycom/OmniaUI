@@ -406,7 +406,10 @@ export function transform(content, route = "") {
     }
     // Webicons in the preview become inline SVG (lib/inline-icons.mjs): faster pages, no Iconify API request.
     inlineIcons(document, demo);
-    const scoped = demo.innerHTML;
+    // <oc-demo hint="Hover the link…">: a short muted line in the preview that says how to open an overlay demo
+    // (hover card, popover, tooltip). Only in the preview, never in the code tabs.
+    const hint = demo.getAttribute("hint");
+    const scoped = demo.innerHTML + (hint ? `<p class="oc-demo__hint">${hint}</p>` : "");
     replaceWithHtml(document, demo, `<div class="oc-demo oc-demo--v2${pro ? " oc-demo--pro" : ""}"><div class="oc-demo__bar"><h4 class="oc-demo__title">${title}${pro ? ' <span class="oc-demo__pro-badge">Pro</span>' : ""}</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show">${tabs}</div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width">${widths}</div></div><div class="oc-demo__preview oc-theme-scope${size}">${scoped}</div>${panels}</div>`);
   }
 
@@ -618,6 +621,17 @@ export function transform(content, route = "") {
       used.add(id);
     }
     toc.push({ id: h.id, text, level: h.localName === "h2" ? 2 : 3 });
+  }
+
+  // Code in a reference table cell (a tool name such as get_component, a path, a class with a dot): a break chance
+  // after "_", "/", "|", "=" and a "." before a letter, and before "[", so on a phone it wraps at a readable place
+  // instead of per letter
+  // (oc-docs-v2.css keeps code cells on overflow-wrap: break-word). The text itself (search, llms.txt) is unchanged.
+  for (const code of body.querySelectorAll(".oc-table-ref td code")) {
+    if (code.children.length || code.closest("pre")) continue;
+    const t = code.textContent;
+    if (t.length < 12 || !/[_/|=[]|\.[a-z]/i.test(t)) continue;
+    code.innerHTML = escText(t).replace(/(?<=\S)([_/|=]|\.(?=[a-z]))(?=.)/gi, "$1<wbr>").replace(/(?<=[^\s>])\[/g, "<wbr>[");
   }
 
   return { html: body.innerHTML, toc };

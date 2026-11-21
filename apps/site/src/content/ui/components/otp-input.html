@@ -96,6 +96,90 @@ class JoinGame extends Component
         class="oc-otp--fit oc-otp--group" style="--oc-otp-group: 4" inputmode="text" pattern="[A-Za-z0-9]*" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="full-code">Full code, focus and submit <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">A full code keeps every digit in its own cell, also while the field has focus: the digits are drawn half a cell gap to the right of the real text, so the caret after the last digit never scrolls the field. The field sets its own height and font size, so an app rule such as <code>input { height: 2rem }</code> does not squash it; <code>--oc-otp-size</code> changes the digit size. <code>onComplete</code> (React) and <code>@complete</code> (Vue) run after the new value has rendered, so a parent that submits from there already holds the full code. In plain HTML listen to <code>input</code> and check the length; the Livewire <code>complete</code> method runs on the next tick, after <code>wire:model</code> has the code.</p>
+          <oc-demo title="OTP input - full code and submit">
+<form class="oc-field" id="oc-otp-full-form">
+  <label class="oc-field-label" for="oc-otp-full">Authentication code</label>
+  <input class="oc-otp" id="oc-otp-full" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" style="--oc-otp-length: 6; --oc-otp-size: 1.75rem" value="482916">
+  <p class="oc-field-description">Click the field: the code stays in place.</p>
+</form>
+<script>
+  // complete: submit once the sixth digit is in (after the input has its value)
+  document.getElementById('oc-otp-full').addEventListener('input', (e) => {
+    if (e.target.value.length === e.target.maxLength) e.target.form.requestSubmit?.();
+  });
+  document.getElementById('oc-otp-full-form').addEventListener('submit', (e) => e.preventDefault());
+</script>
+<oc-code lang="html">&lt;form class="oc-field" action="/two-factor" method="post"&gt;
+  &lt;label class="oc-field-label" for="oc-otp-full"&gt;Authentication code&lt;/label&gt;
+  &lt;input class="oc-otp" id="oc-otp-full" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" style="--oc-otp-length: 6; --oc-otp-size: 1.75rem"&gt;
+&lt;/form&gt;
+&lt;script&gt;
+  // submit once the sixth digit is in: the input already has its value here
+  document.getElementById('oc-otp-full').addEventListener('input', (e) =&gt; {
+    if (e.target.value.length === e.target.maxLength) e.target.form.requestSubmit();
+  });
+&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import type { CSSProperties } from "react";
+import { FormField, OtpInput } from "@birdycom/omniaui-react";
+
+export function TwoFactor({ submit }: { submit: (code: string) =&gt; void }) {
+  const [code, setCode] = useState("");
+  // onComplete runs after the render with the full code: the state already holds it
+  return (
+    &lt;FormField label="Authentication code"&gt;
+      &lt;OtpInput name="code" value={code} onChange={setCode} onComplete={() =&gt; submit(code)} style={{ "--oc-otp-size": "1.75rem" } as CSSProperties} /&gt;
+    &lt;/FormField&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFormField, OcOtpInput } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ submit: [code: string] }&gt;()
+const code = ref('')
+// @complete fires after the v-model update: code.value is the full code
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Authentication code" v-slot="f"&gt;
+    &lt;OcOtpInput :id="f.id" v-model="code" name="code" style="--oc-otp-size: 1.75rem" @complete="emit('submit', code)" /&gt;
+  &lt;/OcFormField&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;form method="post" action="{{ route('two-factor.login') }}"&gt;
+    @csrf
+    &lt;x-oc::otp-input label="Authentication code" name="code" style="--oc-otp-size: 1.75rem" /&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TwoFactor extends Component
+{
+    public string $code = '';
+
+    public function verify(): void
+    {
+        // $this-&gt;code holds all six digits: complete runs after wire:model has updated
+        $this-&gt;validate(['code' =&gt; 'required|digits:6']);
+    }
+
+    public function render()
+    {
+        return view('livewire.two-factor');
+    }
+}
+
+{{-- resources/views/livewire/two-factor.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::wire.otp model="code" complete="verify" label="Authentication code" style="--oc-otp-length: 6; --oc-otp-size: 1.75rem" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -111,6 +195,8 @@ class JoinGame extends Component
               <tr><td><code>.oc-otp</code></td><td>The input. Set <code>style="--oc-otp-length: 6"</code> and <code>maxlength</code> to the code length. <code>aria-invalid="true"</code> shows the error state.</td></tr>
               <tr><td><code>.oc-otp--fit</code></td><td>The cells shrink with the parent (container query units); at most the normal size. Prop <code>fit</code>.</td></tr>
               <tr><td><code>.oc-otp--group</code> + <code>--oc-otp-group</code></td><td>A darker divider after every n cells (default 4). Prop <code>group</code>.</td></tr>
+              <tr><td><code>--oc-otp-size</code></td><td>Digit size (default <code>1.5rem</code>); the cells and the height follow. The field sets its own <code>block-size</code> and <code>font-size</code>, so a global <code>input</code> height rule does not squash it (0.17.0).</td></tr>
+              <tr><td>Complete</td><td>React <code>onComplete</code> and Vue <code>@complete</code> run after the value update has rendered; Livewire <code>complete</code> runs on the next tick, after <code>wire:model</code> (0.17.0). Plain HTML: listen to <code>input</code> and compare the length with <code>maxlength</code>.</td></tr>
             </tbody>
           </table>
         </div>

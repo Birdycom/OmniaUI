@@ -1,0 +1,47 @@
+/* File: packages/ui/src/parts/forms-copy-field-extras.css
+   Map: copy button with icon + label -> icon swap on .is-copied -> show/hide toggle (masked secret) -> --wrap
+   Copy field additions (0.17.0). The base .oc-copy-field lives in components.css.
+   - .oc-copy-field-button holds an icon (mdi:content-copy, mdi:check once copied) and .oc-copy-field-button-label;
+     the label shows the copied feedback, .oc-copy-field-status (visually hidden, role="status") announces it.
+   - .oc-copy-field-toggle: show/hide for a secret in input[type=password]; aria-pressed="true" = shown. The markup can
+     carry both icons (.oc-copy-field-icon-show / -hide); the one that does not fit the state is hidden.
+   - .oc-copy-field--wrap: long values (a token, a URL) break over lines instead of ending in an ellipsis; the value is
+     an <output> (an <input> cannot wrap). */
+
+.oc-copy-field-button,
+.oc-copy-field-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  white-space: nowrap;
+}
+.oc-copy-field-button > svg,
+.oc-copy-field-toggle > svg { flex: none; inline-size: 1.125em; block-size: 1.125em; }
+.oc-copy-field-button:not(.is-copied) > .oc-copy-field-icon-copied,
+.oc-copy-field-button.is-copied > .oc-copy-field-icon-copy { display: none; }
+
+.oc-copy-field-toggle {
+  padding: 0 0.625rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--oc-muted-foreground);
+  background: transparent;
+  border: 0;
+  border-inline-start: 1px solid var(--oc-border);
+  cursor: pointer;
+}
+.oc-copy-field-toggle:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-copy-field-toggle:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+.oc-copy-field-toggle[aria-pressed="true"] { color: var(--oc-foreground); }
+.oc-copy-field-toggle[aria-pressed="true"] > .oc-copy-field-icon-show,
+.oc-copy-field-toggle:not([aria-pressed="true"]) > .oc-copy-field-icon-hide { display: none; }
+
+.oc-copy-field--wrap .oc-copy-field-value {
+  display: block;
+  align-self: center;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  line-height: 1.45;
+}

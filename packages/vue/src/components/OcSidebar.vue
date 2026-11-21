@@ -8,15 +8,32 @@
  * variant="docs" (0.17.0): the documentation navigation, nav.oc-sidebar.oc-sidebar--docs with an optional title
  * (h2.oc-sidebar-title, prop or #title slot) and groups of text links as plain siblings; OcSidebarGroup, OcSidebarMenu
  * and OcSidebarMenuButton inside follow it (no wrappers, labels or tooltips).
+ * Inside an OcSidebarProvider (0.17.0) the sidebar follows the provider (collapsed, mobile overlay, closing); its own
+ * collapsed / overlay props win.
  */
 import { computed, onBeforeUnmount, provide, watch } from 'vue'
+import { useSidebarOptional } from '../composables/useSidebar'
 
-const props = defineProps<{ collapsed?: boolean; right?: boolean; floating?: boolean; dark?: boolean; label?: string; overlay?: boolean; variant?: 'app' | 'docs'; title?: string }>()
+const props = withDefaults(
+  defineProps<{ collapsed?: boolean; right?: boolean; floating?: boolean; dark?: boolean; label?: string; overlay?: boolean; variant?: 'app' | 'docs'; title?: string }>(),
+  { collapsed: undefined, overlay: undefined },
+)
 provide('oc-sidebar-variant', computed(() => props.variant ?? 'app'))
 const emit = defineEmits<{ 'update:collapsed': [collapsed: boolean] }>()
-const open = computed(() => !!props.overlay && !props.collapsed)
-const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') emit('update:collapsed', true) }
-const onDown = (e: PointerEvent) => { if (!(e.target as Element | null)?.closest?.('.oc-sidebar--overlay')) emit('update:collapsed', true) }
+const ctx = useSidebarOptional()
+const collapsed = computed(() => props.collapsed ?? ctx?.collapsed.value ?? false)
+const overlay = computed(() => props.overlay ?? ctx?.isMobile.value ?? false)
+const close = () => {
+  emit('update:collapsed', true)
+  if (props.collapsed === undefined) ctx?.setCollapsed(true)
+}
+const open = computed(() => overlay.value && !collapsed.value)
+const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close() }
+const onDown = (e: PointerEvent) => {
+  const target = e.target as Element | null
+  if (target?.closest?.('.oc-sidebar--overlay') || target?.closest?.('[data-oc-sidebar-trigger], [data-oc-sidebar-rail]')) return
+  close()
+}
 function listen(on: boolean) {
   if (typeof document === 'undefined') return
   const method = on ? 'addEventListener' : 'removeEventListener'

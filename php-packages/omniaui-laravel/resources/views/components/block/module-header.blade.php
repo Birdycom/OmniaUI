@@ -6,16 +6,19 @@
        .oc-block-modulehead-title / -intro: Title and intro
        .oc-block-modulehead-meta: Row for badges under the title (optional)
        .oc-block-modulehead-actions: Row for buttons below the band (optional)
+       .oc-block-modulehead-eyebrow: Small line above the title (optional, 0.17.0)
+       .oc-block-modulehead--fixed: One band height, --oc-modulehead-height (0.17.0)
+       data-module="<name>": Module colour for the band and icon tile (0.17.0)
      Slots: icon, title, intro, meta, actions
-     Blade: <x-oc::block.module-header> - attributes merge onto the root element.
+     Blade: <x-oc::block.module-header> - attributes merge onto the root element; props: module => null, eyebrow => null, fixedHeight => false.
      Blade slots (each falls back to the snippet content when empty): icon, title, intro, meta, actions.
      Props (0.17.0, optional): heading-level (1 default; 2 renders the title as an h2 with the same look).
 --}}
-@props(['headingLevel' => 1, 'icon' => null, 'title' => null, 'intro' => null, 'meta' => null, 'actions' => null])
+@props(['module' => null, 'eyebrow' => null, 'fixedHeight' => false, 'headingLevel' => 1, 'icon' => null, 'title' => null, 'intro' => null, 'meta' => null, 'actions' => null])
 @php
     $ocHeading = (int) $headingLevel === 2 ? 'h2' : 'h1';
 @endphp
-<header {{ $attributes->merge(['class' => 'oc-block-modulehead']) }}>
+<header {{ $attributes->merge(['class' => 'oc-block-modulehead'.($fixedHeight ? ' oc-block-modulehead--fixed' : ''), 'data-module' => $module ?: null]) }}>
   <div class="oc-block-modulehead-band">
     <span class="oc-block-modulehead-icon" aria-hidden="true">
         @if (isset($icon) && trim((string) $icon) !== '')
@@ -25,6 +28,7 @@
         @endif
     </span>
     <div class="oc-block-modulehead-body">
+      @if (isset($eyebrow) && trim((string) $eyebrow) !== '')<p class="oc-block-modulehead-eyebrow">{{ $eyebrow }}</p>@endif
       <{{ $ocHeading }} class="oc-block-modulehead-title">
           @if (isset($title) && trim((string) $title) !== '')
               {{ $title }}

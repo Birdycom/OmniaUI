@@ -1,0 +1,55 @@
+/* File: packages/ui/src/parts/forms-field-extras.css
+   Map: label row (label + info icon + trailing content) -> required mark -> info icon button -> validation message
+        -> forced colors
+   Extras of .oc-field (0.17.0): a label row with a tooltip icon and content at its end (a link, a counter), a mark for a
+   required field, and the message the input-mask script writes on blur. Theme tokens only; flat. */
+
+.oc-field-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-inline-size: 0;
+}
+.oc-field-label-row > .oc-field-label { min-inline-size: 0; }
+.oc-field-label-trailing {
+  margin-inline-start: auto;
+  font-size: 0.8rem;
+  color: var(--oc-muted-foreground);
+}
+.oc-field-label-trailing a { color: var(--oc-primary); }
+.oc-field--horizontal > .oc-field-label-row { min-inline-size: 120px; }
+
+/* Required: a small mark after the label text (aria-hidden; the control has required + aria-required). */
+.oc-field-required {
+  margin-inline-start: 0.2em;
+  color: light-dark(oklch(from var(--oc-destructive) min(l, 0.55) c h), oklch(from var(--oc-destructive) max(l, 0.78) c h));
+  font-weight: 600;
+}
+
+/* Info icon: a small round button in the muted colour; the tooltip is the existing .oc-tooltip. */
+.oc-field-tooltip-wrap { display: inline-flex; }
+.oc-field-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--oc-muted-foreground);
+  cursor: help;
+}
+.oc-field-tooltip > :is(svg, iconify-icon) { inline-size: 1rem; block-size: 1rem; font-size: 1rem; }
+.oc-field-tooltip:hover { color: var(--oc-foreground); }
+.oc-field-tooltip:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+
+/* Ledger field: a smaller info icon. */
+.oc-field--ledger .oc-field-tooltip { inline-size: 1rem; block-size: 1rem; }
+.oc-field--ledger .oc-field-tooltip > :is(svg, iconify-icon) { inline-size: 0.875rem; block-size: 0.875rem; font-size: 0.875rem; }
+
+@media (forced-colors: active) {
+  .oc-field-tooltip { color: ButtonText; }
+  .oc-field-required { color: CanvasText; }
+}

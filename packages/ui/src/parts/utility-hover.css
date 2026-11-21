@@ -5,7 +5,9 @@
      .oc-hover-grow   grows a little in place (--oc-hover-scale, 1.02)
      .oc-hover-glow   stays in place, with a glow in the accent color
      .oc-hover-none   no movement (also turns off the default lift of a product or price card)
-   They share one smooth curve: --oc-hover-duration (0.45s) and --oc-hover-ease. This file loads after the cards, so the class wins. */
+   They share one smooth curve: --oc-hover-duration (0.45s), --oc-hover-ease and --oc-hover-delay (0s). A product card
+   starts its lift a moment later and more gently (0.3s ease after 0.08s), so it never jumps up the instant the mouse
+   passes. This file loads after the cards, so the class wins. */
 
 :is(.oc-hover-lift, .oc-hover-grow, .oc-hover-glow, .oc-product-card) {
   transition:
@@ -14,9 +16,10 @@
     box-shadow var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
     /* The colors follow the same curve as the lift, so the glow and the border do not lag behind the movement. */
     border-color var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    background-color var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    --oc-glow var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1));
+    background-color var(--oc-hover-duration, 0.45s) var(--oc-hover-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  transition-delay: var(--oc-hover-delay, 0s);
 }
+:where(.oc-product-card) { --oc-hover-duration: 0.3s; --oc-hover-ease: ease; --oc-hover-delay: 0.08s; }
 .oc-product-card:hover { translate: 0 calc(-1 * var(--oc-hover-lift, 6px)); }
 .oc-hover-lift:hover {
   translate: 0 calc(-1 * var(--oc-hover-lift, 6px));

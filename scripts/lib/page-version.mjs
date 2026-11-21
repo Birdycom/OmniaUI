@@ -1,13 +1,18 @@
 // File: scripts/lib/page-version.mjs
 // Which release brought a docs page, and which pages are new: shared by the sidebar (build-nav.mjs) and the
 // overview galleries (build-galleries.mjs), so both mark the same pages.
-// Map: introduced version (section header badge, else the badge of the first demo) -> versions named on the page
+// Map: introduced version (meta "since", else section header / title / first demo badge) -> versions named on the page
 //      -> newest version named on any page (new = brought by it, updated = an older page with a part brought by it)
 
-/** "0.12.6" from the version badge in the Demo header, else from the first demo title (demo-1); "" when neither has one.
- *  A badge further down (a new variant of an older component) does not make the page new. */
+/** "0.12.6": "since" in the oc-page meta (line 1), else the version badge in the Demo header, else the badge in the
+ *  page title (h1), else the badge of the first demo title (demo-1); "" when none has one.
+ *  A badge further down (a new variant of an older component) does not make the page new. An older page whose first
+ *  demo got a badge (new code tabs, a new prop) sets "since" to the release that brought it, so it stays "updated". */
 export function introducedIn(src) {
+  const meta = src.match(/^<!--oc-page .*?"since"\s*:\s*"(\d+\.\d+\.\d+)"/);
+  if (meta) return meta[1];
   const m = src.match(/oc-section-header__badge-version oc-badge-version">v(\d+\.\d+\.\d+)</)
+    || src.match(/class="oc-hero-title">[^<]*<span class="oc-badge-version">v(\d+\.\d+\.\d+)</)
     || src.match(/id="demo-1">[^<]*<span class="oc-badge-version">v(\d+\.\d+\.\d+)</);
   return m ? m[1] : "";
 }

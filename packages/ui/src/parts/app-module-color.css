@@ -1,0 +1,152 @@
+/* File: packages/ui/src/parts/app-module-color.css | Map: tokens (data-module names) -> scope (focus ring) -> button -> badge -> tabs
+   -> launcher -> form section -> sidebar row -> floating button (.oc-btn--float) */
+/* Module colour (0.17.0): give a part of an app its own accent. data-module="<name>" on any ancestor sets
+   --oc-module (solid accent), --oc-module-soft (tint for backgrounds) and --oc-module-fg (text on the solid accent).
+   Ten generic names: blue, green, purple, gold, cyan, pink, red, orange, teal, slate. An unknown name sets no colour,
+   so an app can set --oc-module itself (style="--oc-module: ..." on the same element). Every consumer reads
+   var(--oc-module, var(--oc-primary)), so without a module everything keeps the primary colour.
+   Light mode: dark accents with white text; dark mode: light accents with dark text (AA 4.5:1 both ways). */
+
+[data-module] {
+  --oc-module-soft: color-mix(in oklab, var(--oc-module, var(--oc-primary)) 12%, transparent);
+  /* Focus rings of fields, buttons, tabs and rows inside the scope follow the module. */
+  --oc-ring: var(--oc-module, var(--oc-primary));
+}
+
+[data-module="blue"],
+[data-module="green"],
+[data-module="purple"],
+[data-module="gold"],
+[data-module="cyan"],
+[data-module="pink"],
+[data-module="red"],
+[data-module="orange"],
+[data-module="teal"],
+[data-module="slate"] {
+  --oc-module-fg: light-dark(var(--color-white-50), var(--color-shallowblue-95));
+}
+
+/* The blue palette lies far outside sRGB: its chroma is capped, so tints and borders mixed from it stay clean. */
+[data-module="blue"] { --oc-module: light-dark(oklch(from var(--color-blue-40) l min(c, 0.2) h), oklch(from var(--color-blue-2) l min(c, 0.12) h)); }
+[data-module="green"] { --oc-module: light-dark(var(--color-green-60), var(--color-green-10)); }
+[data-module="purple"] { --oc-module: light-dark(var(--color-indigo-20), var(--color-indigo-2)); }
+[data-module="gold"] { --oc-module: light-dark(color-mix(in oklab, var(--color-orange-95) 80%, var(--color-green-95)), var(--color-gold-70)); }
+[data-module="cyan"] { --oc-module: light-dark(var(--color-teal-70), var(--color-cyan-90)); }
+[data-module="pink"] { --oc-module: light-dark(color-mix(in oklab, var(--color-magenta-95), var(--color-pink-95)), color-mix(in oklab, var(--color-magenta-60), var(--color-pink-80))); }
+[data-module="red"] { --oc-module: light-dark(var(--color-red-90), var(--color-red-30)); }
+[data-module="orange"] { --oc-module: light-dark(color-mix(in oklab, var(--color-red-90) 35%, var(--color-orange-95)), color-mix(in oklab, var(--color-red-30) 35%, var(--color-orange-60))); }
+[data-module="teal"] { --oc-module: light-dark(color-mix(in oklab, var(--color-teal-70), var(--color-green-70)), color-mix(in oklab, var(--color-teal-10), var(--color-green-10))); }
+[data-module="slate"] { --oc-module: light-dark(var(--color-stormblue-30), var(--color-stormblue-2)); }
+
+/* Primary (default) button: flat module colour. Variants (secondary, outline, ghost ...) keep their own look. */
+.oc-btn:where([data-module], [data-module] *):not(:where(
+  .oc-btn--secondary, .oc-btn--outline, .oc-btn--ghost, .oc-btn--link, .oc-btn--destructive, .oc-btn--success,
+  .oc-btn--gradient, .oc-btn--glass, .oc-btn--neon, .oc-btn--plain,
+  .oc-btn--soft-primary, .oc-btn--soft-success, .oc-btn--soft-warning, .oc-btn--soft-destructive, .oc-btn--soft-info
+)) {
+  background: var(--oc-module, var(--oc-primary));
+  color: var(--oc-module-fg, var(--oc-primary-foreground));
+}
+.oc-btn--link:where([data-module], [data-module] *) { color: var(--oc-module, var(--oc-primary)); }
+.oc-btn--soft-primary:where([data-module], [data-module] *) { --oc-btn-tone: var(--oc-module, var(--oc-primary)); }
+
+/* Badge: only a badge that carries data-module itself (solid) or variant="module" (soft tint, module text). */
+.oc-badge[data-module]:not(:where(
+  .oc-badge--secondary, .oc-badge--outline, .oc-badge--success, .oc-badge--warning, .oc-badge--destructive, .oc-badge--info, .oc-badge--module
+)) {
+  background: var(--oc-module, var(--oc-primary));
+  color: var(--oc-module-fg, var(--oc-primary-foreground));
+}
+.oc-badge--module {
+  background: var(--oc-module-soft, color-mix(in oklab, var(--oc-module, var(--oc-primary)) 12%, transparent));
+  color: var(--oc-module, var(--oc-primary));
+  border-color: color-mix(in oklab, var(--oc-module, var(--oc-primary)) 35%, transparent);
+}
+
+/* Active tab: the line (or the pill text) in the module colour. */
+.oc-tab-trigger:where([data-module] *):is(.is-active, [aria-selected="true"]),
+.oc-tabset:where([data-module], [data-module] *) .oc-tab-trigger:has(input:checked) {
+  border-bottom-color: var(--oc-module, var(--oc-primary));
+}
+.oc-tab-list--vertical .oc-tab-trigger:where([data-module] *):is(.is-active, [aria-selected="true"]),
+.oc-tabset:where([data-module], [data-module] *) .oc-tab-list--vertical .oc-tab-trigger:has(input:checked) {
+  border-bottom-color: transparent;
+  border-right-color: var(--oc-module, var(--oc-primary));
+}
+.oc-tab-list--pill .oc-tab-trigger:where([data-module] *):is(.is-active, [aria-selected="true"]),
+.oc-tabset:where([data-module], [data-module] *) .oc-tab-list--pill .oc-tab-trigger:has(input:checked) {
+  color: var(--oc-module, var(--oc-primary));
+}
+
+/* Launcher card: hover/current border, tint and icon tile. */
+.oc-launcher:where([data-module], [data-module] *):hover,
+.oc-launcher:where([data-module], [data-module] *):is([aria-current="true"], .is-active) {
+  border-color: var(--oc-module, var(--oc-primary));
+}
+.oc-launcher:where([data-module], [data-module] *):is([aria-current="true"], .is-active) {
+  background: color-mix(in oklab, var(--oc-module, var(--oc-primary)) 6%, var(--oc-card));
+}
+.oc-launcher:where([data-module], [data-module] *) .oc-launcher-icon {
+  color: var(--oc-module, var(--oc-primary));
+  background: var(--oc-module-soft);
+}
+
+/* Form section: the icon tile (an invalid section keeps its red or orange tile). */
+.oc-form-section:where([data-module], [data-module] *) .oc-form-section__icon {
+  color: var(--oc-module, var(--oc-primary));
+  background: var(--oc-module-soft);
+}
+
+/* Sidebar: the current row in a soft module tint (the dark sidebar keeps its own look). */
+.oc-sidebar-menu-button:where([data-module] *):is([aria-current="page"], .is-active) {
+  background: var(--oc-module-soft);
+  color: var(--oc-module, var(--oc-primary));
+}
+
+/* Floating button (0.17.0): small icons (hearts by default) rise behind the label, fade out and drift a little.
+   Markup: <button class="oc-btn oc-btn--float"><span class="oc-btn-float" aria-hidden="true"><i></i> x5</span>Donate</button>.
+   Another webicon: data-float-icon="mdi:star" (built in) or --oc-btn-float-icon: url("data:image/svg+xml,...") (the wrappers
+   set it for any registered webicon). Only transform and opacity animate; no animation with prefers-reduced-motion. */
+.oc-btn--float {
+  --oc-btn-float-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.54z'/%3E%3C/svg%3E");
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.oc-btn--float[data-float-icon="mdi:star"] {
+  --oc-btn-float-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2L9.19 8.62L2 9.24l5.45 4.73L5.82 21z'/%3E%3C/svg%3E");
+}
+.oc-btn-float {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.oc-btn-float > i {
+  position: absolute;
+  inset-block-end: -0.75em;
+  inset-inline-start: var(--oc-btn-float-x, 50%);
+  inline-size: var(--oc-btn-float-size, 0.75em);
+  block-size: var(--oc-btn-float-size, 0.75em);
+  /* A lighter (or in dark mode darker) tint of the button: the label colour at low strength, so the text stays readable. */
+  background: var(--oc-btn-float-color, color-mix(in oklab, currentColor 38%, transparent));
+  -webkit-mask: var(--oc-btn-float-icon) center / contain no-repeat;
+  mask: var(--oc-btn-float-icon) center / contain no-repeat;
+  opacity: 0;
+  animation: oc-btn-float-rise var(--oc-btn-float-duration, 3.2s) var(--oc-btn-float-delay, 0s) ease-out infinite;
+}
+.oc-btn-float > i:nth-child(1) { --oc-btn-float-x: 12%; --oc-btn-float-delay: 0s; --oc-btn-float-drift: 0.35em; }
+.oc-btn-float > i:nth-child(2) { --oc-btn-float-x: 32%; --oc-btn-float-delay: 1.3s; --oc-btn-float-drift: -0.3em; --oc-btn-float-size: 0.6em; }
+.oc-btn-float > i:nth-child(3) { --oc-btn-float-x: 52%; --oc-btn-float-delay: 0.6s; --oc-btn-float-drift: 0.25em; --oc-btn-float-size: 0.85em; }
+.oc-btn-float > i:nth-child(4) { --oc-btn-float-x: 72%; --oc-btn-float-delay: 2s; --oc-btn-float-drift: -0.4em; --oc-btn-float-size: 0.65em; }
+.oc-btn-float > i:nth-child(5) { --oc-btn-float-x: 88%; --oc-btn-float-delay: 2.6s; --oc-btn-float-drift: 0.3em; }
+
+@keyframes oc-btn-float-rise {
+  0% { opacity: 0; transform: translate(-50%, 0) rotate(-10deg) scale(0.7); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--oc-btn-float-drift, 0.3em)), -3.25em) rotate(12deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-btn-float > i { animation: none; opacity: 0; }
+}

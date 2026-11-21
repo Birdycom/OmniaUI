@@ -20,11 +20,17 @@
 .oc-topbar-nav { min-inline-size: 0; }
 .oc-topbar-actions .oc-btn { white-space: nowrap; }
 
-/* Centred menu: brand left, menu in the middle, actions right (from 761px; smaller screens keep the burger). */
+/* Centred menu: brand left, menu in the middle, actions right (from 761px; smaller screens keep the burger).
+   Brand and actions share the free room equally (flex: 1 1 0), so the menu sits in the true middle. A --collapsible bar
+   follows its own width (container oc-topbar, docs-ui.css) instead of the screen: in a narrow card or preview it folds
+   into the burger like any other bar, with the button at the end. */
 @media (min-width: 761px) {
-  .oc-topbar--center { display: grid; grid-template-columns: 1fr auto 1fr; }
-  .oc-topbar--center .oc-topbar-brand { justify-self: start; }
-  .oc-topbar--center .oc-topbar-actions { justify-self: end; }
+  .oc-topbar--center:not(.oc-topbar--collapsible) > :is(.oc-topbar-brand, .oc-topbar-actions) { flex: 1 1 0; }
+  .oc-topbar--center:not(.oc-topbar--collapsible) > .oc-topbar-actions { justify-content: flex-end; }
+}
+@container oc-topbar (min-width: 47.5625rem) {
+  .oc-topbar--center > :is(.oc-topbar-brand, .oc-topbar-actions) { flex: 1 1 0; }
+  .oc-topbar--center > .oc-topbar-actions { justify-content: flex-end; }
 }
 
 /* Plain links: no pill frames, the current page underlined. */
@@ -92,5 +98,7 @@
 .oc-footerbar-links a { color: var(--oc-muted-foreground); text-decoration: none; }
 .oc-footerbar-links a:hover { color: var(--oc-foreground); }
 .oc-footerbar.oc-footerbar--dark { color: oklch(from var(--color-white-50) l c h / 0.7); background: var(--oc-dark-band, var(--color-duskblue-95)); border-block-start-color: transparent; }
+/* On a dark page the dark band is about as dark as the page: a light hairline on top marks where the footer starts. */
+.oc-footerbar.oc-footerbar--dark { border-block-start-color: light-dark(transparent, oklch(from var(--color-white-50) l c h / 0.16)); }
 .oc-footerbar--dark :is(a, .oc-footerbar-links a) { color: oklch(from var(--color-white-50) l c h / 0.85); }
 .oc-footerbar--dark .oc-footerbar-links a:hover { color: var(--color-white-50); }

@@ -1,0 +1,88 @@
+/* File: packages/ui/src/parts/site-hero-media.css */
+/* Map: hero with background media -> media layer (video / img, object-fit cover) -> scrim (start / end / full, phone =
+        full) -> content in the container (start / center / end) -> reduced motion */
+/* A hero over the full width with a video or a photo behind the text. The media fills the section (object-fit: cover)
+   and the text sits in the page container on top of it. The section is dark (color-scheme: dark), so the text, the
+   lead and the buttons take their dark-mode colors. A scrim keeps the text readable (WCAG AA): --scrim-start darkens
+   the side where the text starts, --scrim-end the other side, --scrim the whole picture. Below 48rem the text covers
+   the full width, so a start/end scrim becomes a full one. Tune: --oc-hero-media-scrim (the dark color),
+   --oc-hero-media-min (height), --oc-hero-media-bg (color while the media loads), --oc-hero-media-measure (text width).
+   Reduced motion: put the video source in <source media="(prefers-reduced-motion: no-preference)">; no source matches
+   then and only the poster shows. The components do this for you. */
+
+.oc-hero-media {
+  /* Same strength and fade tokens as the scrim component (media-scrim.css): --oc-scrim-strength and --oc-scrim-size tune
+     this scrim too. The color stays dark (the text on it is light): --oc-hero-media-scrim-color. */
+  --oc-hero-media-scrim: color-mix(in oklab, var(--oc-hero-media-scrim-color, oklch(14% 0.01 260deg)) calc(var(--oc-scrim-strength, 0.82) * 100%), transparent);
+  --oc-hero-media-scrim-soft: color-mix(in oklab, var(--oc-hero-media-scrim-color, oklch(14% 0.01 260deg)) calc(var(--oc-scrim-strength, 0.82) * 62%), transparent);
+  /* Where the text column starts and how wide it is, measured on the gradient line (100% = the width of the hero).
+     The start / end scrim stays solid under the text and only then fades out, also when the hero is narrow. */
+  --_oc-hero-media-x: max(var(--oc-container-gutter, 1.25rem), (100% - var(--oc-container, 1200px)) / 2);
+  --_oc-hero-media-w: min(var(--oc-hero-media-measure, 40rem), 100% - 2 * var(--oc-container-gutter, 1.25rem));
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  min-block-size: var(--oc-hero-media-min, clamp(26rem, 72vh, 46rem));
+  color-scheme: dark;
+  background: var(--oc-hero-media-bg, oklch(22% 0.02 260deg));
+  /* Secondary text (the lead) sits on a photo, not on a dark surface: the dark-mode muted tone (a soft lavender) drops
+     under AA on a warm, mid-dark picture. A near-white grey keeps it at AA or better over the scrim. */
+  --oc-muted-foreground: var(--oc-hero-media-muted, oklch(90% 0.01 260deg));
+  color: var(--oc-foreground);
+}
+.oc-hero-media__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: var(--oc-hero-media-position, center);
+  border: 0;
+}
+.oc-hero-media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.oc-hero-media--scrim::before { background: var(--oc-hero-media-scrim-full, color-mix(in oklab, var(--oc-hero-media-scrim-color, oklch(14% 0.01 260deg)) calc(var(--oc-scrim-strength, 0.82) * 78%), transparent)); }
+.oc-hero-media--scrim-start::before {
+  background: linear-gradient(to right, var(--oc-hero-media-scrim) 0%, var(--oc-hero-media-scrim) calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) * 0.85), var(--oc-hero-media-scrim-soft) calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) + 4rem), transparent calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) + var(--oc-scrim-size, 14rem)));
+}
+.oc-hero-media--scrim-end::before {
+  background: linear-gradient(to left, var(--oc-hero-media-scrim) 0%, var(--oc-hero-media-scrim) calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) * 0.85), var(--oc-hero-media-scrim-soft) calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) + 4rem), transparent calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) + var(--oc-scrim-size, 14rem)));
+}
+.oc-hero-media--scrim-start:dir(rtl)::before {
+  background: linear-gradient(to left, var(--oc-hero-media-scrim) 0%, var(--oc-hero-media-scrim) calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) * 0.85), var(--oc-hero-media-scrim-soft) calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) + 4rem), transparent calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) + var(--oc-scrim-size, 14rem)));
+}
+.oc-hero-media--scrim-end:dir(rtl)::before {
+  background: linear-gradient(to right, var(--oc-hero-media-scrim) 0%, var(--oc-hero-media-scrim) calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) * 0.85), var(--oc-hero-media-scrim-soft) calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) + 4rem), transparent calc(var(--_oc-hero-media-x) + var(--_oc-hero-media-w) + var(--oc-scrim-size, 14rem)));
+}
+.oc-hero-media__content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  inline-size: min(100% - 2 * var(--oc-container-gutter, 1.25rem), var(--oc-container, 1200px));
+  margin-inline: auto;
+  padding-block: var(--oc-hero-media-pad, clamp(4rem, 10vw, 7rem));
+}
+.oc-hero-media__content > * { max-inline-size: var(--oc-hero-media-measure, 40rem); }
+.oc-hero-media--center .oc-hero-media__content { justify-items: center; text-align: center; }
+.oc-hero-media--center .oc-actions { justify-content: center; }
+.oc-hero-media--end .oc-hero-media__content { justify-items: end; }
+
+/* Phone: the text spans the width, so the whole picture gets the scrim. */
+@media (max-width: 48rem) {
+  .oc-hero-media:is(.oc-hero-media--scrim-start, .oc-hero-media--scrim-end)::before {
+    background: var(--oc-hero-media-scrim-full, color-mix(in oklab, var(--oc-hero-media-scrim-color, oklch(14% 0.01 260deg)) calc(var(--oc-scrim-strength, 0.82) * 78%), transparent));
+  }
+  .oc-hero-media--end .oc-hero-media__content { justify-items: start; }
+}
+

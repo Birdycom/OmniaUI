@@ -1,5 +1,5 @@
 /* File: packages/blocks/src/parts/site-contact-grid.css
-   Map: section -> head -> card grid -> card (mark, title, lines) -> plain variant
+   Map: section -> head -> card grid -> card (icon + title on one line, lines) -> plain variant
    Contact grid block: contact info cards (e-mail, phone, address, hours). */
 
 .oc-block-contact {
@@ -20,6 +20,7 @@
 .oc-block-contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  grid-auto-rows: 1fr; /* every card as tall as the tallest, also on the next row */
   gap: 1.25rem;
 }
 /* Exactly three items: narrower minimum, so they share one row instead of two plus a lone one. */
@@ -35,7 +36,25 @@
   background: var(--oc-surface);
   font-style: normal; /* the address card is an <address> */
 }
-.oc-block-contact-card > .oc-product-mark { margin-block-end: 0.75rem; }
+/* The icon stands in front of the title, on the same line: a plain glyph in the accent color, no tile.
+   The card markup keeps the soft product mark (.oc-product-mark), so React, Vue and Blade need no change. */
+.oc-block-contact-card:has(> .oc-product-mark) { grid-template-columns: auto minmax(0, 1fr); column-gap: 0.6rem; }
+.oc-block-contact-card:has(> .oc-product-mark) > :not(.oc-product-mark, .oc-block-contact-title) { grid-column: 1 / -1; }
+.oc-block-contact-card > .oc-product-mark {
+  --oc-mark-size: 1.35rem;
+  align-self: center;
+  margin: 0 0 0.25rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+  color: light-dark(oklch(from var(--oc-accent-from) min(l, 0.52) c h), oklch(from var(--oc-accent-from) max(l, 0.72) c h));
+  font-size: 1.15rem;
+}
+.oc-block-contact-card > .oc-product-mark > :is(img, svg) { inline-size: 100%; block-size: 100%; }
+.oc-block-contact-card > .oc-product-mark::before,
+.oc-block-contact-card > .oc-product-mark::after { content: none; }
 .oc-block-contact-title { margin: 0 0 0.25rem; font-size: 1.05rem; font-weight: 700; }
 
 /* A line of info. As a link it turns to the foreground color on hover. */

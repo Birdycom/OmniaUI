@@ -1,9 +1,10 @@
 {{-- OmniaUI form section. Props: title, hint, icon (webicon name), name (one open at a time), open, invalid ('error' |
-     'warning': your own check found something), issues (count in the header), issues-label.
+     'warning': your own check found something), issues (count in the header), issues-label, dense (tighter header and body).
+     module (0.17.0: data-module, blue|green|purple|gold|cyan|pink|red|orange|teal|slate or your own name).
      Slots: status (right side), default (the fields). --}}
-@props(['title' => '', 'hint' => null, 'icon' => null, 'name' => null, 'open' => false, 'status' => null, 'invalid' => null, 'issues' => null, 'issuesLabel' => null])
+@props(['title' => '', 'hint' => null, 'icon' => null, 'name' => null, 'open' => false, 'status' => null, 'invalid' => null, 'issues' => null, 'issuesLabel' => null, 'dense' => false, 'module' => null])
 @php($countLabel = $issuesLabel ?? ($issues.' '.($invalid === 'warning' ? 'warning' : 'error').((int) $issues === 1 ? '' : 's')))
-<details {{ $attributes->class(['oc-form-section'])->merge(array_filter(['data-issue' => $invalid])) }} @if($name) name="{{ $name }}" @endif @if($open) open @endif>
+<details {{ $attributes->class(['oc-form-section', 'oc-form-section--dense' => $dense])->merge(array_filter(['data-issue' => $invalid, 'data-module' => $module])) }} @if($name) name="{{ $name }}" @endif @if($open) open @endif>
     <summary class="oc-form-section__summary">
         <span class="oc-form-section__icon">@if ($icon)<x-oc::webicon :name="$icon" bare fallback="iconify" />@endif</span>
         <span class="oc-form-section__heading">

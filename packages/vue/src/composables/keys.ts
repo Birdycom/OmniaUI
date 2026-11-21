@@ -5,6 +5,8 @@ export interface RadioGroupContext {
   model: Ref<string | number | undefined>
   name: Ref<string>
   card: Ref<boolean>
+  /** Id of the group's error message (0.17.0): every radio gets aria-invalid + aria-describedby. */
+  errorId?: Ref<string | undefined>
 }
 export const radioGroupKey: InjectionKey<RadioGroupContext> = Symbol('oc-radio-group')
 

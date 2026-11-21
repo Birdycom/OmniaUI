@@ -1,28 +1,78 @@
-import { forwardRef } from "react";
-import type { HTMLAttributes, ReactNode } from "react";
+"use client";
+
+import { forwardRef, useId } from "react";
+import type { CSSProperties, FocusEvent, HTMLAttributes, MouseEvent, ReactNode } from "react";
 import { cx } from "../utils";
+import { useControllable } from "../hooks";
 
 export interface TooltipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "content"> {
-  /** Tooltip text (`data-tooltip`); with `heading`, the lines under the title. */
-  content: string;
+  /** Tooltip text (`data-tooltip`); with `heading`, the lines under the title. A node (0.17.0) renders rich content:
+   *  `.oc-tooltip__content[role=tooltip]`, linked with `aria-describedby`. */
+  content: ReactNode;
   /** Keep the line breaks of `content` (`oc-tooltip--multiline`). */
   multiline?: boolean;
   /** Title above `content` (`.oc-tooltip__title`: larger, capital first letter); renders `.oc-tooltip__content`. */
   heading?: string;
   /** Preferred side (default top); with anchor positioning it moves to the other side when there is no room. */
   side?: "top" | "bottom" | "left" | "right";
+  /** Controlled visibility (0.17.0): `true` shows it (`.is-open`), `false` keeps it hidden, also on hover (`.is-closed`). */
+  open?: boolean;
+  /** Visible on the first render (uncontrolled). */
+  defaultOpen?: boolean;
+  /** Called when hover or keyboard focus shows or hides the tooltip. */
+  onOpenChange?: (open: boolean) => void;
+  /** Delay before showing, in ms (`--oc-tooltip-delay`; overrides the TooltipProvider). */
+  delayDuration?: number;
   children: ReactNode;
 }
 
+export interface TooltipProviderProps {
+  /** Delay before the tooltips inside show, in ms (CSS `--oc-tooltip-delay`). Default 0. */
+  delayDuration?: number;
+  /** Accepted for API compatibility; CSS tooltips have no shared skip timer. */
+  skipDelayDuration?: number;
+  children?: ReactNode;
+}
+
+/** Shared settings for the tooltips inside it: a `display: contents` wrapper (`.oc-tooltip-provider`) that sets `--oc-tooltip-delay`. */
+export function TooltipProvider({ delayDuration, children }: TooltipProviderProps) {
+  const style = delayDuration != null ? ({ "--oc-tooltip-delay": `${delayDuration}ms` } as CSSProperties) : undefined;
+  return <span className="oc-tooltip-provider" style={style}>{children}</span>;
+}
+
 /** `<span class="oc-tooltip" data-tooltip>`: CSS-only tooltip around its children. */
-export const Tooltip = forwardRef<HTMLSpanElement, TooltipProps>(function Tooltip({ content, multiline, heading, side, className, children, ...rest }, ref) {
-  const classes = cx("oc-tooltip", multiline && !heading && "oc-tooltip--multiline", side && side !== "top" && `oc-tooltip--${side}`, className);
-  if (!heading) return <span ref={ref} className={classes} data-tooltip={content} {...rest}>{children}</span>;
+export const Tooltip = forwardRef<HTMLSpanElement, TooltipProps>(function Tooltip(
+  { content, multiline, heading, side, open, defaultOpen, onOpenChange, delayDuration, className, style, children, onMouseEnter, onMouseLeave, onFocus, onBlur, ...rest },
+  ref,
+) {
+  const contentId = `oc-tooltip-${useId().replace(/:/g, "")}`;
+  const tracked = open !== undefined || defaultOpen !== undefined || onOpenChange != null;
+  const [shown, setShown] = useControllable<boolean>(open, defaultOpen ?? false, onOpenChange);
+  const plain = typeof content === "string" || typeof content === "number";
+  const classes = cx(
+    "oc-tooltip",
+    multiline && !heading && "oc-tooltip--multiline",
+    side && side !== "top" && `oc-tooltip--${side}`,
+    tracked && (shown ? "is-open" : open === false ? "is-closed" : null),
+    className,
+  );
+  const ownStyle = delayDuration != null ? ({ "--oc-tooltip-delay": `${delayDuration}ms`, ...style } as CSSProperties) : style;
+  const handlers = tracked
+    ? {
+        onMouseEnter: (e: MouseEvent<HTMLSpanElement>) => { onMouseEnter?.(e); if (!shown) setShown(true); },
+        onMouseLeave: (e: MouseEvent<HTMLSpanElement>) => { onMouseLeave?.(e); if (shown) setShown(false); },
+        onFocus: (e: FocusEvent<HTMLSpanElement>) => { onFocus?.(e); if (!shown) setShown(true); },
+        onBlur: (e: FocusEvent<HTMLSpanElement>) => { onBlur?.(e); if (shown) setShown(false); },
+      }
+    : { onMouseEnter, onMouseLeave, onFocus, onBlur };
+  if (!heading && plain) {
+    return <span ref={ref} className={classes} style={ownStyle} data-tooltip={String(content)} {...handlers} {...rest}>{children}</span>;
+  }
   return (
-    <span ref={ref} className={classes} {...rest}>
+    <span ref={ref} className={classes} style={ownStyle} aria-describedby={plain ? undefined : contentId} {...handlers} {...rest}>
       {children}
-      <span className="oc-tooltip__content" role="tooltip">
-        <span className="oc-tooltip__title">{heading}</span>
+      <span className="oc-tooltip__content" role="tooltip" id={contentId}>
+        {heading && <span className="oc-tooltip__title">{heading}</span>}
         {content}
       </span>
     </span>

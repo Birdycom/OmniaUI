@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Recovery codes", "category": "Forms", "description": "A warning panel with a grid of two-factor recovery codes, shown once after setup, with copy and download actions handled by the framework wrapper.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Recovery codes", "category": "Forms", "description": "A warning panel with a grid of two-factor recovery codes, shown once after setup, with copy, download and print actions and a Copied message.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Recovery codes</h1>
         <p class="oc-hero-text">Shown once after enabling two-factor authentication. Copy/download are wrapper actions. <a href="../components.html">All components</a>.</p>
@@ -66,6 +66,163 @@ class RecoveryCodesPanel extends Component
     &lt;x-oc::button variant="ghost" size="sm" wire:click="regenerate" wire:confirm="The old codes stop working. Continue?"&gt;New codes&lt;/x-oc::button&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="icons-feedback">Icons, copied feedback and print <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">The warning starts with an alert icon and the buttons carry icons (copy, download, print), all Omnia webicons. After <em>Copy all</em> the button says <code>copiedLabel</code> ("Copied") for two seconds and a hidden live region announces it. <code>print</code> adds a Print button that prints only the codes (a hidden frame, not the whole page). <code>icons={false}</code> leaves the icons out.</p>
+          <oc-demo title="Recovery codes - icons, feedback and print">
+<div class="oc-recovery-codes" id="oc-recovery-icons">
+  <h3 class="oc-recovery-codes-title">Recovery codes</h3>
+  <p class="oc-recovery-codes-warning"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2"/></svg><span>Store these codes somewhere safe. Each code works once.</span></p>
+  <ul class="oc-recovery-codes-list">
+    <li>4F8K-92QA</li><li>M3ZP-71LD</li>
+    <li>7TQX-0BNE</li><li>C8WV-5YHR</li>
+    <li>2JDA-KE63</li><li>R9UG-X4MS</li>
+  </ul>
+  <div class="oc-recovery-codes-actions">
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="copy" data-copied-label="Copied"><svg class="oc-recovery-codes-icon-copy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg><svg class="oc-recovery-codes-icon-copied" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg><span class="oc-recovery-codes-label">Copy all</span></button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="download"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg><span>Download .txt</span></button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="print"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18 3H6v4h12m1 5a1 1 0 0 1-1-1a1 1 0 0 1 1-1a1 1 0 0 1 1 1a1 1 0 0 1-1 1m-3 7H8v-5h8m3-6H5a3 3 0 0 0-3 3v6h4v4h12v-4h4v-6a3 3 0 0 0-3-3"/></svg><span>Print</span></button>
+  </div>
+  <span class="oc-recovery-codes-status oc-visually-hidden" role="status" aria-live="polite"></span>
+</div>
+<script>
+  document.getElementById('oc-recovery-icons').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-oc-recovery]');
+    if (!btn) return;
+    const panel = btn.closest('.oc-recovery-codes');
+    const codes = Array.from(panel.querySelectorAll('.oc-recovery-codes-list li')).map((li) => li.textContent.trim());
+    const text = codes.join('\n');
+    const action = btn.dataset.ocRecovery;
+    if (action === 'copy') {
+      try { await navigator.clipboard.writeText(text); } catch { return; }
+      // data-copied-label: feedback on the button and in the live region (.oc-recovery-codes-status)
+      const label = btn.querySelector('.oc-recovery-codes-label');
+      const status = panel.querySelector('.oc-recovery-codes-status');
+      const done = btn.dataset.copiedLabel || 'Copied';
+      if (label) { label.dataset.label ??= label.textContent; label.textContent = done; }
+      if (status) status.textContent = done;
+      btn.classList.add('is-copied');
+      clearTimeout(btn.ocCopyTimer);
+      btn.ocCopyTimer = setTimeout(() => {
+        btn.classList.remove('is-copied');
+        if (label) label.textContent = label.dataset.label;
+        if (status) status.textContent = '';
+      }, 2000);
+      return;
+    }
+    if (action === 'print') {
+      // only the codes on paper: a hidden iframe with the title and the list
+      const esc = (t) => t.replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`);
+      const title = esc(panel.querySelector('.oc-recovery-codes-title')?.textContent.trim() || 'Recovery codes');
+      const frame = document.createElement('iframe');
+      frame.setAttribute('aria-hidden', 'true');
+      frame.style.cssText = 'position:fixed;inline-size:0;block-size:0;border:0;inset:auto auto 0 0';
+      frame.srcdoc = `<!doctype html><meta charset="utf-8"><title>${title}</title><style>body{font:14px ui-monospace,Consolas,monospace;margin:2cm}h1{font:600 16px system-ui,sans-serif}ul{list-style:none;padding:0;columns:2}</style><${'h1'}>${title}</${'h1'}><ul>${codes.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>`;
+      frame.addEventListener('load', () => { frame.contentWindow.print(); setTimeout(() => frame.remove(), 1000); });
+      document.body.append(frame);
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text + '\n'], { type: 'text/plain' }));
+    a.download = btn.dataset.filename || 'recovery-codes.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+</script>
+<oc-code lang="html">&lt;div class="oc-recovery-codes"&gt;
+  &lt;h3 class="oc-recovery-codes-title"&gt;Recovery codes&lt;/h3&gt;
+  &lt;p class="oc-recovery-codes-warning"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"&gt;&lt;path d="M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2"/&gt;&lt;/svg&gt;&lt;span&gt;Store these codes somewhere safe. Each code works once.&lt;/span&gt;&lt;/p&gt;
+  &lt;ul class="oc-recovery-codes-list"&gt;
+    &lt;li&gt;4F8K-92QA&lt;/li&gt;&lt;li&gt;M3ZP-71LD&lt;/li&gt;
+    &lt;li&gt;7TQX-0BNE&lt;/li&gt;&lt;li&gt;C8WV-5YHR&lt;/li&gt;
+    &lt;li&gt;2JDA-KE63&lt;/li&gt;&lt;li&gt;R9UG-X4MS&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="oc-recovery-codes-actions"&gt;
+    &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="copy" data-copied-label="Copied"&gt;&lt;svg class="oc-recovery-codes-icon-copy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"&gt;&lt;path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/&gt;&lt;/svg&gt;&lt;svg class="oc-recovery-codes-icon-copied" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"&gt;&lt;path d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/&gt;&lt;/svg&gt;&lt;span class="oc-recovery-codes-label"&gt;Copy all&lt;/span&gt;&lt;/button&gt;
+    &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="download"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"&gt;&lt;path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/&gt;&lt;/svg&gt;&lt;span&gt;Download .txt&lt;/span&gt;&lt;/button&gt;
+    &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="print"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"&gt;&lt;path d="M18 3H6v4h12m1 5a1 1 0 0 1-1-1a1 1 0 0 1 1-1a1 1 0 0 1 1 1a1 1 0 0 1-1 1m-3 7H8v-5h8m3-6H5a3 3 0 0 0-3 3v6h4v4h12v-4h4v-6a3 3 0 0 0-3-3"/&gt;&lt;/svg&gt;&lt;span&gt;Print&lt;/span&gt;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;span class="oc-recovery-codes-status oc-visually-hidden" role="status" aria-live="polite"&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- once per page: copy (with feedback), download and print --&gt;
+&lt;script&gt;
+  document.addEventListener('click', async (e) =&gt; {
+    const btn = e.target.closest('[data-oc-recovery]');
+    if (!btn) return;
+    const panel = btn.closest('.oc-recovery-codes');
+    const codes = Array.from(panel.querySelectorAll('.oc-recovery-codes-list li')).map((li) =&gt; li.textContent.trim());
+    const text = codes.join('\n');
+    const action = btn.dataset.ocRecovery;
+    if (action === 'copy') {
+      try { await navigator.clipboard.writeText(text); } catch { return; }
+      // data-copied-label: feedback on the button and in the live region (.oc-recovery-codes-status)
+      const label = btn.querySelector('.oc-recovery-codes-label');
+      const status = panel.querySelector('.oc-recovery-codes-status');
+      const done = btn.dataset.copiedLabel || 'Copied';
+      if (label) { label.dataset.label ??= label.textContent; label.textContent = done; }
+      if (status) status.textContent = done;
+      btn.classList.add('is-copied');
+      clearTimeout(btn.ocCopyTimer);
+      btn.ocCopyTimer = setTimeout(() =&gt; {
+        btn.classList.remove('is-copied');
+        if (label) label.textContent = label.dataset.label;
+        if (status) status.textContent = '';
+      }, 2000);
+      return;
+    }
+    if (action === 'print') {
+      // only the codes on paper: a hidden iframe with the title and the list
+      const esc = (t) =&gt; t.replace(/[&amp;&lt;&gt;"']/g, (ch) =&gt; `&amp;#${ch.charCodeAt(0)};`);
+      const title = esc(panel.querySelector('.oc-recovery-codes-title')?.textContent.trim() || 'Recovery codes');
+      const frame = document.createElement('iframe');
+      frame.setAttribute('aria-hidden', 'true');
+      frame.style.cssText = 'position:fixed;inline-size:0;block-size:0;border:0;inset:auto auto 0 0';
+      frame.srcdoc = `&lt;!doctype html&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;${title}&lt;/title&gt;&lt;style&gt;body{font:14px ui-monospace,Consolas,monospace;margin:2cm}h1{font:600 16px system-ui,sans-serif}ul{list-style:none;padding:0;columns:2}&lt;/style&gt;&lt;h1&gt;${title}&lt;/h1&gt;&lt;ul&gt;${codes.map((c) =&gt; `&lt;li&gt;${esc(c)}&lt;/li&gt;`).join('')}&lt;/ul&gt;`;
+      frame.addEventListener('load', () =&gt; { frame.contentWindow.print(); setTimeout(() =&gt; frame.remove(), 1000); });
+      document.body.append(frame);
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text + '\n'], { type: 'text/plain' }));
+    a.download = btn.dataset.filename || 'recovery-codes.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">&lt;RecoveryCodes
+  codes={["4F8K-92QA", "M3ZP-71LD", "7TQX-0BNE", "C8WV-5YHR", "2JDA-KE63", "R9UG-X4MS"]}
+  copiedLabel="Copied"
+  print
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcRecoveryCodes
+  :codes="['4F8K-92QA', 'M3ZP-71LD', '7TQX-0BNE', 'C8WV-5YHR', '2JDA-KE63', 'R9UG-X4MS']"
+  copied-label="Copied"
+  print
+/&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::recovery-codes :codes="$codes" copied-label="Copied" print /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class RecoveryCodesPrint extends Component
+{
+    /** @var list&lt;string&gt; */
+    public array $codes = ['4F8K-92QA', 'M3ZP-71LD', '7TQX-0BNE', 'C8WV-5YHR', '2JDA-KE63', 'R9UG-X4MS'];
+
+    public function render()
+    {
+        return view('livewire.recovery-codes-print');
+    }
+}
+
+{{-- resources/views/livewire/recovery-codes-print.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::recovery-codes :codes="$codes" copied-label="Copied" print /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -81,7 +238,11 @@ class RecoveryCodesPanel extends Component
               <tr><td><code>.oc-recovery-codes</code></td><td>Panel (warning tint)</td></tr>
               <tr><td><code>.oc-recovery-codes-title / -warning</code></td><td>Heading and explanation</td></tr>
               <tr><td><code>.oc-recovery-codes-list</code></td><td>Two-column monospace grid (selectable with one click)</td></tr>
-              <tr><td><code>.oc-recovery-codes-actions</code></td><td>Button row</td></tr>
+              <tr><td><code>.oc-recovery-codes-actions</code></td><td>Button row. <code>data-oc-recovery="copy|download|print"</code> wires a button to the optional script.</td></tr>
+              <tr><td><code>.oc-recovery-codes-warning</code> icon</td><td>An <code>svg</code> before the text (mdi:alert-outline) takes the warning color (0.17.0).</td></tr>
+              <tr><td><code>data-copied-label</code> + <code>.oc-recovery-codes-label</code></td><td>The copy button shows the copied label (default "Copied") for 2s; <code>.oc-recovery-codes-icon-copy</code> / <code>-copied</code> swap on <code>.is-copied</code> (0.17.0). Prop <code>copiedLabel</code>.</td></tr>
+              <tr><td><code>.oc-recovery-codes-status</code></td><td>Visually hidden <code>role="status"</code> live region that announces the copied label (0.17.0).</td></tr>
+              <tr><td><code>print</code>, <code>printLabel</code>, <code>icons</code> (props)</td><td>A Print button that prints only the codes; icons on the buttons and the warning (default on) (0.17.0). React also exports <code>printRecoveryCodes(codes, title)</code>.</td></tr>
             </tbody>
           </table>
         </div>

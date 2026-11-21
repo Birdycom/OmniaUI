@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Launcher card", "category": "Layout", "description": "Large clickable card with icon, title and description (module hub, settings sections).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Launcher card", "category": "Layout", "description": "Large clickable card with icon, title and description for a module hub or settings sections, with active and disabled states via aria attributes.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Launcher card</h1>
         <p class="oc-hero-text">Use an <code>&lt;a&gt;</code> for navigation or a <code>&lt;button&gt;</code> for in-page switching. The active section uses <code>aria-current="true"</code>, a module you cannot open <code>aria-disabled="true"</code>. <a href="../components.html">All components</a>.</p>
@@ -150,6 +150,204 @@ class AppLaunchers extends Component
     &lt;/x-oc::launcher-card&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="disabled-footer">A footer only while disabled <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">The same card can be open for one user and closed for another. <code>disabledFooter</code> is the footer that shows only while the card is disabled (why it is off), in place of the normal <code>footer</code>, so one card in your code covers both states. Left: open, right: disabled. Blade: <code>disabled-footer</code> or the slot <code>disabledFooter</code>; Vue also the slot <code>disabled-footer</code>.</p>
+          <oc-demo title="Launcher card - disabled footer">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1rem;align-items:stretch;inline-size:100%">
+  <a class="oc-launcher" href="#disabled-footer">
+    <span class="oc-launcher-icon" aria-hidden="true"><svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/></svg></span>
+    <h3 class="oc-launcher-title">Reports</h3>
+    <p class="oc-launcher-description">Sales and hours per month.</p>
+    <span class="oc-launcher-footer">Updated every night</span>
+  </a>
+  <span class="oc-launcher" aria-disabled="true">
+    <span class="oc-launcher-icon" aria-hidden="true"><svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/></svg></span>
+    <h3 class="oc-launcher-title">Reports</h3>
+    <p class="oc-launcher-description">Sales and hours per month.</p>
+    <span class="oc-launcher-footer">Ask your administrator for access.</span>
+  </span>
+</div>
+<oc-code lang="html">&lt;!-- open --&gt;
+&lt;a class="oc-launcher" href="/reports"&gt;
+  &lt;span class="oc-launcher-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;/span&gt;
+  &lt;h3 class="oc-launcher-title"&gt;Reports&lt;/h3&gt;
+  &lt;p class="oc-launcher-description"&gt;Sales and hours per month.&lt;/p&gt;
+  &lt;span class="oc-launcher-footer"&gt;Updated every night&lt;/span&gt;
+&lt;/a&gt;
+
+&lt;!-- disabled: the footer says why --&gt;
+&lt;span class="oc-launcher" aria-disabled="true"&gt;
+  &lt;span class="oc-launcher-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;/span&gt;
+  &lt;h3 class="oc-launcher-title"&gt;Reports&lt;/h3&gt;
+  &lt;p class="oc-launcher-description"&gt;Sales and hours per month.&lt;/p&gt;
+  &lt;span class="oc-launcher-footer"&gt;Ask your administrator for access.&lt;/span&gt;
+&lt;/span&gt;</oc-code>
+<oc-code lang="tsx">import { LauncherCard, Webicon } from "@birdycom/omniaui-react";
+
+export function Example({ canSeeReports }: { canSeeReports: boolean }) {
+  return (
+    &lt;LauncherCard
+      href="/reports"
+      icon={&lt;Webicon name="mdi:folder-outline" /&gt;}
+      title="Reports"
+      description="Sales and hours per month."
+      footer="Updated every night"
+      disabled={!canSeeReports}
+      disabledFooter="Ask your administrator for access."
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcLauncherCard, OcWebicon } from "@birdycom/omniaui-vue";
+
+defineProps&lt;{ canSeeReports: boolean }&gt;();
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcLauncherCard
+    href="/reports"
+    title="Reports"
+    description="Sales and hours per month."
+    footer="Updated every night"
+    :disabled="!canSeeReports"
+    disabled-footer="Ask your administrator for access."
+  &gt;
+    &lt;template #icon&gt;&lt;OcWebicon name="mdi:folder-outline" /&gt;&lt;/template&gt;
+  &lt;/OcLauncherCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::launcher-card href="/reports" title="Reports" description="Sales and hours per month." :disabled="! auth()-&gt;user()?-&gt;can('view-reports')"
+    disabled-footer="Ask your administrator for access."&gt;
+    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" /&gt;&lt;/x-slot:icon&gt;
+    &lt;x-slot:footer&gt;Updated every night&lt;/x-slot:footer&gt;
+&lt;/x-oc::launcher-card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ReportsLauncher extends Component
+{
+    public bool $canSeeReports = false;
+
+    public function render()
+    {
+        return view('livewire.reports-launcher');
+    }
+}
+
+{{-- resources/views/livewire/reports-launcher.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::launcher-card href="/reports" title="Reports" description="Sales and hours per month." :disabled="! $canSeeReports"
+        disabled-footer="Ask your administrator for access."&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" /&gt;&lt;/x-slot:icon&gt;
+        &lt;x-slot:footer&gt;Updated every night&lt;/x-slot:footer&gt;
+    &lt;/x-oc::launcher-card&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="module">Module colour <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">On a hub every card can carry the colour of its module: <code>module</code> (<code>data-module</code>) tints the icon tile, and the hover and current border (<code>aria-current</code>, middle card) take the <a href="module-color.html">module colour</a>. Cards inside a <code>data-module</code> wrapper follow without the prop.</p>
+          <oc-demo title="Launcher card - module colour">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1rem;align-items:stretch;inline-size:100%">
+  <a class="oc-launcher" href="#module" data-module="blue">
+    <span class="oc-launcher-icon" aria-hidden="true"><svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/></svg></span>
+    <h3 class="oc-launcher-title">Sales</h3>
+    <p class="oc-launcher-description">Quotes, orders and invoices.</p>
+  </a>
+  <a class="oc-launcher" href="#module" data-module="green" aria-current="true">
+    <span class="oc-launcher-icon" aria-hidden="true"><svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/></svg></span>
+    <h3 class="oc-launcher-title">Stock</h3>
+    <p class="oc-launcher-description">Products, locations and counts.</p>
+  </a>
+  <a class="oc-launcher" href="#module" data-module="purple">
+    <span class="oc-launcher-icon" aria-hidden="true"><svg data-icon="mdi:account-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2m0 7c2.67 0 8 1.33 8 4v3H4v-3c0-2.67 5.33-4 8-4m0 1.9c-2.97 0-6.1 1.46-6.1 2.1v1.1h12.2V17c0-.64-3.13-2.1-6.1-2.1"/></svg></span>
+    <h3 class="oc-launcher-title">Contacts</h3>
+    <p class="oc-launcher-description">Customers and suppliers.</p>
+  </a>
+</div>
+<oc-code lang="html">&lt;a class="oc-launcher" href="/sales" data-module="blue"&gt;
+  &lt;span class="oc-launcher-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/&gt;&lt;/svg&gt;&lt;/span&gt;
+  &lt;h3 class="oc-launcher-title"&gt;Sales&lt;/h3&gt;
+  &lt;p class="oc-launcher-description"&gt;Quotes, orders and invoices.&lt;/p&gt;
+&lt;/a&gt;
+&lt;a class="oc-launcher" href="/stock" data-module="green" aria-current="true"&gt;
+  &lt;span class="oc-launcher-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;/span&gt;
+  &lt;h3 class="oc-launcher-title"&gt;Stock&lt;/h3&gt;
+  &lt;p class="oc-launcher-description"&gt;Products, locations and counts.&lt;/p&gt;
+&lt;/a&gt;</oc-code>
+<oc-code lang="tsx">import { LauncherCard, Webicon } from "@birdycom/omniaui-react";
+
+const modules = [
+  { href: "/sales", module: "blue", icon: "mdi:file-document-outline", title: "Sales", description: "Quotes, orders and invoices." },
+  { href: "/stock", module: "green", icon: "mdi:folder-outline", title: "Stock", description: "Products, locations and counts." },
+  { href: "/contacts", module: "purple", icon: "mdi:account-outline", title: "Contacts", description: "Customers and suppliers." },
+];
+
+export function Example({ current }: { current: string }) {
+  return (
+    &lt;div className="grid gap-4"&gt;
+      {modules.map((m) =&gt; (
+        &lt;LauncherCard key={m.href} href={m.href} module={m.module} active={m.href === current}
+          icon={&lt;Webicon name={m.icon} /&gt;} title={m.title} description={m.description} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcLauncherCard, OcWebicon } from "@birdycom/omniaui-vue";
+
+defineProps&lt;{ current: string }&gt;();
+const modules = [
+  { href: "/sales", module: "blue", icon: "mdi:file-document-outline", title: "Sales", description: "Quotes, orders and invoices." },
+  { href: "/stock", module: "green", icon: "mdi:folder-outline", title: "Stock", description: "Products, locations and counts." },
+  { href: "/contacts", module: "purple", icon: "mdi:account-outline", title: "Contacts", description: "Customers and suppliers." },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="grid gap-4"&gt;
+    &lt;OcLauncherCard v-for="m in modules" :key="m.href" :href="m.href" :module="m.module" :current="m.href === current"
+      :title="m.title" :description="m.description"&gt;
+      &lt;template #icon&gt;&lt;OcWebicon :name="m.icon" /&gt;&lt;/template&gt;
+    &lt;/OcLauncherCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::launcher-card href="/sales" module="blue" title="Sales" description="Quotes, orders and invoices."&gt;
+    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:file-document-outline" /&gt;&lt;/x-slot:icon&gt;
+&lt;/x-oc::launcher-card&gt;
+&lt;x-oc::launcher-card href="/stock" module="green" :active="request()-&gt;is('stock*')" title="Stock" description="Products, locations and counts."&gt;
+    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" /&gt;&lt;/x-slot:icon&gt;
+&lt;/x-oc::launcher-card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ModuleHub extends Component
+{
+    public array $modules = [
+        ['href' =&gt; '/sales', 'module' =&gt; 'blue', 'icon' =&gt; 'mdi:file-document-outline', 'title' =&gt; 'Sales', 'description' =&gt; 'Quotes, orders and invoices.'],
+        ['href' =&gt; '/stock', 'module' =&gt; 'green', 'icon' =&gt; 'mdi:folder-outline', 'title' =&gt; 'Stock', 'description' =&gt; 'Products, locations and counts.'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.module-hub');
+    }
+}
+
+{{-- resources/views/livewire/module-hub.blade.php --}}
+&lt;div&gt;
+    @foreach ($modules as $m)
+        &lt;x-oc::launcher-card :href="$m['href']" :module="$m['module']" :title="$m['title']" :description="$m['description']"&gt;
+            &lt;x-slot:icon&gt;&lt;x-oc::webicon :name="$m['icon']" /&gt;&lt;/x-slot:icon&gt;
+        &lt;/x-oc::launcher-card&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -167,6 +365,7 @@ class AppLaunchers extends Component
               <tr><td><code>.oc-launcher-title</code></td><td>Title (may contain a badge)</td></tr>
               <tr><td><code>.oc-launcher-description</code></td><td>Muted description</td></tr>
               <tr><td><code>.oc-launcher-footer</code></td><td>Optional footer text (e.g. why it is disabled)</td></tr>
+              <tr><td><code>disabledFooter</code> (Blade <code>disabled-footer</code>)</td><td>Footer shown only while the card is disabled, in place of <code>footer</code>: why it is off. Vue and Blade also as a slot.</td></tr>
             </tbody>
           </table>
         </div>

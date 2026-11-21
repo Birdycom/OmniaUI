@@ -27,7 +27,7 @@ test("combobox icons: icon column, same start without icon, icon of the choice i
   const css = parts[0][1];
   assert.match(css, /\.oc-combobox-list:has\(\.oc-combobox-option-icon\) > \.oc-combobox-option:not\(:has\(> \.oc-combobox-option-icon\)\)/);
   assert.match(css, /padding-inline-start: calc\(0\.625rem \+ var\(--oc-combobox-icon\) \+ 0\.5rem\)/);
-  assert.match(css, /\.oc-combobox:has\(> \.oc-combobox-icon\) > \.oc-combobox-input \{\s*padding-inline-start: calc\(4px \+ 0\.625rem \+ var\(--oc-combobox-icon\) \+ 0\.5rem\)/);
+  assert.match(css, /\.oc-combobox:has\(> \.oc-combobox-icon:not\(:empty\)\) > \.oc-combobox-input \{\s*padding-inline-start: calc\(4px \+ 0\.625rem \+ var\(--oc-combobox-icon\) \+ 0\.5rem\)/);
   assert.match(css, /\.oc-dropdown-menu:has\(> \.oc-dropdown-item > \.oc-dropdown-icon\)/);
   assert.match(css, /@media \(forced-colors: active\)/);
 });

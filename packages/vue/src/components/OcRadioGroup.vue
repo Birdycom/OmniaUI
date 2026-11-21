@@ -2,6 +2,7 @@
 /**
  * Radio group (fieldset). v-model = value of the checked radio. Pass `options` or put OcRadio items in the default slot.
  * `legend` renders a legend; `row` lays the items out horizontally; `card` makes the option items bordered cards.
+ * `error`: message below the items (.oc-field-error); every radio gets aria-invalid and aria-describedby.
  * Classes: .oc-radio-group(--row)
  */
 import { computed, provide } from 'vue'
@@ -16,10 +17,12 @@ export interface RadioOption {
   disabled?: boolean
 }
 
-const props = defineProps<{ legend?: string; options?: RadioOption[]; name?: string; row?: boolean; card?: boolean }>()
+const props = defineProps<{ legend?: string; options?: RadioOption[]; name?: string; row?: boolean; card?: boolean; error?: string }>()
 const model = defineModel<string | number>()
 const uid = useUid('oc-radio')
-provide(radioGroupKey, { model, name: computed(() => props.name ?? uid), card: computed(() => !!props.card) })
+const groupName = computed(() => props.name ?? uid)
+const errorId = computed(() => (props.error ? `${groupName.value.replace(/[^\w-]/g, '')}-error` : undefined))
+provide(radioGroupKey, { model, name: groupName, card: computed(() => !!props.card), errorId })
 </script>
 
 <template>
@@ -28,5 +31,6 @@ provide(radioGroupKey, { model, name: computed(() => props.name ?? uid), card: c
     <slot>
       <OcRadio v-for="o in options" :key="o.value" :value="o.value" :disabled="o.disabled" :description="o.description">{{ o.label }}</OcRadio>
     </slot>
+    <p v-if="error" :id="errorId" class="oc-field-error" role="alert">{{ error }}</p>
   </fieldset>
 </template>

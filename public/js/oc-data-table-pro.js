@@ -6,6 +6,9 @@
 // OmniaUI Pro on top of the free data table (@birdycom/omniaui/data-table.js): drag a column edge
 // (.oc-data-table-resize in the header) to set its width, and drag a row by its grip (.oc-sortable-row-grip).
 // Widths are remembered per table id; [data-oc-reset-widths] clears them. A drop fires oc-datatable-reorder { keys }.
+// Server mode (0.17.0, data-oc-server="true" on the root, rows rendered by the app or a wrapper): a drop does not move
+// the row in the page; it only fires oc-datatable-reorder { keys, key, server: true } with the new order of this page,
+// and the app saves it and renders the rows again.
 
 function readStore(id, name) {
   try {
@@ -108,7 +111,16 @@ export function bindDataTablePro(root) {
     const from = dragKey ? tbody.querySelector(`[data-oc-key="${CSS.escape(dragKey)}"]`) : null;
     if (!row || !from || row === from) return;
     event.preventDefault();
-    tbody.insertBefore(from, row.classList.contains("is-drop-after") ? row.nextSibling : row);
+    const after = row.classList.contains("is-drop-after");
+    if (root.dataset.ocServer === "true") {
+      // The app owns the rows: hand it the new order of this page, leave the DOM to the app.
+      const keys = rows().map((item) => item.dataset.ocKey).filter((key) => key !== dragKey);
+      keys.splice(keys.indexOf(row.dataset.ocKey) + (after ? 1 : 0), 0, dragKey);
+      row.classList.remove("is-drop-before", "is-drop-after");
+      root.dispatchEvent(new CustomEvent("oc-datatable-reorder", { bubbles: true, detail: { keys, key: dragKey, server: true } }));
+      return;
+    }
+    tbody.insertBefore(from, after ? row.nextSibling : row);
     root.dispatchEvent(new CustomEvent("oc-datatable-reorder", { bubbles: true, detail: { keys: rows().map((item) => item.dataset.ocKey) } }));
     refresh();
   });

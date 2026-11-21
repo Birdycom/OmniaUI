@@ -1,5 +1,5 @@
 <!--oc-page {"title": "OmniaUI - Tooltip", "category": "Overlays", "description": "A short hint next to an element on hover and keyboard focus, from a data-tooltip attribute, placed by CSS anchor positioning. No JavaScript.", "nav": "Tooltip", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
-<!-- File: apps/site/src/content/ui/components/tooltip.html | Map: hero -> demo (basic, icon buttons, multiline, with a title, placement, automatic placement) -> reference -> frameworks -> browser support -> source footer -->
+<!-- File: apps/site/src/content/ui/components/tooltip.html | Map: hero -> demo (basic, icon buttons, multiline, with a title, rich content, placement, automatic placement) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Tooltip</h1>
         <p class="oc-hero-text">A short hint that appears next to an element (above by default) on hover and on keyboard focus. The text comes from the <code>data-tooltip</code> attribute and CSS draws it; no JavaScript. Keep it short and never put essential information only in a tooltip (touch screens have no hover). For richer content, use a <a href="hover-card.html">hover card</a> or a <a href="popover.html">popover</a>. <a href="../components.html">All components</a>.</p>
@@ -106,7 +106,7 @@ class RowActions extends Component
 
           <h3 class="oc-section-content__title mt-2">Multiline</h3>
           <p class="oc-section-content__desc">Add <code>.oc-tooltip--multiline</code> and every line break in <code>data-tooltip</code> (<code>&amp;#10;</code> in HTML, <code>\n</code> in JavaScript) starts a new line.</p>
-          <oc-demo title="Tooltip - multiline">
+          <oc-demo title="Tooltip - multiline" hint="Hover or focus the button: the tooltip opens above it.">
 <div class="pt-8">
   <span class="oc-tooltip oc-tooltip--multiline" data-tooltip="Autosave is on&#10;Last saved 2 minutes ago&#10;Ctrl S saves now">
     <button class="oc-btn oc-btn--outline" type="button">Save status</button>
@@ -164,7 +164,7 @@ class SaveStatus extends Component
 
           <h3 class="oc-section-content__title mt-2">With a title</h3>
           <p class="oc-section-content__desc">For a title above the lines, put a <code>.oc-tooltip__content</code> inside the tooltip instead of <code>data-tooltip</code>, with a <code>.oc-tooltip__title</code>: a little larger, bold and always starting with a capital (<code>::first-letter</code>). A pseudo-element cannot style its own first line, so this needs a real element. The OmniaCSS <a href="https://omniacss.test/docs/colors/palettes.html">color palettes</a> use it for the color models of every swatch.</p>
-          <oc-demo title="Tooltip - with a title">
+          <oc-demo title="Tooltip - with a title" hint="Hover or focus the button: the tooltip opens above it.">
 <div class="pt-8">
   <span class="oc-tooltip">
     <button class="oc-btn oc-btn--outline" type="button">Red: color values</button>
@@ -224,6 +224,77 @@ class ColorValues extends Component
 &lt;div class="pt-8"&gt;
     &lt;x-oc::tooltip :heading="$name" :text="$this-&gt;lines()"&gt;
         &lt;x-oc::button variant="outline"&gt;{{ ucfirst($name) }}: color values&lt;/x-oc::button&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="rich">Rich content, delay and open state <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Content can be markup now: pass a node as <code>content</code> in React, use the <code>#content</code> slot in Vue or <code>&lt;x-slot:content&gt;</code> in Blade. It renders a <code>.oc-tooltip__content</code> with <code>role="tooltip"</code>, linked to the wrapper with <code>aria-describedby</code>. <code>TooltipProvider</code> (<code>OcTooltipProvider</code>) sets a delay for every tooltip inside it through <code>--oc-tooltip-delay</code>; <code>delayDuration</code> on one tooltip overrides it (Blade <code>delay</code>). For a controlled tooltip pass <code>open</code> + <code>onOpenChange</code> (Vue <code>v-model:open</code>): <code>.is-open</code> shows it without hover, <code>.is-closed</code> keeps it hidden. Hover the button: the tooltip waits 400 ms.</p>
+          <oc-demo title="Tooltip - rich content" hint="Hover or focus the button: the tooltip opens above it.">
+<div class="pt-8">
+  <span class="oc-tooltip-provider" style="--oc-tooltip-delay: 400ms">
+    <span class="oc-tooltip" aria-describedby="oc-tooltip-rich">
+      <button class="oc-btn oc-btn--outline" type="button">Invoice 2026-014</button>
+      <span class="oc-tooltip__content" role="tooltip" id="oc-tooltip-rich"><span class="oc-tooltip__title">Customer 1</span>Due <strong>today</strong>, 1.250,00 EUR</span>
+    </span>
+  </span>
+</div>
+<oc-code lang="tsx">import { Button, Tooltip, TooltipProvider } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="pt-8"&gt;
+      &lt;TooltipProvider delayDuration={400}&gt;
+        &lt;Tooltip heading="Customer 1" content={&lt;&gt;Due &lt;strong&gt;today&lt;/strong&gt;, 1.250,00 EUR&lt;/&gt;}&gt;
+          &lt;Button variant="outline"&gt;Invoice 2026-014&lt;/Button&gt;
+        &lt;/Tooltip&gt;
+      &lt;/TooltipProvider&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcTooltip, OcTooltipProvider } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="pt-8"&gt;
+    &lt;OcTooltipProvider :delay-duration="400"&gt;
+      &lt;OcTooltip heading="Customer 1"&gt;
+        &lt;OcButton variant="outline"&gt;Invoice 2026-014&lt;/OcButton&gt;
+        &lt;template #content&gt;Due &lt;strong&gt;today&lt;/strong&gt;, 1.250,00 EUR&lt;/template&gt;
+      &lt;/OcTooltip&gt;
+    &lt;/OcTooltipProvider&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="pt-8"&gt;
+    &lt;x-oc::tooltip heading="Customer 1" delay="400"&gt;
+        &lt;x-oc::button variant="outline"&gt;Invoice 2026-014&lt;/x-oc::button&gt;
+        &lt;x-slot:content&gt;Due &lt;strong&gt;today&lt;/strong&gt;, 1.250,00 EUR&lt;/x-slot:content&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceHint extends Component
+{
+    public string $customer = 'Customer 1';
+
+    public string $amount = '1.250,00 EUR';
+
+    public function render()
+    {
+        return view('livewire.invoice-hint');
+    }
+}
+
+{{-- resources/views/livewire/invoice-hint.blade.php --}}
+&lt;div class="pt-8"&gt;
+    &lt;x-oc::tooltip :heading="$customer" delay="400"&gt;
+        &lt;x-oc::button variant="outline"&gt;Invoice 2026-014&lt;/x-oc::button&gt;
+        &lt;x-slot:content&gt;Due &lt;strong&gt;today&lt;/strong&gt;, {{ $amount }}&lt;/x-slot:content&gt;
     &lt;/x-oc::tooltip&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
@@ -369,6 +440,9 @@ class TooltipCorners extends Component
               <tr><td><code>.oc-tooltip__content</code></td><td>Child element instead of <code>data-tooltip</code> (give it <code>role="tooltip"</code>): same bubble and placement, line breaks kept.</td></tr>
               <tr><td><code>.oc-tooltip__title</code></td><td>Title line inside <code>.oc-tooltip__content</code>: 0.875rem, bold, first letter always a capital.</td></tr>
               <tr><td><code>--oc-tooltip-gap</code></td><td>Space between the element and the tooltip (default <code>8px</code>).</td></tr>
+              <tr><td><code>--oc-tooltip-delay</code> / <code>.oc-tooltip-provider</code></td><td>Delay before the tooltip shows (0.17.0, default <code>0ms</code>); the provider is a <code>display: contents</code> wrapper that sets it for every tooltip inside. Styles in <code>parts/app-compound-overlays.css</code>.</td></tr>
+              <tr><td><code>.is-open</code> / <code>.is-closed</code></td><td>Controlled tooltip (0.17.0): shown without hover, or hidden also on hover. React <code>open</code> / <code>onOpenChange</code>, Vue <code>v-model:open</code>, Blade <code>:open="true|false"</code>.</td></tr>
+              <tr><td><code>aria-describedby</code></td><td>Rich content (React node, Vue <code>#content</code>, Blade <code>&lt;x-slot:content&gt;</code>) gets an id; the wrapper points to it.</td></tr>
             </tbody>
           </table>
         </div>

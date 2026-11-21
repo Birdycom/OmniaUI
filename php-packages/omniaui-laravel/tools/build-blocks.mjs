@@ -27,6 +27,8 @@ const external = opts.config ? await import(pathToFileURL(path.resolve(opts.conf
  * (array of attributes merged onto it, e.g. ['wire:submit' => 'login']) plus @csrf for a non-GET form (only with the prop, so the
  * markup without it stays the snippet); `heading: <match>`
  * gives that h1 a `heading-level` prop (1 default, 2 renders an h2 with the same classes).
+ * `classExpr: "<php>"` appends a PHP string expression to the root class (conditional modifiers); `insertBefore: [[match, line]]` puts
+ * a Blade line (same indent) before the first line containing `match` (optional parts that are not in the snippet).
  */
 // 0.17.0: the auth page blocks (login, signup, otp, forgot / reset password) share one config: a form prop for the form attributes
 // (action, method, wire:submit), heading-level, and title / text / fields / footer as named slots that also take a plain string
@@ -136,6 +138,11 @@ const CONFIG = external?.CONFIG ?? {
     ],
   },
   "module-header": {
+    // 0.17.0: module (data-module: band tint + icon tile), eyebrow (line above the title), fixed-height (one band height).
+    props: "'module' => null, 'eyebrow' => null, 'fixedHeight' => false",
+    merge: { "data-module": "$module ?: null" },
+    classExpr: "($fixedHeight ? ' oc-block-modulehead--fixed' : '')",
+    insertBefore: [['<h1 class="oc-block-modulehead-title"', "@if (isset($eyebrow) && trim((string) $eyebrow) !== '')<p class=\"oc-block-modulehead-eyebrow\">{{ $eyebrow }}</p>@endif"]],
     heading: '<h1 class="oc-block-modulehead-title"',
     slots: [
       { name: "icon", match: '<span class="oc-block-modulehead-icon"', inner: true },
@@ -216,6 +223,8 @@ const MANUAL = new Set(external ? external.MANUAL ?? [] : [
   "route-progress", "step-view", "route-steps", "type-picker",
   "showcase", "hero-code", "product-grid", "about-timeline", "portfolio-grid", "contact-grid",
   "auth-split", "hero-orbit",
+  // 0.17.0: app-header is written by hand (overflow More menu, search slot, module); its CONFIG above is kept for reference.
+  "app-header",
 ]);
 
 const VOID = new Set(["input", "br", "img", "hr", "meta", "link", "source", "wbr", "col", "area", "base", "embed", "track", "param"]);
@@ -366,6 +375,11 @@ function build(name) {
   for (const [from, to] of cfg.replaceLine ?? []) {
     inner = inner.map((l) => (l.includes(from) ? l.replace(from, to) : l));
   }
+  for (const [match, line] of cfg.insertBefore ?? []) {
+    const at = inner.findIndex((l) => l.includes(match));
+    if (at < 0) throw new Error(`${name}: insertBefore: no line with ${match}`);
+    inner.splice(at, 0, indentOf(inner[at]) + line);
+  }
 
   const pre = [];
   const props = cfg.props ? [cfg.props] : [];
@@ -414,7 +428,7 @@ function build(name) {
   const propList = [...props, ...slots.map((x) => `'${x.name}' => null`)];
   if (propList.length) lines.push(`@props([${propList.join(", ")}])`);
   if (pre.length) lines.push("@php", ...pre, "@endphp");
-  lines.push(`<${tag} {{ $attributes->merge([${["'class' => " + phpStr(attrs.class ?? ""), ...mergeEntries.filter((e) => !e.startsWith("'class'"))].join(", ")}]) }}>`);
+  lines.push(`<${tag} {{ $attributes->merge([${["'class' => " + phpStr(attrs.class ?? "") + (cfg.classExpr ? `.${cfg.classExpr}` : ""), ...mergeEntries.filter((e) => !e.startsWith("'class'"))].join(", ")}]) }}>`);
   if (cfg.afterOpen) lines.push(`    ${cfg.afterOpen}`);
   lines.push(...inner);
   lines.push(closeLine, ...tail);

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Tabs", "category": "Navigation", "description": "Tabs without JavaScript: radio inputs and :has(). Line, pill and vertical variants, plus a class-toggle version for existing scripts.", "nav": "Tabs", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Tabs", "category": "Navigation", "description": "Tabs without JavaScript: radio inputs and :has(). Line, pill and vertical variants, class-toggle tabs and a compound API with controlled value.", "nav": "Tabs", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/tabs.html | Map: hero -> demo (line, pill, vertical) -> class-toggle tabs (script) -> tabs with icons and counts -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Tabs</h1>
@@ -330,6 +330,101 @@ class TabsClassToggle extends Component
   });
 &lt;/script&gt;</oc-code>
 
+          <h3 id="compound" class="oc-section-content__title mt-2">Compound API <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Build the tabs from parts instead of a <code>tabs</code> array: <code>TabsList</code>, <code>TabsTrigger</code> and <code>TabsContent</code> in React (<code>OcTabsList</code>, <code>OcTabsTrigger</code>, <code>OcTabsContent</code> in Vue, <code>&lt;x-oc::tabs.list&gt;</code>, <code>.trigger</code>, <code>.content</code> in Blade). Leave out <code>tabs</code> and the root switches to this mode. The value is controlled with <code>value</code> + <code>onValueChange</code> (Vue <code>v-model</code>, Blade <code>active</code>); arrow keys, Home and End move between the enabled tabs. Underneath it is the class-toggle markup above, so panels can hold anything, including forms. In Livewire, <code>wire:model</code> on <code>&lt;x-oc::tabs&gt;</code> makes every trigger set the property.</p>
+          <oc-demo title="Tabs - compound">
+<div class="oc-tabs">
+  <div class="oc-tab-list" role="tablist" aria-label="Company settings" data-oc-tabs="">
+    <button class="oc-tab-trigger" type="button" role="tab" id="oc-tabs-cmp-tab-profile" aria-selected="true" aria-controls="oc-tabs-cmp-profile">Profile</button>
+    <button class="oc-tab-trigger" type="button" role="tab" id="oc-tabs-cmp-tab-team" aria-selected="false" aria-controls="oc-tabs-cmp-team">Team</button>
+    <button class="oc-tab-trigger" type="button" role="tab" id="oc-tabs-cmp-tab-billing" aria-selected="false" aria-controls="oc-tabs-cmp-billing">Billing</button>
+  </div>
+  <div class="oc-tab-panel is-active" id="oc-tabs-cmp-profile" role="tabpanel" aria-labelledby="oc-tabs-cmp-tab-profile" tabindex="0">Company 1, info@company1.example.</div>
+  <div class="oc-tab-panel" id="oc-tabs-cmp-team" role="tabpanel" aria-labelledby="oc-tabs-cmp-tab-team" tabindex="0">Three members: Contact 1, Contact 2 and Contact 3.</div>
+  <div class="oc-tab-panel" id="oc-tabs-cmp-billing" role="tabpanel" aria-labelledby="oc-tabs-cmp-tab-billing" tabindex="0">Invoices go to billing@company1.example.</div>
+</div>
+<oc-code lang="tsx">import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [tab, setTab] = useState("profile");
+  return (
+    &lt;Tabs name="oc-tabs-cmp" value={tab} onValueChange={setTab}&gt;
+      &lt;TabsList aria-label="Company settings"&gt;
+        &lt;TabsTrigger value="profile"&gt;Profile&lt;/TabsTrigger&gt;
+        &lt;TabsTrigger value="team"&gt;Team&lt;/TabsTrigger&gt;
+        &lt;TabsTrigger value="billing"&gt;Billing&lt;/TabsTrigger&gt;
+      &lt;/TabsList&gt;
+      &lt;TabsContent value="profile"&gt;Company 1, info@company1.example.&lt;/TabsContent&gt;
+      &lt;TabsContent value="team"&gt;Three members: Contact 1, Contact 2 and Contact 3.&lt;/TabsContent&gt;
+      &lt;TabsContent value="billing"&gt;Invoices go to billing@company1.example.&lt;/TabsContent&gt;
+    &lt;/Tabs&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTabs, OcTabsContent, OcTabsList, OcTabsTrigger } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const tab = ref("profile");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTabs v-model="tab" name="oc-tabs-cmp"&gt;
+    &lt;OcTabsList aria-label="Company settings"&gt;
+      &lt;OcTabsTrigger value="profile"&gt;Profile&lt;/OcTabsTrigger&gt;
+      &lt;OcTabsTrigger value="team"&gt;Team&lt;/OcTabsTrigger&gt;
+      &lt;OcTabsTrigger value="billing"&gt;Billing&lt;/OcTabsTrigger&gt;
+    &lt;/OcTabsList&gt;
+    &lt;OcTabsContent value="profile"&gt;Company 1, info@company1.example.&lt;/OcTabsContent&gt;
+    &lt;OcTabsContent value="team"&gt;Three members: Contact 1, Contact 2 and Contact 3.&lt;/OcTabsContent&gt;
+    &lt;OcTabsContent value="billing"&gt;Invoices go to billing@company1.example.&lt;/OcTabsContent&gt;
+  &lt;/OcTabs&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Leave out :tabs; active = the selected value. oc-tabs.js handles clicks and arrow keys. --}}
+&lt;x-oc::tabs name="oc-tabs-cmp" active="profile"&gt;
+    &lt;x-oc::tabs.list label="Company settings"&gt;
+        &lt;x-oc::tabs.trigger value="profile"&gt;Profile&lt;/x-oc::tabs.trigger&gt;
+        &lt;x-oc::tabs.trigger value="team"&gt;Team&lt;/x-oc::tabs.trigger&gt;
+        &lt;x-oc::tabs.trigger value="billing"&gt;Billing&lt;/x-oc::tabs.trigger&gt;
+    &lt;/x-oc::tabs.list&gt;
+    &lt;x-oc::tabs.content value="profile"&gt;Company 1, info@company1.example.&lt;/x-oc::tabs.content&gt;
+    &lt;x-oc::tabs.content value="team"&gt;Three members: Contact 1, Contact 2 and Contact 3.&lt;/x-oc::tabs.content&gt;
+    &lt;x-oc::tabs.content value="billing"&gt;Invoices go to billing@company1.example.&lt;/x-oc::tabs.content&gt;
+&lt;/x-oc::tabs&gt;
+
+&lt;script type="module" src="/js/oc-tabs.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CompanySettings extends Component
+{
+    public string $tab = 'profile';
+
+    public function render()
+    {
+        return view('livewire.company-settings');
+    }
+}
+
+{{-- resources/views/livewire/company-settings.blade.php --}}
+&lt;div&gt;
+    {{-- wire:model: every trigger sets $tab; active keeps the server render on the same tab. --}}
+    &lt;x-oc::tabs name="oc-tabs-cmp" wire:model="tab" :active="$tab"&gt;
+        &lt;x-oc::tabs.list label="Company settings"&gt;
+            &lt;x-oc::tabs.trigger value="profile"&gt;Profile&lt;/x-oc::tabs.trigger&gt;
+            &lt;x-oc::tabs.trigger value="team"&gt;Team&lt;/x-oc::tabs.trigger&gt;
+            &lt;x-oc::tabs.trigger value="billing"&gt;Billing&lt;/x-oc::tabs.trigger&gt;
+        &lt;/x-oc::tabs.list&gt;
+        &lt;x-oc::tabs.content value="profile"&gt;Company 1, info@company1.example.&lt;/x-oc::tabs.content&gt;
+        &lt;x-oc::tabs.content value="team"&gt;Three members: Contact 1, Contact 2 and Contact 3.&lt;/x-oc::tabs.content&gt;
+        &lt;x-oc::tabs.content value="billing"&gt;Invoices go to billing@company1.example.&lt;/x-oc::tabs.content&gt;
+    &lt;/x-oc::tabs&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
           <h3 id="counts" class="oc-section-content__title mt-2">With icons and counts <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc">The type tabs of a list (as in the <a href="data-table.html">Data table</a> and the Pro block <a href="../blocks/relations-list.html">Relations list</a>): an icon, the label and a count. Add <code>.oc-data-table-tabs</code> to the tab list and a <code>.oc-data-table-tab-count</code> to every tab; <code>--success</code>, <code>--info</code> and <code>--warning</code> color the count like the type badge in the table. In a data table the tabs filter a column (<code>data-oc-col-filter</code>); here they switch panels with the script above.</p>
           <oc-demo title="Tabs - icons and counts">
@@ -450,6 +545,8 @@ class TabsIconsAndCounts extends Component
               <tr><td><code>button.oc-tab-trigger[aria-selected]</code> / <code>.is-active</code></td><td>Class-toggle version: the active tab (<code>aria-selected="true"</code> or <code>.is-active</code>) and the visible panel (<code>.oc-tab-panel.is-active</code>).</td></tr>
               <tr><td><code>.oc-data-table-tabs</code> + <code>.oc-data-table-tab-count</code></td><td>Tabs with an icon and a count (<code>--success</code>, <code>--info</code>, <code>--warning</code> color the count). Styles in <code>parts/app-data-table-rich.css</code>.</td></tr>
               <tr><td><code>:disabled</code> / <code>[aria-disabled="true"]</code></td><td>A tab that cannot be selected (dimmed).</td></tr>
+              <tr><td><code>.oc-tabs</code></td><td>Root of the compound tabs (0.17.0): the tab list and the panels of class-toggle tabs; with a <code>--vertical</code> list the tabs sit beside the panels. Styles in <code>parts/app-compound-overlays.css</code>.</td></tr>
+              <tr><td><code>[data-state="active"]</code></td><td>Compound tabs: set on the active trigger and panel (<code>inactive</code> on the others), for your own styling.</td></tr>
             </tbody>
           </table>
         </div>
@@ -479,6 +576,10 @@ class TabsIconsAndCounts extends Component
   &lt;x-oc::tabs.panel&gt;…&lt;/x-oc::tabs.panel&gt;
   &lt;x-oc::tabs.panel&gt;…&lt;/x-oc::tabs.panel&gt;
 &lt;/x-oc::tabs&gt;</oc-code>
+          <oc-code lang="html">&lt;!-- Compound (0.17.0): leave out tabs; value / onValueChange (Vue v-model, Blade active + model / wire:model) --&gt;
+&lt;Tabs value={tab} onValueChange={setTab}&gt;&lt;TabsList&gt;&lt;TabsTrigger value="a"&gt;A&lt;/TabsTrigger&gt;&lt;/TabsList&gt;&lt;TabsContent value="a"&gt;…&lt;/TabsContent&gt;&lt;/Tabs&gt;
+&lt;OcTabs v-model="tab"&gt;&lt;OcTabsList&gt;&lt;OcTabsTrigger value="a"&gt;A&lt;/OcTabsTrigger&gt;&lt;/OcTabsList&gt;&lt;OcTabsContent value="a"&gt;…&lt;/OcTabsContent&gt;&lt;/OcTabs&gt;
+&lt;x-oc::tabs name="t" active="a"&gt;&lt;x-oc::tabs.list&gt;&lt;x-oc::tabs.trigger value="a"&gt;A&lt;/x-oc::tabs.trigger&gt;&lt;/x-oc::tabs.list&gt;&lt;x-oc::tabs.content value="a"&gt;…&lt;/x-oc::tabs.content&gt;&lt;/x-oc::tabs&gt;</oc-code>
         </div>
       </section>
 
@@ -498,6 +599,7 @@ class TabsIconsAndCounts extends Component
               <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
               <tbody>
                 <tr><td><code>packages/ui/src/components.css</code></td><td>Styles (tab list, variants, CSS-only tab set)</td></tr>
+                <tr><td><code>packages/ui/src/parts/app-compound-overlays.css</code></td><td>Compound root (<code>.oc-tabs</code>), 0.17.0</td></tr>
                 <tr><td><code>packages/ui/snippets/tabs.html</code></td><td>Copy-paste markup</td></tr>
                 <tr><td><code>packages/react/src/components/Tabs.tsx</code> / <code>packages/vue/src/components/OcTabs.vue</code></td><td>Wrappers</td></tr>
                 <tr><td><code>resources/views/components/tabs.blade.php</code></td><td>Laravel: <code>&lt;x-oc::tabs&gt;</code></td></tr>

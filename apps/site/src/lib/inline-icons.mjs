@@ -3,7 +3,7 @@
 // collections. The previews then draw at once, without a request to the Iconify API and without a shadow root per
 // icon (that made long pages stutter while scrolling). The code tabs keep the <iconify-icon> markup (taken earlier).
 // Map: load a collection (cached) -> icon data (aliases) -> svg markup -> replace in one demo
-// Skipped: icons a script changes later (inside [data-oc-favorite]) and icons with rotate or flip.
+// Skipped: icons a script changes later (the single icon of a [data-oc-favorite] button) and icons with rotate or flip.
 
 import { createRequire } from "node:module";
 
@@ -35,7 +35,10 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").repl
 
 /** Inline SVG for one iconify-icon element (linkedom element), or null to keep the element. */
 function svgFor(el) {
-  if (el.hasAttribute("rotate") || el.hasAttribute("flip") || el.closest("[data-oc-favorite]")) return null;
+  if (el.hasAttribute("rotate") || el.hasAttribute("flip")) return null;
+  // A favorite button with one icon swaps its icon name (shop.js); one with an off and an on icon only hides one (CSS).
+  const favorite = el.closest("[data-oc-favorite]");
+  if (favorite && favorite.querySelectorAll("iconify-icon, svg[data-icon]").length === 1) return null;
   const data = iconData(el.getAttribute("icon"));
   if (!data) return null;
   const ratio = Math.round((data.width / data.height) * 1000) / 1000;

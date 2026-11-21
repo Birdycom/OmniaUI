@@ -2,7 +2,8 @@
 /**
  * One-time code field drawn as separate cells on a single real input.
  * v-model: the code string. `length` sets maxlength and --oc-otp-length. `invalid` sets aria-invalid.
- * Emits `complete` with the code when it reaches `length`. `fit`: cells shrink with the parent; `group`: a divider after
+ * Emits `complete` with the code when it reaches `length`, after the v-model update has rendered (flush: 'post'), so a
+ * parent that submits from @complete already holds the full code. `fit`: cells shrink with the parent; `group`: a divider after
  * every n cells (4: "ABCD EFGH").
  */
 import { computed, watch } from 'vue'
@@ -16,8 +17,8 @@ const model = defineModel<string>({ default: '' })
 const style = computed(() => ({ '--oc-otp-length': String(props.length), ...(props.group ? { '--oc-otp-group': String(props.group) } : {}) }))
 
 watch(model, (code) => {
-  if (code.length === props.length) emit('complete', code)
-})
+  if (code && code.length === props.length) emit('complete', code)
+}, { flush: 'post' })
 </script>
 
 <template>

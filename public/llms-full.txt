@@ -1,6 +1,6 @@
 # OmniaUI — full reference for AI assistants
 
-> OmniaUI is the component and block library for OmniaCSS: 188 components and
+> OmniaUI is the component and block library for OmniaCSS: 191 components and
 > 104 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
 > wrappers for React, Vue, Laravel Blade and Livewire. Behaviour comes from native HTML (dialog, popover, details,
 > :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; 52 advanced
@@ -884,22 +884,58 @@ Read-only monospace value with a copy button
 <!-- OmniaUI component: copy-field - Read-only monospace value with a copy button. Needs @birdycom/omniaui CSS.
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-copy-field: Wrapper
-       .oc-copy-field-value: Read-only <input readonly> (or <output>)
-       .oc-copy-field-button: Copy button; add .is-copied for 2s feedback; data-copy="…" copies that instead of the value
+       .oc-copy-field-value: Read-only <input readonly> (or <output> with --wrap)
+       .oc-copy-field-button: Copy button; add .is-copied for 2s feedback; data-copy="..." copies that instead of the value;
+         data-copied-label (0.17.0): the feedback ("Copied") in .oc-copy-field-button-label and .oc-copy-field-status
+       .oc-copy-field-icon-copy / -copied (0.17.0): mdi:content-copy and mdi:check on the button; they swap on .is-copied
+       .oc-copy-field-status (0.17.0): visually hidden role="status" live region that announces the feedback
+       .oc-copy-field-toggle (0.17.0): show/hide for a secret (input type="password", aria-pressed, aria-label);
+         .oc-copy-field-icon-show / -hide (mdi:eye / mdi:eye-off) swap on aria-pressed
+       .oc-copy-field--wrap (0.17.0): long values break over lines (use <output class="oc-copy-field-value">)
        .oc-copy-field--display (+ --lg) (0.17.0): large centred code; .oc-copy-field-caption: a line under it
 -->
 <div class="oc-copy-field">
-  <input class="oc-copy-field-value" type="text" readonly value="JBSWY3DPEHPK3PXP" aria-label="Setup key">
-  <button class="oc-copy-field-button" type="button">Copy</button>
+  <input class="oc-copy-field-value" id="oc-copy-key" type="password" readonly value="JBSWY3DPEHPK3PXP" aria-label="Setup key" autocomplete="off">
+  <button class="oc-copy-field-toggle" type="button" aria-pressed="false" aria-controls="oc-copy-key" aria-label="Show value">
+    <svg class="oc-copy-field-icon-show" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
+    <svg class="oc-copy-field-icon-hide" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M11.83 9L15 12.16V12a3 3 0 0 0-3-3zm-4.3.8l1.55 1.55c-.05.21-.08.42-.08.65a3 3 0 0 0 3 3c.22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53a5 5 0 0 1-5-5c0-.79.2-1.53.53-2.2M2 4.27l2.28 2.28l.45.45C3.08 8.3 1.78 10 1 12c1.73 4.39 6 7.5 11 7.5c1.55 0 3.03-.3 4.38-.84l.43.42L19.73 22L21 20.73L3.27 3M12 7a5 5 0 0 1 5 5c0 .64-.13 1.26-.36 1.82l2.93 2.93c1.5-1.25 2.7-2.89 3.43-4.75c-1.73-4.39-6-7.5-11-7.5c-1.4 0-2.74.25-4 .7l2.17 2.15C10.74 7.13 11.35 7 12 7"/></svg>
+  </button>
+  <button class="oc-copy-field-button" type="button" data-copied-label="Copied">
+    <svg class="oc-copy-field-icon-copy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg>
+    <svg class="oc-copy-field-icon-copied" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>
+    <span class="oc-copy-field-button-label">Copy</span>
+  </button>
+  <span class="oc-copy-field-status oc-visually-hidden" role="status" aria-live="polite"></span>
 </div>
 <script>
   document.addEventListener('click', async (e) => {
+    const toggle = e.target.closest('.oc-copy-field-toggle');
+    if (toggle) {
+      const show = toggle.getAttribute('aria-pressed') !== 'true';
+      toggle.setAttribute('aria-pressed', String(show));
+      const input = toggle.parentElement.querySelector('input.oc-copy-field-value');
+      if (input) input.type = show ? 'text' : 'password';
+      return;
+    }
     const btn = e.target.closest('.oc-copy-field-button');
     if (!btn) return;
+    const field = btn.parentElement;
+    const value = field.querySelector('.oc-copy-field-value');
     // data-copy: the raw code when the field shows it in groups ("K7QM 2XPA" -> "K7QM2XPA")
-    await navigator.clipboard.writeText(btn.dataset.copy ?? btn.parentElement.querySelector('.oc-copy-field-value').value);
+    try { await navigator.clipboard.writeText(btn.dataset.copy ?? value.value); } catch { return; }
+    // data-copied-label: the feedback on the button and in the live region (.oc-copy-field-status)
+    const label = btn.querySelector('.oc-copy-field-button-label');
+    const status = field.querySelector('.oc-copy-field-status');
+    const done = btn.dataset.copiedLabel || 'Copied';
+    if (label) { label.dataset.label ??= label.textContent; label.textContent = done; }
+    if (status) status.textContent = done;
     btn.classList.add('is-copied');
-    setTimeout(() => btn.classList.remove('is-copied'), 2000);
+    clearTimeout(btn.ocCopyTimer);
+    btn.ocCopyTimer = setTimeout(() => {
+      btn.classList.remove('is-copied');
+      if (label) label.textContent = label.dataset.label;
+      if (status) status.textContent = '';
+    }, 2000);
   });
 </script>
 ```
@@ -970,26 +1006,75 @@ Large clickable card with icon, title and description (module hub, settings sect
 Warning panel with a code grid plus copy and download actions
 
 ```html
-<!-- OmniaUI component: recovery-codes - Warning panel with a code grid plus copy and download actions. Needs @birdycom/omniaui CSS.
+<!-- OmniaUI component: recovery-codes - Warning panel with a code grid plus copy, download and print actions. Needs @birdycom/omniaui CSS.
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-recovery-codes: Panel (warning tint)
-       .oc-recovery-codes-title / -warning: Heading and explanation
+       .oc-recovery-codes-title / -warning: Heading and explanation (the warning can start with an icon: mdi:alert-outline)
        .oc-recovery-codes-list: Two-column monospace grid (selectable with one click)
-       .oc-recovery-codes-actions: Button row
+       .oc-recovery-codes-actions: Button row; data-oc-recovery="copy|download|print" wires a button to the script below
+       data-copied-label (0.17.0): feedback on the copy button (.oc-recovery-codes-label) and in .oc-recovery-codes-status
+       .oc-recovery-codes-icon-copy / -copied (0.17.0): mdi:content-copy and mdi:check; they swap on .is-copied
+       .oc-recovery-codes-status (0.17.0): visually hidden role="status" live region
 -->
 <div class="oc-recovery-codes">
   <h3 class="oc-recovery-codes-title">Recovery codes</h3>
-  <p class="oc-recovery-codes-warning">Store these codes somewhere safe. Each code works once.</p>
+  <p class="oc-recovery-codes-warning"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2"/></svg><span>Store these codes somewhere safe. Each code works once.</span></p>
   <ul class="oc-recovery-codes-list">
     <li>4F8K-92QA</li><li>M3ZP-71LD</li>
     <li>7TQX-0BNE</li><li>C8WV-5YHR</li>
     <li>2JDA-KE63</li><li>R9UG-X4MS</li>
   </ul>
   <div class="oc-recovery-codes-actions">
-    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button">Copy all</button>
-    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button">Download .txt</button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="copy" data-copied-label="Copied"><svg class="oc-recovery-codes-icon-copy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12z"/></svg><svg class="oc-recovery-codes-icon-copied" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M21 7L9 19l-5.5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg><span class="oc-recovery-codes-label">Copy all</span></button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="download"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg><span>Download .txt</span></button>
+    <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-recovery="print"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18 3H6v4h12m1 5a1 1 0 0 1-1-1a1 1 0 0 1 1-1a1 1 0 0 1 1 1a1 1 0 0 1-1 1m-3 7H8v-5h8m3-6H5a3 3 0 0 0-3 3v6h4v4h12v-4h4v-6a3 3 0 0 0-3-3"/></svg><span>Print</span></button>
   </div>
+  <span class="oc-recovery-codes-status oc-visually-hidden" role="status" aria-live="polite"></span>
 </div>
+<script>
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-oc-recovery]');
+    if (!btn) return;
+    const panel = btn.closest('.oc-recovery-codes');
+    const codes = Array.from(panel.querySelectorAll('.oc-recovery-codes-list li')).map((li) => li.textContent.trim());
+    const text = codes.join('\n');
+    const action = btn.dataset.ocRecovery;
+    if (action === 'copy') {
+      try { await navigator.clipboard.writeText(text); } catch { return; }
+      // data-copied-label: feedback on the button and in the live region (.oc-recovery-codes-status)
+      const label = btn.querySelector('.oc-recovery-codes-label');
+      const status = panel.querySelector('.oc-recovery-codes-status');
+      const done = btn.dataset.copiedLabel || 'Copied';
+      if (label) { label.dataset.label ??= label.textContent; label.textContent = done; }
+      if (status) status.textContent = done;
+      btn.classList.add('is-copied');
+      clearTimeout(btn.ocCopyTimer);
+      btn.ocCopyTimer = setTimeout(() => {
+        btn.classList.remove('is-copied');
+        if (label) label.textContent = label.dataset.label;
+        if (status) status.textContent = '';
+      }, 2000);
+      return;
+    }
+    if (action === 'print') {
+      // only the codes on paper: a hidden iframe with the title and the list
+      const esc = (t) => t.replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`);
+      const title = esc(panel.querySelector('.oc-recovery-codes-title')?.textContent.trim() || 'Recovery codes');
+      const frame = document.createElement('iframe');
+      frame.setAttribute('aria-hidden', 'true');
+      frame.style.cssText = 'position:fixed;inline-size:0;block-size:0;border:0;inset:auto auto 0 0';
+      frame.srcdoc = `<!doctype html><meta charset="utf-8"><title>${title}</title><style>body{font:14px ui-monospace,Consolas,monospace;margin:2cm}h1{font:600 16px system-ui,sans-serif}ul{list-style:none;padding:0;columns:2}</style><h1>${title}</h1><ul>${codes.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>`;
+      frame.addEventListener('load', () => { frame.contentWindow.print(); setTimeout(() => frame.remove(), 1000); });
+      document.body.append(frame);
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text + '\n'], { type: 'text/plain' }));
+    a.download = btn.dataset.filename || 'recovery-codes.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+</script>
 ```
 
 ### input
@@ -2015,7 +2100,7 @@ Accordion variant: every item is a card with a colored accent edge; presets or s
 <div class="oc-accordion oc-accordion--accent">
   <details class="oc-accordion-item" name="oc-accent-demo" open>
     <summary class="oc-accordion-trigger">Customer details <span class="oc-accordion-accent-meta">Complete</span></summary>
-    <div class="oc-accordion-content">Contact 1, Main street 12, Ghent.</div>
+    <div class="oc-accordion-content">Contact 1, Street 1, City 1.</div>
   </details>
   <details class="oc-accordion-item oc-accent--violet" name="oc-accent-demo">
     <summary class="oc-accordion-trigger">Materials <span class="oc-accordion-accent-meta">4 items</span></summary>
@@ -2758,7 +2843,7 @@ Page title row with back link, subtitle, meta and actions; actions move under th
   <div class="oc-page-header-main">
     <div class="oc-page-header-text">
       <h1 class="oc-page-header-title">Kitchen renovation <span class="oc-badge oc-badge--success">Active</span></h1>
-      <p class="oc-page-header-subtitle">Main street 12, Ghent - started 2 September 2026.</p>
+      <p class="oc-page-header-subtitle">Street 1, City 1 - started 2 September 2026.</p>
       <div class="oc-page-header-meta"><span>Owner: Contact 1</span><span>Updated 2 hours ago</span></div>
     </div>
     <div class="oc-page-header-actions">
@@ -5992,6 +6077,59 @@ Time left for a task, a round or a reservation: inline, a pill or large digits, 
   <b class="oc-countdown-time">1:30</b>
 </div>
 <script type="module" src="/js/oc-countdown.js"></script>
+```
+
+### hero-media
+
+Full-width hero with a video or photo behind the text, a dark scrim on the text side and a poster under reduced motion
+
+```html
+<!-- OmniaUI component: hero-media - Full-width hero with a video or photo behind the text, a dark scrim on the text side and a poster under reduced motion. Needs @birdycom/omniaui CSS.
+     Class API (modifiers are extra classes on the same element):
+       .oc-hero-media: the section (full width, dark color scheme, at least --oc-hero-media-min high)
+       .oc-hero-media__media: the video or img (object-fit: cover, position --oc-hero-media-position)
+       .oc-hero-media__content: the text in the page container, each child at most --oc-hero-media-measure wide
+       --scrim-start / --scrim-end: dark layer on the text side / other side; --scrim: over the whole picture
+       --center / --end: text centered / at the end side
+-->
+<section class="oc-hero-media oc-hero-media--scrim-start">
+  <img class="oc-hero-media__media" src="/img/hero.webp" alt="">
+  <div class="oc-hero-media__content">
+    <p class="oc-eyebrow">Company 1</p>
+    <h2 class="oc-display oc-display--md">Software that moves your business forward</h2>
+    <p class="oc-lead">Web applications, desktop tools and support, built around the way your team works.</p>
+    <div class="oc-actions">
+      <a class="oc-btn" href="#work">See our work</a>
+      <a class="oc-btn oc-btn--outline" href="#contact">Get in touch</a>
+    </div>
+  </div>
+</section>
+```
+
+### scrim
+
+A calm fade over a picture (from a color at one edge to transparent) so text on top of it stays readable
+
+```html
+<!-- OmniaUI component: scrim - A calm fade over a picture (from a color at one edge to transparent) so text on top of it stays readable. Needs @birdycom/omniaui CSS.
+     File: packages/ui/snippets/scrim.html | Map: positioned box -> image -> span.oc-scrim (or .oc-has-scrim on the box) -> text (.oc-scrim-content)
+     Class API (modifiers are extra classes on the same element):
+       .oc-scrim: click-through layer over its positioned parent (child element, aria-hidden)
+       .oc-has-scrim: the same scrim as ::after on the box itself, no extra element
+       Modifiers: --top, --start, --end (default: bottom), --full (one even layer), --dark (near black instead of the page background)
+       .oc-scrim-content: text above the scrim (position: relative; z-index 2)
+       Tokens: --oc-scrim-color, --oc-scrim-strength (0 to 1, default 0.85), --oc-scrim-size (fade length, default 60%)
+     Slots: none. The layer is decorative (aria-hidden).
+-->
+<figure class="relative m-0 w-full aspect-16 overflow-hidden rounded-lg">
+  <img style="display:block;inline-size:100%;block-size:100%;object-fit:cover" src="/img/blocks/otp-split-photo.webp" alt="Stone surface with old carvings">
+  <span class="oc-scrim oc-scrim--dark" aria-hidden="true"></span>
+  <figcaption class="oc-scrim-content absolute p-2" style="inset-block-end:0;color:oklch(98% 0 0)">Caption on the scrim</figcaption>
+</figure>
+
+<figure class="oc-has-scrim oc-scrim--top m-0 w-full aspect-16 overflow-hidden rounded-lg">
+  <img style="display:block;inline-size:100%;block-size:100%;object-fit:cover" src="/img/blocks/otp-split-photo.webp" alt="">
+</figure>
 ```
 
 ## Blocks

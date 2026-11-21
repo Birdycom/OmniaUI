@@ -10,6 +10,7 @@
           <p class="oc-section-header__desc">A complete app frame: a sidebar with groups, a badge and a folding Invoices menu, a top bar with breadcrumbs, and the page area. Click Invoices to fold its submenu. Snippet: <code>packages/blocks/blocks/app-shell.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title">App shell <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="App shell" size="tall">
 <div class="oc-block-shell" style="--oc-block-shell-height: 30rem">
   <input class="oc-block-shell-toggle" type="checkbox" id="oc-shell-toggle" aria-label="Collapse sidebar">
@@ -55,7 +56,7 @@
   <div class="oc-block-shell-main">
     <header class="oc-block-appbar">
       <label class="oc-btn oc-btn--ghost oc-btn--icon" for="oc-shell-toggle" title="Toggle sidebar"><svg data-icon="mdi:menu" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg><span class="oc-visually-hidden">Toggle sidebar</span></label>
-      <nav class="oc-block-appbar-nav" aria-label="Module navigation">
+      <nav class="oc-block-appbar-nav" aria-label="Module navigation" data-oc-nav-overflow data-more-label="More">
         <ul class="oc-navmenu">
           <li><a class="oc-navmenu-link" href="#" aria-current="page">Contacts</a></li>
           <li><a class="oc-navmenu-link" href="#">Companies</a></li>
@@ -133,6 +134,7 @@ export function Example() {
       header={
         &lt;BlockAppHeader
           toggleFor="oc-shell-toggle"
+          overflow
           nav={[{ label: "Contacts", href: "/contacts", current: true }, { label: "Companies", href: "/companies" }, { label: "Segments", href: "/segments" }]}
           actions={&lt;&gt;
             &lt;ThemeSwitch as="div" modes={["light", "dark"]} name="oc-shell-theme" aria-label="Theme" /&gt;
@@ -223,7 +225,7 @@ const crumbs = [
       &lt;/OcSidebar&gt;
     &lt;/template&gt;
     &lt;template #header&gt;
-      &lt;OcBlockAppHeader toggle-for="oc-shell-toggle" :nav-items="nav"&gt;
+      &lt;OcBlockAppHeader toggle-for="oc-shell-toggle" :nav-items="nav" overflow&gt;
         &lt;template #actions&gt;
           &lt;OcThemeSwitch v-model="theme" as="div" :options="['light', 'dark']" name="oc-shell-theme" label="Theme" /&gt;
           &lt;button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" popovertarget="oc-shell-user" aria-label="User menu"&gt;&lt;span class="oc-avatar oc-avatar--sm"&gt;U1&lt;/span&gt;&lt;/button&gt;
@@ -285,8 +287,8 @@ const crumbs = [
         &lt;/x-oc::sidebar&gt;
     &lt;/x-slot:sidebar&gt;
     &lt;x-slot:header&gt;
-        {{-- the toggle points at the checkbox of the shell (id oc-shell-toggle) --}}
-        &lt;x-oc::block.app-header toggle-for="oc-shell-toggle"&gt;
+        {{-- the toggle points at the checkbox of the shell (id oc-shell-toggle); :overflow + oc-nav-overflow.js: links that do not fit go into a More menu --}}
+        &lt;x-oc::block.app-header toggle-for="oc-shell-toggle" :overflow="true"&gt;
             &lt;x-slot:nav&gt;
                 &lt;ul class="oc-navmenu"&gt;
                     &lt;li&gt;&lt;a class="oc-navmenu-link" href="/contacts" aria-current="page"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
@@ -316,7 +318,9 @@ const crumbs = [
     &lt;/x-slot:breadcrumbs&gt;
     &lt;h2 class="oc-heading-title"&gt;Contacts&lt;/h2&gt;
     &lt;p class="oc-heading-description"&gt;Page content scrolls here.&lt;/p&gt;
-&lt;/x-oc::block.app-shell&gt;</oc-code>
+&lt;/x-oc::block.app-shell&gt;
+
+&lt;script type="module" src="/js/oc-nav-overflow.js"&gt;&lt;/script&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -383,8 +387,8 @@ class AppShell extends Component
         &lt;/x-oc::sidebar&gt;
     &lt;/x-slot:sidebar&gt;
     &lt;x-slot:header&gt;
-        {{-- the toggle points at the checkbox of the shell (id oc-shell-toggle) --}}
-        &lt;x-oc::block.app-header toggle-for="oc-shell-toggle"&gt;
+        {{-- the toggle points at the checkbox of the shell (id oc-shell-toggle); :overflow + oc-nav-overflow.js: links that do not fit go into a More menu --}}
+        &lt;x-oc::block.app-header toggle-for="oc-shell-toggle" :overflow="true"&gt;
             &lt;x-slot:nav&gt;
                 &lt;ul class="oc-navmenu"&gt;
                     &lt;li&gt;&lt;a class="oc-navmenu-link" href="/contacts" wire:navigate aria-current="page"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
@@ -408,7 +412,9 @@ class AppShell extends Component
     &lt;/x-slot:breadcrumbs&gt;
     &lt;h2 class="oc-heading-title"&gt;{{ ucfirst($page) }}&lt;/h2&gt;
     &lt;p class="oc-heading-description"&gt;Page content scrolls here.&lt;/p&gt;
-&lt;/x-oc::block.app-shell&gt;</oc-code>
+&lt;/x-oc::block.app-shell&gt;
+
+&lt;script type="module" src="/js/oc-nav-overflow.js"&gt;&lt;/script&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -423,7 +429,7 @@ class AppShell extends Component
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>.oc-block-shell</code></td><td>Grid root. Height via <code>--oc-block-shell-height</code> (default <code>100dvh</code>).</td></tr>
-              <tr><td><code>.oc-block-shell-toggle</code></td><td>Hidden checkbox that collapses the sidebar (label <code>for</code> it in the header bar)</td></tr>
+              <tr><td><code>.oc-block-shell-toggle</code></td><td>Hidden checkbox flipped by a label <code>for</code> it in the header bar. Wide shell: folds the sidebar to icons. Narrow shell (icon rail) or small screen: opens the sidebar as an overlay; a click outside closes it.</td></tr>
               <tr><td><code>.oc-sidebar</code></td><td>Sidebar component (first grid child)</td></tr>
               <tr><td><code>.oc-block-shell-main</code></td><td>Column holding the header bar, breadcrumbs and content</td></tr>
               <tr><td><code>.oc-block-shell-breadcrumbs</code></td><td>Strip under the header bar</td></tr>
@@ -433,3 +439,4 @@ class AppShell extends Component
           </table>
         </div>
       </section>
+<script type="module" src="/js/oc-nav-overflow.js"></script>

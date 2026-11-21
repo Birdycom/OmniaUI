@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Sidebar", "category": "Navigation", "description": "App sidebar with header, groups, menu items, badges, nested menus, a footer and an icon-only mode, plus the docs sidebar and an on-this-page column.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Sidebar", "category": "Navigation", "description": "App sidebar with groups, badges, nested menus and an icon rail, a provider with trigger, rail and remembered state, plus the docs sidebar and a page index.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Sidebar</h1>
         <p class="oc-hero-text">Vertical navigation in two variants. The <strong>app sidebar</strong> (<code>.oc-sidebar</code>) is a panel with header, icons, badges, collapsible groups and a footer, for dashboards and back offices. The <strong>docs sidebar</strong> (<code>.oc-sidebar.oc-sidebar--docs</code>) is the navigation you see on the left of this very page: titled groups of outlined links, with the section you are in highlighted. Both share the same parts and the same <code>aria-current="page"</code> active state. <a href="../components.html">All components</a>.</p>
@@ -586,6 +586,239 @@ class SidebarMetaLines extends Component
     &lt;x-oc::sidebar.meta collapsed :brand="$brand" :version="$version" copyright="© 2026 Company 1" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+          <h3 id="provider" class="oc-section-content__title mt-2">Provider, trigger, rail and inset <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">An app shell in one piece: <code>.oc-sidebar-provider</code> holds the state (expanded or collapsed) for the sidebar, a menu button in the page header (<code>.oc-sidebar-trigger</code>), a thin rail on the sidebar edge (<code>.oc-sidebar-rail</code>) and the page next to it (<code>.oc-sidebar-inset</code>). <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>B</kbd> toggles it, <code>persist</code> remembers the choice (localStorage, or a cookie the server can read for the first paint), and below 768px the sidebar opens over the page and starts closed (Escape or a click outside closes it). <code>.oc-sidebar-menu-action</code> is a small button on the right of an item, optionally only on hover. React and Vue hold the state themselves (<code>SidebarProvider</code>, <code>useSidebar()</code>); plain HTML and Blade use <code>sidebar.js</code> (<code>npx omniaui copy-js sidebar</code>). A sidebar inside a provider follows it; its own <code>collapsed</code> still wins, and the checkbox toggle of the app shell block keeps working.</p>
+          <oc-demo title="Sidebar - provider, trigger, rail and inset" size="tall">
+<div class="oc-sidebar-provider" data-oc-sidebar-provider data-oc-persist="docs-demo" style="block-size:24rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);overflow:hidden">
+  <aside class="oc-sidebar" aria-label="Main navigation">
+    <div class="oc-sidebar-header">
+      <a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#">
+        <svg class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3"/></svg>
+        <span class="oc-sidebar-menu-label"><strong>Company 1</strong></span>
+      </a>
+    </div>
+    <div class="oc-sidebar-content">
+      <div class="oc-sidebar-group">
+        <div class="oc-sidebar-group-label">Platform</div>
+        <ul class="oc-sidebar-menu">
+          <li><a class="oc-sidebar-menu-button oc-tooltip oc-tooltip--right" data-tooltip="Dashboard" href="#" aria-current="page"><svg class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 3v6h8V3m-8 18h8V11h-8M3 21h8v-6H3m0-2h8V3H3z"/></svg><span class="oc-sidebar-menu-label">Dashboard</span></a></li>
+          <li>
+            <a class="oc-sidebar-menu-button oc-tooltip oc-tooltip--right" data-tooltip="Projects" href="#"><svg class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/></svg><span class="oc-sidebar-menu-label">Projects</span></a>
+            <button class="oc-sidebar-menu-action oc-sidebar-menu-action--hover" type="button" aria-label="New project" title="New project"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg></button>
+          </li>
+          <li><a class="oc-sidebar-menu-button oc-tooltip oc-tooltip--right" data-tooltip="Inbox" href="#"><svg class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 15h-4a3 3 0 0 1-3 3a3 3 0 0 1-3-3H5V5h14m0-2H5c-1.11 0-2 .9-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"/></svg><span class="oc-sidebar-menu-label">Inbox</span><span class="oc-sidebar-menu-badge">4</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+  <button class="oc-sidebar-rail" type="button" tabindex="-1" aria-label="Toggle sidebar" title="Toggle sidebar" data-oc-sidebar-rail></button>
+  <main class="oc-sidebar-inset">
+    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem;border-block-end:1px solid var(--oc-border)">
+      <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-sidebar-trigger" type="button" aria-label="Toggle sidebar" title="Toggle sidebar" aria-expanded="true" data-oc-sidebar-trigger><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg></button>
+      <strong>Dashboard</strong>
+    </div>
+    <div style="padding:1rem">
+      <p>Click the menu button, the edge of the sidebar or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>B</kbd>. The choice is remembered (reload the page). On a phone the sidebar opens over the page.</p>
+    </div>
+  </main>
+</div>
+<oc-code lang="html">&lt;!-- Load sidebar.js once: &lt;script type="module" src="/js/oc-sidebar.js"&gt;&lt;/script&gt; --&gt;
+&lt;div class="oc-sidebar-provider" data-oc-sidebar-provider data-oc-persist="docs-demo" style="block-size:24rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);overflow:hidden"&gt;
+  &lt;aside class="oc-sidebar" aria-label="Main navigation"&gt;
+    &lt;div class="oc-sidebar-header"&gt;
+      &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="#"&gt;
+        &lt;svg class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3"/&gt;&lt;/svg&gt;
+        &lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Company 1&lt;/strong&gt;&lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-sidebar-content"&gt;
+      &lt;div class="oc-sidebar-group"&gt;
+        &lt;div class="oc-sidebar-group-label"&gt;Platform&lt;/div&gt;
+        &lt;ul class="oc-sidebar-menu"&gt;
+          &lt;li&gt;&lt;a class="oc-sidebar-menu-button oc-tooltip oc-tooltip--right" data-tooltip="Dashboard" href="#" aria-current="page"&gt;&lt;svg class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M13 3v6h8V3m-8 18h8V11h-8M3 21h8v-6H3m0-2h8V3H3z"/&gt;&lt;/svg&gt;&lt;span class="oc-sidebar-menu-label"&gt;Dashboard&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;
+            &lt;a class="oc-sidebar-menu-button oc-tooltip oc-tooltip--right" data-tooltip="Projects" href="#"&gt;&lt;svg class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;span class="oc-sidebar-menu-label"&gt;Projects&lt;/span&gt;&lt;/a&gt;
+            &lt;button class="oc-sidebar-menu-action oc-sidebar-menu-action--hover" type="button" aria-label="New project" title="New project"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/&gt;&lt;/svg&gt;&lt;/button&gt;
+          &lt;/li&gt;
+          &lt;li&gt;&lt;a class="oc-sidebar-menu-button oc-tooltip oc-tooltip--right" data-tooltip="Inbox" href="#"&gt;&lt;svg class="oc-sidebar-menu-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 15h-4a3 3 0 0 1-3 3a3 3 0 0 1-3-3H5V5h14m0-2H5c-1.11 0-2 .9-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"/&gt;&lt;/svg&gt;&lt;span class="oc-sidebar-menu-label"&gt;Inbox&lt;/span&gt;&lt;span class="oc-sidebar-menu-badge"&gt;4&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/aside&gt;
+  &lt;button class="oc-sidebar-rail" type="button" tabindex="-1" aria-label="Toggle sidebar" title="Toggle sidebar" data-oc-sidebar-rail&gt;&lt;/button&gt;
+  &lt;main class="oc-sidebar-inset"&gt;
+    &lt;div style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem;border-block-end:1px solid var(--oc-border)"&gt;
+      &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-sidebar-trigger" type="button" aria-label="Toggle sidebar" title="Toggle sidebar" aria-expanded="true" data-oc-sidebar-trigger&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/&gt;&lt;/svg&gt;&lt;/button&gt;
+      &lt;strong&gt;Dashboard&lt;/strong&gt;
+    &lt;/div&gt;
+    &lt;div style="padding:1rem"&gt;
+      &lt;p&gt;Click the menu button, the edge of the sidebar or press &lt;kbd&gt;Ctrl&lt;/kbd&gt;/&lt;kbd&gt;Cmd&lt;/kbd&gt; + &lt;kbd&gt;B&lt;/kbd&gt;. The choice is remembered (reload the page). On a phone the sidebar opens over the page.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/main&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import {
+  Sidebar,
+  SidebarGroup,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  Webicon,
+} from "@birdycom/omniaui-react";
+
+export function Example() {
+  // persist: remembered in localStorage (storage="cookie": readable by the server). Below 768px it opens over the page.
+  return (
+    &lt;SidebarProvider persist="app" style={{ blockSize: "24rem" }}&gt;
+      &lt;Sidebar
+        aria-label="Main navigation"
+        header={&lt;SidebarMenuButton href="/" size="lg" icon={&lt;Webicon name="mdi:home-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;&lt;strong&gt;Company 1&lt;/strong&gt;&lt;/SidebarMenuButton&gt;}
+      &gt;
+        &lt;SidebarGroup label="Platform"&gt;
+          &lt;SidebarMenu&gt;
+            &lt;SidebarMenuItem&gt;
+              &lt;SidebarMenuButton href="/" current icon={&lt;Webicon name="mdi:view-dashboard-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Dashboard&lt;/SidebarMenuButton&gt;
+            &lt;/SidebarMenuItem&gt;
+            &lt;SidebarMenuItem&gt;
+              &lt;SidebarMenuButton href="/projects" icon={&lt;Webicon name="mdi:folder-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Projects&lt;/SidebarMenuButton&gt;
+              &lt;SidebarMenuAction label="New project" icon="mdi:plus" showOnHover /&gt;
+            &lt;/SidebarMenuItem&gt;
+            &lt;SidebarMenuItem&gt;
+              &lt;SidebarMenuButton href="/inbox" badge={4} icon={&lt;Webicon name="mdi:inbox-outline" className="oc-sidebar-menu-icon" /&gt;}&gt;Inbox&lt;/SidebarMenuButton&gt;
+            &lt;/SidebarMenuItem&gt;
+          &lt;/SidebarMenu&gt;
+        &lt;/SidebarGroup&gt;
+      &lt;/Sidebar&gt;
+      &lt;SidebarRail /&gt;
+      &lt;SidebarInset&gt;
+        &lt;div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.75rem", borderBlockEnd: "1px solid var(--oc-border)" }}&gt;
+          &lt;SidebarTrigger /&gt;
+          &lt;strong&gt;Dashboard&lt;/strong&gt;
+        &lt;/div&gt;
+        &lt;div style={{ padding: "1rem" }}&gt;Page content&lt;/div&gt;
+      &lt;/SidebarInset&gt;
+    &lt;/SidebarProvider&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import {
+  OcSidebar,
+  OcSidebarGroup,
+  OcSidebarInset,
+  OcSidebarMenu,
+  OcSidebarMenuAction,
+  OcSidebarMenuButton,
+  OcSidebarProvider,
+  OcSidebarRail,
+  OcSidebarTrigger,
+  OcWebicon,
+} from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- persist: remembered in localStorage (storage="cookie": readable by the server). Below 768px it opens over the page. --&gt;
+  &lt;OcSidebarProvider persist="app" style="block-size:24rem"&gt;
+    &lt;OcSidebar label="Main navigation"&gt;
+      &lt;template #header&gt;
+        &lt;OcSidebarMenuButton href="/" large&gt;&lt;template #icon&gt;&lt;OcWebicon name="mdi:home-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;&lt;strong&gt;Company 1&lt;/strong&gt;&lt;/OcSidebarMenuButton&gt;
+      &lt;/template&gt;
+      &lt;OcSidebarGroup label="Platform"&gt;
+        &lt;OcSidebarMenu&gt;
+          &lt;li&gt;&lt;OcSidebarMenuButton href="/" current&gt;&lt;template #icon&gt;&lt;OcWebicon name="mdi:view-dashboard-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;Dashboard&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
+          &lt;li&gt;
+            &lt;OcSidebarMenuButton href="/projects"&gt;&lt;template #icon&gt;&lt;OcWebicon name="mdi:folder-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;Projects&lt;/OcSidebarMenuButton&gt;
+            &lt;OcSidebarMenuAction label="New project" icon="mdi:plus" show-on-hover /&gt;
+          &lt;/li&gt;
+          &lt;li&gt;&lt;OcSidebarMenuButton href="/inbox" :badge="4"&gt;&lt;template #icon&gt;&lt;OcWebicon name="mdi:inbox-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/template&gt;Inbox&lt;/OcSidebarMenuButton&gt;&lt;/li&gt;
+        &lt;/OcSidebarMenu&gt;
+      &lt;/OcSidebarGroup&gt;
+    &lt;/OcSidebar&gt;
+    &lt;OcSidebarRail /&gt;
+    &lt;OcSidebarInset&gt;
+      &lt;div style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem;border-block-end:1px solid var(--oc-border)"&gt;
+        &lt;OcSidebarTrigger /&gt;
+        &lt;strong&gt;Dashboard&lt;/strong&gt;
+      &lt;/div&gt;
+      &lt;div style="padding:1rem"&gt;Page content&lt;/div&gt;
+    &lt;/OcSidebarInset&gt;
+  &lt;/OcSidebarProvider&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Load sidebar.js once (npx omniaui copy-js sidebar): &lt;script type="module" src="/js/oc-sidebar.js"&gt;&lt;/script&gt; --}}
+&lt;x-oc::sidebar.provider persist="app" style="block-size:24rem"&gt;
+    &lt;x-oc::sidebar label="Main navigation"&gt;
+        &lt;x-slot:header&gt;
+            &lt;a class="oc-sidebar-menu-button oc-sidebar-menu-button--lg" href="/"&gt;&lt;x-oc::webicon name="mdi:home-outline" class="oc-sidebar-menu-icon" /&gt;&lt;span class="oc-sidebar-menu-label"&gt;&lt;strong&gt;Company 1&lt;/strong&gt;&lt;/span&gt;&lt;/a&gt;
+        &lt;/x-slot:header&gt;
+        &lt;x-oc::sidebar.group label="Platform"&gt;
+            &lt;x-oc::sidebar.item href="/" current&gt;&lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:view-dashboard-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;Dashboard&lt;/x-oc::sidebar.item&gt;
+            &lt;x-oc::sidebar.item href="/projects"&gt;
+                &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                Projects
+                &lt;x-slot:action&gt;&lt;x-oc::sidebar.menu-action label="New project" icon="mdi:plus" show-on-hover /&gt;&lt;/x-slot:action&gt;
+            &lt;/x-oc::sidebar.item&gt;
+            &lt;x-oc::sidebar.item href="/inbox" badge="4"&gt;&lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:inbox-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;Inbox&lt;/x-oc::sidebar.item&gt;
+        &lt;/x-oc::sidebar.group&gt;
+    &lt;/x-oc::sidebar&gt;
+    &lt;x-oc::sidebar.rail /&gt;
+    &lt;x-oc::sidebar.inset&gt;
+        &lt;div style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem;border-block-end:1px solid var(--oc-border)"&gt;
+            &lt;x-oc::sidebar.trigger /&gt;
+            &lt;strong&gt;Dashboard&lt;/strong&gt;
+        &lt;/div&gt;
+        &lt;div style="padding:1rem"&gt;Page content&lt;/div&gt;
+    &lt;/x-oc::sidebar.inset&gt;
+&lt;/x-oc::sidebar.provider&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+// The sidebar state lives in the browser (sidebar.js). With storage="cookie" the server reads it for the first paint
+// (add 'oc-sidebar-app' to the encryptCookies(except: …) list in bootstrap/app.php: the browser writes it unencrypted).
+class AppShell extends Component
+{
+    public bool $collapsed = false;
+
+    public function mount(): void
+    {
+        $this-&gt;collapsed = request()-&gt;cookie('oc-sidebar-app') === '1';
+    }
+
+    public function render()
+    {
+        return view('livewire.app-shell');
+    }
+}
+
+{{-- resources/views/livewire/app-shell.blade.php --}}
+&lt;div&gt;
+    {{-- wire:ignore: Livewire updates the page, sidebar.js keeps the sidebar state --}}
+    &lt;x-oc::sidebar.provider :collapsed="$collapsed" persist="app" storage="cookie" style="block-size:24rem" wire:ignore&gt;
+        &lt;x-oc::sidebar label="Main navigation" :collapsed="$collapsed"&gt;
+            &lt;x-oc::sidebar.group label="Platform"&gt;
+                &lt;x-oc::sidebar.item href="/" current&gt;&lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:view-dashboard-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;Dashboard&lt;/x-oc::sidebar.item&gt;
+                &lt;x-oc::sidebar.item href="/projects"&gt;
+                    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:folder-outline" class="oc-sidebar-menu-icon" /&gt;&lt;/x-slot:icon&gt;
+                    Projects
+                    &lt;x-slot:action&gt;&lt;x-oc::sidebar.menu-action label="New project" icon="mdi:plus" show-on-hover /&gt;&lt;/x-slot:action&gt;
+                &lt;/x-oc::sidebar.item&gt;
+            &lt;/x-oc::sidebar.group&gt;
+        &lt;/x-oc::sidebar&gt;
+        &lt;x-oc::sidebar.rail /&gt;
+        &lt;x-oc::sidebar.inset&gt;
+            &lt;div style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem"&gt;
+                &lt;x-oc::sidebar.trigger :expanded="! $collapsed" /&gt;
+                &lt;strong&gt;Dashboard&lt;/strong&gt;
+            &lt;/div&gt;
+        &lt;/x-oc::sidebar.inset&gt;
+    &lt;/x-oc::sidebar.provider&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         <h3 id="docs-sidebar" class="oc-section-content__title mt-2">OmniaCSS docs sidebar <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">The sidebar of this documentation. It is generated at build time from <code>public/data/oc-*-nav.json</code> and uses exactly this component. Snippet: <code>packages/ui/snippets/sidebar-docs.html</code>.</p>
           <oc-demo title="Docs sidebar" size="tall">
 <nav class="oc-sidebar oc-sidebar--docs" aria-label="OmniaCSS Docs">
@@ -845,6 +1078,12 @@ class PageToc extends Component
               <tr><td><code>.oc-sidebar-menu-badge</code></td><td>Count pill on the right</td></tr>
               <tr><td><code>.oc-sidebar-menu-sub</code></td><td>Nested <code>ul</code> with a guide line</td></tr>
               <tr><td><code>details.oc-sidebar-collapsible</code></td><td>Expandable item: <code>&lt;summary class="oc-sidebar-menu-button"&gt;</code> + <code>.oc-sidebar-menu-sub</code></td></tr>
+              <tr><td><code>.oc-sidebar-provider</code> <span class="oc-badge-version">v0.17.0</span></td><td>Flex row around sidebar, rail and inset; <code>data-state="expanded|collapsed"</code>. With <code>sidebar.js</code>: <code>[data-oc-sidebar-provider]</code>, <code>data-oc-persist</code> (key), <code>data-oc-storage="cookie"</code>, <code>data-oc-mobile-breakpoint</code> (768), <code>data-oc-shortcut</code> ("b", empty = none); fires <code>oc-sidebar-change</code> { collapsed, mobile }</td></tr>
+              <tr><td><code>.oc-sidebar-trigger</code> / <code>[data-oc-sidebar-trigger]</code> <span class="oc-badge-version">v0.17.0</span></td><td>Menu button that toggles the sidebar; <code>aria-expanded</code> follows the state</td></tr>
+              <tr><td><code>.oc-sidebar-rail</code> <span class="oc-badge-version">v0.17.0</span></td><td>8px hit area on the sidebar edge (takes no width); put it right after the sidebar</td></tr>
+              <tr><td><code>.oc-sidebar-inset</code> <span class="oc-badge-version">v0.17.0</span></td><td>The page next to the sidebar: the remaining width, <code>min-inline-size: 0</code></td></tr>
+              <tr><td><code>.oc-sidebar-menu-action</code> (<code>--hover</code>) <span class="oc-badge-version">v0.17.0</span></td><td>Small button on the right of a menu item (in the <code>li</code>, after the link); <code>--hover</code> shows it only on hover or focus. Hidden in the icon rail</td></tr>
+              <tr><td><code>.oc-sidebar[data-module]</code> <span class="oc-badge-version">v0.17.0</span></td><td>The active row in the module colour (<code>--oc-module-soft</code>, icon in <code>--oc-module</code>); without a module colour the primary colour</td></tr>
             </tbody>
           </table>
         <h3 id="app-sidebar" class="oc-section-content__title mt-2">App sidebar</h3><p class="oc-section-content__desc">Anatomy, from top to bottom. Markup is also available as the snippet <code>packages/ui/snippets/sidebar.html</code>.</p>
@@ -887,3 +1126,4 @@ class PageToc extends Component
 }</oc-code>
         </div>
       </section>
+<script type="module" src="/js/oc-sidebar.js"></script>

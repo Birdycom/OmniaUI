@@ -64,25 +64,25 @@
       @endforeach
       @else
     <article class="oc-block-contact-card">
-      <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--blue" aria-hidden="true">&#9993;</span>
+      <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--blue" aria-hidden="true"><x-oc::webicon name="mdi:email-outline" bare fallback="iconify" /></span>
       <h3 class="oc-block-contact-title">E-mail</h3>
       <a class="oc-block-contact-line" href="mailto:info@company1.example">info@company1.example</a>
       <p class="oc-block-contact-line">For quotes and questions.</p>
     </article>
     <article class="oc-block-contact-card">
-      <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--green" aria-hidden="true">&#9742;</span>
+      <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--green" aria-hidden="true"><x-oc::webicon name="mdi:phone-outline" bare fallback="iconify" /></span>
       <h3 class="oc-block-contact-title">Phone</h3>
       <a class="oc-block-contact-line" href="tel:+3230000000">+32 3 000 00 00</a>
       <p class="oc-block-contact-line">Monday to Friday.</p>
     </article>
     <address class="oc-block-contact-card">
-      <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--orange" aria-hidden="true">&#9873;</span>
+      <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--orange" aria-hidden="true"><x-oc::webicon name="mdi:map-marker-outline" bare fallback="iconify" /></span>
       <span class="oc-block-contact-title">Office</span>
       <span class="oc-block-contact-line">Company 1</span>
       <span class="oc-block-contact-line">Main Street 1, 2000 Antwerp</span>
     </address>
     <article class="oc-block-contact-card">
-      <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--violet" aria-hidden="true">&#9719;</span>
+      <span class="oc-product-mark oc-product-mark--sm oc-product-mark--soft oc-accent--violet" aria-hidden="true"><x-oc::webicon name="mdi:clock-outline" bare fallback="iconify" /></span>
       <h3 class="oc-block-contact-title">Opening hours</h3>
       <p class="oc-block-contact-line">Mon&ndash;Fri: 9:00 &ndash; 17:30</p>
       <p class="oc-block-contact-line">Sat&ndash;Sun: closed</p>

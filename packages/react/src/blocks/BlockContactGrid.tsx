@@ -13,7 +13,7 @@ export interface ContactGridLine {
 export interface ContactGridCard {
   title: ReactNode;
   lines: ContactGridLine[];
-  /** Glyph or a webicon name ("mdi:email-outline") in a soft product mark. */
+  /** Glyph or a webicon name ("mdi:email-outline"), shown in front of the title in the accent color. */
   icon?: ReactNode;
   /** Accent preset of the mark (green, violet, ...). */
   accent?: string;

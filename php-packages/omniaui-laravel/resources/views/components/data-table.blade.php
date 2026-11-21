@@ -1,6 +1,7 @@
 {{-- File: resources/views/components/data-table.blade.php | Map: props -> tabs -> toolbar -> filters -> column menu -> rows -> footer
      OmniaUI list table. Load packages/ui/src/data-table.js on the page for the behaviour.
-     Props: title, table-id, columns (key, header, numeric, sortable, hideable, defaultHidden, truncate),
+     Props: title, table-id, columns (key, header, numeric, sortable, hideable, defaultHidden, truncate,
+     hideBelow / hide-below: sm|md|lg hides the column when the table is narrower than 24, 32 or 48rem),
      rows (key, status, cells, values, href, actions), page-size, live, search-placeholder, selectable, draggable and resizable
      (grip / width handles; the behaviour is OmniaUI Pro, data-table-pro.js), column-menu (Pro CSS),
      filters (trash pills), archive ("Archive only" pill), importable ("Import CSV" in the settings), variant (default|bordered:
@@ -13,7 +14,13 @@
      'badge' => ['Active' => 'success', 'Deleted' => 'secondary'] (variant per text); the text is the sort/search value.
      0.17.0: labels (texts in another language, any subset of the keys in \$en below; the script texts selected, summary,
      firstPage, previousPage, nextPage, lastPage, sortedBy, ascending, descending go to data-oc-labels), view (false: no
-     table / cards switch), pagination (false: every row on one page), bulk (selection bar; default: as filters). --}}
+     table / cards switch), pagination (false: every row on one page), bulk (selection bar; default: as filters).
+     0.17.0 server mode: server (the rows are the current page; data-table.js does not filter, sort or slice and fires
+     oc-datatable-query instead; answer with updateDataTable), total (all matches), page (1-based), sort (column key, or
+     ['key' => …, 'dir' => 'asc|desc']) + sort-dir, search (text in the field), search-delay (ms, default 300), trashed
+     (active|all|deleted|archived: the pill that is on), loading (skeleton rows + aria-busy), skeleton-rows,
+     visible-columns (list of keys: only those columns render, plus a column chooser in the actions header that fires
+     oc-datatable-columns). --}}
 @props([
     'title' => 'List',
     'tableId' => 'oc-data-table',
@@ -39,6 +46,17 @@
     'view' => true,
     'pagination' => true,
     'bulk' => null,
+    'server' => false,
+    'total' => null,
+    'page' => null,
+    'sort' => null,
+    'sortDir' => 'asc',
+    'search' => null,
+    'searchDelay' => null,
+    'trashed' => 'active',
+    'loading' => false,
+    'skeletonRows' => null,
+    'visibleColumns' => null,
 ])
 @php
     $pageSize = (int) $pageSize;
@@ -71,8 +89,32 @@
 
         return [(string) $cell, is_array($column['badge']) ? ($column['badge'][(string) $cell] ?? 'default') : 'default'];
     };
+    // 0.17.0: sort as a key or ['key' => …, 'dir' => …]; null = the columns' defaultSort.
+    $sortKey = is_array($sort) ? ($sort['key'] ?? null) : $sort;
+    $sortDir = is_array($sort) ? ($sort['dir'] ?? $sortDir) : $sortDir;
+    $ariaSort = function (array $column) use ($sort, $sortKey, $sortDir): ?string {
+        if ($sort === null) {
+            return $column['defaultSort'] ?? null;
+        }
+
+        return $sortKey === $column['key'] ? ($sortDir === 'desc' ? 'descending' : 'ascending') : null;
+    };
+    $picker = $visibleColumns !== null;
+    $visibleKeys = $picker ? array_map('strval', (array) $visibleColumns) : [];
+    $shown = $picker
+        ? array_values(array_filter($columns, fn ($c) => ($c['hideable'] ?? true) === false || in_array($c['key'], $visibleKeys, true)))
+        : array_values($columns);
+    // hideBelow (or hide-below): sm | md | lg -> data-hide-below on the th and its tds (other values are ignored)
+    $shown = array_map(function ($c) {
+        $hb = $c['hideBelow'] ?? $c['hide-below'] ?? null;
+        $c['hideBelow'] = in_array($hb, ['sm', 'md', 'lg'], true) ? $hb : null;
+
+        return $c;
+    }, $shown);
+    $skeletons = $loading ? (int) ($skeletonRows ?? ($pagination && $pageSize > 0 ? $pageSize : 5)) : 0;
+    $trashed = $trashed ?: 'active';
 @endphp
-<div @class(['oc-data-table', 'oc-data-table--bordered' => $variant === 'bordered', 'oc-data-table--plain' => ! $striped, 'oc-column-menu-scope' => $columnMenu]) id="{{ $tableId }}" data-page-size="{{ $pagination ? $pageSize : 0 }}" @if($scriptLabels) data-oc-labels="{{ json_encode($scriptLabels, JSON_UNESCAPED_UNICODE) }}" @endif @unless($view) data-oc-no-grid @endunless @if($live) data-oc-live="true" @endif>
+<div @class(['oc-data-table', 'oc-data-table--bordered' => $variant === 'bordered', 'oc-data-table--plain' => ! $striped, 'oc-column-menu-scope' => $columnMenu]) id="{{ $tableId }}" data-page-size="{{ $pagination ? $pageSize : 0 }}" @if($scriptLabels) data-oc-labels="{{ json_encode($scriptLabels, JSON_UNESCAPED_UNICODE) }}" @endif @unless($view) data-oc-no-grid @endunless @if($live) data-oc-live="true" @endif @if($server) data-oc-server="true" data-oc-total="{{ $total ?? count($rows) }}" data-oc-current-page="{{ $page ?? 1 }}" @endif @if($searchDelay !== null) data-oc-search-delay="{{ (int) $searchDelay }}" @endif @if($loading) aria-busy="true" @endif>
     @if ($tabs)
         <div class="oc-tab-list oc-data-table-tabs" role="tablist" aria-label="{{ $tabs['label'] ?? 'Filter' }}">
             @foreach ($tabs['items'] as $i => $tab)
@@ -99,14 +141,14 @@
                 <button class="oc-dropdown-item" type="button" data-oc-density="compact">{{ $L['compact'] }}</button>
             </div>
         </div>
-        <input class="oc-input oc-data-table-search" type="search" placeholder="{{ $searchPlaceholder }}" aria-label="{{ $fill($L['search'], $title) }}">
+        <input class="oc-input oc-data-table-search" type="search" placeholder="{{ $searchPlaceholder }}" aria-label="{{ $fill($L['search'], $title) }}" @if($search !== null && $search !== '') value="{{ $search }}" @endif>
         @if ($filters)
             <div class="oc-filter-pills" role="group" aria-label="{{ $L['trashFilter'] }}">
-                <button class="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true">{{ $L['activeOnly'] }}</button>
-                <button class="oc-filter-pill" type="button" data-oc-filter="all">{{ $L['includingTrash'] }}</button>
-                <button class="oc-filter-pill" type="button" data-oc-filter="deleted">{{ $L['trashOnly'] }}</button>
+                <button class="oc-filter-pill" type="button" data-oc-filter="active" @if($trashed === 'active') aria-current="true" @endif>{{ $L['activeOnly'] }}</button>
+                <button class="oc-filter-pill" type="button" data-oc-filter="all" @if($trashed === 'all') aria-current="true" @endif>{{ $L['includingTrash'] }}</button>
+                <button class="oc-filter-pill" type="button" data-oc-filter="deleted" @if($trashed === 'deleted') aria-current="true" @endif>{{ $L['trashOnly'] }}</button>
                 @if ($archive)
-                    <button class="oc-filter-pill" type="button" data-oc-filter="archived">{{ $L['archiveOnly'] }}</button>
+                    <button class="oc-filter-pill" type="button" data-oc-filter="archived" @if($trashed === 'archived') aria-current="true" @endif>{{ $L['archiveOnly'] }}</button>
                 @endif
             </div>
         @endif
@@ -135,7 +177,16 @@
             @endforeach
         </div>
     @endif
-    @if ($columnMenu)
+    @if ($picker)
+    <div class="oc-dropdown-menu oc-data-table-colpick" id="{{ $tableId }}-colpick" popover>
+        <p class="oc-data-table-colpick-title">{{ $L['columns'] }}</p>
+        @foreach ($columns as $column)
+            @php($locked = ($column['hideable'] ?? true) === false)
+            <label class="oc-dropdown-item"><input type="checkbox" data-oc-visible-col="{{ $column['key'] }}" @checked($locked || in_array($column['key'], $visibleKeys, true)) @disabled($locked)> {{ $column['header'] }}</label>
+        @endforeach
+    </div>
+    @endif
+    @if ($columnMenu && ! $picker)
     <div class="oc-column-menu" id="{{ $tableId }}-columns" popover>
         <p class="oc-column-menu-title">{{ $L['columns'] }}</p>
         @if ($resizable)
@@ -174,8 +225,9 @@
                         @if ($draggable)
                             <th data-oc-col="order"><span class="oc-visually-hidden">{{ $L['order'] }}</span></th>
                         @endif
-                        @foreach ($columns as $column)
-                            <th data-oc-col="{{ $column['key'] }}" data-oc-sort="{{ !empty($column['numeric']) ? 'numeric' : 'text' }}" @if(!empty($column['numeric'])) data-numeric @endif @if(!empty($column['defaultSort'])) aria-sort="{{ $column['defaultSort'] }}" @endif>
+                        @foreach ($shown as $column)
+                            @php($sorted = $ariaSort($column))
+                            <th data-oc-col="{{ $column['key'] }}" data-oc-sort="{{ !empty($column['numeric']) ? 'numeric' : 'text' }}" @if(!empty($column['numeric'])) data-numeric @endif @if($column['hideBelow']) data-hide-below="{{ $column['hideBelow'] }}" @endif @if($sorted) aria-sort="{{ $sorted }}" @endif>
                                 <span class="oc-data-table-th">
                                     @if (($column['sortable'] ?? true) !== false)
                                         <button class="oc-table-sort" type="button">{{ $column['header'] }}</button>
@@ -188,11 +240,19 @@
                                 </span>
                             </th>
                         @endforeach
-                        <th data-oc-col="actions"><span class="oc-data-table-th">{{ $L['actions'] }} @if ($columnMenu)<button class="oc-btn oc-btn--plain oc-data-table-columns-btn" type="button" popovertarget="{{ $tableId }}-columns" aria-label="Columns" title="Columns"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5v13h17V5zm10 2v9h-3V7zM6 7h3v9H6zm13 9h-3V7h3z"/></svg></button>@endif</span></th>
+                        <th data-oc-col="actions"><span class="oc-data-table-th">{{ $L['actions'] }} @if ($columnMenu || $picker)<button class="oc-btn oc-btn--plain oc-data-table-columns-btn" type="button" popovertarget="{{ $tableId }}-{{ $picker ? 'colpick' : 'columns' }}" aria-label="{{ $L['columns'] }}" title="{{ $L['columns'] }}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5v13h17V5zm10 2v9h-3V7zM6 7h3v9H6zm13 9h-3V7h3z"/></svg></button>@endif</span></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($rows as $row)
+                    @for ($i = 0; $i < $skeletons; $i++)
+                        <tr class="oc-data-table-skeleton" aria-hidden="true">
+                            @if ($selectable)<td data-oc-col="select"><span class="oc-skeleton oc-data-table-skeleton-box"></span></td>@endif
+                            @if ($draggable)<td data-oc-col="order"></td>@endif
+                            @foreach ($shown as $column)<td @if(!empty($column['numeric'])) data-numeric @endif @if($column['hideBelow']) data-hide-below="{{ $column['hideBelow'] }}" @endif><span class="oc-skeleton oc-data-table-skeleton-bar"></span></td>@endforeach
+                            <td data-oc-col="actions"></td>
+                        </tr>
+                    @endfor
+                    @foreach ($loading ? [] : $rows as $row)
                         <tr data-oc-row data-oc-key="{{ $row['key'] }}" data-oc-status="{{ $row['status'] ?? 'active' }}" @if(!empty($row['href'])) data-oc-href="{{ $row['href'] }}" @endif>
                             @if ($selectable)
                                 <td data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select aria-label="{{ $fill($L['select'], $label($row)) }}"></td>
@@ -200,10 +260,10 @@
                             @if ($draggable)
                                 <td data-oc-col="order" class="oc-sortable-row-grip-cell"><button class="oc-sortable-row-grip" type="button" aria-label="{{ $fill($L['move'], $label($row)) }}"></button></td>
                             @endif
-                            @foreach ($columns as $column)
+                            @foreach ($shown as $column)
                                 @php($cell = $row['cells'][$column['key']] ?? '')
                                 @php($badge = $badgeOf($column, $cell))
-                                <td data-oc-col="{{ $column['key'] }}" @if(!empty($column['numeric'])) data-numeric @endif @if(isset($row['values'][$column['key']])) data-oc-value="{{ $row['values'][$column['key']] }}" @elseif($badge) data-oc-value="{{ $badge[0] }}" @endif>@if ($badge)<span @class(['oc-badge', 'oc-badge--'.$badge[1] => ! in_array($badge[1], ['default', 'primary', null, ''], true)])>{{ $badge[0] }}</span>@elseif (!empty($column['truncate']) && is_string($cell))<span class="oc-data-table-truncate" style="--oc-data-table-truncate: {{ $column['truncate'] }}" title="{{ $cell }}">{{ $cell }}</span>@else{{ $cell }}@endif</td>
+                                <td data-oc-col="{{ $column['key'] }}" @if(!empty($column['numeric'])) data-numeric @endif @if($column['hideBelow']) data-hide-below="{{ $column['hideBelow'] }}" @endif @if(isset($row['values'][$column['key']])) data-oc-value="{{ $row['values'][$column['key']] }}" @elseif($badge) data-oc-value="{{ $badge[0] }}" @endif>@if ($badge)<span @class(['oc-badge', 'oc-badge--'.$badge[1] => ! in_array($badge[1], ['default', 'primary', null, ''], true)])>{{ $badge[0] }}</span>@elseif (!empty($column['truncate']) && is_string($cell))<span class="oc-data-table-truncate" style="--oc-data-table-truncate: {{ $column['truncate'] }}" title="{{ $cell }}">{{ $cell }}</span>@else{{ $cell }}@endif</td>
                             @endforeach
                             <td data-oc-col="actions"><div style="display: flex; gap: 0.375rem; justify-content: flex-end">
                                 @if (isset($row['actions']))

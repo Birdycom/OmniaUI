@@ -15,23 +15,28 @@ export interface LauncherCardProps extends Omit<AnchorHTMLAttributes<HTMLElement
   active?: boolean;
   /** Not clickable (`aria-disabled`); renders a <span>. */
   disabled?: boolean;
+  /** Footer shown only while the card is disabled (why it is off, e.g. "Ask your admin"); replaces `footer` then. */
+  disabledFooter?: ReactNode;
+  /** 0.17.0: module colour (`data-module`): blue, green, purple, gold, cyan, pink, red, orange, teal, slate, or your own name. */
+  module?: string;
 }
 
 /** `.oc-launcher`: an `<a>` (with `href`), a `<button>` (with `onClick`), or a `<span>` when disabled. */
 export const LauncherCard = forwardRef<HTMLElement, LauncherCardProps>(function LauncherCard(
-  { icon, title, badge, description, footer, active, disabled, className, href, onClick, ...rest },
+  { icon, title, badge, description, footer, active, disabled, disabledFooter, module, className, href, onClick, ...rest },
   ref,
 ) {
+  const foot = disabled && disabledFooter != null ? disabledFooter : footer;
   const content = (
     <>
       {icon != null && <span className="oc-launcher-icon" aria-hidden="true">{icon}</span>}
       <h3 className="oc-launcher-title">{title}{badge != null && <> {badge}</>}</h3>
       {description != null && <p className="oc-launcher-description">{description}</p>}
-      {footer != null && <span className="oc-launcher-footer">{footer}</span>}
+      {foot != null && <span className="oc-launcher-footer">{foot}</span>}
     </>
   );
   const cls = cx("oc-launcher", className);
-  const common = { className: cls, "aria-current": active ? ("true" as const) : undefined };
+  const common = { className: cls, "aria-current": active ? ("true" as const) : undefined, "data-module": module || undefined };
   if (disabled) {
     return <span ref={ref} {...common} aria-disabled="true">{content}</span>;
   }

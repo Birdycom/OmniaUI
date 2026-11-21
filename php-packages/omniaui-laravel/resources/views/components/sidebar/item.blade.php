@@ -2,7 +2,8 @@
      Slots: default = label, icon (inline svg with class oc-sidebar-menu-icon),
      sub (nested <x-oc::sidebar.item> entries; renders an expandable details), tooltip (in a collapsed sidebar; default the
      text of the label, false for none). In <x-oc::sidebar variant="docs">: a plain text link, and `sub` becomes the
-     ul.oc-sidebar-menu-sub right after it (always visible). --}}
+     ul.oc-sidebar-menu-sub right after it (always visible).
+     0.17.0: slot action = a button on the right of the item (<x-oc::sidebar.menu-action label="More" show-on-hover />). --}}
 @aware(['variant' => 'app'])
 @props(['href' => '#', 'current' => false, 'disabled' => false, 'badge' => null, 'tooltip' => null, 'active' => false])
 @if ($variant === 'docs')
@@ -28,6 +29,7 @@
                 <span class="oc-sidebar-menu-badge">{{ $badge }}</span>
             @endif
         </a>
+        @if (isset($action) && trim((string) $action) !== ''){{ $action }}@endif
     @endif
 </li>
 @endif

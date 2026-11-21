@@ -39,3 +39,30 @@
   .oc-block-datatable .oc-table-footer { grid-template-columns: 1fr; }
   .oc-block-datatable .oc-table-footer nav { justify-self: start; }
 }
+/* The card measures itself: in a narrow column (a docs preview, a sidebar layout) the footer and the table adapt too,
+   not only on a narrow screen. */
+.oc-block-datatable { container: oc-datatable / inline-size; }
+/* The pager keeps its buttons on one row (it never breaks into two short rows). */
+.oc-block-datatable .oc-data-table-pager { flex-wrap: nowrap; }
+/* Medium card: entries + pager on the first row, rows-per-page under the entries. */
+@container oc-datatable (max-width: 48rem) {
+  .oc-block-datatable .oc-table-footer { grid-template-columns: minmax(0, 1fr) auto; }
+  .oc-block-datatable .oc-table-footer > :first-child { grid-column: 1; grid-row: 1; }
+  .oc-block-datatable .oc-table-footer label { grid-column: 1; grid-row: 2; }
+  .oc-block-datatable .oc-table-footer nav { grid-column: 2; grid-row: 1 / span 2; justify-self: end; }
+}
+/* Narrow card: one column, everything aligned at the start. */
+@container oc-datatable (max-width: 28rem) {
+  .oc-block-datatable .oc-table-footer { grid-template-columns: 1fr; }
+  .oc-block-datatable .oc-table-footer > :is(:first-child, label, nav) { grid-column: 1; grid-row: auto; justify-self: start; }
+}
+/* Scroll hint: when the table is wider than the card, its right edge fades out until it is scrolled to the end, so a cut
+   column reads as "scroll for more" instead of as a broken layout. Without scroll-driven animations: plain scroll. */
+@supports (animation-timeline: scroll()) {
+  .oc-block-datatable .oc-table-wrap { animation: oc-datatable-scroll-hint linear both; animation-timeline: scroll(self inline); }
+}
+@keyframes oc-datatable-scroll-hint {
+  0%, 3% { mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent); }
+  4%, 96% { mask-image: linear-gradient(to right, transparent, #000 2rem, #000 calc(100% - 3rem), transparent); }
+  97%, 100% { mask-image: linear-gradient(to right, transparent, #000 2rem); }
+}

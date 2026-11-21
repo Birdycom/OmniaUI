@@ -4,7 +4,7 @@
  * Nested tree list on details / summary. Renders itself recursively for child lists (`nested`).
  * Per item: icon (webicon name) and actions ({ label, icon?, text?, href?, tone? }[]: icon buttons that emit `action`).
  * Slots (scoped, { item }): icon, actions (replace the item props); plus `head-actions` for the head row.
- * Classes: .oc-tree(--quiet/--flush), .oc-tree-head, ul.oc-tree-list, details.oc-tree-node, .oc-tree-row(.is-muted),
+ * Classes: .oc-tree(--quiet/--flush/--ellipsis), .oc-tree-head, ul.oc-tree-list, details.oc-tree-node, .oc-tree-row(.is-muted),
  * .oc-tree-icon, .oc-tree-label, .oc-tree-count, .oc-tree-actions, .oc-table-actions-icon
  */
 import OcWebicon from './OcWebicon.vue'
@@ -39,6 +39,8 @@ defineProps<{
   head?: string
   quiet?: boolean
   flush?: boolean
+  /** Long names end in an ellipsis (full name in the label's title) instead of scrolling sideways. */
+  ellipsis?: boolean
   /** Internal: render only the list (used for child lists). */
   nested?: boolean
 }>()
@@ -64,7 +66,7 @@ function run(e: Event, action: OcTreeAction, item: OcTreeItem) {
       <details v-if="item.children?.length" class="oc-tree-node" :open="item.open">
         <summary :class="['oc-tree-row', item.muted && 'is-muted']" :aria-current="item.current && !item.href ? 'true' : undefined">
           <span v-if="$slots.icon || item.icon" class="oc-tree-icon" aria-hidden="true"><slot name="icon" :item="item"><OcWebicon v-if="item.icon" :name="item.icon" bare fallback="iconify" /></slot></span>
-          <span class="oc-tree-label">{{ item.label }}</span>
+          <span class="oc-tree-label" :title="item.label">{{ item.label }}</span>
           <span v-if="item.count != null" class="oc-tree-count">{{ item.count }}</span>
           <span v-if="$slots.actions || item.actions?.length" class="oc-tree-actions">
             <slot name="actions" :item="item">
@@ -82,8 +84,8 @@ function run(e: Event, action: OcTreeAction, item: OcTreeItem) {
       </details>
       <div v-else :class="['oc-tree-row', item.muted && 'is-muted']" :aria-current="item.current && !item.href ? 'true' : undefined">
         <span v-if="$slots.icon || item.icon" class="oc-tree-icon" aria-hidden="true"><slot name="icon" :item="item"><OcWebicon v-if="item.icon" :name="item.icon" bare fallback="iconify" /></slot></span>
-        <a v-if="item.href" class="oc-tree-label" :href="item.href" :aria-current="item.current ? 'true' : undefined">{{ item.label }}</a>
-        <span v-else class="oc-tree-label">{{ item.label }}</span>
+        <a v-if="item.href" class="oc-tree-label" :href="item.href" :title="item.label" :aria-current="item.current ? 'true' : undefined">{{ item.label }}</a>
+        <span v-else class="oc-tree-label" :title="item.label">{{ item.label }}</span>
         <span v-if="item.count != null" class="oc-tree-count">{{ item.count }}</span>
         <span v-if="$slots.actions || item.actions?.length" class="oc-tree-actions">
           <slot name="actions" :item="item">
@@ -96,7 +98,7 @@ function run(e: Event, action: OcTreeAction, item: OcTreeItem) {
       </div>
     </li>
   </ul>
-  <div v-else :class="['oc-tree', quiet && 'oc-tree--quiet', flush && 'oc-tree--flush']">
+  <div v-else :class="['oc-tree', quiet && 'oc-tree--quiet', flush && 'oc-tree--flush', ellipsis && 'oc-tree--ellipsis']">
     <div v-if="head" class="oc-tree-row oc-tree-head">
       <span class="oc-tree-label">{{ head }}</span>
       <span v-if="$slots['head-actions']" class="oc-tree-actions"><slot name="head-actions" /></span>

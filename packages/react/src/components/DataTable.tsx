@@ -1,10 +1,12 @@
 // File: packages/react/src/components/DataTable.tsx
-// Map: icons -> column, row, tab and filter types -> name cell helper -> shell markup -> bind the list-table script on mount
+// Map: icons -> column, row, tab and filter types -> name cell helper -> server state (page, sort, search, trash, columns,
+//      selection) -> shell markup (skeleton rows while loading) -> bind the list-table script on mount, query events -> callbacks
 "use client";
 
 import { useEffect, useId, useRef } from "react";
 import type { ReactNode } from "react";
-import { bindDataTable } from "../../../ui/src/data-table.js";
+import { bindDataTable, setDataTableSelection } from "../../../ui/src/data-table.js";
+import { useControllable } from "../hooks";
 import { Icon } from "./Icon";
 
 /** Webicon paths (MDI) for the toolbar, drawn inline so the table needs no icon loader. */
@@ -34,6 +36,8 @@ export interface DataTableColumn {
   truncate?: string;
   /** Sort the table on this column when it starts. */
   defaultSort?: "ascending" | "descending";
+  /** Hide the column (th and tds, data-hide-below) when the table is narrower than 24rem (sm), 32rem (md) or 48rem (lg). */
+  hideBelow?: "sm" | "md" | "lg";
 }
 
 export interface DataTableRow {
@@ -105,6 +109,71 @@ export interface DataTableProps {
   pagination?: boolean;
   /** The selection bar and the selection items of the list menu (default: as `filters`). */
   bulk?: boolean;
+
+  /**
+   * Server mode (0.17.0): `rows` is the current page from your API. The table does not filter, sort or slice them; every
+   * control (sort, search, trash pills, column filters, pager, rows per page) calls back so you can fetch the next page.
+   */
+  server?: boolean;
+  /** Server mode: the number of matches on the server (all pages), for the pager and the "Showing" line. */
+  total?: number;
+  /** Server mode: the current page, 1-based (controlled). Without it the table keeps the page itself. */
+  page?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
+  /** The sorted column (controlled): `{ key, dir }`, or null for none. Without it: the columns' defaultSort. */
+  sort?: DataTableSort | null;
+  onSortChange?: (sort: DataTableSort | null) => void;
+  /** Text in the search field (controlled from outside, e.g. from the URL). */
+  search?: string;
+  /** Server mode: called after the typing stops (`searchDelay`). */
+  onSearchChange?: (search: string) => void;
+  /** Server mode: wait this long after the last key before onSearchChange. Default 300 ms. */
+  searchDelay?: number;
+  /** The trash pill that is on (controlled). Default "active". */
+  trashed?: DataTableTrashed;
+  onTrashedChange?: (trashed: DataTableTrashed) => void;
+  /** Server mode: a column filter (select or tab) changed; "" means all. */
+  onColumnFilterChange?: (column: string, value: string) => void;
+  /** Server mode: every change at once (sort, dir, page, pageSize, search, trashed, filters), handy for one fetch. */
+  onQueryChange?: (query: DataTableQuery) => void;
+  /** Loading: skeleton rows instead of the rows and aria-busy on the table. */
+  loading?: boolean;
+  /** Number of skeleton rows. Default: the page size (5 without pagination). */
+  skeletonRows?: number;
+  /** Shown when there are no rows (default: the noResults text). */
+  emptyState?: ReactNode;
+  /**
+   * Column chooser (free, 0.17.0): the keys of the visible columns (controlled). Setting this, defaultVisibleColumns or
+   * onVisibleColumnsChange adds a columns button to the actions header; unchecked columns are not rendered.
+   * Columns with hideable false always show.
+   */
+  visibleColumns?: string[];
+  defaultVisibleColumns?: string[];
+  onVisibleColumnsChange?: (keys: string[]) => void;
+  /** The selected row keys (controlled), kept over pages. */
+  selectedKeys?: string[];
+  onSelectionChange?: (keys: string[]) => void;
+}
+
+/** The sorted column in server mode. */
+export interface DataTableSort {
+  key: string;
+  dir: "asc" | "desc";
+}
+
+export type DataTableTrashed = "active" | "all" | "deleted" | "archived";
+
+/** Everything the server needs for one page (detail of the oc-datatable-query event). page is 1-based. */
+export interface DataTableQuery {
+  reason: "sort" | "page" | "pageSize" | "search" | "trashed" | "filter";
+  sort: string | null;
+  dir: "asc" | "desc";
+  page: number;
+  pageSize: number;
+  search: string;
+  trashed: DataTableTrashed;
+  filters: Record<string, string>;
 }
 
 /** Every text of the DataTable, for another language (0.17.0). The script texts (pager, "3 selected", sort line,
@@ -198,30 +267,117 @@ export function DataTable({
   view = true,
   pagination = true,
   bulk = filters,
+  server = false,
+  total,
+  page,
+  onPageChange,
+  onPageSizeChange,
+  sort,
+  onSortChange,
+  search,
+  onSearchChange,
+  searchDelay,
+  trashed,
+  onTrashedChange,
+  onColumnFilterChange,
+  onQueryChange,
+  loading = false,
+  skeletonRows,
+  emptyState,
+  visibleColumns,
+  defaultVisibleColumns,
+  onVisibleColumnsChange,
+  selectedKeys,
+  onSelectionChange,
 }: DataTableProps) {
   const L = { ...DATA_TABLE_EN, ...labels };
   const scriptLabels = labels ? JSON.stringify(Object.fromEntries(SCRIPT_KEYS.filter((k) => labels[k] != null).map((k) => [k, labels[k]]))) : undefined;
   const autoId = useId().replace(/:/g, "");
   const tableId = id || `oc-dt-${autoId}`;
   const rootRef = useRef<HTMLDivElement>(null);
-  const onBulkRef = useRef(onBulk);
-  onBulkRef.current = onBulk;
+  const [currentPage, setCurrentPage] = useControllable<number>(page, 1, onPageChange);
+  const picker = visibleColumns !== undefined || defaultVisibleColumns !== undefined || onVisibleColumnsChange !== undefined;
+  const [visible, setVisible] = useControllable<string[]>(
+    visibleColumns,
+    defaultVisibleColumns ?? columns.filter((c) => !c.defaultHidden).map((c) => c.key),
+    onVisibleColumnsChange,
+  );
+  const shown = picker ? columns.filter((c) => c.hideable === false || visible.includes(c.key)) : columns;
+  // The latest callbacks for the listeners below, which are added once.
+  const callbacks = { onBulk, onQueryChange, onSortChange, onSearchChange, onTrashedChange, onPageSizeChange, onColumnFilterChange, onSelectionChange, setCurrentPage, currentPage };
+  const latest = useRef(callbacks);
+  latest.current = callbacks;
+  const lastFilters = useRef<Record<string, string>>({});
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    bindDataTable(root);
     const onBulkEvent = (event: Event) => {
       const detail = (event as CustomEvent<{ action: string; keys: string[] }>).detail;
-      onBulkRef.current?.(detail.action, detail.keys);
+      latest.current.onBulk?.(detail.action, detail.keys);
     };
+    const onQuery = (event: Event) => {
+      const q = (event as CustomEvent<DataTableQuery>).detail;
+      const cb = latest.current;
+      cb.onQueryChange?.(q);
+      if (q.reason === "sort") cb.onSortChange?.(q.sort ? { key: q.sort, dir: q.dir } : null);
+      if (q.reason === "search") cb.onSearchChange?.(q.search);
+      if (q.reason === "trashed") cb.onTrashedChange?.(q.trashed);
+      if (q.reason === "pageSize") cb.onPageSizeChange?.(q.pageSize);
+      if (q.reason === "filter") {
+        for (const [key, value] of Object.entries(q.filters)) {
+          if ((lastFilters.current[key] ?? "") !== value) cb.onColumnFilterChange?.(key, value);
+        }
+      }
+      lastFilters.current = { ...q.filters };
+      if (q.page !== cb.currentPage) cb.setCurrentPage(q.page);
+    };
+    const onSelection = (event: Event) => latest.current.onSelectionChange?.((event as CustomEvent<{ keys: string[] }>).detail.keys);
     root.addEventListener("oc-datatable-bulk", onBulkEvent);
-    return () => root.removeEventListener("oc-datatable-bulk", onBulkEvent);
-  }, [columns, rows]);
+    root.addEventListener("oc-datatable-query", onQuery);
+    root.addEventListener("oc-datatable-selection", onSelection);
+    return () => {
+      root.removeEventListener("oc-datatable-bulk", onBulkEvent);
+      root.removeEventListener("oc-datatable-query", onQuery);
+      root.removeEventListener("oc-datatable-selection", onSelection);
+    };
+  }, []);
+
+  // (Re)bind after every change of the rows or the server state: the script keeps the selection and reads the new state.
+  const sortKey = sort === undefined ? undefined : sort ? `${sort.key}:${sort.dir}` : "";
+  const visibleKey = shown.map((c) => c.key).join(",");
+  useEffect(() => {
+    const root = rootRef.current;
+    if (root) bindDataTable(root);
+  }, [columns, rows, server, currentPage, total, sortKey, trashed, loading, visibleKey]);
+
+  // Controlled text and page size: put them in the fields when they change from outside.
+  useEffect(() => {
+    const input = rootRef.current?.querySelector<HTMLInputElement>(".oc-data-table-search");
+    if (input && search !== undefined && input.value !== search) input.value = search;
+  }, [search]);
+  useEffect(() => {
+    const select = rootRef.current?.querySelector<HTMLSelectElement>("[data-oc-page-size]");
+    if (server && select && select.value !== String(pageSize)) select.value = String(pageSize);
+  }, [server, pageSize]);
+  const selectedKey = selectedKeys?.join("\u0000");
+  useEffect(() => {
+    if (selectedKeys && rootRef.current) setDataTableSelection(rootRef.current, selectedKeys);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedKey]);
 
   const lead = (selectable ? 1 : 0) + (draggable ? 1 : 0);
   const sizes = [...new Set([...PAGE_SIZES, pageSize])].sort((a, b) => a - b);
   const label = (row: DataTableRow) => row.values?.name ?? (typeof row.cells.name === "string" ? row.cells.name : row.key);
+  const pill = (value: DataTableTrashed) => ((trashed ?? "active") === value ? ("true" as const) : undefined);
+  const ariaSort = (col: DataTableColumn) => {
+    if (sort === undefined) return col.defaultSort;
+    return sort && sort.key === col.key ? (sort.dir === "desc" ? "descending" : "ascending") : undefined;
+  };
+  const toggleColumn = (key: string, on: boolean) => {
+    setVisible(columns.map((c) => c.key).filter((k) => (k === key ? on : visible.includes(k))));
+  };
+  const skeletons = loading ? Array.from({ length: skeletonRows ?? (pagination && pageSize > 0 ? pageSize : 5) }, (_, i) => i) : [];
 
   return (
     <div
@@ -232,6 +388,11 @@ export function DataTable({
       data-oc-live={live ? "true" : undefined}
       data-oc-labels={scriptLabels && scriptLabels !== "{}" ? scriptLabels : undefined}
       data-oc-no-grid={view ? undefined : ""}
+      data-oc-server={server ? "true" : undefined}
+      data-oc-total={server ? (total ?? rows.length) : undefined}
+      data-oc-current-page={server ? currentPage : undefined}
+      data-oc-search-delay={searchDelay}
+      aria-busy={loading ? true : undefined}
     >
       {tabs && (
         <div className="oc-tab-list oc-data-table-tabs" role="tablist" aria-label={tabs.label ?? "Filter"}>
@@ -272,13 +433,13 @@ export function DataTable({
             <button className="oc-dropdown-item" type="button" data-oc-density="compact">{L.compact}</button>
           </div>
         </div>
-        <input className="oc-input oc-data-table-search" type="search" placeholder={searchPlaceholder} aria-label={fill(L.search, title)} />
+        <input className="oc-input oc-data-table-search" type="search" placeholder={searchPlaceholder} aria-label={fill(L.search, title)} defaultValue={search} />
         {filters && (
           <div className="oc-filter-pills" role="group" aria-label={L.trashFilter}>
-            <button className="oc-filter-pill" type="button" data-oc-filter="active" aria-current="true">{L.activeOnly}</button>
-            <button className="oc-filter-pill" type="button" data-oc-filter="all">{L.includingTrash}</button>
-            <button className="oc-filter-pill" type="button" data-oc-filter="deleted">{L.trashOnly}</button>
-            {archive && <button className="oc-filter-pill" type="button" data-oc-filter="archived">{L.archiveOnly}</button>}
+            <button className="oc-filter-pill" type="button" data-oc-filter="active" aria-current={pill("active")}>{L.activeOnly}</button>
+            <button className="oc-filter-pill" type="button" data-oc-filter="all" aria-current={pill("all")}>{L.includingTrash}</button>
+            <button className="oc-filter-pill" type="button" data-oc-filter="deleted" aria-current={pill("deleted")}>{L.trashOnly}</button>
+            {archive && <button className="oc-filter-pill" type="button" data-oc-filter="archived" aria-current={pill("archived")}>{L.archiveOnly}</button>}
           </div>
         )}
         {view && <div className="oc-data-table-view" role="group" aria-label={L.view}>
@@ -304,7 +465,23 @@ export function DataTable({
           ))}
         </div>
       ) : null}
-      {columnMenu && (<div className="oc-column-menu" id={`${tableId}-columns`} popover="auto">
+      {picker && (
+        <div className="oc-dropdown-menu oc-data-table-colpick" id={`${tableId}-colpick`} popover="auto">
+          <p className="oc-data-table-colpick-title">{L.columns}</p>
+          {columns.map((col) => (
+            <label className="oc-dropdown-item" key={col.key}>
+              <input
+                type="checkbox"
+                data-oc-visible-col={col.key}
+                checked={col.hideable === false || visible.includes(col.key)}
+                disabled={col.hideable === false}
+                onChange={(e) => toggleColumn(col.key, e.currentTarget.checked)}
+              /> {col.header}
+            </label>
+          ))}
+        </div>
+      )}
+      {columnMenu && !picker && (<div className="oc-column-menu" id={`${tableId}-columns`} popover="auto">
         <p className="oc-column-menu-title">{L.columns}</p>
         {resizable && <button className="oc-dropdown-item" type="button" data-oc-reset-widths="">{L.resetWidths}</button>}
         {resizable && <div className="oc-dropdown-separator" />}
@@ -332,8 +509,8 @@ export function DataTable({
               <tr>
                 {selectable && <th data-oc-col="select"><input className="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label={L.selectAll} /></th>}
                 {draggable && <th data-oc-col="order"><span className="oc-visually-hidden">{L.order}</span></th>}
-                {columns.map((col) => (
-                  <th key={col.key} data-oc-col={col.key} data-oc-sort={col.numeric ? "numeric" : "text"} data-numeric={col.numeric ? "" : undefined} aria-sort={col.defaultSort}>
+                {shown.map((col) => (
+                  <th key={col.key} data-oc-col={col.key} data-oc-sort={col.numeric ? "numeric" : "text"} data-numeric={col.numeric ? "" : undefined} data-hide-below={col.hideBelow} aria-sort={ariaSort(col)}>
                     <span className="oc-data-table-th">
                       {col.sortable === false ? col.header : <button className="oc-table-sort" type="button">{col.header}</button>}
                       {resizable && <span className="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label={fill(L.resize, col.header)} />}
@@ -343,8 +520,8 @@ export function DataTable({
                 <th data-oc-col="actions">
                   <span className="oc-data-table-th">
                     {L.actions}
-                    {columnMenu && (
-                      <button className="oc-btn oc-btn--plain oc-data-table-columns-btn" type="button" popoverTarget={`${tableId}-columns`} aria-label={L.columns} title={L.columns}>
+                    {(columnMenu || picker) && (
+                      <button className="oc-btn oc-btn--plain oc-data-table-columns-btn" type="button" popoverTarget={picker ? `${tableId}-colpick` : `${tableId}-columns`} aria-label={L.columns} title={L.columns}>
                         <Icon d={MDI.view_column_outline} />
                       </button>
                     )}
@@ -353,7 +530,17 @@ export function DataTable({
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
+              {skeletons.map((i) => (
+                <tr key={`oc-skeleton-${i}`} className="oc-data-table-skeleton" aria-hidden="true">
+                  {selectable && <td data-oc-col="select"><span className="oc-skeleton oc-data-table-skeleton-box" /></td>}
+                  {draggable && <td data-oc-col="order" />}
+                  {shown.map((col) => (
+                    <td key={col.key} data-numeric={col.numeric ? "" : undefined} data-hide-below={col.hideBelow}><span className="oc-skeleton oc-data-table-skeleton-bar" /></td>
+                  ))}
+                  <td data-oc-col="actions" />
+                </tr>
+              ))}
+              {!loading && rows.map((row) => (
                 <tr key={row.key} data-oc-row="" data-oc-key={row.key} data-oc-status={row.status || "active"} data-oc-href={row.href}>
                   {selectable && (
                     <td data-oc-col="select"><input className="oc-checkbox" type="checkbox" data-oc-select="" aria-label={fill(L.select, label(row))} /></td>
@@ -363,10 +550,10 @@ export function DataTable({
                       <button className="oc-sortable-row-grip" type="button" aria-label={fill(L.move, label(row))} />
                     </td>
                   )}
-                  {columns.map((col) => {
+                  {shown.map((col) => {
                     const cell = row.cells[col.key] ?? "";
                     return (
-                      <td key={col.key} data-oc-col={col.key} data-numeric={col.numeric ? "" : undefined} data-oc-value={row.values?.[col.key]}>
+                      <td key={col.key} data-oc-col={col.key} data-numeric={col.numeric ? "" : undefined} data-hide-below={col.hideBelow} data-oc-value={row.values?.[col.key]}>
                         {col.truncate && typeof cell === "string"
                           ? <span className="oc-data-table-truncate" style={{ ["--oc-data-table-truncate" as string]: col.truncate }} title={cell}>{cell}</span>
                           : cell}
@@ -379,7 +566,9 @@ export function DataTable({
             </tbody>
           </table>
         </div>
-        <p className="oc-data-table-empty" hidden>{L.noResults}</p>
+        {emptyState != null
+          ? <div className="oc-data-table-empty" hidden>{emptyState}</div>
+          : <p className="oc-data-table-empty" hidden>{L.noResults}</p>}
       </div>
       <div className="oc-data-table-footer">
         <p className="oc-data-table-summary" data-oc-summary={summary ?? labels?.summary ?? ""} />

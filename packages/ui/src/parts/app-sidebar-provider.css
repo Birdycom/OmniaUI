@@ -1,0 +1,98 @@
+/* File: packages/ui/src/parts/app-sidebar-provider.css | Map: provider layout -> inset -> trigger -> rail -> menu action -> module tint */
+/* Sidebar provider (0.17.0): div.oc-sidebar-provider holds the sidebar state (data-state="expanded|collapsed") for the
+   sidebar, a trigger in the page header (button.oc-sidebar-trigger), a thin rail on the sidebar edge (button.oc-sidebar-rail)
+   and the page next to it (main.oc-sidebar-inset). The components and sidebar.js set the classes; this is the layout. */
+
+.oc-sidebar-provider {
+  display: flex;
+  align-items: stretch;
+  inline-size: 100%;
+  min-block-size: 0;
+  block-size: 100%;
+}
+.oc-sidebar-provider > .oc-sidebar { flex-shrink: 0; }
+
+/* The page: takes the remaining width and may shrink below its content (tables scroll inside it). */
+.oc-sidebar-inset {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 0;
+  background: var(--oc-background);
+}
+
+.oc-sidebar-trigger > svg { inline-size: 1.25rem; block-size: 1.25rem; }
+
+/* Rail: an 8px hit area centred on the sidebar edge; a thin line shows on hover. It takes no width in the layout. */
+.oc-sidebar-rail {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  align-self: stretch;
+  inline-size: 8px;
+  margin-inline: -4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: w-resize;
+}
+.oc-sidebar-rail::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 3px;
+  inline-size: 2px;
+  background: transparent;
+  transition: background var(--oc-transition-fast);
+}
+.oc-sidebar-rail:hover::after,
+.oc-sidebar-rail:focus-visible::after { background: var(--oc-border); }
+.oc-sidebar-rail:focus-visible { outline: none; }
+[data-state="collapsed"] > .oc-sidebar-rail { cursor: e-resize; }
+.oc-sidebar--right + .oc-sidebar-rail,
+.oc-sidebar-rail:has(+ .oc-sidebar--right) { cursor: e-resize; }
+
+/* Menu action: a small button on the right of a menu item (more, add). */
+.oc-sidebar-menu > li:has(> .oc-sidebar-menu-action),
+.oc-sidebar-menu-sub > li:has(> .oc-sidebar-menu-action) { position: relative; }
+li:has(> .oc-sidebar-menu-action) > .oc-sidebar-menu-button { padding-inline-end: 2.25rem; }
+.oc-sidebar-menu-action {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0.25rem;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  padding: 0;
+  font: inherit;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 0;
+  border-radius: calc(var(--oc-radius) - 4px);
+  cursor: pointer;
+  translate: 0 -50%;
+  transition: background var(--oc-transition-fast), color var(--oc-transition-fast), opacity var(--oc-transition-fast);
+}
+.oc-sidebar-menu-action > svg { inline-size: 1rem; block-size: 1rem; }
+.oc-sidebar-menu-action:hover { background: var(--oc-muted); color: var(--oc-foreground); }
+.oc-sidebar-menu-action:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: -2px; }
+@media (hover: hover) {
+  .oc-sidebar-menu-action--hover { opacity: 0; }
+  li:hover > .oc-sidebar-menu-action--hover,
+  li:focus-within > .oc-sidebar-menu-action--hover,
+  .oc-sidebar-menu-action--hover[aria-expanded="true"] { opacity: 1; }
+}
+.oc-sidebar--collapsed .oc-sidebar-menu-action { display: none; }
+.oc-sidebar--collapsed li:has(> .oc-sidebar-menu-action) > .oc-sidebar-menu-button { padding-inline-end: 0; }
+
+/* Module tint: a sidebar with data-module (or inside one) marks the active row with the module colour (soft fill, coloured
+   icon); without a module colour it falls back to the primary colour. */
+.oc-sidebar[data-module] .oc-sidebar-menu-button[aria-current="page"],
+.oc-sidebar[data-module] .oc-sidebar-menu-button.is-active {
+  background: var(--oc-module-soft, color-mix(in oklab, var(--oc-module, var(--oc-primary)) 12%, transparent));
+  color: var(--oc-foreground);
+}
+.oc-sidebar[data-module] .oc-sidebar-menu-button[aria-current="page"] .oc-sidebar-menu-icon,
+.oc-sidebar[data-module] .oc-sidebar-menu-button.is-active .oc-sidebar-menu-icon { color: var(--oc-module, var(--oc-primary)); }

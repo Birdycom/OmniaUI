@@ -57,6 +57,29 @@ const snippetAlias = {
   'card-link': 'card',
   'dropdown-sub': 'dropdown-menu',
   'version-badge': 'badge',
+  dialog: 'modal',
+  'dialog-body': 'modal',
+  'dialog-close': 'modal',
+  'dialog-content': 'modal',
+  'dialog-description': 'modal',
+  'dialog-footer': 'modal',
+  'dialog-header': 'modal',
+  'dialog-title': 'modal',
+  'dialog-trigger': 'modal',
+  'popover-anchor': 'popover',
+  'popover-content': 'popover',
+  'popover-trigger': 'popover',
+  'tabs-list': 'tabs',
+  'tabs-trigger': 'tabs',
+  'tabs-content': 'tabs',
+  'tooltip-provider': 'tooltip',
+  'sidebar-inset': 'sidebar',
+  'sidebar-menu-action': 'sidebar',
+  'sidebar-menu-badge': 'sidebar',
+  'sidebar-menu-sub': 'sidebar',
+  'sidebar-provider': 'sidebar',
+  'sidebar-rail': 'sidebar',
+  'sidebar-trigger': 'sidebar',
 }
 
 const entries = []
@@ -112,6 +135,9 @@ lines.push("export { useUid } from './composables/useUid'")
 lines.push("export { addWebicons, getWebicon, hasWebicon, languageFlag, registerWebicons } from './webicons'")
 lines.push("export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './webicons'")
 lines.push("export { contrastRatio, luminance, pickOnColor, toRgb } from './color'")
+// Sidebar provider (0.17.0): read the state of the nearest OcSidebarProvider in your own components.
+lines.push("export { useSidebar, useSidebarOptional, sidebarKey } from './composables/useSidebar'")
+lines.push("export type { SidebarContext } from './composables/useSidebar'")
 lines.push('')
 lines.push('/** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */')
 lines.push('export const components: Record<string, Component> = {')

@@ -1,0 +1,142 @@
+/* File: packages/ui/src/parts/forms-combobox-catalog.css
+   Map: panel (list + footer) -> option text with a description -> image and emoji -> clear and custom rows -> loading row
+        -> manage footer -> list in document.body (portal) -> forced colors
+   Catalog mode of the combobox (0.17.0): long server-searched lists of customers, products or codes. A two-line option
+   (label + muted description), an image or emoji in the icon column, a first row that clears the choice, a row that takes
+   what was typed, a loading row, a footer with a manage link, and a list moved to document.body so a scrolling or clipping
+   parent does not cut it off. Theme tokens only; flat, no gradient, no glow. */
+
+/* Panel: with a footer the popup is a div (.oc-combobox-list--panel) around the listbox and the footer. */
+.oc-combobox-list.oc-combobox-list--panel {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+.oc-combobox-options {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+}
+/* Options without an icon in a list that has icons: same start as in .oc-combobox-list (forms-combobox-icons.css). */
+.oc-combobox-options:has(.oc-combobox-option-icon, .oc-combobox-option-image, .oc-combobox-option-emoji) > .oc-combobox-option:not(:has(> :is(.oc-combobox-option-icon, .oc-combobox-option-image, .oc-combobox-option-emoji)), .oc-combobox-clear, .oc-combobox-custom),
+.oc-combobox-list:has(.oc-combobox-option-image, .oc-combobox-option-emoji) > .oc-combobox-option:not(:has(> :is(.oc-combobox-option-icon, .oc-combobox-option-image, .oc-combobox-option-emoji)), .oc-combobox-clear, .oc-combobox-custom) {
+  padding-inline-start: calc(0.625rem + var(--oc-combobox-icon) + 0.5rem);
+}
+
+/* Two lines: label + muted description. */
+.oc-combobox-option-text {
+  display: grid;
+  flex: 1 1 auto;
+  gap: 1px;
+  min-inline-size: 0;
+}
+.oc-combobox-option-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.oc-combobox-option-description {
+  overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--oc-muted-foreground);
+}
+.oc-combobox-option:is(:hover, :focus-visible, [data-active]) .oc-combobox-option-description { color: inherit; opacity: 0.8; }
+.oc-combobox-option:has(> .oc-combobox-option-text) { justify-content: flex-start; }
+.oc-combobox-option:has(> .oc-combobox-option-text)[aria-selected="true"]::after { flex: none; margin-inline-start: auto; }
+
+/* Image and emoji take the icon column. */
+.oc-combobox-option-image,
+.oc-combobox-option-emoji {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--oc-combobox-icon, 1.125rem);
+  block-size: var(--oc-combobox-icon, 1.125rem);
+  line-height: 1;
+}
+img.oc-combobox-option-image {
+  border-radius: calc(var(--oc-radius) - 4px);
+  object-fit: cover;
+  /* A wide logo (mark + name) shows its mark on the left instead of a cropped middle. */
+  object-position: left center;
+}
+.oc-combobox-option-emoji { font-size: 1rem; }
+.oc-combobox-option:has(> :is(.oc-combobox-option-image, .oc-combobox-option-emoji)) { justify-content: flex-start; }
+.oc-combobox-option:has(> :is(.oc-combobox-option-image, .oc-combobox-option-emoji))[aria-selected="true"]::after { margin-inline-start: auto; }
+.oc-combobox-icon > .oc-combobox-option-image,
+.oc-combobox-icon > .oc-combobox-option-emoji { inline-size: 100%; block-size: 100%; }
+/* The selected logo in the field: the icon square, cropped from the left like in the list (not a tiny contained wordmark). */
+.oc-combobox-icon > img.oc-combobox-option-image { inline-size: var(--oc-combobox-icon, 1.125rem); block-size: var(--oc-combobox-icon, 1.125rem); object-fit: cover; object-position: left center; }
+.oc-combobox-icon > .oc-combobox-option-emoji { inline-size: auto; block-size: auto; }
+.oc-combobox-icon:has(> .oc-combobox-option-emoji) { color: inherit; }
+
+/* Clear row: muted, separated from the options under it. */
+.oc-combobox-clear {
+  color: var(--oc-muted-foreground);
+  font-style: italic;
+  border-block-end: 1px solid var(--oc-border);
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+  margin-block-end: 2px;
+}
+/* Custom row: "Use ..." at the end, in the primary colour. */
+.oc-combobox-custom {
+  color: var(--oc-primary);
+  font-weight: 500;
+}
+.oc-combobox-custom:is(:hover, :focus-visible, [data-active]) { color: var(--oc-accent-foreground); }
+.oc-combobox-custom[hidden],
+.oc-combobox-clear[hidden],
+.oc-combobox-loading[hidden] { display: none; }
+
+/* Loading row (aria-busy on the listbox). */
+.oc-combobox-loading {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  color: var(--oc-muted-foreground);
+}
+
+/* Footer with the manage link: outside the listbox, stays at the bottom while the options scroll. */
+.oc-combobox-footer {
+  flex: none;
+  padding: 4px;
+  border-block-start: 1px solid var(--oc-border);
+  background: var(--oc-popover);
+}
+.oc-combobox-footer > a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.625rem;
+  border-radius: calc(var(--oc-radius) - 2px);
+  color: var(--oc-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+.oc-combobox-footer > a:is(:hover, :focus-visible) { background: var(--oc-accent); color: var(--oc-accent-foreground); outline: none; }
+
+/* Portal: the list lives in document.body, fixed under the field (top/left/width set by the script or wrapper). It is
+   no longer inside .oc-combobox, so [data-open] on the list itself shows it. */
+.oc-combobox-list.oc-combobox-list--portal {
+  position: fixed;
+  inset: auto;
+  z-index: 1000;
+  max-inline-size: calc(100vw - 16px);
+}
+.oc-combobox-list--portal[data-open=""] { visibility: visible; opacity: 1; translate: 0 0; transition-delay: 0s; }
+.oc-combobox-list--portal[data-open="false"] { visibility: hidden; opacity: 0; }
+
+@media (forced-colors: active) {
+  .oc-combobox-clear,
+  .oc-combobox-footer { border-color: CanvasText; }
+  .oc-combobox-custom,
+  .oc-combobox-footer > a { color: LinkText; }
+}

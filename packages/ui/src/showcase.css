@@ -153,7 +153,10 @@
    Your own ratio: set --oc-split-cols in a class (and to 1fr in a media query for small screens). */
 .oc-split--lead { --oc-split-cols: 1.25fr 1fr; }
 .oc-split--media { --oc-split-cols: 1fr 1.15fr; }
-.oc-split__media { display: grid; place-items: center; }
+.oc-split__media { display: grid; place-items: center; container-type: inline-size; }
+/* A large product mark never grows wider than its column: in a narrow box (a card, a docs preview) the text keeps its
+   share of the split instead of being squeezed to a few words per line. */
+.oc-split__media .oc-icon-tile--xl { --oc-tile-size: min(clamp(7rem, 22vw, 15rem), 100cqi); }
 /* Columns aligned at the top (a fact list next to a long text). */
 .oc-split--top { align-items: start; }
 /* --oc-split-cols-wide: your own ratio that only applies above 960px, so the split still stacks on a phone. */
@@ -226,7 +229,10 @@
 .oc-browser-frame__bar > i { inline-size: 0.6rem; aspect-ratio: 1; border-radius: 50%; background: var(--oc-border-strong); }
 .oc-browser-frame__bar > i:first-child { background: var(--oc-accent-from); }
 .oc-browser-frame > img,
-.oc-browser-frame__body { display: block; inline-size: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+.oc-browser-frame__body { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+/* block-size: auto above: an <img> with width/height attributes keeps the 16 / 10 box instead of its attribute height
+   (which cropped the sides). An <img> inside the body (the React, Vue and Blade showcase render it so) fills that box too. */
+.oc-browser-frame__body > img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
 
 /* Icon tile: rounded square with an accent gradient (product logo, feature icon) */
 .oc-icon-tile {
@@ -252,7 +258,7 @@
 .oc-icon-tile--float { animation: oc-float 6s ease-in-out infinite; }
 @keyframes oc-float { 50% { translate: 0 -12px; } }
 
-/* Product / feature card with hover lift and accent glow */
+/* Product / feature card with a soft hover lift and an accent border (no glow) */
 .oc-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--oc-card-min, 17rem)), 1fr)); gap: var(--oc-card-gap, 1.25rem); }
 /* Wide cards (projects, case studies): from 32rem, three in a row on a wide screen. */
 .oc-card-grid--wide { --oc-card-min: 32rem; --oc-card-gap: 1.5rem; }
@@ -267,30 +273,24 @@
   padding: 1.6rem;
   border: 1px solid var(--oc-border);
   border-radius: var(--oc-radius-lg);
-  background:
-    radial-gradient(22rem circle at 50% 0%, oklch(from var(--oc-accent-from) l c h / var(--oc-glow, 0)), transparent 60%),
-    var(--oc-surface);
+  background: var(--oc-surface);
   color: var(--oc-foreground);
   text-decoration: none;
-  transition: translate 0.35s var(--oc-ease-out), border-color 0.35s, --oc-glow 0.35s;
-}
-@property --oc-glow {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 0;
+  /* Timing lives in parts/utility-hover.css: 0.3s ease after a 0.08s delay, so the lift eases in instead of jumping. */
+  transition: translate 0.3s ease 0.08s, border-color 0.3s ease 0.08s;
 }
 .oc-product-card:hover {
-  --oc-glow: 0.22;
   /* The lift uses translate; a fly-in (.oc-reveal--fly) animates the transform, so both keep working. */
   translate: 0 calc(-1 * var(--oc-hover-lift, 6px));
-  border-color: oklch(from var(--oc-accent-from) l c h / 0.55);
+  border-color: oklch(from var(--oc-accent-from) l c h / 0.45);
 }
 .oc-product-card__top { display: flex; justify-content: space-between; align-items: flex-start; margin-block-end: 0.75rem; }
 .oc-product-card__name { margin: 0; font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; }
 .oc-product-card__tagline { margin: 0; color: light-dark(oklch(from var(--oc-accent-from) min(l, 0.52) c h), oklch(from var(--oc-accent-from) max(l, 0.72) c h)); font-weight: 600; font-size: 0.95rem; }
 .oc-product-card__summary { margin: 0; color: var(--oc-muted-foreground); font-size: 0.95rem; flex-grow: 1; }
 .oc-product-card__more { display: inline-flex; align-items: center; gap: 0.4rem; margin-block-start: 0.75rem; font-weight: 600; font-size: 0.92rem; }
-.oc-product-card__more::after { content: "\002192"; transition: translate 0.25s var(--oc-ease-out); }
+.oc-product-card__more::after { content: "\002192"; transition: translate 0.3s ease 0.08s; }
+@media (prefers-reduced-motion: reduce) { .oc-product-card__more::after { transition: none; } .oc-product-card:hover .oc-product-card__more::after { translate: none; } }
 .oc-product-card:hover .oc-product-card__more::after { translate: 5px 0; }
 
 /* Pill badge (neutral) and accent pill + pulsing status dot */
@@ -348,11 +348,13 @@
 .oc-stat-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  overflow: hidden;
   border-block: 1px solid var(--oc-border);
   background: var(--oc-surface);
 }
-.oc-stat-strip__item { padding: 2rem 1.5rem; border-inline-start: 1px solid var(--oc-border); }
-.oc-stat-strip__item:first-child { border-inline-start: 0; }
+/* Cell lines as a 1px shadow on the start and top side of every figure; the strip clips the ones on its outer edge.
+   So the lines stay even for any number of columns (4, 2 + 2, 1 per row) and container width. */
+.oc-stat-strip__item { padding: 2rem 1.5rem; box-shadow: -1px 0 0 var(--oc-border), 0 -1px 0 var(--oc-border); }
 .oc-stat-strip__value { font-family: var(--oc-font-display, inherit); font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; line-height: 1.1; }
 .oc-stat-strip__suffix { color: var(--oc-brand-1); }
 .oc-stat-strip__label { display: block; color: var(--oc-muted-foreground); font-size: 0.92rem; }
@@ -361,8 +363,6 @@
 /* Four figures on a narrower screen: two rows of two instead of three and one. */
 @media (max-width: 960px) {
   .oc-stat-strip:has(> .oc-stat-strip__item:nth-child(4):last-child) { grid-template-columns: 1fr 1fr; }
-  .oc-stat-strip:has(> .oc-stat-strip__item:nth-child(4):last-child) > .oc-stat-strip__item:nth-child(3) { border-inline-start: 0; }
-  .oc-stat-strip:has(> .oc-stat-strip__item:nth-child(4):last-child) > .oc-stat-strip__item:nth-child(n + 3) { border-block-start: 1px solid var(--oc-border); }
 }
 
 /* Spotlight: large highlighted panel with copy + module list */
@@ -395,7 +395,7 @@
 .oc-steps > li { position: relative; padding: 1.75rem 1.5rem; border-block-start: 2px solid var(--oc-border-strong); counter-increment: oc-step; }
 .oc-steps > li::before { content: ""; position: absolute; inset-block-start: -2px; inset-inline-start: 0; inline-size: 3rem; block-size: 2px; background: var(--oc-gradient-brand); }
 .oc-steps > li::after { content: counter(oc-step, decimal-leading-zero); position: absolute; inset-block-start: 1.75rem; inset-inline-end: 1.5rem; color: var(--oc-brand-1); font-family: var(--oc-font-mono); font-size: 0.85rem; }
-.oc-steps h3 { margin: 0 0 0.5rem; font-size: 1.3rem; }
+.oc-steps h3 { margin: 0 0 0.5rem; font-size: 1.3rem; color: var(--oc-foreground); }
 .oc-steps p { margin: 0; color: var(--oc-muted-foreground); font-size: 0.95rem; }
 
 /* Marquee: endless scrolling row (repeat the items once; pauses on hover) */

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Combobox", "category": "Forms", "description": "Input + listbox styling (filtering and selection are wrapper responsibility).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Combobox", "category": "Forms", "description": "Input with a listbox of suggestions: icons, server search, a clear row and a manage link. Filtering and choosing come from a wrapper or script.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Combobox</h1>
         <p class="oc-hero-text">An input with a listbox of suggestions, with or without an icon in front of each option. The CSS draws the field, the chevron and the list, and opens the list while the wrapper has focus. Filtering, keyboard selection and the ARIA bookkeeping come from the React, Vue or Blade component, or from the small script <code>oc-combobox.js</code>. <a href="../components.html">All components</a>.</p>
@@ -9,7 +9,7 @@
         </div>
         <div class="oc-section-content">
           <p class="oc-section-content__desc">Click the field: the list opens while the field has focus, with Laravel marked as chosen and Svelte disabled. Hover the options. Typing does not filter here: filtering and choosing need the wrapper component or your own script.</p>
-          <oc-demo title="Combobox" size="tall">
+          <oc-demo title="Combobox" size="tall" hint="Click the field or type: the list opens below it.">
 <div class="oc-combobox">
   <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework…" aria-label="Framework">
   <ul class="oc-combobox-list" id="oc-cb-list" role="listbox" aria-label="Frameworks">
@@ -94,7 +94,7 @@ class FrameworkPicker extends Component
 
           <h3 class="oc-section-content__title mt-2" id="icons">With icons <span class="oc-badge-version">v0.16.0</span></h3>
           <p class="oc-section-content__desc">An icon in front of every option (<code>.oc-combobox-option-icon</code>: a webicon, a flag, a small logo) and in front of the chosen value in the field (<code>.oc-combobox-icon</code>). "Other" has no icon and still starts where the other labels start. Type <kbd>car</kbd> to filter, move with <kbd>↓</kbd> <kbd>↑</kbd>, choose with <kbd>Enter</kbd> or a click: the icon of the choice moves into the field. This demo needs the small script <code>oc-combobox.js</code> (<code>npx omniaui copy-js combobox</code>) for typing and the keyboard, because a list that filters while you type cannot be built in CSS; the React, Vue and Blade components do the same.</p>
-          <oc-demo title="Combobox - with icons" size="tall">
+          <oc-demo title="Combobox - with icons" size="tall" hint="Click a field or type: the list opens below it.">
 <div class="flex flex-wrap gap-2 w-full">
 <div class="oc-combobox" data-oc-combobox>
   <span class="oc-combobox-icon" aria-hidden="true"><iconify-icon icon="mdi:wallet-outline" aria-hidden="true"></iconify-icon></span>
@@ -245,6 +245,284 @@ class PaymentDetails extends Component
     /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="catalog">Catalog mode <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">For long lists that live on the server: customers, products, ledger codes. The customer field searches while you type (here a fake server that answers after 300 ms; the list shows a loading row meanwhile and an older answer never overwrites a newer one), gives numeric ids, starts with a row that clears the choice and ends with a <em>Manage customers</em> link outside the listbox. It sits in a small scrolling box and uses <code>portal</code>: the list moves to <code>document.body</code> so the box does not cut it off. The unit field is local, uses emoji and the ledger look, and offers what you typed when nothing matches exactly (type <kbd>week</kbd>). Options can have a <code>description</code>, an <code>image</code> or an <code>emoji</code>.</p>
+          <oc-demo title="Combobox - catalog mode" size="tall" hint="Click the field or type: the list opens below it, also outside the scrolling box.">
+<div class="flex flex-wrap gap-2 w-full">
+<div style="inline-size:min(100%, 20rem); max-block-size:6.5rem; overflow:auto; padding:0.75rem; border:1px dashed var(--oc-border); border-radius:var(--oc-radius)">
+<div class="oc-combobox" id="cb-catalog-customer" data-oc-combobox data-oc-search="event" data-oc-value-type="number" data-oc-portal style="inline-size:100%">
+  <span class="oc-combobox-icon" aria-hidden="true"><img class="oc-combobox-option-image" src="/img/samples/logo-company-1.svg" alt=""></span>
+  <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="cb-catalog-customer-list" aria-autocomplete="list" aria-label="Customer" placeholder="Search customers" value="Company 1">
+  <input type="hidden" name="customer_id" value="1">
+  <div class="oc-combobox-list oc-combobox-list--panel">
+    <ul class="oc-combobox-options" id="cb-catalog-customer-list" role="listbox" aria-label="Customer">
+      <li class="oc-combobox-option oc-combobox-clear" role="option" tabindex="-1" data-value="" aria-selected="false">No customer</li>
+      <li class="oc-combobox-option" role="option" tabindex="-1" data-value="1" aria-selected="true"><img class="oc-combobox-option-image" src="/img/samples/logo-company-1.svg" alt=""><span class="oc-combobox-option-text"><span class="oc-combobox-option-label">Company 1</span><span class="oc-combobox-option-description">info@company1.example</span></span></li>
+      <li class="oc-combobox-empty" role="presentation" hidden>No results</li>
+    </ul>
+    <div class="oc-combobox-footer"><a href="#catalog" tabindex="-1">Manage customers</a></div>
+  </div>
+</div>
+<p class="oc-text-muted" style="margin:0.75rem 0 0">This box scrolls; the list is not clipped.</p>
+</div>
+<div class="oc-combobox oc-combobox--ledger" data-oc-combobox>
+  <span class="oc-combobox-icon" aria-hidden="true"></span>
+  <input class="oc-input oc-combobox-input oc-input--ledger" type="text" role="combobox" aria-expanded="false" aria-controls="cb-catalog-unit" aria-autocomplete="list" aria-label="Unit" placeholder="Unit">
+  <input type="hidden" name="unit" value="">
+  <ul class="oc-combobox-list" id="cb-catalog-unit" role="listbox" aria-label="Unit">
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="piece" aria-selected="false"><span class="oc-combobox-option-emoji" aria-hidden="true">📦</span>Piece</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="hour" aria-selected="false"><span class="oc-combobox-option-emoji" aria-hidden="true">⏱️</span>Hour</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="day" aria-selected="false"><span class="oc-combobox-option-emoji" aria-hidden="true">📅</span>Day</li>
+    <li class="oc-combobox-option" role="option" tabindex="-1" data-value="km" aria-selected="false"><span class="oc-combobox-option-emoji" aria-hidden="true">🚗</span>Kilometre</li>
+    <li class="oc-combobox-option oc-combobox-custom" role="option" tabindex="-1" aria-selected="false" data-oc-custom-label="Use &quot;{query}&quot;" hidden></li>
+    <li class="oc-combobox-empty" role="presentation" hidden>No results</li>
+  </ul>
+</div>
+</div>
+<script>
+// Demo only: a fake server that answers after 300 ms. In your app: fetch() in the listener, or data-oc-search-url.
+(() => {
+  const all = [1, 2, 3, 4].map((n) => ({ value: n, label: `Company ${n}`, description: `info@company${n}.example`, image: `/img/samples/logo-company-${n}.svg` }))
+    .concat([1, 2, 3].map((n) => ({ value: 10 + n, label: `Customer ${n}`, description: `customer${n}@company1.example`, emoji: "🙂" })));
+  document.addEventListener("oc-combobox-search", (e) => {
+    if (e.target.id !== "cb-catalog-customer") return;
+    const q = e.detail.query.toLowerCase();
+    setTimeout(() => e.target.ocSetOptions(all.filter((c) => `${c.label} ${c.description}`.toLowerCase().includes(q)), e.detail.query), 300);
+  });
+})();
+</script>
+<oc-code lang="html">&lt;div class="flex flex-wrap gap-2 w-full"&gt;
+&lt;div style="inline-size:min(100%, 20rem); max-block-size:6.5rem; overflow:auto"&gt;
+&lt;div class="oc-combobox" id="cb-catalog-customer" data-oc-combobox data-oc-search="event" data-oc-value-type="number" data-oc-portal&gt;
+  &lt;span class="oc-combobox-icon" aria-hidden="true"&gt;&lt;img class="oc-combobox-option-image" src="/img/samples/logo-company-1.svg" alt=""&gt;&lt;/span&gt;
+  &lt;input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="cb-catalog-customer-list" aria-autocomplete="list" aria-label="Customer" placeholder="Search customers" value="Company 1"&gt;
+  &lt;input type="hidden" name="customer_id" value="1"&gt;
+  &lt;div class="oc-combobox-list oc-combobox-list--panel"&gt;
+    &lt;ul class="oc-combobox-options" id="cb-catalog-customer-list" role="listbox" aria-label="Customer"&gt;
+      &lt;li class="oc-combobox-option oc-combobox-clear" role="option" tabindex="-1" data-value="" aria-selected="false"&gt;No customer&lt;/li&gt;
+      &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="1" aria-selected="true"&gt;&lt;img class="oc-combobox-option-image" src="/img/samples/logo-company-1.svg" alt=""&gt;&lt;span class="oc-combobox-option-text"&gt;&lt;span class="oc-combobox-option-label"&gt;Company 1&lt;/span&gt;&lt;span class="oc-combobox-option-description"&gt;info@company1.example&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+      &lt;li class="oc-combobox-empty" role="presentation" hidden&gt;No results&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;div class="oc-combobox-footer"&gt;&lt;a href="/customers" tabindex="-1"&gt;Manage customers&lt;/a&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="oc-combobox oc-combobox--ledger" data-oc-combobox&gt;
+  &lt;span class="oc-combobox-icon" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;input class="oc-input oc-combobox-input oc-input--ledger" type="text" role="combobox" aria-expanded="false" aria-controls="cb-catalog-unit" aria-autocomplete="list" aria-label="Unit" placeholder="Unit"&gt;
+  &lt;input type="hidden" name="unit" value=""&gt;
+  &lt;ul class="oc-combobox-list" id="cb-catalog-unit" role="listbox" aria-label="Unit"&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="piece" aria-selected="false"&gt;&lt;span class="oc-combobox-option-emoji" aria-hidden="true"&gt;📦&lt;/span&gt;Piece&lt;/li&gt;
+    &lt;li class="oc-combobox-option" role="option" tabindex="-1" data-value="hour" aria-selected="false"&gt;&lt;span class="oc-combobox-option-emoji" aria-hidden="true"&gt;⏱️&lt;/span&gt;Hour&lt;/li&gt;
+    &lt;li class="oc-combobox-option oc-combobox-custom" role="option" tabindex="-1" aria-selected="false" data-oc-custom-label="Use &amp;quot;{query}&amp;quot;" hidden&gt;&lt;/li&gt;
+    &lt;li class="oc-combobox-empty" role="presentation" hidden&gt;No results&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script type="module"&gt;
+// Answer the search event with the options; the query tells the script which question this answer belongs to.
+document.getElementById("cb-catalog-customer").addEventListener("oc-combobox-search", async (e) =&gt; {
+  const res = await fetch(`/customers/search?q=${encodeURIComponent(e.detail.query)}`);
+  e.target.ocSetOptions(await res.json(), e.detail.query);
+});
+&lt;/script&gt;
+&lt;script type="module" src="/js/oc-combobox.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">import { useRef, useState } from "react";
+import { Combobox } from "@birdycom/omniaui-react";
+import type { ComboboxOption } from "@birdycom/omniaui-react";
+
+const company1 = { value: 1, label: "Company 1", description: "info@company1.example", image: "/img/samples/logo-company-1.svg" };
+const units: ComboboxOption[] = [
+  { value: "piece", label: "Piece", emoji: "📦" },
+  { value: "hour", label: "Hour", emoji: "⏱️" },
+  { value: "day", label: "Day", emoji: "📅" },
+  { value: "km", label: "Kilometre", emoji: "🚗" },
+];
+
+export function InvoiceLine({ searchCustomers }: { searchCustomers: (query: string) =&gt; Promise&lt;ComboboxOption[]&gt; }) {
+  const [customerId, setCustomerId] = useState&lt;number | null&gt;(1);
+  const [results, setResults] = useState&lt;ComboboxOption[]&gt;([]);
+  const [loading, setLoading] = useState(false);
+  const [unit, setUnit] = useState("");
+  const asked = useRef("");
+
+  // onSearch is debounced (searchDelay, 250 ms); keep only the answer to the latest question.
+  const search = async (query: string) =&gt; {
+    asked.current = query;
+    setLoading(true);
+    const found = await searchCustomers(query);
+    if (asked.current === query) {
+      setResults(found);
+      setLoading(false);
+    }
+  };
+
+  return (
+    &lt;div className="flex flex-wrap gap-2 w-full"&gt;
+      &lt;Combobox
+        label="Customer"
+        placeholder="Search customers"
+        name="customer_id"
+        valueType="number"
+        value={customerId}
+        onChange={setCustomerId}
+        options={results}
+        onSearch={search}
+        loading={loading}
+        selected={company1}
+        clearLabel="No customer"
+        manageHref="/customers"
+        manageLabel="Manage customers"
+        portal
+      /&gt;
+      &lt;Combobox
+        label="Unit"
+        placeholder="Unit"
+        name="unit"
+        variant="ledger"
+        options={units}
+        value={unit}
+        onChange={setUnit}
+        allowCustomFromSearch
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcCombobox } from '@birdycom/omniaui-vue'
+import type { ComboboxItem } from '@birdycom/omniaui-vue'
+
+const props = defineProps&lt;{ searchCustomers: (query: string) =&gt; Promise&lt;ComboboxItem[]&gt; }&gt;()
+const company1: ComboboxItem = { value: 1, label: 'Company 1', description: 'info@company1.example', image: '/img/samples/logo-company-1.svg' }
+const units: ComboboxItem[] = [
+  { value: 'piece', label: 'Piece', emoji: '📦' },
+  { value: 'hour', label: 'Hour', emoji: '⏱️' },
+  { value: 'day', label: 'Day', emoji: '📅' },
+  { value: 'km', label: 'Kilometre', emoji: '🚗' },
+]
+const customerId = ref&lt;number | null&gt;(1)
+const results = ref&lt;ComboboxItem[]&gt;([])
+const loading = ref(false)
+const unit = ref('')
+let asked = ''
+
+// @search is debounced (search-delay, 250 ms); keep only the answer to the latest question.
+async function search(query: string) {
+  asked = query
+  loading.value = true
+  const found = await props.searchCustomers(query)
+  if (asked === query) {
+    results.value = found
+    loading.value = false
+  }
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="flex flex-wrap gap-2 w-full"&gt;
+    &lt;OcCombobox
+      v-model="customerId"
+      value-type="number"
+      :options="results"
+      :loading="loading"
+      :selected="company1"
+      label="Customer"
+      placeholder="Search customers"
+      name="customer_id"
+      clear-label="No customer"
+      manage-href="/customers"
+      manage-label="Manage customers"
+      portal
+      @search="search"
+    /&gt;
+    &lt;OcCombobox v-model="unit" :options="units" label="Unit" placeholder="Unit" name="unit" variant="ledger" allow-custom-from-search /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- search-url: the script fetches /customers/search?q=... and expects JSON [{ value, label, description, image }] --}}
+&lt;div class="flex flex-wrap gap-2 w-full"&gt;
+    &lt;x-oc::combobox
+        name="customer_id"
+        label="Customer"
+        placeholder="Search customers"
+        value-type="number"
+        search-url="/customers/search?q="
+        value="1"
+        :selected="['value' =&gt; 1, 'label' =&gt; 'Company 1', 'description' =&gt; 'info@company1.example', 'image' =&gt; '/img/samples/logo-company-1.svg']"
+        :options="[]"
+        clear-label="No customer"
+        manage-href="/customers"
+        manage-label="Manage customers"
+        portal
+    /&gt;
+    &lt;x-oc::combobox name="unit" label="Unit" placeholder="Unit" variant="ledger" allow-custom-from-search :options="[
+        'piece' =&gt; ['label' =&gt; 'Piece', 'emoji' =&gt; '📦'],
+        'hour' =&gt; ['label' =&gt; 'Hour', 'emoji' =&gt; '⏱️'],
+        'day' =&gt; ['label' =&gt; 'Day', 'emoji' =&gt; '📅'],
+        'km' =&gt; ['label' =&gt; 'Kilometre', 'emoji' =&gt; '🚗'],
+    ]" /&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-combobox.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Renderless;
+use Livewire\Component;
+
+class InvoiceLine extends Component
+{
+    public ?int $customerId = 1;
+
+    public string $unit = '';
+
+    public array $units = [
+        'piece' =&gt; ['label' =&gt; 'Piece', 'emoji' =&gt; '📦'],
+        'hour' =&gt; ['label' =&gt; 'Hour', 'emoji' =&gt; '⏱️'],
+        'day' =&gt; ['label' =&gt; 'Day', 'emoji' =&gt; '📅'],
+        'km' =&gt; ['label' =&gt; 'Kilometre', 'emoji' =&gt; '🚗'],
+    ];
+
+    /** Called by x-oc::wire.combobox while you type; the returned list becomes the options (no re-render needed). */
+    #[Renderless]
+    public function searchCustomers(string $query): array
+    {
+        // In your app: Customer::where('name', 'like', "%{$query}%")-&gt;limit(20)-&gt;get()-&gt;map(...)
+        return collect(range(1, 4))
+            -&gt;map(fn ($n) =&gt; ['value' =&gt; $n, 'label' =&gt; "Company {$n}", 'description' =&gt; "info@company{$n}.example", 'image' =&gt; "/img/samples/logo-company-{$n}.svg"])
+            -&gt;filter(fn ($c) =&gt; str_contains(strtolower($c['label'].' '.$c['description']), strtolower($query)))
+            -&gt;values()
+            -&gt;all();
+    }
+
+    public function render()
+    {
+        return view('livewire.invoice-line');
+    }
+}
+
+{{-- resources/views/livewire/invoice-line.blade.php --}}
+&lt;div class="flex flex-wrap gap-2 w-full"&gt;
+    {{-- model: the property that gets the choice (like wire:model.live); search: the method above --}}
+    &lt;x-oc::wire.combobox
+        model="customerId"
+        value-type="number"
+        search="searchCustomers"
+        :value="$customerId"
+        :selected="['value' =&gt; 1, 'label' =&gt; 'Company 1', 'description' =&gt; 'info@company1.example', 'image' =&gt; '/img/samples/logo-company-1.svg']"
+        :options="[]"
+        label="Customer"
+        placeholder="Search customers"
+        clear-label="No customer"
+        manage-href="/customers"
+        manage-label="Manage customers"
+        portal
+    /&gt;
+    &lt;x-oc::wire.combobox model="unit" :value="$unit" :options="$units" label="Unit" placeholder="Unit" variant="ledger" allow-custom-from-search /&gt;
+    &lt;p class="oc-text-muted"&gt;Customer: {{ $customerId ?? 'none' }}, unit: {{ $unit ?: 'none' }}&lt;/p&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
@@ -262,7 +540,17 @@ class PaymentDetails extends Component
               <tr><td><code>.oc-combobox-group / -empty</code></td><td>Heading and empty state</td></tr>
               <tr><td><code>.oc-combobox-option-icon</code></td><td>Icon in front of an option (svg, <code>iconify-icon</code> or img, 1.125rem: <code>--oc-combobox-icon</code>). Options without one line up with the others</td></tr>
               <tr><td><code>.oc-combobox-icon</code></td><td>First child of the wrapper: the icon of the chosen value in the field, at the same start as the option icons</td></tr>
-              <tr><td><code>[data-oc-combobox]</code></td><td>Turns on <code>oc-combobox.js</code>: filter while typing, arrow keys, <kbd>Enter</kbd>, <kbd>Esc</kbd>; <code>data-value</code> per option, a hidden input gets the value; event <code>oc-combobox-change</code> <code>{ value, label }</code></td></tr>
+              <tr><td><code>[data-oc-combobox]</code></td><td>Turns on <code>oc-combobox.js</code>: filter while typing, arrow keys, <kbd>Enter</kbd>, <kbd>Esc</kbd>; <code>data-value</code> per option, a hidden input gets the value; event <code>oc-combobox-change</code> <code>{ value, label, custom }</code></td></tr>
+              <tr><td><code>.oc-combobox-option-text</code> &gt; <code>-label</code> + <code>-description</code></td><td>Two-line option: the label and a muted description under it (0.17.0)</td></tr>
+              <tr><td><code>.oc-combobox-option-image</code> / <code>-emoji</code></td><td>An <code>&lt;img alt=""&gt;</code> or an emoji in the icon column; also in the field for the chosen value (0.17.0)</td></tr>
+              <tr><td><code>.oc-combobox-clear</code></td><td>First row (<code>data-value=""</code>) that clears the choice (0.17.0)</td></tr>
+              <tr><td><code>.oc-combobox-custom</code></td><td>Row that takes what was typed when nothing matches exactly; text from <code>data-oc-custom-label</code> (<code>Use "{query}"</code>) (0.17.0)</td></tr>
+              <tr><td><code>.oc-combobox-loading</code></td><td>Loading row while results are on their way; the listbox gets <code>aria-busy="true"</code> (0.17.0)</td></tr>
+              <tr><td><code>.oc-combobox-list--panel</code> &gt; <code>.oc-combobox-options</code> + <code>.oc-combobox-footer</code></td><td>Popup with a footer: the listbox scrolls, the footer link (manage) stays under it, outside the listbox (0.17.0)</td></tr>
+              <tr><td><code>.oc-combobox-list--portal</code></td><td>The list in <code>document.body</code>, <code>position: fixed</code> under the field; shown with <code>[data-open=""]</code> on the list (0.17.0)</td></tr>
+              <tr><td><code>.oc-combobox--ledger</code></td><td>Compact ledger look; the input gets <code>.oc-input--ledger</code>. <code>data-module</code> sets the module colour (0.17.0)</td></tr>
+              <tr><td><code>data-oc-search="event"</code> / <code>data-oc-search-url</code></td><td>Server search (debounced by <code>data-oc-search-delay</code>, 250 ms): no local filter. <code>event</code> fires <code>oc-combobox-search</code> <code>{ query }</code>, answer with <code>el.ocSetOptions(items, query)</code>; a URL is fetched (<code>url + query</code>, JSON <code>[{ value, label, description, icon, image, emoji }]</code>) and an older answer is dropped (0.17.0)</td></tr>
+              <tr><td><code>data-oc-portal</code></td><td>The script moves the list to <code>document.body</code> while it is open, so a scrolling or clipping parent cannot cut it off (0.17.0)</td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>
@@ -285,17 +573,19 @@ class PaymentDetails extends Component
 <ul>
 <li>Follow the ARIA combobox pattern: <code>role="combobox"</code> on the input, <code>aria-expanded</code>, <code>aria-controls</code> and <code>aria-activedescendant</code> pointing at the active option.</li>
 <li>The wrapper must filter the list, move <code>[data-active]</code>/<code>aria-activedescendant</code> with the arrow keys, set <code>aria-selected</code> and write the chosen label into the input.</li>
+<li>Catalog mode: the listbox gets <code>aria-busy="true"</code> while results load; the clear and custom rows have <code>role="option"</code>; the manage link sits in a footer outside the <code>role="listbox"</code>, so the listbox only holds options.</li>
 <li>If you only need to pick one value from a short list, a native <a href="native-select.html">select</a> is simpler and more accessible.</li>
 </ul>
 <h3 class="oc-section-content__title mt-2">Keyboard</h3>
 <ul>
 <li><kbd>↓</kbd>/<kbd>↑</kbd> move the active option, <kbd>Enter</kbd> selects, <kbd>Esc</kbd> closes, <kbd>Home</kbd>/<kbd>End</kbd> jump (implemented by the wrappers and <code>oc-combobox.js</code>).</li>
+<li>The clear row and the "use what I typed" row are options too: the arrow keys reach them and <kbd>Enter</kbd> chooses them.</li>
 </ul>
         </div>
       </section><section class="oc-docs-section" id="frameworks">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Framework wrappers</h2>
-          <p class="oc-section-header__desc">The wrappers filter, move with the keyboard and set <code>aria-selected</code>, <code>aria-activedescendant</code> and <code>aria-expanded</code> themselves. <code>options</code> is a list of <code>{ value, label, icon?, disabled? }</code>; <code>icon</code> is a webicon name (<code>mdi:…</code>, <code>flag:…</code>) or, in React, any node. <code>name</code> adds a hidden input for forms.</p>
+          <p class="oc-section-header__desc">The wrappers filter, move with the keyboard and set <code>aria-selected</code>, <code>aria-activedescendant</code> and <code>aria-expanded</code> themselves. <code>options</code> is a list of <code>{ value, label, icon?, description?, image?, emoji?, disabled? }</code>; <code>icon</code> is a webicon name (<code>mdi:…</code>, <code>flag:…</code>) or, in React, any node. <code>name</code> adds a hidden input for forms. Catalog mode (0.17.0): <code>valueType="number"</code>, <code>onSearch</code> (Vue <code>@search</code>) + <code>searchDelay</code> + <code>loading</code> + <code>selected</code>, <code>clearLabel</code>, <code>manageHref</code> / <code>manageLabel</code> / <code>onManage</code>, <code>allowCustomFromSearch</code> + <code>customLabel</code> + <code>onCustom</code>, <code>portal</code>, <code>variant="ledger"</code>, <code>module</code>. Livewire: <code>&lt;x-oc::wire.combobox model="customerId" search="searchCustomers"&gt;</code> sets the property and asks a component method for the results.</p>
         </div>
         <div class="oc-section-content">
           <oc-code lang="html">&lt;!-- React --&gt;

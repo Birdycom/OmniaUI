@@ -11,6 +11,8 @@ interface RadioGroupState {
   setValue: (value: string | number) => void;
   name: string;
   card: boolean;
+  /** Id of the group's error message: every radio gets aria-invalid + aria-describedby. */
+  errorId?: string;
 }
 
 const RadioGroupContext = createContext<RadioGroupState | null>(null);
@@ -36,6 +38,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
   const group = useContext(RadioGroupContext);
   const isCard = card || !!group?.card || description != null;
   const own = group ? { name: group.name, checked: group.value === value } : checked !== undefined ? { checked } : {};
+  const invalid = group?.errorId ? { "aria-invalid": true, "aria-describedby": group.errorId } : {};
   return (
     <label className={cx("oc-radio-item", isCard && "oc-radio-item--card", labelClassName, className)} style={style as CSSProperties | undefined}>
       <input
@@ -43,6 +46,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         className="oc-radio"
         type="radio"
         value={value}
+        {...invalid}
         {...rest}
         {...own}
         onChange={(e) => {
@@ -76,22 +80,28 @@ export interface RadioGroupProps extends Omit<FieldsetHTMLAttributes<HTMLFieldSe
   row?: boolean;
   /** Bordered card items. */
   card?: boolean;
+  /** Error message below the items (`.oc-field-error`); every radio gets `aria-invalid` and `aria-describedby`. */
+  error?: ReactNode;
 }
 
 /** Radio group on a fieldset (`.oc-radio-group`, `--row`). */
 export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(function RadioGroup(
-  { value, defaultValue, onValueChange, legend, options, name, row, card, className, children, ...rest },
+  { value, defaultValue, onValueChange, legend, options, name, row, card, error, className, children, ...rest },
   ref,
 ) {
   const auto = useId();
+  const hasError = error != null && error !== false && error !== "";
+  const groupName = name ?? `oc-radio-${auto.replace(/:/g, "")}`;
+  const errorId = hasError ? `${groupName.replace(/[^\w-]/g, "")}-error` : undefined;
   const [current, setCurrent] = useControllable<string | number | undefined>(value, defaultValue, onValueChange as (v: string | number | undefined) => void);
   return (
-    <RadioGroupContext.Provider value={{ value: current, setValue: setCurrent, name: name ?? `oc-radio-${auto.replace(/:/g, "")}`, card: !!card }}>
+    <RadioGroupContext.Provider value={{ value: current, setValue: setCurrent, name: groupName, card: !!card, errorId }}>
       <fieldset ref={ref} className={cx("oc-radio-group", row && "oc-radio-group--row", className)} {...rest}>
         {legend != null && <legend className="oc-label">{legend}</legend>}
         {children ?? options?.map((o) => (
           <Radio key={o.value} value={o.value} disabled={o.disabled} description={o.description}>{o.label}</Radio>
         ))}
+        {hasError && <p className="oc-field-error" id={errorId} role="alert">{error}</p>}
       </fieldset>
     </RadioGroupContext.Provider>
   );

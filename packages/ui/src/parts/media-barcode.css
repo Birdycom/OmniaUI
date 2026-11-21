@@ -1,6 +1,8 @@
-/* File: packages/ui/src/parts/media-barcode.css | Map: barcode figure -> svg bars -> digits -> sizes (hero, compact) -> error */
+/* File: packages/ui/src/parts/media-barcode.css | Map: barcode figure -> svg bars -> digits (groups) -> sizes (hero, compact) -> bare -> error */
 /* Barcode display: EAN-13, EAN-8, UPC-A or Code 128, drawn as SVG by
-   packages/ui/src/barcode.js from data-value. Always black bars on white, in both themes, so scanners read it. */
+   packages/ui/src/barcode.js from data-value. Black bars on a white plate, in both themes, so scanners read it.
+   --bare (0.17.0): no plate, no border (inside a card); the bars take currentColor. The figure never gets wider than
+   its container: the SVG then scales down in width. */
 
 .oc-barcode {
   display: inline-flex;
@@ -13,11 +15,30 @@
   background: var(--color-white-50);
   border: 1px solid var(--oc-border);
   border-radius: var(--oc-radius);
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
 }
-.oc-barcode svg { display: block; inline-size: auto; block-size: var(--oc-barcode-height, 4rem); max-inline-size: 100%; }
-.oc-barcode__digits { font-family: var(--oc-font-mono); font-size: 0.8125rem; letter-spacing: 0.18em; color: inherit; }
+.oc-barcode svg { display: block; inline-size: auto; block-size: var(--oc-barcode-height, 4rem); max-inline-size: 100%; min-inline-size: 0; }
+.oc-barcode__digits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 0.6em;
+  max-inline-size: 100%;
+  font-family: var(--oc-font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.18em;
+  color: inherit;
+}
+/* each group drops the trailing letter-spacing so the gaps between groups look equal */
+.oc-barcode__group { margin-inline-end: -0.18em; }
 .oc-barcode--hero { padding: 1.25rem 1.5rem; --oc-barcode-height: 6rem; }
 .oc-barcode--hero .oc-barcode__digits { font-size: 1rem; }
 .oc-barcode--compact { padding: 0.375rem 0.5rem; --oc-barcode-height: 2.25rem; }
 .oc-barcode--compact .oc-barcode__digits { font-size: 0.6875rem; letter-spacing: 0.1em; }
+.oc-barcode--compact .oc-barcode__group { margin-inline-end: -0.1em; }
 .oc-barcode[data-error] .oc-barcode__digits { color: var(--color-red-70); letter-spacing: 0; }
+/* --bare (0.17.0): no own white plate and border, so a barcode in a card has no double frame. The bars and digits take
+   currentColor (light on dark in dark mode: most phone scanners read that; keep the default plate for print/labels). */
+.oc-barcode.oc-barcode--bare { padding: 0; color: inherit; background: none; border: 0; border-radius: 0; }

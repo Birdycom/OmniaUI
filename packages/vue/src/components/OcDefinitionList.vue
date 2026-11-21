@@ -15,6 +15,8 @@ withDefaults(
     label?: string
     /** Term + explanation: the term bold, the explanation normal text (.oc-dl--glossary). */
     glossary?: boolean
+    /** A counter (01, 02, ...) above each term (.oc-dl--numbered). */
+    numbered?: boolean
   }>(),
   { rows: () => [] },
 )
@@ -24,7 +26,7 @@ withDefaults(
   <div class="oc-dl-panel" role="region" :aria-label="label ?? title">
     <h3 v-if="title || $slots.title" class="oc-dl-title"><slot name="title">{{ title }}</slot></h3>
     <p v-if="description || $slots.description" class="oc-dl-description"><slot name="description">{{ description }}</slot></p>
-    <dl :class="['oc-dl', glossary && 'oc-dl--glossary']">
+    <dl :class="['oc-dl', glossary && 'oc-dl--glossary', numbered && 'oc-dl--numbered']">
       <slot>
         <div v-for="(row, i) in rows" :key="i" class="oc-dl-row">
           <dt class="oc-dl-term">{{ row.term }}</dt>
