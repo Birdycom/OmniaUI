@@ -1,5 +1,5 @@
 <!--oc-page {"title": "OmniaUI - Breadcrumb", "category": "Navigation", "description": "Breadcrumb trail that shows where the page sits in the site, with icons, a chevron separator, a menu for hidden levels and the current page marked.", "nav": "Breadcrumb", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
-<!-- File: apps/site/src/content/ui/components/breadcrumb.html | Map: hero -> demo (trail, icons + chevron, collapsed, above a page title) -> reference -> frameworks -> browser support -> source footer -->
+<!-- File: apps/site/src/content/ui/components/breadcrumb.html | Map: hero -> demo (trail, icons + chevron, collapsed, above a page title, maxItems, compound parts) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Breadcrumb</h1>
         <p class="oc-hero-text">A trail of links that shows where the page sits in the site. A <code>&lt;nav&gt;</code> with links; the separators come from CSS and the current page is marked with <code>aria-current="page"</code>, so screen readers announce it. Items can carry a webicon, and <code>--chevron</code> puts a › between them. No JavaScript. <a href="../components.html">All components</a>.</p>
@@ -319,6 +319,225 @@ class InvoiceHeader extends Component
     &lt;h2 style="margin:0;font-size:1.5rem;font-weight:700;color:var(--oc-foreground)"&gt;Invoice {{ $number }}&lt;/h2&gt;
 &lt;/header&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="max-items">Long trail with maxItems <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">Give the wrappers the whole trail and <code>maxItems</code>: when it is longer, the middle folds into the "…" button with a menu of the hidden levels (a native popover, no script). <code>itemsBefore</code> (1) and <code>itemsAfter</code> (2, the current page included) say how many levels stay; <code>ellipsisLabel</code> names the button (<code>{count}</code> is the number of hidden levels). The HTML is what the wrappers write.</p>
+          <oc-demo title="Breadcrumb - maxItems">
+<nav class="oc-breadcrumb oc-breadcrumb--chevron" aria-label="Breadcrumb">
+  <a class="oc-breadcrumb-item" tabindex="0"><iconify-icon icon="mdi:home-outline" aria-hidden="true"></iconify-icon>Dashboard</a>
+  <span class="oc-breadcrumb-item"><button type="button" class="oc-breadcrumb-ellipsis" popovertarget="oc-bc-long" aria-label="Show 3 more levels"><iconify-icon icon="mdi:dots-horizontal" aria-hidden="true"></iconify-icon></button>
+    <div class="oc-dropdown-menu" id="oc-bc-long" popover="auto" role="menu">
+      <a class="oc-dropdown-item" role="menuitem" tabindex="0">Relations</a>
+      <a class="oc-dropdown-item" role="menuitem" tabindex="0">Customers</a>
+      <a class="oc-dropdown-item" role="menuitem" tabindex="0">Company 1</a>
+    </div>
+  </span>
+  <a class="oc-breadcrumb-item" tabindex="0">Projects</a>
+  <span class="oc-breadcrumb-item" aria-current="page">Kitchen – ground floor</span>
+</nav>
+<oc-code lang="html">&lt;nav class="oc-breadcrumb oc-breadcrumb--chevron" aria-label="Breadcrumb"&gt;
+  &lt;a class="oc-breadcrumb-item" tabindex="0"&gt;&lt;iconify-icon icon="mdi:home-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Dashboard&lt;/a&gt;
+  &lt;span class="oc-breadcrumb-item"&gt;&lt;button type="button" class="oc-breadcrumb-ellipsis" popovertarget="oc-bc-long" aria-label="Show 3 more levels"&gt;&lt;iconify-icon icon="mdi:dots-horizontal" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+    &lt;div class="oc-dropdown-menu" id="oc-bc-long" popover="auto" role="menu"&gt;
+      &lt;a class="oc-dropdown-item" role="menuitem" href="/relations"&gt;Relations&lt;/a&gt;
+      &lt;a class="oc-dropdown-item" role="menuitem" href="/customers"&gt;Customers&lt;/a&gt;
+      &lt;a class="oc-dropdown-item" role="menuitem" href="/customers/1"&gt;Company 1&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/span&gt;
+  &lt;a class="oc-breadcrumb-item" href="/customers/1/projects"&gt;Projects&lt;/a&gt;
+  &lt;span class="oc-breadcrumb-item" aria-current="page"&gt;Kitchen – ground floor&lt;/span&gt;
+&lt;/nav&gt;</oc-code>
+<oc-code lang="tsx">import { Breadcrumb } from "@birdycom/omniaui-react";
+
+const trail = [
+  { label: "Dashboard", href: "/", icon: "mdi:home-outline" },
+  { label: "Relations", href: "/relations" },
+  { label: "Customers", href: "/customers" },
+  { label: "Company 1", href: "/customers/1" },
+  { label: "Projects", href: "/customers/1/projects" },
+  { label: "Kitchen – ground floor" },
+];
+
+export function Example() {
+  return &lt;Breadcrumb items={trail} maxItems={4} separator="chevron" /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBreadcrumb } from "@birdycom/omniaui-vue";
+
+const trail = [
+  { label: "Dashboard", href: "/", icon: "mdi:home-outline" },
+  { label: "Relations", href: "/relations" },
+  { label: "Customers", href: "/customers" },
+  { label: "Company 1", href: "/customers/1" },
+  { label: "Projects", href: "/customers/1/projects" },
+  { label: "Kitchen – ground floor" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBreadcrumb :items="trail" :max-items="4" separator="chevron" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::breadcrumb separator="chevron" :max-items="4" :items="[
+    ['label' =&gt; 'Dashboard', 'href' =&gt; '/', 'icon' =&gt; 'mdi:home-outline'],
+    ['label' =&gt; 'Relations', 'href' =&gt; '/relations'],
+    ['label' =&gt; 'Customers', 'href' =&gt; '/customers'],
+    ['label' =&gt; 'Company 1', 'href' =&gt; '/customers/1'],
+    ['label' =&gt; 'Projects', 'href' =&gt; '/customers/1/projects'],
+    ['label' =&gt; 'Kitchen – ground floor'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProjectHeader extends Component
+{
+    public string $project = 'Kitchen – ground floor';
+
+    public function trail(): array
+    {
+        return [
+            ['label' =&gt; 'Dashboard', 'href' =&gt; '/', 'icon' =&gt; 'mdi:home-outline'],
+            ['label' =&gt; 'Relations', 'href' =&gt; '/relations'],
+            ['label' =&gt; 'Customers', 'href' =&gt; '/customers'],
+            ['label' =&gt; 'Company 1', 'href' =&gt; '/customers/1'],
+            ['label' =&gt; 'Projects', 'href' =&gt; '/customers/1/projects'],
+            ['label' =&gt; $this-&gt;project],
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.project-header');
+    }
+}
+
+{{-- resources/views/livewire/project-header.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::breadcrumb separator="chevron" :max-items="4" :items="$this-&gt;trail()" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="compound">Compound parts <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">For a trail you build yourself (router links, your own separator, a menu with your own items) use the parts: <code>BreadcrumbList</code> (the <code>&lt;ol&gt;</code>), <code>BreadcrumbItem</code>, <code>BreadcrumbLink</code> (React <code>asChild</code> for your router link, Vue <code>as</code>), <code>BreadcrumbPage</code>, <code>BreadcrumbSeparator</code> and <code>BreadcrumbEllipsis</code>. The list takes no room of its own, so the items line up as before; without separators the items get "/" or › from the CSS. Blade: <code>&lt;x-oc::breadcrumb.list&gt;</code>, <code>.item</code>, <code>.link</code>, <code>.page</code>, <code>.separator</code>, <code>.ellipsis</code>.</p>
+          <oc-demo title="Breadcrumb - compound parts">
+<nav class="oc-breadcrumb" aria-label="Breadcrumb">
+  <ol class="oc-breadcrumb-list">
+    <li class="oc-breadcrumb-item"><a class="oc-breadcrumb-link" tabindex="0"><iconify-icon icon="mdi:home-outline" aria-hidden="true"></iconify-icon>Dashboard</a></li>
+    <li class="oc-breadcrumb-separator" role="presentation" aria-hidden="true"><iconify-icon icon="mdi:chevron-double-right" aria-hidden="true"></iconify-icon></li>
+    <li class="oc-breadcrumb-item"><button type="button" class="oc-breadcrumb-ellipsis" popovertarget="oc-bc-compound" aria-label="Show 2 more levels"><iconify-icon icon="mdi:dots-horizontal" aria-hidden="true"></iconify-icon></button>
+      <div class="oc-dropdown-menu" id="oc-bc-compound" popover="auto" role="menu">
+        <a class="oc-dropdown-item" role="menuitem" tabindex="0">Sales</a>
+        <a class="oc-dropdown-item" role="menuitem" tabindex="0">Invoices</a>
+      </div>
+    </li>
+    <li class="oc-breadcrumb-separator" role="presentation" aria-hidden="true"><iconify-icon icon="mdi:chevron-double-right" aria-hidden="true"></iconify-icon></li>
+    <li class="oc-breadcrumb-item"><span class="oc-breadcrumb-page" aria-current="page"><iconify-icon icon="mdi:file-document-outline" aria-hidden="true"></iconify-icon>INV-2026-0142</span></li>
+  </ol>
+</nav>
+<oc-code lang="html">&lt;nav class="oc-breadcrumb" aria-label="Breadcrumb"&gt;
+  &lt;ol class="oc-breadcrumb-list"&gt;
+    &lt;li class="oc-breadcrumb-item"&gt;&lt;a class="oc-breadcrumb-link" href="/"&gt;&lt;iconify-icon icon="mdi:home-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Dashboard&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="oc-breadcrumb-separator" role="presentation" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:chevron-double-right" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/li&gt;
+    &lt;li class="oc-breadcrumb-item"&gt;&lt;button type="button" class="oc-breadcrumb-ellipsis" popovertarget="oc-bc-compound" aria-label="Show 2 more levels"&gt;&lt;iconify-icon icon="mdi:dots-horizontal" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+      &lt;div class="oc-dropdown-menu" id="oc-bc-compound" popover="auto" role="menu"&gt;
+        &lt;a class="oc-dropdown-item" role="menuitem" href="/sales"&gt;Sales&lt;/a&gt;
+        &lt;a class="oc-dropdown-item" role="menuitem" href="/sales/invoices"&gt;Invoices&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="oc-breadcrumb-separator" role="presentation" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:chevron-double-right" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/li&gt;
+    &lt;li class="oc-breadcrumb-item"&gt;&lt;span class="oc-breadcrumb-page" aria-current="page"&gt;&lt;iconify-icon icon="mdi:file-document-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;INV-2026-0142&lt;/span&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;</oc-code>
+<oc-code lang="tsx">import {
+  Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Webicon,
+} from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Breadcrumb&gt;
+      &lt;BreadcrumbList&gt;
+        &lt;BreadcrumbItem&gt;
+          {/* asChild: your router link (Inertia Link, Next Link) gets the props */}
+          &lt;BreadcrumbLink asChild&gt;
+            &lt;a href="/"&gt;&lt;Webicon name="mdi:home-outline" bare /&gt;Dashboard&lt;/a&gt;
+          &lt;/BreadcrumbLink&gt;
+        &lt;/BreadcrumbItem&gt;
+        &lt;BreadcrumbSeparator&gt;&lt;Webicon name="mdi:chevron-double-right" bare /&gt;&lt;/BreadcrumbSeparator&gt;
+        &lt;BreadcrumbItem&gt;
+          &lt;BreadcrumbEllipsis items={[{ label: "Sales", href: "/sales" }, { label: "Invoices", href: "/sales/invoices" }]} /&gt;
+        &lt;/BreadcrumbItem&gt;
+        &lt;BreadcrumbSeparator&gt;&lt;Webicon name="mdi:chevron-double-right" bare /&gt;&lt;/BreadcrumbSeparator&gt;
+        &lt;BreadcrumbItem&gt;
+          &lt;BreadcrumbPage icon="mdi:file-document-outline"&gt;INV-2026-0142&lt;/BreadcrumbPage&gt;
+        &lt;/BreadcrumbItem&gt;
+      &lt;/BreadcrumbList&gt;
+    &lt;/Breadcrumb&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import {
+  OcBreadcrumb, OcBreadcrumbEllipsis, OcBreadcrumbItem, OcBreadcrumbLink, OcBreadcrumbList, OcBreadcrumbPage, OcBreadcrumbSeparator, OcWebicon,
+} from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBreadcrumb&gt;
+    &lt;OcBreadcrumbList&gt;
+      &lt;OcBreadcrumbItem&gt;
+        &lt;!-- as: your router link (RouterLink, Inertia Link) with its own props, e.g. :as="RouterLink" to="/" --&gt;
+        &lt;OcBreadcrumbLink href="/" icon="mdi:home-outline"&gt;Dashboard&lt;/OcBreadcrumbLink&gt;
+      &lt;/OcBreadcrumbItem&gt;
+      &lt;OcBreadcrumbSeparator&gt;&lt;OcWebicon name="mdi:chevron-double-right" bare /&gt;&lt;/OcBreadcrumbSeparator&gt;
+      &lt;OcBreadcrumbItem&gt;
+        &lt;OcBreadcrumbEllipsis :items="[{ label: 'Sales', href: '/sales' }, { label: 'Invoices', href: '/sales/invoices' }]" /&gt;
+      &lt;/OcBreadcrumbItem&gt;
+      &lt;OcBreadcrumbSeparator&gt;&lt;OcWebicon name="mdi:chevron-double-right" bare /&gt;&lt;/OcBreadcrumbSeparator&gt;
+      &lt;OcBreadcrumbItem&gt;
+        &lt;OcBreadcrumbPage icon="mdi:file-document-outline"&gt;INV-2026-0142&lt;/OcBreadcrumbPage&gt;
+      &lt;/OcBreadcrumbItem&gt;
+    &lt;/OcBreadcrumbList&gt;
+  &lt;/OcBreadcrumb&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::breadcrumb&gt;
+    &lt;x-oc::breadcrumb.list&gt;
+        &lt;x-oc::breadcrumb.item&gt;&lt;x-oc::breadcrumb.link href="/" icon="mdi:home-outline"&gt;Dashboard&lt;/x-oc::breadcrumb.link&gt;&lt;/x-oc::breadcrumb.item&gt;
+        &lt;x-oc::breadcrumb.separator&gt;&lt;x-oc::webicon name="mdi:chevron-double-right" bare /&gt;&lt;/x-oc::breadcrumb.separator&gt;
+        &lt;x-oc::breadcrumb.item&gt;
+            &lt;x-oc::breadcrumb.ellipsis :items="[['label' =&gt; 'Sales', 'href' =&gt; '/sales'], ['label' =&gt; 'Invoices', 'href' =&gt; '/sales/invoices']]" /&gt;
+        &lt;/x-oc::breadcrumb.item&gt;
+        &lt;x-oc::breadcrumb.separator&gt;&lt;x-oc::webicon name="mdi:chevron-double-right" bare /&gt;&lt;/x-oc::breadcrumb.separator&gt;
+        &lt;x-oc::breadcrumb.item&gt;&lt;x-oc::breadcrumb.page icon="mdi:file-document-outline"&gt;INV-2026-0142&lt;/x-oc::breadcrumb.page&gt;&lt;/x-oc::breadcrumb.item&gt;
+    &lt;/x-oc::breadcrumb.list&gt;
+&lt;/x-oc::breadcrumb&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceTrail extends Component
+{
+    public string $number = 'INV-2026-0142';
+
+    public function render()
+    {
+        return view('livewire.invoice-trail');
+    }
+}
+
+{{-- resources/views/livewire/invoice-trail.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::breadcrumb&gt;
+        &lt;x-oc::breadcrumb.list&gt;
+            &lt;x-oc::breadcrumb.item&gt;&lt;x-oc::breadcrumb.link href="/" icon="mdi:home-outline" wire:navigate&gt;Dashboard&lt;/x-oc::breadcrumb.link&gt;&lt;/x-oc::breadcrumb.item&gt;
+            &lt;x-oc::breadcrumb.item&gt;&lt;x-oc::breadcrumb.link href="/sales/invoices" wire:navigate&gt;Invoices&lt;/x-oc::breadcrumb.link&gt;&lt;/x-oc::breadcrumb.item&gt;
+            &lt;x-oc::breadcrumb.item&gt;&lt;x-oc::breadcrumb.page icon="mdi:file-document-outline"&gt;{{ $number }}&lt;/x-oc::breadcrumb.page&gt;&lt;/x-oc::breadcrumb.item&gt;
+        &lt;/x-oc::breadcrumb.list&gt;
+    &lt;/x-oc::breadcrumb&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -337,6 +556,10 @@ class InvoiceHeader extends Component
               <tr><td><code>.oc-breadcrumb--chevron</code></td><td>A › chevron between the items instead of "/".</td></tr>
               <tr><td><code>&lt;iconify-icon&gt;</code> / <code>&lt;svg&gt;</code> in an item</td><td>An icon before the label (1.1em, muted on links, full color on the current page).</td></tr>
               <tr><td><code>button.oc-breadcrumb-ellipsis</code></td><td>"…" for the collapsed middle of a long trail; opens a menu with the hidden levels.</td></tr>
+              <tr><td><code>nav.oc-breadcrumb &gt; ol</code></td><td>Compound markup (0.18.0): the list takes no room of its own (<code>display: contents</code>), its <code>li.oc-breadcrumb-item</code> line up like the flat items.</td></tr>
+              <tr><td><code>.oc-breadcrumb-item &gt; [aria-current="page"]</code></td><td>The current page inside an item (BreadcrumbPage).</td></tr>
+              <tr><td><code>.oc-breadcrumb-separator</code></td><td>An explicit separator between two items (your own icon); <code>role="presentation"</code>, <code>aria-hidden="true"</code>.</td></tr>
+              <tr><td><code>maxItems</code>, <code>itemsBefore</code>, <code>itemsAfter</code>, <code>ellipsisLabel</code></td><td>Wrappers: fold the middle of a long <code>items</code> trail into the "…" menu. Blade: <code>max-items</code>, <code>items-before</code>, <code>items-after</code>, <code>ellipsis-label</code>.</td></tr>
               <tr><td><code>li.oc-breadcrumb-item &gt; a</code></td><td>Older list markup (<code>&lt;ol class="oc-breadcrumb"&gt;</code>) keeps working; there the last item is the current page.</td></tr>
             </tbody>
           </table>

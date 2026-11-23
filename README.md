@@ -18,17 +18,19 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 
 ## Showcase
 
-A short tour: the homepage, the components gallery, a component page (tooltip placement with anchor positioning),
-the data table, the blocks gallery in dark mode, a Pro block (CMS dashboard) and OmniaUI Pro.
+A short tour: the homepage with live components (segmented control, dropdown menu), the components gallery,
+the data table, the blocks gallery, a Pro block (CMS dashboard), the switch to the dark theme and the OmniaUI Pro pricing.
 
-![Tour of omniaui.eu: components, blocks and Pro](docs/readme/omniaui-tour.gif)
+![Tour of omniaui.eu: homepage, components, data table, blocks, CMS dashboard, dark mode and Pro pricing](docs/readme/omniaui-tour.gif)
 
 | | |
 |---|---|
-| ![OmniaUI homepage](docs/readme/omniaui-home.png) | ![Components gallery](docs/readme/omniaui-components.png) |
-| Homepage | Components gallery: every component with its `npx omniaui add` command |
-| ![Blocks gallery in dark mode](docs/readme/omniaui-blocks-dark.png) | ![OmniaUI Pro](docs/readme/omniaui-pro.png) |
-| Blocks gallery in dark mode, Pro blocks marked | OmniaUI Pro: app blocks with a commercial license |
+| ![OmniaUI homepage with live components](docs/readme/omniaui-home.png) | ![OmniaUI homepage in dark mode](docs/readme/omniaui-home-dark.png) |
+| Homepage: stat cards, modal, segmented control, progress and tabs, all live | The homepage in dark mode |
+| ![Components gallery, Overlays category](docs/readme/omniaui-components.png) | ![Blocks gallery in dark mode with live previews](docs/readme/omniaui-blocks-dark.png) |
+| Components gallery: every component with its `npx omniaui add` command | Blocks gallery in dark mode, Pro blocks marked |
+| ![CMS dashboard Pro block demo](docs/readme/omniaui-cms.png) | ![OmniaUI Pro pricing: Free, Pro and Pro Team](docs/readme/omniaui-pro.png) |
+| A Pro block: the CMS dashboard with its live demo | OmniaUI Pro: Free, Pro and Pro Team |
 
 ## Packages
 

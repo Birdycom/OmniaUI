@@ -1,0 +1,61 @@
+/* File: packages/ui/src/parts/app-badge-status.css
+   Map: status badge set (0.18.0: the colour per data-status, extends .oc-badge--status of app-0160-apps.css)
+        -> read-only value chip (.oc-badge--readonly) -> forced colors
+   Status badges: one class, the status in data-status, a webicon before the label. The wrappers add the icon and the
+   English label by themselves (status="paid"); in plain HTML you write both.
+   <span class="oc-badge oc-badge--status" data-status="paid"><svg .../>Paid</span>
+   Tones: success (paid, approved, active, done), warning (pending, waiting), destructive (overdue, rejected, failed, error),
+   info (sent, scheduled, in-progress, working, refunded), neutral (draft, cancelled, inactive, archived, read-only, idle).
+   Your own status: data-status="on-hold" style="--oc-badge-status: var(--oc-warning)". Theme tokens only. */
+
+.oc-badge--status:is([data-status="paid"], [data-status="approved"], [data-status="active"], [data-status="done"]) {
+  --oc-badge-status: var(--oc-success);
+}
+.oc-badge--status:is([data-status="pending"], [data-status="waiting"]) {
+  --oc-badge-status: var(--oc-warning);
+}
+.oc-badge--status:is([data-status="overdue"], [data-status="rejected"], [data-status="failed"], [data-status="error"]) {
+  --oc-badge-status: var(--oc-destructive);
+}
+.oc-badge--status:is([data-status="sent"], [data-status="scheduled"], [data-status="in-progress"], [data-status="working"], [data-status="refunded"]) {
+  --oc-badge-status: var(--oc-info, var(--oc-primary));
+}
+/* Neutral: draft, cancelled, inactive, archived, read-only, idle keep the muted default of .oc-badge--status. */
+
+/* Readable text on the tint in both modes: the status colour, darker in light mode (4.5:1 on its own tint). */
+.oc-badge--status[data-status] {
+  color: light-dark(oklch(from var(--oc-badge-status) min(l, 0.45) c h), color-mix(in oklch, var(--oc-badge-status) 80%, var(--oc-foreground)));
+}
+.oc-badge--status { gap: 0.3rem; }
+/* A cancelled or archived item is over: the label is quieter. */
+.oc-badge--status:is([data-status="cancelled"], [data-status="archived"], [data-status="inactive"]) { border-style: dashed; }
+
+/* Read-only value chip (0.18.0): a value the user sees but cannot change here (a contact, an account, a linked record).
+   Squarer and calmer than a status pill, the size of body text, an icon in the muted colour, long text cut off with ...
+   <span class="oc-badge oc-badge--readonly"><svg .../><span>Customer 1</span></span> */
+.oc-badge--readonly {
+  gap: 0.5rem;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  inline-size: fit-content; /* in a field (.oc-field, a flex or grid column) it keeps its own width */
+  padding: 0.4rem 0.75rem;
+  border-color: var(--oc-border);
+  border-radius: var(--oc-radius);
+  background: var(--oc-muted);
+  color: var(--oc-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25;
+  vertical-align: middle;
+}
+.oc-badge--readonly > :is(svg, iconify-icon) { color: var(--oc-muted-foreground); }
+.oc-badge--readonly > :not(svg, iconify-icon) {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .oc-badge--status,
+  .oc-badge--readonly { border-color: CanvasText; }
+}

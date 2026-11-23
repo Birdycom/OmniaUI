@@ -30,6 +30,8 @@ export interface BlockAppHeaderProps extends Omit<HTMLAttributes<HTMLElement>, "
   moreLabel?: string;
   /** Search field between the nav and the actions (`.oc-block-appbar-search`), e.g. an Input type="search". */
   search?: ReactNode;
+  /** 0.18.0: on a narrow bar (below 40rem) the search shrinks to a magnifier and opens over the bar on focus. */
+  searchCollapse?: boolean;
   /** Module color (`data-module` on the bar). */
   module?: string;
 }
@@ -82,7 +84,7 @@ export function useNavOverflow(listRef: RefObject<HTMLElement | null>, count: nu
 
 /** `.oc-block-appbar`: top bar with sidebar toggle, module navigation, search and actions. */
 export const BlockAppHeader = forwardRef<HTMLElement, BlockAppHeaderProps>(function BlockAppHeader(
-  { toggleFor, toggleLabel = "Toggle sidebar", nav, navLabel = "Module navigation", actions, title, overflow, moreLabel = "More", search, module, className, ...rest },
+  { toggleFor, toggleLabel = "Toggle sidebar", nav, navLabel = "Module navigation", actions, title, overflow, moreLabel = "More", search, searchCollapse, module, className, ...rest },
   ref,
 ) {
   const listRef = useRef<HTMLUListElement>(null);
@@ -130,7 +132,7 @@ export const BlockAppHeader = forwardRef<HTMLElement, BlockAppHeaderProps>(funct
           )}
         </Navmenu>
       )}
-      {search != null && <div className="oc-block-appbar-search">{search}</div>}
+      {search != null && <div className={cx("oc-block-appbar-search", searchCollapse && "oc-block-appbar-search--collapse")}>{search}</div>}
       {actions != null && <div className="oc-block-appbar-actions">{actions}</div>}
     </header>
   );

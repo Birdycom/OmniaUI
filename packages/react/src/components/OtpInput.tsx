@@ -3,7 +3,8 @@
 import { forwardRef, useEffect, useRef } from "react";
 import type { CSSProperties, InputHTMLAttributes } from "react";
 import { cx } from "../utils";
-import { useControllable } from "../hooks";
+import { useControllable, useMergedRef } from "../hooks";
+import { bindOtp } from "../../../ui/src/form-extras.js";
 
 export interface OtpInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange" | "type" | "maxLength"> {
   /** Code length (default 6). */
@@ -12,7 +13,8 @@ export interface OtpInputProps extends Omit<InputHTMLAttributes<HTMLInputElement
   defaultValue?: string;
   onChange?: (value: string) => void;
   /** Called once when `length` characters have been entered. Runs AFTER the value update has rendered (an effect), so a
-   *  controlled parent (`form.setData`) already holds the full code when it submits from here. */
+   *  controlled parent (`form.setData`) already holds the full code when it submits from here. 0.18.0: also when a controlled
+   *  `value` arrives complete from outside (a code from a link or the server), on mount too; once per distinct code. */
   onComplete?: (value: string) => void;
   /** Error state (`aria-invalid`). */
   invalid?: boolean;
@@ -33,16 +35,25 @@ export const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(function Otp
   // onComplete waits for the render with the new value: the latest callback (fresh parent closure) gets the code
   const completeRef = useRef(onComplete);
   completeRef.current = onComplete;
-  const pending = useRef<string | null>(null);
+  const fired = useRef<string | null>(null);
+  const mounted = useRef(false);
   useEffect(() => {
-    if (pending.current !== null && pending.current === code) {
-      pending.current = null;
-      completeRef.current?.(code);
-    }
-  }, [code]);
+    const first = !mounted.current;
+    mounted.current = true;
+    if (code.length !== length) { fired.current = null; return; }
+    if (fired.current === code) return;
+    fired.current = code;
+    // An uncontrolled defaultValue that is already complete is not "entered": no call on mount.
+    if (first && value === undefined) return;
+    completeRef.current?.(code);
+  }, [code, length, value]);
+  // 0.18.0: mark the cell the caret is in (data-otp-active, forms-otp-active.css).
+  const own = useRef<HTMLInputElement>(null);
+  const setRef = useMergedRef(ref, own);
+  useEffect(() => (own.current ? bindOtp(own.current) : undefined), []);
   return (
     <input
-      ref={ref}
+      ref={setRef}
       className={cx("oc-otp", fit && "oc-otp--fit", group ? "oc-otp--group" : undefined, className)}
       type="text"
       inputMode={alphanumeric ? "text" : "numeric"}
@@ -55,7 +66,6 @@ export const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(function Otp
       onChange={(e) => {
         const next = alphanumeric ? e.target.value : e.target.value.replace(/\D/g, "");
         setCode(next);
-        pending.current = next.length === length ? next : null;
       }}
       {...rest}
     />

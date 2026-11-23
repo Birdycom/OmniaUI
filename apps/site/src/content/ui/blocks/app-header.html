@@ -295,6 +295,93 @@ class AppHeaderSearch extends Component
     &lt;script type="module" src="/js/oc-nav-overflow.js"&gt;&lt;/script&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="search-collapse">Search that folds away on a phone <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">On a narrow bar (below 40rem, measured on the bar itself) a search field takes the room the title and the actions need. <code>searchCollapse</code> (Blade <code>search-collapse</code>) shrinks it to a magnifier; a tap or Tab opens it over the whole bar and leaving the field folds it again. No script: the field is the button. Click the magnifier below.</p>
+          <oc-demo title="App header - collapsible search">
+<div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1rem;align-items:start">
+  <div style="display:grid;gap:0.5rem;max-inline-size:22rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);overflow:hidden">
+  <header class="oc-block-appbar">
+    <span class="oc-block-appbar-title">Invoices</span>
+    <div class="oc-block-appbar-search oc-block-appbar-search--collapse"><input class="oc-input" type="search" placeholder="Search invoices" aria-label="Search invoices"></div>
+    <div class="oc-block-appbar-actions">
+      <button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" aria-label="User menu"><span class="oc-avatar oc-avatar--sm">U1</span></button>
+    </div>
+  </header>
+  </div>
+</div>
+<oc-code lang="html">&lt;header class="oc-block-appbar"&gt;
+  &lt;span class="oc-block-appbar-title"&gt;Invoices&lt;/span&gt;
+  &lt;div class="oc-block-appbar-search oc-block-appbar-search--collapse"&gt;
+    &lt;input class="oc-input" type="search" placeholder="Search invoices" aria-label="Search invoices"&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-block-appbar-actions"&gt;…&lt;/div&gt;
+&lt;/header&gt;</oc-code>
+<oc-code lang="tsx">import { Avatar, BlockAppHeader, Button, Input } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockAppHeader
+      title="Invoices"
+      searchCollapse
+      search={&lt;Input type="search" placeholder="Search invoices" aria-label="Search invoices" /&gt;}
+      actions={&lt;Button variant="ghost" icon aria-label="User menu"&gt;&lt;Avatar size="sm"&gt;U1&lt;/Avatar&gt;&lt;/Button&gt;}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcAvatar, OcBlockAppHeader, OcButton, OcInput } from "@birdycom/omniaui-vue";
+
+const query = ref("");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockAppHeader title="Invoices" search-collapse&gt;
+    &lt;template #search&gt;
+      &lt;OcInput v-model="query" type="search" placeholder="Search invoices" aria-label="Search invoices" /&gt;
+    &lt;/template&gt;
+    &lt;template #actions&gt;
+      &lt;OcButton variant="ghost" icon aria-label="User menu"&gt;&lt;OcAvatar size="sm"&gt;U1&lt;/OcAvatar&gt;&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockAppHeader&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.app-header search-collapse&gt;
+    &lt;x-slot:search&gt;
+        &lt;x-oc::input type="search" name="q" placeholder="Search invoices" aria-label="Search invoices" /&gt;
+    &lt;/x-slot:search&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button variant="ghost" icon aria-label="User menu"&gt;&lt;x-oc::avatar size="sm"&gt;U1&lt;/x-oc::avatar&gt;&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.app-header&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoicesHeader extends Component
+{
+    public string $query = '';
+
+    public function render()
+    {
+        return view('livewire.invoices-header');
+    }
+}
+
+{{-- resources/views/livewire/invoices-header.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.app-header search-collapse&gt;
+        &lt;x-slot:search&gt;
+            &lt;x-oc::wire.input model="query" type="search" placeholder="Search invoices" aria-label="Search invoices" /&gt;
+        &lt;/x-slot:search&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button variant="ghost" icon aria-label="User menu"&gt;&lt;x-oc::avatar size="sm"&gt;U1&lt;/x-oc::avatar&gt;&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::block.app-header&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 

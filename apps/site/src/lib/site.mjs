@@ -1,6 +1,6 @@
 // File: apps/site/src/lib/site.mjs
 // Site-wide constants: repository paths, version, header links, and the OmniaCSS docs URL.
-// Map: findRepo -> paths + version -> OMNIACSS_URL + header links -> crossLinks -> sectionOf
+// Map: findRepo -> paths + version -> OMNIACSS_URL + header links -> footer links -> crossLinks -> sectionOf
 
 import fs from "node:fs";
 import path from "node:path";
@@ -36,12 +36,31 @@ export const HEADER_LINKS = [
   { id: "starter-kits", label: "Starter kits", href: "/ui/starter-kits.html" },
   { id: "webicons", label: "Webicons", href: "/ui/webicons.html" },
   { id: "story", label: "Our story", href: `${OMNIACSS_URL}/story.html` },
+  { id: "release-notes", label: "Release notes", href: `${OMNIACSS_URL}/release-notes.html` },
 ];
 
 // Header button to the Pro pricing (every page, so buyers find it without going through Blocks).
 export const PRO_LINK = { label: "Pro", href: "/ui/pro.html#pricing", route: "ui/pro.html" };
 
 export const GITHUB = "https://github.com/Birdycom/OmniaUI";
+
+// The one bottom bar of every page (layouts/ContentPage.astro, .ocd-footer in oc-docs-v2.css): copyright + version on
+// the left, these links on the right. Same labels and order as on omniacss.eu (apps/docs/src/lib/site.mjs in the
+// OmniaCSS repo); only the GitHub repo and the terms page are this site's own. Keep both lists equal. The release notes
+// of both packages (same version number) are one page on omniacss.eu.
+export const FOOTER_LINKS = [
+  { label: "OmniaCSS docs", href: `${OMNIACSS_URL}/docs/index.html` },
+  { label: "OmniaUI components", href: "/ui/components.html" },
+  { label: "Release notes", href: `${OMNIACSS_URL}/release-notes.html` },
+  { label: "GitHub", href: GITHUB },
+  { label: "License", href: "/legal/terms.html#license" },
+  { label: "Terms", href: "https://birdycom.be/en/terms/omniaui-pro" },
+  { label: "Privacy", href: "https://birdycom.be/en/privacy" },
+  { label: "Cookies", href: "https://birdycom.be/en/cookies" },
+  { label: "birdycom.be", href: "https://birdycom.be/en" },
+];
+// Copyright years in the footer bar: from the first release (2022) to the year of the build.
+export const COPYRIGHT_YEARS = { from: 2022, to: new Date().getFullYear() };
 
 /**
  * Links in the content to CSS docs pages ("/docs/x.html", "../docs/x.html", "/pages/x.html")

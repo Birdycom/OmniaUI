@@ -23,6 +23,12 @@ import OcBarcode from './components/OcBarcode.vue'
 import OcBarcodeInput from './components/OcBarcodeInput.vue'
 import OcBrandMark from './components/OcBrandMark.vue'
 import OcBreadcrumb from './components/OcBreadcrumb.vue'
+import OcBreadcrumbEllipsis from './components/OcBreadcrumbEllipsis.vue'
+import OcBreadcrumbItem from './components/OcBreadcrumbItem.vue'
+import OcBreadcrumbLink from './components/OcBreadcrumbLink.vue'
+import OcBreadcrumbList from './components/OcBreadcrumbList.vue'
+import OcBreadcrumbPage from './components/OcBreadcrumbPage.vue'
+import OcBreadcrumbSeparator from './components/OcBreadcrumbSeparator.vue'
 import OcBrowserFrame from './components/OcBrowserFrame.vue'
 import OcBusyOverlay from './components/OcBusyOverlay.vue'
 import OcButton from './components/OcButton.vue'
@@ -325,6 +331,12 @@ export {
   OcBarcodeInput,
   OcBrandMark,
   OcBreadcrumb,
+  OcBreadcrumbEllipsis,
+  OcBreadcrumbItem,
+  OcBreadcrumbLink,
+  OcBreadcrumbList,
+  OcBreadcrumbPage,
+  OcBreadcrumbSeparator,
   OcBrowserFrame,
   OcBusyOverlay,
   OcButton,
@@ -608,6 +620,7 @@ export {
 export type { AffixInputKind } from './components/OcAffixInput.vue'
 export type { AttachmentType, AttachmentFile } from './components/OcAttachment.vue'
 export type { BreadcrumbItem } from './components/OcBreadcrumb.vue'
+export type { BreadcrumbEllipsisItem } from './components/OcBreadcrumbEllipsis.vue'
 export type { ChartLineSeries } from './components/OcChartLine.vue'
 export type { ChecklistItem } from './components/OcChecklist.vue'
 export type { ChipFilterItem } from './components/OcChipFilter.vue'
@@ -684,6 +697,9 @@ export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './web
 export { contrastRatio, luminance, pickOnColor, toRgb } from './color'
 export { useSidebar, useSidebarOptional, sidebarKey } from './composables/useSidebar'
 export type { SidebarContext } from './composables/useSidebar'
+export { badgeStatuses } from './badgeStatus'
+export type { BadgeStatus, BadgeStatusTone } from './badgeStatus'
+export { encodeBarcode, guessFormat } from '../../ui/src/barcode.js'
 
 /** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */
 export const components: Record<string, Component> = {
@@ -709,6 +725,12 @@ export const components: Record<string, Component> = {
   OcBarcodeInput,
   OcBrandMark,
   OcBreadcrumb,
+  OcBreadcrumbEllipsis,
+  OcBreadcrumbItem,
+  OcBreadcrumbLink,
+  OcBreadcrumbList,
+  OcBreadcrumbPage,
+  OcBreadcrumbSeparator,
   OcBrowserFrame,
   OcBusyOverlay,
   OcButton,
