@@ -202,6 +202,104 @@ class OptionsMenu extends Component
     &lt;/x-oc::dropdown&gt;
 &lt;/div&gt;</oc-code>
 </oc-demo>
+        <h3 id="radio-group" class="oc-section-content__title mt-2">Radio group <span class="oc-badge-version">v0.17.2</span></h3><p class="oc-section-content__desc">One choice out of a few (sort by, density, view). Items get <code>role="menuitemradio"</code> and <code>aria-checked</code>; the checked one shows a dot. The group keeps the value: React <code>DropdownRadioGroup value onValueChange</code> + <code>DropdownRadioItem value</code>, Vue <code>OcDropdownRadioGroup v-model</code> + <code>OcDropdownRadioItem</code>, Blade <code>&lt;x-oc::dropdown.radio-group&gt;</code> with <code>value</code> and <code>items</code> (or <code>.radio-item</code> with <code>:checked</code>). Like check items, radio items keep the menu open (<code>keepOpen={false}</code> closes it). The older <code>DropdownItem radio checked</code> keeps working.</p>
+          <oc-demo title="Sort by" size="tall" hint="Open the menu: the dot follows your choice.">
+            <button class="oc-btn oc-btn--outline" type="button" popovertarget="demo-dropdown-radio">Sort by</button>
+            <div class="oc-dropdown-menu" id="demo-dropdown-radio" popover>
+              <span class="oc-dropdown-label">Sort by</span>
+              <div class="oc-dropdown-radio-group" role="group" onclick="const i=event.target.closest('[role=menuitemradio]');if(i)for(const b of this.querySelectorAll('[role=menuitemradio]'))b.setAttribute('aria-checked',String(b===i))">
+                <button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="true" data-value="name"><span class="oc-dropdown-check" aria-hidden="true"></span>Name</button>
+                <button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="false" data-value="date"><span class="oc-dropdown-check" aria-hidden="true"></span>Date added</button>
+                <button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="false" data-value="amount"><span class="oc-dropdown-check" aria-hidden="true"></span>Amount</button>
+              </div>
+            </div>
+          <oc-code lang="html">&lt;button class="oc-btn oc-btn--outline" popovertarget="sort"&gt;Sort by&lt;/button&gt;
+&lt;div class="oc-dropdown-menu" id="sort" popover&gt;
+  &lt;span class="oc-dropdown-label"&gt;Sort by&lt;/span&gt;
+  &lt;div class="oc-dropdown-radio-group" role="group"&gt;
+    &lt;button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="true" data-value="name"&gt;
+      &lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Name
+    &lt;/button&gt;
+    &lt;button class="oc-dropdown-item" type="button" role="menuitemradio" aria-checked="false" data-value="date"&gt;
+      &lt;span class="oc-dropdown-check" aria-hidden="true"&gt;&lt;/span&gt;Date added
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { Dropdown, DropdownLabel, DropdownRadioGroup, DropdownRadioItem } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [sort, setSort] = useState("name");
+  return (
+    &lt;Dropdown trigger="Sort by"&gt;
+      &lt;DropdownLabel&gt;Sort by&lt;/DropdownLabel&gt;
+      &lt;DropdownRadioGroup value={sort} onValueChange={setSort}&gt;
+        &lt;DropdownRadioItem value="name"&gt;Name&lt;/DropdownRadioItem&gt;
+        &lt;DropdownRadioItem value="date"&gt;Date added&lt;/DropdownRadioItem&gt;
+        &lt;DropdownRadioItem value="amount"&gt;Amount&lt;/DropdownRadioItem&gt;
+      &lt;/DropdownRadioGroup&gt;
+    &lt;/Dropdown&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcDropdown, OcDropdownLabel, OcDropdownRadioGroup, OcDropdownRadioItem } from '@birdycom/omniaui-vue'
+
+const sort = ref('name')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDropdown label="Sort by"&gt;
+    &lt;OcDropdownLabel&gt;Sort by&lt;/OcDropdownLabel&gt;
+    &lt;OcDropdownRadioGroup v-model="sort"&gt;
+      &lt;OcDropdownRadioItem value="name"&gt;Name&lt;/OcDropdownRadioItem&gt;
+      &lt;OcDropdownRadioItem value="date"&gt;Date added&lt;/OcDropdownRadioItem&gt;
+      &lt;OcDropdownRadioItem value="amount"&gt;Amount&lt;/OcDropdownRadioItem&gt;
+    &lt;/OcDropdownRadioGroup&gt;
+  &lt;/OcDropdown&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::dropdown label="Sort by"&gt;
+    &lt;x-oc::dropdown.label&gt;Sort by&lt;/x-oc::dropdown.label&gt;
+    &lt;x-oc::dropdown.radio-group value="name" :items="[
+        ['value' =&gt; 'name', 'label' =&gt; 'Name'],
+        ['value' =&gt; 'date', 'label' =&gt; 'Date added'],
+        ['value' =&gt; 'amount', 'label' =&gt; 'Amount'],
+    ]" /&gt;
+&lt;/x-oc::dropdown&gt;
+
+{{-- or item by item (:checked="$sort === 'name'") --}}
+&lt;x-oc::dropdown.radio-group&gt;
+    &lt;x-oc::dropdown.radio-item value="name" :checked="true"&gt;Name&lt;/x-oc::dropdown.radio-item&gt;
+    &lt;x-oc::dropdown.radio-item value="date"&gt;Date added&lt;/x-oc::dropdown.radio-item&gt;
+&lt;/x-oc::dropdown.radio-group&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SortMenu extends Component
+{
+    public string $sort = 'name';
+
+    public function render()
+    {
+        return view('livewire.sort-menu');
+    }
+}
+
+{{-- resources/views/livewire/sort-menu.blade.php --}}
+{{-- model="sort": every item gets wire:click="$set('sort', '…')" --}}
+&lt;div&gt;
+    &lt;x-oc::dropdown label="Sort by"&gt;
+        &lt;x-oc::dropdown.radio-group model="sort" :value="$sort" :items="[
+            ['value' =&gt; 'name', 'label' =&gt; 'Name'],
+            ['value' =&gt; 'date', 'label' =&gt; 'Date added'],
+            ['value' =&gt; 'amount', 'label' =&gt; 'Amount'],
+        ]" /&gt;
+    &lt;/x-oc::dropdown&gt;
+&lt;/div&gt;</oc-code>
+</oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
@@ -218,6 +316,7 @@ class OptionsMenu extends Component
                 <tr><td><code>.oc-dropdown-label</code></td><td>Small group heading</td></tr>
                 <tr><td><code>.oc-dropdown-separator</code></td><td>Divider line</td></tr>
                 <tr><td><code>.oc-dropdown</code> + <code>.is-open</code></td><td>Class-toggle variant (inline, needs a script). Components: <code>mode="toggle"</code></td></tr>
+                <tr><td><code>.oc-dropdown-radio-group[role="group"]</code> + <code>.oc-dropdown-item[role="menuitemradio"]</code></td><td>Radio group: one item with <code>aria-checked="true"</code>. Components: <code>DropdownRadioGroup</code> / <code>DropdownRadioItem</code>, <code>OcDropdownRadioGroup</code> / <code>OcDropdownRadioItem</code>, <code>&lt;x-oc::dropdown.radio-group&gt;</code> / <code>.radio-item</code> (v0.17.2)</td></tr>
                 <tr><td>Blade <code>&lt;x-oc::dropdown.item&gt;</code>, <code>.label</code>, <code>.separator</code>, <code>.sub</code></td><td>Menu parts as components; attributes such as <code>wire:click</code> go to the item</td></tr>
               </tbody>
             </table>

@@ -14,6 +14,8 @@
  * slice; every control emits instead: v-model:page (1-based), v-model:page-size, v-model:sort ({ key, dir } | null),
  * v-model:search (after search-delay, default 300 ms), v-model:trashed, column-filter (column, value) and query (all at
  * once, handy for one fetch). loading: skeleton rows + aria-busy. Slot empty: the text when there are no rows.
+ * bulk-actions (0.17.2): your own selection bar buttons (or replace / hide built-in ones by key); @bulk gets the key.
+ * Columns take width and min-width (0.17.2).
  * Column chooser (free): v-model:visible-columns (keys); a columns button in the actions header, unchecked columns are
  * not rendered (hideable false always shows). v-model:selected-keys: the selection, kept over pages.
  */
@@ -34,6 +36,21 @@ export interface DataTableColumn {
   defaultSort?: 'ascending' | 'descending'
   /** Hide the column (th and tds, data-hide-below) when the table is narrower than 24rem (sm), 32rem (md) or 48rem (lg). */
   hideBelow?: 'sm' | 'md' | 'lg'
+  /** Width of the column (0.17.2), e.g. "12rem" or "20%" (on the th). Works with truncate. */
+  width?: string
+  /** Minimum width of the column (0.17.2), e.g. "8rem". */
+  minWidth?: string
+}
+/** A button in the selection bar (0.17.2). The key of a built-in button (export, duplicate, archive, restore, delete,
+ *  clear) replaces it; hidden leaves it out; other keys are added before "clear". A click emits bulk (key, keys). */
+export interface DataTableBulkAction {
+  key: string
+  label: string
+  /** Webicon name in front of the label ("mdi:email-outline"). */
+  icon?: string
+  tone?: 'outline' | 'primary' | 'destructive' | 'ghost'
+  disabled?: boolean
+  hidden?: boolean
 }
 export interface DataTableRow {
   key: string
@@ -109,6 +126,8 @@ const props = withDefaults(
     pagination?: boolean
     /** The selection bar and the selection items of the list menu (default: as filters). */
     bulk?: boolean
+    /** Your own selection bar buttons (0.17.2), or changes to the built-in ones (same key = replace, hidden = leave out). */
+    bulkActions?: DataTableBulkAction[]
     /** Server mode (0.17.0): rows is the current page; the controls emit instead of filtering, sorting and slicing. */
     server?: boolean
     /** Server mode: all matches on the server, for the pager and the "Showing" line. */
@@ -132,7 +151,7 @@ const props = withDefaults(
     /** The selected row keys (v-model:selected-keys), kept over pages. */
     selectedKeys?: string[]
   }>(),
-  { title: 'List', pageSize: 15, searchPlaceholder: 'Search...', selectable: true, draggable: false, resizable: false, columnMenu: false, filters: true, archive: true, summary: '', importable: false, variant: 'default', striped: true, live: false, view: true, pagination: true, bulk: undefined, server: false, total: undefined, page: undefined, sort: undefined, search: undefined, searchDelay: undefined, trashed: undefined, loading: false, skeletonRows: undefined, visibleColumns: undefined, selectedKeys: undefined },
+  { title: 'List', pageSize: 15, searchPlaceholder: 'Search...', selectable: true, draggable: false, resizable: false, columnMenu: false, filters: true, archive: true, summary: '', importable: false, variant: 'default', striped: true, live: false, view: true, pagination: true, bulk: undefined, bulkActions: undefined, server: false, total: undefined, page: undefined, sort: undefined, search: undefined, searchDelay: undefined, trashed: undefined, loading: false, skeletonRows: undefined, visibleColumns: undefined, selectedKeys: undefined },
 )
 const emit = defineEmits<{
   'update:page': [page: number]
@@ -151,6 +170,17 @@ const emit = defineEmits<{
 const L = computed(() => ({ ...DATA_TABLE_EN, ...props.labels }) as typeof DATA_TABLE_EN)
 const fill = (s: string, name: unknown) => s.replace('{name}', String(name))
 const showBulk = computed(() => props.bulk ?? props.filters)
+const BULK_KEYS = ['export', 'duplicate', 'archive', 'restore', 'delete', 'clear']
+const bulkButtons = computed<DataTableBulkAction[]>(() => {
+  const custom = props.bulkActions ?? []
+  const own = new Map(custom.map((a) => [a.key, a]))
+  const text: Record<string, string> = { export: L.value.exportSelection, duplicate: L.value.duplicate, archive: L.value.moveToTrash, restore: L.value.restore, delete: L.value.deletePermanently, clear: L.value.clear }
+  const tone: Record<string, DataTableBulkAction['tone']> = { delete: 'destructive', clear: 'ghost' }
+  const builtIn = BULK_KEYS.map((key) => ({ key, label: text[key], tone: tone[key] ?? 'outline', ...own.get(key) }) as DataTableBulkAction)
+  const extra = custom.filter((a) => !BULK_KEYS.includes(a.key))
+  return [...builtIn.slice(0, -1), ...extra, builtIn[builtIn.length - 1]].filter((a) => !a.hidden)
+})
+const colStyle = (col: DataTableColumn) => (col.width || col.minWidth ? { width: col.width, minWidth: col.minWidth } : undefined)
 const SCRIPT_KEYS = ['selected', 'summary', 'firstPage', 'previousPage', 'nextPage', 'lastPage', 'sortedBy', 'ascending', 'descending'] as const
 const scriptLabels = computed(() => {
   const l = props.labels
@@ -323,12 +353,7 @@ watch(() => props.selectedKeys, (keys) => { if (keys && root.value) setDataTable
     </div>
     <div v-if="showBulk" class="oc-data-table-bulk" hidden>
       <span data-oc-selected-count>{{ L.selected.replace('{n}', '0') }}</span>
-      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">{{ L.exportSelection }}</button>
-      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">{{ L.duplicate }}</button>
-      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">{{ L.moveToTrash }}</button>
-      <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">{{ L.restore }}</button>
-      <button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">{{ L.deletePermanently }}</button>
-      <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">{{ L.clear }}</button>
+      <button v-for="a in bulkButtons" :key="a.key" :class="['oc-btn', a.tone !== 'primary' && `oc-btn--${a.tone ?? 'outline'}`, 'oc-btn--sm']" type="button" :data-oc-bulk="a.key" :disabled="a.disabled || undefined"><OcWebicon v-if="a.icon" :name="a.icon" bare fallback="iconify" />{{ a.label }}</button>
     </div>
     <div class="oc-data-table-frame">
       <div class="oc-data-table-scroll">
@@ -337,7 +362,7 @@ watch(() => props.selectedKeys, (keys) => { if (keys && root.value) setDataTable
             <tr>
               <th v-if="selectable" data-oc-col="select"><input class="oc-checkbox" type="checkbox" data-oc-select-all :aria-label="L.selectAll"></th>
               <th v-if="draggable" data-oc-col="order"><span class="oc-visually-hidden">{{ L.order }}</span></th>
-              <th v-for="col in shown" :key="col.key" :data-oc-col="col.key" :data-oc-sort="col.numeric ? 'numeric' : 'text'" :data-numeric="col.numeric ? '' : undefined" :data-hide-below="col.hideBelow" :aria-sort="ariaSort(col)">
+              <th v-for="col in shown" :key="col.key" :data-oc-col="col.key" :data-oc-sort="col.numeric ? 'numeric' : 'text'" :data-numeric="col.numeric ? '' : undefined" :data-hide-below="col.hideBelow" :aria-sort="ariaSort(col)" :style="colStyle(col)">
                 <span class="oc-data-table-th">
                   <button v-if="col.sortable !== false" class="oc-table-sort" type="button">{{ col.header }}</button>
                   <template v-else>{{ col.header }}</template>

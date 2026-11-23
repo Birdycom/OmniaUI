@@ -151,6 +151,45 @@ export function DropdownItem({ className, checked, hint, icon, keepOpen, descrip
   return <button type="button" className={cls} {...extra} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)} onClick={onClick}>{content}</button>;
 }
 
+interface RadioContext { value: string | undefined; select: (value: string) => void }
+const RadioGroupContext = createContext<RadioContext | null>(null);
+
+export interface DropdownRadioGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** The chosen value (controlled); with `onValueChange`. */
+  value?: string;
+  /** The chosen value on the first render (uncontrolled). */
+  defaultValue?: string;
+  /** Called with the value of the clicked `DropdownRadioItem`. */
+  onValueChange?: (value: string) => void;
+}
+
+/** `.oc-dropdown-radio-group[role="group"]` around `DropdownRadioItem`s: one of them is checked (role menuitemradio). 0.17.2 */
+export function DropdownRadioGroup({ value, defaultValue, onValueChange, className, children, ...rest }: DropdownRadioGroupProps) {
+  const [current, setCurrent] = useControllable<string | undefined>(value, defaultValue, onValueChange as ((v: string | undefined) => void) | undefined);
+  return (
+    <div role="group" className={cx("oc-dropdown-radio-group", className)} {...rest}>
+      <RadioGroupContext.Provider value={{ value: current, select: (v) => setCurrent(v) }}>{children}</RadioGroupContext.Provider>
+    </div>
+  );
+}
+
+export type DropdownRadioItemProps = Omit<ItemProps, "checked" | "radio"> & {
+  /** The value this item stands for; checked when it matches the group's value. */
+  value: string;
+};
+
+/** A radio item inside `DropdownRadioGroup` (a `DropdownItem radio` with `checked` from the group).
+ *  Like every check item it keeps the menu open, unless `keepOpen={false}`. 0.17.2 */
+export function DropdownRadioItem({ value, ...props }: DropdownRadioItemProps) {
+  const group = useContext(RadioGroupContext);
+  const userClick = props.onClick as ((e: MouseEvent<HTMLElement>) => void) | undefined;
+  const onClick = (e: MouseEvent<HTMLElement>) => {
+    userClick?.(e);
+    if (!e.defaultPrevented) group?.select(value);
+  };
+  return <DropdownItem {...(props as ItemProps)} radio checked={group?.value === value} data-value={value} onClick={onClick as never} />;
+}
+
 export interface DropdownSubProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   /** Text of the item that opens the sub-menu. */
   label: ReactNode;

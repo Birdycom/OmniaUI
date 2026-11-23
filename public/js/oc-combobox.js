@@ -102,7 +102,8 @@ export function bindCombobox(root) {
   root.dataset.ocBound = "";
   const doc = root.ownerDocument;
   const win = doc.defaultView ?? globalThis;
-  const slot = root.querySelector(":scope > .oc-combobox-icon");
+  // data-oc-fixed on the icon slot (0.17.2, an icon-only trigger with a code such as "NL"): the slot keeps its content.
+  const slot = root.querySelector(":scope > .oc-combobox-icon:not([data-oc-fixed])");
   const placeholderIcon = slot ? slot.innerHTML : "";
   const hidden = root.querySelector(':scope > input[type="hidden"]');
   const empty = list.querySelector(".oc-combobox-empty");
@@ -122,7 +123,11 @@ export function bindCombobox(root) {
   const marker = portal ? doc.createComment("oc-combobox-list") : null;
   const place = () => {
     const r = root.getBoundingClientRect();
-    Object.assign(popup.style, { position: "fixed", top: `${r.bottom + 4}px`, left: `${r.left}px`, width: `${r.width}px` });
+    // A header (or icon-only) trigger is narrow (0.17.2): the list gets at least 12rem and stays inside the viewport.
+    const header = root.classList.contains("oc-combobox--header");
+    const width = header ? Math.max(r.width, 192) : r.width;
+    const left = header ? Math.max(8, Math.min(r.left, (win.innerWidth || width + 16) - width - 8)) : r.left;
+    Object.assign(popup.style, { position: "fixed", top: `${r.bottom + 4}px`, left: `${left}px`, width: `${width}px` });
   };
   const showPortal = (open) => {
     if (!portal) return;

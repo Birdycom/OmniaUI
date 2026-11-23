@@ -10,6 +10,10 @@
  * when it is not in options), `clearLabel` (first row that clears), `manageHref` / `manageLabel` / `@manage` (footer link
  * outside the listbox), `allowCustomFromSearch` + `customLabel` + `@custom` (take what was typed), `portal` (list in
  * document.body), options with `description`, `image` or `emoji`, `variant="ledger"`, `module`.
+ * Header trigger (0.17.2): trigger-variant="ghost" (no border, shadow or margin; muted text, fuller on hover with a light
+ * background), size="full" (default) | "header" (36px high, 6.5rem to 14rem wide; the list goes to document.body unless
+ * :portal="false"), icon-only (with header: a square 36x36 button that shows trigger-label, else the icon / image / emoji
+ * of the chosen option, else a dots icon), trigger-aria-label (aria-label of the field; default: label).
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useUid } from '../composables/useUid'
@@ -66,8 +70,18 @@ const props = withDefaults(
     variant?: 'ledger'
     /** Module colour name: data-module */
     module?: string
+    /** 0.17.2: ghost = a trigger for a header bar */
+    triggerVariant?: 'default' | 'ghost'
+    /** 0.17.2: full (default) or header (compact, 36px) */
+    size?: 'full' | 'header'
+    /** 0.17.2, with size="header": a square icon-only trigger */
+    iconOnly?: boolean
+    /** 0.17.2: short code in an icon-only trigger ("NL") */
+    triggerLabel?: string
+    /** 0.17.2: aria-label of the field (default: label) */
+    triggerAriaLabel?: string
   }>(),
-  { label: 'Choose', emptyText: 'No results', valueType: 'string', searchDelay: 250, loadingText: 'Loading...', manageLabel: 'Manage', customLabel: 'Use "{query}"' },
+  { portal: undefined, size: 'full', label: 'Choose', emptyText: 'No results', valueType: 'string', searchDelay: 250, loadingText: 'Loading...', manageLabel: 'Manage', customLabel: 'Use "{query}"' },
 )
 const emit = defineEmits<{ custom: [query: string] }>()
 // string | number | null; typed loosely (like OcSelect) so existing string handlers keep compiling.
@@ -99,7 +113,10 @@ const rows = computed<Row[]>(() => [
 ])
 const enabled = computed(() => rows.value.filter((r) => !r.disabled))
 const hasVisual = (o?: ComboboxItem | null) => !!o && !!(o.icon || o.image || o.emoji)
-const withIcons = computed(() => !!props.icon || props.options.some(hasVisual) || hasVisual(props.selected) || hasVisual(chosen.value))
+const header = computed(() => props.size === 'header')
+const iconOnlyOn = computed(() => header.value && props.iconOnly)
+const usePortal = computed(() => props.portal ?? header.value)
+const withIcons = computed(() => iconOnlyOn.value || !!props.icon || props.options.some(hasVisual) || hasVisual(props.selected) || hasVisual(chosen.value))
 const fieldItem = computed(() => (hasVisual(chosen.value) ? chosen.value : undefined))
 const rowId = (r: Row) => (r.kind === 'option' ? `${listId}-${props.options.findIndex((o) => same(o.value, r.option!.value))}` : `${listId}-${r.kind}`)
 const activeId = computed(() => {
@@ -123,7 +140,11 @@ const mounted = ref(false)
 onMounted(() => { mounted.value = true })
 function measure() {
   const r = wrap.value?.getBoundingClientRect()
-  if (r) place.value = { position: 'fixed', top: `${r.bottom + 4}px`, left: `${r.left}px`, width: `${r.width}px` }
+  if (!r) return
+  // A header (or icon-only) trigger is narrow: the list gets at least 12rem and stays inside the viewport.
+  const width = header.value ? Math.max(r.width, 192) : r.width
+  const left = header.value ? Math.max(8, Math.min(r.left, window.innerWidth - width - 8)) : r.left
+  place.value = { position: 'fixed', top: `${r.bottom + 4}px`, left: `${left}px`, width: `${width}px` }
 }
 function listen(on: boolean) {
   const fn = on ? window.addEventListener : window.removeEventListener
@@ -131,11 +152,11 @@ function listen(on: boolean) {
   fn.call(window, 'resize', measure)
 }
 watch(open, (now) => {
-  if (!props.portal || typeof window === 'undefined') return
+  if (!usePortal.value || typeof window === 'undefined') return
   if (now) measure()
   listen(now)
 })
-onBeforeUnmount(() => { if (props.portal && typeof window !== 'undefined') listen(false) })
+onBeforeUnmount(() => { if (usePortal.value && typeof window !== 'undefined') listen(false) })
 
 function close() {
   open.value = false
@@ -202,24 +223,26 @@ function rowAttrs(r: Row): Record<string, unknown> {
   const o = r.option!
   return { ...base, class: 'oc-combobox-option', 'data-value': String(o.value), 'aria-selected': String(same(o.value, model.value)), 'aria-disabled': o.disabled ? 'true' : undefined }
 }
-const listClass = computed(() => ['oc-combobox-list', footer.value && 'oc-combobox-list--panel', props.portal && 'oc-combobox-list--portal'])
-const portalAttrs = computed(() => (props.portal ? { style: place.value, 'data-open': open.value ? '' : 'false', 'data-module': props.module } : {}))
+const listClass = computed(() => ['oc-combobox-list', footer.value && 'oc-combobox-list--panel', usePortal.value && 'oc-combobox-list--portal'])
+const portalAttrs = computed(() => (usePortal.value ? { style: place.value, 'data-open': open.value ? '' : 'false', 'data-module': props.module } : {}))
 </script>
 
 <template>
   <div
     ref="wrap"
-    :class="['oc-combobox', variant === 'ledger' && 'oc-combobox--ledger']"
+    :class="['oc-combobox', variant === 'ledger' && 'oc-combobox--ledger', triggerVariant === 'ghost' && 'oc-combobox--ghost', header && 'oc-combobox--header', iconOnlyOn && 'oc-combobox--icon-only']"
     :data-open="open ? '' : 'false'"
     :data-module="module"
   >
     <span v-if="withIcons" class="oc-combobox-icon" aria-hidden="true">
-      <template v-if="fieldItem">
+      <span v-if="iconOnlyOn && triggerLabel" class="oc-combobox-code">{{ triggerLabel }}</span>
+      <template v-else-if="fieldItem">
         <OcWebicon v-if="fieldItem.icon" :name="fieldItem.icon" bare fallback="iconify" />
         <img v-else-if="fieldItem.image" class="oc-combobox-option-image" :src="fieldItem.image" alt="" />
         <span v-else class="oc-combobox-option-emoji" aria-hidden="true">{{ fieldItem.emoji }}</span>
       </template>
       <OcWebicon v-else-if="icon" :name="icon" bare fallback="iconify" />
+      <svg v-else-if="iconOnlyOn" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-webicon="mdi:dots-horizontal"><path d="M16 12a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2" /></svg>
     </span>
     <input
       :class="['oc-input oc-combobox-input', variant === 'ledger' && 'oc-input--ledger']"
@@ -230,7 +253,7 @@ const portalAttrs = computed(() => (props.portal ? { style: place.value, 'data-o
       :aria-controls="listId"
       aria-autocomplete="list"
       :aria-activedescendant="activeId"
-      :aria-label="label"
+      :aria-label="triggerAriaLabel ?? label"
       :aria-busy="loading || undefined"
       :placeholder="placeholder"
       :value="text ?? chosen?.label ?? ''"
@@ -241,7 +264,7 @@ const portalAttrs = computed(() => (props.portal ? { style: place.value, 'data-o
       @blur="close"
     />
     <input v-if="name" type="hidden" :name="name" :value="model == null ? '' : String(model)" />
-    <Teleport to="body" :disabled="!portal || !mounted">
+    <Teleport to="body" :disabled="!usePortal || !mounted">
       <div v-if="footer" :class="listClass" v-bind="portalAttrs" @mousedown.prevent>
         <ul :id="listId" class="oc-combobox-options" role="listbox" :aria-label="label" :aria-busy="loading || undefined">
           <li v-for="r in rows" :key="r.key" v-bind="rowAttrs(r)" @click="choose(r)">

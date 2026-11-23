@@ -1239,6 +1239,67 @@ class CustomerActions extends Component
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
+          <h3 class="oc-section-content__title mt-2" id="as-child">Your own element: <code>asChild</code> <span class="oc-badge-version">v0.17.2</span></h3>
+          <p class="oc-section-content__desc">React <code>asChild</code> puts the button classes and props on your only child instead of rendering a <code>&lt;button&gt;</code>, the way shadcn/ui and Radix do: a router link, a <code>&lt;label&gt;</code> for a file input, a <code>&lt;summary&gt;</code>. Click handlers of both run (the child's first), classes are joined, the ref goes to the child; <code>disabled</code> and <code>loading</code> become <code>aria-disabled</code>, and <code>iconStart</code> / <code>iconEnd</code> are placed around the child's label. <code>as</code> keeps working and does the same with a tag or component name. Vue has no <code>asChild</code>: use <code>as</code> (or <code>is</code>) with a tag or a component such as <code>RouterLink</code>; other attributes such as <code>to</code> fall through. Blade: <code>as="a"</code>, <code>as="label"</code>, <code>as="summary"</code>.</p>
+          <oc-demo title="Button - asChild">
+<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
+  <a class="oc-btn oc-btn--outline" tabindex="0"><iconify-icon icon="mdi:file-document-outline" aria-hidden="true"></iconify-icon>Invoices</a>
+  <label class="oc-btn oc-btn--secondary"><iconify-icon icon="mdi:upload" aria-hidden="true"></iconify-icon>Upload file<input type="file" hidden></label>
+</div>
+<oc-code lang="html">&lt;a class="oc-btn oc-btn--outline" href="/invoices"&gt;&lt;iconify-icon icon="mdi:file-document-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Invoices&lt;/a&gt;
+&lt;label class="oc-btn oc-btn--secondary"&gt;&lt;iconify-icon icon="mdi:upload" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Upload file&lt;input type="file" hidden&gt;&lt;/label&gt;</oc-code>
+<oc-code lang="tsx">import { Button } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;&gt;
+      {/* any element or router link: &lt;Button asChild&gt;&lt;Link to="/invoices"&gt;Invoices&lt;/Link&gt;&lt;/Button&gt; */}
+      &lt;Button asChild variant="outline" iconStart="mdi:file-document-outline"&gt;
+        &lt;a href="/invoices"&gt;Invoices&lt;/a&gt;
+      &lt;/Button&gt;
+      &lt;Button asChild variant="secondary" iconStart="mdi:upload"&gt;
+        &lt;label&gt;Upload file&lt;input type="file" hidden /&gt;&lt;/label&gt;
+      &lt;/Button&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Vue: as (or is) with a tag or a component, e.g. :as="RouterLink" to="/invoices" --&gt;
+  &lt;OcButton as="a" href="/invoices" variant="outline" icon-start="mdi:file-document-outline"&gt;Invoices&lt;/OcButton&gt;
+  &lt;OcButton as="label" variant="secondary" icon-start="mdi:upload"&gt;Upload file&lt;input type="file" hidden&gt;&lt;/OcButton&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button as="a" href="/invoices" variant="outline" icon-start="mdi:file-document-outline"&gt;Invoices&lt;/x-oc::button&gt;
+&lt;x-oc::button as="label" variant="secondary" icon-start="mdi:upload"&gt;Upload file&lt;input type="file" hidden&gt;&lt;/x-oc::button&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Livewire\WithFileUploads;
+
+class InvoiceUpload extends Component
+{
+    use WithFileUploads;
+
+    public $file;
+
+    public function render()
+    {
+        return view('livewire.invoice-upload');
+    }
+}
+
+{{-- resources/views/livewire/invoice-upload.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button as="a" href="/invoices" wire:navigate variant="outline" icon-start="mdi:file-document-outline"&gt;Invoices&lt;/x-oc::button&gt;
+    &lt;x-oc::button as="label" variant="secondary" icon-start="mdi:upload"&gt;Upload file&lt;input type="file" wire:model="file" hidden&gt;&lt;/x-oc::button&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
           <h3 class="oc-section-content__title mt-2" id="module">Module colour <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc"><code>module</code> sets <code>data-module</code> on the button, so the primary button takes a <a href="module-color.html">module colour</a> (flat, white text in light mode, dark text in dark mode). Inside a <code>data-module</code> wrapper every primary button follows without the prop; <code>soft-primary</code> and <code>link</code> follow too, the other variants keep their own look.</p>
           <oc-demo title="Button - module colour">

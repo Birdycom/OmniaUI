@@ -18,6 +18,8 @@ const snippetAlias = {
   'dropdown-item': 'dropdown',
   'dropdown-label': 'dropdown',
   'dropdown-separator': 'dropdown',
+  'dropdown-radio-group': 'dropdown',
+  'dropdown-radio-item': 'dropdown',
   'navmenu-list': 'navmenu',
   'accordion-item': 'accordion',
   'toast-container': 'toast',

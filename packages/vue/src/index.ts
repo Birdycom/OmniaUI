@@ -82,6 +82,8 @@ import OcDrawer from './components/OcDrawer.vue'
 import OcDropdown from './components/OcDropdown.vue'
 import OcDropdownItem from './components/OcDropdownItem.vue'
 import OcDropdownLabel from './components/OcDropdownLabel.vue'
+import OcDropdownRadioGroup from './components/OcDropdownRadioGroup.vue'
+import OcDropdownRadioItem from './components/OcDropdownRadioItem.vue'
 import OcDropdownSeparator from './components/OcDropdownSeparator.vue'
 import OcDropdownSub from './components/OcDropdownSub.vue'
 import OcDropzone from './components/OcDropzone.vue'
@@ -390,6 +392,8 @@ export {
   OcDropdown,
   OcDropdownItem,
   OcDropdownLabel,
+  OcDropdownRadioGroup,
+  OcDropdownRadioItem,
   OcDropdownSeparator,
   OcDropdownSub,
   OcDropzone,
@@ -628,7 +632,7 @@ export type { ColorSelectItem } from './components/OcColorSelect.vue'
 export type { ComboboxItem } from './components/OcCombobox.vue'
 export type { CommandItem } from './components/OcCommand.vue'
 export type { CookieCategory, ConsentChoice } from './components/OcCookieConsent.vue'
-export type { DataTableColumn, DataTableRow, DataTableTabs, DataTableColumnFilter, DataTableSort, DataTableTrashed, DataTableQuery } from './components/OcDataTable.vue'
+export type { DataTableColumn, DataTableBulkAction, DataTableRow, DataTableTabs, DataTableColumnFilter, DataTableSort, DataTableTrashed, DataTableQuery } from './components/OcDataTable.vue'
 export type { DefinitionRow } from './components/OcDefinitionList.vue'
 export type { DocViewerItem } from './components/OcDocViewer.vue'
 export type { ExpandableTableColumn } from './components/OcExpandableTable.vue'
@@ -784,6 +788,8 @@ export const components: Record<string, Component> = {
   OcDropdown,
   OcDropdownItem,
   OcDropdownLabel,
+  OcDropdownRadioGroup,
+  OcDropdownRadioItem,
   OcDropdownSeparator,
   OcDropdownSub,
   OcDropzone,
