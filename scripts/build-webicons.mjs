@@ -21,7 +21,7 @@ export const BUILTIN = [
   "mdi:web", "mdi:monitor", "mdi:white-balance-sunny", "mdi:weather-night", "mdi:lock-outline", "mdi:lightbulb-on-outline",
   "mdi:eye", "mdi:eye-off", "mdi:download", "mdi:printer", "mdi:alert-outline", "mdi:heart", "mdi:star",
   "material-symbols:arrow-outward-rounded",
-  // 0.18.0: the icons of the status badges (Badge status="…") and the breadcrumb ellipsis.
+  // 0.17.1: the icons of the status badges (Badge status="…") and the breadcrumb ellipsis.
   "mdi:check-circle-outline", "mdi:clock-outline", "mdi:alert-circle-outline", "mdi:pencil-outline", "mdi:send-outline",
   "mdi:cancel", "mdi:check-decagram-outline", "mdi:close-circle-outline", "mdi:circle-medium", "mdi:circle-off-outline",
   "mdi:archive-outline", "mdi:alert-octagon-outline", "mdi:cash-refund", "mdi:calendar-clock-outline", "mdi:progress-clock",

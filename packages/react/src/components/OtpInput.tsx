@@ -13,7 +13,7 @@ export interface OtpInputProps extends Omit<InputHTMLAttributes<HTMLInputElement
   defaultValue?: string;
   onChange?: (value: string) => void;
   /** Called once when `length` characters have been entered. Runs AFTER the value update has rendered (an effect), so a
-   *  controlled parent (`form.setData`) already holds the full code when it submits from here. 0.18.0: also when a controlled
+   *  controlled parent (`form.setData`) already holds the full code when it submits from here. 0.17.1: also when a controlled
    *  `value` arrives complete from outside (a code from a link or the server), on mount too; once per distinct code. */
   onComplete?: (value: string) => void;
   /** Error state (`aria-invalid`). */
@@ -47,7 +47,7 @@ export const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(function Otp
     if (first && value === undefined) return;
     completeRef.current?.(code);
   }, [code, length, value]);
-  // 0.18.0: mark the cell the caret is in (data-otp-active, forms-otp-active.css).
+  // 0.17.1: mark the cell the caret is in (data-otp-active, forms-otp-active.css).
   const own = useRef<HTMLInputElement>(null);
   const setRef = useMergedRef(ref, own);
   useEffect(() => (own.current ? bindOtp(own.current) : undefined), []);

@@ -5,10 +5,10 @@
  * without text also its accessible name.
  * module (0.17.0): data-module (blue, green, purple, gold, cyan, pink, red, orange, teal, slate, or your own name): a default
  * badge takes the solid module colour; variant="module" is the soft tint (also from a module on an ancestor).
- * status (0.18.0): a ready-made status (paid, pending, overdue, draft, sent, cancelled, approved, rejected, active, inactive,
+ * status (0.17.1): a ready-made status (paid, pending, overdue, draft, sent, cancelled, approved, rejected, active, inactive,
  * archived, failed, refunded, scheduled, in-progress, done, read-only, working, waiting, error, idle): .oc-badge--status +
  * data-status, its webicon and its English label (the default slot replaces the label).
- * variant="readonly" (0.18.0): a read-only value chip (a contact, an account); the text is cut off with an ellipsis.
+ * variant="readonly" (0.17.1): a read-only value chip (a contact, an account); the text is cut off with an ellipsis.
  */
 import { computed, useSlots } from 'vue'
 import OcWebicon from './OcWebicon.vue'

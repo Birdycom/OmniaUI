@@ -5,7 +5,7 @@ import { Webicon } from "./Webicon";
 
 export type BadgeVariant = "default" | "secondary" | "outline" | "destructive" | "success" | "warning" | "info" | "module" | "readonly";
 
-/** 0.18.0: the ready-made statuses of `status` (tone, webicon and English label in `badgeStatuses`). */
+/** 0.17.1: the ready-made statuses of `status` (tone, webicon and English label in `badgeStatuses`). */
 export type BadgeStatus =
   | "paid" | "pending" | "overdue" | "draft" | "sent" | "cancelled" | "approved" | "rejected" | "active" | "inactive"
   | "archived" | "failed" | "refunded" | "scheduled" | "in-progress" | "done" | "read-only"
@@ -39,10 +39,10 @@ export const badgeStatuses: Record<BadgeStatus, { label: string; icon: string; t
 };
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  /** `readonly` (0.18.0): a read-only value chip (a contact, an account), squarer and calmer, text cut off with … */
+  /** `readonly` (0.17.1): a read-only value chip (a contact, an account), squarer and calmer, text cut off with … */
   variant?: BadgeVariant;
   /**
-   * 0.18.0: a ready-made status (`"paid"`, `"overdue"`, `"in-progress"` …): `.oc-badge--status` + `data-status`, its webicon
+   * 0.17.1: a ready-made status (`"paid"`, `"overdue"`, `"in-progress"` …): `.oc-badge--status` + `data-status`, its webicon
    * and its English label. Children replace the label (translations), `icon` replaces the icon (`false`: none).
    * Any other name only sets `data-status` (give it a colour with `--oc-badge-status`).
    */

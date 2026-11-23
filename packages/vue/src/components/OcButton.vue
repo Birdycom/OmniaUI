@@ -6,6 +6,7 @@
  * Classes: .oc-btn + --secondary/--outline/--ghost/--link/--destructive/--success/--gradient/--glass/--neon,
  * --soft-primary/-success/-warning/-destructive/-info (row actions), --plain (icon only, no surface),
  * --xs/--sm/--lg, --icon, --pill, --inline (link button inside running text). `loading` sets aria-busy (spinner).
+ * inherit (0.17.1): with outline/ghost on a dark or coloured band, label, border and hover follow the text colour around it.
  * module (0.17.0): data-module (blue, green, purple, gold, cyan, pink, red, orange, teal, slate, or your own name).
  * float (0.17.0): small icons rise behind the label (.oc-btn--float): 'hearts' or a webicon name ('mdi:star', any registered one).
  */
@@ -23,6 +24,8 @@ const props = withDefaults(
     icon?: boolean
     pill?: boolean
     inline?: boolean
+    /** 0.17.1: outline/ghost on a dark or coloured band follows the text colour around it (.oc-btn--inherit). */
+    inherit?: boolean
     loading?: boolean
     disabled?: boolean
     href?: string
@@ -77,6 +80,7 @@ const classes = computed(() => [
   props.icon && 'oc-btn--icon',
   props.pill && 'oc-btn--pill',
   props.inline && 'oc-btn--inline',
+  props.inherit && 'oc-btn--inherit',
   props.float && 'oc-btn--float',
 ])
 </script>

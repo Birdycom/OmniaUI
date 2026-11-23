@@ -5,7 +5,7 @@ import type { HTMLAttributes } from "react";
 import { barsToSvg, digitGroups, encodeBarcode } from "../../../ui/src/barcode.js";
 import { cx } from "../utils";
 
-/** 0.18.0: the encoder of the barcode script, for your own checks (which format a scanned value is, whether it encodes). */
+/** 0.17.1: the encoder of the barcode script, for your own checks (which format a scanned value is, whether it encodes). */
 export { encodeBarcode, guessFormat } from "../../../ui/src/barcode.js";
 
 export interface BarcodeProps extends HTMLAttributes<HTMLElement> {
@@ -19,7 +19,7 @@ export interface BarcodeProps extends HTMLAttributes<HTMLElement> {
   /** Group the digits like on a product (EAN-13 1 6 6, EAN-8 4 4, UPC-A 1 5 5 1). Default true. */
   groupDigits?: boolean;
   /**
-   * 0.18.0: `"code128"`: an EAN/UPC value that cannot be encoded (a wrong check digit) is drawn as Code 128 instead of an
+   * 0.17.1: `"code128"`: an EAN/UPC value that cannot be encoded (a wrong check digit) is drawn as Code 128 instead of an
    * error; the figure then gets `data-fallback-used`.
    */
   fallback?: "code128";

@@ -2,9 +2,9 @@
      the text; :icon="false" hides the icon of a status), title (tooltip; on a badge without text also its accessible name: role="img" +
      aria-label), module (0.17.0: data-module, blue|green|purple|gold|cyan|pink|red|orange|teal|slate or your own name; a default badge
      takes the solid module colour, variant="module" the soft tint, also from a module on an ancestor).
-     status (0.18.0): paid|pending|overdue|draft|sent|cancelled|approved|rejected|active|inactive|archived|failed|refunded|scheduled|
+     status (0.17.1): paid|pending|overdue|draft|sent|cancelled|approved|rejected|active|inactive|archived|failed|refunded|scheduled|
      in-progress|done|read-only|working|waiting|error|idle: .oc-badge--status + data-status, its webicon and its English label (the slot
-     replaces the label). variant="readonly" (0.18.0): a read-only value chip; the text is cut off with an ellipsis. Slot: text. --}}
+     replaces the label). variant="readonly" (0.17.1): a read-only value chip; the text is cut off with an ellipsis. Slot: text. --}}
 @props(['variant' => 'default', 'status' => null, 'icon' => null, 'title' => null, 'module' => null])
 @php
     // Label and webicon per status (same list as the React and Vue badge); the colour comes from the CSS (data-status).

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
  * Breadcrumb. Pass `items` (the last one is the current page) or use the default slot: plain .oc-breadcrumb-item markup
- * or the compound parts (0.18.0: OcBreadcrumbList, OcBreadcrumbItem, OcBreadcrumbLink, OcBreadcrumbPage,
+ * or the compound parts (0.17.1: OcBreadcrumbList, OcBreadcrumbItem, OcBreadcrumbLink, OcBreadcrumbPage,
  * OcBreadcrumbSeparator, OcBreadcrumbEllipsis).
  * `icon` per item is a webicon name (mdi:home-outline …), drawn as inline SVG (OcWebicon); separator="chevron" puts › between.
- * maxItems (0.18.0): a longer trail folds its middle into a "…" button with a menu of the hidden levels; itemsBefore (1)
+ * maxItems (0.17.1): a longer trail folds its middle into a "…" button with a menu of the hidden levels; itemsBefore (1)
  * and itemsAfter (2, the current page included) say how many levels stay. ellipsisLabel: name of the button ({count}).
  */
 import { computed, provide } from 'vue'

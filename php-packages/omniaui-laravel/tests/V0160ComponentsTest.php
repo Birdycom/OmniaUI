@@ -30,7 +30,7 @@ class V0160ComponentsTest extends TestCase
         $html = $this->render('<x-oc::dropdown label="Actions" :items="[[\'label\' => \'Edit\', \'href\' => \'/e\', \'icon\' => \'mdi:pencil-outline\'], [\'label\' => \'Paid\', \'href\' => \'/p\']]" />');
 
         $this->assertSame(1, substr_count($html, 'oc-dropdown-icon'));
-        // 0.18.0: mdi:pencil-outline is a built-in webicon (status badge "draft"), so it is inline SVG now
+        // 0.17.1: mdi:pencil-outline is a built-in webicon (status badge "draft"), so it is inline SVG now
         $this->assertMatchesRegularExpression('/data-webicon="mdi:pencil-outline"|<iconify-icon icon="mdi:pencil-outline"/', $html);
     }
 

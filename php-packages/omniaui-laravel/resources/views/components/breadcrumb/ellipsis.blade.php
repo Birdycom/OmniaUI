@@ -1,4 +1,4 @@
-{{-- OmniaCSS compound breadcrumb (0.18.0): the folded middle of a long trail. Props: items (the hidden levels, list of
+{{-- OmniaCSS compound breadcrumb (0.17.1): the folded middle of a long trail. Props: items (the hidden levels, list of
      ['label' => ..., 'href' => ..., 'icon' => ...]: a menu under the "…" button, a native popover without script), label
      (accessible name, {count} = number of hidden levels), id (of the menu). Slot: your own menu content (.oc-dropdown-item
      links) instead of items. Without items or slot it is only a "…" mark. Put it in <x-oc::breadcrumb.item>. --}}

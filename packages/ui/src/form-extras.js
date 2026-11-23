@@ -1,6 +1,6 @@
 // File: packages/ui/src/form-extras.js
 // Map: ISO week -> date field (week label) -> name card (rename) -> avatar picker (preview, drop, remove) -> quantity
-//      (step buttons) -> language code (the closed code select) -> one-time code (active cell, 0.18.0) -> init -> boot
+//      (step buttons) -> language code (the closed code select) -> one-time code (active cell, 0.17.1) -> init -> boot
 // Small behaviour for six CSS components; each works without it (native date input, <details>, file input, number input,
 // native select, one text input).
 // Events on the component root: oc-namecard-rename { name }, oc-avatar-change { file } (null when removed),
@@ -214,7 +214,7 @@ export function otpActiveCell(selectionStart, valueLength, length) {
   return Math.max(0, Math.min(at, length - 1));
 }
 
-/** .oc-otp (0.18.0): marks the cell the caret is in (data-otp-active + --oc-otp-active) while the field has focus,
+/** .oc-otp (0.17.1): marks the cell the caret is in (data-otp-active + --oc-otp-active) while the field has focus,
  *  so a visitor sees which cell the next character goes to. The whole field still shows its own focus ring. */
 export function bindOtp(input) {
   if (!input || input.dataset.ocOtpBound != null) return () => {};

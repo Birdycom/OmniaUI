@@ -3,7 +3,7 @@
  * Top bar with sidebar toggle, module navigation and user actions.
  * `toggleFor` = id of the checkbox that collapses the sidebar (see OcBlockAppShell).
  * Slots: toggle (replaces the default hamburger label), nav (replaces the items), title, search, actions.
- * searchCollapse (0.18.0): on a narrow bar the search slot shrinks to a magnifier and opens over the bar on focus.
+ * searchCollapse (0.17.1): on a narrow bar the search slot shrinks to a magnifier and opens over the bar on focus.
  * 0.17.0: overflow = the nav-items that do not fit go into a "More" menu (ResizeObserver; more-label, default "More"; the
  * More button is marked current when the current page is in it); search slot between nav and actions; module = data-module.
  * Classes: .oc-block-appbar, -nav(--overflow), -more, -search, -actions, -title
@@ -22,7 +22,7 @@ const props = withDefaults(
     title?: string
     overflow?: boolean
     moreLabel?: string
-    /** 0.18.0: on a narrow bar (below 40rem) the search shrinks to a magnifier and opens over the bar on focus. */
+    /** 0.17.1: on a narrow bar (below 40rem) the search shrinks to a magnifier and opens over the bar on focus. */
     searchCollapse?: boolean
     module?: string
   }>(),

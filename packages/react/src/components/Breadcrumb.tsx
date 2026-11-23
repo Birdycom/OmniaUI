@@ -1,5 +1,5 @@
 // File: packages/react/src/components/Breadcrumb.tsx
-// Map: item data -> context (separator, inside a list) -> Breadcrumb (items, maxItems collapse) -> compound parts (0.18.0):
+// Map: item data -> context (separator, inside a list) -> Breadcrumb (items, maxItems collapse) -> compound parts (0.17.1):
 //      BreadcrumbList, BreadcrumbItem, BreadcrumbLink (asChild), BreadcrumbPage, BreadcrumbSeparator, BreadcrumbEllipsis
 // Same markup as packages/ui/snippets/breadcrumb.html. The ellipsis menu is a native popover (no script).
 import { createContext, forwardRef, useContext, useId } from "react";
@@ -24,7 +24,7 @@ export interface BreadcrumbProps extends HTMLAttributes<HTMLElement> {
   /** `"slash"` (default) or `"chevron"` (›) between the items. */
   separator?: Separator;
   /**
-   * 0.18.0: a longer trail folds its middle into a "…" button with a menu of the hidden levels. Keeps `itemsBefore`
+   * 0.17.1: a longer trail folds its middle into a "…" button with a menu of the hidden levels. Keeps `itemsBefore`
    * levels at the start and `itemsAfter` at the end (the current page included).
    */
   maxItems?: number;
@@ -73,7 +73,7 @@ export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Brea
   );
 });
 
-/** 0.18.0: `<ol>` of the compound breadcrumb; its items become `<li>`. Optional: items also work straight in Breadcrumb. */
+/** 0.17.1: `<ol>` of the compound breadcrumb; its items become `<li>`. Optional: items also work straight in Breadcrumb. */
 export const BreadcrumbList = forwardRef<HTMLOListElement, OlHTMLAttributes<HTMLOListElement>>(function BreadcrumbList({ children, className, ...rest }, ref) {
   const ctx = useContext(BreadcrumbContext);
   return (
@@ -83,7 +83,7 @@ export const BreadcrumbList = forwardRef<HTMLOListElement, OlHTMLAttributes<HTML
   );
 });
 
-/** 0.18.0: one level (`.oc-breadcrumb-item`): `<li>` inside BreadcrumbList, else `<span>`. Holds a link, the page or the ellipsis. */
+/** 0.17.1: one level (`.oc-breadcrumb-item`): `<li>` inside BreadcrumbList, else `<span>`. Holds a link, the page or the ellipsis. */
 export const BreadcrumbItem = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function BreadcrumbItem({ className, ...rest }, ref) {
   const { inList } = useContext(BreadcrumbContext);
   const Tag = (inList ? "li" : "span") as "span";
@@ -97,7 +97,7 @@ export interface BreadcrumbLinkProps extends AnchorHTMLAttributes<HTMLAnchorElem
   asChild?: boolean;
 }
 
-/** 0.18.0: a level you can go back to: `<a>` (or your router link with `asChild`). */
+/** 0.17.1: a level you can go back to: `<a>` (or your router link with `asChild`). */
 export const BreadcrumbLink = forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(function BreadcrumbLink({ icon, asChild, children, className, ...rest }, ref) {
   if (asChild) {
     const merged = mergeIntoChild(children, { ...rest, className: cx("oc-breadcrumb-link", className) }, ref);
@@ -110,12 +110,12 @@ export interface BreadcrumbPageProps extends HTMLAttributes<HTMLSpanElement> {
   icon?: ReactNode;
 }
 
-/** 0.18.0: the current page (`aria-current="page"`), not a link. */
+/** 0.17.1: the current page (`aria-current="page"`), not a link. */
 export const BreadcrumbPage = forwardRef<HTMLSpanElement, BreadcrumbPageProps>(function BreadcrumbPage({ icon, children, className, ...rest }, ref) {
   return <span ref={ref} className={cx("oc-breadcrumb-page", className)} aria-current="page" {...rest}>{webiconNode(icon)}{children}</span>;
 });
 
-/** 0.18.0: an explicit separator (`.oc-breadcrumb-separator`), e.g. your own icon. Without it the items get "/" or › by CSS. */
+/** 0.17.1: an explicit separator (`.oc-breadcrumb-separator`), e.g. your own icon. Without it the items get "/" or › by CSS. */
 export const BreadcrumbSeparator = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function BreadcrumbSeparator({ className, children, ...rest }, ref) {
   const { inList, separator } = useContext(BreadcrumbContext);
   const Tag = (inList ? "li" : "span") as "span";
@@ -135,7 +135,7 @@ export interface BreadcrumbEllipsisProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
 }
 
-/** 0.18.0: the folded middle of a long trail: `.oc-breadcrumb-ellipsis` with a menu of the hidden levels. Put it in a BreadcrumbItem. */
+/** 0.17.1: the folded middle of a long trail: `.oc-breadcrumb-ellipsis` with a menu of the hidden levels. Put it in a BreadcrumbItem. */
 export const BreadcrumbEllipsis = forwardRef<HTMLElement, BreadcrumbEllipsisProps>(function BreadcrumbEllipsis({ items, label, children, className, id, ...rest }, ref) {
   const auto = useId();
   const menuId = id ?? `oc-bc-${auto.replace(/[^a-zA-Z0-9_-]/g, "")}`;

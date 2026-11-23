@@ -8,7 +8,7 @@
      Slots: toggle, module nav, search, actions (theme switch, workspace select, user dropdown)
      Blade: <x-oc::block.app-header> - attributes merge onto the root element; props: toggleFor => oc-appbar-toggle.
      Blade slots (each falls back to the snippet content when empty): toggle, nav, actions; search (0.17.0, empty by default;
-     search-collapse (0.18.0): on a narrow bar it shrinks to a magnifier and opens over the bar on focus).
+     search-collapse (0.17.1): on a narrow bar it shrinks to a magnifier and opens over the bar on focus).
      0.17.0 (written by hand, not generated): overflow (links that do not fit go into a "More" menu; needs
      <script type="module" src="/js/oc-nav-overflow.js"></script>, `npx omniaui copy-js nav-overflow`), more-label (default
      "More"), nav-label (aria-label of the nav), module (data-module on the bar).

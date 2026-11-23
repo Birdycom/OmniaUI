@@ -2,7 +2,7 @@
 <script setup lang="ts">
 /** EAN-13, EAN-8, UPC-A or Code 128 as SVG; shows the reason when the value cannot be encoded.
  *  variant="bare": no white plate and border (inside a card). groupDigits (default true): EAN-13 1 6 6, EAN-8 4 4, UPC-A 1 5 5 1.
- *  fallback="code128" (0.18.0): an EAN/UPC value that cannot be encoded (wrong check digit) is drawn as Code 128 (data-fallback-used). */
+ *  fallback="code128" (0.17.1): an EAN/UPC value that cannot be encoded (wrong check digit) is drawn as Code 128 (data-fallback-used). */
 import { computed } from 'vue'
 import { barsToSvg, digitGroups, encodeBarcode } from '../../../ui/src/barcode.js'
 

@@ -1,6 +1,6 @@
 // File: packages/vue/src/composables/keys-breadcrumb.ts
 // Map: breadcrumb context (OcBreadcrumb -> OcBreadcrumbList -> OcBreadcrumbItem / OcBreadcrumbSeparator) -> collapse helper
-// 0.18.0 compound breadcrumb: provide in OcBreadcrumb (separator) and OcBreadcrumbList (items become <li>).
+// 0.17.1 compound breadcrumb: provide in OcBreadcrumb (separator) and OcBreadcrumbList (items become <li>).
 
 import type { InjectionKey } from 'vue'
 

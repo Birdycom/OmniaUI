@@ -1,4 +1,4 @@
-// File: packages/react/test/v0180-desk.test.tsx
+// File: packages/react/test/v0171-desk.test.tsx
 // Map: Badge status set + readonly -> Breadcrumb maxItems + compound parts -> DecimalInput currency / percent ->
 //      Barcode fallback + exports -> OtpInput active cell + onComplete from a controlled value -> app header searchCollapse
 
@@ -14,7 +14,7 @@ import { Barcode, encodeBarcode, guessFormat } from "../src/components/Barcode";
 import { OtpInput } from "../src/components/OtpInput";
 import { BlockAppHeader } from "../src/blocks/BlockAppHeader";
 
-describe("0.18.0 status badges", () => {
+describe("0.17.1 status badges", () => {
   it("status sets the class, data-status, its icon and its label", () => {
     const { container } = render(<Badge status="paid" />);
     const b = container.querySelector("span.oc-badge")!;
@@ -54,7 +54,7 @@ describe("0.18.0 status badges", () => {
   });
 });
 
-describe("0.18.0 breadcrumb", () => {
+describe("0.17.1 breadcrumb", () => {
   const trail = [
     { label: "Dashboard", href: "/" },
     { label: "Relations", href: "/relations" },
@@ -118,7 +118,7 @@ describe("0.18.0 breadcrumb", () => {
   });
 });
 
-describe("0.18.0 DecimalInput currency and percent", () => {
+describe("0.17.1 DecimalInput currency and percent", () => {
   it("currencyAffix reads the symbol, its side and the decimals from the locale", () => {
     expect(currencyAffix("nl-BE", "EUR")).toEqual({ symbol: "€", before: true, decimals: 2 });
     expect(currencyAffix("fr-BE", "EUR").before).toBe(false);
@@ -153,7 +153,7 @@ describe("0.18.0 DecimalInput currency and percent", () => {
   });
 });
 
-describe("0.18.0 Barcode fallback", () => {
+describe("0.17.1 Barcode fallback", () => {
   it("draws a wrong check digit as Code 128 with fallback, else shows the error", () => {
     const { container } = render(<><Barcode value="4006381333932" fallback="code128" /><Barcode value="4006381333932" /></>);
     const [a, b] = container.querySelectorAll("figure");
@@ -168,7 +168,7 @@ describe("0.18.0 Barcode fallback", () => {
   });
 });
 
-describe("0.18.0 OtpInput", () => {
+describe("0.17.1 OtpInput", () => {
   it("marks the active cell while it has focus", () => {
     render(<OtpInput aria-label="Code" defaultValue="12" />);
     const input = screen.getByLabelText("Code") as HTMLInputElement;
@@ -211,7 +211,7 @@ describe("0.18.0 OtpInput", () => {
   });
 });
 
-describe("0.18.0 app header search collapse", () => {
+describe("0.17.1 app header search collapse", () => {
   it("searchCollapse adds the modifier to the search slot", () => {
     const { container, rerender } = render(<BlockAppHeader search={<input className="oc-input" type="search" aria-label="Search" />} searchCollapse />);
     expect(container.querySelector(".oc-block-appbar-search")!.className).toBe("oc-block-appbar-search oc-block-appbar-search--collapse");

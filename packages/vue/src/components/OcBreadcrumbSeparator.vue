@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Compound breadcrumb (0.18.0): an explicit separator (.oc-breadcrumb-separator), e.g. your own icon in the slot. Without it the items get "/" or › by CSS. */
+/** Compound breadcrumb (0.17.1): an explicit separator (.oc-breadcrumb-separator), e.g. your own icon in the slot. Without it the items get "/" or › by CSS. */
 import { inject } from 'vue'
 import { breadcrumbKey } from '../composables/keys-breadcrumb'
 import type { BreadcrumbContext } from '../composables/keys-breadcrumb'

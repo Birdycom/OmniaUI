@@ -30,7 +30,7 @@ export interface BlockAppHeaderProps extends Omit<HTMLAttributes<HTMLElement>, "
   moreLabel?: string;
   /** Search field between the nav and the actions (`.oc-block-appbar-search`), e.g. an Input type="search". */
   search?: ReactNode;
-  /** 0.18.0: on a narrow bar (below 40rem) the search shrinks to a magnifier and opens over the bar on focus. */
+  /** 0.17.1: on a narrow bar (below 40rem) the search shrinks to a magnifier and opens over the bar on focus. */
   searchCollapse?: boolean;
   /** Module color (`data-module` on the bar). */
   module?: string;

@@ -1,6 +1,6 @@
 <?php
 
-// File: tests/V0180DeskTest.php
+// File: tests/V0171DeskTest.php
 // Map: badge status set + readonly -> breadcrumb max-items + compound parts -> decimal input currency / percent + locale ->
 //      barcode fallback -> otp input (the active cell comes from form-extras.js; markup unchanged)
 
@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Omniacss\Laravel\Tests;
 
-class V0180DeskTest extends TestCase
+class V0171DeskTest extends TestCase
 {
     public function test_status_badges(): void
     {

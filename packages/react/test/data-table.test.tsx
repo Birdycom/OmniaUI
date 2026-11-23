@@ -79,4 +79,17 @@ describe("Data table", () => {
     fireEvent.click(screen.getByRole("button", { name: "Move to trash" }));
     expect(onBulk).toHaveBeenCalledWith("archive", ["schar"]);
   });
+
+  it("reports a new row order from oc-datatable-reorder", () => {
+    const onReorder = vi.fn();
+    const { unmount } = render(<DataTable id="dt-reorder" title="Articles" pageSize={10} draggable columns={columns} rows={rows} onReorder={onReorder} />);
+    const root = document.getElementById("dt-reorder")!;
+    root.dispatchEvent(new CustomEvent("oc-datatable-reorder", { bubbles: true, detail: { keys: ["greep", "schar", "schroef"] } }));
+    expect(onReorder).toHaveBeenCalledWith(["greep", "schar", "schroef"], { key: undefined, server: undefined });
+    root.dispatchEvent(new CustomEvent("oc-datatable-reorder", { bubbles: true, detail: { keys: ["schar", "greep"], key: "schar", server: true } }));
+    expect(onReorder).toHaveBeenLastCalledWith(["schar", "greep"], { key: "schar", server: true });
+    unmount();
+    root.dispatchEvent(new CustomEvent("oc-datatable-reorder", { bubbles: true, detail: { keys: [] } }));
+    expect(onReorder).toHaveBeenCalledTimes(2);
+  });
 });

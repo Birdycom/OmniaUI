@@ -56,7 +56,7 @@ describe('v0.16.0 combobox with icons', () => {
 describe('v0.16.0 dropdown item icon', () => {
   it('a webicon before the label', () => {
     const w = mount(OcDropdownItem, { props: { icon: 'mdi:pencil-outline' }, slots: { default: 'Edit' } })
-    // 0.18.0: mdi:pencil-outline is a built-in webicon (status badge "draft"), so it is inline SVG now
+    // 0.17.1: mdi:pencil-outline is a built-in webicon (status badge "draft"), so it is inline SVG now
     expect(w.find('.oc-dropdown-icon svg, .oc-dropdown-icon iconify-icon').exists()).toBe(true)
     expect(mount(OcDropdownItem, { slots: { default: 'Paid' } }).find('.oc-dropdown-icon').exists()).toBe(false)
   })

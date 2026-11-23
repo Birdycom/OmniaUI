@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Compound breadcrumb (0.18.0): a level you can go back to. An <a> by default; `as` renders your router link
+ * Compound breadcrumb (0.17.1): a level you can go back to. An <a> by default; `as` renders your router link
  * (RouterLink, Inertia Link …) with the same attributes (to, …). href: the link. icon: a webicon name before the label.
  */
 import type { Component } from 'vue'

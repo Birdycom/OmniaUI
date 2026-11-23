@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Compound breadcrumb (0.18.0): the folded middle of a long trail. items: the hidden levels, in a menu under the "…"
+ * Compound breadcrumb (0.17.1): the folded middle of a long trail. items: the hidden levels, in a menu under the "…"
  * button (a native popover, no script); or your own menu content in the default slot (.oc-dropdown-item links).
  * Without items or slot it is only a "…" mark. label: accessible name, {count} = number of hidden levels.
  * Put it in an OcBreadcrumbItem.

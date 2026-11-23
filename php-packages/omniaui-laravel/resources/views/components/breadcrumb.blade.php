@@ -1,7 +1,7 @@
 {{-- OmniaCSS breadcrumb. Props: items (list of ['label' => ..., 'href' => ..., 'icon' => 'mdi:...']; the last item is the
      current page), label, separator (slash|chevron). Without items the slot is rendered: plain <a class="oc-breadcrumb-item">
-     markup or the compound parts (0.18.0): <x-oc::breadcrumb.list>, .item, .link, .page, .separator, .ellipsis.
-     max-items (0.18.0): a longer trail folds its middle into a "…" button with a menu of the hidden levels (a native popover);
+     markup or the compound parts (0.17.1): <x-oc::breadcrumb.list>, .item, .link, .page, .separator, .ellipsis.
+     max-items (0.17.1): a longer trail folds its middle into a "…" button with a menu of the hidden levels (a native popover);
      items-before (1) and items-after (2, the current page included) say how many levels stay; ellipsis-label ({count}). --}}
 @props(['items' => [], 'label' => 'Breadcrumb', 'separator' => 'slash', 'maxItems' => null, 'itemsBefore' => 1, 'itemsAfter' => 2, 'ellipsisLabel' => null])
 @php

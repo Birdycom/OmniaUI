@@ -1,4 +1,4 @@
-{{-- OmniaCSS compound breadcrumb (0.18.0): an explicit separator (.oc-breadcrumb-separator). Props: as (li|span).
+{{-- OmniaCSS compound breadcrumb (0.17.1): an explicit separator (.oc-breadcrumb-separator). Props: as (li|span).
      Slot: your own separator; empty = "/" or the chevron of separator="chevron" on <x-oc::breadcrumb>. Without separators the
      items get "/" or › by CSS. --}}
 @aware(['separator' => 'slash'])

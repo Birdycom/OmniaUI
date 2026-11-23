@@ -5,7 +5,7 @@
  * Emits `complete` with the code when it reaches `length`, after the v-model update has rendered (flush: 'post'), so a
  * parent that submits from @complete already holds the full code. `fit`: cells shrink with the parent; `group`: a divider after
  * every n cells (4: "ABCD EFGH").
- * 0.18.0: `complete` also fires when the v-model arrives complete from outside (also on mount), once per distinct code;
+ * 0.17.1: `complete` also fires when the v-model arrives complete from outside (also on mount), once per distinct code;
  * the cell the caret is in is marked while the field has focus (bindOtp of form-extras.js).
  */
 import { computed, onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'

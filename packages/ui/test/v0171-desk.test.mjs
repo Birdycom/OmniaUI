@@ -1,4 +1,4 @@
-// File: packages/ui/test/v0180-desk.test.mjs
+// File: packages/ui/test/v0171-desk.test.mjs
 // Map: status badges (tones per data-status, readonly chip) -> breadcrumb compound CSS -> barcode (UPC-A guess, Code 128
 //      fallback, data-fallback on the figure) -> one-time code (active cell: helper, bindOtp, CSS)
 

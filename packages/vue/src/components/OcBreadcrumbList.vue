@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Compound breadcrumb (0.18.0): the <ol> inside OcBreadcrumb; its OcBreadcrumbItem / OcBreadcrumbSeparator become <li>. */
+/** Compound breadcrumb (0.17.1): the <ol> inside OcBreadcrumb; its OcBreadcrumbItem / OcBreadcrumbSeparator become <li>. */
 import { inject, provide } from 'vue'
 import { breadcrumbKey } from '../composables/keys-breadcrumb'
 import type { BreadcrumbContext } from '../composables/keys-breadcrumb'

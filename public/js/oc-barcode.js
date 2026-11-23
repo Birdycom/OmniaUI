@@ -2,7 +2,7 @@
 // Map: format guess -> EAN-13 / EAN-8 / UPC-A -> Code 128 (B, or C for even digit runs) -> digit groups -> bars to SVG -> SVG file -> bind -> boot
 // Barcode display without a dependency : <figure class="oc-barcode" data-value="5412345678908">
 // gets an SVG with the bars and the digits under it. data-format="auto|EAN13|EAN8|UPC|CODE128" (default auto).
-// data-fallback="code128" (0.18.0): an EAN/UPC value with a wrong check digit is drawn as Code 128 instead of an error
+// data-fallback="code128" (0.17.1): an EAN/UPC value with a wrong check digit is drawn as Code 128 instead of an error
 // (the figure then gets data-fallback-used).
 // The digits are grouped like on a product (EAN-13 1 6 6, EAN-8 4 4, UPC-A 1 5 5 1); data-group="false" keeps one run.
 
@@ -30,7 +30,7 @@ const R = L.map((code) => code.replace(/./g, (bit) => (bit === "1" ? "0" : "1"))
 const PARITY = ["LLLLLL", "LLGLGG", "LLGGLG", "LLGGGL", "LGLLGG", "LGGLLG", "LGGGLL", "LGLGLG", "LGLGGL", "LGGLGL"];
 
 /** EAN-13, EAN-8 or UPC-A for plain digit strings of that length (with or without the check digit); else Code 128.
- *  12 digits (0.18.0): UPC-A when the last digit is its check digit, else the body of an EAN-13 (the check digit is added). */
+ *  12 digits (0.17.1): UPC-A when the last digit is its check digit, else the body of an EAN-13 (the check digit is added). */
 export function guessFormat(value) {
   if (/^\d{12}$/.test(value) && eanCheck(value.slice(0, 11)) === value[11]) return "UPC";
   if (/^\d{12,13}$/.test(value)) return "EAN13";
@@ -85,7 +85,7 @@ export function encodeCode128(text) {
 }
 
 /** Encode a value in a format (auto picks one). Returns the module string, the human-readable text and the format
- *  that was used (EAN13, EAN8, UPC or CODE128). fallback "code128" (0.18.0): when an EAN/UPC value cannot be encoded
+ *  that was used (EAN13, EAN8, UPC or CODE128). fallback "code128" (0.17.1): when an EAN/UPC value cannot be encoded
  *  (a wrong check digit, a wrong length), draw it as Code 128 and report `fallback: true` instead of throwing. */
 export function encodeBarcode(value, format = "auto", { fallback } = {}) {
   const code = String(value ?? "").trim();

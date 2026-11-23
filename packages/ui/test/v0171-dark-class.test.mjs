@@ -1,4 +1,4 @@
-// File: packages/ui/test/v0180-dark-class.test.mjs
+// File: packages/ui/test/v0171-dark-class.test.mjs
 // Map: the class .dark / .light (Tailwind / shadcn apps) themes like data-theme (color-scheme, so every light-dark()
 //      token follows) -> the theme tokens put it in front too (oc-theme.css) -> --oc-info is a real token and the info
 //      badge / alert / toast use it -> theme images and scopes know the class -> no rule resets color-scheme on .dark

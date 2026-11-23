@@ -1,10 +1,10 @@
-<!-- File: packages/vue/src/components/OcDecimalInput.vue | Map: props + model -> locale helpers (parse / format, currency symbol) -> template (field, optional unit frame, 0.18.0: currency / percent affix frame) -->
+<!-- File: packages/vue/src/components/OcDecimalInput.vue | Map: props + model -> locale helpers (parse / format, currency symbol) -> template (field, optional unit frame, 0.17.1: currency / percent affix frame) -->
 <script setup lang="ts">
 /**
  * Locale decimal field (1.234,56). v-model: number | null. Formats on blur with Intl.NumberFormat.
  * Same markup as packages/ui/snippets/decimal-input.html. All attributes (also class) go to the input.
- * currency (0.18.0): ISO code ("EUR"): its symbol inside the frame, before or after the value as the locale writes it
- * (€ 1.234,56 in nl-BE), and the decimals of that currency unless `decimals` is set. percent (0.18.0): "%" after the value
+ * currency (0.17.1): ISO code ("EUR"): its symbol inside the frame, before or after the value as the locale writes it
+ * (€ 1.234,56 in nl-BE), and the decimals of that currency unless `decimals` is set. percent (0.17.1): "%" after the value
  * (the value is the number you see: 21 = 21 %). groupClass: class for the frame.
  */
 import { computed, ref, watch } from 'vue'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Compound breadcrumb (0.18.0): the current page (aria-current="page"), not a link. icon: a webicon name before the label. */
+/** Compound breadcrumb (0.17.1): the current page (aria-current="page"), not a link. icon: a webicon name before the label. */
 import OcWebicon from './OcWebicon.vue'
 
 defineProps<{ icon?: string }>()

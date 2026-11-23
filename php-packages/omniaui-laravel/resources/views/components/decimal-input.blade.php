@@ -1,9 +1,9 @@
 {{-- File: resources/views/components/decimal-input.blade.php | Map: props -> locale separators + currency symbol -> value formatting
-     -> input (optionally inside a unit frame, or 0.18.0: the affix frame with a currency or percent symbol)
+     -> input (optionally inside a unit frame, or 0.17.1: the affix frame with a currency or percent symbol)
      OmniaUI decimal input. Props: unit (text after the value), start (left-aligned), error, pattern (default: the decimal
-     notation of the locale, like 1.234,56), locale (0.18.0, default nl-BE), decimals (0.18.0: default 2, or those of the
-     currency), currency (0.18.0: ISO code like EUR: its symbol in the frame, before or after the value as the locale writes it),
-     percent (0.18.0: "%" after the value; the value is the number you see, 21 = 21 %), group-class (class of the frame).
+     notation of the locale, like 1.234,56), locale (0.17.1, default nl-BE), decimals (0.17.1: default 2, or those of the
+     currency), currency (0.17.1: ISO code like EUR: its symbol in the frame, before or after the value as the locale writes it),
+     percent (0.17.1: "%" after the value; the value is the number you see, 21 = 21 %), group-class (class of the frame).
      Attributes (name, value, id, wire:model ...) go to the input. A numeric value (int or float) is formatted in the locale
      (1234.5 -> 1.234,50); a string value is shown as it is. --}}
 @props(['unit' => null, 'start' => false, 'error' => false, 'pattern' => null, 'locale' => 'nl-BE', 'decimals' => null, 'currency' => null, 'percent' => false, 'groupClass' => null])

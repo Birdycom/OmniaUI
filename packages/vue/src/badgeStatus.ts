@@ -1,5 +1,5 @@
 // File: packages/vue/src/badgeStatus.ts
-// Map: the ready-made statuses of <OcBadge status="…"> (0.18.0): label, webicon and tone per status.
+// Map: the ready-made statuses of <OcBadge status="…"> (0.17.1): label, webicon and tone per status.
 // Same list as packages/react/src/components/Badge.tsx and the Blade badge; the colour comes from the CSS (data-status).
 
 export type BadgeStatus =

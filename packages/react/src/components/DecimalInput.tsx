@@ -1,6 +1,6 @@
 // File: packages/react/src/components/DecimalInput.tsx
 // Map: helpers (locale separators, parse, format, currency symbol) -> component (text field, optional unit frame,
-//      0.18.0: currency / percent preset = the affix frame of AffixInput around the locale field)
+//      0.17.1: currency / percent preset = the affix frame of AffixInput around the locale field)
 // Same markup as packages/ui/snippets/decimal-input.html. Formats on blur with Intl.NumberFormat.
 "use client";
 
@@ -20,11 +20,11 @@ export interface DecimalInputProps extends Omit<InputHTMLAttributes<HTMLInputEle
   /** Unit text inside the frame (m², kg). */
   unit?: string;
   /**
-   * 0.18.0: ISO currency code ("EUR", "USD"): its symbol inside the frame (before or after the value, as the locale writes
+   * 0.17.1: ISO currency code ("EUR", "USD"): its symbol inside the frame (before or after the value, as the locale writes
    * it: € 1.234,56 in nl-BE, 1.234,56 € in fr-BE) and the decimals of that currency unless `decimals` is set.
    */
   currency?: string;
-  /** 0.18.0: a percentage: "%" after the value. The value is the number you see (21 = 21 %), not a fraction. */
+  /** 0.17.1: a percentage: "%" after the value. The value is the number you see (21 = 21 %), not a fraction. */
   percent?: boolean;
   /** Class for the frame around the field (with `unit`, `currency` or `percent`); `className` goes to the input. */
   groupClassName?: string;

@@ -1,4 +1,4 @@
-// File: packages/vue/tests/v0180-desk.test.ts
+// File: packages/vue/tests/v0171-desk.test.ts
 // Map: OcBadge status set + readonly -> OcBreadcrumb maxItems + compound parts -> OcDecimalInput currency / percent ->
 //      OcBarcode fallback -> OcOtpInput active cell + complete from the v-model
 
@@ -19,7 +19,7 @@ import OcOtpInput from '../src/components/OcOtpInput.vue'
 import OcBlockAppHeader from '../src/blocks/OcBlockAppHeader.vue'
 import { badgeStatuses } from '../src/badgeStatus'
 
-describe('0.18.0 status badges', () => {
+describe('0.17.1 status badges', () => {
   it('status sets the class, data-status, its icon and its label', () => {
     const w = mount(OcBadge, { props: { status: 'paid' } })
     expect(w.classes()).toEqual(['oc-badge', 'oc-badge--status'])
@@ -46,7 +46,7 @@ describe('0.18.0 status badges', () => {
   })
 })
 
-describe('0.18.0 breadcrumb', () => {
+describe('0.17.1 breadcrumb', () => {
   const trail = [
     { label: 'Dashboard', href: '/' },
     { label: 'Relations', href: '/relations' },
@@ -97,7 +97,7 @@ describe('0.18.0 breadcrumb', () => {
   })
 })
 
-describe('0.18.0 decimal input presets', () => {
+describe('0.17.1 decimal input presets', () => {
   it('currency EUR: € before the value, nl-BE notation', () => {
     const w = mount(OcDecimalInput, { props: { currency: 'EUR', modelValue: 1234.5 } })
     expect(w.classes()).toContain('oc-input-group--affix')
@@ -114,7 +114,7 @@ describe('0.18.0 decimal input presets', () => {
   })
 })
 
-describe('0.18.0 barcode fallback', () => {
+describe('0.17.1 barcode fallback', () => {
   it('draws a wrong check digit as Code 128', () => {
     const w = mount(OcBarcode, { props: { value: '4006381333932', fallback: 'code128' } })
     expect(w.attributes('data-fallback-used')).toBe('')
@@ -123,7 +123,7 @@ describe('0.18.0 barcode fallback', () => {
   })
 })
 
-describe('0.18.0 otp input', () => {
+describe('0.17.1 otp input', () => {
   it('complete fires when the v-model arrives complete from outside, once per code', async () => {
     const code = ref('')
     const w = mount(OcOtpInput, { props: { modelValue: code.value } })
@@ -156,7 +156,7 @@ describe('0.18.0 otp input', () => {
   })
 })
 
-describe('0.18.0 app header search collapse', () => {
+describe('0.17.1 app header search collapse', () => {
   it('searchCollapse adds the modifier to the search slot', () => {
     const w = mount(OcBlockAppHeader, { props: { searchCollapse: true }, slots: { search: '<input class="oc-input" type="search" aria-label="Search">' } })
     expect(w.find('.oc-block-appbar-search').classes()).toEqual(['oc-block-appbar-search', 'oc-block-appbar-search--collapse'])
