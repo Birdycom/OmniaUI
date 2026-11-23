@@ -1,5 +1,5 @@
-<!--oc-page {"title": "OmniaUI - Forms & Inputs", "category": "Forms", "description": "Field wrapper, input, select, textarea, checkbox, radio, switch, input group.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
-<!-- File: apps/site/src/content/ui/components/forms.html | Map: hero -> demo (field, error, input group, other inputs, horizontal, filled, busy) -> reference -> frameworks -> browser support -> source footer -->
+<!--oc-page {"title": "OmniaUI - Forms & Inputs", "category": "Forms", "description": "Form fields with label, help, error and tooltip, input masks with validation, a compact ledger look, input groups, select, textarea, checkbox and switch.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/forms.html | Map: hero -> demo (field, error, input group, other inputs, horizontal, filled, busy, field extras, mask and validation, ledger) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Forms &amp; Inputs</h1>
         <p class="oc-hero-text">Compose forms with the <code>.oc-field</code> wrapper: a label, the control and an optional description or error. <code>.oc-input-group</code> adds a prefix or suffix. For the separate controls see <a href="native-select.html">Native select</a>, <a href="radio.html">Radio</a> and <a href="toggle-field.html">Toggle field</a>.</p>
@@ -23,6 +23,60 @@
     <input class="oc-input" id="form-password" type="password" placeholder="••••••••">
   </div>
 </div>
+<oc-code lang="tsx">&lt;FormField label="Email" description="We'll never share your email."&gt;
+  &lt;Input type="email" placeholder="name@example.com" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;
+&lt;/FormField&gt;
+&lt;FormField label="Password"&gt;
+  &lt;Input type="password" value={password} onChange={(e) =&gt; setPassword(e.target.value)} /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Email" description="We'll never share your email." v-slot="f"&gt;
+  &lt;OcInput :id="f.id" v-model="email" type="email" placeholder="name@example.com" :aria-describedby="f.describedBy" /&gt;
+&lt;/OcFormField&gt;
+&lt;OcFormField label="Password" v-slot="f"&gt;
+  &lt;OcInput :id="f.id" v-model="password" type="password" /&gt;
+&lt;/OcFormField&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Email" for="email" name="email" description="We'll never share your email."&gt;
+    &lt;x-oc::input id="email" name="email" type="email" placeholder="name@example.com" aria-describedby="email-help" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;x-oc::form-field label="Password" for="password" name="password"&gt;
+    &lt;x-oc::input id="password" name="password" type="password" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class SignIn extends Component
+{
+    #[Validate('required|email')]
+    public string $email = '';
+
+    #[Validate('required|min:8')]
+    public string $password = '';
+
+    public function signIn(): void
+    {
+        $this-&gt;validate();
+        // Auth::attempt(...) and redirect
+    }
+
+    public function render()
+    {
+        return view('livewire.sign-in');
+    }
+}
+
+{{-- resources/views/livewire/sign-in.blade.php --}}
+&lt;form wire:submit="signIn"&gt;
+    &lt;x-oc::form-field label="Email" for="email" name="email" description="We'll never share your email."&gt;
+        &lt;x-oc::wire.input id="email" model="email" blur type="email" placeholder="name@example.com" aria-describedby="email-help" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Password" for="password" name="password"&gt;
+        &lt;x-oc::wire.input id="password" model="password" type="password" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="error-state">Error state</h3>
@@ -33,6 +87,47 @@
   <input class="oc-input" id="form-username" aria-invalid="true" aria-describedby="form-username-error" value="anna">
   <span class="oc-field-error" id="form-username-error">This username is already taken.</span>
 </div>
+<oc-code lang="tsx">&lt;FormField label="Username" error={taken ? "This username is already taken." : undefined}&gt;
+  &lt;Input value={username} onChange={(e) =&gt; setUsername(e.target.value)} /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Username" :error="taken ? 'This username is already taken.' : undefined" v-slot="f"&gt;
+  &lt;OcInput :id="f.id" v-model="username" :error="f.invalid" :aria-describedby="f.describedBy" /&gt;
+&lt;/OcFormField&gt;</oc-code>
+<oc-code lang="blade">{{-- The error comes from the validator: $errors-&gt;first('username') --}}
+&lt;x-oc::form-field label="Username" for="username" name="username"&gt;
+    &lt;x-oc::input id="username" name="username" value="anna" aria-describedby="username-error" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Account extends Component
+{
+    public string $username = 'anna';
+
+    public function updatedUsername(): void
+    {
+        $this-&gt;validate(
+            ['username' =&gt; 'required|unique:users,username'],
+            ['username.unique' =&gt; 'This username is already taken.'],
+        );
+    }
+
+    public function render()
+    {
+        return view('livewire.account');
+    }
+}
+
+{{-- resources/views/livewire/account.blade.php --}}
+&lt;div&gt;
+    {{-- wire.input sets aria-invalid, form-field shows the message --}}
+    &lt;x-oc::form-field label="Username" for="username" name="username"&gt;
+        &lt;x-oc::wire.input id="username" model="username" blur aria-describedby="username-error" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="input-group">Input group</h3>
@@ -42,6 +137,34 @@
   <span class="oc-input-addon">https://</span>
   <input class="oc-input" placeholder="example.com" aria-label="Website">
 </div>
+<oc-code lang="tsx">&lt;InputGroup prefix="https://"&gt;
+  &lt;Input placeholder="example.com" aria-label="Website" value={website} onChange={(e) =&gt; setWebsite(e.target.value)} /&gt;
+&lt;/InputGroup&gt;</oc-code>
+<oc-code lang="vue">&lt;OcInputGroup prefix="https://"&gt;
+  &lt;OcInput v-model="website" placeholder="example.com" aria-label="Website" /&gt;
+&lt;/OcInputGroup&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::input-group prefix="https://" name="website" placeholder="example.com" aria-label="Website" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Website extends Component
+{
+    public string $website = '';
+
+    public function render()
+    {
+        return view('livewire.website');
+    }
+}
+
+{{-- resources/views/livewire/website.blade.php --}}
+&lt;div&gt;
+    {{-- input-group passes its attributes, wire:model too, to the input --}}
+    &lt;x-oc::input-group prefix="https://" wire:model.blur="website" placeholder="example.com" aria-label="Website" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="inputs">Select, textarea, checkbox, radio and switch</h3>
@@ -63,6 +186,73 @@
     <label class="oc-switch"><input type="checkbox" checked aria-label="Notifications"><span class="oc-switch-track"></span></label>
   </div>
 </div>
+<oc-code lang="tsx">&lt;FormField label="Country"&gt;
+  &lt;Select options={["Belgium", "Netherlands", "Germany"]} value={country} onChange={(e) =&gt; setCountry(e.target.value)} /&gt;
+&lt;/FormField&gt;
+&lt;FormField label="Message"&gt;
+  &lt;Textarea rows={3} placeholder="Type here…" value={message} onChange={(e) =&gt; setMessage(e.target.value)} /&gt;
+&lt;/FormField&gt;
+&lt;Checkbox label="Remember me" checked={remember} onChange={(e) =&gt; setRemember(e.target.checked)} /&gt;
+&lt;Radio name="plan" value="free" checked={plan === "free"} onChange={() =&gt; setPlan("free")}&gt;Free&lt;/Radio&gt;
+&lt;Radio name="plan" value="pro" checked={plan === "pro"} onChange={() =&gt; setPlan("pro")}&gt;Pro&lt;/Radio&gt;
+&lt;Switch aria-label="Notifications" checked={notify} onChange={(e) =&gt; setNotify(e.target.checked)} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Country" v-slot="f"&gt;
+  &lt;OcSelect :id="f.id" v-model="country" :options="['Belgium', 'Netherlands', 'Germany']" /&gt;
+&lt;/OcFormField&gt;
+&lt;OcFormField label="Message" v-slot="f"&gt;
+  &lt;OcTextarea :id="f.id" v-model="message" rows="3" placeholder="Type here…" /&gt;
+&lt;/OcFormField&gt;
+&lt;OcCheckbox v-model="remember" label="Remember me" /&gt;
+&lt;OcRadio v-model="plan" name="plan" value="free"&gt;Free&lt;/OcRadio&gt;
+&lt;OcRadio v-model="plan" name="plan" value="pro"&gt;Pro&lt;/OcRadio&gt;
+&lt;OcSwitch v-model="notify" aria-label="Notifications" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Country" for="country" name="country"&gt;
+    &lt;x-oc::select id="country" name="country" value="be" :options="['be' =&gt; 'Belgium', 'nl' =&gt; 'Netherlands', 'de' =&gt; 'Germany']" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;x-oc::form-field label="Message" for="message" name="message"&gt;
+    &lt;x-oc::textarea id="message" name="message" rows="3" placeholder="Type here…" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;x-oc::checkbox name="remember" value="1" label="Remember me" /&gt;
+&lt;x-oc::checkbox radio name="plan" value="free" label="Free" checked /&gt;
+&lt;x-oc::checkbox radio name="plan" value="pro" label="Pro" /&gt;
+&lt;x-oc::switch name="notifications" value="1" checked aria-label="Notifications" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Preferences extends Component
+{
+    public string $country = 'be';
+
+    public string $message = '';
+
+    public bool $remember = false;
+
+    public string $plan = 'free';
+
+    public bool $notifications = true;
+
+    public function render()
+    {
+        return view('livewire.preferences');
+    }
+}
+
+{{-- resources/views/livewire/preferences.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::form-field label="Country" for="country" name="country"&gt;
+        &lt;x-oc::wire.select id="country" model="country" :options="['be' =&gt; 'Belgium', 'nl' =&gt; 'Netherlands', 'de' =&gt; 'Germany']" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Message" for="message" name="message"&gt;
+        &lt;x-oc::wire.textarea id="message" model="message" rows="3" placeholder="Type here…" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::wire.checkbox model="remember" label="Remember me" /&gt;
+    &lt;x-oc::wire.checkbox radio model="plan" value="free" label="Free" /&gt;
+    &lt;x-oc::wire.checkbox radio model="plan" value="pro" label="Pro" /&gt;
+    &lt;x-oc::wire.switch model="notifications" live aria-label="Notifications" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="horizontal-field">Horizontal field</h3>
@@ -72,6 +262,37 @@
   <label class="oc-field-label" for="form-key">API key</label>
   <input class="oc-input" id="form-key" value="sk-abc123…" readonly>
 </div>
+<oc-code lang="tsx">&lt;FormField label="API key" horizontal&gt;
+  &lt;Input value={apiKey} readOnly /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="API key" horizontal v-slot="f"&gt;
+  &lt;OcInput :id="f.id" :model-value="apiKey" readonly /&gt;
+&lt;/OcFormField&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field class="oc-field--horizontal" label="API key" for="api-key"&gt;
+    &lt;x-oc::input id="api-key" value="sk-abc123…" readonly /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ApiKey extends Component
+{
+    public string $apiKey = 'sk-abc123…';
+
+    public function render()
+    {
+        return view('livewire.api-key');
+    }
+}
+
+{{-- resources/views/livewire/api-key.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::form-field class="oc-field--horizontal" label="API key" for="api-key"&gt;
+        &lt;x-oc::wire.input id="api-key" model="apiKey" readonly /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="filled-form">Filled form <span class="oc-badge-version">v0.13.0</span></h3>
@@ -116,6 +337,142 @@
     <p class="oc-form-note">We only use your details to answer you. See the <a href="#privacy">privacy statement</a>.</p>
   </div>
 </form>
+<oc-code lang="tsx">&lt;form className="oc-form oc-form--filled" onSubmit={send} noValidate&gt;
+  &lt;FieldGroup row&gt;
+    &lt;FormField label="Name"&gt;&lt;Input name="name" autoComplete="name" value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;&lt;/FormField&gt;
+    &lt;FormField label="E-mail" error={errors.email}&gt;&lt;Input type="email" name="email" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;&lt;/FormField&gt;
+  &lt;/FieldGroup&gt;
+  &lt;FieldGroup row&gt;
+    &lt;FormField label={&lt;&gt;Phone &lt;span className="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/&gt;}&gt;&lt;Input type="tel" name="phone" autoComplete="tel" /&gt;&lt;/FormField&gt;
+    &lt;FormField label="What is it about?"&gt;
+      &lt;Select name="subject" options={[{ value: "", label: "Choose a subject" }, "A new project", "Support"]} /&gt;
+    &lt;/FormField&gt;
+  &lt;/FieldGroup&gt;
+  &lt;FormField label="Your message"&gt;&lt;Textarea className="oc-textarea" name="message" rows={5} /&gt;&lt;/FormField&gt;
+  &lt;div className="oc-form-actions"&gt;
+    &lt;Button size="lg" type="submit"&gt;Send message&lt;/Button&gt;
+    &lt;p className="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="vue">&lt;form class="oc-form oc-form--filled" novalidate @submit.prevent="send"&gt;
+  &lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;OcFormField label="Name" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="form.name" autocomplete="name" /&gt;&lt;/OcFormField&gt;
+    &lt;OcFormField label="E-mail" :error="errors.email" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="form.email" type="email" :error="f.invalid" :aria-describedby="f.describedBy" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;OcFormField&gt;
+      &lt;template #label&gt;Phone &lt;span class="oc-field-label__hint"&gt;(optional)&lt;/span&gt;&lt;/template&gt;
+      &lt;template #default="f"&gt;&lt;OcInput :id="f.id" v-model="form.phone" type="tel" autocomplete="tel" /&gt;&lt;/template&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="What is it about?" v-slot="f"&gt;
+      &lt;OcSelect :id="f.id" v-model="form.subject" :options="[{ value: '', label: 'Choose a subject' }, 'A new project', 'Support']" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+  &lt;OcFormField label="Your message" v-slot="f"&gt;&lt;OcTextarea :id="f.id" v-model="form.message" class="oc-textarea" rows="5" /&gt;&lt;/OcFormField&gt;
+  &lt;div class="oc-form-actions"&gt;
+    &lt;OcButton size="lg" type="submit"&gt;Send message&lt;/OcButton&gt;
+    &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="blade">&lt;form class="oc-form oc-form--filled" method="post" action="{{ route('contact.send') }}" novalidate&gt;
+    @csrf
+    &lt;div class="oc-honeypot" aria-hidden="true"&gt;
+        &lt;label for="website"&gt;Leave this field empty&lt;/label&gt;
+        &lt;input type="text" id="website" name="website" tabindex="-1" autocomplete="off"&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-field-group oc-field-group--row"&gt;
+        &lt;x-oc::form-field label="Name" for="name" name="name"&gt;
+            &lt;x-oc::input id="name" name="name" autocomplete="name" :value="old('name')" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;
+            &lt;x-oc::input id="email" name="email" type="email" :value="old('email')" aria-describedby="email-error" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-field-group oc-field-group--row"&gt;
+        &lt;x-oc::form-field label="Phone (optional)" for="phone" name="phone"&gt;
+            &lt;x-oc::input id="phone" name="phone" type="tel" autocomplete="tel" :value="old('phone')" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="What is it about?" for="subject" name="subject"&gt;
+            &lt;x-oc::select id="subject" name="subject" placeholder="Choose a subject" :value="old('subject')" :options="['project' =&gt; 'A new project', 'support' =&gt; 'Support']" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;x-oc::form-field label="Your message" for="message" name="message"&gt;
+        &lt;x-oc::textarea id="message" name="message" class="oc-textarea" rows="5"&gt;{{ old('message') }}&lt;/x-oc::textarea&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div class="oc-form-actions"&gt;
+        &lt;x-oc::button size="lg" type="submit"&gt;Send message&lt;/x-oc::button&gt;
+        &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+use Omniacss\Livewire\WithOcToast;
+
+class ContactForm extends Component
+{
+    use WithOcToast;
+
+    #[Validate('required')]
+    public string $name = '';
+
+    #[Validate('required|email')]
+    public string $email = '';
+
+    public string $phone = '';
+
+    #[Validate('required')]
+    public string $subject = '';
+
+    #[Validate('required|min:10')]
+    public string $message = '';
+
+    public function send(): void
+    {
+        $this-&gt;validate();
+        // Mail::to('info@company1.example')-&gt;send(new ContactMessage(...));
+        $this-&gt;reset();
+        $this-&gt;ocToast('success', 'Message sent', 'We will answer you soon.');
+    }
+
+    public function render()
+    {
+        return view('livewire.contact-form');
+    }
+}
+
+{{-- resources/views/livewire/contact-form.blade.php --}}
+{{-- &lt;x-oc::toast-stack /&gt; sits once in the layout --}}
+&lt;form class="oc-form oc-form--filled" wire:submit="send" novalidate&gt;
+    &lt;div class="oc-field-group oc-field-group--row"&gt;
+        &lt;x-oc::form-field label="Name" for="name" name="name"&gt;
+            &lt;x-oc::wire.input id="name" model="name" autocomplete="name" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;
+            &lt;x-oc::wire.input id="email" model="email" blur type="email" aria-describedby="email-error" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-field-group oc-field-group--row"&gt;
+        &lt;x-oc::form-field label="Phone (optional)" for="phone"&gt;
+            &lt;x-oc::wire.input id="phone" model="phone" type="tel" autocomplete="tel" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="What is it about?" for="subject" name="subject"&gt;
+            &lt;x-oc::wire.select id="subject" model="subject" placeholder="Choose a subject" :options="['project' =&gt; 'A new project', 'support' =&gt; 'Support']" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+    &lt;x-oc::form-field label="Your message" for="message" name="message"&gt;
+        &lt;x-oc::wire.textarea id="message" model="message" class="oc-textarea" rows="5" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div class="oc-form-actions"&gt;
+        &lt;x-oc::button size="lg" type="submit"&gt;Send message&lt;/x-oc::button&gt;
+        &lt;p class="oc-form-note"&gt;We only use your details to answer you. See the &lt;a href="/privacy"&gt;privacy statement&lt;/a&gt;.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="busy-form">While it sends <span class="oc-badge-version">v0.13.0</span></h3>
@@ -130,6 +487,543 @@
     <button class="oc-btn oc-btn--lg" type="submit" disabled>Sending…</button>
   </div>
 </form>
+<oc-code lang="tsx">&lt;form className="oc-form oc-form--filled" aria-busy={sending} onSubmit={send}&gt;
+  &lt;FormField label="E-mail"&gt;
+    &lt;Input type="email" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;
+  &lt;/FormField&gt;
+  &lt;div className="oc-form-actions"&gt;
+    &lt;Button size="lg" type="submit" loading={sending} disabled={sending}&gt;{sending ? "Sending…" : "Send"}&lt;/Button&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="vue">&lt;form class="oc-form oc-form--filled" :aria-busy="sending" @submit.prevent="send"&gt;
+  &lt;OcFormField label="E-mail" v-slot="f"&gt;
+    &lt;OcInput :id="f.id" v-model="email" type="email" /&gt;
+  &lt;/OcFormField&gt;
+  &lt;div class="oc-form-actions"&gt;
+    &lt;OcButton size="lg" type="submit" :loading="sending" :disabled="sending"&gt;{{ sending ? 'Sending…' : 'Send' }}&lt;/OcButton&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="blade">{{-- A plain form marks itself busy and disables the button while the browser posts it --}}
+&lt;form class="oc-form oc-form--filled" method="post" action="{{ route('newsletter.subscribe') }}"
+      onsubmit="this.setAttribute('aria-busy', 'true'); this.querySelector('[type=submit]').disabled = true"&gt;
+    @csrf
+    &lt;x-oc::form-field label="E-mail" for="busy-email" name="email"&gt;
+        &lt;x-oc::input id="busy-email" name="email" type="email" :value="old('email')" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div class="oc-form-actions"&gt;
+        &lt;x-oc::button size="lg" type="submit"&gt;Send&lt;/x-oc::button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class Newsletter extends Component
+{
+    #[Validate('required|email')]
+    public string $email = 'info@company1.example';
+
+    public function subscribe(): void
+    {
+        $this-&gt;validate();
+        // add the address to the list
+    }
+
+    public function render()
+    {
+        return view('livewire.newsletter');
+    }
+}
+
+{{-- resources/views/livewire/newsletter.blade.php --}}
+{{-- wire:loading sets aria-busy on the form and disables the button while the request runs --}}
+&lt;form class="oc-form oc-form--filled" wire:submit="subscribe" wire:loading.attr="aria-busy"&gt;
+    &lt;x-oc::form-field label="E-mail" for="busy-email" name="email"&gt;
+        &lt;x-oc::wire.input id="busy-email" model="email" type="email" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div class="oc-form-actions"&gt;
+        &lt;x-oc::button size="lg" type="submit" wire:loading.attr="disabled"&gt;
+            &lt;span wire:loading.remove&gt;Send&lt;/span&gt;
+            &lt;span wire:loading&gt;Sending…&lt;/span&gt;
+        &lt;/x-oc::button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</oc-code>
+          </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="field-extras">Tooltip, required, label row <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">A field can carry more than a label: an info icon with a tooltip (<code>.oc-field-tooltip</code>, keyboard reachable), a required mark (<code>.oc-field-required</code>; the control gets <code>required</code> and <code>aria-required</code>), content at the end of the label row (<code>.oc-field-label-trailing</code>: a counter, a link) and an error tied to a key in your error bag (<code>error-key="email"</code>: <code>data-error-key</code> on the field and <code>email-error</code> as the id of the message). <code>hideLabel</code> keeps the label for screen readers only.</p>
+          <oc-demo title="Forms - field extras">
+<div class="oc-field-group oc-field-group--row" style="inline-size:min(100%, 40rem)">
+<div class="oc-field" data-error-key="email">
+  <div class="oc-field-label-row">
+    <label class="oc-field-label" for="fx-email">Email<span class="oc-field-required" aria-hidden="true">*</span></label>
+    <span class="oc-tooltip oc-field-tooltip-wrap" data-tooltip="We send the invoice to this address."><button type="button" class="oc-field-tooltip" aria-label="More information" aria-describedby="fx-email-tip"><iconify-icon icon="mdi:information-outline" aria-hidden="true"></iconify-icon></button><span class="oc-visually-hidden" id="fx-email-tip">We send the invoice to this address.</span></span>
+  </div>
+  <input class="oc-input" id="fx-email" type="email" value="info@company1" required aria-required="true" aria-invalid="true" aria-describedby="email-error">
+  <p class="oc-field-error" id="email-error" role="alert">Fill in a valid e-mail address.</p>
+</div>
+<div class="oc-field">
+  <div class="oc-field-label-row">
+    <label class="oc-field-label" for="fx-reference">Reference</label>
+    <span class="oc-field-label-trailing">Up to 20 characters</span>
+  </div>
+  <input class="oc-input" id="fx-reference" maxlength="20" value="Order 1001" aria-describedby="fx-reference-help">
+  <p class="oc-field-description" id="fx-reference-help">Shown on the invoice.</p>
+</div>
+<div class="oc-field">
+  <label class="oc-field-label oc-visually-hidden" for="fx-search">Search customers</label>
+  <input class="oc-input" id="fx-search" type="search" placeholder="Search customers">
+</div>
+</div>
+<oc-code lang="html">&lt;div class="oc-field" data-error-key="email"&gt;
+  &lt;div class="oc-field-label-row"&gt;
+    &lt;label class="oc-field-label" for="fx-email"&gt;Email&lt;span class="oc-field-required" aria-hidden="true"&gt;*&lt;/span&gt;&lt;/label&gt;
+    &lt;span class="oc-tooltip oc-field-tooltip-wrap" data-tooltip="We send the invoice to this address."&gt;
+      &lt;button type="button" class="oc-field-tooltip" aria-label="More information" aria-describedby="fx-email-tip"&gt;&lt;iconify-icon icon="mdi:information-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+      &lt;span class="oc-visually-hidden" id="fx-email-tip"&gt;We send the invoice to this address.&lt;/span&gt;
+    &lt;/span&gt;
+  &lt;/div&gt;
+  &lt;input class="oc-input" id="fx-email" type="email" value="info@company1" required aria-required="true" aria-invalid="true" aria-describedby="email-error"&gt;
+  &lt;p class="oc-field-error" id="email-error" role="alert"&gt;Fill in a valid e-mail address.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="oc-field"&gt;
+  &lt;div class="oc-field-label-row"&gt;
+    &lt;label class="oc-field-label" for="fx-reference"&gt;Reference&lt;/label&gt;
+    &lt;span class="oc-field-label-trailing"&gt;Up to 20 characters&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;input class="oc-input" id="fx-reference" maxlength="20" value="Order 1001" aria-describedby="fx-reference-help"&gt;
+  &lt;p class="oc-field-description" id="fx-reference-help"&gt;Shown on the invoice.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="oc-field"&gt;
+  &lt;label class="oc-field-label oc-visually-hidden" for="fx-search"&gt;Search customers&lt;/label&gt;
+  &lt;input class="oc-input" id="fx-search" type="search" placeholder="Search customers"&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { FormField, Input } from "@birdycom/omniaui-react";
+
+export function InvoiceContact({ errors }: { errors: Record&lt;string, string | undefined&gt; }) {
+  const [email, setEmail] = useState("info@company1");
+  const [reference, setReference] = useState("Order 1001");
+  const [search, setSearch] = useState("");
+  return (
+    &lt;div className="oc-field-group oc-field-group--row"&gt;
+      &lt;FormField label="Email" required tooltip="We send the invoice to this address." errorKey="email" error={errors.email}&gt;
+        &lt;Input type="email" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Reference" labelTrailing={`${reference.length}/20`} description="Shown on the invoice."&gt;
+        &lt;Input maxLength={20} value={reference} onChange={(e) =&gt; setReference(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Search customers" hideLabel&gt;
+        &lt;Input type="search" placeholder="Search customers" value={search} onChange={(e) =&gt; setSearch(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFormField, OcInput } from '@birdycom/omniaui-vue'
+
+const props = defineProps&lt;{ errors: Record&lt;string, string | undefined&gt; }&gt;()
+const email = ref('info@company1')
+const reference = ref('Order 1001')
+const search = ref('')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;OcFormField label="Email" required tooltip="We send the invoice to this address." error-key="email" :error="props.errors.email" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="email" type="email" :required="f.required" :error="f.invalid" :aria-describedby="f.describedBy" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Reference" :label-trailing="`${reference.length}/20`" description="Shown on the invoice." v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="reference" maxlength="20" :aria-describedby="f.describedBy" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Search customers" hide-label v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="search" type="search" placeholder="Search customers" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- error-key="email" shows $errors-&gt;first('email') and gives the message the id email-error --}}
+&lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;x-oc::form-field label="Email" for="email" required tooltip="We send the invoice to this address." error-key="email"&gt;
+        &lt;x-oc::input id="email" name="email" type="email" required aria-required="true" aria-describedby="email-error" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Reference" for="reference" label-trailing="Up to 20 characters" description="Shown on the invoice."&gt;
+        &lt;x-oc::input id="reference" name="reference" maxlength="20" value="Order 1001" aria-describedby="reference-help" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Search customers" for="customer-search" hide-label&gt;
+        &lt;x-oc::input id="customer-search" type="search" placeholder="Search customers" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceContact extends Component
+{
+    public string $email = 'info@company1';
+
+    public string $reference = 'Order 1001';
+
+    public string $search = '';
+
+    public function updatedEmail(): void
+    {
+        $this-&gt;validateOnly('email', ['email' =&gt; 'required|email:rfc'], ['email.email' =&gt; 'Fill in a valid e-mail address.']);
+    }
+
+    public function render()
+    {
+        return view('livewire.invoice-contact');
+    }
+}
+
+{{-- resources/views/livewire/invoice-contact.blade.php --}}
+&lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;x-oc::form-field label="Email" for="email" required tooltip="We send the invoice to this address." error-key="email"&gt;
+        &lt;x-oc::wire.input id="email" model="email" blur type="email" required aria-required="true" aria-describedby="email-error" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Reference" for="reference" label-trailing="{{ strlen($reference) }}/20" description="Shown on the invoice."&gt;
+        &lt;x-oc::wire.input id="reference" model="reference" live maxlength="20" aria-describedby="reference-help" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Search customers" for="customer-search" hide-label&gt;
+        &lt;x-oc::wire.input id="customer-search" model="search" live :debounce="300" type="search" placeholder="Search customers" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="mask">Mask and validation <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">An input can format while you type (<code>mask</code>: <code>iban</code>, <code>bic</code>, <code>vat</code>, <code>phone</code> or a pattern where <code>9</code> is a digit, <code>A</code> a letter and <code>*</code> anything) and check its value when you leave it (<code>validationType</code>: <code>iban</code> with the mod-97 check and the length per country, <code>bic</code>, <code>vat</code> for BE and NL, <code>email</code>, <code>phone</code>). The caret stays behind the character you typed. A wrong value gets <code>aria-invalid</code> and the field shows the <code>validationMessage</code>; it goes away as soon as the value is right. Type an IBAN with one wrong digit and press <kbd>Tab</kbd>. Prefixes and units stay in an <a href="#input-group">input group</a>. Plain HTML and Blade use the small script <code>oc-input-mask.js</code> (<code>npx omniaui copy-js input-mask</code>).</p>
+          <oc-demo title="Forms - mask and validation">
+<div class="oc-field-group oc-field-group--row" style="inline-size:min(100%, 40rem)">
+<div class="oc-field">
+  <label class="oc-field-label" for="mask-iban">IBAN</label>
+  <input class="oc-input" id="mask-iban" name="iban" autocomplete="off" placeholder="BE68 5390 0754 7034" data-oc-mask="iban" data-oc-validate="iban" data-oc-validation-message="This is not a valid IBAN.">
+</div>
+<div class="oc-field">
+  <label class="oc-field-label" for="mask-vat">VAT number</label>
+  <input class="oc-input" id="mask-vat" name="vat" autocomplete="off" placeholder="BE0123.456.749" data-oc-mask="vat" data-oc-validate="vat" data-oc-validation-message="Use a BE or NL VAT number, such as BE0123.456.749.">
+</div>
+<div class="oc-field">
+  <label class="oc-field-label" for="mask-phone">Phone</label>
+  <input class="oc-input" id="mask-phone" name="phone" type="tel" placeholder="+32 470 12 34 56" data-oc-mask="phone" data-oc-validate="phone" data-oc-validation-message="Fill in a phone number.">
+</div>
+<div class="oc-field">
+  <label class="oc-field-label" for="mask-postcode">Postcode (pattern 9999 AA)</label>
+  <input class="oc-input" id="mask-postcode" name="postcode" placeholder="1234 AB" data-oc-mask="9999 AA">
+</div>
+</div>
+<oc-code lang="html">&lt;div class="oc-field"&gt;
+  &lt;label class="oc-field-label" for="mask-iban"&gt;IBAN&lt;/label&gt;
+  &lt;input class="oc-input" id="mask-iban" name="iban" autocomplete="off" placeholder="BE68 5390 0754 7034" data-oc-mask="iban" data-oc-validate="iban" data-oc-validation-message="This is not a valid IBAN."&gt;
+&lt;/div&gt;
+&lt;div class="oc-field"&gt;
+  &lt;label class="oc-field-label" for="mask-vat"&gt;VAT number&lt;/label&gt;
+  &lt;input class="oc-input" id="mask-vat" name="vat" autocomplete="off" placeholder="BE0123.456.749" data-oc-mask="vat" data-oc-validate="vat" data-oc-validation-message="Use a BE or NL VAT number, such as BE0123.456.749."&gt;
+&lt;/div&gt;
+&lt;div class="oc-field"&gt;
+  &lt;label class="oc-field-label" for="mask-phone"&gt;Phone&lt;/label&gt;
+  &lt;input class="oc-input" id="mask-phone" name="phone" type="tel" placeholder="+32 470 12 34 56" data-oc-mask="phone" data-oc-validate="phone" data-oc-validation-message="Fill in a phone number."&gt;
+&lt;/div&gt;
+&lt;div class="oc-field"&gt;
+  &lt;label class="oc-field-label" for="mask-postcode"&gt;Postcode (pattern 9999 AA)&lt;/label&gt;
+  &lt;input class="oc-input" id="mask-postcode" name="postcode" placeholder="1234 AB" data-oc-mask="9999 AA"&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-input-mask.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { FormField, Input } from "@birdycom/omniaui-react";
+
+export function BankDetails() {
+  const [iban, setIban] = useState("");
+  const [vat, setVat] = useState("");
+  const [phone, setPhone] = useState("");
+  const [postcode, setPostcode] = useState("");
+  return (
+    &lt;div className="oc-field-group oc-field-group--row"&gt;
+      &lt;FormField label="IBAN"&gt;
+        &lt;Input mask="iban" validationType="iban" validationMessage="This is not a valid IBAN." placeholder="BE68 5390 0754 7034" value={iban} onChange={(e) =&gt; setIban(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="VAT number"&gt;
+        &lt;Input mask="vat" validationType="vat" validationMessage="Use a BE or NL VAT number, such as BE0123.456.749." placeholder="BE0123.456.749" value={vat} onChange={(e) =&gt; setVat(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Phone"&gt;
+        &lt;Input type="tel" mask="phone" validationType="phone" validationMessage="Fill in a phone number." placeholder="+32 470 12 34 56" value={phone} onChange={(e) =&gt; setPhone(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Postcode (pattern 9999 AA)"&gt;
+        &lt;Input mask="9999 AA" placeholder="1234 AB" value={postcode} onChange={(e) =&gt; setPostcode(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFormField, OcInput } from '@birdycom/omniaui-vue'
+
+const iban = ref('')
+const vat = ref('')
+const phone = ref('')
+const postcode = ref('')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;!-- An OcInput with validation-type tells its OcFormField; the field shows the message --&gt;
+    &lt;OcFormField label="IBAN" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="iban" mask="iban" validation-type="iban" validation-message="This is not a valid IBAN." placeholder="BE68 5390 0754 7034" :aria-describedby="f.describedBy" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="VAT number" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="vat" mask="vat" validation-type="vat" validation-message="Use a BE or NL VAT number, such as BE0123.456.749." placeholder="BE0123.456.749" :aria-describedby="f.describedBy" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Phone" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="phone" type="tel" mask="phone" validation-type="phone" validation-message="Fill in a phone number." placeholder="+32 470 12 34 56" :aria-describedby="f.describedBy" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Postcode (pattern 9999 AA)" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="postcode" mask="9999 AA" placeholder="1234 AB" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Formatting and the blur check: oc-input-mask.js (npx omniaui copy-js input-mask). Validate on the server too. --}}
+&lt;div class="oc-field-group oc-field-group--row"&gt;
+    &lt;x-oc::form-field label="IBAN" for="iban" name="iban"&gt;
+        &lt;x-oc::input id="iban" name="iban" mask="iban" validation-type="iban" validation-message="This is not a valid IBAN." placeholder="BE68 5390 0754 7034" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="VAT number" for="vat" name="vat"&gt;
+        &lt;x-oc::input id="vat" name="vat" mask="vat" validation-type="vat" validation-message="Use a BE or NL VAT number, such as BE0123.456.749." placeholder="BE0123.456.749" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Phone" for="phone" name="phone"&gt;
+        &lt;x-oc::input id="phone" name="phone" type="tel" mask="phone" validation-type="phone" validation-message="Fill in a phone number." placeholder="+32 470 12 34 56" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Postcode (pattern 9999 AA)" for="postcode"&gt;
+        &lt;x-oc::input id="postcode" name="postcode" mask="9999 AA" placeholder="1234 AB" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-input-mask.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class BankDetails extends Component
+{
+    public string $iban = '';
+
+    public string $vat = '';
+
+    public string $phone = '';
+
+    public string $postcode = '';
+
+    public function render()
+    {
+        return view('livewire.bank-details');
+    }
+}
+
+{{-- resources/views/livewire/bank-details.blade.php --}}
+&lt;div class="oc-field-group oc-field-group--row"&gt;
+    {{-- The script formats and checks in the browser; wire:model.blur sends the formatted value --}}
+    &lt;x-oc::form-field label="IBAN" for="iban"&gt;
+        &lt;x-oc::wire.input id="iban" model="iban" blur mask="iban" validation-type="iban" validation-message="This is not a valid IBAN." placeholder="BE68 5390 0754 7034" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="VAT number" for="vat"&gt;
+        &lt;x-oc::wire.input id="vat" model="vat" blur mask="vat" validation-type="vat" validation-message="Use a BE or NL VAT number, such as BE0123.456.749." placeholder="BE0123.456.749" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Phone" for="phone"&gt;
+        &lt;x-oc::wire.input id="phone" model="phone" blur type="tel" mask="phone" validation-type="phone" validation-message="Fill in a phone number." placeholder="+32 470 12 34 56" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Postcode (pattern 9999 AA)" for="postcode"&gt;
+        &lt;x-oc::wire.input id="postcode" model="postcode" blur mask="9999 AA" placeholder="1234 AB" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="ledger">Ledger fields <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc"><code>variant="ledger"</code> on a field (or on Input, Select, Textarea, Combobox and InputGroup) gives the compact bookkeeping look for invoice lines and other dense forms: about 2rem high, tabular figures, a lightly tinted fill, a thin border and a small muted label. The focus colour follows the module colour (<code>module="green"</code> sets <code>data-module</code>, see <a href="module-color.html">Module colour</a>) and falls back to the theme ring.</p>
+          <oc-demo title="Forms - ledger fields">
+<div class="flex flex-wrap gap-2 w-full">
+<div class="oc-field oc-field--ledger" data-module="green" style="inline-size:7rem">
+  <label class="oc-field-label" for="ledger-code">Code</label>
+  <input class="oc-input" id="ledger-code" value="A-1001">
+</div>
+<div class="oc-field oc-field--ledger" data-module="green" style="flex:1 1 12rem">
+  <label class="oc-field-label" for="ledger-description">Description</label>
+  <input class="oc-input" id="ledger-description" value="Consulting, November">
+</div>
+<div class="oc-field oc-field--ledger" data-module="green" style="inline-size:5rem">
+  <label class="oc-field-label" for="ledger-qty">Qty</label>
+  <input class="oc-input" id="ledger-qty" inputmode="decimal" value="12">
+</div>
+<div class="oc-field oc-field--ledger" data-module="green" style="inline-size:6.5rem">
+  <label class="oc-field-label" for="ledger-unit">Unit</label>
+  <select class="oc-select" id="ledger-unit"><option>Hour</option><option>Day</option><option>Piece</option></select>
+</div>
+<div class="oc-field oc-field--ledger" data-module="green" style="inline-size:8.5rem">
+  <label class="oc-field-label" for="ledger-price">Price</label>
+  <div class="oc-input-group"><span class="oc-input-addon">EUR</span><input class="oc-input" id="ledger-price" inputmode="decimal" value="85.00"></div>
+</div>
+<div class="oc-field oc-field--ledger" data-module="green" style="inline-size:5.5rem">
+  <label class="oc-field-label" for="ledger-vat">VAT</label>
+  <select class="oc-select" id="ledger-vat"><option>21%</option><option>6%</option><option>0%</option></select>
+</div>
+</div>
+<oc-code lang="html">&lt;div class="flex flex-wrap gap-2 w-full"&gt;
+  &lt;div class="oc-field oc-field--ledger" data-module="green" style="inline-size:7rem"&gt;
+    &lt;label class="oc-field-label" for="ledger-code"&gt;Code&lt;/label&gt;
+    &lt;input class="oc-input" id="ledger-code" value="A-1001"&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-field oc-field--ledger" data-module="green" style="flex:1 1 12rem"&gt;
+    &lt;label class="oc-field-label" for="ledger-description"&gt;Description&lt;/label&gt;
+    &lt;input class="oc-input" id="ledger-description" value="Consulting, November"&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-field oc-field--ledger" data-module="green" style="inline-size:5rem"&gt;
+    &lt;label class="oc-field-label" for="ledger-qty"&gt;Qty&lt;/label&gt;
+    &lt;input class="oc-input" id="ledger-qty" inputmode="decimal" value="12"&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-field oc-field--ledger" data-module="green" style="inline-size:6.5rem"&gt;
+    &lt;label class="oc-field-label" for="ledger-unit"&gt;Unit&lt;/label&gt;
+    &lt;select class="oc-select" id="ledger-unit"&gt;&lt;option&gt;Hour&lt;/option&gt;&lt;option&gt;Day&lt;/option&gt;&lt;option&gt;Piece&lt;/option&gt;&lt;/select&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-field oc-field--ledger" data-module="green" style="inline-size:8.5rem"&gt;
+    &lt;label class="oc-field-label" for="ledger-price"&gt;Price&lt;/label&gt;
+    &lt;div class="oc-input-group"&gt;&lt;span class="oc-input-addon"&gt;EUR&lt;/span&gt;&lt;input class="oc-input" id="ledger-price" inputmode="decimal" value="85.00"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-field oc-field--ledger" data-module="green" style="inline-size:5.5rem"&gt;
+    &lt;label class="oc-field-label" for="ledger-vat"&gt;VAT&lt;/label&gt;
+    &lt;select class="oc-select" id="ledger-vat"&gt;&lt;option&gt;21%&lt;/option&gt;&lt;option&gt;6%&lt;/option&gt;&lt;option&gt;0%&lt;/option&gt;&lt;/select&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- On a control without a field: .oc-input--ledger, .oc-select--ledger, .oc-textarea--ledger, .oc-input-group--ledger --&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { FormField, Input, InputGroup, Select } from "@birdycom/omniaui-react";
+
+export function InvoiceLineFields() {
+  const [line, setLine] = useState({ code: "A-1001", description: "Consulting, November", qty: "12", unit: "Hour", price: "85.00", vat: "21%" });
+  const set = (key: keyof typeof line) =&gt; (e: { target: { value: string } }) =&gt; setLine({ ...line, [key]: e.target.value });
+  return (
+    &lt;div className="flex flex-wrap gap-2 w-full"&gt;
+      &lt;FormField label="Code" variant="ledger" module="green" style={{ inlineSize: "7rem" }}&gt;
+        &lt;Input value={line.code} onChange={set("code")} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Description" variant="ledger" module="green" style={{ flex: "1 1 12rem" }}&gt;
+        &lt;Input value={line.description} onChange={set("description")} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Qty" variant="ledger" module="green" style={{ inlineSize: "5rem" }}&gt;
+        &lt;Input inputMode="decimal" value={line.qty} onChange={set("qty")} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Unit" variant="ledger" module="green" style={{ inlineSize: "6.5rem" }}&gt;
+        &lt;Select options={["Hour", "Day", "Piece"]} value={line.unit} onChange={set("unit")} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Price" variant="ledger" module="green" htmlFor="line-price" style={{ inlineSize: "8.5rem" }}&gt;
+        &lt;InputGroup prefix="EUR"&gt;
+          &lt;Input id="line-price" inputMode="decimal" value={line.price} onChange={set("price")} /&gt;
+        &lt;/InputGroup&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="VAT" variant="ledger" module="green" style={{ inlineSize: "5.5rem" }}&gt;
+        &lt;Select options={["21%", "6%", "0%"]} value={line.vat} onChange={set("vat")} /&gt;
+      &lt;/FormField&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { reactive } from 'vue'
+import { OcFormField, OcInput, OcInputGroup, OcSelect } from '@birdycom/omniaui-vue'
+
+const line = reactive({ code: 'A-1001', description: 'Consulting, November', qty: '12', unit: 'Hour', price: '85.00', vat: '21%' })
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="flex flex-wrap gap-2 w-full"&gt;
+    &lt;OcFormField label="Code" variant="ledger" module="green" style="inline-size:7rem" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="line.code" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Description" variant="ledger" module="green" style="flex:1 1 12rem" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="line.description" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Qty" variant="ledger" module="green" style="inline-size:5rem" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="line.qty" inputmode="decimal" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Unit" variant="ledger" module="green" style="inline-size:6.5rem" v-slot="f"&gt;
+      &lt;OcSelect :id="f.id" v-model="line.unit" :options="['Hour', 'Day', 'Piece']" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Price" variant="ledger" module="green" style="inline-size:8.5rem" v-slot="f"&gt;
+      &lt;OcInputGroup prefix="EUR"&gt;&lt;OcInput :id="f.id" v-model="line.price" inputmode="decimal" /&gt;&lt;/OcInputGroup&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="VAT" variant="ledger" module="green" style="inline-size:5.5rem" v-slot="f"&gt;
+      &lt;OcSelect :id="f.id" v-model="line.vat" :options="['21%', '6%', '0%']" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="flex flex-wrap gap-2 w-full"&gt;
+    &lt;x-oc::form-field label="Code" for="code" variant="ledger" module="green" style="inline-size:7rem"&gt;
+        &lt;x-oc::input id="code" name="code" value="A-1001" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Description" for="description" variant="ledger" module="green" style="flex:1 1 12rem"&gt;
+        &lt;x-oc::input id="description" name="description" value="Consulting, November" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Qty" for="qty" variant="ledger" module="green" style="inline-size:5rem"&gt;
+        &lt;x-oc::input id="qty" name="qty" inputmode="decimal" value="12" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Unit" for="unit" variant="ledger" module="green" style="inline-size:6.5rem"&gt;
+        &lt;x-oc::select id="unit" name="unit" value="hour" :options="['hour' =&gt; 'Hour', 'day' =&gt; 'Day', 'piece' =&gt; 'Piece']" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Price" for="price" variant="ledger" module="green" style="inline-size:8.5rem"&gt;
+        &lt;x-oc::input-group id="price" name="price" prefix="EUR" inputmode="decimal" value="85.00" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="VAT" for="vat" variant="ledger" module="green" style="inline-size:5.5rem"&gt;
+        &lt;x-oc::select id="vat" name="vat" value="21" :options="['21' =&gt; '21%', '6' =&gt; '6%', '0' =&gt; '0%']" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceLineFields extends Component
+{
+    public string $code = 'A-1001';
+
+    public string $description = 'Consulting, November';
+
+    public string $qty = '12';
+
+    public string $unit = 'hour';
+
+    public string $price = '85.00';
+
+    public string $vat = '21';
+
+    public function render()
+    {
+        return view('livewire.invoice-line-fields');
+    }
+}
+
+{{-- resources/views/livewire/invoice-line-fields.blade.php --}}
+&lt;div class="flex flex-wrap gap-2 w-full"&gt;
+    &lt;x-oc::form-field label="Code" for="code" variant="ledger" module="green" style="inline-size:7rem"&gt;
+        &lt;x-oc::wire.input id="code" model="code" blur /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Description" for="description" variant="ledger" module="green" style="flex:1 1 12rem"&gt;
+        &lt;x-oc::wire.input id="description" model="description" blur /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Qty" for="qty" variant="ledger" module="green" style="inline-size:5rem"&gt;
+        &lt;x-oc::wire.input id="qty" model="qty" blur inputmode="decimal" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Unit" for="unit" variant="ledger" module="green" style="inline-size:6.5rem"&gt;
+        &lt;x-oc::wire.select id="unit" model="unit" :options="['hour' =&gt; 'Hour', 'day' =&gt; 'Day', 'piece' =&gt; 'Piece']" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Price" for="price" variant="ledger" module="green" style="inline-size:8.5rem"&gt;
+        &lt;x-oc::input-group id="price" wire:model.blur="price" prefix="EUR" inputmode="decimal" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="VAT" for="vat" variant="ledger" module="green" style="inline-size:5.5rem"&gt;
+        &lt;x-oc::wire.select id="vat" model="vat" :options="['21' =&gt; '21%', '6' =&gt; '6%', '0' =&gt; '0%']" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -159,8 +1053,15 @@
               <tr><td><code>.oc-textarea</code></td><td>Textarea that only grows downwards; <code>--oc-textarea-min</code> is its minimum height (80px, 9rem in a filled form).</td></tr>
               <tr><td><code>.oc-field-label__hint</code></td><td>Muted, normal weight addition in a label: <em>(optional)</em>.</td></tr>
               <tr><td><code>.oc-form-actions</code> + <code>.oc-form-note</code></td><td>Submit button with a short note next to it (privacy); the note wraps under the button on a narrow form.</td></tr>
+              <tr><td><code>.oc-field-label-row</code> + <code>.oc-field-label-trailing</code></td><td>Label with content at the end of its row: a counter, a link (0.17.0).</td></tr>
+              <tr><td><code>.oc-field-required</code></td><td>Mark after the label of a required field (<code>aria-hidden</code>; the control has <code>required</code> + <code>aria-required</code>) (0.17.0).</td></tr>
+              <tr><td><code>.oc-field-tooltip</code></td><td>Info button after the label inside an <code>.oc-tooltip</code>; the text is also in a visually hidden span the button points to with <code>aria-describedby</code> (0.17.0).</td></tr>
+              <tr><td><code>[data-error-key]</code></td><td>Key of the field in the error bag; the message gets the id <code>&lt;key&gt;-error</code> (0.17.0).</td></tr>
+              <tr><td><code>data-oc-mask</code> / <code>data-oc-validate</code> / <code>data-oc-validation-message</code></td><td><code>oc-input-mask.js</code>: format while typing (<code>iban</code>, <code>bic</code>, <code>vat</code>, <code>phone</code> or a pattern with <code>9</code>, <code>A</code>, <code>*</code>) and check on blur (<code>iban</code>, <code>bic</code>, <code>vat</code>, <code>email</code>, <code>phone</code>); writes the message into the field and fires <code>oc-input-validate</code> <code>{ valid, value, type }</code> (0.17.0).</td></tr>
+              <tr><td><code>.oc-field--ledger</code>, <code>.oc-input--ledger</code>, <code>.oc-select--ledger</code>, <code>.oc-textarea--ledger</code>, <code>.oc-input-group--ledger</code></td><td>Compact ledger look: 2rem high (<code>--oc-ledger-height</code>), tabular figures, tinted fill, small muted label; focus in <code>--oc-module</code> with the theme ring as fallback (0.17.0).</td></tr>
               <tr><td><code>.oc-honeypot</code></td><td>A field for bots, off screen for people (not <code>display:none</code>). Give it <code>aria-hidden="true"</code>, the input <code>tabindex="-1"</code>.</td></tr>
             </tbody>
           </table>
         </div>
       </section>
+<script type="module" src="/js/oc-input-mask.js"></script>

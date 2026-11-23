@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Line and area chart", "category": "Data", "description": "Line and area chart in inline SVG with axes, legend and tooltips on hover and focus.", "nav": "Line chart", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Line and area chart", "category": "Data", "description": "Line, area and sparkline charts in inline SVG with axes, a legend and tooltips on hover and focus. CSS only, colored with the chart tokens.", "nav": "Line chart", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/chart-line.html | Map: hero -> demo (line) -> area -> sparkline -> how it works -> a11y -> reference -> platform features -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Line and area chart</h1>
@@ -44,6 +44,80 @@
   </div>
   <ul class="oc-chart-legend"><li><span class="oc-chart-swatch"></span>Desktop</li><li><span class="oc-chart-swatch"></span>Mobile</li></ul>
 </figure>
+<oc-code lang="tsx">import { ChartLine } from "@birdycom/omniaui-react";
+
+const series = [
+  { name: "Desktop", values: [186, 305, 237, 73, 209, 214] },
+  { name: "Mobile", values: [80, 200, 120, 190, 130, 140] },
+];
+
+export function Example() {
+  return (
+    &lt;ChartLine
+      title="Visitors"
+      sub="January – June 2026"
+      series={series}
+      labels={["January", "February", "March", "April", "May", "June"]}
+      label="Visitors per month"
+      dots
+      style={{ maxInlineSize: "40rem" }}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcChartLine } from '@birdycom/omniaui-vue'
+
+const series = [
+  { name: 'Desktop', values: [186, 305, 237, 73, 209, 214] },
+  { name: 'Mobile', values: [80, 200, 120, 190, 130, 140] },
+]
+const labels = ['January', 'February', 'March', 'April', 'May', 'June']
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcChartLine title="Visitors" sub="January – June 2026" :series="series" :labels="labels" label="Visitors per month" dots style="max-inline-size:40rem" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::chart-line
+    title="Visitors"
+    sub="January – June 2026"
+    :series="[
+        ['name' =&gt; 'Desktop', 'values' =&gt; [186, 305, 237, 73, 209, 214]],
+        ['name' =&gt; 'Mobile', 'values' =&gt; [80, 200, 120, 190, 130, 140]],
+    ]"
+    :labels="['January', 'February', 'March', 'April', 'May', 'June']"
+    label="Visitors per month"
+    dots
+    style="max-inline-size:40rem"
+/&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class VisitorsChart extends Component
+{
+    public function render()
+    {
+        return view('livewire.visitors-chart');
+    }
+}
+
+{{-- resources/views/livewire/visitors-chart.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::chart-line
+        title="Visitors"
+        sub="January – June 2026"
+        :series="[
+            ['name' =&gt; 'Desktop', 'values' =&gt; [186, 305, 237, 73, 209, 214]],
+            ['name' =&gt; 'Mobile', 'values' =&gt; [80, 200, 120, 190, 130, 140]],
+        ]"
+        :labels="['January', 'February', 'March', 'April', 'May', 'June']"
+        label="Visitors per month"
+        dots
+        style="max-inline-size:40rem"
+    /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="area" class="oc-section-content__title mt-2">Area chart</h3><p class="oc-section-content__desc">Add <code>--area</code> to fill under each line. The second series is dashed (<code>.oc-chart-line__path--dashed</code>) to compare with last year; five gridline rows via <code>--oc-chart-line-rows</code>.</p>
           <oc-demo title="Area chart">
@@ -80,6 +154,108 @@
   </div>
   <ul class="oc-chart-legend"><li><span class="oc-chart-swatch"></span>2026</li><li><span class="oc-chart-swatch"></span>2025</li></ul>
 </figure>
+<oc-code lang="tsx">import { ChartLine } from "@birdycom/omniaui-react";
+
+// Values in thousands of euro.
+const series = [
+  { name: "2026", values: [12.4, 14.1, 13.2, 16.8, 18.9, 17.6, 21.3, 24] },
+  { name: "2025", values: [8.1, 9, 10.4, 9.8, 11.2, 12.9, 12.1, 14.6], dashed: true },
+];
+
+export function Example() {
+  return (
+    &lt;ChartLine
+      variant="area"
+      title="Revenue per month"
+      value="€ 24.0k"
+      sub=""
+      series={series}
+      labels={["March", "April", "May", "June", "July", "August", "September", "October"]}
+      max={25}
+      rows={5}
+      dots={false}
+      label="Data points"
+      format={(v) =&gt; `€ ${v}k`}
+      style={{ maxInlineSize: "40rem" }}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcChartLine } from '@birdycom/omniaui-vue'
+
+// Values in thousands of euro.
+const series = [
+  { name: '2026', values: [12.4, 14.1, 13.2, 16.8, 18.9, 17.6, 21.3, 24] },
+  { name: '2025', values: [8.1, 9, 10.4, 9.8, 11.2, 12.9, 12.1, 14.6], dashed: true },
+]
+const labels = ['March', 'April', 'May', 'June', 'July', 'August', 'September', 'October']
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcChartLine
+    variant="area"
+    title="Revenue per month"
+    value="€ 24.0k"
+    sub=""
+    :series="series"
+    :labels="labels"
+    :max="25"
+    :rows="5"
+    :dots="false"
+    label="Data points"
+    style="max-inline-size:40rem"
+  /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Values in thousands of euro --}}
+&lt;x-oc::chart-line
+    variant="area"
+    title="Revenue per month"
+    value="€ 24.0k"
+    :sub="null"
+    :series="[
+        ['name' =&gt; '2026', 'values' =&gt; [12.4, 14.1, 13.2, 16.8, 18.9, 17.6, 21.3, 24]],
+        ['name' =&gt; '2025', 'values' =&gt; [8.1, 9, 10.4, 9.8, 11.2, 12.9, 12.1, 14.6], 'dashed' =&gt; true],
+    ]"
+    :labels="['March', 'April', 'May', 'June', 'July', 'August', 'September', 'October']"
+    :max="25"
+    :rows="5"
+    :dots="false"
+    label="Data points"
+    style="max-inline-size:40rem"
+/&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class RevenueChart extends Component
+{
+    public function render()
+    {
+        return view('livewire.revenue-chart');
+    }
+}
+
+{{-- resources/views/livewire/revenue-chart.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::chart-line
+        variant="area"
+        title="Revenue per month"
+        value="€ 24.0k"
+        :sub="null"
+        :series="[
+            ['name' =&gt; '2026', 'values' =&gt; [12.4, 14.1, 13.2, 16.8, 18.9, 17.6, 21.3, 24]],
+            ['name' =&gt; '2025', 'values' =&gt; [8.1, 9, 10.4, 9.8, 11.2, 12.9, 12.1, 14.6], 'dashed' =&gt; true],
+        ]"
+        :labels="['March', 'April', 'May', 'June', 'July', 'August', 'September', 'October']"
+        :max="25"
+        :rows="5"
+        :dots="false"
+        label="Data points"
+        style="max-inline-size:40rem"
+    /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="spark" class="oc-section-content__title mt-2">Sparkline</h3><p class="oc-section-content__desc"><code>--spark</code> drops the axes and the grid, for a stat card or a table cell. The tooltip opens above the line.</p>
           <oc-demo title="Sparkline">
@@ -110,6 +286,94 @@
     </div>
   </figure>
 </div>
+<oc-code lang="tsx">import { Card, ChartLine } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Card style={{ inlineSize: "100%", maxInlineSize: "20rem", padding: "1rem 1.25rem" }}&gt;
+      &lt;ChartLine
+        variant="spark"
+        className="oc-chart-line--area"
+        title=""
+        sub="Weekly sign-ups"
+        value="74"
+        series={[{ name: "Sign-ups", values: [42, 48, 45, 51, 58, 55, 63, 61, 70, 74] }]}
+        labels={["Week 34", "Week 35", "Week 36", "Week 37", "Week 38", "Week 39", "Week 40", "Week 41", "Week 42", "Week 43"]}
+        max={80}
+        dots={false}
+        label="Data points"
+      /&gt;
+    &lt;/Card&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCard, OcChartLine } from '@birdycom/omniaui-vue'
+
+const series = [{ name: 'Sign-ups', values: [42, 48, 45, 51, 58, 55, 63, 61, 70, 74] }]
+const labels = ['Week 34', 'Week 35', 'Week 36', 'Week 37', 'Week 38', 'Week 39', 'Week 40', 'Week 41', 'Week 42', 'Week 43']
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCard style="inline-size:100%;max-inline-size:20rem;padding:1rem 1.25rem"&gt;
+    &lt;OcChartLine
+      variant="spark"
+      class="oc-chart-line--area"
+      title=""
+      sub="Weekly sign-ups"
+      value="74"
+      :series="series"
+      :labels="labels"
+      :max="80"
+      :dots="false"
+      label="Data points"
+    /&gt;
+  &lt;/OcCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::card style="inline-size:100%;max-inline-size:20rem;padding:1rem 1.25rem"&gt;
+    &lt;x-oc::chart-line
+        variant="spark"
+        class="oc-chart-line--area"
+        :title="null"
+        sub="Weekly sign-ups"
+        value="74"
+        :series="[['name' =&gt; 'Sign-ups', 'values' =&gt; [42, 48, 45, 51, 58, 55, 63, 61, 70, 74]]]"
+        :labels="['Week 34', 'Week 35', 'Week 36', 'Week 37', 'Week 38', 'Week 39', 'Week 40', 'Week 41', 'Week 42', 'Week 43']"
+        :max="80"
+        :dots="false"
+        label="Data points"
+    /&gt;
+&lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SignupSparkline extends Component
+{
+    public function render()
+    {
+        return view('livewire.signup-sparkline');
+    }
+}
+
+{{-- resources/views/livewire/signup-sparkline.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::card style="inline-size:100%;max-inline-size:20rem;padding:1rem 1.25rem"&gt;
+        &lt;x-oc::chart-line
+            variant="spark"
+            class="oc-chart-line--area"
+            :title="null"
+            sub="Weekly sign-ups"
+            value="74"
+            :series="[['name' =&gt; 'Sign-ups', 'values' =&gt; [42, 48, 45, 51, 58, 55, 63, 61, 70, 74]]]"
+            :labels="['Week 34', 'Week 35', 'Week 36', 'Week 37', 'Week 38', 'Week 39', 'Week 40', 'Week 41', 'Week 42', 'Week 43']"
+            :max="80"
+            :dots="false"
+            label="Data points"
+        /&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

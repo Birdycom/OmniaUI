@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Sheet", "category": "Overlays", "description": "Side panel on &lt;dialog&gt; (right, left, top, bottom) - no JavaScript.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Sheet", "category": "Overlays", "description": "A modal side panel on a native dialog that slides in from the right, left, top or bottom. Invoker commands open it; Esc or the backdrop closes it.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Sheet</h1>
         <p class="oc-hero-text">A modal panel that slides in from an edge. Opens with invoker commands, closes with Esc, the close button or a click on the backdrop (<code>closedby="any"</code>). Also the mobile container for the sidebar. <a href="../components.html">All components</a>.</p>
@@ -33,6 +33,89 @@
     </div>
   </div>
 </dialog>
+<oc-code lang="tsx">&lt;Button variant="outline" onClick={() =&gt; setOpen(true)}&gt;Open sheet&lt;/Button&gt;
+&lt;Sheet
+  open={open}
+  onOpenChange={setOpen}
+  title="Table design"
+  description="Choose the columns you want to see."
+  footer={&lt;&gt;
+    &lt;ModalClose variant="outline"&gt;Cancel&lt;/ModalClose&gt;
+    &lt;Button onClick={() =&gt; { save(columns); setOpen(false); }}&gt;Save&lt;/Button&gt;
+  &lt;/&gt;}
+&gt;
+  &lt;FieldGroup&gt;
+    &lt;Checkbox label="Name" checked={columns.name} onChange={(e) =&gt; toggle("name", e.target.checked)} /&gt;
+    &lt;Checkbox label="E-mail" checked={columns.email} onChange={(e) =&gt; toggle("email", e.target.checked)} /&gt;
+    &lt;Checkbox label="Phone" checked={columns.phone} onChange={(e) =&gt; toggle("phone", e.target.checked)} /&gt;
+  &lt;/FieldGroup&gt;
+&lt;/Sheet&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton variant="outline" @click="open = true"&gt;Open sheet&lt;/OcButton&gt;
+&lt;OcSheet v-model:open="open" title="Table design" description="Choose the columns you want to see."&gt;
+  &lt;div class="oc-field-group"&gt;
+    &lt;OcCheckbox v-model="columns" value="name" label="Name" /&gt;
+    &lt;OcCheckbox v-model="columns" value="email" label="E-mail" /&gt;
+    &lt;OcCheckbox v-model="columns" value="phone" label="Phone" /&gt;
+  &lt;/div&gt;
+  &lt;template #footer="{ close }"&gt;
+    &lt;OcButton variant="outline" @click="close"&gt;Cancel&lt;/OcButton&gt;
+    &lt;OcButton @click="save(columns); close()"&gt;Save&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcSheet&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::sheet id="table-design" title="Table design" description="Choose the columns you want to see."&gt;
+    &lt;x-slot:trigger&gt;&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="table-design"&gt;Open sheet&lt;/button&gt;&lt;/x-slot:trigger&gt;
+    &lt;form id="table-design-form" class="oc-field-group" method="post" action="{{ route('columns.update') }}"&gt;
+        @csrf
+        &lt;x-oc::checkbox name="columns[]" value="name" label="Name" checked /&gt;
+        &lt;x-oc::checkbox name="columns[]" value="email" label="E-mail" checked /&gt;
+        &lt;x-oc::checkbox name="columns[]" value="phone" label="Phone" /&gt;
+    &lt;/form&gt;
+    &lt;x-slot:footer&gt;
+        &lt;button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="table-design"&gt;Cancel&lt;/button&gt;
+        &lt;button class="oc-btn" type="submit" form="table-design-form"&gt;Save&lt;/button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::sheet&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class TableDesign extends Component
+{
+    use WithOcModal;
+
+    /** @var list&lt;string&gt; */
+    public array $columns = ['name', 'email'];
+
+    public function save(): void
+    {
+        // store $this-&gt;columns as the user's table preference
+        $this-&gt;closeOcModal('columns');
+    }
+
+    public function render()
+    {
+        return view('livewire.table-design');
+    }
+}
+
+{{-- resources/views/livewire/table-design.blade.php --}}
+&lt;div&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('columns')"&gt;Open sheet&lt;/button&gt;
+    &lt;x-oc::wire.sheet name="columns" title="Table design" description="Choose the columns you want to see."&gt;
+        &lt;div class="oc-field-group"&gt;
+            &lt;x-oc::wire.checkbox model="columns" value="name" label="Name" /&gt;
+            &lt;x-oc::wire.checkbox model="columns" value="email" label="E-mail" /&gt;
+            &lt;x-oc::wire.checkbox model="columns" value="phone" label="Phone" /&gt;
+        &lt;/div&gt;
+        &lt;x-slot:footer&gt;
+            &lt;button class="oc-btn oc-btn--outline" type="button" x-on:click="open = false"&gt;Cancel&lt;/button&gt;
+            &lt;button class="oc-btn" type="button" wire:click="save"&gt;Save&lt;/button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.sheet&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="sides">Sides</h3>
@@ -82,6 +165,66 @@
   </div>
 </dialog>
 </div>
+<oc-code lang="tsx">&lt;Button variant="outline" onClick={() =&gt; setSide("left")}&gt;From the left&lt;/Button&gt;
+&lt;Button variant="outline" onClick={() =&gt; setSide("top")}&gt;From the top&lt;/Button&gt;
+&lt;Button variant="outline" onClick={() =&gt; setSide("bottom")}&gt;From the bottom&lt;/Button&gt;
+
+&lt;Sheet side="left" open={side === "left"} onOpenChange={(o) =&gt; setSide(o ? "left" : null)} title="Menu" description="A navigation panel on the start side." footer={&lt;ModalClose&gt;Done&lt;/ModalClose&gt;}&gt;
+  &lt;p style={{ margin: 0 }}&gt;Customer 1 · info@company1.example&lt;/p&gt;
+&lt;/Sheet&gt;
+&lt;Sheet side="top" open={side === "top"} onOpenChange={(o) =&gt; setSide(o ? "top" : null)} title="Search" description="A panel that drops down from the top." footer={&lt;ModalClose&gt;Done&lt;/ModalClose&gt;}&gt;…&lt;/Sheet&gt;
+&lt;Sheet side="bottom" open={side === "bottom"} onOpenChange={(o) =&gt; setSide(o ? "bottom" : null)} title="Share" description="A bottom sheet, as on a phone." footer={&lt;ModalClose&gt;Done&lt;/ModalClose&gt;}&gt;…&lt;/Sheet&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton variant="outline" @click="left = true"&gt;From the left&lt;/OcButton&gt;
+&lt;OcButton variant="outline" @click="top = true"&gt;From the top&lt;/OcButton&gt;
+&lt;OcButton variant="outline" @click="bottom = true"&gt;From the bottom&lt;/OcButton&gt;
+
+&lt;OcSheet v-model:open="left" side="left" title="Menu" description="A navigation panel on the start side."&gt;
+  &lt;p style="margin: 0"&gt;Customer 1 · info@company1.example&lt;/p&gt;
+  &lt;template #footer="{ close }"&gt;&lt;OcButton @click="close"&gt;Done&lt;/OcButton&gt;&lt;/template&gt;
+&lt;/OcSheet&gt;
+&lt;OcSheet v-model:open="top" side="top" title="Search" description="A panel that drops down from the top."&gt;…&lt;/OcSheet&gt;
+&lt;OcSheet v-model:open="bottom" side="bottom" title="Share" description="A bottom sheet, as on a phone."&gt;…&lt;/OcSheet&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::sheet id="sheet-left" side="left" title="Menu" description="A navigation panel on the start side."&gt;
+    &lt;x-slot:trigger&gt;&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="sheet-left"&gt;From the left&lt;/button&gt;&lt;/x-slot:trigger&gt;
+    &lt;p style="margin:0"&gt;Customer 1 · info@company1.example&lt;/p&gt;
+    &lt;x-slot:footer&gt;&lt;button class="oc-btn" type="button" command="close" commandfor="sheet-left"&gt;Done&lt;/button&gt;&lt;/x-slot:footer&gt;
+&lt;/x-oc::sheet&gt;
+&lt;x-oc::sheet id="sheet-top" side="top" title="Search" description="A panel that drops down from the top."&gt;…&lt;/x-oc::sheet&gt;
+&lt;x-oc::sheet id="sheet-bottom" side="bottom" title="Share" description="A bottom sheet, as on a phone."&gt;…&lt;/x-oc::sheet&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class SheetSides extends Component
+{
+    use WithOcModal;
+
+    public function render()
+    {
+        return view('livewire.sheet-sides');
+    }
+}
+
+{{-- resources/views/livewire/sheet-sides.blade.php --}}
+&lt;div style="display:flex;flex-wrap:wrap;gap:.75rem"&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('left')"&gt;From the left&lt;/button&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('top')"&gt;From the top&lt;/button&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('bottom')"&gt;From the bottom&lt;/button&gt;
+
+    &lt;x-oc::wire.sheet name="left" side="left" title="Menu" description="A navigation panel on the start side."&gt;
+        &lt;p style="margin:0"&gt;Customer 1 · info@company1.example&lt;/p&gt;
+        &lt;x-slot:footer&gt;&lt;button class="oc-btn" type="button" x-on:click="open = false"&gt;Done&lt;/button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.sheet&gt;
+    &lt;x-oc::wire.sheet name="top" side="top" title="Search" description="A panel that drops down from the top."&gt;
+        &lt;p style="margin:0"&gt;Customer 1 · info@company1.example&lt;/p&gt;
+    &lt;/x-oc::wire.sheet&gt;
+    &lt;x-oc::wire.sheet name="bottom" side="bottom" title="Share" description="A bottom sheet, as on a phone."&gt;
+        &lt;p style="margin:0"&gt;Customer 1 · info@company1.example&lt;/p&gt;
+    &lt;/x-oc::wire.sheet&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="glass">Glass, inset and a footer panel <span class="oc-badge-version">v0.16.0</span></h3>
@@ -164,6 +307,33 @@
     &lt;x-oc::collapsible plain title="About this game"&gt;Five rounds in the old town, about two hours on foot.&lt;/x-oc::collapsible&gt;
     &lt;x-slot:footer&gt;&lt;strong&gt;Company 1&lt;/strong&gt;&lt;div class="oc-sheet-description"&gt;App 1 2.4.0 · © 2026 Company 1&lt;/div&gt;&lt;/x-slot:footer&gt;
 &lt;/x-oc::sheet&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class GameMenu extends Component
+{
+    use WithOcModal;
+
+    public function render()
+    {
+        return view('livewire.game-menu');
+    }
+}
+
+{{-- resources/views/livewire/game-menu.blade.php --}}
+&lt;div&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('menu')"&gt;Open the glass menu&lt;/button&gt;
+    {{-- glass and inset are classes on the dialog, the footer panel a class on the footer --}}
+    &lt;x-oc::wire.sheet name="menu" side="left" class="oc-sheet--glass oc-sheet--inset" title="Menu" description="Team 1, round 2 of 5"&gt;
+        &lt;x-oc::collapsible plain open title="Settings"&gt;Language, sound and the size of the text.&lt;/x-oc::collapsible&gt;
+        &lt;x-oc::collapsible plain title="Help"&gt;Call the organiser at any time, or send a message from this menu.&lt;/x-oc::collapsible&gt;
+        &lt;x-oc::collapsible plain title="About this game"&gt;Five rounds in the old town, about two hours on foot.&lt;/x-oc::collapsible&gt;
+    &lt;/x-oc::wire.sheet&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

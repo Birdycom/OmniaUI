@@ -1,3 +1,4 @@
+// File: packages/react/src/blocks/BlockHeroCode.tsx | Map: types -> BlockHeroCode (copy: eyebrow, title, lead, actions -> code window with floating tiles)
 import { forwardRef } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
@@ -18,6 +19,8 @@ export interface BlockHeroCodeProps extends Omit<HTMLAttributes<HTMLElement>, "t
   eyebrow?: ReactNode;
   /** Display title; wrap a word in `<span className="oc-text-gradient">`. */
   title: ReactNode;
+  /** 0.17.0: heading level of the title (default 1; 2 for a block lower on the page, same look). */
+  headingLevel?: 1 | 2;
   lead?: ReactNode;
   /** Buttons (usually two `oc-btn--gradient` / `oc-btn--glass` links). */
   actions?: ReactNode;
@@ -25,21 +28,24 @@ export interface BlockHeroCodeProps extends Omit<HTMLAttributes<HTMLElement>, "t
   codeTitle?: ReactNode;
   /** Code shown in the window. */
   code: string;
-  /** Floating icon tiles (accent name from the accent palette + position style). */
+  /** Floating icon tiles (accent name from the accent palette + position style); `[]` for none. */
   tiles?: HeroTile[];
+  /** Dark code window (`oc-code-window--dark`, as in the snippet). */
+  codeDark?: boolean;
 }
 
 /** Landing hero: eyebrow, display title, lead, buttons and a code window with floating icon tiles. */
 export const BlockHeroCode = forwardRef<HTMLElement, BlockHeroCodeProps>(function BlockHeroCode(
-  { eyebrow, title, lead, actions, codeTitle, code, tiles = DEFAULT_TILES, className, ...rest },
+  { eyebrow, title, headingLevel = 1, lead, actions, codeTitle, code, tiles = DEFAULT_TILES, codeDark = false, className, ...rest },
   ref,
 ) {
+  const Heading = headingLevel === 2 ? "h2" : "h1";
   return (
     <section ref={ref} className={cx("oc-section-pad", className)} {...rest}>
       <div className="oc-container oc-split">
         <div>
           {eyebrow != null && <p className="oc-eyebrow">{eyebrow}</p>}
-          <h1 className="oc-display">{title}</h1>
+          <Heading className="oc-display">{title}</Heading>
           {lead != null && <p className="oc-lead">{lead}</p>}
           {actions != null && <div className="flex flex-wrap gap-1 mt-2">{actions}</div>}
         </div>
@@ -49,7 +55,7 @@ export const BlockHeroCode = forwardRef<HTMLElement, BlockHeroCodeProps>(functio
               {tile.glyph}
             </span>
           ))}
-          <div className="oc-code-window">
+          <div className={cx("oc-code-window", codeDark && "oc-code-window--dark")}>
             <div className="oc-code-window__bar">
               <i /><i /><i />
               {codeTitle != null && <span className="oc-code-window__title">{codeTitle}</span>}

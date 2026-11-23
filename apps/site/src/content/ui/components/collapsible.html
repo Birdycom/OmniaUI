@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Collapsible section", "category": "Layout", "description": "Card-style details/summary form section with icon, title and chevron.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Collapsible section", "category": "Layout", "description": "A native details element styled as a card, with icon, title and chevron. Unlike the accordion every section opens on its own; no JavaScript needed.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Collapsible section</h1>
         <p class="oc-hero-text">A native <code>&lt;details&gt;</code> that looks like a card. Use <code>open</code> for the default state. Unlike the accordion, sections are independent. <a href="../components.html">All components</a>.</p>
@@ -24,6 +24,48 @@
     </div>
   </div>
 </details>
+<oc-code lang="tsx">&lt;Collapsible defaultOpen title="General information" icon={&lt;Webicon name="mdi:information-outline" bare className="oc-collapsible-icon" /&gt;}&gt;
+  &lt;FormField label="Name"&gt;
+    &lt;Input defaultValue="Company 1 BV" /&gt;
+  &lt;/FormField&gt;
+&lt;/Collapsible&gt;</oc-code>
+<oc-code lang="vue">&lt;OcCollapsible title="General information" :open="true"&gt;
+  &lt;template #icon&gt;&lt;OcWebicon name="mdi:information-outline" bare class="oc-collapsible-icon" /&gt;&lt;/template&gt;
+  &lt;OcFormField label="Name" v-slot="f"&gt;
+    &lt;OcInput :id="f.id" model-value="Company 1 BV" /&gt;
+  &lt;/OcFormField&gt;
+&lt;/OcCollapsible&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::collapsible title="General information" open&gt;
+    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:information-outline" bare class="oc-collapsible-icon" /&gt;&lt;/x-slot:icon&gt;
+    &lt;x-oc::form-field label="Name" for="company-name" name="name"&gt;
+        &lt;x-oc::input id="company-name" name="name" value="Company 1 BV" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/x-oc::collapsible&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CompanyGeneral extends Component
+{
+    public string $name = 'Company 1 BV';
+
+    public function render()
+    {
+        return view('livewire.company-general');
+    }
+}
+
+{{-- resources/views/livewire/company-general.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::collapsible title="General information" open&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:information-outline" bare class="oc-collapsible-icon" /&gt;&lt;/x-slot:icon&gt;
+        &lt;x-oc::form-field label="Name" for="company-name" name="name"&gt;
+            &lt;x-oc::wire.input id="company-name" model="name" blur /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/x-oc::collapsible&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="plain">Plain, for a list inside a panel <span class="oc-badge-version">v0.16.0</span></h3>
@@ -68,6 +110,122 @@
 <oc-code lang="blade">&lt;x-oc::collapsible plain open title="Opening hours"&gt;Monday to Friday, 9:00 to 17:00. Closed on public holidays.&lt;/x-oc::collapsible&gt;
 &lt;x-oc::collapsible plain title="Address"&gt;Company 1, Street 1, 1000 City 1.&lt;/x-oc::collapsible&gt;
 &lt;x-oc::collapsible plain title="Contact"&gt;info@company1.example&lt;/x-oc::collapsible&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CompanyInfo extends Component
+{
+    /** @var array&lt;string, string&gt; title =&gt; text */
+    public array $sections = [
+        'Opening hours' =&gt; 'Monday to Friday, 9:00 to 17:00. Closed on public holidays.',
+        'Address' =&gt; 'Company 1, Street 1, 1000 City 1.',
+        'Contact' =&gt; 'info@company1.example',
+    ];
+
+    public function render()
+    {
+        return view('livewire.company-info');
+    }
+}
+
+{{-- resources/views/livewire/company-info.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::card class="w-full" style="max-inline-size: 30rem; padding: 0.5rem"&gt;
+        @foreach ($sections as $title =&gt; $text)
+            &lt;x-oc::collapsible plain :open="$loop-&gt;first" :title="$title"&gt;{{ $text }}&lt;/x-oc::collapsible&gt;
+        @endforeach
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="hint">Hint, maybe at a cost <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">A tip the player opens on purpose. <code>.oc-collapsible--hint</code> draws a dashed frame in the warning tone until it is opened, with a lightbulb, and <code>.oc-collapsible-meta</code> puts the cost (or a count) in the header before the chevron. With <code>once</code> the React, Vue and Blade components keep an opened hint open: a seen hint stays seen. Your app takes the points off in <code>onOpenChange</code>.</p>
+          <oc-demo title="Collapsible - hint">
+<div style="display:grid;gap:0.75rem;inline-size:min(100%,30rem)">
+  <details class="oc-collapsible oc-collapsible--hint oc-collapsible--dense">
+    <summary>
+      <span class="oc-collapsible-icon" aria-hidden="true"><iconify-icon icon="mdi:lightbulb-on-outline"></iconify-icon></span>
+      <span class="oc-collapsible-title">Show a hint</span>
+      <span class="oc-collapsible-meta">−5 points</span>
+    </summary>
+    <div class="oc-collapsible-content">Look up at the clock above the gate: the year is carved in the stone.</div>
+  </details>
+  <details class="oc-collapsible oc-collapsible--hint oc-collapsible--dense" open>
+    <summary>
+      <span class="oc-collapsible-icon" aria-hidden="true"><iconify-icon icon="mdi:lightbulb-on-outline"></iconify-icon></span>
+      <span class="oc-collapsible-title">Second hint</span>
+      <span class="oc-collapsible-meta">−10 points</span>
+    </summary>
+    <div class="oc-collapsible-content">It is the same year as the tower of the town hall.</div>
+  </details>
+</div>
+<oc-code lang="html">&lt;div style="display:grid;gap:0.75rem;inline-size:min(100%,30rem)"&gt;
+  &lt;details class="oc-collapsible oc-collapsible--hint oc-collapsible--dense"&gt;
+    &lt;summary&gt;
+      &lt;span class="oc-collapsible-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:lightbulb-on-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+      &lt;span class="oc-collapsible-title"&gt;Show a hint&lt;/span&gt;
+      &lt;span class="oc-collapsible-meta"&gt;−5 points&lt;/span&gt;
+    &lt;/summary&gt;
+    &lt;div class="oc-collapsible-content"&gt;Look up at the clock above the gate: the year is carved in the stone.&lt;/div&gt;
+  &lt;/details&gt;
+  &lt;details class="oc-collapsible oc-collapsible--hint oc-collapsible--dense" open&gt;
+    &lt;summary&gt;
+      &lt;span class="oc-collapsible-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:lightbulb-on-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+      &lt;span class="oc-collapsible-title"&gt;Second hint&lt;/span&gt;
+      &lt;span class="oc-collapsible-meta"&gt;−10 points&lt;/span&gt;
+    &lt;/summary&gt;
+    &lt;div class="oc-collapsible-content"&gt;It is the same year as the tower of the town hall.&lt;/div&gt;
+  &lt;/details&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;Collapsible hint once dense meta="−5 points" title="Show a hint" onOpenChange={(open) =&gt; open &amp;&amp; useHint(1)}&gt;
+  Look up at the clock above the gate: the year is carved in the stone.
+&lt;/Collapsible&gt;</oc-code>
+<oc-code lang="vue">&lt;OcCollapsible hint once dense meta="−5 points" title="Show a hint" @update:open="(o) =&gt; o &amp;&amp; useHint(1)"&gt;
+  Look up at the clock above the gate: the year is carved in the stone.
+&lt;/OcCollapsible&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::collapsible hint dense meta="−5 points" title="Show a hint"&gt;
+    Look up at the clock above the gate: the year is carved in the stone.
+&lt;/x-oc::collapsible&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class StepHints extends Component
+{
+    public int $points = 100;
+
+    /** @var list&lt;int&gt; */
+    public array $used = [];
+
+    public function useHint(int $hint): void
+    {
+        if (! in_array($hint, $this-&gt;used, true)) {
+            $this-&gt;used[] = $hint;
+            $this-&gt;points -= $hint === 1 ? 5 : 10;
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.step-hints');
+    }
+}
+
+{{-- resources/views/livewire/step-hints.blade.php --}}
+&lt;div style="display:grid;gap:0.75rem;inline-size:min(100%,30rem)"&gt;
+    {{-- the first toggle costs the points; hint stays open once seen --}}
+    &lt;x-oc::collapsible hint dense meta="−5 points" title="Show a hint" :open="in_array(1, $used)" x-on:toggle.once="$wire.useHint(1)"&gt;
+        Look up at the clock above the gate: the year is carved in the stone.
+    &lt;/x-oc::collapsible&gt;
+    &lt;x-oc::collapsible hint dense meta="−10 points" title="Second hint" :open="in_array(2, $used)" x-on:toggle.once="$wire.useHint(2)"&gt;
+        It is the same year as the tower of the town hall.
+    &lt;/x-oc::collapsible&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -81,6 +239,7 @@
           <table class="oc-table-ref">
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
+              <tr><td><code>.oc-collapsible--hint</code> + <code>.oc-collapsible-meta</code></td><td>A tip opened on purpose (dashed warning frame, lightbulb) and a pill in the header (cost, count). Props <code>hint</code>, <code>meta</code>, <code>once</code> (stays open once opened)</td></tr>
               <tr><td><code>details.oc-collapsible</code></td><td>Root. Modifiers: <code>--dense</code> (compact paddings), <code>--plain</code> (no card: a list of sections inside a panel, a line between neighbours). React / Vue / Blade: <code>dense</code>, <code>plain</code>.</td></tr>
               <tr><td><code>summary</code></td><td>Header row with <code>.oc-collapsible-icon</code> + <code>.oc-collapsible-title</code>; the chevron is CSS</td></tr>
               <tr><td><code>.oc-collapsible-content</code></td><td>Body with a top border</td></tr>

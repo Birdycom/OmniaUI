@@ -157,6 +157,25 @@ export function getWebicon(name: string): ResolvedWebicon | undefined {
 /** True when the icon can be drawn. */
 export const hasWebicon = (name: string): boolean => getWebicon(name) !== undefined;
 
+/** The country flag for a language code that does not match its country (en -> gb, da -> dk, …). */
+const LANGUAGE_COUNTRY: Record<string, string> = {
+  en: "gb", da: "dk", sv: "se", nb: "no", nn: "no", cs: "cz", sl: "si", el: "gr", et: "ee", ga: "ie", lb: "lu",
+  uk: "ua", ja: "jp", zh: "cn", ko: "kr", ar: "sa", he: "il", hi: "in", vi: "vn", ca: "es-ct", eu: "es-pv", gl: "es-ga",
+  cy: "gb-wls", fa: "ir", sr: "rs", sq: "al", ms: "my", tl: "ph", sw: "tz", af: "za", ka: "ge", hy: "am", be: "by", kk: "kz",
+};
+
+/**
+ * The flag webicon for a language code: a region in the code wins ("nl-BE" -> "flag:be-4x3", "en-US" -> us), otherwise
+ * the usual country of the language ("en" -> gb, "nl" -> nl, "fr" -> fr). Undefined for a code it cannot place.
+ * nl, be, fr, de, gb, it and us are built in; register other flags with `npx omniaui webicons flag:es-4x3 …`.
+ */
+export function languageFlag(code: string): string | undefined {
+  const [lang = "", ...rest] = code.toLowerCase().split(/[-_]/);
+  const region = rest.find((p) => /^[a-z]{2}$/.test(p));
+  const country = region ?? LANGUAGE_COUNTRY[lang] ?? (/^[a-z]{2}$/.test(lang) ? lang : undefined);
+  return country ? `flag:${country}-4x3` : undefined;
+}
+
 const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 

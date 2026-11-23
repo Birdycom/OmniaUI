@@ -1,4 +1,4 @@
-// OmniaUI Pro v0.16.2 - commercial software, NOT open source and NOT under the MIT license.
+// OmniaUI Pro v0.17.0 - commercial software, NOT open source and NOT under the MIT license.
 // Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
 // Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro).
 // File: packages/pro/src/shop.js
@@ -174,11 +174,13 @@ function bindProduct(root) {
   update();
 }
 
-/** Favorite / wishlist toggle ([data-oc-favorite]): aria-pressed, the filled icon (data-oc-icon-on / -off on the
- *  iconify-icon, default mdi:heart / mdi:heart-outline) and the label (data-oc-label-on / -off). */
+/** Favorite / wishlist toggle ([data-oc-favorite]): aria-pressed, the filled icon and the label (data-oc-label-on / -off).
+ *  Two icons in the button (.oc-block-shop-favorite-off / -on): CSS shows one by aria-pressed. One iconify-icon: its
+ *  icon is swapped (data-oc-icon-on / -off, default mdi:heart / mdi:heart-outline). */
 export function toggleFavorite(button, pressed = button.getAttribute("aria-pressed") !== "true") {
   button.setAttribute("aria-pressed", String(pressed));
-  const icon = button.querySelector("iconify-icon");
+  const icons = button.querySelectorAll("iconify-icon, svg");
+  const icon = icons.length === 1 && icons[0].localName === "iconify-icon" ? icons[0] : null;
   if (icon) icon.setAttribute("icon", pressed ? icon.dataset.ocIconOn || "mdi:heart" : icon.dataset.ocIconOff || "mdi:heart-outline");
   const label = pressed ? button.dataset.ocLabelOn : button.dataset.ocLabelOff;
   if (label) { button.setAttribute("aria-label", label); button.title = label; }

@@ -1,9 +1,17 @@
 // File: packages/ui/src/data-table.js
 // Map: page numbers -> compare -> csv -> row filter -> bind one table (search, column filters, sort, pages, columns, trash,
-//      bulk, cards) -> boot. Column width and row drag are OmniaUI Pro (data-table-pro.js).
+//      bulk, cards) -> server mode (state from the DOM, oc-datatable-query) -> updateDataTable / setDataTableSelection -> boot.
+//      Column width and row drag are OmniaUI Pro (data-table-pro.js).
 // The list table for business apps. Markup stays plain HTML.
 // This script adds the behaviour. Excel, PDF and the real delete API stay in the app:
 // listen for oc-datatable-bulk, oc-datatable-row, oc-datatable-search and oc-datatable-import.
+// Server mode (0.17.0): data-oc-server="true" on the root. The rows in the page ARE the current page: the script does not
+// filter, sort or slice them. It keeps the controls (sort headers, trash pills, search, pager, rows per page, column
+// filters) and fires oc-datatable-query { reason, sort, dir, page, pageSize, search, trashed, filters } on every change;
+// the app fetches and puts the new rows in, with data-oc-total (all matches) and data-oc-current-page (1-based) on the root, and
+// calls updateDataTable(root, state) or bindDataTable(root) again. aria-busy="true" on the root = loading (no empty text).
+// Selection is kept by key over pages: oc-datatable-selection { keys } on every change.
+// Column chooser: checkboxes [data-oc-visible-col="key"] fire oc-datatable-columns { visible } (the app renders the columns).
 
 /** Page numbers with ellipses, a window around the current page (current and last are 1-based). */
 export function pageItems(current, last) {
@@ -107,6 +115,13 @@ export function bindDataTable(root) {
   const sortSummary = root.querySelector("[data-oc-sort-summary]");
   const frame = root.querySelector(".oc-data-table-frame") || table.parentElement;
   const live = root.dataset.ocLive === "true";
+  // Texts the script writes itself (pager, selection count, sort line), translated with data-oc-labels on the root:
+  // data-oc-labels='{"nextPage":"Volgende pagina","selected":"{n} geselecteerd"}' (0.17.0). Missing keys stay English.
+  let T = {};
+  try { T = JSON.parse(root.dataset.ocLabels || "{}"); } catch { T = {}; }
+  const t = (key, fallback, vars = {}) => String(T[key] ?? fallback).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+  // data-oc-no-grid: no card view (the table only), also not from a stored choice.
+  const noGrid = root.hasAttribute("data-oc-no-grid");
 
   let query = "";
   let filter = root.querySelector("[data-oc-filter][aria-current='true']")?.dataset.ocFilter
@@ -123,15 +138,25 @@ export function bindDataTable(root) {
   let page = 0;
   let pageSize = Number(pageSelect?.value || root.dataset.pageSize || 15);
   const selected = new Set();
+  // Server mode is read live, so a wrapper can switch it on later. The page attribute only wins when it changed: a click
+  // on the pager moves at once and the app confirms it with the next data-oc-current-page.
+  const server = () => root.dataset.ocServer === "true";
+  let pageAttr;
+  let searchTimer = 0;
+  const searchDelay = () => {
+    const n = Number(root.dataset.ocSearchDelay);
+    return Number.isFinite(n) && n >= 0 ? n : 300;
+  };
 
   // Remembered choices from the last visit: page size, density, view, hidden columns.
   const savedSize = readStore(id, "pageSize");
-  if (savedSize && pageSelect?.querySelector(`option[value="${savedSize}"]`)) {
+  // Server mode: the app owns the page size (it fetched that many rows), so no stored size.
+  if (!server() && savedSize && pageSelect?.querySelector(`option[value="${savedSize}"]`)) {
     pageSelect.value = String(savedSize);
     pageSize = Number(savedSize);
   }
   if (readStore(id, "density") === "compact") root.classList.add("oc-data-table--compact");
-  if (readStore(id, "view") === "grid") root.classList.add("oc-data-table--grid");
+  if (!noGrid && readStore(id, "view") === "grid") root.classList.add("oc-data-table--grid");
   const savedCols = readStore(id, "cols") || {};
   root.querySelectorAll("[data-col]").forEach((box) => {
     if (!box.disabled && savedCols[box.dataset.col] != null) box.checked = savedCols[box.dataset.col];
@@ -165,7 +190,68 @@ export function bindDataTable(root) {
     return td ? (td.dataset.ocValue || td.textContent.trim()) : "";
   };
   const passesColumns = (row) => [...colFilters].every(([key, want]) => !want || valueOf(row, key) === want);
-  const matched = () => rows().filter((row) => rowPasses(row.dataset.ocStatus, filter, textOf(row), query) && passesColumns(row));
+  // Server mode: every row in the page is a match (the server filtered them).
+  const matched = () => (server() ? rows() : rows().filter((row) => rowPasses(row.dataset.ocStatus, filter, textOf(row), query) && passesColumns(row)));
+
+  function emit(name, detail) {
+    root.dispatchEvent(new CustomEvent(name, { bubbles: true, detail }));
+  }
+  const emitSelection = () => emit("oc-datatable-selection", { keys: [...selected] });
+
+  /** Server mode: the state the app asked for, read from the markup (sort header, trash pill, page, rows per page). */
+  function readServerState() {
+    const sortedHead = [...table.tHead.rows[0].cells].find((th) => th.dataset.ocCol && th.hasAttribute("aria-sort") && th.getAttribute("aria-sort") !== "none");
+    sortKey = sortedHead ? sortedHead.dataset.ocCol : "";
+    sortDir = sortedHead?.getAttribute("aria-sort") === "descending" ? "desc" : "asc";
+    const pill = root.querySelector("[data-oc-filter][aria-current='true']");
+    if (pill) filter = pill.dataset.ocFilter;
+    if (root.dataset.ocCurrentPage !== pageAttr) {
+      pageAttr = root.dataset.ocCurrentPage;
+      if (pageAttr != null) page = Math.max(0, (Number(pageAttr) || 1) - 1);
+    }
+    if (pageSelect && Number(pageSelect.value)) pageSize = Number(pageSelect.value);
+  }
+
+  /** Server mode: tell the app what to fetch. */
+  function emitQuery(reason) {
+    emit("oc-datatable-query", {
+      reason,
+      sort: sortKey || null,
+      dir: sortDir,
+      page: page + 1,
+      pageSize,
+      search: search ? search.value.trim() : "",
+      trashed: filter,
+      filters: Object.fromEntries(colFilters),
+    });
+  }
+
+  /** Server mode: the rows stay as they are; only the summary, pager, empty text, cards and checks follow the state. */
+  function applyServer() {
+    readServerState();
+    const all = rows();
+    for (const row of all) {
+      if (row.hidden) queueMicrotask(() => redrawIcons(row));
+      row.hidden = false;
+    }
+    const busy = root.getAttribute("aria-busy") === "true";
+    const total = Math.max(0, Number(root.dataset.ocTotal ?? all.length) || 0);
+    const last = pageSize > 0 ? Math.max(1, Math.ceil(total / pageSize)) : 1;
+    const start = pageSize > 0 ? page * pageSize : 0;
+    if (empty) empty.hidden = busy || all.length !== 0;
+    if (summary) {
+      const template = summary.dataset.ocSummary || t("summary", "Showing {from}–{to} of {total}");
+      const values = { from: all.length ? start + 1 : 0, to: Math.min(total, start + all.length), total };
+      summary.textContent = template.replace(/\{(from|to|total)\}/g, (_, key) => String(values[key]));
+    }
+    if (sortSummary) {
+      const label = sortKey ? table.querySelector(`th[data-oc-col="${sortKey}"] .oc-table-sort`)?.textContent?.trim() : "";
+      sortSummary.textContent = label ? t("sortedBy", "Sorted by {label}, {dir}", { label, dir: sortDir === "asc" ? t("ascending", "ascending") : t("descending", "descending") }) : "";
+    }
+    renderPager(Math.min(page + 1, last), total === 0 ? 1 : last);
+    syncGrid(all);
+    paintChecks();
+  }
 
   function paintChecks() {
     for (const row of rows()) {
@@ -180,7 +266,7 @@ export function bindDataTable(root) {
       selectAll.checked = keys.length > 0 && picked === keys.length;
       selectAll.indeterminate = picked > 0 && picked < keys.length;
     }
-    if (count) count.textContent = selected.size === 1 ? "1 selected" : `${selected.size} selected`;
+    if (count) count.textContent = t("selected", "{n} selected", { n: selected.size });
     if (bulk) bulk.hidden = selected.size === 0;
   }
 
@@ -199,8 +285,8 @@ export function bindDataTable(root) {
       if (extra?.label) button.setAttribute("aria-label", extra.label);
       pager.append(button);
     };
-    add("«", 1, { disabled: current === 1, label: "First page" });
-    add("‹", current - 1, { disabled: current === 1, label: "Previous page" });
+    add("«", 1, { disabled: current === 1, label: t("firstPage", "First page") });
+    add("‹", current - 1, { disabled: current === 1, label: t("previousPage", "Previous page") });
     for (const item of pageItems(current, last)) {
       if (item === "…") {
         const span = document.createElement("span");
@@ -209,11 +295,12 @@ export function bindDataTable(root) {
         pager.append(span);
       } else add(String(item), item, { current: item === current });
     }
-    add("›", current + 1, { disabled: current === last, label: "Next page" });
-    add("»", last, { disabled: current === last, label: "Last page" });
+    add("›", current + 1, { disabled: current === last, label: t("nextPage", "Next page") });
+    add("»", last, { disabled: current === last, label: t("lastPage", "Last page") });
   }
 
   function syncGrid(list) {
+    if (noGrid) return;
     let grid = root.querySelector(".oc-data-table-grid");
     if (!grid && frame) {
       grid = document.createElement("div");
@@ -272,6 +359,10 @@ export function bindDataTable(root) {
   }
 
   function apply() {
+    if (server()) {
+      applyServer();
+      return;
+    }
     const all = rows();
     const list = matched();
     if (sortKey) {
@@ -294,13 +385,13 @@ export function bindDataTable(root) {
     if (empty) empty.hidden = list.length !== 0;
     if (summary) {
       // data-oc-summary="Toont {from} t/m {to} van {total} resultaten" translates the line; empty = English.
-      const template = summary.dataset.ocSummary || "Showing {from}–{to} of {total}";
+      const template = summary.dataset.ocSummary || t("summary", "Showing {from}–{to} of {total}");
       const values = { from: list.length ? start + 1 : 0, to: start + visible.size, total: list.length };
       summary.textContent = template.replace(/\{(from|to|total)\}/g, (_, key) => String(values[key]));
     }
     if (sortSummary) {
       const label = sortKey ? table.querySelector(`th[data-oc-col="${sortKey}"] .oc-table-sort`)?.textContent?.trim() : "";
-      sortSummary.textContent = label ? `Sorted by ${label}, ${sortDir === "asc" ? "ascending" : "descending"}` : "";
+      sortSummary.textContent = label ? t("sortedBy", "Sorted by {label}, {dir}", { label, dir: sortDir === "asc" ? t("ascending", "ascending") : t("descending", "descending") }) : "";
     }
     renderPager(page + 1, list.length === 0 ? 1 : last);
     syncGrid([...visible]);
@@ -317,10 +408,6 @@ export function bindDataTable(root) {
       : matched();
     const body = source.map((row) => heads.map((th) => valueOf(row, th.dataset.ocCol)));
     download(`${id}.csv`, toCsv(heads.map((th) => th.textContent.trim()), body));
-  }
-
-  function emit(name, detail) {
-    root.dispatchEvent(new CustomEvent(name, { bubbles: true, detail }));
   }
 
   // Live mode (the docs demo) changes the rows in the page. An app listens and updates its own data.
@@ -340,6 +427,7 @@ export function bindDataTable(root) {
     }
     selected.clear();
     apply();
+    emitSelection();
     return true;
   }
 
@@ -348,6 +436,12 @@ export function bindDataTable(root) {
     if (target === search) {
       query = target.value.trim().toLowerCase();
       page = 0;
+      if (server()) {
+        // Wait until the typing stops (data-oc-search-delay, default 300 ms), then ask the app once.
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => { page = 0; emitQuery("search"); apply(); }, searchDelay());
+        return;
+      }
       apply();
     }
   });
@@ -358,12 +452,19 @@ export function bindDataTable(root) {
       pageSize = Number(target.value) || 0;
       page = 0;
       writeStore(id, "pageSize", pageSize);
+      if (server()) emitQuery("pageSize");
       apply();
     }
     if (target.matches?.("select[data-oc-col-filter]")) {
       colFilters.set(target.dataset.ocColFilter, target.value);
       page = 0;
+      if (server()) emitQuery("filter");
       apply();
+    }
+    if (target.matches?.("[data-oc-visible-col]")) {
+      // Column chooser: the app shows the columns (React/Vue/Livewire render only the visible ones).
+      const visible = [...root.querySelectorAll("[data-oc-visible-col]")].filter((box) => box.checked).map((box) => box.dataset.ocVisibleCol);
+      emit("oc-datatable-columns", { visible, key: target.dataset.ocVisibleCol, checked: target.checked });
     }
     if (target.matches?.("[data-col]")) {
       const cols = {};
@@ -376,6 +477,7 @@ export function bindDataTable(root) {
       if (target.checked) selected.add(row.dataset.ocKey);
       else selected.delete(row.dataset.ocKey);
       paintChecks();
+      emitSelection();
     }
     if (target === selectAll) {
       for (const row of matched()) {
@@ -384,6 +486,7 @@ export function bindDataTable(root) {
         else selected.delete(row.dataset.ocKey);
       }
       paintChecks();
+      emitSelection();
     }
     if (target.matches?.("[data-oc-file]")) {
       const file = target.files?.[0];
@@ -395,6 +498,14 @@ export function bindDataTable(root) {
   root.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && event.target === search) {
       emit("oc-datatable-search", { query: search.value });
+      // Server mode: Enter does not wait for the typing delay.
+      if (server() && searchTimer) {
+        clearTimeout(searchTimer);
+        searchTimer = 0;
+        page = 0;
+        emitQuery("search");
+        apply();
+      }
     }
   });
 
@@ -412,6 +523,7 @@ export function bindDataTable(root) {
       for (const head of table.tHead.rows[0].cells) head.removeAttribute("aria-sort");
       th.setAttribute("aria-sort", sortDir === "asc" ? "ascending" : "descending");
       page = 0;
+      if (server()) emitQuery("sort");
       apply();
       return;
     }
@@ -423,6 +535,7 @@ export function bindDataTable(root) {
         if (btn === filterBtn) btn.setAttribute("aria-current", "true");
         else btn.removeAttribute("aria-current");
       });
+      if (server()) emitQuery("trashed");
       apply();
       return;
     }
@@ -457,6 +570,7 @@ export function bindDataTable(root) {
         tab.setAttribute("aria-selected", tab === colTab ? "true" : "false");
       });
       page = 0;
+      if (server()) emitQuery("filter");
       apply();
       return;
     }
@@ -477,9 +591,10 @@ export function bindDataTable(root) {
       writeStore(id, "density", compact ? "compact" : "comfortable");
       return;
     }
-    const pageBtn = event.target.closest("[data-oc-page]");
+    const pageBtn = event.target.closest("button[data-oc-page]");
     if (pageBtn && root.contains(pageBtn) && !pageBtn.disabled) {
       page = Number(pageBtn.dataset.ocPage) - 1;
+      if (server()) emitQuery("page");
       apply();
       return;
     }
@@ -496,7 +611,7 @@ export function bindDataTable(root) {
       const action = bulkBtn.dataset.ocBulk;
       // Snapshot first: live mode clears the selection while it updates the rows.
       const keys = [...selected];
-      if (action === "clear") { selected.clear(); paintChecks(); return; }
+      if (action === "clear") { selected.clear(); paintChecks(); emitSelection(); return; }
       if (action === "export") { exportCsv(selected); return; }
       liveAction(action);
       emit("oc-datatable-bulk", { action, keys });
@@ -526,7 +641,60 @@ export function bindDataTable(root) {
   });
 
   apply();
-  controls.set(root, { apply });
+  controls.set(root, {
+    apply,
+    // Replace the selection (a controlled selectedKeys); no event, the caller already knows.
+    setSelection(keys) {
+      selected.clear();
+      for (const key of keys || []) selected.add(String(key));
+      paintChecks();
+    },
+    getSelection: () => [...selected],
+  });
+}
+
+/** The selected row keys of a wired table (kept over pages and filters). */
+export function getDataTableSelection(root) {
+  return controls.get(root)?.getSelection() ?? [];
+}
+
+/** Set the selected row keys of a wired table (selection over pages: keys that are not on this page stay selected). */
+export function setDataTableSelection(root, keys) {
+  if (!root) return;
+  if (!controls.get(root)) bindDataTable(root);
+  controls.get(root)?.setSelection(keys);
+}
+
+/**
+ * Server mode helper for plain HTML / Blade: put the state the server answered on the table and show it again.
+ * state: { total, page (1-based), sort (column key or null), dir ("asc" | "desc"), trashed, loading, selected }.
+ * Replace the <tbody> rows yourself first (each tr[data-oc-row][data-oc-key]).
+ */
+export function updateDataTable(root, state = {}) {
+  if (!root) return;
+  root.dataset.ocServer = root.dataset.ocServer || "true";
+  if (state.total != null) root.dataset.ocTotal = String(state.total);
+  if (state.page != null) root.dataset.ocCurrentPage = String(state.page);
+  if (state.loading != null) {
+    if (state.loading) root.setAttribute("aria-busy", "true");
+    else root.removeAttribute("aria-busy");
+  }
+  const head = root.querySelector("table")?.tHead?.rows[0];
+  if (head && "sort" in state) {
+    for (const th of head.cells) {
+      if (!th.dataset.ocCol) continue;
+      if (state.sort && th.dataset.ocCol === state.sort) th.setAttribute("aria-sort", state.dir === "desc" ? "descending" : "ascending");
+      else th.removeAttribute("aria-sort");
+    }
+  }
+  if (state.trashed) {
+    root.querySelectorAll("[data-oc-filter]").forEach((btn) => {
+      if (btn.dataset.ocFilter === state.trashed) btn.setAttribute("aria-current", "true");
+      else btn.removeAttribute("aria-current");
+    });
+  }
+  bindDataTable(root);
+  if (state.selected) setDataTableSelection(root, state.selected);
 }
 
 /** Wire every table under scope that is not wired yet (also the data table block: [data-oc-data-table]). */

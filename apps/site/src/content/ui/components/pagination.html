@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Pagination", "category": "Navigation", "description": "Page numbers for long lists: links with the current page marked by aria-current, and a gap for skipped pages.", "nav": "Pagination", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Pagination", "category": "Navigation", "description": "Page numbers for long lists: plain links with the current page marked by aria-current, previous and next, and a gap for skipped pages. No JavaScript.", "nav": "Pagination", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/pagination.html | Map: hero -> demo (pages, many pages with gaps + previous/next) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Pagination</h1>
@@ -20,6 +20,49 @@
   <a class="oc-pagination-item" href="#page-2" aria-current="page">2</a>
   <a class="oc-pagination-item" href="#page-3">3</a>
 </nav>
+<oc-code lang="tsx">import { Pagination } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [page, setPage] = useState(2);
+
+  return (
+    &lt;Pagination page={page} pageCount={3} onPageChange={setPage} hrefFor={(n) =&gt; `#page-${n}`} /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcPagination } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const page = ref(2);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcPagination v-model="page" :pages="3" :href-for="(n) =&gt; `#page-${n}`" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::pagination :current="2" :total="3" url="#page-%d" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Url;
+use Livewire\Component;
+
+class Pagination extends Component
+{
+    #[Url]
+    public int $page = 2;
+
+    public function render()
+    {
+        return view('livewire.pagination');
+    }
+}
+
+{{-- resources/views/livewire/pagination.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::pagination :current="$page" :total="3" url="?page=%d" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Many pages, previous and next</h3>
@@ -38,6 +81,50 @@
   <a class="oc-pagination-item" href="#page-24">24</a>
   <a class="oc-pagination-item" href="#page-8" aria-label="Next page">&rsaquo;</a>
 </nav>
+<oc-code lang="tsx">import { Pagination } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [page, setPage] = useState(7);
+
+  return (
+    &lt;Pagination page={page} pageCount={24} onPageChange={setPage} hrefFor={(n) =&gt; `#page-${n}`} /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcPagination } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const page = ref(7);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcPagination v-model="page" :pages="24" :href-for="(n) =&gt; `#page-${n}`" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::pagination :current="7" :total="24" url="#page-%d" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Url;
+use Livewire\Component;
+
+class PaginationManyPages extends Component
+{
+    #[Url]
+    public int $page = 7;
+
+    public function render()
+    {
+        return view('livewire.pagination-many-pages');
+    }
+}
+
+{{-- resources/views/livewire/pagination-many-pages.blade.php --}}
+&lt;div&gt;
+    {{-- With a Laravel paginator: &lt;x-oc::pagination :paginator="$invoices" /&gt; --}}
+    &lt;x-oc::pagination :current="$page" :total="24" url="?page=%d" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

@@ -111,7 +111,13 @@ class BlocksTest extends TestCase
         $snippet = preg_replace('/^<!--.*?-->/s', '', $snippet);
         $snippet = str_replace(' style="--oc-block-shell-height: 30rem"', '', $snippet);
 
-        $strip = fn (string $html): string => preg_replace('/\s+/', '', $html);
+        // 0.17.0: blocks print icons with <x-oc::webicon> (inline SVG); the snippet keeps <iconify-icon>. Both become [icon:name|label].
+        $icons = fn (string $html): string => preg_replace_callback(
+            '/<svg[^>]*data-webicon="([^"]+)"[^>]*>.*?<\/svg>|<iconify-icon[^>]*icon="([^"]+)"[^>]*><\/iconify-icon>/s',
+            fn (array $m): string => '[icon:'.($m[1] !== '' ? $m[1] : $m[2]).'|'.(preg_match('/aria-label="([^"]*)"/', strstr($m[0], '>', true), $l) ? $l[1] : '').']',
+            $html,
+        );
+        $strip = fn (string $html): string => preg_replace('/\s+/', '', $icons($html));
 
         $this->assertSame($strip($snippet), $strip(Blade::render("<x-oc::block.{$name} />")));
     }

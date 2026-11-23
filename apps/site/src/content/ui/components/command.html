@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Command", "category": "Overlays", "description": "Command palette / searchable list styling (filter logic in a wrapper).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Command", "category": "Overlays", "description": "Command palette styling: a search field with grouped, selectable results, shortcuts and disabled items. Filtering is done by the wrapper component.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Command</h1>
         <p class="oc-hero-text">Styling for a search field plus grouped, selectable results. Put it in a <code>dialog.oc-modal</code> for a palette. Filtering and <code>aria-selected</code> are driven by the wrapper component (set <code>hidden</code> on non-matching items). <a href="../components.html">All components</a>.</p>
@@ -12,7 +12,7 @@
         <div class="oc-section-content">
           <p class="oc-section-content__desc">The look of a command palette: a search field and grouped results, with the selected row, a shortcut and a disabled item. Typing does not filter here; the wrapper component hides the items that do not match.</p>
           <oc-demo title="Command">
-<div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox">
+<div class="oc-command" style="inline-size:min(100%, 22rem)" role="combobox" aria-expanded="true" aria-haspopup="listbox">
   <input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands">
   <ul class="oc-command-list" role="listbox">
     <li class="oc-command-group-label" role="presentation">Suggestions</li>
@@ -25,6 +25,77 @@
   </ul>
   <div class="oc-command-empty" hidden>No results found.</div>
 </div>
+<oc-code lang="tsx">import { Command } from "@birdycom/omniaui-react";
+
+const groups = [
+  { label: "Suggestions", items: [{ id: "invoice", label: "New invoice", shortcut: "Ctrl N" }, { id: "contacts", label: "Open contacts" }] },
+  { label: "Settings", items: [{ id: "appearance", label: "Appearance" }, { id: "billing", label: "Billing", disabled: true }] },
+];
+
+function run(id: string) {
+  // open the page or action behind the command
+}
+
+export function Example() {
+  return (
+    &lt;Command groups={groups} onSelect={(item) =&gt; run(item.id)} /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCommand } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const query = ref("");
+const items = [
+  { label: "New invoice", value: "invoice", group: "Suggestions", shortcut: "Ctrl N" },
+  { label: "Open contacts", value: "contacts", group: "Suggestions" },
+  { label: "Appearance", value: "appearance", group: "Settings" },
+  { label: "Billing", value: "billing", group: "Settings", disabled: true },
+];
+
+function run(item: { value?: string }) {
+  // open the page or action behind the command
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCommand v-model:query="query" :items="items" @select="run" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::command :items="[
+    ['group' =&gt; 'Suggestions'],
+    ['label' =&gt; 'New invoice', 'shortcut' =&gt; 'Ctrl N', 'selected' =&gt; true],
+    ['label' =&gt; 'Open contacts'],
+    ['separator' =&gt; true],
+    ['group' =&gt; 'Settings'],
+    ['label' =&gt; 'Appearance'],
+    ['label' =&gt; 'Billing', 'disabled' =&gt; true],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Command extends Component
+{
+    public function render()
+    {
+        return view('livewire.command');
+    }
+}
+
+{{-- resources/views/livewire/command.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::command :items="[
+        ['group' =&gt; 'Suggestions'],
+        ['label' =&gt; 'New invoice', 'shortcut' =&gt; 'Ctrl N', 'selected' =&gt; true],
+        ['label' =&gt; 'Open contacts'],
+        ['separator' =&gt; true],
+        ['group' =&gt; 'Settings'],
+        ['label' =&gt; 'Appearance'],
+        ['label' =&gt; 'Billing', 'disabled' =&gt; true],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

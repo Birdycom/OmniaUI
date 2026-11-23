@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - List toolbar", "category": "Data", "description": "Search, result count, cards/table view toggle and actions above a list.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - List toolbar", "category": "Data", "description": "Search, result count, a cards or table view toggle and actions above a list. The toggle is a radio group that switches the view with :has(), no JavaScript.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/list-toolbar.html | Map: hero -> view switch demo -> bordered toolbar demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">List toolbar</h1>
@@ -34,6 +34,147 @@
     <table class="oc-table"><thead><tr><th>Product</th></tr></thead><tbody><tr><td>Oak table</td></tr><tr><td>Linen chair</td></tr><tr><td>Brass lamp</td></tr></tbody></table>
   </div>
 </div>
+<oc-code lang="tsx">import { useState } from "react";
+import { Button, Card, CardContent, Input, ListToolbar, Table, Webicon } from "@birdycom/omniaui-react";
+
+const products = ["Oak table", "Linen chair", "Brass lamp"];
+const views = [
+  { value: "cards", label: "Cards", icon: &lt;Webicon name="mdi:view-grid-outline" /&gt; },
+  { value: "table", label: "Table", icon: &lt;Webicon name="mdi:table" /&gt; },
+];
+
+export function Example() {
+  const [query, setQuery] = useState("");
+  const [view, setView] = useState("cards");
+  const shown = products.filter((p) =&gt; p.toLowerCase().includes(query.toLowerCase()));
+  return (
+    &lt;div style={{ width: "100%" }}&gt;
+      &lt;ListToolbar
+        aria-label="Products"
+        search={&lt;Input type="search" placeholder="Search products" aria-label="Search products" value={query} onChange={(e) =&gt; setQuery(e.target.value)} /&gt;}
+        count={`${shown.length} items`}
+        views={views}
+        view={view}
+        onViewChange={setView}
+        actions={&lt;Button size="sm"&gt;New product&lt;/Button&gt;}
+      /&gt;
+      {view === "cards" ? (
+        &lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(10rem,1fr))", gap: ".75rem" }}&gt;
+          {shown.map((p) =&gt; &lt;Card key={p} className="oc-card--sm"&gt;&lt;CardContent&gt;{p}&lt;/CardContent&gt;&lt;/Card&gt;)}
+        &lt;/div&gt;
+      ) : (
+        &lt;Table&gt;
+          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Product&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+          &lt;tbody&gt;{shown.map((p) =&gt; &lt;tr key={p}&gt;&lt;td&gt;{p}&lt;/td&gt;&lt;/tr&gt;)}&lt;/tbody&gt;
+        &lt;/Table&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { computed, ref } from "vue";
+import { OcButton, OcCard, OcInput, OcListToolbar } from "@birdycom/omniaui-vue";
+
+const products = ["Oak table", "Linen chair", "Brass lamp"];
+const query = ref("");
+const view = ref("cards");
+const shown = computed(() =&gt; products.filter((p) =&gt; p.toLowerCase().includes(query.value.toLowerCase())));
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="width:100%"&gt;
+    &lt;OcListToolbar
+      v-model:view="view"
+      aria-label="Products"
+      :count="`${shown.length} items`"
+      :views="[{ value: 'cards', label: 'Cards' }, { value: 'table', label: 'Table' }]"
+    &gt;
+      &lt;template #search&gt;&lt;OcInput v-model="query" type="search" placeholder="Search products" aria-label="Search products" /&gt;&lt;/template&gt;
+      &lt;template #actions&gt;&lt;OcButton size="sm"&gt;New product&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcListToolbar&gt;
+    &lt;div v-if="view === 'cards'" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:.75rem"&gt;
+      &lt;OcCard v-for="p in shown" :key="p" size="sm"&gt;{{ p }}&lt;/OcCard&gt;
+    &lt;/div&gt;
+    &lt;table v-else class="oc-table"&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Product&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;&lt;tr v-for="p in shown" :key="p"&gt;&lt;td&gt;{{ p }}&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- the scope + panels switch with CSS only: the checked view radio shows its panel --}}
+&lt;div class="oc-list-toolbar-scope" style="width:100%"&gt;
+    &lt;x-oc::list-toolbar label="Products" count="3 items" :views="['cards' =&gt; 'Cards', 'table' =&gt; 'Table']" view="cards" name="oc-list-view-docs"&gt;
+        &lt;x-slot:search&gt;&lt;x-oc::input type="search" name="q" placeholder="Search products" aria-label="Search products" /&gt;&lt;/x-slot:search&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm"&gt;New product&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::list-toolbar&gt;
+    &lt;div class="oc-list-toolbar-panel" data-view="cards"&gt;
+        &lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:.75rem"&gt;
+            @foreach (['Oak table', 'Linen chair', 'Brass lamp'] as $product)
+                &lt;x-oc::card size="sm"&gt;{{ $product }}&lt;/x-oc::card&gt;
+            @endforeach
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-list-toolbar-panel" data-view="table"&gt;
+        &lt;table class="oc-table"&gt;
+            &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Product&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+            &lt;tbody&gt;
+                @foreach (['Oak table', 'Linen chair', 'Brass lamp'] as $product)
+                    &lt;tr&gt;&lt;td&gt;{{ $product }}&lt;/td&gt;&lt;/tr&gt;
+                @endforeach
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProductList extends Component
+{
+    public string $search = '';
+
+    public array $products = ['Oak table', 'Linen chair', 'Brass lamp'];
+
+    public function create(): void
+    {
+        // $this-&gt;redirect(route('products.create'));
+    }
+
+    public function render()
+    {
+        $shown = array_values(array_filter($this-&gt;products, fn ($p) =&gt; str_contains(strtolower($p), strtolower($this-&gt;search))));
+
+        return view('livewire.product-list', ['shown' =&gt; $shown]);
+    }
+}
+
+{{-- resources/views/livewire/product-list.blade.php --}}
+&lt;div class="oc-list-toolbar-scope" style="width:100%"&gt;
+    {{-- the view radios switch the panels with CSS; wire:ignore keeps the chosen view between requests --}}
+    &lt;x-oc::list-toolbar label="Products" :count="count($shown).' items'" :views="['cards' =&gt; 'Cards', 'table' =&gt; 'Table']" view="cards" name="oc-list-view-docs" wire:ignore.self&gt;
+        &lt;x-slot:search&gt;&lt;x-oc::wire.input type="search" model="search" live placeholder="Search products" aria-label="Search products" /&gt;&lt;/x-slot:search&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" wire:click="create"&gt;New product&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::list-toolbar&gt;
+    &lt;div class="oc-list-toolbar-panel" data-view="cards"&gt;
+        &lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:.75rem"&gt;
+            @foreach ($shown as $product)
+                &lt;x-oc::card size="sm" wire:key="card-{{ $product }}"&gt;{{ $product }}&lt;/x-oc::card&gt;
+            @endforeach
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-list-toolbar-panel" data-view="table"&gt;
+        &lt;table class="oc-table"&gt;
+            &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Product&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+            &lt;tbody&gt;
+                @foreach ($shown as $product)
+                    &lt;tr wire:key="row-{{ $product }}"&gt;&lt;td&gt;{{ $product }}&lt;/td&gt;&lt;/tr&gt;
+                @endforeach
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="bordered">Bordered and sticky</h3>
@@ -48,6 +189,67 @@
     <button class="oc-btn oc-btn--sm" type="button">New invoice</button>
   </div>
 </div>
+<oc-code lang="tsx">import { Button, Input, ListToolbar } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;ListToolbar
+      bordered
+      aria-label="Invoices"
+      style={{ width: "100%" }}
+      search={&lt;Input type="search" placeholder="Search invoices" aria-label="Search invoices" /&gt;}
+      count="128 invoices"
+      actions={&lt;&gt;
+        &lt;Button size="sm" variant="outline"&gt;Export&lt;/Button&gt;
+        &lt;Button size="sm"&gt;New invoice&lt;/Button&gt;
+      &lt;/&gt;}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcInput, OcListToolbar } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcListToolbar bordered aria-label="Invoices" count="128 invoices" style="width:100%"&gt;
+    &lt;template #search&gt;&lt;OcInput type="search" placeholder="Search invoices" aria-label="Search invoices" /&gt;&lt;/template&gt;
+    &lt;template #actions&gt;
+      &lt;OcButton size="sm" variant="outline"&gt;Export&lt;/OcButton&gt;
+      &lt;OcButton size="sm"&gt;New invoice&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcListToolbar&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::list-toolbar bordered label="Invoices" count="128 invoices" style="width:100%"&gt;
+    &lt;x-slot:search&gt;&lt;x-oc::input type="search" name="q" placeholder="Search invoices" aria-label="Search invoices" /&gt;&lt;/x-slot:search&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button size="sm" variant="outline"&gt;Export&lt;/x-oc::button&gt;
+        &lt;x-oc::button size="sm"&gt;New invoice&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::list-toolbar&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ListToolbarBorderedToolbar extends Component
+{
+    public function render()
+    {
+        return view('livewire.list-toolbar-bordered-toolbar');
+    }
+}
+
+{{-- resources/views/livewire/list-toolbar-bordered-toolbar.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::list-toolbar bordered label="Invoices" count="128 invoices" style="width:100%"&gt;
+        &lt;x-slot:search&gt;&lt;x-oc::input type="search" name="q" placeholder="Search invoices" aria-label="Search invoices" /&gt;&lt;/x-slot:search&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button size="sm" variant="outline"&gt;Export&lt;/x-oc::button&gt;
+            &lt;x-oc::button size="sm"&gt;New invoice&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::list-toolbar&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

@@ -1,4 +1,4 @@
-/*! OmniaUI Pro v0.16.2 - commercial software, NOT open source and NOT under the MIT license.
+/*! OmniaUI Pro v0.17.0 - commercial software, NOT open source and NOT under the MIT license.
    Copyright (c) 2026 Serge Cools (Birdycom). All rights reserved.
    Use only with a valid OmniaUI Pro license: https://omniaui.eu/legal/pro-license (buy: https://omniaui.eu/ui/pro). */
 /* File: packages/pro/src/pro.css
@@ -10,7 +10,8 @@
 
 .oc-block-kpi-icon svg { inline-size: 1.25em; block-size: 1.25em; }
 
-.oc-block-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+/* grid-auto-rows: 1fr keeps every KPI card as tall as the tallest, also on the next row. */
+.oc-block-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); grid-auto-rows: 1fr; gap: 1rem; }
 
 .oc-block-kpi {
   display: flex;
@@ -66,7 +67,45 @@
 
 .oc-block-settings-danger { border-color: oklch(from var(--oc-destructive) l c h / 0.5); background: oklch(from var(--oc-destructive) l c h / 0.05); }
 
-.oc-block-hub { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem; }
+/* Hub: launcher cards in an even grid (all as tall as the tallest, also over rows). Inside the hub the launcher icon is
+   no tile: it sits large and faint in the bottom-right corner, partly clipped by the card, in the module or primary color.
+   Hover: border and icon take a little more color after a short delay, with a soft curve (no jump, no glow). */
+.oc-block-hub { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); grid-auto-rows: 1fr; gap: 1rem; }
+.oc-block-hub > .oc-launcher {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 1.1rem 1.25rem;
+  padding-inline-end: 3.5rem;
+  transition: border-color 0.3s ease 0.08s, background-color 0.3s ease 0.08s;
+}
+.oc-block-hub > .oc-launcher:hover { transform: none; box-shadow: 0 1px 2px oklch(from var(--color-black-60) l c h / 0.05); }
+.oc-block-hub > .oc-launcher > .oc-launcher-icon {
+  position: absolute;
+  inset-block-end: -0.85rem;
+  inset-inline-end: -0.6rem;
+  z-index: -1;
+  display: block;
+  inline-size: auto;
+  block-size: auto;
+  border-radius: 0;
+  background: none;
+  font-size: 4.5rem;
+  line-height: 1;
+  color: var(--oc-module, var(--oc-primary));
+  opacity: 0.1;
+  pointer-events: none;
+  transition: opacity 0.3s ease 0.08s, translate 0.3s ease 0.08s;
+}
+.oc-block-hub > .oc-launcher > .oc-launcher-icon svg { display: block; inline-size: 1em; block-size: 1em; }
+.oc-block-hub > .oc-launcher:is(:hover, [aria-current="true"], .is-active) > .oc-launcher-icon { opacity: 0.18; }
+.oc-block-hub > .oc-launcher:hover > .oc-launcher-icon { translate: -0.2rem -0.2rem; }
+.oc-block-hub > .oc-launcher > .oc-launcher-title { font-size: 1.05rem; letter-spacing: -0.01em; }
+@media (prefers-reduced-motion: reduce) {
+  .oc-block-hub > .oc-launcher,
+  .oc-block-hub > .oc-launcher > .oc-launcher-icon { transition: none; }
+  .oc-block-hub > .oc-launcher:hover > .oc-launcher-icon { translate: none; }
+}
 
 .oc-block-onboarding { display: flex; flex-direction: column; gap: 1rem; padding: 1.25rem 1.5rem; }
 
@@ -86,9 +125,25 @@
 
 .oc-block-sb--double { grid-template-columns: auto auto minmax(0, 1fr); }
 
+/* Both sidebars in a narrow frame: the navigation folds to an icon rail so the page keeps its width; on a phone the
+   right panel steps aside as well. */
+@container oc-block-sb (max-width: 44rem) {
+  .oc-block-sb--both > .oc-sidebar:not(.oc-sidebar--right) { inline-size: var(--oc-sidebar-width-icon); }
+  .oc-block-sb--both > .oc-sidebar:not(.oc-sidebar--right) :is(.oc-sidebar-menu-label, .oc-sidebar-menu-badge, .oc-sidebar-menu-sub, .oc-sidebar-group-label, .oc-user-text) { display: none; }
+  .oc-block-sb--both > .oc-sidebar:not(.oc-sidebar--right) details.oc-sidebar-collapsible > summary::after { display: none; }
+  .oc-block-sb--both > .oc-sidebar:not(.oc-sidebar--right) .oc-sidebar-menu-button { justify-content: center; padding-inline: 0; }
+}
+@container oc-block-sb (max-width: 30rem) {
+  .oc-block-sb--both { grid-template-columns: auto minmax(0, 1fr); }
+  .oc-block-sb--both > .oc-sidebar--right { display: none; }
+}
+
 .oc-block-sb--inset { background: var(--oc-muted); }
 
 .oc-block-sb--inset > .oc-sidebar { background: transparent; border: 0; }
+
+/* The avatar's own muted fill disappears on the muted inset frame: give it the page color and a line. */
+.oc-block-sb--inset > .oc-sidebar .oc-avatar { background: var(--oc-background); box-shadow: inset 0 0 0 1px var(--oc-border); }
 
 .oc-block-sb--inset > .oc-block-sb-main {
   margin: 0.5rem 0.5rem 0.5rem 0;
@@ -99,6 +154,8 @@
 }
 
 .oc-block-sb-bar--sticky { position: sticky; inset-block-start: 0; z-index: 1; }
+/* With a sticky bar the page scrolls inside the frame, so the frame keeps its fixed height. */
+.oc-block-sb:has(.oc-block-sb-bar--sticky) { block-size: var(--oc-block-sb-height); }
 
 .oc-block-sb-spacer { flex: 1; }
 
@@ -256,7 +313,11 @@
 
 .oc-block-cal-side { display: flex; flex-direction: column; gap: 0.75rem; min-inline-size: 11rem; padding-inline-start: 1.25rem; border-inline-start: 1px solid var(--oc-border); }
 
-.oc-block-cal-slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; max-block-size: 15rem; overflow: auto; }
+.oc-block-cal-slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; max-block-size: 17rem; overflow: auto; }
+/* More slots than fit: the list fades out at the edge where more follow (scroll-driven, see oc-pro-scroll-hint-y). */
+@supports (animation-timeline: scroll()) {
+  .oc-block-cal-slots { animation: oc-pro-scroll-hint-y linear both; animation-timeline: scroll(self block); }
+}
 
 .oc-block-cal-presets { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
@@ -305,6 +366,21 @@
 @media (forced-colors: active) {
   :is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio) { appearance: auto; }
   :is(.oc-column-menu-item, .oc-block-shop-filter-body > label, .oc-block-shop-choice, .oc-block-media-manager-photo) > input:is([type="checkbox"], [type="radio"]):not(.oc-checkbox, .oc-radio)::before { content: none; }
+}
+
+/* Scroll hint shared by the Pro blocks: a row that scrolls sideways (tabs, a wide table) fades out at the side where
+   more follows, so a cut label reads as "scroll" instead of as a broken layout. Scroll-driven, so it only shows while
+   the row really scrolls; browsers without animation-timeline keep the plain scroll. */
+@keyframes oc-pro-scroll-hint {
+  0%, 3% { mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent); }
+  4%, 96% { mask-image: linear-gradient(to right, transparent, #000 1.5rem, #000 calc(100% - 2.5rem), transparent); }
+  97%, 100% { mask-image: linear-gradient(to right, transparent, #000 1.5rem); }
+}
+/* The same for a list that scrolls down (time slots). */
+@keyframes oc-pro-scroll-hint-y {
+  0%, 3% { mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent); }
+  4%, 96% { mask-image: linear-gradient(to bottom, transparent, #000 1.5rem, #000 calc(100% - 2.5rem), transparent); }
+  97%, 100% { mask-image: linear-gradient(to bottom, transparent, #000 1.5rem); }
 }
 
 /* parts/app-barcode-maker.css */
@@ -473,6 +549,14 @@
 
 .oc-block-cms { --oc-block-sb-height: 44rem; }
 .oc-block-cms .oc-block-sb-main { container-type: inline-size; background: var(--oc-background); }
+/* Narrow frame (a phone): the dark sidebar folds to an icon rail instead of taking most of the width. */
+@container oc-block-sb (max-width: 36rem) {
+  .oc-block-cms > .oc-sidebar { inline-size: var(--oc-sidebar-width-icon); }
+  .oc-block-cms > .oc-sidebar :is(.oc-sidebar-menu-label, .oc-sidebar-menu-badge, .oc-sidebar-menu-sub, .oc-sidebar-group-label, .oc-user-text) { display: none; }
+  .oc-block-cms > .oc-sidebar details.oc-sidebar-collapsible > summary::after { display: none; }
+  .oc-block-cms > .oc-sidebar .oc-sidebar-menu-button { justify-content: center; padding-inline: 0; }
+  .oc-block-cms > .oc-sidebar .oc-sidebar-footer .oc-user { justify-content: center; }
+}
 
 /* ---- Top bar ---- */
 .oc-block-cms-bar {
@@ -494,43 +578,121 @@
 .oc-block-cms-body { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 1.5rem; padding: 1.5rem; overflow: auto; }
 .oc-block-cms-section-title { margin: 0 0 0.75rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-muted-foreground); }
 
-/* ---- Content tiles ---- */
-.oc-block-cms-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
+/* ---- Content tiles: compact stat cards ----
+   Label on top (with a small square in the tile color), a large count, an optional delta line, the manage / add links at
+   the foot. The icon sits large and faint in the bottom-right corner, partly clipped by the card: no icon tile.
+   All tiles in the grid are equally tall (grid-auto-rows: 1fr), also over rows. */
+.oc-block-cms-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  grid-auto-rows: 1fr;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .oc-block-cms-tile {
+  --oc-tile: var(--oc-primary);
+  position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 0.25rem 0.9rem;
-  padding: 1rem;
+  grid-template-areas: "label" "count" "delta" "links";
+  grid-template-rows: auto auto 1fr auto;
+  min-inline-size: 0;
+  padding: 0.85rem 1rem 0.75rem;
   border: 1px solid var(--oc-border);
-  border-radius: 12px;
+  border-radius: calc(var(--oc-radius) + 2px);
   background: var(--oc-card);
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color 0.25s ease 0.06s;
 }
+.oc-block-cms-tile:hover { border-color: color-mix(in oklch, var(--oc-tile) 45%, var(--oc-border)); }
 .oc-block-cms-tile-icon {
-  grid-row: span 2;
-  display: grid;
-  place-items: center;
-  inline-size: 2.75rem;
-  aspect-ratio: 1;
-  border-radius: 10px;
-  background: color-mix(in oklch, var(--oc-tile, var(--oc-primary)) 14%, transparent);
-  color: var(--oc-tile, var(--oc-primary));
+  position: absolute;
+  inset-block-end: -0.9rem;
+  inset-inline-end: -0.7rem;
+  z-index: -1;
+  display: block;
+  color: var(--oc-tile);
+  opacity: 0.1;
+  pointer-events: none;
+  transition: opacity 0.25s ease 0.06s, translate 0.25s ease 0.06s;
 }
-.oc-block-cms-tile-icon svg { inline-size: 1.35rem; block-size: 1.35rem; }
-.oc-block-cms-tile-count { font-size: 1.6rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
-.oc-block-cms-tile-label { color: var(--oc-muted-foreground); font-size: 0.85rem; }
-.oc-block-cms-tile-links { grid-column: 1 / -1; display: flex; gap: 0.5rem; margin-block-start: 0.6rem; padding-block-start: 0.6rem; border-block-start: 1px solid var(--oc-border); font-size: 0.825rem; }
+.oc-block-cms-tile-icon svg { display: block; inline-size: 4.75rem; block-size: 4.75rem; }
+.oc-block-cms-tile:hover .oc-block-cms-tile-icon { opacity: 0.16; translate: -0.15rem -0.15rem; }
+.oc-block-cms-tile-label {
+  grid-area: label;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-inline-size: 0;
+  color: var(--oc-muted-foreground);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.oc-block-cms-tile-label::before { content: ""; inline-size: 0.45rem; aspect-ratio: 1; flex-shrink: 0; border-radius: 2px; background: var(--oc-tile); }
+.oc-block-cms-tile-count {
+  grid-area: count;
+  margin-block-start: 0.35rem;
+  color: var(--oc-foreground);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+/* Optional change since the last period. --up is green, --down red; without a modifier it stays muted. */
+.oc-block-cms-tile-delta { grid-area: delta; margin-block-start: 0.2rem; color: var(--oc-muted-foreground); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.oc-block-cms-tile-delta--up { color: light-dark(var(--color-green-60), var(--color-green-20)); }
+.oc-block-cms-tile-delta--down { color: light-dark(var(--color-red-60), var(--color-red-20)); }
+.oc-block-cms-tile-delta:is(.oc-block-cms-tile-delta--up, .oc-block-cms-tile-delta--down)::before { font-size: 0.6rem; vertical-align: 0.1em; margin-inline-end: 0.3rem; }
+.oc-block-cms-tile-delta--up::before { content: "\0025B2"; }
+.oc-block-cms-tile-delta--down::before { content: "\0025BC"; }
+.oc-block-cms-tile-links {
+  grid-area: links;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.5rem;
+  margin-block-start: 0.75rem;
+  padding-block-start: 0.6rem;
+  border-block-start: 1px solid var(--oc-border);
+  font-size: 0.8rem;
+}
 .oc-block-cms-tile-links a { color: var(--oc-link-color, var(--oc-primary)); text-decoration: none; }
 .oc-block-cms-tile-links a:hover { text-decoration: underline; }
 .oc-block-cms-tile-links a + a::before { content: "\0000b7"; margin-inline-end: 0.5rem; color: var(--oc-muted-foreground); }
-.oc-block-cms-tile--green { --oc-tile: var(--color-green-50); }
-.oc-block-cms-tile--orange { --oc-tile: var(--color-orange-50); }
-.oc-block-cms-tile--magenta { --oc-tile: var(--color-magenta-50); }
+.oc-block-cms-tile--green { --oc-tile: light-dark(var(--color-green-60), var(--color-green-20)); }
+.oc-block-cms-tile--orange { --oc-tile: light-dark(var(--color-orange-70), var(--color-orange-40)); }
+.oc-block-cms-tile--magenta { --oc-tile: light-dark(var(--color-magenta-60), var(--color-magenta-30)); }
+@media (prefers-reduced-motion: reduce) {
+  .oc-block-cms-tile,
+  .oc-block-cms-tile-icon { transition: none; }
+  .oc-block-cms-tile:hover .oc-block-cms-tile-icon { translate: none; }
+}
+
+/* ---- Recent changes: the titles read as text links, not as browser-blue underlined links ---- */
+.oc-block-cms-body .oc-table a { color: var(--oc-foreground); font-weight: 500; text-decoration: none; }
+.oc-block-cms-body .oc-table a:hover { color: var(--oc-link-color, var(--oc-primary)); text-decoration: underline; }
 
 @container (width < 36rem) {
   .oc-block-cms-bar { padding-inline: 1rem; }
+  /* Two stat cards per row on a phone, instead of one long column. */
+  .oc-block-cms-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .oc-block-cms-tile { padding-inline: 0.8rem; }
+  .oc-block-cms-tile-count { font-size: 1.6rem; }
   .oc-block-cms-body { padding: 1rem; }
   .oc-block-cms-user .oc-user-text { display: none; }
+}
+/* Phone width: the user and the log-out button move under the title instead of running past the edge. */
+@container (width < 22rem) {
+  .oc-block-cms-bar { flex-wrap: wrap; flex-shrink: 0; row-gap: 0.5rem; padding-block: 0.75rem; }
+  /* One stat card per row: label on top, the number and its change side by side, the links below. */
+  .oc-block-cms-tiles { grid-template-columns: minmax(0, 1fr); gap: 0.6rem; }
+  .oc-block-cms-tile { grid-template-areas: "label label" "count delta" "links links"; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto; column-gap: 0.6rem; align-items: baseline; }
+  .oc-block-cms-tile-links { margin-block-start: 0.6rem; }
+  .oc-block-cms-tile-icon svg { inline-size: 4rem; block-size: 4rem; }
 }
 
 /* parts/app-column-menu.css */
@@ -657,6 +819,40 @@
 .oc-data-table-table--sized { inline-size: max-content; min-inline-size: 100%; }
 .oc-data-table--bordered th:hover .oc-data-table-resize::after { opacity: 0; }
 
+/* ---- Pro list blocks in a narrow column (products, quote lines, relations: a docs preview, a phone) ---- */
+:is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table { container: oc-pro-table / inline-size; }
+/* The sticky Actions column throws a soft edge, so a column that scrolls under it reads as "more to the side". */
+:is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table :is(th, td)[data-oc-col="actions"] { box-shadow: -10px 0 10px -10px oklch(0% 0 0 / 0.3); }
+/* Type tabs that do not fit fade out at the side where more follow (scroll-driven, see pro.css). */
+@supports (animation-timeline: scroll()) {
+  :is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table-tabs { animation: oc-pro-scroll-hint linear both; animation-timeline: scroll(self inline); }
+  /* The table itself only on a phone, where the Actions column scrolls along (a sticky column must not fade). */
+  @container oc-pro-table (max-width: 30rem) {
+    :is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table-scroll { animation: oc-pro-scroll-hint linear both; animation-timeline: scroll(self inline); }
+  }
+}
+@container oc-pro-table (max-width: 40rem) {
+  /* Quote lines: the unit steps aside and the description wraps under the item name. */
+  .oc-block-lines .oc-data-table :is(th, td)[data-oc-col="unit"] { display: none; }
+  .oc-block-lines .oc-data-table td[data-oc-col="name"] { white-space: normal; min-inline-size: 8rem; }
+  /* Relations: phone, e-mail and projects step aside (they are on the detail page) and a long address wraps, so
+     nothing runs under the Actions column. */
+  .oc-block-relations .oc-data-table :is(th, td):is([data-oc-col="phone"], [data-oc-col="email"], [data-oc-col="projects"]) { display: none; }
+  .oc-block-relations .oc-data-table td[data-oc-col="address"] { white-space: normal; min-inline-size: 7rem; }
+  .oc-block-relations .oc-data-table td[data-oc-col="address"] .oc-data-table-truncate { white-space: normal; }
+  /* The type tabs drop their icons, so All, Customers, Companies and Suppliers fit with their counts. */
+  :is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table-tabs .oc-tab-trigger > :is(svg, iconify-icon) { display: none; }
+}
+@container oc-pro-table (max-width: 30rem) {
+  /* Phone: tighter type tabs without their icons, the search field on its own row. */
+  :is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table-tabs .oc-tab-trigger { padding-inline: 0.5rem; }
+  :is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table-tabs .oc-tab-trigger > :is(svg, iconify-icon) { display: none; }
+  :is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table-search { flex: 1 1 100%; order: 3; }
+  .oc-block-lines .oc-data-table :is(th, td)[data-oc-col="price"] { display: none; }
+  /* On a phone the Actions column no longer sticks over the figures: the row scrolls as a whole (the edge fades). */
+  :is(.oc-block-shop, .oc-block-lines, .oc-block-relations) .oc-data-table :is(th, td)[data-oc-col="actions"] { position: static; box-shadow: none; }
+}
+
 /* parts/app-form-builder.css */
 /* File: packages/pro/src/parts/app-form-builder.css
    Map: block -> top bar -> layout (canvas left, palette right) -> field card (grip, main, chips, actions, states)
@@ -758,7 +954,8 @@
    Media manager block (admin): the documents, videos and photos of one item (a service, a project), each with an
    upload zone, a reorderable list and delete actions. */
 
-.oc-block-media-manager { container-type: inline-size; display: grid; gap: 1rem; inline-size: 100%; }
+/* minmax(0, 1fr): the tab row can never widen the block past its container (it overflowed by 24px on a phone). */
+.oc-block-media-manager { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; inline-size: 100%; }
 .oc-block-media-manager-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
 .oc-block-media-manager-title { margin: 0; font-size: 1.15rem; font-weight: 700; }
 .oc-block-media-manager-hint { margin: 0; color: var(--oc-muted-foreground); font-size: 0.85rem; }
@@ -857,6 +1054,9 @@
   .oc-block-media-manager-row { grid-template-columns: auto 2.5rem minmax(0, 1fr); }
   .oc-block-media-manager-thumb { inline-size: 2.5rem; }
   .oc-block-media-manager-actions { grid-column: 2 / -1; }
+  /* Narrow: tighter tabs so the three fit on one row; they wrap rather than overflow when the labels are longer. */
+  .oc-block-media-manager .oc-tab-list { flex-wrap: wrap; max-inline-size: 100%; }
+  .oc-block-media-manager .oc-tab-trigger { gap: 0.3rem; padding-inline: 0.5rem; }
 }
 
 /* parts/app-network-graph.css */
@@ -981,11 +1181,17 @@
   justify-content: flex-end;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: color-mix(in oklch, var(--oc-background) 88%, transparent);
+  /* Solid, not see-through: while it floats over the form, the fields under it must not show through the bar. */
+  background: var(--oc-background);
   border: 1px solid var(--oc-border);
   border-radius: calc(var(--oc-radius) + 4px);
-  backdrop-filter: blur(8px);
+  box-shadow: 0 -6px 16px -12px oklch(0% 0 0 / 0.35);
 }
+/* --static: the bar sits under the form instead of sticking to the bottom of the window (a short form, a dialog, a
+   preview that is part of a longer page). */
+.oc-block-shop-savebar--static { position: static; box-shadow: none; }
+/* A field that gets focus (Tab) scrolls to just above the sticky bar instead of under it. */
+.oc-block-shop :is(input, select, textarea, button):not(.oc-block-shop-savebar *) { scroll-margin-block-end: 5rem; }
 .oc-block-shop-savebar > .oc-block-shop-note { margin-inline-end: auto; font-size: 0.8125rem; color: var(--oc-muted-foreground); }
 
 /* ---- Picker: a dialog with a search field and products as radio options ---- */
@@ -1034,6 +1240,26 @@
   .oc-block-shop-picked-row .oc-quantity { grid-column: 2; }
 }
 
+/* ---- Product list in a narrow column (a docs preview, a phone) ----
+   Shared cues of the Pro list blocks (products, quote lines, relations) live in app-data-table-pro.css. */
+@container oc-pro-table (max-width: 40rem) {
+  /* Category is also a filter above the table: the column steps aside first. */
+  .oc-block-shop .oc-data-table :is(th, td)[data-oc-col="category"] { display: none; }
+  /* The type badge goes under the name instead of widening the column. */
+  .oc-block-shop .oc-data-table-name-line { flex-wrap: wrap; row-gap: 0.125rem; }
+}
+@container oc-pro-table (max-width: 30rem) {
+  .oc-block-shop .oc-data-table :is(th, td)[data-oc-col="price"] .oc-price__note { display: none; }
+}
+/* Product detail: up to four photos share the row as equal squares, so the fourth is never cut at the edge of a phone.
+   Only when the thumbnails sit under the photo: in a wide side gallery they stay a column next to it. */
+.oc-block-shop .oc-gallery:not(.oc-gallery--side) > .oc-gallery__thumbs:not(:has(> .oc-gallery__thumb:nth-of-type(5))) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; }
+.oc-block-shop .oc-gallery:not(.oc-gallery--side) > .oc-gallery__thumbs:not(:has(> .oc-gallery__thumb:nth-of-type(5))) > .oc-gallery__thumb { inline-size: auto; block-size: auto; aspect-ratio: 1; max-inline-size: 5rem; }
+@container (max-width: 31.99rem) {
+  .oc-block-shop .oc-gallery--side > .oc-gallery__thumbs:not(:has(> .oc-gallery__thumb:nth-of-type(5))) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; }
+  .oc-block-shop .oc-gallery--side > .oc-gallery__thumbs:not(:has(> .oc-gallery__thumb:nth-of-type(5))) > .oc-gallery__thumb { inline-size: auto; block-size: auto; aspect-ratio: 1; max-inline-size: 5rem; }
+}
+
 /* parts/app-quote-lines.css */
 /* File: packages/pro/src/parts/app-quote-lines.css | Map: block grid -> page head (breadcrumb + title, buttons) -> item cell and actions -> totals */
 /* Quote lines block: lines of a quote or order in the free data table (bordered), put in order by dragging
@@ -1064,7 +1290,7 @@
 .oc-block-lines-totals .is-total { padding-block-start: 0.5rem; font-size: 1rem; font-weight: 700; color: var(--oc-foreground); border-block-start: 1px solid var(--oc-border); }
 
 /* parts/app-relations-list.css */
-/* File: packages/pro/src/parts/app-relations-list.css | Map: block grid -> page head (breadcrumb + title, actions) -> title */
+/* File: packages/pro/src/parts/app-relations-list.css | Map: block grid -> page head (breadcrumb + title, actions) -> title -> phone columns */
 /* Relations list block (customers, companies, suppliers): a page head above the free data table.
    The table itself is .oc-data-table (packages/ui), filled with tabs, filters, rich cells and row actions. */
 
@@ -1072,6 +1298,24 @@
 .oc-block-relations-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 0.75rem; }
 .oc-block-relations-heading { display: grid; gap: 0.375rem; min-inline-size: 0; }
 .oc-block-relations-title { margin: 0; font-size: 1.375rem; font-weight: 700; line-height: 1.25; }
+
+/* On a phone (the table area narrower than 30rem) only Name, Type and the row actions stay, so the table fits without
+   scrolling under the Actions column: address and region step aside too (phone, e-mail and projects already went at
+   40rem, see app-data-table-pro.css), and so do the select boxes and the avatar. The name and the VAT number stay on one line (a VAT number broken as "BE0000.000.0 / 01" reads wrong; it gets a
+   slightly smaller size instead), and the
+   header widths that data-table.js measured for the wide layout no longer hold the columns open. The full record is on
+   the detail page and the cards view (grid button) still shows every field. */
+@container oc-pro-table (max-width: 30rem) {
+  .oc-block-relations .oc-data-table :is(th, td):is([data-oc-col="select"], [data-oc-col="address"], [data-oc-col="region"]) { display: none; }
+  .oc-block-relations .oc-data-table th[data-oc-col] { min-inline-size: 0 !important; }
+  .oc-block-relations .oc-data-table .oc-data-table-table :is(th, td) { padding-inline: 0.25rem; }
+  .oc-block-relations .oc-data-table td[data-oc-col="name"] { white-space: normal; }
+  .oc-block-relations .oc-data-table td[data-oc-col="name"] .oc-avatar { display: none; }
+  .oc-block-relations .oc-data-table td[data-oc-col="name"] .oc-data-table-name-line { white-space: nowrap; }
+  .oc-block-relations .oc-data-table td[data-oc-col="name"] .oc-data-table-name-sub { white-space: nowrap; font-size: 0.68rem; }
+  .oc-block-relations .oc-data-table td[data-oc-col="type"] .oc-badge { padding-inline: 0.35rem; font-size: 0.7rem; }
+  .oc-block-relations .oc-data-table :is(th, td)[data-oc-col="actions"] { inline-size: auto !important; box-shadow: none; }
+}
 
 /* parts/app-shop-front.css */
 /* File: packages/pro/src/parts/app-shop-front.css | Map: catalog (filters + grid, cards) -> product page (buy box, delivery list, reviews) -> cart (lines, summary) -> checkout (choice cards, summary) */
@@ -1113,7 +1357,7 @@
 
 /* ---- Product page: buy box ---- */
 .oc-block-shop-buy-box { display: grid; gap: 1rem; align-content: start; min-inline-size: 0; }
-.oc-block-shop-buy-box h1 { margin: 0; font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem); line-height: 1.2; }
+.oc-block-shop-buy-box :is(h1, h2) { margin: 0; font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem); line-height: 1.2; }
 .oc-block-shop-option-group { display: grid; gap: 0.5rem; margin: 0; padding: 0; border: 0; }
 .oc-block-shop-option-group > legend { margin-block-end: 0.375rem; padding: 0; font-size: 0.8125rem; font-weight: 600; }
 .oc-block-shop-delivery { display: grid; gap: 0.5rem; margin: 0; padding: 0.875rem 1rem; font-size: 0.875rem; list-style: none; background: var(--oc-muted); border-radius: var(--oc-radius); }
@@ -1132,16 +1376,18 @@
 .oc-block-shop-line-text { display: grid; gap: 0.125rem; min-inline-size: 0; }
 .oc-block-shop-line-text strong a { color: inherit; text-decoration: none; }
 .oc-block-shop-line-text span { font-size: 0.8125rem; color: var(--oc-muted-foreground); }
-.oc-block-shop-line-total { font-weight: 700; font-variant-numeric: tabular-nums; text-align: end; }
+/* The line total sits top right next to the name (narrow) or in its own column (wide), never on a row of its own. */
+.oc-block-shop-line-total { grid-column: 3; grid-row: 1; align-self: start; font-weight: 700; font-variant-numeric: tabular-nums; text-align: end; }
 .oc-block-shop-line-tools { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
 @container (min-width: 40rem) {
   .oc-block-shop-line { grid-template-columns: 4.5rem minmax(0, 1fr) auto 7rem; }
   .oc-block-shop-line-tools { grid-column: 3; grid-row: 1; }
   .oc-block-shop-line-total { grid-column: 4; }
 }
-.oc-block-shop-totals { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem 1rem; margin: 0; font-size: 0.875rem; }
+/* No column gap: the line above Total runs on under both cells (the amount keeps its room with a padding). */
+.oc-block-shop-totals { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem 0; margin: 0; font-size: 0.875rem; }
 .oc-block-shop-totals dt { color: var(--oc-muted-foreground); }
-.oc-block-shop-totals dd { margin: 0; text-align: end; font-variant-numeric: tabular-nums; }
+.oc-block-shop-totals dd { margin: 0; padding-inline-start: 1rem; text-align: end; font-variant-numeric: tabular-nums; }
 .oc-block-shop-totals .is-total { padding-block-start: 0.625rem; font-size: 1.0625rem; font-weight: 700; color: var(--oc-foreground); border-block-start: 1px solid var(--oc-border); }
 .oc-block-shop-coupon { display: flex; gap: 0.5rem; }
 .oc-block-shop-coupon .oc-input { min-inline-size: 0; }
@@ -1206,6 +1452,9 @@
 .oc-block-shop-option-group .oc-segmented { inline-size: fit-content; }
 .oc-block-shop-option-group .oc-segmented-item:has(input[data-oc-stock="0"]) { color: var(--oc-muted-foreground); text-decoration: line-through; }
 .oc-block-shop-favorite[aria-pressed="true"] { color: var(--oc-destructive); border-color: currentColor; }
+/* Both hearts are in the markup (they draw at once, also as inline SVG); aria-pressed shows one. */
+.oc-block-shop-favorite:not([aria-pressed="true"]) > .oc-block-shop-favorite-on,
+.oc-block-shop-favorite[aria-pressed="true"] > .oc-block-shop-favorite-off { display: none; }
 
 /* parts/app-status-page.css */
 /* File: packages/pro/src/parts/app-status-page.css | Map: split grid -> visual panel (big code, rings, quote) -> content column + card -> code badge, title, text, detail -> actions + help -> status modifiers (403, 500, maintenance) -> full height */
@@ -1259,7 +1508,7 @@
 /* ---- Content column ---- */
 .oc-block-statuspage-content { display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
 .oc-block-statuspage-card { inline-size: 100%; max-inline-size: 28rem; }
-.oc-block-statuspage-logo { display: inline-flex; align-items: center; gap: 0.5rem; margin-block-end: 2rem; font-weight: 600; color: inherit; text-decoration: none; }
+.oc-block-statuspage-logo { display: flex; inline-size: fit-content; align-items: center; gap: 0.5rem; margin-block-end: 2rem; font-weight: 600; color: inherit; text-decoration: none; }
 .oc-block-statuspage-logo svg { inline-size: 1.5rem; block-size: 1.5rem; color: var(--oc-primary); }
 
 /* Small code badge ("Error 404"). */
@@ -1499,6 +1748,9 @@
 .oc-block-ecosystem-node .oc-icon-tile { transition: transform 0.3s var(--oc-ease-out, ease-out), box-shadow 0.3s; }
 .oc-block-ecosystem-node:is(:hover, :focus-visible) .oc-icon-tile { transform: scale(1.12); box-shadow: 0 0 24px -4px var(--oc-accent-from, var(--oc-primary)); }
 .oc-block-ecosystem-name { color: var(--oc-muted-foreground); font-size: 0.72rem; line-height: 1.25; text-align: center; }
+/* A line that passes behind a name (from an app higher up to one further down) stops at the letters: the name sits on
+   a small pill in the card color, above the lines. */
+.oc-block-ecosystem-name { position: relative; z-index: 1; padding: 0 0.3rem; border-radius: 999px; background: var(--oc-card); }
 .oc-block-ecosystem-row--first .oc-block-ecosystem-name { white-space: nowrap; }
 .oc-block-ecosystem-node:is(:hover, :focus-visible) .oc-block-ecosystem-name { color: var(--oc-foreground); }
 
@@ -1943,7 +2195,21 @@
 .oc-block-glass-nav { display: grid; place-items: center; min-block-size: 20rem; padding: clamp(1rem, 4vw, 2rem); border-radius: calc(var(--oc-radius) + 6px); }
 .oc-block-glass-nav__sheet { display: grid; justify-items: center; gap: 1rem; inline-size: min(100%, 30rem); padding: 1rem; border-radius: 36px; }
 .oc-block-glass-nav__bar { inline-size: 100%; justify-content: space-around; border-radius: 28px; }
+/* The sheet never grows past the stage; on a phone the menu items share the bar and get tighter instead of running out. */
+.oc-block-glass-nav { grid-template-columns: minmax(0, 1fr); }
+.oc-block-glass-nav__sheet { box-sizing: border-box; max-inline-size: 100%; justify-self: center; }
+.oc-block-glass-nav__bar { box-sizing: border-box; max-inline-size: 100%; }
+.oc-block-glass-nav__bar .oc-glass-bar__item { flex: 1 1 0; min-inline-size: 0; }
+@media (max-width: 30rem) {
+  .oc-block-glass-nav__sheet { padding: 0.75rem; }
+  .oc-block-glass-nav__bar { gap: 0; padding-inline: 0.25rem; }
+  .oc-block-glass-nav__bar .oc-glass-bar__item { padding-inline: 0.25rem; font-size: 0.75rem; }
+}
 .oc-block-glass-nav__action .oc-glass-bar__item { grid-auto-flow: column; gap: 0.5rem; font-size: 0.85rem; }
+/* White labels on the bright glass: a soft dark shadow under the text and icons keeps them readable on every color
+   that shows through (the gradient itself is unchanged). */
+.oc-block-glass-nav .oc-glass-bar.oc-glass-bar--light .oc-glass-bar__item, .oc-block-glass-nav .oc-glass-bar__item { color: oklch(100% 0 0deg); font-weight: 600; text-shadow: 0 1px 2px oklch(0% 0 0 / 0.55), 0 0 1px oklch(0% 0 0 / 0.4); }
+.oc-block-glass-nav .oc-glass-bar__item :is(svg, iconify-icon) { filter: drop-shadow(0 1px 1.5px oklch(0% 0 0 / 0.5)); }
 
 /* parts/site-infinite-carousel.css */
 /* File: packages/pro/src/parts/site-infinite-carousel.css
@@ -1952,7 +2218,12 @@
    sides and jumps back unseen), so after the last slide the first one slides in from the right. Omnia tokens only. */
 
 /* minmax(0, 1fr): the column must not grow to the width of all slides (the viewport scrolls them). */
-.oc-block-carousel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+.oc-block-carousel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; container-type: inline-size; }
+/* Narrow block (a phone): one slide per view instead of two or three, so the arrows (centred on the carousel) land on
+   the picture and never on a slide title. */
+@container (max-width: 30rem) {
+  .oc-block-carousel :is(.oc-carousel--halves, .oc-carousel--thirds) .oc-carousel-item { flex-basis: 100%; }
+}
 .oc-block-carousel-head { display: grid; gap: 0.35rem; }
 .oc-block-carousel-title { margin: 0; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); font-weight: 700; letter-spacing: -0.02em; }
 .oc-block-carousel-lead { margin: 0; color: var(--oc-muted-foreground); }
@@ -1974,6 +2245,13 @@
 .oc-block-carousel-card-body { display: grid; gap: 0.25rem; padding: 0.9rem 1.1rem 1.1rem; }
 .oc-block-carousel-card-title { margin: 0; font-size: 1.05rem; font-weight: 700; }
 .oc-block-carousel-card-text { margin: 0; color: var(--oc-muted-foreground); font-size: 0.9rem; }
+
+/* The dots keep some room under the cards. */
+@supports (scroll-marker-group: after) {
+  .oc-block-carousel .oc-carousel { padding-block-end: 2rem; }
+  .oc-block-carousel .oc-carousel-viewport::scroll-marker-group { inset-block-start: calc(anchor(end) + 0.9rem); }
+}
+.oc-block-carousel .oc-carousel-dots { margin-block-start: 0.9rem; }
 
 /* The copies made by the script get no dot of their own. */
 .oc-carousel-clone::scroll-marker { content: none; }
@@ -2270,6 +2548,21 @@
 .oc-block-plans-compare :is(th, td) { padding: 0.65rem 1rem; border-block-end: 1px solid var(--oc-border); text-align: start; vertical-align: top; }
 .oc-block-plans-compare tbody tr:last-child > :is(th, td) { border-block-end: 0; }
 .oc-block-plans-compare :is(th, td):not(:first-child) { inline-size: 22%; text-align: center; }
+/* Free gets the short answers, Pro the longer ones ("While the subscription runs, or forever"): no five-line cells. */
+@container (max-width: 40rem) {
+  .oc-block-plans-compare :is(th, td) { padding-inline: 0.75rem; }
+  .oc-block-plans-compare :is(th, td):nth-child(2) { inline-size: 18%; }
+  .oc-block-plans-compare :is(th, td):nth-child(3) { inline-size: 32%; }
+  .oc-block-plans-compare td { text-wrap: balance; }
+}
+/* Phone: no sideways scroll that hides the answers behind the edge. The table fits the width; the row label gets
+   about half of it, Free and Pro share the rest (long answers wrap to a few short lines). */
+@container (max-width: 34rem) {
+  .oc-block-plans-compare { min-inline-size: 0; font-size: 0.85rem; }
+  .oc-block-plans-compare :is(th, td) { padding-inline: 0.5rem; }
+  .oc-block-plans-compare :is(th, td):nth-child(2) { inline-size: 22%; }
+  .oc-block-plans-compare :is(th, td):nth-child(3) { inline-size: 30%; }
+}
 .oc-block-plans-compare thead th { background: var(--oc-muted); font-weight: 700; }
 .oc-block-plans-compare tbody th { font-weight: 500; }
 .oc-block-plans-compare-group > th {
@@ -2359,6 +2652,10 @@
 .oc-block-services-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-block-start: 0.25rem; }
 .oc-block-services-docs { display: grid; gap: 0.75rem; padding-block-start: 1.25rem; border-block-start: 1px solid var(--oc-border); }
 .oc-block-services-docs-title { margin: 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-muted-foreground); }
+/* The document and the video sit side by side: one frame shape (4:3) for both, so the two cards are equally high.
+   The preview fills the frame from its top-left corner (the first page reads from there). */
+.oc-block-services-docs .oc-doc-viewer .oc-doc-viewer__frame { aspect-ratio: 4 / 3; }
+.oc-block-services-docs .oc-doc-viewer__frame > :is(img, .oc-media-art) { object-fit: cover; object-position: left top; }
 
 /* ---- Narrow: tabs become a scrolling row above the panel ---- */
 @container (width < 40rem) {
@@ -2376,6 +2673,12 @@
   .oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-list .oc-tab-trigger:has(input:checked) { border-bottom-color: var(--oc-foreground); }
   .oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-panel { grid-column: 1; grid-row: 2; }
   .oc-block-services-media { aspect-ratio: 16 / 9; }
+}
+/* The scrolling tab row fades out at the side where more services follow (scroll-driven; see pro.css). */
+@supports (animation-timeline: scroll()) {
+  @container (width < 40rem) {
+    .oc-block-services .oc-tabset.oc-block-services-tabs > .oc-tab-list { animation: oc-pro-scroll-hint linear both; animation-timeline: scroll(self inline); }
+  }
 }
 
 /* parts/site-spotlight-cards.css */
@@ -2554,6 +2857,8 @@
   background:
     radial-gradient(circle at 30% 30%, color-mix(in oklch, var(--oc-brand-2) 45%, transparent), transparent 55%),
     var(--color-shallowblue-95);
+  /* A line around the player: in dark mode its dark fill would otherwise melt into the page. */
+  border: 1px solid var(--oc-border);
   overflow: hidden;
 }
 .oc-block-watch-player > :is(video, iframe, img) { inline-size: 100%; block-size: 100%; border: 0; object-fit: cover; }

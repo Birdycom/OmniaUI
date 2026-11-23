@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const src = path.join(root, 'src')
 
-const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+// Login01 -> login-01: a letter followed by a digit also gets a dash (existing names have none).
+const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/([a-zA-Z])([0-9])/g, '$1-$2').toLowerCase()
 
 // Sub-parts that render markup of another snippet.
 const snippetAlias = {
@@ -40,6 +41,45 @@ const snippetAlias = {
   'card-band': 'card',
   'sidebar-meta': 'sidebar',
   'language-menu': 'language-select',
+  'paper-lift': 'paper',
+  footerbar: 'site-footer',
+  'show-more': 'expandable-table',
+  'product-card': 'fly-in',
+  'badge-source': 'badge',
+  'tag-list': 'feature-card',
+  'carousel-item': 'carousel',
+  'resizable-panel': 'resizable',
+  'menu-entries': 'menubar',
+  topbar: 'site-header',
+  'section-block': 'page-sections',
+  'section-header': 'page-sections',
+  'card-grid': 'page-sections',
+  'card-link': 'card',
+  'dropdown-sub': 'dropdown-menu',
+  'version-badge': 'badge',
+  dialog: 'modal',
+  'dialog-body': 'modal',
+  'dialog-close': 'modal',
+  'dialog-content': 'modal',
+  'dialog-description': 'modal',
+  'dialog-footer': 'modal',
+  'dialog-header': 'modal',
+  'dialog-title': 'modal',
+  'dialog-trigger': 'modal',
+  'popover-anchor': 'popover',
+  'popover-content': 'popover',
+  'popover-trigger': 'popover',
+  'tabs-list': 'tabs',
+  'tabs-trigger': 'tabs',
+  'tabs-content': 'tabs',
+  'tooltip-provider': 'tooltip',
+  'sidebar-inset': 'sidebar',
+  'sidebar-menu-action': 'sidebar',
+  'sidebar-menu-badge': 'sidebar',
+  'sidebar-menu-sub': 'sidebar',
+  'sidebar-provider': 'sidebar',
+  'sidebar-rail': 'sidebar',
+  'sidebar-trigger': 'sidebar',
 }
 
 const entries = []
@@ -92,8 +132,12 @@ lines.push("export type { ToastItem, ToastOptions, ToastVariant } from './compos
 // Used by the OmniaUI Pro blocks (@birdycom/omniaui-pro-vue) for their id wiring.
 lines.push("export { useUid } from './composables/useUid'")
 // Webicons: icons by name as inline SVG (OcWebicon), from icons the app registers (no network).
-lines.push("export { addWebicons, getWebicon, hasWebicon, registerWebicons } from './webicons'")
+lines.push("export { addWebicons, getWebicon, hasWebicon, languageFlag, registerWebicons } from './webicons'")
 lines.push("export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './webicons'")
+lines.push("export { contrastRatio, luminance, pickOnColor, toRgb } from './color'")
+// Sidebar provider (0.17.0): read the state of the nearest OcSidebarProvider in your own components.
+lines.push("export { useSidebar, useSidebarOptional, sidebarKey } from './composables/useSidebar'")
+lines.push("export type { SidebarContext } from './composables/useSidebar'")
 lines.push('')
 lines.push('/** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */')
 lines.push('export const components: Record<string, Component> = {')

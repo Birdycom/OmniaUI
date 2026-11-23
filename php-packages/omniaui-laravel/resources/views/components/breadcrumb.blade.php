@@ -5,9 +5,9 @@
     @forelse ($items as $i => $item)
         @php($item = is_array($item) ? $item : ['label' => $item])
         @if ($loop->last || empty($item['href']))
-            <span class="oc-breadcrumb-item" @if ($loop->last) aria-current="page" @endif>@if (! empty($item['icon']))<iconify-icon icon="{{ $item['icon'] }}" aria-hidden="true"></iconify-icon>@endif{{ $item['label'] }}</span>
+            <span class="oc-breadcrumb-item" @if ($loop->last) aria-current="page" @endif>@if (! empty($item['icon']))<x-oc::webicon :name="$item['icon']" bare fallback="iconify" />@endif{{ $item['label'] }}</span>
         @else
-            <a class="oc-breadcrumb-item" href="{{ $item['href'] }}">@if (! empty($item['icon']))<iconify-icon icon="{{ $item['icon'] }}" aria-hidden="true"></iconify-icon>@endif{{ $item['label'] }}</a>
+            <a class="oc-breadcrumb-item" href="{{ $item['href'] }}">@if (! empty($item['icon']))<x-oc::webicon :name="$item['icon']" bare fallback="iconify" />@endif{{ $item['label'] }}</a>
         @endif
     @empty
         {{ $slot }}

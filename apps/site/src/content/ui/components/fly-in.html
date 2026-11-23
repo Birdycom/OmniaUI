@@ -32,6 +32,83 @@
     <span class="oc-product-card__more">Read more</span>
   </a>
 </div>
+<oc-code lang="tsx">import { ProductCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // fly: the card flies in from the middle of its row when it scrolls into view (fly.js runs inside the component).
+  return (
+    &lt;div className="oc-card-grid" style={{ inlineSize: "100%" }}&gt;
+      &lt;ProductCard fly accent="blue" href="#product-1" name="Product 1" tagline="Plan every shift" more="Read more"&gt;
+        Schedules and leave in one view.
+      &lt;/ProductCard&gt;
+      &lt;ProductCard fly accent="green" href="#product-2" name="Product 2" badge="New" tagline="Quotes in minutes" more="Read more"&gt;
+        From quote to invoice without typing twice.
+      &lt;/ProductCard&gt;
+      &lt;ProductCard fly accent="violet" href="#product-3" name="Product 3" tagline="Your shop online" more="Read more"&gt;
+        Products, stock and orders in one place.
+      &lt;/ProductCard&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcProductCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- fly: the card flies in from the middle of its row when it scrolls into view (fly.js runs inside the component). --&gt;
+  &lt;div class="oc-card-grid" style="inline-size:100%"&gt;
+    &lt;OcProductCard fly accent="blue" href="#product-1" name="Product 1" tagline="Plan every shift" more="Read more"&gt;
+      Schedules and leave in one view.
+    &lt;/OcProductCard&gt;
+    &lt;OcProductCard fly accent="green" href="#product-2" name="Product 2" badge="New" tagline="Quotes in minutes" more="Read more"&gt;
+      From quote to invoice without typing twice.
+    &lt;/OcProductCard&gt;
+    &lt;OcProductCard fly accent="violet" href="#product-3" name="Product 3" tagline="Your shop online" more="Read more"&gt;
+      Products, stock and orders in one place.
+    &lt;/OcProductCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- fly: load fly.js (npx omniaui copy-js fly) and the cards fly in from the middle of their row. --}}
+&lt;div class="oc-card-grid" style="inline-size:100%"&gt;
+  &lt;x-oc::product-card fly accent="blue" href="#product-1" name="Product 1" tagline="Plan every shift" more="Read more"&gt;
+    Schedules and leave in one view.
+  &lt;/x-oc::product-card&gt;
+  &lt;x-oc::product-card fly accent="green" href="#product-2" name="Product 2" badge="New" tagline="Quotes in minutes" more="Read more"&gt;
+    From quote to invoice without typing twice.
+  &lt;/x-oc::product-card&gt;
+  &lt;x-oc::product-card fly accent="violet" href="#product-3" name="Product 3" tagline="Your shop online" more="Read more"&gt;
+    Products, stock and orders in one place.
+  &lt;/x-oc::product-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class FlyInProductCards extends Component
+{
+    /** @var list&lt;array{name: string, accent: string, tagline: string, summary: string, badge?: string}&gt; */
+    public array $products = [
+        ['name' =&gt; 'Product 1', 'accent' =&gt; 'blue', 'tagline' =&gt; 'Plan every shift', 'summary' =&gt; 'Schedules and leave in one view.'],
+        ['name' =&gt; 'Product 2', 'accent' =&gt; 'green', 'tagline' =&gt; 'Quotes in minutes', 'summary' =&gt; 'From quote to invoice without typing twice.', 'badge' =&gt; 'New'],
+        ['name' =&gt; 'Product 3', 'accent' =&gt; 'violet', 'tagline' =&gt; 'Your shop online', 'summary' =&gt; 'Products, stock and orders in one place.'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.fly-in-product-cards');
+    }
+}
+
+{{-- resources/views/livewire/fly-in-product-cards.blade.php --}}
+&lt;div class="oc-card-grid" style="inline-size:100%"&gt;
+    {{-- fly: load fly.js (npx omniaui copy-js fly) and the cards fly in from the middle of their row. --}}
+    @foreach ($products as $product)
+        &lt;x-oc::product-card wire:key="product-{{ $loop-&gt;index }}" fly :accent="$product['accent']" href="#product-{{ $loop-&gt;iteration }}"
+            :name="$product['name']" :badge="$product['badge'] ?? null" :tagline="$product['tagline']" :summary="$product['summary']" more="Read more" /&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-2">Per column, both ways</h3>
           <p class="oc-section-content__desc"><code>--oc-fly-step: 45px</code> starts each card 45px per column from the middle, <code>--oc-fly-stagger: 90ms</code> lands the row from left to right, and <code>data-oc-fly-repeat</code> lets the cards fly out again when they leave the view.</p>
@@ -41,6 +118,54 @@
   <article class="oc-feature-card oc-reveal--fly"><h3 class="oc-feature-card__title">Build</h3><p class="oc-feature-card__text">Short iterations.</p></article>
   <article class="oc-feature-card oc-reveal--fly"><h3 class="oc-feature-card__title">Support</h3><p class="oc-feature-card__text">For years.</p></article>
 </div>
+<oc-code lang="tsx">import { FeatureCard } from "@birdycom/omniaui-react";
+import type { CSSProperties } from "react";
+
+export function Example() {
+  return (
+    &lt;div className="oc-card-grid oc-card-grid--fit" data-oc-fly-repeat="" style={{ "--oc-fly-step": "45px", "--oc-fly-stagger": "90ms", inlineSize: "100%" } as CSSProperties}&gt;
+      &lt;FeatureCard className="oc-reveal--fly" title="Plan"&gt;Listen first.&lt;/FeatureCard&gt;
+      &lt;FeatureCard className="oc-reveal--fly" title="Build"&gt;Short iterations.&lt;/FeatureCard&gt;
+      &lt;FeatureCard className="oc-reveal--fly" title="Support"&gt;For years.&lt;/FeatureCard&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcFeatureCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-card-grid oc-card-grid--fit" data-oc-fly-repeat style="--oc-fly-step: 45px; --oc-fly-stagger: 90ms; inline-size:100%"&gt;
+    &lt;OcFeatureCard class="oc-reveal--fly" title="Plan"&gt;Listen first.&lt;/OcFeatureCard&gt;
+    &lt;OcFeatureCard class="oc-reveal--fly" title="Build"&gt;Short iterations.&lt;/OcFeatureCard&gt;
+    &lt;OcFeatureCard class="oc-reveal--fly" title="Support"&gt;For years.&lt;/OcFeatureCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-card-grid oc-card-grid--fit" data-oc-fly-repeat style="--oc-fly-step: 45px; --oc-fly-stagger: 90ms; inline-size:100%"&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Plan"&gt;Listen first.&lt;/x-oc::feature-card&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Build"&gt;Short iterations.&lt;/x-oc::feature-card&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Support"&gt;For years.&lt;/x-oc::feature-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class FlyInPerColumnBothWays extends Component
+{
+    public function render()
+    {
+        return view('livewire.fly-in-per-column-both-ways');
+    }
+}
+
+{{-- resources/views/livewire/fly-in-per-column-both-ways.blade.php --}}
+&lt;div class="oc-card-grid oc-card-grid--fit" data-oc-fly-repeat style="--oc-fly-step: 45px; --oc-fly-stagger: 90ms; inline-size:100%"&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Plan"&gt;Listen first.&lt;/x-oc::feature-card&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Build"&gt;Short iterations.&lt;/x-oc::feature-card&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Support"&gt;For years.&lt;/x-oc::feature-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-3">Random timing, later trigger <span class="oc-badge-version">v0.15.0</span></h3>
           <p class="oc-section-content__desc"><code>data-oc-fly-random="900"</code> lets every card come and go on its own, with a new random delay (up to 900ms) and start offset each time. <code>data-oc-fly-trigger="25"</code> waits until a card is a quarter into the view, and <code>--oc-fly-rise</code> / <code>--oc-fly-blur</code> give a softer landing.</p>
@@ -51,6 +176,70 @@
   <article class="oc-feature-card oc-reveal--fly"><h3 class="oc-feature-card__title">Customer 3</h3><p class="oc-feature-card__text">Quotes in minutes.</p></article>
   <article class="oc-feature-card oc-reveal--fly"><h3 class="oc-feature-card__title">Customer 4</h3><p class="oc-feature-card__text">Stock always right.</p></article>
 </div>
+<oc-code lang="tsx">import { FeatureCard } from "@birdycom/omniaui-react";
+import type { CSSProperties } from "react";
+
+export function Example() {
+  return (
+    &lt;div
+      className="oc-card-grid oc-card-grid--fit"
+      data-oc-fly-random="900"
+      data-oc-fly-trigger="25"
+      data-oc-fly-repeat=""
+      style={{ "--oc-fly-rise": "110px", "--oc-fly-blur": "8px", inlineSize: "100%" } as CSSProperties}
+    &gt;
+      &lt;FeatureCard className="oc-reveal--fly" title="Customer 1"&gt;Onboarded in a week.&lt;/FeatureCard&gt;
+      &lt;FeatureCard className="oc-reveal--fly" title="Customer 2"&gt;Two teams, one planning.&lt;/FeatureCard&gt;
+      &lt;FeatureCard className="oc-reveal--fly" title="Customer 3"&gt;Quotes in minutes.&lt;/FeatureCard&gt;
+      &lt;FeatureCard className="oc-reveal--fly" title="Customer 4"&gt;Stock always right.&lt;/FeatureCard&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcFeatureCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-card-grid oc-card-grid--fit" data-oc-fly-random="900" data-oc-fly-trigger="25" data-oc-fly-repeat style="--oc-fly-rise: 110px; --oc-fly-blur: 8px; inline-size:100%"&gt;
+    &lt;OcFeatureCard class="oc-reveal--fly" title="Customer 1"&gt;Onboarded in a week.&lt;/OcFeatureCard&gt;
+    &lt;OcFeatureCard class="oc-reveal--fly" title="Customer 2"&gt;Two teams, one planning.&lt;/OcFeatureCard&gt;
+    &lt;OcFeatureCard class="oc-reveal--fly" title="Customer 3"&gt;Quotes in minutes.&lt;/OcFeatureCard&gt;
+    &lt;OcFeatureCard class="oc-reveal--fly" title="Customer 4"&gt;Stock always right.&lt;/OcFeatureCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-card-grid oc-card-grid--fit" data-oc-fly-random="900" data-oc-fly-trigger="25" data-oc-fly-repeat style="--oc-fly-rise: 110px; --oc-fly-blur: 8px; inline-size:100%"&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Customer 1"&gt;Onboarded in a week.&lt;/x-oc::feature-card&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Customer 2"&gt;Two teams, one planning.&lt;/x-oc::feature-card&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Customer 3"&gt;Quotes in minutes.&lt;/x-oc::feature-card&gt;
+    &lt;x-oc::feature-card class="oc-reveal--fly" title="Customer 4"&gt;Stock always right.&lt;/x-oc::feature-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class FlyInRandomTiming extends Component
+{
+    public array $stories = [
+        'Customer 1' =&gt; 'Onboarded in a week.',
+        'Customer 2' =&gt; 'Two teams, one planning.',
+        'Customer 3' =&gt; 'Quotes in minutes.',
+        'Customer 4' =&gt; 'Stock always right.',
+    ];
+
+    public function render()
+    {
+        return view('livewire.fly-in-random-timing');
+    }
+}
+
+{{-- resources/views/livewire/fly-in-random-timing.blade.php --}}
+&lt;div class="oc-card-grid oc-card-grid--fit" data-oc-fly-random="900" data-oc-fly-trigger="25" data-oc-fly-repeat style="--oc-fly-rise: 110px; --oc-fly-blur: 8px; inline-size:100%"&gt;
+    @foreach ($stories as $customer =&gt; $story)
+        &lt;x-oc::feature-card class="oc-reveal--fly" :title="$customer"&gt;{{ $story }}&lt;/x-oc::feature-card&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

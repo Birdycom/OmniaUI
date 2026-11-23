@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Image zoom", "category": "Media", "description": "Fixed-ratio window with zoom levels and panning for a large image.", "nav": "Image zoom", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Image zoom", "category": "Media", "description": "A fixed-ratio window around a large image with zoom levels and panning by scroll, touch or arrow keys. The levels are radio buttons read with :has().", "nav": "Image zoom", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/image-zoom.html | Map: hero -> demo (radio levels) -> fixed level -> how it works -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Image zoom</h1>
@@ -28,13 +28,93 @@
           <path d="M0 15H160M0 30H160M0 45H160M0 60H160M0 75H160M20 0V90M40 0V90M60 0V90M80 0V90M100 0V90M120 0V90M140 0V90" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width=".3" />
           <path d="M10 70C40 50 60 80 90 55S140 30 150 20" fill="none" stroke="currentColor" stroke-width="1.2" />
           <circle cx="90" cy="55" r="3" fill="currentColor" />
-          <text x="95" y="52" font-size="5" fill="currentColor">Harbour</text>
+          <text x="94" y="67" font-size="5" fill="currentColor">Harbour</text>
           <text x="12" y="76" font-size="2" fill="currentColor">Small print: zoom in to read this line.</text>
         </svg>
       </div>
     </div>
   </div>
 </div>
+<oc-code lang="tsx">import { ImageZoom } from "@birdycom/omniaui-react";
+
+const map = (
+  &lt;div className="oc-media-art oc-media-art--2"&gt;
+    &lt;svg viewBox="0 0 160 90" role="img" aria-label="Harbour map" style={{ display: "block", inlineSize: "100%", blockSize: "100%", color: "var(--oc-foreground)" }}&gt;
+      &lt;path d="M0 15H160M0 30H160M0 45H160M0 60H160M0 75H160M20 0V90M40 0V90M60 0V90M80 0V90M100 0V90M120 0V90M140 0V90" fill="none" stroke="currentColor" strokeOpacity=".35" strokeWidth=".3" /&gt;
+      &lt;path d="M10 70C40 50 60 80 90 55S140 30 150 20" fill="none" stroke="currentColor" strokeWidth="1.2" /&gt;
+      &lt;circle cx="90" cy="55" r="3" fill="currentColor" /&gt;
+      &lt;text x="94" y="67" fontSize="5" fill="currentColor"&gt;Harbour&lt;/text&gt;
+      &lt;text x="12" y="76" fontSize="2" fill="currentColor"&gt;Small print: zoom in to read this line.&lt;/text&gt;
+    &lt;/svg&gt;
+  &lt;/div&gt;
+);
+
+export function Example() {
+  // levels defaults to [1, 1.5, 2, 3]; media replaces the &lt;img&gt;
+  return &lt;ImageZoom alt="Harbour map" media={map} style={{ maxInlineSize: "36rem" }} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcImageZoom } from "@birdycom/omniaui-vue";
+
+const zoom = ref(1);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- levels defaults to [1, 1.5, 2, 3]; the default slot replaces the &lt;img&gt; --&gt;
+  &lt;OcImageZoom v-model:zoom="zoom" alt="Harbour map" style="max-inline-size:36rem"&gt;
+    &lt;div class="oc-media-art oc-media-art--2"&gt;
+      &lt;svg viewBox="0 0 160 90" role="img" aria-label="Harbour map" style="display:block;inline-size:100%;block-size:100%;color:var(--oc-foreground)"&gt;
+        &lt;path d="M0 15H160M0 30H160M0 45H160M0 60H160M0 75H160M20 0V90M40 0V90M60 0V90M80 0V90M100 0V90M120 0V90M140 0V90" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width=".3" /&gt;
+        &lt;path d="M10 70C40 50 60 80 90 55S140 30 150 20" fill="none" stroke="currentColor" stroke-width="1.2" /&gt;
+        &lt;circle cx="90" cy="55" r="3" fill="currentColor" /&gt;
+        &lt;text x="94" y="67" font-size="5" fill="currentColor"&gt;Harbour&lt;/text&gt;
+        &lt;text x="12" y="76" font-size="2" fill="currentColor"&gt;Small print: zoom in to read this line.&lt;/text&gt;
+      &lt;/svg&gt;
+    &lt;/div&gt;
+  &lt;/OcImageZoom&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- levels defaults to [1, 1.5, 2, 3]; the slot replaces the &lt;img&gt; --}}
+&lt;x-oc::image-zoom alt="Harbour map" name="oc-zoom-demo" style="max-inline-size:36rem"&gt;
+    &lt;div class="oc-media-art oc-media-art--2"&gt;
+        &lt;svg viewBox="0 0 160 90" role="img" aria-label="Harbour map" style="display:block;inline-size:100%;block-size:100%;color:var(--oc-foreground)"&gt;
+            &lt;path d="M0 15H160M0 30H160M0 45H160M0 60H160M0 75H160M20 0V90M40 0V90M60 0V90M80 0V90M100 0V90M120 0V90M140 0V90" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width=".3" /&gt;
+            &lt;path d="M10 70C40 50 60 80 90 55S140 30 150 20" fill="none" stroke="currentColor" stroke-width="1.2" /&gt;
+            &lt;circle cx="90" cy="55" r="3" fill="currentColor" /&gt;
+            &lt;text x="94" y="67" font-size="5" fill="currentColor"&gt;Harbour&lt;/text&gt;
+            &lt;text x="12" y="76" font-size="2" fill="currentColor"&gt;Small print: zoom in to read this line.&lt;/text&gt;
+        &lt;/svg&gt;
+    &lt;/div&gt;
+&lt;/x-oc::image-zoom&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ImageZoomZoomLevels extends Component
+{
+    public function render()
+    {
+        return view('livewire.image-zoom-zoom-levels');
+    }
+}
+
+{{-- resources/views/livewire/image-zoom-zoom-levels.blade.php --}}
+&lt;div&gt;
+    {{-- levels defaults to [1, 1.5, 2, 3]; the slot replaces the &lt;img&gt; --}}
+    &lt;x-oc::image-zoom alt="Harbour map" name="oc-zoom-demo" style="max-inline-size:36rem"&gt;
+        &lt;div class="oc-media-art oc-media-art--2"&gt;
+            &lt;svg viewBox="0 0 160 90" role="img" aria-label="Harbour map" style="display:block;inline-size:100%;block-size:100%;color:var(--oc-foreground)"&gt;
+                &lt;path d="M0 15H160M0 30H160M0 45H160M0 60H160M0 75H160M20 0V90M40 0V90M60 0V90M80 0V90M100 0V90M120 0V90M140 0V90" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width=".3" /&gt;
+                &lt;path d="M10 70C40 50 60 80 90 55S140 30 150 20" fill="none" stroke="currentColor" stroke-width="1.2" /&gt;
+                &lt;circle cx="90" cy="55" r="3" fill="currentColor" /&gt;
+                &lt;text x="94" y="67" font-size="5" fill="currentColor"&gt;Harbour&lt;/text&gt;
+                &lt;text x="12" y="76" font-size="2" fill="currentColor"&gt;Small print: zoom in to read this line.&lt;/text&gt;
+            &lt;/svg&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::image-zoom&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="fixed" class="oc-section-content__title mt-2">Fixed level, square window</h3><p class="oc-section-content__desc">Without a toolbar: <code>.oc-image-zoom--200</code> (or <code>style="--oc-zoom: 2.5"</code>) sets the level, <code>--square</code> the window ratio. Useful for a "detail" crop next to the full image. Scroll inside the square (or Tab to it and use the arrow keys) to move over the photo.</p>
           <oc-demo title="Fixed level">
@@ -43,6 +123,57 @@
     <div class="oc-image-zoom__canvas"><img src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs on a temple wall, detail" style="display:block;inline-size:100%;block-size:100%;object-fit:cover" loading="lazy"></div>
   </div>
 </div>
+<oc-code lang="tsx">import { ImageZoom } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // levels={[]}: no toolbar, the picture stays at the starting level
+  return (
+    &lt;ImageZoom
+      src="/img/blocks/auth-split-photo.webp"
+      alt="Hieroglyphs on a temple wall, detail"
+      levels={[]}
+      defaultZoom={2}
+      ratio="square"
+      style={{ maxInlineSize: "16rem" }}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcImageZoom } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- :levels="[]": no toolbar, the picture stays at the starting level --&gt;
+  &lt;OcImageZoom
+    src="/img/blocks/auth-split-photo.webp"
+    alt="Hieroglyphs on a temple wall, detail"
+    :levels="[]"
+    :zoom="2"
+    ratio="square"
+    style="max-inline-size:16rem"
+  /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- :levels="[]": no toolbar, the picture stays at the starting level --}}
+&lt;x-oc::image-zoom src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs on a temple wall, detail" :levels="[]" :zoom="2" ratio="square" style="max-inline-size:16rem" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ImageZoomFixedLevel extends Component
+{
+    public function render()
+    {
+        return view('livewire.image-zoom-fixed-level');
+    }
+}
+
+{{-- resources/views/livewire/image-zoom-fixed-level.blade.php --}}
+&lt;div&gt;
+    {{-- :levels="[]": no toolbar, the picture stays at the starting level --}}
+    &lt;x-oc::image-zoom src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs on a temple wall, detail" :levels="[]" :zoom="2" ratio="square" style="max-inline-size:16rem" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

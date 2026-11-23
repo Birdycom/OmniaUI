@@ -1,0 +1,47 @@
+/* File: packages/ui/src/parts/app-data-table-server.css | Map: loading (aria-busy) -> skeleton rows -> column chooser -> Livewire extras */
+/* Server-driven list table (0.17.0): the rows come from the app per page (data-oc-server="true"). While a page loads the
+   root has aria-busy="true" and the body shows skeleton rows (tr.oc-data-table-skeleton) with the height of a real row,
+   so the table does not jump. The column chooser is a plain dropdown with a checkbox per column (data-oc-visible-col). */
+
+.oc-data-table[aria-busy="true"] .oc-data-table-pager,
+.oc-data-table[aria-busy="true"] .oc-data-table-summary { opacity: 0.6; }
+.oc-data-table[aria-busy="true"] .oc-data-table-empty { display: none; }
+
+/* Skeleton rows: one bar per cell, not selectable, no hover tint. */
+.oc-data-table-skeleton > td { pointer-events: none; }
+.oc-data-table-skeleton:hover > td { background: transparent; }
+.oc-data-table-skeleton-bar {
+  display: block;
+  inline-size: 70%;
+  max-inline-size: 12rem;
+  block-size: 0.75rem;
+  margin-block: 0.3rem;
+}
+.oc-data-table-skeleton > td:nth-child(3n + 2) .oc-data-table-skeleton-bar { inline-size: 45%; }
+.oc-data-table-skeleton > td:nth-child(3n) .oc-data-table-skeleton-bar { inline-size: 85%; }
+.oc-data-table-skeleton > td[data-numeric] .oc-data-table-skeleton-bar { margin-inline-start: auto; inline-size: 3.5rem; }
+.oc-data-table-skeleton-box { display: block; inline-size: 1rem; block-size: 1rem; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .oc-data-table-skeleton .oc-skeleton { animation: none; }
+}
+
+/* Column chooser (free): a dropdown with a checkbox per column; the app renders only the checked columns. */
+.oc-data-table-colpick { min-inline-size: 12rem; }
+.oc-data-table-colpick-title {
+  margin: 0;
+  padding: 0.375rem 0.625rem 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--oc-muted-foreground);
+}
+.oc-data-table-colpick .oc-dropdown-item { cursor: pointer; }
+.oc-data-table-colpick .oc-dropdown-item:has(input:disabled) { cursor: default; opacity: 0.6; }
+.oc-data-table-colpick .oc-dropdown-item > input { margin: 0; accent-color: var(--oc-primary); }
+
+/* Livewire table (.oc-block-datatable): the toolbar holds the trash pills and the column chooser next to the search. */
+.oc-block-datatable .oc-table-toolbar { flex-wrap: wrap; gap: 0.5rem; }
+
+/* Livewire skeleton: a second tbody that only shows while wire:loading sets aria-busy on the section. */
+.oc-data-table-skeleton-body { display: none; }
+.oc-block-datatable[aria-busy="true"] .oc-data-table-skeleton-body { display: table-row-group; }
+.oc-block-datatable[aria-busy="true"] .oc-block-datatable-rows { display: none; }

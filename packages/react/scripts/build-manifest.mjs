@@ -5,13 +5,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+// Login01 -> login-01: a letter followed by a digit also gets a dash (existing names have none).
+const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/([a-zA-Z])([0-9])/g, "$1-$2").toLowerCase();
+// Components whose markup lives in another snippet.
+const snippetAlias = { footerbar: "site-footer", "product-card": "fly-in", "badge-source": "badge", "tag-list": "feature-card", topbar: "site-header", "section-block": "page-sections" };
 const list = (dir) => fs.readdirSync(path.join(root, "src", dir)).filter((f) => f.endsWith(".tsx")).sort();
 
 const items = [];
 for (const f of list("components")) {
   const n = f.replace(/\.tsx$/, "");
-  const snippet = `snippets/${kebab(n)}.html`;
+  const snippet = `snippets/${snippetAlias[kebab(n)] ?? kebab(n)}.html`;
   const has = fs.existsSync(path.join(root, "..", "ui", snippet));
   items.push({ name: kebab(n), kind: "component", file: `src/components/${f}`, snippet: has ? `@birdycom/omniaui/${snippet}` : null });
 }

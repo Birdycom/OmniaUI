@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Lightbox", "category": "Media", "description": "Full-screen image viewer on a native dialog.", "nav": "Lightbox", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Lightbox", "category": "Media", "description": "A full-screen image viewer on a native dialog with a dark backdrop, previous and next buttons, a counter and a caption, opened by invoker commands.", "nav": "Lightbox", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/lightbox.html | Map: hero -> demo (gallery) -> single image -> how it works -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Lightbox</h1>
@@ -63,6 +63,52 @@ document.addEventListener("close", (e) => {
   if (slide && e.target.contains(slide)) history.replaceState(history.state, "", location.pathname + location.search);
 }, true);
 </script>
+<oc-code lang="tsx">{/* Thumbnails open the viewer at that photo; prev / next and the arrow keys move through the photos */}
+&lt;Lightbox title="Holiday photos" images={[
+  { src: "/photos/harbour.jpg", thumb: "/photos/harbour-thumb.jpg", alt: "Harbour at dawn" },
+  { src: "/photos/forest.jpg", thumb: "/photos/forest-thumb.jpg", alt: "Forest trail" },
+  { src: "/photos/desert.jpg", thumb: "/photos/desert-thumb.jpg", alt: "Desert road" },
+]} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcLightbox title="Holiday photos" :images="[
+  { src: '/photos/harbour.jpg', thumb: '/photos/harbour-thumb.jpg', alt: 'Harbour at dawn' },
+  { src: '/photos/forest.jpg', thumb: '/photos/forest-thumb.jpg', alt: 'Forest trail' },
+  { src: '/photos/desert.jpg', thumb: '/photos/desert-thumb.jpg', alt: 'Desert road' },
+]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::lightbox id="holiday" title="Holiday photos" :images="[
+    ['src' =&gt; '/photos/harbour.jpg', 'thumb' =&gt; '/photos/harbour-thumb.jpg', 'alt' =&gt; 'Harbour at dawn'],
+    ['src' =&gt; '/photos/forest.jpg', 'thumb' =&gt; '/photos/forest-thumb.jpg', 'alt' =&gt; 'Forest trail'],
+    ['src' =&gt; '/photos/desert.jpg', 'thumb' =&gt; '/photos/desert-thumb.jpg', 'alt' =&gt; 'Desert road'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AlbumViewer extends Component
+{
+    public string $album = 'Holiday photos';
+
+    /** @var list&lt;array{src: string, thumb: string, alt: string}&gt; */
+    public array $photos = [
+        ['src' =&gt; '/photos/harbour.jpg', 'thumb' =&gt; '/photos/harbour-thumb.jpg', 'alt' =&gt; 'Harbour at dawn'],
+        ['src' =&gt; '/photos/forest.jpg', 'thumb' =&gt; '/photos/forest-thumb.jpg', 'alt' =&gt; 'Forest trail'],
+        ['src' =&gt; '/photos/desert.jpg', 'thumb' =&gt; '/photos/desert-thumb.jpg', 'alt' =&gt; 'Desert road'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.album-viewer');
+    }
+}
+
+{{-- resources/views/livewire/album-viewer.blade.php --}}
+&lt;div&gt;
+    {{-- a native &lt;dialog&gt;: wire:ignore keeps it open while Livewire re-renders the rest --}}
+    &lt;div wire:ignore&gt;
+        &lt;x-oc::lightbox id="album" :title="$album" :images="$photos" /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="single" class="oc-section-content__title mt-2">Single image</h3><p class="oc-section-content__desc"><code>.oc-lightbox--single</code> hides the arrows and the counter. Handy for "click to enlarge" on a product photo.</p>
           <oc-demo title="Single image">
@@ -79,6 +125,45 @@ document.addEventListener("close", (e) => {
     </figure>
   </div>
 </dialog>
+<oc-code lang="tsx">&lt;div style={{ inlineSize: "14rem" }}&gt;
+  &lt;Lightbox title="Studio lamp" aria-label="Studio lamp" images={[
+    { src: "/photos/studio-lamp.jpg", alt: "Studio lamp", caption: "Brushed brass, 42 cm" },
+  ]} /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div style="inline-size:14rem"&gt;
+  &lt;OcLightbox title="Studio lamp" label="Studio lamp" :images="[
+    { src: '/photos/studio-lamp.jpg', alt: 'Studio lamp', caption: 'Brushed brass, 42 cm' },
+  ]" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="inline-size:14rem"&gt;
+    &lt;x-oc::lightbox id="studio-lamp" title="Studio lamp" label="Studio lamp" :images="[
+        ['src' =&gt; '/photos/studio-lamp.jpg', 'alt' =&gt; 'Studio lamp', 'caption' =&gt; 'Brushed brass, 42 cm'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProductPhoto extends Component
+{
+    public string $name = 'Studio lamp';
+
+    public string $photo = '/photos/studio-lamp.jpg';
+
+    public string $details = 'Brushed brass, 42 cm';
+
+    public function render()
+    {
+        return view('livewire.product-photo');
+    }
+}
+
+{{-- resources/views/livewire/product-photo.blade.php --}}
+&lt;div style="inline-size:14rem" wire:ignore&gt;
+    &lt;x-oc::lightbox id="product-photo" :title="$name" :label="$name" :images="[['src' =&gt; $photo, 'alt' =&gt; $name, 'caption' =&gt; $details]]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

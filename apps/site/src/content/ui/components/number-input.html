@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Number input", "category": "Forms", "description": "Native number input with minus and plus stepper buttons.", "nav": "Number input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Number input", "category": "Forms", "description": "A native number input between minus and plus buttons. Min, max and step come from the input, and the buttons call stepDown() and stepUp() for you.", "nav": "Number input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/number-input.html | Map: hero -> demo (default, block + small + disabled) -> reference -> script -> frameworks -> browser support -> source footer -> page script -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Number input</h1>
@@ -18,6 +18,47 @@
   <input class="oc-number-input-field" type="number" name="quantity" value="2" min="0" max="99" step="1" aria-label="Quantity">
   <button class="oc-number-input-step" type="button" data-oc-step="1" aria-label="Increase">+</button>
 </div>
+<oc-code lang="tsx">import { useState } from "react";
+import { NumberInput } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [quantity, setQuantity] = useState&lt;number | null&gt;(2);
+  return &lt;NumberInput name="quantity" value={quantity} onChange={setQuantity} min={0} max={99} step={1} aria-label="Quantity" /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcNumberInput } from "@birdycom/omniaui-vue";
+
+const quantity = ref&lt;number | null&gt;(2);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcNumberInput v-model="quantity" name="quantity" :min="0" :max="99" :step="1" aria-label="Quantity" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::number-input name="quantity" :value="old('quantity', 2)" min="0" max="99" step="1" aria-label="Quantity" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class OrderLine extends Component
+{
+    #[Validate('required|integer|min:0|max:99')]
+    public int $quantity = 2;
+
+    public function render()
+    {
+        return view('livewire.order-line');
+    }
+}
+
+{{-- resources/views/livewire/order-line.blade.php --}}
+&lt;div&gt;
+    {{-- attributes such as wire:model go to the number field --}}
+    &lt;x-oc::number-input wire:model.live="quantity" min="0" max="99" step="1" aria-label="Quantity" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Full width, small, error and disabled</h3>
@@ -82,6 +123,75 @@
   &lt;button class="oc-number-input-step" type="button" data-oc-step="-1" aria-label="Decrease" disabled&gt;−&lt;/button&gt;
   &lt;input class="oc-number-input-field" type="number" value="3" aria-label="Locked amount" disabled&gt;
   &lt;button class="oc-number-input-step" type="button" data-oc-step="1" aria-label="Increase" disabled&gt;+&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { NumberInput } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [hours, setHours] = useState&lt;number | null&gt;(1.5);
+  const [pieces, setPieces] = useState&lt;number | null&gt;(4);
+  const [quantity, setQuantity] = useState&lt;number | null&gt;(140);
+  return (
+    &lt;&gt;
+      &lt;NumberInput block value={hours} onChange={setHours} min={0} max={10} step={0.5} aria-label="Hours" /&gt;
+      &lt;NumberInput size="sm" value={pieces} onChange={setPieces} min={1} max={12} aria-label="Pieces" /&gt;
+      &lt;NumberInput error value={quantity} onChange={setQuantity} min={0} max={99} aria-label="Quantity" /&gt;
+      &lt;NumberInput disabled defaultValue={3} aria-label="Locked amount" /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcNumberInput } from "@birdycom/omniaui-vue";
+
+const hours = ref&lt;number | null&gt;(1.5);
+const pieces = ref&lt;number | null&gt;(4);
+const quantity = ref&lt;number | null&gt;(140);
+const locked = ref&lt;number | null&gt;(3);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcNumberInput v-model="hours" block :min="0" :max="10" :step="0.5" aria-label="Hours" /&gt;
+  &lt;OcNumberInput v-model="pieces" size="sm" :min="1" :max="12" aria-label="Pieces" /&gt;
+  &lt;OcNumberInput v-model="quantity" error :min="0" :max="99" aria-label="Quantity" /&gt;
+  &lt;OcNumberInput v-model="locked" disabled aria-label="Locked amount" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::number-input block :value="1.5" min="0" max="10" step="0.5" aria-label="Hours" /&gt;
+&lt;x-oc::number-input size="sm" :value="4" min="1" max="12" aria-label="Pieces" /&gt;
+&lt;x-oc::number-input error :value="140" min="0" max="99" aria-label="Quantity" /&gt;
+&lt;x-oc::number-input :value="3" aria-label="Locked amount" disabled /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class TimeEntry extends Component
+{
+    #[Validate('required|numeric|min:0|max:10')]
+    public float $hours = 1.5;
+
+    #[Validate('required|integer|min:1|max:12')]
+    public int $pieces = 4;
+
+    #[Validate('required|integer|min:0|max:99')]
+    public int $quantity = 140;
+
+    public int $locked = 3;
+
+    public function render()
+    {
+        return view('livewire.time-entry');
+    }
+}
+
+{{-- resources/views/livewire/time-entry.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::number-input block wire:model="hours" min="0" max="10" step="0.5" aria-label="Hours" /&gt;
+    &lt;x-oc::number-input size="sm" wire:model="pieces" min="1" max="12" aria-label="Pieces" /&gt;
+    &lt;x-oc::number-input :error="$errors-&gt;has('quantity')" wire:model.blur="quantity" min="0" max="99" aria-label="Quantity" /&gt;
+    &lt;x-oc::number-input wire:model="locked" aria-label="Locked amount" disabled /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

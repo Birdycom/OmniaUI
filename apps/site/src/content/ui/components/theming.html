@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Theming", "category": "Docs UI", "description": "Semantic CSS tokens with light-dark(): re-theme the whole page or one container.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Theming", "category": "Docs UI", "description": "Semantic CSS tokens with light-dark(): override them on :root to re-theme the whole page, or on one container to theme only that part. No extra classes.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/theming.html | Map: hero -> demo (default vs custom theme, page-wide override) -> reference (tokens) -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Theming</h1>
@@ -28,6 +28,84 @@
     </div>
   </div>
 </div>
+<oc-code lang="tsx">import type { CSSProperties } from "react";
+
+// Tokens are CSS custom properties: set them on any container and everything inside follows
+const custom = { "--oc-primary": "light-dark(var(--color-purple-40), var(--color-purple-10))", "--oc-ring": "var(--oc-primary)", "--oc-radius": "1rem" } as CSSProperties;
+
+&lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(14rem, 1fr))", gap: "1rem", inlineSize: "100%" }}&gt;
+  {[{ title: "Default tokens", style: undefined }, { title: "Custom tokens", style: custom }].map((card) =&gt; (
+    &lt;Card key={card.title} className="oc-card--sm" style={card.style}&gt;
+      &lt;CardHeader&gt;&lt;CardTitle&gt;{card.title}&lt;/CardTitle&gt;&lt;/CardHeader&gt;
+      &lt;CardContent style={{ display: "grid", gap: "0.75rem" }}&gt;
+        &lt;Input placeholder="Search" /&gt;
+        &lt;div style={{ display: "flex", gap: "0.5rem" }}&gt;&lt;Button&gt;Save&lt;/Button&gt;&lt;Button variant="outline"&gt;Cancel&lt;/Button&gt;&lt;/div&gt;
+      &lt;/CardContent&gt;
+    &lt;/Card&gt;
+  ))}
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(14rem, 1fr));gap:1rem;inline-size:100%"&gt;
+  &lt;OcCard size="sm" title="Default tokens"&gt;
+    &lt;div style="display:grid;gap:0.75rem"&gt;
+      &lt;OcInput placeholder="Search" /&gt;
+      &lt;div style="display:flex;gap:0.5rem"&gt;&lt;OcButton&gt;Save&lt;/OcButton&gt;&lt;OcButton variant="outline"&gt;Cancel&lt;/OcButton&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/OcCard&gt;
+  &lt;OcCard size="sm" title="Custom tokens" style="--oc-primary: light-dark(var(--color-purple-40), var(--color-purple-10)); --oc-ring: var(--oc-primary); --oc-radius: 1rem"&gt;
+    &lt;div style="display:grid;gap:0.75rem"&gt;
+      &lt;OcInput placeholder="Search" /&gt;
+      &lt;div style="display:flex;gap:0.5rem"&gt;&lt;OcButton&gt;Save&lt;/OcButton&gt;&lt;OcButton variant="outline"&gt;Cancel&lt;/OcButton&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/OcCard&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(14rem, 1fr));gap:1rem;inline-size:100%"&gt;
+    &lt;x-oc::card size="sm" title="Default tokens"&gt;
+        &lt;div style="display:grid;gap:0.75rem"&gt;
+            &lt;x-oc::input name="q" placeholder="Search" /&gt;
+            &lt;div style="display:flex;gap:0.5rem"&gt;&lt;x-oc::button&gt;Save&lt;/x-oc::button&gt;&lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card size="sm" title="Custom tokens" style="--oc-primary: light-dark(var(--color-purple-40), var(--color-purple-10)); --oc-ring: var(--oc-primary); --oc-radius: 1rem"&gt;
+        &lt;div style="display:grid;gap:0.75rem"&gt;
+            &lt;x-oc::input name="q2" placeholder="Search" /&gt;
+            &lt;div style="display:flex;gap:0.5rem"&gt;&lt;x-oc::button&gt;Save&lt;/x-oc::button&gt;&lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class BrandPreview extends Component
+{
+    /** The customer's brand color, e.g. from their settings. */
+    public string $brand = 'light-dark(var(--color-purple-40), var(--color-purple-10))';
+
+    public string $search = '';
+
+    public function render()
+    {
+        return view('livewire.brand-preview');
+    }
+}
+
+{{-- resources/views/livewire/brand-preview.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(14rem, 1fr));gap:1rem;inline-size:100%"&gt;
+    &lt;x-oc::card size="sm" title="Default tokens"&gt;
+        &lt;div style="display:grid;gap:0.75rem"&gt;
+            &lt;x-oc::wire.input model="search" placeholder="Search" /&gt;
+            &lt;div style="display:flex;gap:0.5rem"&gt;&lt;x-oc::button&gt;Save&lt;/x-oc::button&gt;&lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card size="sm" title="Custom tokens" style="--oc-primary: {{ $brand }}; --oc-ring: var(--oc-primary); --oc-radius: 1rem"&gt;
+        &lt;div style="display:grid;gap:0.75rem"&gt;
+            &lt;x-oc::wire.input model="search" placeholder="Search" /&gt;
+            &lt;div style="display:flex;gap:0.5rem"&gt;&lt;x-oc::button&gt;Save&lt;/x-oc::button&gt;&lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Page-wide override</h3>
@@ -70,6 +148,47 @@
   <p id="main-demo" style="margin:0;display:flex;align-items:center;gap:0.5rem"><iconify-icon class="oc-icon" icon="mdi:information-outline" aria-hidden="true"></iconify-icon> An inline icon as large as the text (1.25em).</p>
   <p style="margin:0"><a class="oc-btn" href="#main-demo"><iconify-icon class="oc-icon" icon="mdi:send" aria-hidden="true"></iconify-icon>In a button 1.1em</a></p>
 </div>
+<oc-code lang="tsx">&lt;div style={{ position: "relative", display: "grid", gap: "1rem", inlineSize: "100%", paddingBlockStart: "4rem", overflow: "clip" }}&gt;
+  &lt;a className="oc-skip-link" href="#main-demo"&gt;Skip to content&lt;/a&gt;
+  &lt;p className="oc-text-muted" style={{ margin: 0 }}&gt;Press Tab in this box: the skip link drops in at the top.&lt;/p&gt;
+  &lt;p id="main-demo" style={{ margin: 0, display: "flex", alignItems: "center", gap: "0.5rem" }}&gt;&lt;Webicon name="mdi:information-outline" /&gt; An inline icon as large as the text (1.25em).&lt;/p&gt;
+  &lt;p style={{ margin: 0 }}&gt;&lt;ButtonLink href="#main-demo"&gt;&lt;Webicon name="mdi:send" /&gt;In a button 1.1em&lt;/ButtonLink&gt;&lt;/p&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div style="position:relative;display:grid;gap:1rem;inline-size:100%;padding-block-start:4rem;overflow:clip"&gt;
+  &lt;a class="oc-skip-link" href="#main-demo"&gt;Skip to content&lt;/a&gt;
+  &lt;p class="oc-text-muted" style="margin:0"&gt;Press Tab in this box: the skip link drops in at the top.&lt;/p&gt;
+  &lt;p id="main-demo" style="margin:0;display:flex;align-items:center;gap:0.5rem"&gt;&lt;OcWebicon name="mdi:information-outline" /&gt; An inline icon as large as the text (1.25em).&lt;/p&gt;
+  &lt;p style="margin:0"&gt;&lt;OcButton href="#main-demo"&gt;&lt;OcWebicon name="mdi:send" /&gt;In a button 1.1em&lt;/OcButton&gt;&lt;/p&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="position:relative;display:grid;gap:1rem;inline-size:100%;padding-block-start:4rem;overflow:clip"&gt;
+    &lt;a class="oc-skip-link" href="#main-demo"&gt;Skip to content&lt;/a&gt;
+    &lt;p class="oc-text-muted" style="margin:0"&gt;Press Tab in this box: the skip link drops in at the top.&lt;/p&gt;
+    &lt;p id="main-demo" style="margin:0;display:flex;align-items:center;gap:0.5rem"&gt;&lt;x-oc::webicon name="mdi:information-outline" /&gt; An inline icon as large as the text (1.25em).&lt;/p&gt;
+    &lt;p style="margin:0"&gt;&lt;x-oc::button href="#main-demo"&gt;&lt;x-oc::webicon name="mdi:send" /&gt;In a button 1.1em&lt;/x-oc::button&gt;&lt;/p&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SkipLinkLayout extends Component
+{
+    public string $message = 'An inline icon as large as the text (1.25em).';
+
+    public function render()
+    {
+        return view('livewire.skip-link-layout');
+    }
+}
+
+{{-- resources/views/livewire/skip-link-layout.blade.php --}}
+&lt;div style="position:relative;display:grid;gap:1rem;inline-size:100%;padding-block-start:4rem;overflow:clip"&gt;
+    &lt;a class="oc-skip-link" href="#main-demo"&gt;Skip to content&lt;/a&gt;
+    &lt;p class="oc-text-muted" style="margin:0"&gt;Press Tab in this box: the skip link drops in at the top.&lt;/p&gt;
+    &lt;p id="main-demo" style="margin:0;display:flex;align-items:center;gap:0.5rem"&gt;&lt;x-oc::webicon name="mdi:information-outline" /&gt; {{ $message }}&lt;/p&gt;
+    &lt;p style="margin:0"&gt;&lt;x-oc::button href="#main-demo"&gt;&lt;x-oc::webicon name="mdi:send" /&gt;In a button 1.1em&lt;/x-oc::button&gt;&lt;/p&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

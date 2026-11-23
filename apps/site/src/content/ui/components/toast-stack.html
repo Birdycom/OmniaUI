@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Toast stack", "category": "Overlays", "description": "Overlapping toasts that expand on hover or focus.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Toast stack", "category": "Overlays", "description": "A stacking variant of the toast: notifications overlap with the newest in front, and hovering or focusing the stack expands it into a list. Pure CSS.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Toast stack</h1>
         <p class="oc-hero-text">A stacking variant of the <a href="toast.html">toast</a>: notifications overlap with the newest in front and older ones peeking out above; hovering or focusing the stack expands it into a list. Pure CSS, driven by <code>:nth-last-child()</code>. <a href="../components.html">All components</a>.</p>
@@ -14,6 +14,51 @@
   <div class="oc-toast oc-toast--warning" role="status"><span class="oc-toast-icon" aria-hidden="true">!</span><div class="oc-toast-body"><p class="oc-toast-title">Storage almost full</p><p class="oc-toast-description">92% of 5 GB used.</p></div></div>
   <div class="oc-toast oc-toast--success" role="status"><span class="oc-toast-icon" aria-hidden="true">✓</span><div class="oc-toast-body"><p class="oc-toast-title">Invoice sent</p><p class="oc-toast-description">Hover to expand the stack.</p></div><button class="oc-toast-close" type="button" aria-label="Dismiss">×</button></div>
 </div>
+<oc-code lang="tsx">&lt;ToastContainer static className="oc-toast-container--stack" tabIndex={0} aria-label="Notifications"&gt;
+  &lt;Toast variant="info" title="Update available" description="Version 0.9 is ready." /&gt;
+  &lt;Toast variant="warning" title="Storage almost full" description="92% of 5 GB used." /&gt;
+  &lt;Toast variant="success" title="Invoice sent" description="Hover to expand the stack." onDismiss={() =&gt; hide("invoice")} /&gt;
+&lt;/ToastContainer&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="oc-toast-container oc-toast-container--static oc-toast-container--stack" tabindex="0" aria-label="Notifications"&gt;
+  &lt;OcToast variant="info" title="Update available" description="Version 0.9 is ready." :dismissible="false" /&gt;
+  &lt;OcToast variant="warning" title="Storage almost full" description="92% of 5 GB used." :dismissible="false" /&gt;
+  &lt;OcToast variant="success" title="Invoice sent" description="Hover to expand the stack." @dismiss="hide('invoice')" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::toast.container static class="oc-toast-container--stack" tabindex="0" aria-label="Notifications"&gt;
+    &lt;x-oc::toast variant="info" title="Update available" :dismissible="false"&gt;Version 0.9 is ready.&lt;/x-oc::toast&gt;
+    &lt;x-oc::toast variant="warning" title="Storage almost full" :dismissible="false"&gt;92% of 5 GB used.&lt;/x-oc::toast&gt;
+    &lt;x-oc::toast variant="success" title="Invoice sent"&gt;Hover to expand the stack.&lt;/x-oc::toast&gt;
+&lt;/x-oc::toast.container&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcToast;
+
+class Notifications extends Component
+{
+    use WithOcToast;
+
+    public function check(): void
+    {
+        $this-&gt;ocToast('info', 'Update available', 'Version 0.9 is ready.');
+        $this-&gt;ocToast('warning', 'Storage almost full', '92% of 5 GB used.');
+        $this-&gt;ocToast('success', 'Invoice sent', 'Hover to expand the stack.');
+    }
+
+    public function render()
+    {
+        return view('livewire.notifications');
+    }
+}
+
+{{-- resources/views/livewire/notifications.blade.php --}}
+{{-- in the layout, once: the stacked version of the Livewire toast stack --}}
+{{-- &lt;x-oc::toast-stack class="oc-toast-container--stack" tabindex="0" aria-label="Notifications" /&gt; --}}
+&lt;div&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="check"&gt;Check for news&lt;/button&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

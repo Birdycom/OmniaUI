@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Sortable row", "category": "Data", "description": "Drag grip, dragging state and drop line for reorderable table rows.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Sortable row", "category": "Data", "description": "Drag grip, dragging state and drop line for reorderable table rows, plus a locked row and a row picked up with the keyboard (aria-pressed).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/sortable-row.html | Map: hero -> states demo -> keyboard state demo -> behaviour notes -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Sortable row</h1>
@@ -10,7 +10,7 @@
           
           
         <p class="oc-section-header__desc">Plain HTML and CSS; each example shows its markup in the HTML tab.</p></div>
-        <div class="oc-section-content"><h3 class="oc-section-content__title">Drag states</h3><p class="oc-section-content__desc">Row 2 shows <code>.is-dragging</code> (being moved). Row 3 shows <code>.is-drop-after</code> (the line where it will land). The last row is locked: its grip is <code>disabled</code>. Snippet: <code>packages/ui/snippets/sortable-row.html</code>.</p>
+        <div class="oc-section-content"><h3 class="oc-section-content__title">Drag states <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">Row 2 shows <code>.is-dragging</code> (being moved). Row 3 shows <code>.is-drop-after</code> (the line where it will land). The last row is locked: its grip is <code>disabled</code>. Snippet: <code>packages/ui/snippets/sortable-row.html</code>.</p>
           <oc-demo title="Sortable rows">
 <div class="oc-table-wrap">
   <table class="oc-table">
@@ -35,6 +35,111 @@
     </tbody>
   </table>
 </div>
+<oc-code lang="tsx">import { SortableRow, Table } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Table&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th className="oc-sortable-row-grip-cell"&gt;&lt;span className="oc-visually-hidden"&gt;Order&lt;/span&gt;&lt;/th&gt;&lt;th&gt;Step&lt;/th&gt;&lt;th&gt;Owner&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;SortableRow gripLabel="Move Measure the room"&gt;
+          &lt;td&gt;Measure the room&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;
+        &lt;/SortableRow&gt;
+        &lt;SortableRow gripLabel="Move Order materials" dragging&gt;
+          &lt;td&gt;Order materials&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;
+        &lt;/SortableRow&gt;
+        &lt;SortableRow gripLabel="Move Install" drop="after"&gt;
+          &lt;td&gt;Install&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;
+        &lt;/SortableRow&gt;
+        &lt;SortableRow gripLabel="Final check (locked)" locked&gt;
+          &lt;td&gt;Final check&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;
+        &lt;/SortableRow&gt;
+      &lt;/tbody&gt;
+    &lt;/Table&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcSortableRow, OcTable } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Without columns OcTable takes your own rows in its default slot. --&gt;
+  &lt;OcTable&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th class="oc-sortable-row-grip-cell"&gt;&lt;span class="oc-visually-hidden"&gt;Order&lt;/span&gt;&lt;/th&gt;&lt;th&gt;Step&lt;/th&gt;&lt;th&gt;Owner&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;OcSortableRow grip-label="Move Measure the room"&gt;
+        &lt;td&gt;Measure the room&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;
+      &lt;/OcSortableRow&gt;
+      &lt;OcSortableRow grip-label="Move Order materials" dragging&gt;
+        &lt;td&gt;Order materials&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;
+      &lt;/OcSortableRow&gt;
+      &lt;OcSortableRow grip-label="Move Install" drop="after"&gt;
+        &lt;td&gt;Install&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;
+      &lt;/OcSortableRow&gt;
+      &lt;OcSortableRow grip-label="Final check (locked)" locked&gt;
+        &lt;td&gt;Final check&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;
+      &lt;/OcSortableRow&gt;
+    &lt;/tbody&gt;
+  &lt;/OcTable&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th class="oc-sortable-row-grip-cell"&gt;&lt;span class="oc-visually-hidden"&gt;Order&lt;/span&gt;&lt;/th&gt;&lt;th&gt;Step&lt;/th&gt;&lt;th&gt;Owner&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;x-oc::sortable-row grip="Move Measure the room"&gt;
+            &lt;td&gt;Measure the room&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;
+        &lt;/x-oc::sortable-row&gt;
+        &lt;x-oc::sortable-row grip="Move Order materials" dragging&gt;
+            &lt;td&gt;Order materials&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;
+        &lt;/x-oc::sortable-row&gt;
+        &lt;x-oc::sortable-row grip="Move Install" drop="after"&gt;
+            &lt;td&gt;Install&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;
+        &lt;/x-oc::sortable-row&gt;
+        &lt;x-oc::sortable-row grip="Final check (locked)" locked&gt;
+            &lt;td&gt;Final check&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;
+        &lt;/x-oc::sortable-row&gt;
+    &lt;/tbody&gt;
+&lt;/x-oc::table&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SortableRowSortableRows extends Component
+{
+    public array $steps = [
+        ['id' =&gt; 1, 'name' =&gt; 'Measure the room', 'owner' =&gt; 'User 1', 'locked' =&gt; false],
+        ['id' =&gt; 2, 'name' =&gt; 'Order materials', 'owner' =&gt; 'User 2', 'locked' =&gt; false],
+        ['id' =&gt; 3, 'name' =&gt; 'Install', 'owner' =&gt; 'User 3', 'locked' =&gt; false],
+        ['id' =&gt; 4, 'name' =&gt; 'Final check', 'owner' =&gt; 'User 1', 'locked' =&gt; true],
+    ];
+
+    /** Called by your drag-and-drop script with the new order of ids: $wire.reorder([2, 1, 3, 4]). */
+    public function reorder(array $ids): void
+    {
+        $byId = array_column($this-&gt;steps, null, 'id');
+        $this-&gt;steps = array_values(array_map(fn ($id) =&gt; $byId[$id], $ids));
+    }
+
+    public function render()
+    {
+        return view('livewire.sortable-row-sortable-rows');
+    }
+}
+
+{{-- resources/views/livewire/sortable-row-sortable-rows.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::table&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th class="oc-sortable-row-grip-cell"&gt;&lt;span class="oc-visually-hidden"&gt;Order&lt;/span&gt;&lt;/th&gt;&lt;th&gt;Step&lt;/th&gt;&lt;th&gt;Owner&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($steps as $step)
+                &lt;x-oc::sortable-row wire:key="step-{{ $step['id'] }}" :grip="$step['locked'] ? $step['name'].' (locked)' : 'Move '.$step['name']" :locked="$step['locked']"&gt;
+                    &lt;td&gt;{{ $step['name'] }}&lt;/td&gt;&lt;td&gt;{{ $step['owner'] }}&lt;/td&gt;
+                &lt;/x-oc::sortable-row&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="keyboard">Keyboard pick-up</h3>
@@ -52,6 +157,96 @@
     </tr>
   </tbody>
 </table>
+<oc-code lang="tsx">import { SortableRow } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;table className="oc-table"&gt;
+      &lt;tbody&gt;
+        &lt;SortableRow gripLabel="Move Measure the room" drop="before"&gt;
+          &lt;td&gt;Measure the room&lt;/td&gt;
+        &lt;/SortableRow&gt;
+        &lt;SortableRow gripLabel="Move Install" grabbed&gt;
+          &lt;td&gt;Install (moving up)&lt;/td&gt;
+        &lt;/SortableRow&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcSortableRow } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;table class="oc-table"&gt;
+    &lt;tbody&gt;
+      &lt;OcSortableRow grip-label="Move Measure the room" drop="before"&gt;
+        &lt;td&gt;Measure the room&lt;/td&gt;
+      &lt;/OcSortableRow&gt;
+      &lt;OcSortableRow grip-label="Move Install" :grabbed="true"&gt;
+        &lt;td&gt;Install (moving up)&lt;/td&gt;
+      &lt;/OcSortableRow&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;table class="oc-table"&gt;
+    &lt;tbody&gt;
+        &lt;x-oc::sortable-row grip="Move Measure the room" drop="before"&gt;
+            &lt;td&gt;Measure the room&lt;/td&gt;
+        &lt;/x-oc::sortable-row&gt;
+        {{-- grabbed: picked up with the keyboard (aria-pressed="true" on the grip) --}}
+        &lt;x-oc::sortable-row grip="Move Install" :grabbed="true"&gt;
+            &lt;td&gt;Install (moving up)&lt;/td&gt;
+        &lt;/x-oc::sortable-row&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SortableRowPickedUpWithTheKeyboard extends Component
+{
+    /** @var list&lt;string&gt; */
+    public array $tasks = ['Measure the room', 'Install'];
+
+    /** Index of the row that is picked up with the keyboard, or null. */
+    public ?int $grabbed = 1;
+
+    public function grab(int $index): void
+    {
+        $this-&gt;grabbed = $this-&gt;grabbed === $index ? null : $index;
+    }
+
+    public function move(int $index, int $step): void
+    {
+        $to = $index + $step;
+        if ($this-&gt;grabbed !== $index || ! isset($this-&gt;tasks[$to])) {
+            return;
+        }
+        [$this-&gt;tasks[$index], $this-&gt;tasks[$to]] = [$this-&gt;tasks[$to], $this-&gt;tasks[$index]];
+        $this-&gt;grabbed = $to;
+    }
+
+    public function render()
+    {
+        return view('livewire.sortable-row-picked-up-with-the-keyboard');
+    }
+}
+
+{{-- resources/views/livewire/sortable-row-picked-up-with-the-keyboard.blade.php --}}
+&lt;table class="oc-table"&gt;
+    &lt;tbody&gt;
+        {{-- Space or a click on the grip picks a row up; the arrow keys move it; the row above it shows where it lands --}}
+        @foreach ($tasks as $i =&gt; $task)
+            &lt;x-oc::sortable-row wire:key="task-{{ $task }}" :grip="'Move '.$task" :grabbed="$grabbed === $i" :drop="$grabbed === $i + 1 ? 'before' : null"
+                :grip-attributes="['wire:click' =&gt; 'grab('.$i.')', 'wire:keydown.arrow-up.prevent' =&gt; 'move('.$i.', -1)', 'wire:keydown.arrow-down.prevent' =&gt; 'move('.$i.', 1)']"&gt;
+                &lt;td&gt;{{ $task }}&lt;/td&gt;
+            &lt;/x-oc::sortable-row&gt;
+        @endforeach
+    &lt;/tbody&gt;
+&lt;/table&gt;</oc-code>
           </oc-demo>
 
           <h3 id="behaviour">Adding the behaviour</h3>

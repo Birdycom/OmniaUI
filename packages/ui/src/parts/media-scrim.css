@@ -1,0 +1,51 @@
+/* File: packages/ui/src/parts/media-scrim.css | Map: child layer (.oc-scrim) and host pseudo (.oc-has-scrim::after)
+   -> sides (bottom default, top, start, end, full) -> dark -> content above the scrim -> rtl */
+/* Scrim (0.17.0): a calm fade over a picture, so text on top of it stays readable. From the scrim color at one edge to
+   transparent. Two ways, same modifiers:
+   - a child element: <span class="oc-scrim oc-scrim--bottom" aria-hidden="true"></span> inside a positioned element
+     with an image (the element needs position: relative);
+   - no extra element: .oc-has-scrim on that element draws the scrim as ::after.
+   Text that sits on the scrim gets .oc-scrim-content (position: relative; z-index 2).
+   Tokens (set them on the element, a parent or :root): --oc-scrim-color (default the page background,
+   .oc-scrim--dark = near black), --oc-scrim-strength (opacity at the edge, 0 to 1, default 0.85), --oc-scrim-size (how
+   far the fade reaches, default 60%). Hero media uses the same tokens for its own scrim. No glow, no color blend. */
+
+.oc-scrim,
+.oc-has-scrim::after {
+  --_oc-scrim-c: var(--oc-scrim-color, var(--oc-background));
+  --_oc-scrim-s: var(--oc-scrim-strength, 0.85);
+  --_oc-scrim-l: var(--oc-scrim-size, 60%);
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    var(--_oc-scrim-dir, to top),
+    color-mix(in oklab, var(--_oc-scrim-c) calc(var(--_oc-scrim-s) * 100%), transparent) 0%,
+    color-mix(in oklab, var(--_oc-scrim-c) calc(var(--_oc-scrim-s) * 55%), transparent) calc(var(--_oc-scrim-l) * 0.55),
+    transparent var(--_oc-scrim-l)
+  );
+}
+.oc-has-scrim { position: relative; isolation: isolate; }
+.oc-has-scrim::after { content: ""; }
+
+/* Dark: a near-black scrim for light text, in light and dark mode. */
+.oc-scrim--dark { --oc-scrim-color: oklch(14% 0.01 260deg); }
+
+/* Sides: where the scrim is strongest. Bottom is the default. */
+.oc-scrim--top { --_oc-scrim-dir: to bottom; }
+.oc-scrim--start { --_oc-scrim-dir: to right; }
+.oc-scrim--end { --_oc-scrim-dir: to left; }
+.oc-scrim--start:dir(rtl) { --_oc-scrim-dir: to left; }
+.oc-scrim--end:dir(rtl) { --_oc-scrim-dir: to right; }
+
+/* Full: one even layer over the whole picture. */
+.oc-scrim.oc-scrim--full,
+.oc-has-scrim.oc-scrim--full::after {
+  background: color-mix(in oklab, var(--_oc-scrim-c) calc(var(--_oc-scrim-s) * 75%), transparent);
+}
+
+/* Text on top of the scrim. Position relative by default; a position utility (absolute) on the same element wins. */
+:where(.oc-scrim-content) { position: relative; }
+.oc-scrim-content { z-index: 2; }

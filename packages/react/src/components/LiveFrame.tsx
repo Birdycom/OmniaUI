@@ -1,10 +1,11 @@
-// File: packages/react/src/components/LiveFrame.tsx | Map: types -> LiveFrame (div.oc-live-frame + virtual size -> iframe or children)
+// File: packages/react/src/components/LiveFrame.tsx | Map: types -> LiveFrame (div.oc-live-frame + virtual size -> iframe and/or children)
 import { forwardRef } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode, Ref, SyntheticEvent } from "react";
 import { cx } from "../utils";
 
 export interface LiveFrameProps extends HTMLAttributes<HTMLDivElement> {
-  /** Page to show in an iframe. Leave empty and pass children (an <img>, <video>, or .oc-live-frame__content). */
+  /** Page to show in an iframe. Leave empty and pass children (an <img>, <video>, or .oc-live-frame__content). With
+   *  both, the children come after the iframe (a watermark or a badge on top of the page). */
   src?: string;
   /** Accessible name of the iframe. */
   title?: string;
@@ -42,7 +43,8 @@ export const LiveFrame = forwardRef<HTMLDivElement, LiveFrameProps>(function Liv
       style={{ ...size, ...style }}
       {...rest}
     >
-      {src ? <iframe ref={frameRef} src={src} title={title} loading="lazy" scrolling="no" tabIndex={isStatic || inert ? -1 : undefined} inert={inert || undefined} aria-hidden={inert || undefined} onLoad={onFrameLoad} /> : children}
+      {src ? <iframe ref={frameRef} src={src} title={title} loading="lazy" scrolling="no" tabIndex={isStatic || inert ? -1 : undefined} inert={inert || undefined} aria-hidden={inert || undefined} onLoad={onFrameLoad} /> : null}
+      {children}
     </div>
   );
 });

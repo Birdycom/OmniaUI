@@ -1,7 +1,8 @@
 // File: packages/ui/src/barcode.js
-// Map: format guess -> EAN-13 / EAN-8 / UPC-A -> Code 128 (B, or C for even digit runs) -> bars to SVG -> SVG file -> bind -> boot
+// Map: format guess -> EAN-13 / EAN-8 / UPC-A -> Code 128 (B, or C for even digit runs) -> digit groups -> bars to SVG -> SVG file -> bind -> boot
 // Barcode display without a dependency : <figure class="oc-barcode" data-value="5412345678908">
 // gets an SVG with the bars and the digits under it. data-format="auto|EAN13|EAN8|UPC|CODE128" (default auto).
+// The digits are grouped like on a product (EAN-13 1 6 6, EAN-8 4 4, UPC-A 1 5 5 1); data-group="false" keeps one run.
 
 /** Module widths of the Code 128 symbols 0–105 (6 elements, 11 modules each) and the stop (7 elements, 13 modules). */
 export const CODE128 = [
@@ -79,15 +80,29 @@ export function encodeCode128(text) {
   return { bits, text };
 }
 
-/** Encode a value in a format (auto picks one). Returns the module string and the human-readable text. */
+/** Encode a value in a format (auto picks one). Returns the module string, the human-readable text and the format
+ *  that was used (EAN13, EAN8, UPC or CODE128). */
 export function encodeBarcode(value, format = "auto") {
   const code = String(value ?? "").trim();
   if (!code) throw new Error("empty value");
   const kind = format === "auto" ? guessFormat(code) : format.toUpperCase();
-  if (kind === "EAN13") return encodeEan(code.padStart(code.length === 12 ? 12 : 13, "0"), 13);
-  if (kind === "UPC") return encodeEan(`0${code}`, 13);
-  if (kind === "EAN8") return encodeEan(code, 8);
-  return encodeCode128(code);
+  if (kind === "EAN13") return { ...encodeEan(code.padStart(code.length === 12 ? 12 : 13, "0"), 13), format: "EAN13" };
+  if (kind === "UPC") return { ...encodeEan(`0${code}`, 13), format: "UPC" };
+  if (kind === "EAN8") return { ...encodeEan(code, 8), format: "EAN8" };
+  return { ...encodeCode128(code), format: "CODE128" };
+}
+
+/** The human-readable text in groups, as printed on a product: EAN-13 1 · 6 · 6, EAN-8 4 · 4, UPC-A 1 · 5 · 5 · 1
+ *  (the 12 UPC digits, without the leading 0 of its EAN-13 form). Code 128 stays one group. */
+export function digitGroups(text, format) {
+  const t = String(text ?? "");
+  if (format === "EAN13" && t.length === 13) return [t.slice(0, 1), t.slice(1, 7), t.slice(7)];
+  if (format === "EAN8" && t.length === 8) return [t.slice(0, 4), t.slice(4)];
+  if (format === "UPC" && t.length === 13) {
+    const u = t.slice(1);
+    return [u.slice(0, 1), u.slice(1, 6), u.slice(6, 11), u.slice(11)];
+  }
+  return [t];
 }
 
 /** Text for HTML: the value can come from user input (Code 128 encodes < > & " too). */
@@ -129,15 +144,21 @@ export function barcodeFile(value, { format = "auto", digits = true, moduleWidth
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${full}" viewBox="0 0 ${width} ${full}"><rect width="100%" height="100%" fill="#fff"/><g fill="#000">${rects}${caption}</g></svg>`;
 }
 
+/** The figcaption with the digits: one span per group (textContent stays the plain number for copy and tests). */
+export function digitsHtml(text, format, group = true) {
+  const groups = group ? digitGroups(text, format) : [String(text)];
+  return `<figcaption class="oc-barcode__digits">${groups.map((g) => `<span class="oc-barcode__group">${escapeHtml(g)}</span>`).join("")}</figcaption>`;
+}
+
 /** Draw one .oc-barcode from its data-value and data-format. Shows a short error instead of bars when it cannot. */
 export function renderBarcode(el) {
   if (!el) return;
   const value = el.dataset.value ?? "";
   const digits = el.dataset.digits !== "false";
   try {
-    const { bits, text } = encodeBarcode(value, el.dataset.format || "auto");
+    const { bits, text, format } = encodeBarcode(value, el.dataset.format || "auto");
     el.removeAttribute("data-error");
-    el.innerHTML = barsToSvg(bits, `Barcode ${text}`) + (digits ? `<figcaption class="oc-barcode__digits">${escapeHtml(text)}</figcaption>` : "");
+    el.innerHTML = barsToSvg(bits, `Barcode ${text}`) + (digits ? digitsHtml(text, format, el.dataset.group !== "false") : "");
   } catch (err) {
     el.setAttribute("data-error", "");
     el.innerHTML = `<figcaption class="oc-barcode__digits">${escapeHtml(value)}: ${escapeHtml(err.message)}</figcaption>`;

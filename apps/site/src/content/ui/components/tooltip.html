@@ -1,5 +1,5 @@
 <!--oc-page {"title": "OmniaUI - Tooltip", "category": "Overlays", "description": "A short hint next to an element on hover and keyboard focus, from a data-tooltip attribute, placed by CSS anchor positioning. No JavaScript.", "nav": "Tooltip", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
-<!-- File: apps/site/src/content/ui/components/tooltip.html | Map: hero -> demo (basic, icon buttons, multiline, with a title, placement, automatic placement) -> reference -> frameworks -> browser support -> source footer -->
+<!-- File: apps/site/src/content/ui/components/tooltip.html | Map: hero -> demo (basic, icon buttons, multiline, with a title, rich content, placement, automatic placement) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Tooltip</h1>
         <p class="oc-hero-text">A short hint that appears next to an element (above by default) on hover and on keyboard focus. The text comes from the <code>data-tooltip</code> attribute and CSS draws it; no JavaScript. Keep it short and never put essential information only in a tooltip (touch screens have no hover). For richer content, use a <a href="hover-card.html">hover card</a> or a <a href="popover.html">popover</a>. <a href="../components.html">All components</a>.</p>
@@ -17,6 +17,37 @@
 <span class="oc-tooltip" data-tooltip="Saved to your library">
   <button class="oc-btn oc-btn--outline" type="button">Hover or focus me</button>
 </span>
+<oc-code lang="tsx">&lt;Tooltip content="Saved to your library"&gt;
+  &lt;Button variant="outline"&gt;Hover or focus me&lt;/Button&gt;
+&lt;/Tooltip&gt;</oc-code>
+<oc-code lang="vue">&lt;OcTooltip text="Saved to your library"&gt;
+  &lt;OcButton variant="outline"&gt;Hover or focus me&lt;/OcButton&gt;
+&lt;/OcTooltip&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tooltip text="Saved to your library"&gt;
+    &lt;x-oc::button variant="outline"&gt;Hover or focus me&lt;/x-oc::button&gt;
+&lt;/x-oc::tooltip&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SaveToLibrary extends Component
+{
+    public bool $saved = true;
+
+    public function render()
+    {
+        return view('livewire.save-to-library');
+    }
+}
+
+{{-- resources/views/livewire/save-to-library.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::tooltip :text="$saved ? 'Saved to your library' : 'Not saved yet'"&gt;
+        &lt;x-oc::button variant="outline"&gt;Hover or focus me&lt;/x-oc::button&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Icon buttons</h3>
@@ -25,21 +56,115 @@
 <span class="oc-tooltip" data-tooltip="Edit"><button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" aria-label="Edit"><span class="font-1.2" aria-hidden="true">&#9998;</span></button></span>
 <span class="oc-tooltip" data-tooltip="Duplicate"><button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" aria-label="Duplicate"><span class="font-1.2" aria-hidden="true">&#10697;</span></button></span>
 <span class="oc-tooltip" data-tooltip="Delete"><button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" aria-label="Delete"><span class="font-1.2" aria-hidden="true">&#128465;</span></button></span>
+<oc-code lang="tsx">&lt;Tooltip content="Edit"&gt;&lt;Button variant="ghost" icon aria-label="Edit"&gt;&lt;Webicon name="mdi:pencil-outline" /&gt;&lt;/Button&gt;&lt;/Tooltip&gt;
+&lt;Tooltip content="Duplicate"&gt;&lt;Button variant="ghost" icon aria-label="Duplicate"&gt;&lt;Webicon name="mdi:content-copy" /&gt;&lt;/Button&gt;&lt;/Tooltip&gt;
+&lt;Tooltip content="Delete"&gt;&lt;Button variant="ghost" icon aria-label="Delete"&gt;&lt;Webicon name="mdi:delete-outline" /&gt;&lt;/Button&gt;&lt;/Tooltip&gt;</oc-code>
+<oc-code lang="vue">&lt;OcTooltip text="Edit"&gt;&lt;OcButton variant="ghost" icon aria-label="Edit"&gt;&lt;OcWebicon name="mdi:pencil-outline" /&gt;&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+&lt;OcTooltip text="Duplicate"&gt;&lt;OcButton variant="ghost" icon aria-label="Duplicate"&gt;&lt;OcWebicon name="mdi:content-copy" /&gt;&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+&lt;OcTooltip text="Delete"&gt;&lt;OcButton variant="ghost" icon aria-label="Delete"&gt;&lt;OcWebicon name="mdi:delete-outline" /&gt;&lt;/OcButton&gt;&lt;/OcTooltip&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tooltip text="Edit"&gt;&lt;x-oc::button variant="ghost" icon aria-label="Edit"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+&lt;x-oc::tooltip text="Duplicate"&gt;&lt;x-oc::button variant="ghost" icon aria-label="Duplicate"&gt;&lt;x-oc::webicon name="mdi:content-copy" /&gt;&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+&lt;x-oc::tooltip text="Delete"&gt;&lt;x-oc::button variant="ghost" icon aria-label="Delete"&gt;&lt;x-oc::webicon name="mdi:delete-outline" /&gt;&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class RowActions extends Component
+{
+    public int $invoice = 1;
+
+    public function edit(): void
+    {
+        $this-&gt;redirect('/invoices/'.$this-&gt;invoice.'/edit', navigate: true);
+    }
+
+    public function duplicate(): void
+    {
+        // copy the invoice
+    }
+
+    public function delete(): void
+    {
+        // delete the invoice
+    }
+
+    public function render()
+    {
+        return view('livewire.row-actions');
+    }
+}
+
+{{-- resources/views/livewire/row-actions.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::tooltip text="Edit"&gt;&lt;x-oc::button variant="ghost" icon aria-label="Edit" wire:click="edit"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip text="Duplicate"&gt;&lt;x-oc::button variant="ghost" icon aria-label="Duplicate" wire:click="duplicate"&gt;&lt;x-oc::webicon name="mdi:content-copy" /&gt;&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip text="Delete"&gt;&lt;x-oc::button variant="ghost" icon aria-label="Delete" wire:click="delete" wire:confirm="Delete this invoice?"&gt;&lt;x-oc::webicon name="mdi:delete-outline" /&gt;&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Multiline</h3>
           <p class="oc-section-content__desc">Add <code>.oc-tooltip--multiline</code> and every line break in <code>data-tooltip</code> (<code>&amp;#10;</code> in HTML, <code>\n</code> in JavaScript) starts a new line.</p>
-          <oc-demo title="Tooltip - multiline">
+          <oc-demo title="Tooltip - multiline" hint="Hover or focus the button: the tooltip opens above it.">
 <div class="pt-8">
   <span class="oc-tooltip oc-tooltip--multiline" data-tooltip="Autosave is on&#10;Last saved 2 minutes ago&#10;Ctrl S saves now">
     <button class="oc-btn oc-btn--outline" type="button">Save status</button>
   </span>
 </div>
+<oc-code lang="tsx">&lt;div className="pt-8"&gt;
+  &lt;Tooltip multiline content={"Autosave is on\nLast saved 2 minutes ago\nCtrl S saves now"}&gt;
+    &lt;Button variant="outline"&gt;Save status&lt;/Button&gt;
+  &lt;/Tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="pt-8"&gt;
+  &lt;OcTooltip multiline :text="'Autosave is on\nLast saved 2 minutes ago\nCtrl S saves now'"&gt;
+    &lt;OcButton variant="outline"&gt;Save status&lt;/OcButton&gt;
+  &lt;/OcTooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="pt-8"&gt;
+    &lt;x-oc::tooltip multiline :text="implode(PHP_EOL, ['Autosave is on', 'Last saved 2 minutes ago', 'Ctrl S saves now'])"&gt;
+        &lt;x-oc::button variant="outline"&gt;Save status&lt;/x-oc::button&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SaveStatus extends Component
+{
+    public bool $autosave = true;
+
+    public string $lastSaved = '2 minutes ago';
+
+    public function status(): string
+    {
+        return implode(PHP_EOL, [
+            $this-&gt;autosave ? 'Autosave is on' : 'Autosave is off',
+            'Last saved '.$this-&gt;lastSaved,
+            'Ctrl S saves now',
+        ]);
+    }
+
+    public function render()
+    {
+        return view('livewire.save-status');
+    }
+}
+
+{{-- resources/views/livewire/save-status.blade.php --}}
+&lt;div class="pt-8"&gt;
+    &lt;x-oc::tooltip multiline :text="$this-&gt;status()"&gt;
+        &lt;x-oc::button variant="outline"&gt;Save status&lt;/x-oc::button&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">With a title</h3>
           <p class="oc-section-content__desc">For a title above the lines, put a <code>.oc-tooltip__content</code> inside the tooltip instead of <code>data-tooltip</code>, with a <code>.oc-tooltip__title</code>: a little larger, bold and always starting with a capital (<code>::first-letter</code>). A pseudo-element cannot style its own first line, so this needs a real element. The OmniaCSS <a href="https://omniacss.test/docs/colors/palettes.html">color palettes</a> use it for the color models of every swatch.</p>
-          <oc-demo title="Tooltip - with a title">
+          <oc-demo title="Tooltip - with a title" hint="Hover or focus the button: the tooltip opens above it.">
 <div class="pt-8">
   <span class="oc-tooltip">
     <button class="oc-btn oc-btn--outline" type="button">Red: color values</button>
@@ -50,6 +175,128 @@ OKLCH: 62.80% 0.2577 29.23deg
 OKLAB: 62.80% 0.2249 0.1258</span>
   </span>
 </div>
+<oc-code lang="tsx">&lt;div className="pt-8"&gt;
+  &lt;Tooltip heading="red" content={"HEX: #FF0000\nRGB: 255 0 0\nHSL: 0deg 100% 50%\nOKLCH: 62.80% 0.2577 29.23deg\nOKLAB: 62.80% 0.2249 0.1258"}&gt;
+    &lt;Button variant="outline"&gt;Red: color values&lt;/Button&gt;
+  &lt;/Tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="pt-8"&gt;
+  &lt;OcTooltip heading="red" :text="'HEX: #FF0000\nRGB: 255 0 0\nHSL: 0deg 100% 50%\nOKLCH: 62.80% 0.2577 29.23deg\nOKLAB: 62.80% 0.2249 0.1258'"&gt;
+    &lt;OcButton variant="outline"&gt;Red: color values&lt;/OcButton&gt;
+  &lt;/OcTooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="pt-8"&gt;
+    &lt;x-oc::tooltip heading="red" :text="implode(PHP_EOL, ['HEX: #FF0000', 'RGB: 255 0 0', 'HSL: 0deg 100% 50%', 'OKLCH: 62.80% 0.2577 29.23deg', 'OKLAB: 62.80% 0.2249 0.1258'])"&gt;
+        &lt;x-oc::button variant="outline"&gt;Red: color values&lt;/x-oc::button&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ColorValues extends Component
+{
+    public string $name = 'red';
+
+    /** @var array&lt;string, string&gt; */
+    public array $values = [
+        'HEX' =&gt; '#FF0000',
+        'RGB' =&gt; '255 0 0',
+        'HSL' =&gt; '0deg 100% 50%',
+        'OKLCH' =&gt; '62.80% 0.2577 29.23deg',
+        'OKLAB' =&gt; '62.80% 0.2249 0.1258',
+    ];
+
+    public function lines(): string
+    {
+        return collect($this-&gt;values)-&gt;map(fn ($value, $space) =&gt; "{$space}: {$value}")-&gt;implode(PHP_EOL);
+    }
+
+    public function render()
+    {
+        return view('livewire.color-values');
+    }
+}
+
+{{-- resources/views/livewire/color-values.blade.php --}}
+&lt;div class="pt-8"&gt;
+    &lt;x-oc::tooltip :heading="$name" :text="$this-&gt;lines()"&gt;
+        &lt;x-oc::button variant="outline"&gt;{{ ucfirst($name) }}: color values&lt;/x-oc::button&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="rich">Rich content, delay and open state <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Content can be markup now: pass a node as <code>content</code> in React, use the <code>#content</code> slot in Vue or <code>&lt;x-slot:content&gt;</code> in Blade. It renders a <code>.oc-tooltip__content</code> with <code>role="tooltip"</code>, linked to the wrapper with <code>aria-describedby</code>. <code>TooltipProvider</code> (<code>OcTooltipProvider</code>) sets a delay for every tooltip inside it through <code>--oc-tooltip-delay</code>; <code>delayDuration</code> on one tooltip overrides it (Blade <code>delay</code>). For a controlled tooltip pass <code>open</code> + <code>onOpenChange</code> (Vue <code>v-model:open</code>): <code>.is-open</code> shows it without hover, <code>.is-closed</code> keeps it hidden. Hover the button: the tooltip waits 400 ms.</p>
+          <oc-demo title="Tooltip - rich content" hint="Hover or focus the button: the tooltip opens above it.">
+<div class="pt-8">
+  <span class="oc-tooltip-provider" style="--oc-tooltip-delay: 400ms">
+    <span class="oc-tooltip" aria-describedby="oc-tooltip-rich">
+      <button class="oc-btn oc-btn--outline" type="button">Invoice 2026-014</button>
+      <span class="oc-tooltip__content" role="tooltip" id="oc-tooltip-rich"><span class="oc-tooltip__title">Customer 1</span>Due <strong>today</strong>, 1.250,00 EUR</span>
+    </span>
+  </span>
+</div>
+<oc-code lang="tsx">import { Button, Tooltip, TooltipProvider } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="pt-8"&gt;
+      &lt;TooltipProvider delayDuration={400}&gt;
+        &lt;Tooltip heading="Customer 1" content={&lt;&gt;Due &lt;strong&gt;today&lt;/strong&gt;, 1.250,00 EUR&lt;/&gt;}&gt;
+          &lt;Button variant="outline"&gt;Invoice 2026-014&lt;/Button&gt;
+        &lt;/Tooltip&gt;
+      &lt;/TooltipProvider&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcTooltip, OcTooltipProvider } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="pt-8"&gt;
+    &lt;OcTooltipProvider :delay-duration="400"&gt;
+      &lt;OcTooltip heading="Customer 1"&gt;
+        &lt;OcButton variant="outline"&gt;Invoice 2026-014&lt;/OcButton&gt;
+        &lt;template #content&gt;Due &lt;strong&gt;today&lt;/strong&gt;, 1.250,00 EUR&lt;/template&gt;
+      &lt;/OcTooltip&gt;
+    &lt;/OcTooltipProvider&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="pt-8"&gt;
+    &lt;x-oc::tooltip heading="Customer 1" delay="400"&gt;
+        &lt;x-oc::button variant="outline"&gt;Invoice 2026-014&lt;/x-oc::button&gt;
+        &lt;x-slot:content&gt;Due &lt;strong&gt;today&lt;/strong&gt;, 1.250,00 EUR&lt;/x-slot:content&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceHint extends Component
+{
+    public string $customer = 'Customer 1';
+
+    public string $amount = '1.250,00 EUR';
+
+    public function render()
+    {
+        return view('livewire.invoice-hint');
+    }
+}
+
+{{-- resources/views/livewire/invoice-hint.blade.php --}}
+&lt;div class="pt-8"&gt;
+    &lt;x-oc::tooltip :heading="$customer" delay="400"&gt;
+        &lt;x-oc::button variant="outline"&gt;Invoice 2026-014&lt;/x-oc::button&gt;
+        &lt;x-slot:content&gt;Due &lt;strong&gt;today&lt;/strong&gt;, {{ $amount }}&lt;/x-slot:content&gt;
+    &lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Placement</h3>
@@ -61,6 +308,47 @@ OKLAB: 62.80% 0.2249 0.1258</span>
   <span class="oc-tooltip oc-tooltip--left" data-tooltip="Left"><button class="oc-btn oc-btn--outline" type="button">Left</button></span>
   <span class="oc-tooltip oc-tooltip--right" data-tooltip="Right"><button class="oc-btn oc-btn--outline" type="button">Right</button></span>
 </div>
+<oc-code lang="tsx">&lt;div className="contain-layout w-full flex gap-1 p-4 place-items-center"&gt;
+  &lt;Tooltip content="Top (default)"&gt;&lt;Button variant="outline"&gt;Top&lt;/Button&gt;&lt;/Tooltip&gt;
+  &lt;Tooltip side="bottom" content="Bottom"&gt;&lt;Button variant="outline"&gt;Bottom&lt;/Button&gt;&lt;/Tooltip&gt;
+  &lt;Tooltip side="left" content="Left"&gt;&lt;Button variant="outline"&gt;Left&lt;/Button&gt;&lt;/Tooltip&gt;
+  &lt;Tooltip side="right" content="Right"&gt;&lt;Button variant="outline"&gt;Right&lt;/Button&gt;&lt;/Tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="contain-layout w-full flex gap-1 p-4 place-items-center"&gt;
+  &lt;OcTooltip text="Top (default)"&gt;&lt;OcButton variant="outline"&gt;Top&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+  &lt;OcTooltip side="bottom" text="Bottom"&gt;&lt;OcButton variant="outline"&gt;Bottom&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+  &lt;OcTooltip side="left" text="Left"&gt;&lt;OcButton variant="outline"&gt;Left&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+  &lt;OcTooltip side="right" text="Right"&gt;&lt;OcButton variant="outline"&gt;Right&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="contain-layout w-full flex gap-1 p-4 place-items-center"&gt;
+    &lt;x-oc::tooltip text="Top (default)"&gt;&lt;x-oc::button variant="outline"&gt;Top&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip side="bottom" text="Bottom"&gt;&lt;x-oc::button variant="outline"&gt;Bottom&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip side="left" text="Left"&gt;&lt;x-oc::button variant="outline"&gt;Left&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip side="right" text="Right"&gt;&lt;x-oc::button variant="outline"&gt;Right&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TooltipSides extends Component
+{
+    /** @var array&lt;string, string&gt; side =&gt; text */
+    public array $sides = ['top' =&gt; 'Top (default)', 'bottom' =&gt; 'Bottom', 'left' =&gt; 'Left', 'right' =&gt; 'Right'];
+
+    public function render()
+    {
+        return view('livewire.tooltip-sides');
+    }
+}
+
+{{-- resources/views/livewire/tooltip-sides.blade.php --}}
+&lt;div class="contain-layout w-full flex gap-1 p-4 place-items-center"&gt;
+    @foreach ($sides as $side =&gt; $text)
+        &lt;x-oc::tooltip :side="$side" :text="$text"&gt;&lt;x-oc::button variant="outline"&gt;{{ ucfirst($side) }}&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Automatic placement</h3>
@@ -77,6 +365,61 @@ OKLAB: 62.80% 0.2249 0.1258</span>
     <span class="oc-tooltip oc-tooltip--left oc-tooltip--multiline" data-tooltip="Left is preferred&#10;and there is room"><button class="oc-btn oc-btn--outline" type="button">Bottom right</button></span>
   </div>
 </div>
+<oc-code lang="tsx">&lt;div className="contain-layout w-full h-12 flex flex-col justify-between p-2 border border-solid border-gray-50 rounded-lg"&gt;
+  &lt;div className="flex justify-between"&gt;
+    &lt;Tooltip content="No room above: shown below"&gt;&lt;Button variant="outline"&gt;Top left&lt;/Button&gt;&lt;/Tooltip&gt;
+    &lt;Tooltip side="right" content="No room on the right: shown on the left"&gt;&lt;Button variant="outline"&gt;Top right&lt;/Button&gt;&lt;/Tooltip&gt;
+  &lt;/div&gt;
+  &lt;div className="flex justify-between"&gt;
+    &lt;Tooltip side="bottom" content="No room below: shown above"&gt;&lt;Button variant="outline"&gt;Bottom left&lt;/Button&gt;&lt;/Tooltip&gt;
+    &lt;Tooltip side="left" multiline content={"Left is preferred\nand there is room"}&gt;&lt;Button variant="outline"&gt;Bottom right&lt;/Button&gt;&lt;/Tooltip&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="contain-layout w-full h-12 flex flex-col justify-between p-2 border border-solid border-gray-50 rounded-lg"&gt;
+  &lt;div class="flex justify-between"&gt;
+    &lt;OcTooltip text="No room above: shown below"&gt;&lt;OcButton variant="outline"&gt;Top left&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+    &lt;OcTooltip side="right" text="No room on the right: shown on the left"&gt;&lt;OcButton variant="outline"&gt;Top right&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+  &lt;/div&gt;
+  &lt;div class="flex justify-between"&gt;
+    &lt;OcTooltip side="bottom" text="No room below: shown above"&gt;&lt;OcButton variant="outline"&gt;Bottom left&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+    &lt;OcTooltip side="left" multiline :text="'Left is preferred\nand there is room'"&gt;&lt;OcButton variant="outline"&gt;Bottom right&lt;/OcButton&gt;&lt;/OcTooltip&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="contain-layout w-full h-12 flex flex-col justify-between p-2 border border-solid border-gray-50 rounded-lg"&gt;
+    &lt;div class="flex justify-between"&gt;
+        &lt;x-oc::tooltip text="No room above: shown below"&gt;&lt;x-oc::button variant="outline"&gt;Top left&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+        &lt;x-oc::tooltip side="right" text="No room on the right: shown on the left"&gt;&lt;x-oc::button variant="outline"&gt;Top right&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;/div&gt;
+    &lt;div class="flex justify-between"&gt;
+        &lt;x-oc::tooltip side="bottom" text="No room below: shown above"&gt;&lt;x-oc::button variant="outline"&gt;Bottom left&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+        &lt;x-oc::tooltip side="left" multiline :text="implode(PHP_EOL, ['Left is preferred', 'and there is room'])"&gt;&lt;x-oc::button variant="outline"&gt;Bottom right&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TooltipCorners extends Component
+{
+    public function render()
+    {
+        return view('livewire.tooltip-corners');
+    }
+}
+
+{{-- resources/views/livewire/tooltip-corners.blade.php --}}
+&lt;div class="contain-layout w-full h-12 flex flex-col justify-between p-2 border border-solid border-gray-50 rounded-lg"&gt;
+    &lt;div class="flex justify-between"&gt;
+        &lt;x-oc::tooltip text="No room above: shown below"&gt;&lt;x-oc::button variant="outline"&gt;Top left&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+        &lt;x-oc::tooltip side="right" text="No room on the right: shown on the left"&gt;&lt;x-oc::button variant="outline"&gt;Top right&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;/div&gt;
+    &lt;div class="flex justify-between"&gt;
+        &lt;x-oc::tooltip side="bottom" text="No room below: shown above"&gt;&lt;x-oc::button variant="outline"&gt;Bottom left&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+        &lt;x-oc::tooltip side="left" multiline :text="implode(PHP_EOL, ['Left is preferred', 'and there is room'])"&gt;&lt;x-oc::button variant="outline"&gt;Bottom right&lt;/x-oc::button&gt;&lt;/x-oc::tooltip&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -97,6 +440,9 @@ OKLAB: 62.80% 0.2249 0.1258</span>
               <tr><td><code>.oc-tooltip__content</code></td><td>Child element instead of <code>data-tooltip</code> (give it <code>role="tooltip"</code>): same bubble and placement, line breaks kept.</td></tr>
               <tr><td><code>.oc-tooltip__title</code></td><td>Title line inside <code>.oc-tooltip__content</code>: 0.875rem, bold, first letter always a capital.</td></tr>
               <tr><td><code>--oc-tooltip-gap</code></td><td>Space between the element and the tooltip (default <code>8px</code>).</td></tr>
+              <tr><td><code>--oc-tooltip-delay</code> / <code>.oc-tooltip-provider</code></td><td>Delay before the tooltip shows (0.17.0, default <code>0ms</code>); the provider is a <code>display: contents</code> wrapper that sets it for every tooltip inside. Styles in <code>parts/app-compound-overlays.css</code>.</td></tr>
+              <tr><td><code>.is-open</code> / <code>.is-closed</code></td><td>Controlled tooltip (0.17.0): shown without hover, or hidden also on hover. React <code>open</code> / <code>onOpenChange</code>, Vue <code>v-model:open</code>, Blade <code>:open="true|false"</code>.</td></tr>
+              <tr><td><code>aria-describedby</code></td><td>Rich content (React node, Vue <code>#content</code>, Blade <code>&lt;x-slot:content&gt;</code>) gets an id; the wrapper points to it.</td></tr>
             </tbody>
           </table>
         </div>

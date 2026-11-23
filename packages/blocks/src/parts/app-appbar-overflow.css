@@ -1,0 +1,49 @@
+/* File: packages/blocks/src/parts/app-appbar-overflow.css | Map: overflow nav (no side scroll) -> hidden items keep their width -> More button -> search slot -> narrow screens */
+/* 0.17.0 app header: links that do not fit move into a "More" menu (BlockAppHeader overflow, Vue :overflow, Blade
+   :overflow="true" + nav-overflow.js), and an optional search field between the nav and the actions. */
+
+.oc-block-appbar-nav--overflow,
+.oc-block-appbar-nav[data-oc-nav-overflow] {
+  overflow: clip;
+  overflow-clip-margin: 4px;
+}
+
+/* Hidden items stay in the list so their width can be measured, but take no room and cannot be reached. */
+.oc-block-appbar-nav [data-oc-hidden] {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+.oc-block-appbar-nav:is(.oc-block-appbar-nav--overflow, [data-oc-nav-overflow]) { position: relative; }
+
+.oc-block-appbar-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font: inherit;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.oc-block-appbar-more svg { inline-size: 1.125rem; block-size: 1.125rem; }
+
+/* ---- Search slot ---- */
+.oc-block-appbar-search {
+  display: flex;
+  align-items: center;
+  flex: 0 1 18rem;
+  min-inline-size: 0;
+}
+.oc-block-appbar-search > * { inline-size: 100%; }
+.oc-block-appbar-search .oc-input { inline-size: 100%; }
+
+/* With a search field the actions follow it directly instead of being pushed to the far end. */
+.oc-block-appbar-search + .oc-block-appbar-actions { margin-inline-start: 0; }
+.oc-block-appbar-nav + .oc-block-appbar-search { margin-inline-start: auto; }
+
+@media (max-width: 47.99rem) {
+  .oc-block-appbar-search { flex: 0 1 12rem; }
+}

@@ -144,6 +144,35 @@ final class Webicons
         return array_merge(['left' => 0, 'top' => 0, 'width' => 24, 'height' => 24, 'rotate' => 0, 'hFlip' => false, 'vFlip' => false], $icon);
     }
 
+    /** Country of the flag for a language code that does not match its country (en -> gb, da -> dk, …). */
+    private const LANGUAGE_COUNTRY = [
+        'en' => 'gb', 'da' => 'dk', 'sv' => 'se', 'nb' => 'no', 'nn' => 'no', 'cs' => 'cz', 'sl' => 'si', 'el' => 'gr',
+        'et' => 'ee', 'ga' => 'ie', 'lb' => 'lu', 'uk' => 'ua', 'ja' => 'jp', 'zh' => 'cn', 'ko' => 'kr', 'ar' => 'sa',
+        'he' => 'il', 'hi' => 'in', 'vi' => 'vn', 'ca' => 'es-ct', 'eu' => 'es-pv', 'gl' => 'es-ga', 'cy' => 'gb-wls',
+        'fa' => 'ir', 'sr' => 'rs', 'sq' => 'al', 'ms' => 'my', 'tl' => 'ph', 'sw' => 'tz', 'af' => 'za', 'ka' => 'ge',
+        'hy' => 'am', 'be' => 'by', 'kk' => 'kz',
+    ];
+
+    /**
+     * The flag webicon for a language code: a region in the code wins ('nl-BE' -> 'flag:be-4x3'), otherwise the usual
+     * country of the language ('en' -> gb, 'nl' -> nl). Null for a code it cannot place.
+     */
+    public static function languageFlag(string $code): ?string
+    {
+        $parts = preg_split('/[-_]/', strtolower($code)) ?: [''];
+        $lang = (string) array_shift($parts);
+        $region = null;
+        foreach ($parts as $part) {
+            if (preg_match('/^[a-z]{2}$/', $part)) {
+                $region = $part;
+                break;
+            }
+        }
+        $country = $region ?? self::LANGUAGE_COUNTRY[$lang] ?? (preg_match('/^[a-z]{2}$/', $lang) ? $lang : null);
+
+        return $country ? "flag:{$country}-4x3" : null;
+    }
+
     /**
      * viewBox, ratio (width / height) and the inner markup (an escaped <title> for a label, then the body).
      *

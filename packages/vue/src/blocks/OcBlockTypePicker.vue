@@ -2,6 +2,8 @@
 <script setup lang="ts">
 /**
  * Gallery of content types to add, each card with a small preview, picked like radios (click or arrow keys).
+ * mode="action": every card is a button, a click emits `pick` (value, option); `draggable` cards emit `item-dragstart`;
+ * an option with `disabledReason` stays focusable and shows why; the arrow keys only move the focus.
  * v-model = picked value. Slots: preview (scoped: { option }), footer. Classes: .oc-block-type-picker, -head, -title, -text,
  * -tools, -search, -cats, -grid, -item, -input, -preview, -name, -hint, -empty, -foot
  */
@@ -15,6 +17,8 @@ export interface TypePickerOption {
   hint?: string
   category?: string
   disabled?: boolean
+  /** Action mode: why the card cannot be used now (shown on the card, the card stays focusable). */
+  disabledReason?: string
 }
 export interface TypePickerCategory {
   value: string
@@ -33,12 +37,26 @@ const props = withDefaults(
     typeLabel?: string
     emptyText?: string
     name?: string
+    mode?: 'pick' | 'action'
+    draggable?: boolean
   }>(),
   {
     title: 'Add a block', categories: () => [], search: true, searchLabel: 'Search blocks', allLabel: 'All',
-    categoryLabel: 'Category', typeLabel: 'Block type', emptyText: 'No block matches your search.',
+    categoryLabel: 'Category', typeLabel: 'Block type', emptyText: 'No block matches your search.', mode: 'pick',
   },
 )
+const emit = defineEmits<{ pick: [value: string, option: TypePickerOption]; 'item-dragstart': [option: TypePickerOption, event: DragEvent] }>()
+const off = (o: TypePickerOption) => !!(o.disabled || o.disabledReason)
+function moveFocus(e: KeyboardEvent) {
+  const keys = ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End']
+  if (!keys.includes(e.key)) return
+  const items = [...(e.currentTarget as HTMLElement).querySelectorAll<HTMLElement>('.oc-block-type-picker-item')]
+  const at = items.indexOf(document.activeElement as HTMLElement)
+  if (at < 0) return
+  e.preventDefault()
+  const next = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : at + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1)
+  items[(next + items.length) % items.length]?.focus()
+}
 const model = defineModel<string>()
 const titleId = useUid('oc-picker-title')
 const auto = useUid('oc-picker')
@@ -52,7 +70,7 @@ const shown = computed(() => {
 </script>
 
 <template>
-  <section class="oc-block-type-picker" :aria-labelledby="titleId">
+  <section :class="['oc-block-type-picker', mode === 'action' && 'oc-block-type-picker--action']" :aria-labelledby="titleId">
     <div class="oc-block-type-picker-head">
       <h2 :id="titleId" class="oc-block-type-picker-title">{{ title }}</h2>
       <p v-if="text" class="oc-block-type-picker-text">{{ text }}</p>
@@ -68,7 +86,28 @@ const shown = computed(() => {
         </label>
       </fieldset>
     </div>
-    <fieldset class="oc-block-type-picker-grid">
+    <div v-if="mode === 'action'" class="oc-block-type-picker-grid" role="group" :aria-label="typeLabel" @keydown="moveFocus">
+      <button
+        v-for="o in shown"
+        :key="o.value"
+        type="button"
+        class="oc-block-type-picker-item"
+        :data-category="o.category"
+        :data-value="o.value"
+        :aria-disabled="off(o) ? 'true' : undefined"
+        :aria-describedby="o.disabledReason ? `${group}-${o.value}-reason` : undefined"
+        :draggable="draggable && !off(o) ? 'true' : undefined"
+        @dragstart="draggable && !off(o) && emit('item-dragstart', o, $event)"
+        @click="!off(o) && emit('pick', o.value, o)"
+      >
+        <span v-if="$slots.preview" class="oc-block-type-picker-preview" aria-hidden="true"><slot name="preview" :option="o" /></span>
+        <span class="oc-block-type-picker-name">{{ o.label }}</span>
+        <span v-if="o.hint" class="oc-block-type-picker-hint">{{ o.hint }}</span>
+        <span v-if="o.disabledReason" :id="`${group}-${o.value}-reason`" class="oc-block-type-picker-reason">{{ o.disabledReason }}</span>
+      </button>
+      <p v-if="!shown.length" class="oc-block-type-picker-empty">{{ emptyText }}</p>
+    </div>
+    <fieldset v-else class="oc-block-type-picker-grid">
       <legend class="oc-visually-hidden">{{ typeLabel }}</legend>
       <label v-for="o in shown" :key="o.value" class="oc-block-type-picker-item" :data-category="o.category">
         <input v-model="model" class="oc-block-type-picker-input" type="radio" :name="group" :value="o.value" :disabled="o.disabled">

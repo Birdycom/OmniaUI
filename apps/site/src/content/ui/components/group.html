@@ -36,6 +36,112 @@
     </div>
   </section>
 </div>
+<oc-code lang="tsx">import { Card, Group, MeterRow } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Card style={{ padding: "0 1rem 0.5rem", inlineSize: "min(100%,26rem)" }}&gt;
+      &lt;Group title="Service 1" aside="2 busy" asideTone="busy" meta="Plan Team · resets Monday"&gt;
+        &lt;div className="oc-meter-list oc-meter-list--dense"&gt;
+          &lt;MeterRow label="Session" percent={46} value="23k / 50k" /&gt;
+          &lt;MeterRow label="Week" percent={78} value="1.6M / 2M" level="warn" /&gt;
+        &lt;/div&gt;
+      &lt;/Group&gt;
+      &lt;Group title="Service 2" aside="idle" meta="Plan Free"&gt;
+        &lt;div className="oc-meter-list oc-meter-list--dense"&gt;
+          &lt;MeterRow label="Day" percent={12} value="6 / 50 requests" /&gt;
+        &lt;/div&gt;
+      &lt;/Group&gt;
+      &lt;Group title="Service 3" aside="limit reached" asideTone="error" meta="Plan Free · resets in 3 h"&gt;
+        &lt;div className="oc-meter-list oc-meter-list--dense"&gt;
+          &lt;MeterRow label="Day" percent={100} value="50 / 50 requests" level="critical" /&gt;
+        &lt;/div&gt;
+      &lt;/Group&gt;
+    &lt;/Card&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCard, OcGroup, OcMeterRow } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCard style="padding:0 1rem 0.5rem;inline-size:min(100%,26rem)"&gt;
+    &lt;OcGroup title="Service 1" aside="2 busy" aside-tone="busy" meta="Plan Team · resets Monday"&gt;
+      &lt;div class="oc-meter-list oc-meter-list--dense"&gt;
+        &lt;OcMeterRow label="Session" :percent="46" value="23k / 50k" /&gt;
+        &lt;OcMeterRow label="Week" :percent="78" value="1.6M / 2M" level="warn" /&gt;
+      &lt;/div&gt;
+    &lt;/OcGroup&gt;
+    &lt;OcGroup title="Service 2" aside="idle" meta="Plan Free"&gt;
+      &lt;div class="oc-meter-list oc-meter-list--dense"&gt;
+        &lt;OcMeterRow label="Day" :percent="12" value="6 / 50 requests" /&gt;
+      &lt;/div&gt;
+    &lt;/OcGroup&gt;
+    &lt;OcGroup title="Service 3" aside="limit reached" aside-tone="error" meta="Plan Free · resets in 3 h"&gt;
+      &lt;div class="oc-meter-list oc-meter-list--dense"&gt;
+        &lt;OcMeterRow label="Day" :percent="100" value="50 / 50 requests" level="critical" /&gt;
+      &lt;/div&gt;
+    &lt;/OcGroup&gt;
+  &lt;/OcCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::card style="padding:0 1rem 0.5rem;inline-size:min(100%,26rem)"&gt;
+    &lt;x-oc::group title="Service 1" aside="2 busy" tone="busy" meta="Plan Team · resets Monday"&gt;
+        &lt;div class="oc-meter-list oc-meter-list--dense"&gt;
+            &lt;x-oc::meter-row label="Session" :percent="46" value="23k / 50k" /&gt;
+            &lt;x-oc::meter-row label="Week" :percent="78" value="1.6M / 2M" level="warn" /&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::group&gt;
+    &lt;x-oc::group title="Service 2" aside="idle" meta="Plan Free"&gt;
+        &lt;div class="oc-meter-list oc-meter-list--dense"&gt;
+            &lt;x-oc::meter-row label="Day" :percent="12" value="6 / 50 requests" /&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::group&gt;
+    &lt;x-oc::group title="Service 3" aside="limit reached" tone="error" meta="Plan Free · resets in 3 h"&gt;
+        &lt;div class="oc-meter-list oc-meter-list--dense"&gt;
+            &lt;x-oc::meter-row label="Day" :percent="100" value="50 / 50 requests" level="critical" /&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::group&gt;
+&lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class GroupGroupsInAPanel extends Component
+{
+    /** Usage per service; meter-row picks warn from 75% and critical from 90%. */
+    public array $services = [
+        ['title' =&gt; 'Service 1', 'aside' =&gt; '2 busy', 'tone' =&gt; 'busy', 'meta' =&gt; 'Plan Team · resets Monday', 'meters' =&gt; [
+            ['label' =&gt; 'Session', 'percent' =&gt; 46, 'value' =&gt; '23k / 50k'],
+            ['label' =&gt; 'Week', 'percent' =&gt; 78, 'value' =&gt; '1.6M / 2M'],
+        ]],
+        ['title' =&gt; 'Service 2', 'aside' =&gt; 'idle', 'tone' =&gt; null, 'meta' =&gt; 'Plan Free', 'meters' =&gt; [
+            ['label' =&gt; 'Day', 'percent' =&gt; 12, 'value' =&gt; '6 / 50 requests'],
+        ]],
+        ['title' =&gt; 'Service 3', 'aside' =&gt; 'limit reached', 'tone' =&gt; 'error', 'meta' =&gt; 'Plan Free · resets in 3 h', 'meters' =&gt; [
+            ['label' =&gt; 'Day', 'percent' =&gt; 100, 'value' =&gt; '50 / 50 requests'],
+        ]],
+    ];
+
+    public function render()
+    {
+        return view('livewire.group-groups-in-a-panel');
+    }
+}
+
+{{-- resources/views/livewire/group-groups-in-a-panel.blade.php --}}
+&lt;x-oc::card style="padding:0 1rem 0.5rem;inline-size:min(100%,26rem)"&gt;
+    @foreach ($services as $service)
+        &lt;x-oc::group :title="$service['title']" :aside="$service['aside']" :tone="$service['tone']" :meta="$service['meta']"&gt;
+            &lt;div class="oc-meter-list oc-meter-list--dense"&gt;
+                @foreach ($service['meters'] as $meter)
+                    &lt;x-oc::meter-row :label="$meter['label']" :percent="$meter['percent']" :value="$meter['value']" /&gt;
+                @endforeach
+            &lt;/div&gt;
+        &lt;/x-oc::group&gt;
+    @endforeach
+&lt;/x-oc::card&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

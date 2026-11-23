@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Resizable", "category": "Layout", "description": "Resizable panels using CSS resize (horizontal, vertical, free box).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Resizable", "category": "Layout", "description": "Resizable panels that use CSS resize, no JavaScript: a side pane that grows sideways, stacked panes that resize in height, and a free box like a textarea.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/resizable.html | Map: hero -> demo (horizontal, vertical, free box) -> reference (classes, accessibility, platform features) -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Resizable</h1>
@@ -12,12 +12,60 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. Drag the grip in the bottom corner of the first pane. The markup is also available as the snippet <code>packages/ui/snippets/resizable.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React, Vue and Blade component <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Drag the grip in the bottom corner of the sidebar to the left or the right; the content takes the rest.</p>
           <oc-demo title="Resizable">
 <div class="oc-resizable" style="inline-size:100%;block-size:11rem">
   <div class="oc-resizable-panel oc-resizable-panel--resizable"><strong>Sidebar</strong><br>Drag the corner grip to resize.</div>
   <div class="oc-resizable-panel"><strong>Content</strong><br>Takes the remaining space.</div>
 </div>
+<oc-code lang="tsx">import { Resizable, ResizablePanel } from "@birdycom/omniaui-react";
+
+// CSS resize, no JavaScript: give the Resizable a block-size
+export function Example() {
+  return (
+    &lt;Resizable style={{ inlineSize: "100%", blockSize: "11rem" }}&gt;
+      &lt;ResizablePanel resizable&gt;&lt;strong&gt;Sidebar&lt;/strong&gt;&lt;br /&gt;Drag the corner grip to resize.&lt;/ResizablePanel&gt;
+      &lt;ResizablePanel&gt;&lt;strong&gt;Content&lt;/strong&gt;&lt;br /&gt;Takes the remaining space.&lt;/ResizablePanel&gt;
+    &lt;/Resizable&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcResizable, OcResizablePanel } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcResizable style="inline-size:100%;block-size:11rem"&gt;
+    &lt;OcResizablePanel resizable&gt;&lt;strong&gt;Sidebar&lt;/strong&gt;&lt;br /&gt;Drag the corner grip to resize.&lt;/OcResizablePanel&gt;
+    &lt;OcResizablePanel&gt;&lt;strong&gt;Content&lt;/strong&gt;&lt;br /&gt;Takes the remaining space.&lt;/OcResizablePanel&gt;
+  &lt;/OcResizable&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::resizable style="inline-size:100%;block-size:11rem"&gt;
+    &lt;x-oc::resizable.panel resizable&gt;&lt;strong&gt;Sidebar&lt;/strong&gt;&lt;br&gt;Drag the corner grip to resize.&lt;/x-oc::resizable.panel&gt;
+    &lt;x-oc::resizable.panel&gt;&lt;strong&gt;Content&lt;/strong&gt;&lt;br&gt;Takes the remaining space.&lt;/x-oc::resizable.panel&gt;
+&lt;/x-oc::resizable&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Resizable extends Component
+{
+    public function render()
+    {
+        return view('livewire.resizable');
+    }
+}
+
+{{-- resources/views/livewire/resizable.blade.php --}}
+{{-- CSS resize only: dragging the grip needs no round trip --}}
+&lt;div&gt;
+    &lt;x-oc::resizable style="inline-size:100%;block-size:11rem"&gt;
+        &lt;x-oc::resizable.panel resizable&gt;&lt;strong&gt;Sidebar&lt;/strong&gt;&lt;br&gt;Drag the corner grip to resize.&lt;/x-oc::resizable.panel&gt;
+        &lt;x-oc::resizable.panel&gt;&lt;strong&gt;Content&lt;/strong&gt;&lt;br&gt;Takes the remaining space.&lt;/x-oc::resizable.panel&gt;
+    &lt;/x-oc::resizable&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Vertical</h3>
@@ -27,6 +75,53 @@
   <div class="oc-resizable-panel oc-resizable-panel--resizable"><strong>Editor</strong><br>Drag the grip down or up.</div>
   <div class="oc-resizable-panel"><strong>Preview</strong><br>Takes the remaining height.</div>
 </div>
+<oc-code lang="tsx">import { Resizable, ResizablePanel } from "@birdycom/omniaui-react";
+
+// CSS resize, no JavaScript: give the Resizable a block-size
+export function Example() {
+  return (
+    &lt;Resizable vertical style={{ inlineSize: "min(100%, 28rem)", blockSize: "14rem" }}&gt;
+      &lt;ResizablePanel resizable&gt;&lt;strong&gt;Editor&lt;/strong&gt;&lt;br /&gt;Drag the grip down or up.&lt;/ResizablePanel&gt;
+      &lt;ResizablePanel&gt;&lt;strong&gt;Preview&lt;/strong&gt;&lt;br /&gt;Takes the remaining height.&lt;/ResizablePanel&gt;
+    &lt;/Resizable&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcResizable, OcResizablePanel } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcResizable vertical style="inline-size:min(100%, 28rem);block-size:14rem"&gt;
+    &lt;OcResizablePanel resizable&gt;&lt;strong&gt;Editor&lt;/strong&gt;&lt;br /&gt;Drag the grip down or up.&lt;/OcResizablePanel&gt;
+    &lt;OcResizablePanel&gt;&lt;strong&gt;Preview&lt;/strong&gt;&lt;br /&gt;Takes the remaining height.&lt;/OcResizablePanel&gt;
+  &lt;/OcResizable&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::resizable vertical style="inline-size:min(100%, 28rem);block-size:14rem"&gt;
+    &lt;x-oc::resizable.panel resizable&gt;&lt;strong&gt;Editor&lt;/strong&gt;&lt;br&gt;Drag the grip down or up.&lt;/x-oc::resizable.panel&gt;
+    &lt;x-oc::resizable.panel&gt;&lt;strong&gt;Preview&lt;/strong&gt;&lt;br&gt;Takes the remaining height.&lt;/x-oc::resizable.panel&gt;
+&lt;/x-oc::resizable&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ResizableVertical extends Component
+{
+    public function render()
+    {
+        return view('livewire.resizable-vertical');
+    }
+}
+
+{{-- resources/views/livewire/resizable-vertical.blade.php --}}
+{{-- CSS resize only: dragging the grip needs no round trip --}}
+&lt;div&gt;
+    &lt;x-oc::resizable vertical style="inline-size:min(100%, 28rem);block-size:14rem"&gt;
+        &lt;x-oc::resizable.panel resizable&gt;&lt;strong&gt;Editor&lt;/strong&gt;&lt;br&gt;Drag the grip down or up.&lt;/x-oc::resizable.panel&gt;
+        &lt;x-oc::resizable.panel&gt;&lt;strong&gt;Preview&lt;/strong&gt;&lt;br&gt;Takes the remaining height.&lt;/x-oc::resizable.panel&gt;
+    &lt;/x-oc::resizable&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Free box</h3>
@@ -35,6 +130,49 @@
 <div class="oc-resizable oc-resizable-box" style="inline-size:16rem;block-size:7rem">
   <div class="oc-resizable-panel">Resize me in both directions.</div>
 </div>
+<oc-code lang="tsx">import { Resizable, ResizablePanel } from "@birdycom/omniaui-react";
+
+// CSS resize, no JavaScript: give the Resizable a block-size
+export function Example() {
+  return (
+    &lt;Resizable box style={{ inlineSize: "16rem", blockSize: "7rem" }}&gt;
+      &lt;ResizablePanel&gt;Resize me in both directions.&lt;/ResizablePanel&gt;
+    &lt;/Resizable&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcResizable, OcResizablePanel } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcResizable box style="inline-size:16rem;block-size:7rem"&gt;
+    &lt;OcResizablePanel&gt;Resize me in both directions.&lt;/OcResizablePanel&gt;
+  &lt;/OcResizable&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::resizable box style="inline-size:16rem;block-size:7rem"&gt;
+    &lt;x-oc::resizable.panel&gt;Resize me in both directions.&lt;/x-oc::resizable.panel&gt;
+&lt;/x-oc::resizable&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ResizableFreeBox extends Component
+{
+    public function render()
+    {
+        return view('livewire.resizable-free-box');
+    }
+}
+
+{{-- resources/views/livewire/resizable-free-box.blade.php --}}
+{{-- CSS resize only: dragging the grip needs no round trip --}}
+&lt;div&gt;
+    &lt;x-oc::resizable box style="inline-size:16rem;block-size:7rem"&gt;
+        &lt;x-oc::resizable.panel&gt;Resize me in both directions.&lt;/x-oc::resizable.panel&gt;
+    &lt;/x-oc::resizable&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

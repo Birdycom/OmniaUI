@@ -11,12 +11,14 @@ import { useUid } from '../composables/useUid'
 defineProps<{
   /** Accessible name of the overflow trigger, e.g. "Actions for Ada". Turns on menu mode. */
   menuLabel?: string
+  /** Icons only: the labels (.oc-table-action-label) stay hidden. */
+  compact?: boolean
 }>()
 const menuId = useUid('oc-table-actions-menu')
 </script>
 
 <template>
-  <td :class="['oc-table-actions', !menuLabel && 'oc-table-actions--icons']">
+  <td :class="['oc-table-actions', !menuLabel && 'oc-table-actions--icons', compact && 'oc-table-actions--compact']">
     <template v-if="menuLabel">
       <button class="oc-table-actions-more" type="button" :popovertarget="menuId" :aria-label="menuLabel"></button>
       <div :id="menuId" class="oc-dropdown-menu" popover><slot /></div>

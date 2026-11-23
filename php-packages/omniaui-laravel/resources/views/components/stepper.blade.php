@@ -1,6 +1,8 @@
 {{-- OmniaCSS stepper. Props: steps (list of strings or ['label', 'meta', 'state' => done|active|upcoming]), current (1-based active step; earlier = done), horizontal, label.
-     Strings get an automatic "n/total" meta text. --}}
-@props(['steps' => [], 'current' => 1, 'horizontal' => false, 'label' => null])
+     Strings get an automatic "n/total" meta text.
+     Click hook: action (Livewire method; a done or active step gets wire:click="{action}({n})" with its 1-based number), or per step
+     'attributes' (extra attributes for its button, e.g. ['wire:click' => "goTo('address')"] or ['onclick' => '...']). --}}
+@props(['steps' => [], 'current' => 1, 'horizontal' => false, 'label' => null, 'action' => null])
 <ol {{ $attributes->class(['oc-stepper', 'oc-stepper--horizontal' => $horizontal])->merge(['aria-label' => $label]) }}>
     @foreach ($steps as $i => $step)
         @php
@@ -8,9 +10,12 @@
             $n = $i + 1;
             $state = $step['state'] ?? ($n < $current ? 'done' : ($n === (int) $current ? 'active' : 'upcoming'));
             $meta = $step['meta'] ?? $n.'/'.count($steps);
+            $stepBag = (new \Illuminate\View\ComponentAttributeBag((array) ($step['attributes'] ?? [])))
+                ->merge($action && $state !== 'upcoming' ? ['wire:click' => $action.'('.$n.')'] : [])
+                ->class(['oc-stepper-item', 'oc-stepper-item--done' => $state === 'done', 'oc-stepper-item--active' => $state === 'active']);
         @endphp
         <li>
-            <button @class(['oc-stepper-item', 'oc-stepper-item--done' => $state === 'done', 'oc-stepper-item--active' => $state === 'active']) type="button" @if ($state === 'active') aria-current="step" @endif @if ($state === 'upcoming') disabled @endif><span><span class="oc-stepper-label">{{ $step['label'] }}</span><span class="oc-stepper-meta">{{ $meta }}</span></span></button>
+            <button {{ $stepBag }} type="button" @if ($state === 'active') aria-current="step" @endif @if ($state === 'upcoming') disabled @endif><span><span class="oc-stepper-label">{{ $step['label'] }}</span><span class="oc-stepper-meta">{{ $meta }}</span></span></button>
         </li>
     @endforeach
 </ol>

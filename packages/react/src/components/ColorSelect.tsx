@@ -14,6 +14,8 @@ export interface ColorSelectOption {
   /** CSS color, use Omnia tokens: "var(--color-red-70)". */
   color: string;
   disabled?: boolean;
+  /** Hover text on the swatch, e.g. "Purple, in use" for a disabled color. */
+  title?: string;
 }
 
 export interface ColorSelectProps extends Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, "onChange" | "defaultValue"> {
@@ -38,7 +40,7 @@ export const ColorSelect = forwardRef<HTMLFieldSetElement, ColorSelectProps>(fun
   return (
     <fieldset ref={ref} className={cx("oc-color-select", list && "oc-color-select--list", size === "sm" && "oc-color-select--sm", className)} role="radiogroup" {...rest}>
       {options.map((o) => (
-        <label key={o.value} className="oc-color-select-option" style={{ "--oc-swatch": o.color } as CSSProperties}>
+        <label key={o.value} className="oc-color-select-option" style={{ "--oc-swatch": o.color } as CSSProperties} title={o.title}>
           <input type="radio" name={group} value={o.value} disabled={o.disabled} checked={current === o.value} onChange={() => setCurrent(o.value)} />
           <span className="oc-color-select-swatch" />
           <span className="oc-color-select-name">{o.label}</span>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Table of contents", "category": "Navigation", "description": "\"On this page\" list with scroll-spy highlight (<code>.oc-toc</code>).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Table of contents", "category": "Navigation", "since": "0.11.0", "description": "\"On this page\" list of heading links with sub items and group labels; sticky in a side column, and a scroll-spy marks the heading you are reading.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Table of contents</h1>
         <p class="oc-hero-text"><strong>"On this page"</strong> list for long articles: links to the headings of the current page, indented for sub headings, with the heading you are reading highlighted. It is the right column of every OmniaCSS documentation page. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/toc.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Headings with sub items <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Table of contents">
 <nav class="oc-toc" aria-label="On this page">
   <p class="oc-toc-title">On this page</p>
@@ -19,6 +20,78 @@
     <li><a class="oc-toc-link" href="#usage">Usage</a></li>
   </ul>
 </nav>
+<oc-code lang="tsx">import { Toc } from "@birdycom/omniaui-react";
+
+const items = [
+  { href: "#overview", label: "Overview" },
+  { href: "#install", label: "Install", current: true },
+  { href: "#npm", label: "With npm", sub: true },
+  { href: "#cdn", label: "From a CDN", sub: true },
+  { href: "#usage", label: "Usage" },
+];
+
+export function Example() {
+  // The scroll-spy (toc.js) moves aria-current to the heading you read.
+  return &lt;Toc title="On this page" items={items} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcToc } from "@birdycom/omniaui-vue";
+
+const items = [
+  { href: "#overview", label: "Overview" },
+  { href: "#install", label: "Install", current: true },
+  { href: "#npm", label: "With npm", sub: true },
+  { href: "#cdn", label: "From a CDN", sub: true },
+  { href: "#usage", label: "Usage" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- The scroll-spy (toc.js) moves aria-current to the heading you read. --&gt;
+  &lt;OcToc title="On this page" :items="items" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Load toc.js (npx omniaui copy-js toc) and aria-current follows the heading you read. --}}
+&lt;x-oc::toc title="On this page" :items="[
+  ['href' =&gt; '#overview', 'label' =&gt; 'Overview'],
+  ['href' =&gt; '#install', 'label' =&gt; 'Install', 'current' =&gt; true],
+  ['href' =&gt; '#npm', 'label' =&gt; 'With npm', 'sub' =&gt; true],
+  ['href' =&gt; '#cdn', 'label' =&gt; 'From a CDN', 'sub' =&gt; true],
+  ['href' =&gt; '#usage', 'label' =&gt; 'Usage'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TocTableOfContents extends Component
+{
+    public string $current = '#install';
+
+    public function items(): array
+    {
+        $items = [
+            ['href' =&gt; '#overview', 'label' =&gt; 'Overview'],
+            ['href' =&gt; '#install', 'label' =&gt; 'Install'],
+            ['href' =&gt; '#npm', 'label' =&gt; 'With npm', 'sub' =&gt; true],
+            ['href' =&gt; '#cdn', 'label' =&gt; 'From a CDN', 'sub' =&gt; true],
+            ['href' =&gt; '#usage', 'label' =&gt; 'Usage'],
+        ];
+
+        return array_map(fn ($item) =&gt; $item + ['current' =&gt; $item['href'] === $this-&gt;current], $items);
+    }
+
+    public function render()
+    {
+        return view('livewire.toc-table-of-contents');
+    }
+}
+
+{{-- resources/views/livewire/toc-table-of-contents.blade.php --}}
+&lt;div&gt;
+    {{-- Load toc.js (npx omniaui copy-js toc) and aria-current follows the heading you read. --}}
+    &lt;x-oc::toc title="On this page" :items="$this-&gt;items()" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

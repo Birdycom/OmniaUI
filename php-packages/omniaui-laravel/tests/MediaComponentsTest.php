@@ -24,6 +24,18 @@ class MediaComponentsTest extends TestCase
         $this->assertStringContainsString('<img src="/a.png" alt="A">', $slot);
     }
 
+    public function test_scrim_renders_an_aria_hidden_layer_with_side_dark_and_tokens(): void
+    {
+        $plain = $this->render('<x-oc::scrim />');
+        $this->assertStringContainsString('class="oc-scrim"', $plain);
+        $this->assertStringContainsString('aria-hidden="true"', $plain);
+        $this->assertStringNotContainsString('style=', $plain);
+
+        $html = $this->render('<x-oc::scrim side="start" dark strength="0.6" size="12rem" />');
+        $this->assertStringContainsString('class="oc-scrim oc-scrim--start oc-scrim--dark"', $html);
+        $this->assertStringContainsString('style="--oc-scrim-strength: 0.6; --oc-scrim-size: 12rem"', $html);
+    }
+
     public function test_watermark_renders_once_or_tiled_and_escapes_the_text(): void
     {
         $one = $this->render('<x-oc::watermark text="<b>Draft</b>" variant="straight" tone="destructive" />');

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Barcode", "category": "Media", "description": "EAN-13, EAN-8, UPC-A or Code 128 drawn as SVG from a value, no dependency.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script type=\"module\" src=\"/js/oc-barcode.js\"></script>", "<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Barcode", "category": "Media", "description": "EAN-13, EAN-8, UPC-A or Code 128 drawn as SVG from a value, with grouped digits and a verified check digit. On a white plate, or bare inside a card.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script type=\"module\" src=\"/js/oc-barcode.js\"></script>", "<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/barcode.html | Map: hero -> demo -> reference -> frameworks -> browser support -> source -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Barcode</h1>
@@ -15,7 +15,7 @@
           <p class="oc-section-content__desc">The script draws each <code>figure.oc-barcode</code> from its <code>data-value</code> and picks the format from the value. Switch to dark mode: the code stays black on white, so it can still be scanned.</p>
           <oc-demo title="Barcode">
 <div class="oc-eg">
-  <div class="oc-eg__panels oc-eg__panels--rows" style="--eg-min: 15rem">
+  <div class="oc-eg__panels" style="--eg-min: 15rem">
     <div class="oc-eg__panel">
       <code class="oc-eg__name">.oc-barcode--hero</code>
       <div class="oc-eg__note">Large, for a product page or a label. 13 digits become an EAN-13.</div>
@@ -61,6 +61,156 @@
 &lt;figure class="oc-barcode" data-value="96385074"&gt;&lt;/figure&gt;
 &lt;figure class="oc-barcode oc-barcode--compact" data-value="012345678905" data-format="UPC" data-digits="false"&gt;&lt;/figure&gt;
 &lt;figure class="oc-barcode" data-value="5400000000018"&gt;&lt;/figure&gt;</oc-code>
+<oc-code lang="tsx">&lt;Barcode value="5400000000010" size="hero" /&gt;
+&lt;Barcode value="SKU-000105" /&gt;
+&lt;Barcode value="96385074" /&gt;
+&lt;Barcode value="012345678905" format="UPC" digits={false} size="compact" /&gt;
+&lt;Barcode value="5400000000018" /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcBarcode value="5400000000010" size="hero" /&gt;
+&lt;OcBarcode value="SKU-000105" /&gt;
+&lt;OcBarcode value="96385074" /&gt;
+&lt;OcBarcode value="012345678905" format="UPC" :digits="false" size="compact" /&gt;
+&lt;OcBarcode value="5400000000018" /&gt;</oc-code>
+<oc-code lang="blade">{{-- Once per page (after npx omniaui copy-js barcode): draws every figure.oc-barcode --}}
+&lt;script type="module" src="/js/oc-barcode.js"&gt;&lt;/script&gt;
+
+&lt;x-oc::barcode value="5400000000010" size="hero" /&gt;
+&lt;x-oc::barcode value="SKU-000105" /&gt;
+&lt;x-oc::barcode value="96385074" /&gt;
+&lt;x-oc::barcode value="012345678905" format="UPC" :digits="false" size="compact" /&gt;
+&lt;x-oc::barcode value="5400000000018" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ArticleBarcodes extends Component
+{
+    public string $ean = '5400000000010';
+
+    public string $sku = 'SKU-000105';
+
+    public function render()
+    {
+        return view('livewire.article-barcodes');
+    }
+}
+
+{{-- resources/views/livewire/article-barcodes.blade.php --}}
+{{-- once in the layout: &lt;script type="module" src="/js/oc-barcode.js"&gt;&lt;/script&gt; --}}
+&lt;div&gt;
+    &lt;x-oc::barcode :value="$ean" size="hero" /&gt;
+    &lt;x-oc::barcode :value="$sku" /&gt;
+    &lt;x-oc::barcode value="96385074" /&gt;
+    &lt;x-oc::barcode value="012345678905" format="UPC" :digits="false" size="compact" /&gt;
+    &lt;x-oc::barcode value="5400000000018" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="bare">In a card: bare, grouped digits, narrow <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc"><code>.oc-barcode--bare</code> drops the white plate and the border, so a barcode inside a card has no double frame; the bars take the text color (light on dark in dark mode, which phone scanners read; keep the default plate for print and labels). The digits are grouped like on a product: EAN-13 1 · 6 · 6, EAN-8 4 · 4, UPC-A 1 · 5 · 5 · 1 (<code>data-group="false"</code> keeps one run). A barcode never gets wider than its container: the SVG scales down.</p>
+          <oc-demo title="Barcode - bare, groups and narrow">
+<div class="oc-eg">
+  <div class="oc-eg__panels" style="--eg-min: 15rem">
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">.oc-barcode--bare</code>
+      <div class="oc-eg__note">Inside a card: no plate, no border, bars in the text color.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="background:var(--oc-card);display:flex;align-items:center;justify-content:center;padding:1rem;--eg-h:9rem">
+        <div class="oc-card" style="padding:1rem;display:grid;gap:0.5rem;justify-items:center">
+          <strong style="font-size:0.875rem">Article 1</strong>
+          <figure class="oc-barcode oc-barcode--bare" data-value="5400000000010"></figure>
+        </div>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">8rem wide</code>
+      <div class="oc-eg__note">A narrow column: the barcode keeps inside it.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="background:var(--oc-card);display:flex;align-items:center;justify-content:center;padding:1rem;--eg-h:9rem">
+        <div style="inline-size:8rem;outline:1px dashed var(--oc-border)">
+          <figure class="oc-barcode" data-value="5400000000010"></figure>
+        </div>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">data-group="false"</code>
+      <div class="oc-eg__note">One run of digits instead of the groups.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="background:var(--oc-card);display:flex;align-items:center;justify-content:center;padding:1rem;--eg-h:9rem">
+        <figure class="oc-barcode" data-value="96385074" data-group="false"></figure>
+      </div>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;!-- Once per page (after npx omniaui copy-js barcode): draws every figure.oc-barcode --&gt;
+&lt;script type="module" src="/js/oc-barcode.js"&gt;&lt;/script&gt;
+
+&lt;div class="oc-card"&gt;
+  &lt;strong&gt;Article 1&lt;/strong&gt;
+  &lt;figure class="oc-barcode oc-barcode--bare" data-value="5400000000010"&gt;&lt;/figure&gt;
+&lt;/div&gt;
+
+&lt;div style="inline-size:8rem"&gt;
+  &lt;figure class="oc-barcode" data-value="5400000000010"&gt;&lt;/figure&gt;
+&lt;/div&gt;
+
+&lt;figure class="oc-barcode" data-value="96385074" data-group="false"&gt;&lt;/figure&gt;</oc-code>
+<oc-code lang="tsx">&lt;div className="oc-card"&gt;
+  &lt;strong&gt;Article 1&lt;/strong&gt;
+  &lt;Barcode value="5400000000010" variant="bare" /&gt;
+&lt;/div&gt;
+
+&lt;div style={{ inlineSize: "8rem" }}&gt;
+  &lt;Barcode value="5400000000010" /&gt;
+&lt;/div&gt;
+
+&lt;Barcode value="96385074" groupDigits={false} /&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="oc-card"&gt;
+  &lt;strong&gt;Article 1&lt;/strong&gt;
+  &lt;OcBarcode value="5400000000010" variant="bare" /&gt;
+&lt;/div&gt;
+
+&lt;div style="inline-size: 8rem"&gt;
+  &lt;OcBarcode value="5400000000010" /&gt;
+&lt;/div&gt;
+
+&lt;OcBarcode value="96385074" :group-digits="false" /&gt;</oc-code>
+<oc-code lang="blade">{{-- Once per page (after npx omniaui copy-js barcode): draws every figure.oc-barcode --}}
+&lt;script type="module" src="/js/oc-barcode.js"&gt;&lt;/script&gt;
+
+&lt;div class="oc-card"&gt;
+    &lt;strong&gt;Article 1&lt;/strong&gt;
+    &lt;x-oc::barcode value="5400000000010" variant="bare" /&gt;
+&lt;/div&gt;
+
+&lt;div style="inline-size: 8rem"&gt;
+    &lt;x-oc::barcode value="5400000000010" /&gt;
+&lt;/div&gt;
+
+&lt;x-oc::barcode value="96385074" :group-digits="false" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ArticleCard extends Component
+{
+    public string $name = 'Article 1';
+
+    public string $ean = '5400000000010';
+
+    public function render()
+    {
+        return view('livewire.article-card');
+    }
+}
+
+{{-- resources/views/livewire/article-card.blade.php --}}
+{{-- once in the layout: &lt;script type="module" src="/js/oc-barcode.js"&gt;&lt;/script&gt; --}}
+&lt;div class="oc-card"&gt;
+    &lt;strong&gt;{{ $name }}&lt;/strong&gt;
+    &lt;x-oc::barcode :value="$ean" variant="bare" wire:key="ean-{{ $ean }}" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <p class="oc-section-content__desc mt-2" id="maker">To make barcodes (type a value, see it live, download a print-ready SVG) use the <a href="../blocks/barcode-maker.html">Barcode maker block</a> of OmniaUI Pro. In your own code the free <code>barcodeFile(value, options)</code> gives the SVG text, for a label or a PDF.</p>
@@ -77,6 +227,8 @@
               <tr><td><code>figure.oc-barcode[data-value]</code></td><td>The barcode. The script replaces its content with the SVG and the digits.</td></tr>
               <tr><td><code>data-format</code></td><td><code>auto</code> (default: 12–13 digits EAN-13, 7–8 EAN-8, 11 UPC-A, else Code 128), <code>EAN13</code>, <code>EAN8</code>, <code>UPC</code> or <code>CODE128</code>.</td></tr>
               <tr><td><code>data-digits="false"</code></td><td>Bars only, no digits.</td></tr>
+              <tr><td><code>.oc-barcode--bare</code></td><td>No white plate and no border (inside a card); bars and digits in the text color (0.17.0). Prop <code>variant="bare"</code>.</td></tr>
+              <tr><td><code>.oc-barcode__group</code> + <code>data-group="false"</code></td><td>The digits in groups: EAN-13 1 · 6 · 6, EAN-8 4 · 4, UPC-A 1 · 5 · 5 · 1; <code>data-group="false"</code> keeps one run (0.17.0). Prop <code>groupDigits</code>. <code>digitGroups(text, format)</code> is exported.</td></tr>
               <tr><td><code>.oc-barcode--hero / --compact</code></td><td>Large (product page, label) or small (table cell).</td></tr>
               <tr><td><code>--oc-barcode-height</code></td><td>Height of the bars (4rem).</td></tr>
               <tr><td><code>[data-error]</code></td><td>Set when the value cannot be encoded (wrong check digit, non-ASCII in Code 128); the reason shows instead of bars.</td></tr>

@@ -52,7 +52,16 @@ function nearestHeading(el) {
 }
 
 // Tab labels for the code languages of a demo.
-const DEMO_LANGS = { html: "HTML", css: "CSS", js: "JavaScript", javascript: "JavaScript", ts: "TypeScript", vue: "Vue", jsx: "React", tsx: "React", react: "React", blade: "Blade", php: "PHP", shell: "Shell", bash: "Shell", json: "JSON", scss: "SCSS" };
+const DEMO_LANGS = { html: "HTML", css: "CSS", js: "JavaScript", javascript: "JavaScript", ts: "TypeScript", vue: "Vue", jsx: "React", tsx: "React", react: "React", blade: "Blade", livewire: "Livewire", php: "PHP", shell: "Shell", bash: "Shell", json: "JSON", scss: "SCSS" };
+// Tab order of a demo, whatever the order in the page source: HTML | React | Vue | Blade | Livewire, other languages after.
+const TAB_ORDER = { html: 0, tsx: 1, jsx: 1, react: 1, vue: 2, blade: 3, livewire: 4 };
+const FRAMEWORK_LANGS = new Set(["tsx", "jsx", "react", "vue", "blade", "livewire"]);
+/** Sort a demo's code tabs (stable) and add the HTML tab from the preview when only framework tabs are given. */
+export function orderDemoCodes(codes, previewCode) {
+  const list = [...codes];
+  if (list.length && !list.some((c) => c.lang === "html") && list.some((c) => FRAMEWORK_LANGS.has(c.lang)) && previewCode?.trim()) list.unshift({ code: previewCode, lang: "html" });
+  return list.map((c, i) => ({ c, i, rank: TAB_ORDER[c.lang] ?? 99 })).sort((a, b) => a.rank - b.rank || a.i - b.i).map((x) => x.c);
+}
 const svgIcon = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const WIDTH_ICONS = {
   desktop: svgIcon('<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>'),
@@ -61,7 +70,7 @@ const WIDTH_ICONS = {
 };
 
 // Code panel of an <oc-demo pro> (OmniaUI Pro block): no code, a pointer to the Pro page instead.
-const PRO_LOCK = `${svgIcon('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')}<p><strong>Part of OmniaUI Pro.</strong> The HTML, Blade, React and Vue code of this block comes with an OmniaUI Pro license.</p><a class="oc-btn oc-btn--primary oc-btn--sm" href="/ui/pro.html">About OmniaUI Pro</a>`;
+const PRO_LOCK = `${svgIcon('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')}<p><strong>Part of OmniaUI Pro.</strong> The HTML, React, Vue and Blade code of this block (Blade works in Livewire views too) comes with an OmniaUI Pro license.</p><a class="oc-btn oc-btn--primary oc-btn--sm" href="/ui/pro.html">About OmniaUI Pro</a>`;
 
 // Native HTML/CSS features recognised in demo markup → MDN keys.
 const MARKUP_FEATURES = [
@@ -359,7 +368,8 @@ export function transform(content, route = "") {
   const demoMarkup = [...body.querySelectorAll("oc-demo")].map((d) => d.innerHTML).join(" ");
 
   // 1. Demo panels: a bar (title, Preview | code tabs, preview widths) -> preview -> one code panel per tab.
-  //    Every <oc-code> child becomes a tab (HTML, CSS, Vue, React, Blade …); without one, code comes from the preview.
+  //    Every <oc-code> child becomes a tab, ordered HTML | React | Vue | Blade | Livewire (orderDemoCodes); without one,
+  //    or with framework tabs only, the HTML tab comes from the preview.
   //    Tabs and widths are radio inputs (CSS :has(), no JavaScript); styles in public/css/oc-docs-v2.css.
   const pageTitle = body.querySelector("h1")?.textContent.trim() || "";
   let demoCount = 0;
@@ -367,11 +377,12 @@ export function transform(content, route = "") {
     const title = demo.getAttribute("title") || nearestHeading(demo) || pageTitle;
     // <oc-demo pro>: an OmniaUI Pro block. The live preview stays; the Code tab says where the code comes from.
     const pro = demo.hasAttribute("pro");
-    const codes = [...demo.children].filter((c) => c.localName === "oc-code").map((c) => {
+    const given = [...demo.children].filter((c) => c.localName === "oc-code").map((c) => {
       c.remove();
       return { code: c.textContent, lang: c.getAttribute("lang") || "html" };
     }).filter((c) => c.code.trim() && !pro);
     const preview = demo.innerHTML;
+    const codes = pro ? [] : orderDemoCodes(given, previewToCode(preview));
     if (!codes.length && !pro) codes.push({ code: previewToCode(preview), lang: "html" });
     const n = ++demoCount;
     // <oc-demo size="tall"> gives popovers/dropdowns room to open inside the preview.
@@ -395,7 +406,10 @@ export function transform(content, route = "") {
     }
     // Webicons in the preview become inline SVG (lib/inline-icons.mjs): faster pages, no Iconify API request.
     inlineIcons(document, demo);
-    const scoped = demo.innerHTML;
+    // <oc-demo hint="Hover the link…">: a short muted line in the preview that says how to open an overlay demo
+    // (hover card, popover, tooltip). Only in the preview, never in the code tabs.
+    const hint = demo.getAttribute("hint");
+    const scoped = demo.innerHTML + (hint ? `<p class="oc-demo__hint">${hint}</p>` : "");
     replaceWithHtml(document, demo, `<div class="oc-demo oc-demo--v2${pro ? " oc-demo--pro" : ""}"><div class="oc-demo__bar"><h4 class="oc-demo__title">${title}${pro ? ' <span class="oc-demo__pro-badge">Pro</span>' : ""}</h4><div class="oc-demo__tablist" role="radiogroup" aria-label="Show">${tabs}</div><div class="oc-demo__widths" role="radiogroup" aria-label="Preview width">${widths}</div></div><div class="oc-demo__preview oc-theme-scope${size}">${scoped}</div>${panels}</div>`);
   }
 
@@ -607,6 +621,17 @@ export function transform(content, route = "") {
       used.add(id);
     }
     toc.push({ id: h.id, text, level: h.localName === "h2" ? 2 : 3 });
+  }
+
+  // Code in a reference table cell (a tool name such as get_component, a path, a class with a dot): a break chance
+  // after "_", "/", "|", "=" and a "." before a letter, and before "[", so on a phone it wraps at a readable place
+  // instead of per letter
+  // (oc-docs-v2.css keeps code cells on overflow-wrap: break-word). The text itself (search, llms.txt) is unchanged.
+  for (const code of body.querySelectorAll(".oc-table-ref td code")) {
+    if (code.children.length || code.closest("pre")) continue;
+    const t = code.textContent;
+    if (t.length < 12 || !/[_/|=[]|\.[a-z]/i.test(t)) continue;
+    code.innerHTML = escText(t).replace(/(?<=\S)([_/|=]|\.(?=[a-z]))(?=.)/gi, "$1<wbr>").replace(/(?<=[^\s>])\[/g, "<wbr>[");
   }
 
   return { html: body.innerHTML, toc };

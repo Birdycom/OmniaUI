@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Code window", "category": "Docs UI", "description": "Window frame around code with a copy button (<code>.oc-code-window</code>).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Code window", "category": "Docs UI", "description": "Code window: a window frame with three dots, a file name and a copy button around highlighted code. Follows the page theme, or stays dark on a light page.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Code window</h1>
         <p class="oc-hero-text"><strong>Code window</strong>: a code sample in a window frame with traffic-light dots, a file name and a <strong>copy button</strong>. The syntax colors come from the <a href="code.html">Code block</a>; the window and the button are the pieces the docs and the homepage use. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/code-window.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React, Vue and Blade component <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Press Copy: the code goes to your clipboard and the button says Copied for a moment. This one example needs the few lines of script in the HTML tab for the copy button.</p>
           <oc-demo title="Code window">
 <div class="oc-code-window">
@@ -49,6 +50,61 @@ document.addEventListener("click", async (e) => {
     setTimeout(() =&gt; { b.classList.remove("is-copied"); b.textContent = "Copy"; }, 1500);
   });
 &lt;/script&gt;</oc-code>
+<oc-code lang="tsx">import { CodeWindow } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // The copy button copies the text of the body and says "Copied" for 1.5 s
+  return (
+    &lt;CodeWindow title="index.html"&gt;
+      {/* Highlighted code: an .oc-code-block (or pre.code-preview) with .hl-tag, .hl-attr, .hl-string … spans */}
+      &lt;div className="oc-code-block"&gt;
+        &lt;pre className="code-preview"&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+    &lt;/CodeWindow&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCodeWindow } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- The copy button copies the text of the body and says "Copied" for 1.5 s --&gt;
+  &lt;OcCodeWindow title="index.html"&gt;
+    &lt;!-- Highlighted code: an .oc-code-block (or pre.code-preview) with .hl-tag, .hl-attr, .hl-string … spans --&gt;
+    &lt;div class="oc-code-block"&gt;
+      &lt;pre class="code-preview"&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/OcCodeWindow&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- The component brings the copy script along (once per page) --}}
+&lt;x-oc::code-window title="index.html"&gt;
+    &lt;div class="oc-code-block"&gt;
+        &lt;pre class="code-preview"&gt;&lt;code&gt;{{ $code ?? '…' }}&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+&lt;/x-oc::code-window&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CodeSample extends Component
+{
+    public string $file = 'index.html';
+
+    public string $code = '&lt;button class="oc-btn" type="button"&gt;Save&lt;/button&gt;';
+
+    public function render()
+    {
+        return view('livewire.code-sample');
+    }
+}
+
+{{-- resources/views/livewire/code-sample.blade.php --}}
+{{-- copying happens in the browser (the script of the component), no round trip --}}
+&lt;div&gt;
+    &lt;x-oc::code-window :title="$file" :code="$code" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
         <h3 id="dark" class="oc-section-content__title mt-2">Always dark <span class="oc-badge-version">v0.12.6</span></h3>
@@ -57,7 +113,7 @@ document.addEventListener("click", async (e) => {
 <div class="oc-code-window oc-code-window--dark">
   <div class="oc-code-window__bar"><i></i><i></i><i></i><span class="oc-code-window__title">omnia.config.json</span></div>
   <oc-code lang="json">{
-  "content": ["resources/**/*.blade.php", "resources/js/**/*.vue"],
+  "content": ["resources/**/*.blade.php", "src/**/*.vue"],
   "pro": true,
   "theme": { "primary": "vividblue" }
 }</oc-code>
@@ -71,11 +127,88 @@ document.addEventListener("click", async (e) => {
 4
 5&lt;/pre&gt;
     &lt;pre class="code-preview"&gt;&lt;code&gt;{
-  &lt;span class="hl-string"&gt;"content"&lt;/span&gt;: [&lt;span class="hl-string"&gt;"resources/**/*.blade.php"&lt;/span&gt;, &lt;span class="hl-string"&gt;"resources/js/**/*.vue"&lt;/span&gt;],
+  &lt;span class="hl-string"&gt;"content"&lt;/span&gt;: [&lt;span class="hl-string"&gt;"resources/**/*.blade.php"&lt;/span&gt;, &lt;span class="hl-string"&gt;"src/**/*.vue"&lt;/span&gt;],
   &lt;span class="hl-string"&gt;"pro"&lt;/span&gt;: &lt;span class="hl-keyword"&gt;true&lt;/span&gt;,
   &lt;span class="hl-string"&gt;"theme"&lt;/span&gt;: { &lt;span class="hl-string"&gt;"primary"&lt;/span&gt;: &lt;span class="hl-string"&gt;"vividblue"&lt;/span&gt; }
 }&lt;/code&gt;&lt;/pre&gt;
   &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { CodeWindow } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;CodeWindow title="omnia.config.json" dark copy={false}&gt;
+      &lt;div className="oc-code-block"&gt;
+        &lt;pre className="oc-code-block__gutter" aria-hidden="true"&gt;{"1\n2\n3\n4\n5"}&lt;/pre&gt;
+        &lt;pre className="code-preview"&gt;&lt;code&gt;{"{\n  "}&lt;span className="hl-string"&gt;{"\"content\""}&lt;/span&gt;{": ["}&lt;span className="hl-string"&gt;{"\"resources/**/*.blade.php\""}&lt;/span&gt;{", "}&lt;span className="hl-string"&gt;{"\"src/**/*.vue\""}&lt;/span&gt;{"],\n  "}&lt;span className="hl-string"&gt;{"\"pro\""}&lt;/span&gt;{": "}&lt;span className="hl-keyword"&gt;{"true"}&lt;/span&gt;{",\n  "}&lt;span className="hl-string"&gt;{"\"theme\""}&lt;/span&gt;{": { "}&lt;span className="hl-string"&gt;{"\"primary\""}&lt;/span&gt;{": "}&lt;span className="hl-string"&gt;{"\"vividblue\""}&lt;/span&gt;{" }\n}"}&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+    &lt;/CodeWindow&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCodeWindow } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCodeWindow title="omnia.config.json" dark :copy="false"&gt;
+    &lt;div class="oc-code-block"&gt;
+      &lt;pre class="oc-code-block__gutter" aria-hidden="true"&gt;1
+2
+3
+4
+5&lt;/pre&gt;
+      &lt;pre class="code-preview"&gt;&lt;code&gt;{
+  &lt;span class="hl-string"&gt;"content"&lt;/span&gt;: [&lt;span class="hl-string"&gt;"resources/**/*.blade.php"&lt;/span&gt;, &lt;span class="hl-string"&gt;"src/**/*.vue"&lt;/span&gt;],
+  &lt;span class="hl-string"&gt;"pro"&lt;/span&gt;: &lt;span class="hl-keyword"&gt;true&lt;/span&gt;,
+  &lt;span class="hl-string"&gt;"theme"&lt;/span&gt;: { &lt;span class="hl-string"&gt;"primary"&lt;/span&gt;: &lt;span class="hl-string"&gt;"vividblue"&lt;/span&gt; }
+}&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/OcCodeWindow&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::code-window title="omnia.config.json" dark :copy="false"&gt;
+  &lt;div class="oc-code-block"&gt;
+    &lt;pre class="oc-code-block__gutter" aria-hidden="true"&gt;1
+2
+3
+4
+5&lt;/pre&gt;
+    &lt;pre class="code-preview"&gt;&lt;code&gt;{
+  &lt;span class="hl-string"&gt;"content"&lt;/span&gt;: [&lt;span class="hl-string"&gt;"resources/**/*.blade.php"&lt;/span&gt;, &lt;span class="hl-string"&gt;"src/**/*.vue"&lt;/span&gt;],
+  &lt;span class="hl-string"&gt;"pro"&lt;/span&gt;: &lt;span class="hl-keyword"&gt;true&lt;/span&gt;,
+  &lt;span class="hl-string"&gt;"theme"&lt;/span&gt;: { &lt;span class="hl-string"&gt;"primary"&lt;/span&gt;: &lt;span class="hl-string"&gt;"vividblue"&lt;/span&gt; }
+}&lt;/code&gt;&lt;/pre&gt;
+  &lt;/div&gt;
+&lt;/x-oc::code-window&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CodeWindowDark extends Component
+{
+    public function render()
+    {
+        return view('livewire.code-window-dark');
+    }
+}
+
+{{-- resources/views/livewire/code-window-dark.blade.php --}}
+&lt;div&gt;
+&lt;x-oc::code-window title="omnia.config.json" dark :copy="false"&gt;
+  &lt;div class="oc-code-block"&gt;
+    &lt;pre class="oc-code-block__gutter" aria-hidden="true"&gt;1
+2
+3
+4
+5&lt;/pre&gt;
+    &lt;pre class="code-preview"&gt;&lt;code&gt;{
+  &lt;span class="hl-string"&gt;"content"&lt;/span&gt;: [&lt;span class="hl-string"&gt;"resources/**/*.blade.php"&lt;/span&gt;, &lt;span class="hl-string"&gt;"src/**/*.vue"&lt;/span&gt;],
+  &lt;span class="hl-string"&gt;"pro"&lt;/span&gt;: &lt;span class="hl-keyword"&gt;true&lt;/span&gt;,
+  &lt;span class="hl-string"&gt;"theme"&lt;/span&gt;: { &lt;span class="hl-string"&gt;"primary"&lt;/span&gt;: &lt;span class="hl-string"&gt;"vividblue"&lt;/span&gt; }
+}&lt;/code&gt;&lt;/pre&gt;
+  &lt;/div&gt;
+&lt;/x-oc::code-window&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

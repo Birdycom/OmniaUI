@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Form page Block", "category": "App UX", "description": "Collapsible form sections in a grid with a sticky action bar.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Form page Block", "category": "App UX", "description": "Create and edit pages: collapsible form sections as cards with a two-column field grid and a sticky save bar that stays in view while you scroll.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Form page</h1>
         <p class="oc-hero-text">Create/edit pages: independent collapsible sections (card-style details) with a two-column field grid, and a sticky save bar that stays in view. <a href="../blocks.html">All blocks</a>.</p>
@@ -32,6 +32,133 @@
     <button class="oc-btn" type="submit">Save</button>
   </div>
 </form>
+<oc-code lang="tsx">import { BlockFormPage, BlockFormPageGrid, Button, ButtonLink, Collapsible, FormField, Input, Select, Textarea, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockFormPage
+      action="/companies"
+      method="post"
+      actions={
+        &lt;&gt;
+          &lt;ButtonLink variant="outline" href="/companies"&gt;Cancel&lt;/ButtonLink&gt;
+          &lt;Button type="submit"&gt;Save&lt;/Button&gt;
+        &lt;/&gt;
+      }
+    &gt;
+      &lt;Collapsible title="General information" defaultOpen icon={&lt;Webicon name="mdi:information-outline" className="oc-collapsible-icon" /&gt;}&gt;
+        &lt;BlockFormPageGrid&gt;
+          &lt;FormField label="Name"&gt;&lt;Input id="oc-form-name" name="name" /&gt;&lt;/FormField&gt;
+          &lt;FormField label="VAT number"&gt;&lt;Input id="oc-form-vat" name="vat" /&gt;&lt;/FormField&gt;
+          &lt;FormField label="E-mail"&gt;&lt;Input id="oc-form-email" name="email" type="email" /&gt;&lt;/FormField&gt;
+          &lt;FormField label="Country"&gt;&lt;Select id="oc-form-country" name="country" options={["Belgium", "Netherlands"]} /&gt;&lt;/FormField&gt;
+        &lt;/BlockFormPageGrid&gt;
+      &lt;/Collapsible&gt;
+      &lt;Collapsible title="Notes" icon={&lt;Webicon name="mdi:format-list-bulleted" className="oc-collapsible-icon" /&gt;}&gt;
+        &lt;Textarea name="notes" rows={3} aria-label="Notes" /&gt;
+      &lt;/Collapsible&gt;
+    &lt;/BlockFormPage&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockFormPage, OcCollapsible, OcFormField, OcInput, OcSelect, OcTextarea, OcWebicon } from "@birdycom/omniaui-vue";
+import { reactive, ref } from "vue";
+
+const general = ref(true);
+const form = reactive({ name: "", vat: "", email: "", country: "Belgium", notes: "" });
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockFormPage action="/companies" method="post" cancel-label="Cancel" submit-label="Save"&gt;
+    &lt;OcCollapsible v-model:open="general" title="General information"&gt;
+      &lt;template #icon&gt;&lt;OcWebicon name="mdi:information-outline" class="oc-collapsible-icon" /&gt;&lt;/template&gt;
+      &lt;div class="oc-block-formpage-grid"&gt;
+        &lt;OcFormField label="Name" for="oc-form-name"&gt;&lt;OcInput id="oc-form-name" v-model="form.name" name="name" /&gt;&lt;/OcFormField&gt;
+        &lt;OcFormField label="VAT number" for="oc-form-vat"&gt;&lt;OcInput id="oc-form-vat" v-model="form.vat" name="vat" /&gt;&lt;/OcFormField&gt;
+        &lt;OcFormField label="E-mail" for="oc-form-email"&gt;&lt;OcInput id="oc-form-email" v-model="form.email" name="email" type="email" /&gt;&lt;/OcFormField&gt;
+        &lt;OcFormField label="Country" for="oc-form-country"&gt;&lt;OcSelect id="oc-form-country" v-model="form.country" name="country" :options="['Belgium', 'Netherlands']" /&gt;&lt;/OcFormField&gt;
+      &lt;/div&gt;
+    &lt;/OcCollapsible&gt;
+    &lt;OcCollapsible title="Notes"&gt;
+      &lt;template #icon&gt;&lt;OcWebicon name="mdi:format-list-bulleted" class="oc-collapsible-icon" /&gt;&lt;/template&gt;
+      &lt;OcTextarea v-model="form.notes" name="notes" :rows="3" aria-label="Notes" /&gt;
+    &lt;/OcCollapsible&gt;
+  &lt;/OcBlockFormPage&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.form-page action="/companies" method="post"&gt;
+    &lt;x-oc::collapsible title="General information" open&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:information-outline" class="oc-collapsible-icon" /&gt;&lt;/x-slot:icon&gt;
+        &lt;div class="oc-block-formpage-grid"&gt;
+            &lt;x-oc::form-field label="Name" for="oc-form-name" name="name"&gt;&lt;x-oc::input name="name" id="oc-form-name" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="VAT number" for="oc-form-vat" name="vat"&gt;&lt;x-oc::input name="vat" id="oc-form-vat" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="E-mail" for="oc-form-email" name="email"&gt;&lt;x-oc::input name="email" id="oc-form-email" type="email" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="Country" for="oc-form-country" name="country"&gt;&lt;x-oc::select name="country" id="oc-form-country" :options="['BE' =&gt; 'Belgium', 'NL' =&gt; 'Netherlands']" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::collapsible&gt;
+    &lt;x-oc::collapsible title="Notes"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:format-list-bulleted" class="oc-collapsible-icon" /&gt;&lt;/x-slot:icon&gt;
+        &lt;x-oc::textarea name="notes" :rows="3" aria-label="Notes" /&gt;
+    &lt;/x-oc::collapsible&gt;
+    &lt;div class="oc-block-formpage-actions"&gt;
+        &lt;x-oc::button variant="outline" href="/companies"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button type="submit"&gt;Save&lt;/x-oc::button&gt;
+    &lt;/div&gt;
+&lt;/x-oc::block.form-page&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class FormPage extends Component
+{
+    #[Validate('required|min:2')]
+    public string $name = '';
+
+    #[Validate('nullable|max:20')]
+    public string $vat = '';
+
+    #[Validate('nullable|email')]
+    public string $email = '';
+
+    #[Validate('required|in:BE,NL')]
+    public string $country = 'BE';
+
+    public string $notes = '';
+
+    public function save(): void
+    {
+        $this-&gt;validate();
+        // Company::create($this-&gt;only(['name', 'vat', 'email', 'country', 'notes']));
+    }
+
+    public function render()
+    {
+        return view('livewire.form-page');
+    }
+}
+
+{{-- resources/views/livewire/form-page.blade.php --}}
+&lt;x-oc::block.form-page wire:submit="save"&gt;
+    &lt;x-oc::collapsible title="General information" open&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:information-outline" class="oc-collapsible-icon" /&gt;&lt;/x-slot:icon&gt;
+        &lt;div class="oc-block-formpage-grid"&gt;
+            &lt;x-oc::form-field label="Name" for="oc-form-name" name="name"&gt;&lt;x-oc::wire.input model="name" id="oc-form-name" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="VAT number" for="oc-form-vat" name="vat"&gt;&lt;x-oc::wire.input model="vat" id="oc-form-vat" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="E-mail" for="oc-form-email" name="email"&gt;&lt;x-oc::wire.input model="email" id="oc-form-email" type="email" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="Country" for="oc-form-country" name="country"&gt;&lt;x-oc::wire.select model="country" id="oc-form-country" :options="['BE' =&gt; 'Belgium', 'NL' =&gt; 'Netherlands']" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::collapsible&gt;
+    &lt;x-oc::collapsible title="Notes"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:format-list-bulleted" class="oc-collapsible-icon" /&gt;&lt;/x-slot:icon&gt;
+        &lt;x-oc::wire.textarea model="notes" :rows="3" aria-label="Notes" /&gt;
+    &lt;/x-oc::collapsible&gt;
+    &lt;div class="oc-block-formpage-actions"&gt;
+        &lt;x-oc::button variant="outline" href="/companies"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button type="submit"&gt;Save&lt;/x-oc::button&gt;
+    &lt;/div&gt;
+&lt;/x-oc::block.form-page&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

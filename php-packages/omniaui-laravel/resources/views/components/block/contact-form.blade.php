@@ -35,7 +35,7 @@
                 @if (isset($success) && trim((string) $success) !== '')
                     {{ $success }}
                 @else
-                    <span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><iconify-icon icon="mdi:check"></iconify-icon></span>
+                    <span class="oc-icon-tile oc-icon-tile--sm oc-accent--green" aria-hidden="true"><x-oc::webicon name="mdi:check" bare fallback="iconify" /></span>
                     <h2 class="oc-result__title">{{ $successTitle }}</h2>
                     @if ($successText)
                         <p class="oc-result__text">{{ $successText }}</p>
@@ -118,7 +118,7 @@
                 @foreach ($cards as $card)
                     <article class="oc-block-contact-card">
                         @if (! empty($card['icon']))
-                            <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><iconify-icon icon="{{ $card['icon'] }}"></iconify-icon></span>
+                            <span class="oc-icon-tile oc-icon-tile--sm" aria-hidden="true"><x-oc::webicon :name="$card['icon']" bare fallback="iconify" /></span>
                         @endif
                         <h3 class="oc-block-contact-title">{{ $card['title'] }}</h3>
                         @foreach ($card['lines'] ?? [] as [$text, $href])

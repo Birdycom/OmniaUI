@@ -1,12 +1,14 @@
+// File: packages/react/src/blocks/BlockProductGrid.tsx | Map: types -> BlockProductGrid (eyebrow, title -> grid of accent product cards)
 import { forwardRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "../components/Webicon";
 
 export interface Product {
   href: string;
   /** Accent name (`green`, `orange`, `violet`, `cyan`, ...), applied as `oc-accent--{accent}`. */
   accent?: string;
-  /** Glyph or inline SVG in the icon tile. */
+  /** Glyph, inline SVG or a webicon name ("mdi:package-variant") in the icon tile. */
   icon?: ReactNode;
   /** Pill label (`Own product`, `Tool`...). */
   pill?: ReactNode;
@@ -38,7 +40,7 @@ export const BlockProductGrid = forwardRef<HTMLElement, BlockProductGridProps>(f
           {products.map((p, i) => (
             <a className={cx("oc-product-card", p.accent && `oc-accent--${p.accent}`)} href={p.href} key={i}>
               <div className="oc-product-card__top">
-                {p.icon != null && <span className="oc-icon-tile" aria-hidden="true">{p.icon}</span>}
+                {p.icon != null && <span className="oc-icon-tile" aria-hidden="true">{webiconNode(p.icon)}</span>}
                 {p.pill != null && <span className="oc-pill">{p.pill}</span>}
               </div>
               <h3 className="oc-product-card__name">{p.name}</h3>

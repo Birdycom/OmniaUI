@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - OTP verification Blocks", "category": "Authentication", "description": "Verification screens around the OTP input: simple card, split layout and a four-digit PIN.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": [], "pro": "some"}-->
+<!--oc-page {"title": "OmniaUI - OTP verification Blocks", "category": "Authentication", "description": "Verification screens around the OTP input: a simple card with a six-digit code and resend link, a split layout with a photo panel and a four-digit PIN.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": [], "pro": "some"}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">OTP verification</h1>
         <p class="oc-hero-text">Verification screens around the <code>.oc-otp</code> component: simple card, split layout and a four-digit PIN with a back link. <a href="../blocks.html">All blocks</a>.</p>
@@ -8,14 +8,14 @@
           
         <p class="oc-section-header__desc">Plain HTML and CSS. Each preview shows the markup that builds it, also available as a snippet in <code>packages/blocks/blocks/</code> (the variants marked Pro are part of <a href="../pro.html">OmniaUI Pro</a>): <code>otp-01</code>, <code>otp-02</code>, <code>otp-03</code>.</p></div>
         <div class="oc-section-content">
-          <h3 class="oc-section-content__title mt-2" id="otp-01">OTP 01 - Simple card</h3>
+          <h3 class="oc-section-content__title mt-2" id="otp-01">OTP 01 - Simple card <span class="oc-badge-version">v0.17.0</span></h3>
           <p>Verification card: six-digit code, verify button and a resend link. Snippet: <code>otp-01</code> (<code>npx omniaui add otp-01</code>).</p>
           <oc-demo title="OTP 01 - Simple card">
 <div class="oc-block-authpage oc-block-authpage--plain">
   <form class="oc-block-authcard" action="#" method="post">
     <span class="oc-block-authcard-logo"><svg data-icon="mdi:shield-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 11c0 5.55-3.84 10.74-9 12c-5.16-1.26-9-6.45-9-12V5l9-4l9 4zm-9 10c3.75-1 7-5.46 7-9.78V6.3l-7-3.12L5 6.3v4.92C5 15.54 8.25 20 12 21"/></svg></span>
     <div class="oc-block-authcard-head">
-      <h1 class="oc-block-authcard-title">Enter verification code</h1>
+      <h2 class="oc-block-authcard-title">Enter verification code</h2>
       <p class="oc-block-authcard-text">We sent a 6-digit code to your e-mail</p>
     </div>
     <div class="oc-block-authcard-fields">
@@ -29,6 +29,79 @@
     <p class="oc-block-authcard-foot">Didn't receive the code? <a href="#">Resend</a></p>
   </form>
 </div>
+<oc-code lang="tsx">import { BlockOtp01 } from "@birdycom/omniaui-react";
+
+// Six code cells, verify button and resend link; onComplete fires when the last cell is filled
+&lt;BlockOtp01 headingLevel={2}
+  action="/verify"
+  description="Enter the 6-digit code we sent to name@company1.example."
+  footer={&lt;&gt;Didn&amp;apos;t receive the code? &lt;a href="/verify/resend"&gt;Resend&lt;/a&gt;&lt;/&gt;}
+  onComplete={(code) =&gt; verify(code)}
+  onSubmit={({ code }) =&gt; verify(code)}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockOtp01 } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ verify: [code: string] }&gt;()
+
+function submit(event: SubmitEvent) {
+  event.preventDefault()
+  emit('verify', String(new FormData(event.target as HTMLFormElement).get('code')))
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockOtp01 :heading-level="2" action="/verify" description="Enter the 6-digit code we sent to name@company1.example."
+    :footer-link="{ label: 'Resend', href: '/verify/resend' }" @submit="submit" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.otp-01 heading-level="2" :form="['action' =&gt; '/verify']"&gt;
+    &lt;x-slot:fields&gt;
+        &lt;x-oc::otp-input id="otp-code" name="code" :length="6" label="Verification code" description="Enter the 6-digit code we sent to name@company1.example." /&gt;
+        &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Verify&lt;/x-oc::button&gt;
+    &lt;/x-slot:fields&gt;
+    &lt;x-slot:footer&gt;Didn't receive the code? &lt;a href="/verify/resend"&gt;Resend&lt;/a&gt;&lt;/x-slot:footer&gt;
+&lt;/x-oc::block.otp-01&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class VerifyCode extends Component
+{
+    public string $code = '';
+
+    public string $email = 'name@company1.example';
+
+    public function verify(): void
+    {
+        $this-&gt;validate(['code' =&gt; 'required|digits:6']);
+        // check the code, then redirect to the dashboard
+    }
+
+    public function resend(): void
+    {
+        $this-&gt;reset('code');
+        // send a new code
+    }
+
+    public function render()
+    {
+        return view('livewire.verify-code');
+    }
+}
+
+{{-- resources/views/livewire/verify-code.blade.php --}}
+&lt;div&gt;
+    {{-- form takes wire:submit; the fields and footer slots replace those regions, the rest comes from the block --}}
+    &lt;x-oc::block.otp-01 heading-level="2" :form="['wire:submit' =&gt; 'verify']"&gt;
+        &lt;x-slot:fields&gt;
+            &lt;x-oc::wire.otp model="code" :length="6" complete="verify" label="Verification code" description="Enter the 6-digit code we sent to {{ $email }}." /&gt;
+            &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Verify&lt;/x-oc::button&gt;
+        &lt;/x-slot:fields&gt;
+        &lt;x-slot:footer&gt;Didn't receive the code? &lt;button type="button" class="oc-link" wire:click="resend"&gt;Resend&lt;/button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.otp-01&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="otp-02">OTP 02 - Split layout</h3>
@@ -46,7 +119,7 @@
     <div class="oc-block-authduo-form">
       <form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post">
         <div class="oc-block-authcard-head">
-          <h1 class="oc-block-authcard-title">Verify your login</h1>
+          <h2 class="oc-block-authcard-title">Verify your login</h2>
           <p class="oc-block-authcard-text">Enter the code from your authenticator app</p>
         </div>
         <div class="oc-block-authcard-fields">
@@ -62,6 +135,91 @@
     </div>
   </div>
 </div>
+<oc-code lang="tsx">import { BlockOtp02 } from "@birdycom/omniaui-react";
+
+&lt;BlockOtp02 headingLevel={2}
+  action="/two-factor-challenge"
+  panel={{ tone: "photo", photo: "/img/blocks/otp-split-photo.webp", quote: "“Two-step verification keeps our client data where it belongs.”", quoteAuthor: "Security team" }}
+  defaultValue="482"
+  footer={&lt;&gt;Lost your device? &lt;a href="/two-factor/recovery"&gt;Use a recovery code&lt;/a&gt;&lt;/&gt;}
+  onComplete={(code) =&gt; verify(code)}
+  onSubmit={({ code }) =&gt; verify(code)}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockOtp02 } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ verify: [code: string] }&gt;()
+
+function submit(event: SubmitEvent) {
+  event.preventDefault()
+  emit('verify', String(new FormData(event.target as HTMLFormElement).get('code')))
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockOtp02 :heading-level="2" action="/two-factor-challenge"
+    :panel="{ tone: 'photo', photo: '/img/blocks/otp-split-photo.webp', quote: '“Two-step verification keeps our client data where it belongs.”', quoteAuthor: 'Security team' }"
+    :footer-link="{ label: 'Use a recovery code', href: '/two-factor/recovery' }"
+    @submit="submit" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.otp-02 heading-level="2" :form="['action' =&gt; '/two-factor-challenge']"&gt;
+    &lt;x-slot:panel&gt;
+        &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--photo" style="--oc-authduo-photo: url('/img/blocks/otp-split-photo.webp')"&gt;
+            &lt;a class="oc-block-authduo-logo" href="/"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
+            &lt;blockquote class="oc-block-authduo-quote"&gt;
+                &lt;p&gt;“Two-step verification keeps our client data where it belongs.”&lt;/p&gt;
+                &lt;footer&gt;Security team&lt;/footer&gt;
+            &lt;/blockquote&gt;
+        &lt;/aside&gt;
+    &lt;/x-slot:panel&gt;
+    &lt;x-slot:fields&gt;
+        &lt;x-oc::otp-input id="otp-login" name="code" :length="6" value="{{ old('code') }}" label="Verification code" description="Enter the 6-digit code we sent to your authenticator app." /&gt;
+        &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Verify&lt;/x-oc::button&gt;
+    &lt;/x-slot:fields&gt;
+    &lt;x-slot:footer&gt;Lost your device? &lt;a href="/two-factor/recovery"&gt;Use a recovery code&lt;/a&gt;&lt;/x-slot:footer&gt;
+&lt;/x-oc::block.otp-02&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TwoFactorChallenge extends Component
+{
+    public string $code = '482';
+
+    public function verify(): void
+    {
+        $this-&gt;validate(['code' =&gt; 'required|digits:6']);
+        // check the code with the authenticator secret, then log in
+    }
+
+    public function render()
+    {
+        return view('livewire.two-factor-challenge');
+    }
+}
+
+{{-- resources/views/livewire/two-factor-challenge.blade.php --}}
+&lt;div&gt;
+    {{-- form takes wire:submit; the fields and footer slots replace those regions, the rest comes from the block --}}
+    &lt;x-oc::block.otp-02 heading-level="2" :form="['wire:submit' =&gt; 'verify']"&gt;
+        &lt;x-slot:panel&gt;
+            &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--photo" style="--oc-authduo-photo: url('/img/blocks/otp-split-photo.webp')"&gt;
+                &lt;a class="oc-block-authduo-logo" href="/"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
+                &lt;blockquote class="oc-block-authduo-quote"&gt;
+                    &lt;p&gt;“Two-step verification keeps our client data where it belongs.”&lt;/p&gt;
+                    &lt;footer&gt;Security team&lt;/footer&gt;
+                &lt;/blockquote&gt;
+            &lt;/aside&gt;
+        &lt;/x-slot:panel&gt;
+        &lt;x-slot:fields&gt;
+            &lt;x-oc::wire.otp model="code" :length="6" complete="verify" label="Verification code" description="Enter the 6-digit code we sent to your authenticator app." /&gt;
+            &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Verify&lt;/x-oc::button&gt;
+        &lt;/x-slot:fields&gt;
+        &lt;x-slot:footer&gt;Lost your device? &lt;a href="/two-factor/recovery"&gt;Use a recovery code&lt;/a&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.otp-02&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="otp-03">OTP 03 - Four digits with back link</h3>
@@ -70,7 +228,7 @@
 <div class="oc-block-authpage">
   <form class="oc-block-authcard" action="#" method="post">
     <div class="oc-block-authcard-head">
-      <h1 class="oc-block-authcard-title">Confirm your phone</h1>
+      <h2 class="oc-block-authcard-title">Confirm your phone</h2>
       <p class="oc-block-authcard-text">Enter the 4-digit PIN sent by text message</p>
     </div>
     <div class="oc-block-authcard-center">

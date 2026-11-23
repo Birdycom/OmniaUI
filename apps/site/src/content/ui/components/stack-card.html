@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Stack card", "category": "Media", "description": "Collection cover drawn as a small pile of cards with a count.", "nav": "Stack card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Stack card", "category": "Media", "description": "A cover for a collection such as a playlist, course or album, drawn as a small pile of cards with a count badge. The layers behind are pseudo-elements.", "nav": "Stack card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/stack-card.html | Map: hero -> demo -> panel variant grid -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Stack card</h1>
@@ -23,6 +23,52 @@
     <p class="oc-stack-card__meta">North Studio · Updated yesterday</p>
   </div>
 </article>
+<oc-code lang="tsx">import { StackCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;StackCard
+      style={{ maxInlineSize: "20rem" }}
+      href="/playlists/cabin-build"
+      title="Cabin build, start to finish"
+      meta="North Studio · Updated yesterday"
+      count={&lt;&gt;&lt;span aria-hidden="true"&gt;☰&lt;/span&gt; 12 videos&lt;/&gt;}
+      thumb={{ art: 4 }}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcStackCard } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcStackCard style="max-inline-size:20rem" href="/playlists/cabin-build" title="Cabin build, start to finish" meta="North Studio · Updated yesterday" :thumb="{ art: 4 }"&gt;
+    &lt;template #count&gt;&lt;span aria-hidden="true"&gt;☰&lt;/span&gt; 12 videos&lt;/template&gt;
+  &lt;/OcStackCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::stack-card style="max-inline-size:20rem" href="/playlists/cabin-build" title="Cabin build, start to finish" meta="North Studio · Updated yesterday" :thumb="['art' =&gt; 4]"&gt;
+    &lt;x-slot:count&gt;&lt;span aria-hidden="true"&gt;☰&lt;/span&gt; 12 videos&lt;/x-slot:count&gt;
+&lt;/x-oc::stack-card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class PlaylistCard extends Component
+{
+    public function render()
+    {
+        return view('livewire.playlist-card');
+    }
+}
+
+{{-- resources/views/livewire/playlist-card.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::stack-card style="max-inline-size:20rem" href="/playlists/cabin-build" title="Cabin build, start to finish" meta="North Studio · Updated yesterday" :thumb="['art' =&gt; 4]"&gt;
+        &lt;x-slot:count&gt;&lt;span aria-hidden="true"&gt;☰&lt;/span&gt; 12 videos&lt;/x-slot:count&gt;
+    &lt;/x-oc::stack-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="panel" class="oc-section-content__title mt-2">Side panel count</h3><p class="oc-section-content__desc"><code>.oc-stack-card--panel</code> turns the badge into a blurred side panel, a common look for course and playlist grids.</p>
           <oc-demo title="Panel variant">
@@ -42,6 +88,69 @@
     <div><h3 class="oc-stack-card__title"><a href="#panel">Street food of the coast</a></h3><p class="oc-stack-card__meta">Playlist · Private</p></div>
   </article>
 </div>
+<oc-code lang="tsx">import { StackCard } from "@birdycom/omniaui-react";
+
+const items = [
+  { href: "/courses/watercolour", title: "Watercolour basics", meta: "Course · 2 h 10 min", count: 8, unit: "lessons", thumb: {  } },
+  { href: "/playlists/street-food", title: "Street food of the coast", meta: "Playlist · Private", count: 24, unit: "videos", thumb: { art: 3 } },
+];
+
+export function Example() {
+  return (
+    &lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(13rem,1fr))", gap: "1.5rem", inlineSize: "100%" }}&gt;
+      {items.map((it) =&gt; (
+        &lt;StackCard key={it.href} panel href={it.href} title={it.title} meta={it.meta} count={&lt;&gt;&lt;strong&gt;{it.count}&lt;/strong&gt; {it.unit}&lt;/&gt;} thumb={it.thumb} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcStackCard } from '@birdycom/omniaui-vue'
+
+const items = [
+  { href: '/courses/watercolour', title: 'Watercolour basics', meta: 'Course · 2 h 10 min', count: 8, unit: 'lessons', thumb: {  } },
+  { href: '/playlists/street-food', title: 'Street food of the coast', meta: 'Playlist · Private', count: 24, unit: 'videos', thumb: { art: 3 } },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:1.5rem;inline-size:100%"&gt;
+    &lt;OcStackCard v-for="it in items" :key="it.href" panel :href="it.href" :title="it.title" :meta="it.meta" :thumb="it.thumb"&gt;
+      &lt;template #count&gt;&lt;strong&gt;{{ it.count }}&lt;/strong&gt; {{ it.unit }}&lt;/template&gt;
+    &lt;/OcStackCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:1.5rem;inline-size:100%"&gt;
+    &lt;x-oc::stack-card panel href="/courses/watercolour" title="Watercolour basics" meta="Course · 2 h 10 min" :thumb="[]"&gt;
+        &lt;x-slot:count&gt;&lt;strong&gt;8&lt;/strong&gt; lessons&lt;/x-slot:count&gt;
+    &lt;/x-oc::stack-card&gt;
+    &lt;x-oc::stack-card panel href="/playlists/street-food" title="Street food of the coast" meta="Playlist · Private" :thumb="['art' =&gt; 3]"&gt;
+        &lt;x-slot:count&gt;&lt;strong&gt;24&lt;/strong&gt; videos&lt;/x-slot:count&gt;
+    &lt;/x-oc::stack-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CourseCards extends Component
+{
+    public function render()
+    {
+        return view('livewire.course-cards');
+    }
+}
+
+{{-- resources/views/livewire/course-cards.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:1.5rem;inline-size:100%"&gt;
+    &lt;x-oc::stack-card panel href="/courses/watercolour" title="Watercolour basics" meta="Course · 2 h 10 min" :thumb="[]"&gt;
+        &lt;x-slot:count&gt;&lt;strong&gt;8&lt;/strong&gt; lessons&lt;/x-slot:count&gt;
+    &lt;/x-oc::stack-card&gt;
+    &lt;x-oc::stack-card panel href="/playlists/street-food" title="Street food of the coast" meta="Playlist · Private" :thumb="['art' =&gt; 3]"&gt;
+        &lt;x-slot:count&gt;&lt;strong&gt;24&lt;/strong&gt; videos&lt;/x-slot:count&gt;
+    &lt;/x-oc::stack-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

@@ -5,6 +5,7 @@
  * Classes: .oc-price-card (--featured), __head, __name, __discount, __desc, __toggle, __price(--monthly/--yearly),
  * __amount, __period, __was, __note, __features, __feature(--excluded), __cta
  */
+import { computed } from 'vue'
 import { useUid } from '../composables/useUid'
 
 export interface PriceCardFeature {
@@ -17,7 +18,7 @@ export interface PriceCardPrice {
   was?: string
   note?: string
 }
-withDefaults(
+const props = withDefaults(
   defineProps<{
     name: string
     description?: string
@@ -32,11 +33,16 @@ withDefaults(
     monthlyLabel?: string
     yearlyLabel?: string
     lifetimeLabel?: string
+    /** Radio group name of the switch (generated when omitted). */
+    group?: string
+    /** aria-label of the switch (default "Billing period"). */
+    groupLabel?: string
   }>(),
-  { defaultPeriod: 'monthly', features: () => [], monthlyLabel: 'Monthly', yearlyLabel: 'Yearly', lifetimeLabel: 'Lifetime' },
+  { defaultPeriod: 'monthly', features: () => [], monthlyLabel: 'Monthly', yearlyLabel: 'Yearly', lifetimeLabel: 'Lifetime', groupLabel: 'Billing period' },
 )
 // Every card needs its own radio group name.
-const group = useUid('oc-price')
+const uid = useUid('oc-price')
+const group = computed(() => props.group || uid)
 </script>
 
 <template>
@@ -46,7 +52,7 @@ const group = useUid('oc-price')
       <span v-if="discount" class="oc-price-card__discount">{{ discount }}</span>
     </div>
     <p v-if="description" class="oc-price-card__desc">{{ description }}</p>
-    <div v-if="yearly" class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period">
+    <div v-if="yearly" class="oc-segmented oc-price-card__toggle" role="radiogroup" :aria-label="groupLabel">
       <label class="oc-segmented-item"><input type="radio" :name="group" value="monthly" :checked="defaultPeriod === 'monthly'" /> {{ monthlyLabel }}</label>
       <label class="oc-segmented-item"><input type="radio" :name="group" value="yearly" :checked="defaultPeriod === 'yearly'" /> {{ yearlyLabel }}</label>
       <label v-if="lifetime" class="oc-segmented-item"><input type="radio" :name="group" value="lifetime" :checked="defaultPeriod === 'lifetime'" /> {{ lifetimeLabel }}</label>

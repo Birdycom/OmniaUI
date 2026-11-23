@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Table compact", "category": "Data", "description": "Dense table variant with smaller rows and padding.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Table compact", "category": "Data", "description": "Dense striped table for inside cards: smaller rows and padding, numeric columns, a bold total row with a colspan, and bordered or plain variants.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/table-compact.html | Map: hero -> table in a card demo -> bordered + plain demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Table compact</h1>
@@ -10,7 +10,7 @@
           
           
         <p class="oc-section-header__desc">Plain HTML and CSS; each example shows its markup in the HTML tab.</p></div>
-        <div class="oc-section-content"><h3 class="oc-section-content__title">Inside a card</h3><p class="oc-section-content__desc">Numbers use <code>data-numeric</code> from the table component. The <code>tfoot</code> row becomes a bold total. Snippet: <code>packages/ui/snippets/table-compact.html</code>.</p>
+        <div class="oc-section-content"><h3 class="oc-section-content__title">Inside a card <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">Numbers use <code>data-numeric</code> from the table component. The <code>tfoot</code> row becomes a bold total. Snippet: <code>packages/ui/snippets/table-compact.html</code>.</p>
           <oc-demo title="Compact table in a card">
 <div class="oc-card" style="max-width:28rem;width:100%">
   <div class="oc-card-header"><h3 class="oc-card-title">Materials</h3></div>
@@ -27,6 +27,125 @@
     </table>
   </div>
 </div>
+<oc-code lang="tsx">import { Card, CardHeader, CardTitle, TableCompact } from "@birdycom/omniaui-react";
+
+const columns = [
+  { key: "item", label: "Item" },
+  { key: "qty", label: "Qty", numeric: true },
+  { key: "price", label: "Price", numeric: true },
+];
+const rows = [
+  { item: &lt;&gt;Oak worktop &lt;span className="oc-table-compact-muted"&gt;(3 m)&lt;/span&gt;&lt;/&gt;, qty: 1, price: "€ 640.00" },
+  { item: "Cabinet 60 cm", qty: 2, price: "€ 380.00" },
+  { item: "Sink", qty: 1, price: "€ 210.00" },
+  { item: "Tap", qty: 1, price: "€ 95.00" },
+];
+
+export function Example() {
+  return (
+    &lt;Card style={{ maxWidth: "28rem", width: "100%" }}&gt;
+      &lt;CardHeader&gt;&lt;CardTitle&gt;Materials&lt;/CardTitle&gt;&lt;/CardHeader&gt;
+      &lt;TableCompact columns={columns} rows={rows} footer={{ item: "Total", price: "€ 1,325.00" }} footerSpan={2} /&gt;
+    &lt;/Card&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCard, OcTableCompact } from '@birdycom/omniaui-vue'
+
+const columns = [
+  { key: 'item', label: 'Item' },
+  { key: 'qty', label: 'Qty', numeric: true },
+  { key: 'price', label: 'Price', numeric: true },
+]
+const rows = [
+  { item: 'Oak worktop', note: '(3 m)', qty: 1, price: '€ 640.00' },
+  { item: 'Cabinet 60 cm', note: '', qty: 2, price: '€ 380.00' },
+  { item: 'Sink', note: '', qty: 1, price: '€ 210.00' },
+  { item: 'Tap', note: '', qty: 1, price: '€ 95.00' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCard title="Materials" style="max-width:28rem;width:100%"&gt;
+    &lt;OcTableCompact :columns="columns" :rows="rows" :footer="{ item: 'Total', price: '€ 1,325.00' }" :footer-span="2"&gt;
+      &lt;template #cell="{ row, column }"&gt;
+        &lt;template v-if="column.key === 'item'"&gt;{{ row.item }} &lt;span v-if="row.note" class="oc-table-compact-muted"&gt;{{ row.note }}&lt;/span&gt;&lt;/template&gt;
+        &lt;template v-else&gt;{{ row[column.key] }}&lt;/template&gt;
+      &lt;/template&gt;
+    &lt;/OcTableCompact&gt;
+  &lt;/OcCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php
+    // An HtmlString cell renders as markup: the muted note after the item.
+    $worktop = new Illuminate\Support\HtmlString('Oak worktop &lt;span class="oc-table-compact-muted"&gt;(3 m)&lt;/span&gt;');
+@endphp
+&lt;x-oc::card title="Materials" style="max-width:28rem;width:100%"&gt;
+    &lt;x-oc::table-compact
+        :columns="['item' =&gt; 'Item', 'qty' =&gt; ['label' =&gt; 'Qty', 'numeric' =&gt; true], 'price' =&gt; ['label' =&gt; 'Price', 'numeric' =&gt; true]]"
+        :rows="[
+            ['item' =&gt; $worktop, 'qty' =&gt; 1, 'price' =&gt; '€ 640.00'],
+            ['item' =&gt; 'Cabinet 60 cm', 'qty' =&gt; 2, 'price' =&gt; '€ 380.00'],
+            ['item' =&gt; 'Sink', 'qty' =&gt; 1, 'price' =&gt; '€ 210.00'],
+            ['item' =&gt; 'Tap', 'qty' =&gt; 1, 'price' =&gt; '€ 95.00'],
+        ]"
+        :footer="['item' =&gt; 'Total', 'price' =&gt; '€ 1,325.00']"
+        :footer-span="2"
+    /&gt;
+&lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Support\HtmlString;
+use Livewire\Component;
+
+class MaterialsTable extends Component
+{
+    /** @var list&lt;array{item: string, note?: string, qty: int, price: float}&gt; */
+    public array $materials = [
+        ['item' =&gt; 'Oak worktop', 'note' =&gt; '(3 m)', 'qty' =&gt; 1, 'price' =&gt; 640.00],
+        ['item' =&gt; 'Cabinet 60 cm', 'qty' =&gt; 2, 'price' =&gt; 380.00],
+        ['item' =&gt; 'Sink', 'qty' =&gt; 1, 'price' =&gt; 210.00],
+        ['item' =&gt; 'Tap', 'qty' =&gt; 1, 'price' =&gt; 95.00],
+    ];
+
+    public function rows(): array
+    {
+        return array_map(fn ($m) =&gt; [
+            'item' =&gt; isset($m['note']) ? new HtmlString(e($m['item']).' &lt;span class="oc-table-compact-muted"&gt;'.e($m['note']).'&lt;/span&gt;') : $m['item'],
+            'qty' =&gt; $m['qty'],
+            'price' =&gt; $this-&gt;euro($m['price']),
+        ], $this-&gt;materials);
+    }
+
+    public function total(): string
+    {
+        return $this-&gt;euro(array_sum(array_column($this-&gt;materials, 'price')));
+    }
+
+    private function euro(float $amount): string
+    {
+        return '€ '.number_format($amount, 2);
+    }
+
+    public function render()
+    {
+        return view('livewire.materials-table');
+    }
+}
+
+{{-- resources/views/livewire/materials-table.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::card title="Materials" style="max-width:28rem;width:100%"&gt;
+        {{-- footer-span="2": "Total" spans the Item and Qty columns --}}
+        &lt;x-oc::table-compact
+            :columns="['item' =&gt; 'Item', 'qty' =&gt; ['label' =&gt; 'Qty', 'numeric' =&gt; true], 'price' =&gt; ['label' =&gt; 'Price', 'numeric' =&gt; true]]"
+            :rows="$this-&gt;rows()"
+            :footer="['item' =&gt; 'Total', 'price' =&gt; $this-&gt;total()]"
+            :footer-span="2"
+        /&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="bordered-plain">Bordered and plain</h3>
@@ -46,6 +165,77 @@
     </table>
   </div>
 </div>
+<oc-code lang="tsx">import { TableCompact } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div style={{ display: "grid", gap: "1rem", width: "100%", maxWidth: "28rem" }}&gt;
+      &lt;TableCompact
+        bordered
+        columns={[{ key: "date", label: "Date" }, { key: "note", label: "Note", wrap: true }]}
+        rows={[{ date: "2 Oct", note: "Measured the room and agreed on the layout." }, { date: "9 Oct", note: "Quote sent." }]}
+      /&gt;
+      &lt;TableCompact
+        plain
+        columns={[{ key: "key", label: "Key" }, { key: "value", label: "Value" }]}
+        rows={[{ key: "VAT", value: "21 %" }, { key: "Currency", value: "EUR" }]}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTableCompact } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;gap:1rem;width:100%;max-width:28rem"&gt;
+    &lt;OcTableCompact
+      bordered
+      :columns="[{ key: 'date', label: 'Date' }, { key: 'note', label: 'Note', wrap: true }]"
+      :rows="[{ date: '2 Oct', note: 'Measured the room and agreed on the layout.' }, { date: '9 Oct', note: 'Quote sent.' }]"
+    /&gt;
+    &lt;OcTableCompact
+      plain
+      :columns="[{ key: 'key', label: 'Key' }, { key: 'value', label: 'Value' }]"
+      :rows="[{ key: 'VAT', value: '21 %' }, { key: 'Currency', value: 'EUR' }]"
+    /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;gap:1rem;width:100%;max-width:28rem"&gt;
+    &lt;x-oc::table-compact bordered
+        :columns="['date' =&gt; 'Date', 'note' =&gt; ['label' =&gt; 'Note', 'wrap' =&gt; true]]"
+        :rows="[['date' =&gt; '2 Oct', 'note' =&gt; 'Measured the room and agreed on the layout.'], ['date' =&gt; '9 Oct', 'note' =&gt; 'Quote sent.']]"
+    /&gt;
+    &lt;x-oc::table-compact plain
+        :columns="['key' =&gt; 'Key', 'value' =&gt; 'Value']"
+        :rows="[['key' =&gt; 'VAT', 'value' =&gt; '21 %'], ['key' =&gt; 'Currency', 'value' =&gt; 'EUR']]"
+    /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProjectNotes extends Component
+{
+    public function render()
+    {
+        return view('livewire.project-notes');
+    }
+}
+
+{{-- resources/views/livewire/project-notes.blade.php --}}
+&lt;div style="display:grid;gap:1rem;width:100%;max-width:28rem"&gt;
+    &lt;x-oc::table-compact bordered
+        :columns="['date' =&gt; 'Date', 'note' =&gt; ['label' =&gt; 'Note', 'wrap' =&gt; true]]"
+        :rows="[['date' =&gt; '2 Oct', 'note' =&gt; 'Measured the room and agreed on the layout.'], ['date' =&gt; '9 Oct', 'note' =&gt; 'Quote sent.']]"
+    /&gt;
+    &lt;x-oc::table-compact plain
+        :columns="['key' =&gt; 'Key', 'value' =&gt; 'Value']"
+        :rows="[['key' =&gt; 'VAT', 'value' =&gt; '21 %'], ['key' =&gt; 'Currency', 'value' =&gt; 'EUR']]"
+    /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

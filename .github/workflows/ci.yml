@@ -1,5 +1,5 @@
 # File: .github/workflows/ci.yml
-# Map: checkout -> node 22 -> npm ci -> npm test (build + CLI/React/Vue tests) -> audit
+# Map: checkout -> node 22 -> npm ci -> npm test (build + code-tab check + CLI/React/Vue tests) -> audit
 # No PHP here: the Laravel/Livewire packages are tested locally with phpunit.
 # The build needs no OmniaCSS checkout: vendor/omniacss is committed.
 name: OmniaUI CI
@@ -27,7 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Manifests + CSS packages + React/Vue builds + UI site, then the CLI, React and Vue tests.
+      # Manifests + CSS packages + React/Vue builds + UI site, then the code-tab check (npm run check:code-tabs: every
+      # React/Vue code example on the docs pages type-checks against the wrapper sources) and the CLI, React and Vue tests.
       - name: Run test pipeline
         run: npm test
 

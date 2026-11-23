@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Greeting", "category": "App UX", "description": "Dashboard header with a time-of-day greeting, date and actions.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Greeting", "category": "App UX", "description": "A dashboard header with a time-of-day greeting, the date and a few actions. Your app or the wrapper picks the morning, afternoon or evening look.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/greeting.html | Map: hero -> morning demo -> evening + large demo -> picking the modifier -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Greeting</h1>
@@ -24,6 +24,62 @@
     <button class="oc-btn oc-btn--sm" type="button">New project</button>
   </div>
 </header>
+<oc-code lang="tsx">{/* The time of day (morning, afternoon, evening) and the date come from the current time */}
+&lt;Greeting
+  style={{ width: "100%" }}
+  name="Ada"
+  eyebrow="Dashboard"
+  icon={&lt;Webicon name="mdi:white-balance-sunny" bare /&gt;}
+  actions={&lt;&gt;
+    &lt;Button variant="outline" size="sm"&gt;Agenda&lt;/Button&gt;
+    &lt;Button size="sm"&gt;New project&lt;/Button&gt;
+  &lt;/&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcGreeting style="width:100%" name="Ada" eyebrow="Dashboard"&gt;
+  &lt;template #icon&gt;&lt;OcWebicon name="mdi:white-balance-sunny" bare /&gt;&lt;/template&gt;
+  &lt;template #actions&gt;
+    &lt;OcButton variant="outline" size="sm"&gt;Agenda&lt;/OcButton&gt;
+    &lt;OcButton size="sm"&gt;New project&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcGreeting&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::greeting style="width:100%" :name="auth()-&gt;user()?-&gt;name ?? 'Ada'" eyebrow="Dashboard"&gt;
+    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:white-balance-sunny" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button variant="outline" size="sm" href="/agenda"&gt;Agenda&lt;/x-oc::button&gt;
+        &lt;x-oc::button size="sm" href="/projects/create"&gt;New project&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::greeting&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class DashboardGreeting extends Component
+{
+    public string $name = 'Ada';
+
+    public function newProject(): void
+    {
+        $this-&gt;redirect('/projects/create', navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.dashboard-greeting');
+    }
+}
+
+{{-- resources/views/livewire/dashboard-greeting.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::greeting style="width:100%" :name="$name" eyebrow="Dashboard"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:white-balance-sunny" bare /&gt;&lt;/x-slot:icon&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button variant="outline" size="sm" href="/agenda" wire:navigate&gt;Agenda&lt;/x-oc::button&gt;
+            &lt;x-oc::button size="sm" wire:click="newProject"&gt;New project&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::greeting&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="evening">Evening, large</h3>
@@ -36,6 +92,63 @@
     <time class="oc-greeting-date" datetime="2026-10-15" lang="fr">jeudi 15 octobre 2026</time>
   </div>
 </header>
+<oc-code lang="tsx">&lt;Greeting
+  style={{ width: "100%" }}
+  size="lg"
+  name="Ada"
+  timeOfDay="evening"
+  words={{ morning: "Bonjour", afternoon: "Bon après-midi", evening: "Bonsoir" }}
+  locale="fr"
+  lang="fr"
+  icon={&lt;Webicon name="mdi:weather-night" bare /&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcGreeting
+  style="width:100%"
+  size="lg"
+  name="Ada"
+  time-of-day="evening"
+  :words="{ morning: 'Bonjour', afternoon: 'Bon après-midi', evening: 'Bonsoir' }"
+  locale="fr"
+  lang="fr"
+&gt;
+  &lt;template #icon&gt;&lt;OcWebicon name="mdi:weather-night" bare /&gt;&lt;/template&gt;
+&lt;/OcGreeting&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::greeting
+    style="width:100%"
+    lg
+    name="Ada"
+    time="evening"
+    :words="['morning' =&gt; 'Bonjour', 'afternoon' =&gt; 'Bon après-midi', 'evening' =&gt; 'Bonsoir']"
+    :date="now()-&gt;locale('fr')"
+    lang="fr"
+&gt;
+    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:weather-night" bare /&gt;&lt;/x-slot:icon&gt;
+&lt;/x-oc::greeting&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class FrenchGreeting extends Component
+{
+    public string $name = 'Ada';
+
+    /** @var array&lt;string, string&gt; */
+    public array $words = ['morning' =&gt; 'Bonjour', 'afternoon' =&gt; 'Bon après-midi', 'evening' =&gt; 'Bonsoir'];
+
+    public function render()
+    {
+        return view('livewire.french-greeting');
+    }
+}
+
+{{-- resources/views/livewire/french-greeting.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::greeting style="width:100%" lg :name="$name" :words="$words" :date="now()-&gt;locale('fr')" lang="fr"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:weather-night" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::greeting&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="pick-modifier">Picking the modifier</h3>

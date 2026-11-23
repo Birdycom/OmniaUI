@@ -1,5 +1,5 @@
-<!--oc-page {"title": "OmniaUI - Modal / Dialog", "category": "Overlays", "description": "Modal on native <dialog>: focus trap, Esc and backdrop for free; sizes sm to full.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
-<!-- File: apps/site/src/content/ui/components/modal.html | Map: hero -> demo (native dialog, form with body, sizes, class toggle) -> reference -> frameworks -> browser support -> source footer -->
+<!--oc-page {"title": "OmniaUI - Modal / Dialog", "category": "Overlays", "description": "Modal on the native dialog element: focus trap, Esc and backdrop for free, sizes, a scrolling form, a round close button and a compound Dialog API.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!-- File: apps/site/src/content/ui/components/modal.html | Map: hero -> demo (native dialog, form with body, sizes, round close, compound dialog, class toggle) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Modal / Dialog</h1>
         <p class="oc-hero-text">A modal on the native <code>&lt;dialog&gt;</code> element: focus trapping, <kbd>Esc</kbd> to close and a <code>::backdrop</code> come from the browser. Buttons open and close it with invoker commands, so no JavaScript is needed. Header, scrollable body and footer; sizes from sm to full.</p>
@@ -28,9 +28,67 @@
     </div>
   </div>
 </dialog>
+<oc-code lang="tsx">&lt;Button onClick={() =&gt; setOpen(true)}&gt;Open modal&lt;/Button&gt;
+&lt;Modal
+  open={open}
+  onOpenChange={setOpen}
+  title="Are you sure?"
+  description="This action cannot be undone."
+  footer={&lt;&gt;
+    &lt;ModalClose variant="outline"&gt;Cancel&lt;/ModalClose&gt;
+    &lt;Button variant="destructive" onClick={() =&gt; { remove(); setOpen(false); }}&gt;Delete&lt;/Button&gt;
+  &lt;/&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton @click="open = true"&gt;Open modal&lt;/OcButton&gt;
+&lt;OcModal v-model:open="open" title="Are you sure?" description="This action cannot be undone."&gt;
+  &lt;template #footer="{ close }"&gt;
+    &lt;OcButton variant="outline" @click="close"&gt;Cancel&lt;/OcButton&gt;
+    &lt;OcButton variant="destructive" @click="remove(); close()"&gt;Delete&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcModal&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::modal id="confirm-delete" title="Are you sure?" description="This action cannot be undone."&gt;
+    &lt;x-slot:trigger&gt;&lt;x-oc::button command="show-modal" commandfor="confirm-delete"&gt;Open modal&lt;/x-oc::button&gt;&lt;/x-slot:trigger&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button variant="outline" command="close" commandfor="confirm-delete"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="destructive" command="close" commandfor="confirm-delete"&gt;Delete&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class Contacts extends Component
+{
+    use WithOcModal;
+
+    public function delete(): void
+    {
+        // Contact::findOrFail($this-&gt;contactId)-&gt;delete();
+        $this-&gt;closeOcModal('delete');
+    }
+
+    public function render()
+    {
+        return view('livewire.contacts');
+    }
+}
+
+{{-- resources/views/livewire/contacts.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button wire:click="openOcModal('delete')"&gt;Open modal&lt;/x-oc::button&gt;
+    &lt;x-oc::wire.modal name="delete" title="Are you sure?" description="This action cannot be undone."&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button variant="outline" x-on:click="open = false"&gt;Cancel&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="destructive" wire:click="delete"&gt;Delete&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.modal&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
-          <h3 class="oc-section-content__title mt-2">Form with a body</h3>
+          <h3 class="oc-section-content__title mt-2">Form with a body <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc"><code>.oc-modal-body</code> scrolls when the content is taller than the screen; header and footer stay in place. <code>.oc-modal-close</code> adds the × button.</p>
           <oc-demo title="Modal - form">
 <button class="oc-btn" command="show-modal" commandfor="oc-modal-profile">Edit profile</button>
@@ -58,6 +116,87 @@
     </div>
   </div>
 </dialog>
+<oc-code lang="tsx">&lt;Button onClick={() =&gt; setOpen(true)}&gt;Edit profile&lt;/Button&gt;
+&lt;Modal
+  open={open}
+  onOpenChange={setOpen}
+  closeButton
+  title="Edit profile"
+  description="Make changes to your profile here."
+  footer={&lt;&gt;
+    &lt;ModalClose variant="outline"&gt;Cancel&lt;/ModalClose&gt;
+    &lt;Button onClick={save}&gt;Save changes&lt;/Button&gt;
+  &lt;/&gt;}
+&gt;
+  &lt;div className="oc-modal-body"&gt;
+    &lt;FormField label="Name"&gt;&lt;Input value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;&lt;/FormField&gt;
+    &lt;FormField label="Username"&gt;&lt;Input value={username} onChange={(e) =&gt; setUsername(e.target.value)} /&gt;&lt;/FormField&gt;
+  &lt;/div&gt;
+&lt;/Modal&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton @click="open = true"&gt;Edit profile&lt;/OcButton&gt;
+&lt;OcModal v-model:open="open" close-button title="Edit profile" description="Make changes to your profile here."&gt;
+  &lt;OcFormField label="Name" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="name" /&gt;&lt;/OcFormField&gt;
+  &lt;OcFormField label="Username" v-slot="f"&gt;&lt;OcInput :id="f.id" v-model="username" /&gt;&lt;/OcFormField&gt;
+  &lt;template #footer="{ close }"&gt;
+    &lt;OcButton variant="outline" @click="close"&gt;Cancel&lt;/OcButton&gt;
+    &lt;OcButton @click="save(); close()"&gt;Save changes&lt;/OcButton&gt;
+  &lt;/template&gt;
+&lt;/OcModal&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::modal id="edit-profile" close-button title="Edit profile" description="Make changes to your profile here."&gt;
+    &lt;x-slot:trigger&gt;&lt;x-oc::button command="show-modal" commandfor="edit-profile"&gt;Edit profile&lt;/x-oc::button&gt;&lt;/x-slot:trigger&gt;
+    &lt;form id="profile-form" method="post" action="{{ route('profile.update') }}"&gt;
+        @csrf
+        &lt;x-oc::form-field label="Name" for="profile-name" name="name"&gt;&lt;x-oc::input id="profile-name" name="name" value="Customer 7" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="Username" for="profile-username" name="username"&gt;&lt;x-oc::input id="profile-username" name="username" value="@anna" /&gt;&lt;/x-oc::form-field&gt;
+    &lt;/form&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button variant="outline" command="close" commandfor="edit-profile"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button type="submit" form="profile-form"&gt;Save changes&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class EditProfile extends Component
+{
+    use WithOcModal;
+
+    #[Validate('required|max:80')]
+    public string $name = 'Customer 7';
+
+    #[Validate('required|max:30')]
+    public string $username = '@anna';
+
+    public function save(): void
+    {
+        $this-&gt;validate();
+        // auth()-&gt;user()-&gt;update($this-&gt;only('name', 'username'));
+        $this-&gt;closeOcModal('profile');
+    }
+
+    public function render()
+    {
+        return view('livewire.edit-profile');
+    }
+}
+
+{{-- resources/views/livewire/edit-profile.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button wire:click="openOcModal('profile')"&gt;Edit profile&lt;/x-oc::button&gt;
+    &lt;x-oc::wire.modal name="profile" title="Edit profile" description="Make changes to your profile here."&gt;
+        &lt;x-oc::form-field label="Name" for="profile-name" name="name"&gt;&lt;x-oc::wire.input id="profile-name" model="name" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="Username" for="profile-username" name="username"&gt;&lt;x-oc::wire.input id="profile-username" model="username" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button variant="outline" x-on:click="open = false"&gt;Cancel&lt;/x-oc::button&gt;
+            &lt;x-oc::button wire:click="save"&gt;Save changes&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.modal&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Sizes</h3>
@@ -87,6 +226,72 @@
     <div class="oc-modal-footer"><button class="oc-btn" command="close" commandfor="oc-modal-full">OK</button></div>
   </div>
 </dialog>
+<oc-code lang="tsx">&lt;Button variant="outline" onClick={() =&gt; setOpen("sm")}&gt;Small&lt;/Button&gt;
+&lt;Button variant="outline" onClick={() =&gt; setOpen("lg")}&gt;Large&lt;/Button&gt;
+&lt;Button variant="outline" onClick={() =&gt; setOpen("full")}&gt;Full&lt;/Button&gt;
+
+&lt;Modal size="sm" open={open === "sm"} onOpenChange={(o) =&gt; setOpen(o ? "sm" : null)} title="Small" description="For a short confirmation." footer={&lt;ModalClose&gt;OK&lt;/ModalClose&gt;} /&gt;
+&lt;Modal size="lg" open={open === "lg"} onOpenChange={(o) =&gt; setOpen(o ? "lg" : null)} title="Large" description="For forms with more fields." footer={&lt;ModalClose&gt;OK&lt;/ModalClose&gt;} /&gt;
+&lt;Modal size="full" open={open === "full"} onOpenChange={(o) =&gt; setOpen(o ? "full" : null)} title="Full" description="Fills the screen, for editors and previews." footer={&lt;ModalClose&gt;OK&lt;/ModalClose&gt;} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton variant="outline" @click="small = true"&gt;Small&lt;/OcButton&gt;
+&lt;OcButton variant="outline" @click="large = true"&gt;Large&lt;/OcButton&gt;
+&lt;OcButton variant="outline" @click="full = true"&gt;Full&lt;/OcButton&gt;
+
+&lt;OcModal v-model:open="small" size="sm" title="Small" description="For a short confirmation."&gt;
+  &lt;template #footer="{ close }"&gt;&lt;OcButton @click="close"&gt;OK&lt;/OcButton&gt;&lt;/template&gt;
+&lt;/OcModal&gt;
+&lt;OcModal v-model:open="large" size="lg" title="Large" description="For forms with more fields."&gt;
+  &lt;template #footer="{ close }"&gt;&lt;OcButton @click="close"&gt;OK&lt;/OcButton&gt;&lt;/template&gt;
+&lt;/OcModal&gt;
+&lt;OcModal v-model:open="full" size="full" title="Full" description="Fills the screen, for editors and previews."&gt;
+  &lt;template #footer="{ close }"&gt;&lt;OcButton @click="close"&gt;OK&lt;/OcButton&gt;&lt;/template&gt;
+&lt;/OcModal&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button variant="outline" command="show-modal" commandfor="modal-sm"&gt;Small&lt;/x-oc::button&gt;
+&lt;x-oc::button variant="outline" command="show-modal" commandfor="modal-lg"&gt;Large&lt;/x-oc::button&gt;
+&lt;x-oc::button variant="outline" command="show-modal" commandfor="modal-full"&gt;Full&lt;/x-oc::button&gt;
+
+&lt;x-oc::modal id="modal-sm" size="sm" title="Small" description="For a short confirmation."&gt;
+    &lt;x-slot:footer&gt;&lt;x-oc::button command="close" commandfor="modal-sm"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;
+&lt;x-oc::modal id="modal-lg" size="lg" title="Large" description="For forms with more fields."&gt;
+    &lt;x-slot:footer&gt;&lt;x-oc::button command="close" commandfor="modal-lg"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;
+&lt;x-oc::modal id="modal-full" size="full" title="Full" description="Fills the screen, for editors and previews."&gt;
+    &lt;x-slot:footer&gt;&lt;x-oc::button command="close" commandfor="modal-full"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class ModalSizes extends Component
+{
+    use WithOcModal;
+
+    public function render()
+    {
+        return view('livewire.modal-sizes');
+    }
+}
+
+{{-- resources/views/livewire/modal-sizes.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('small')"&gt;Small&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('large')"&gt;Large&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('full')"&gt;Full&lt;/x-oc::button&gt;
+
+    &lt;x-oc::wire.modal name="small" size="sm" title="Small" description="For a short confirmation."&gt;
+        &lt;x-slot:footer&gt;&lt;x-oc::button x-on:click="open = false"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.modal&gt;
+    &lt;x-oc::wire.modal name="large" size="lg" title="Large" description="For forms with more fields."&gt;
+        &lt;x-slot:footer&gt;&lt;x-oc::button x-on:click="open = false"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.modal&gt;
+    &lt;x-oc::wire.modal name="full" size="full" title="Full" description="Fills the screen, for editors and previews."&gt;
+        &lt;x-slot:footer&gt;&lt;x-oc::button x-on:click="open = false"&gt;OK&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.modal&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="close-round">Round close button <span class="oc-badge-version">v0.16.1</span></h3>
@@ -114,20 +319,201 @@
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/dialog&gt;</oc-code>
-<oc-code lang="tsx">&lt;Modal open={open} onOpenChange={setOpen} size="sm" closeRound title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
-{/* the same option on the other dialogs */}
-&lt;Sheet closeRound closeClassName="my-close" … /&gt;
-&lt;ConfirmDialog closeRound … /&gt;
-&lt;AlertDialog closeButton closeRound … /&gt;</oc-code>
-<oc-code lang="vue">&lt;OcModal v-model:open="open" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
-&lt;!-- the same option on the other dialogs --&gt;
-&lt;OcSheet close-round close-class="my-close" … /&gt;
-&lt;OcConfirmDialog close-round … /&gt;
-&lt;OcAlertDialog close-button close-round … /&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { Button, Modal } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  return (
+    &lt;&gt;
+      &lt;Button variant="outline" onClick={() =&gt; setOpen(true)}&gt;Open the notice&lt;/Button&gt;
+      {/* the same option on Sheet, ConfirmDialog and AlertDialog: closeRound (+ closeClassName for an extra class) */}
+      &lt;Modal open={open} onOpenChange={setOpen} size="sm" closeRound title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcButton, OcModal } from "@birdycom/omniaui-vue";
+
+const open = ref(false);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton variant="outline" @click="open = true"&gt;Open the notice&lt;/OcButton&gt;
+  &lt;!-- the same option on OcSheet, OcConfirmDialog and OcAlertDialog: close-round (+ close-class for an extra class) --&gt;
+  &lt;OcModal v-model:open="open" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved." /&gt;
+&lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::modal id="notice" size="sm" close-round title="New version" description="App 1 2.5.0 is ready. Your work is saved."&gt;
-    &lt;x-slot:trigger&gt;&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="notice"&gt;Open the notice&lt;/button&gt;&lt;/x-slot:trigger&gt;
+    &lt;x-slot:trigger&gt;&lt;x-oc::button variant="outline" command="show-modal" commandfor="notice"&gt;Open the notice&lt;/x-oc::button&gt;&lt;/x-slot:trigger&gt;
 &lt;/x-oc::modal&gt;
 {{-- also: &lt;x-oc::sheet close-round close-class="my-close"&gt;, &lt;x-oc::confirm-dialog close-round&gt; --}}</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class ModalRoundCloseButton extends Component
+{
+    use WithOcModal;
+
+    public string $version = '2.5.0';
+
+    public function render()
+    {
+        return view('livewire.modal-round-close-button');
+    }
+}
+
+{{-- resources/views/livewire/modal-round-close-button.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('notice')"&gt;Open the notice&lt;/x-oc::button&gt;
+    {{-- close-round: the × in the corner is a round button; it sets the open state back to false --}}
+    &lt;x-oc::wire.modal name="notice" size="sm" close-round title="New version" :description="'App 1 '.$version.' is ready. Your work is saved.'" /&gt;
+    {{-- also: close-button (a plain ×), close-class="my-close", and close-round on the sheet and the confirm dialog --}}
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="compound">Compound Dialog <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Build the dialog from parts: <code>Dialog</code> holds the open state (<code>open</code> + <code>onOpenChange</code>, or <code>defaultOpen</code>), <code>DialogTrigger</code> opens it, <code>DialogContent</code> is the <code>&lt;dialog class="oc-modal"&gt;</code>, and <code>DialogHeader</code>, <code>DialogTitle</code>, <code>DialogDescription</code>, <code>DialogBody</code>, <code>DialogFooter</code> and <code>DialogClose</code> fill it. Title and description become the accessible name and description. <code>asChild</code> on the trigger or close button puts the behaviour on your own element. <code>scroll</code> (or <code>DialogScrollContent</code>) keeps header and footer in place while the body scrolls. Vue has the same parts as <code>OcDialog…</code>; Blade as <code>&lt;x-oc::dialog&gt;</code> with <code>.trigger</code>, <code>.content</code>, <code>.header</code>, <code>.title</code>, <code>.description</code>, <code>.body</code>, <code>.footer</code> and <code>.close</code>, which work without JavaScript. <code>Modal</code> keeps its props API.</p>
+          <oc-demo title="Modal - compound dialog">
+<button class="oc-btn" type="button" aria-haspopup="dialog" aria-controls="oc-dialog-terms" command="show-modal" commandfor="oc-dialog-terms">Read the terms</button>
+
+<dialog class="oc-modal" id="oc-dialog-terms" closedby="any" aria-labelledby="oc-dialog-terms-title" aria-describedby="oc-dialog-terms-description">
+  <div class="oc-modal-content oc-modal-content--scroll">
+    <button class="oc-modal-close" type="button" command="close" commandfor="oc-dialog-terms" aria-label="Close">&times;</button>
+    <div class="oc-modal-header">
+      <h2 class="oc-modal-title" id="oc-dialog-terms-title">Terms of service</h2>
+      <p class="oc-modal-description" id="oc-dialog-terms-description">Company 1, version 3.</p>
+    </div>
+    <div class="oc-modal-body">
+      <p>1. Customer 1 uses the app for its own business.</p>
+      <p>2. Invoices are sent to info@company1.example.</p>
+      <p>3. Data stays in the region the customer chose.</p>
+      <p>4. Either party can end the agreement with one month notice.</p>
+      <p>5. Support answers within two working days.</p>
+      <p>6. Changes to these terms are announced one month ahead.</p>
+    </div>
+    <div class="oc-modal-footer">
+      <button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="oc-dialog-terms">Decline</button>
+      <button class="oc-btn" type="button" command="close" commandfor="oc-dialog-terms">Accept</button>
+    </div>
+  </div>
+</dialog>
+<oc-code lang="tsx">import { useState } from "react";
+import { Dialog, DialogBody, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  return (
+    &lt;Dialog open={open} onOpenChange={setOpen}&gt;
+      &lt;DialogTrigger&gt;Read the terms&lt;/DialogTrigger&gt;
+      &lt;DialogContent scroll&gt;
+        &lt;DialogHeader&gt;
+          &lt;DialogTitle&gt;Terms of service&lt;/DialogTitle&gt;
+          &lt;DialogDescription&gt;Company 1, version 3.&lt;/DialogDescription&gt;
+        &lt;/DialogHeader&gt;
+        &lt;DialogBody&gt;
+          &lt;p&gt;1. Customer 1 uses the app for its own business.&lt;/p&gt;
+          &lt;p&gt;2. Invoices are sent to info@company1.example.&lt;/p&gt;
+        &lt;/DialogBody&gt;
+        &lt;DialogFooter&gt;
+          &lt;DialogClose variant="outline"&gt;Decline&lt;/DialogClose&gt;
+          &lt;DialogClose&gt;Accept&lt;/DialogClose&gt;
+        &lt;/DialogFooter&gt;
+      &lt;/DialogContent&gt;
+    &lt;/Dialog&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcDialog, OcDialogBody, OcDialogClose, OcDialogContent, OcDialogDescription, OcDialogFooter, OcDialogHeader, OcDialogTitle, OcDialogTrigger } from "@birdycom/omniaui-vue";
+
+const open = ref(false);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDialog v-model:open="open"&gt;
+    &lt;OcDialogTrigger&gt;Read the terms&lt;/OcDialogTrigger&gt;
+    &lt;OcDialogContent scroll&gt;
+      &lt;OcDialogHeader&gt;
+        &lt;OcDialogTitle&gt;Terms of service&lt;/OcDialogTitle&gt;
+        &lt;OcDialogDescription&gt;Company 1, version 3.&lt;/OcDialogDescription&gt;
+      &lt;/OcDialogHeader&gt;
+      &lt;OcDialogBody&gt;
+        &lt;p&gt;1. Customer 1 uses the app for its own business.&lt;/p&gt;
+        &lt;p&gt;2. Invoices are sent to info@company1.example.&lt;/p&gt;
+      &lt;/OcDialogBody&gt;
+      &lt;OcDialogFooter&gt;
+        &lt;OcDialogClose&gt;Decline&lt;/OcDialogClose&gt;
+        &lt;OcDialogClose variant="default"&gt;Accept&lt;/OcDialogClose&gt;
+      &lt;/OcDialogFooter&gt;
+    &lt;/OcDialogContent&gt;
+  &lt;/OcDialog&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- No JavaScript: the trigger and the close buttons use command / commandfor with the id of the dialog. --}}
+&lt;x-oc::dialog id="oc-dialog-terms"&gt;
+    &lt;x-oc::dialog.trigger&gt;Read the terms&lt;/x-oc::dialog.trigger&gt;
+    &lt;x-oc::dialog.content scroll&gt;
+        &lt;x-oc::dialog.header&gt;
+            &lt;x-oc::dialog.title&gt;Terms of service&lt;/x-oc::dialog.title&gt;
+            &lt;x-oc::dialog.description&gt;Company 1, version 3.&lt;/x-oc::dialog.description&gt;
+        &lt;/x-oc::dialog.header&gt;
+        &lt;x-oc::dialog.body&gt;
+            &lt;p&gt;1. Customer 1 uses the app for its own business.&lt;/p&gt;
+            &lt;p&gt;2. Invoices are sent to info@company1.example.&lt;/p&gt;
+        &lt;/x-oc::dialog.body&gt;
+        &lt;x-oc::dialog.footer&gt;
+            &lt;x-oc::dialog.close&gt;Decline&lt;/x-oc::dialog.close&gt;
+            &lt;x-oc::dialog.close variant="default"&gt;Accept&lt;/x-oc::dialog.close&gt;
+        &lt;/x-oc::dialog.footer&gt;
+    &lt;/x-oc::dialog.content&gt;
+&lt;/x-oc::dialog&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TermsDialog extends Component
+{
+    public bool $showTerms = false;
+
+    public function accept(): void
+    {
+        // store the acceptance for Customer 1 ...
+        $this-&gt;showTerms = false;
+    }
+
+    public function render()
+    {
+        return view('livewire.terms-dialog');
+    }
+}
+
+{{-- resources/views/livewire/terms-dialog.blade.php --}}
+&lt;div&gt;
+    {{-- model: the trigger sets $showTerms, the dialog follows it; Esc and the close buttons set it back to false. --}}
+    &lt;x-oc::dialog id="oc-dialog-terms" model="showTerms"&gt;
+        &lt;x-oc::dialog.trigger&gt;Read the terms&lt;/x-oc::dialog.trigger&gt;
+        &lt;x-oc::dialog.content scroll&gt;
+            &lt;x-oc::dialog.header&gt;
+                &lt;x-oc::dialog.title&gt;Terms of service&lt;/x-oc::dialog.title&gt;
+                &lt;x-oc::dialog.description&gt;Company 1, version 3.&lt;/x-oc::dialog.description&gt;
+            &lt;/x-oc::dialog.header&gt;
+            &lt;x-oc::dialog.body&gt;
+                &lt;p&gt;1. Customer 1 uses the app for its own business.&lt;/p&gt;
+                &lt;p&gt;2. Invoices are sent to info@company1.example.&lt;/p&gt;
+            &lt;/x-oc::dialog.body&gt;
+            &lt;x-oc::dialog.footer&gt;
+                &lt;x-oc::dialog.close&gt;Decline&lt;/x-oc::dialog.close&gt;
+                &lt;x-oc::button wire:click="accept"&gt;Accept&lt;/x-oc::button&gt;
+            &lt;/x-oc::dialog.footer&gt;
+        &lt;/x-oc::dialog.content&gt;
+    &lt;/x-oc::dialog&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Class toggle</h3>
@@ -147,6 +533,78 @@
     </div>
   </div>
 </div>
+<oc-code lang="tsx">import { useState } from "react";
+import { Button, Modal, ModalClose } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // In React the open state lives in your component: Modal opens the native &lt;dialog&gt; for you,
+  // so you never toggle .is-open yourself (that class is for markup without a &lt;dialog&gt;).
+  const [open, setOpen] = useState(false);
+  return (
+    &lt;&gt;
+      &lt;Button variant="outline" onClick={() =&gt; setOpen(true)}&gt;Open (class toggle)&lt;/Button&gt;
+      &lt;Modal
+        open={open}
+        onOpenChange={setOpen}
+        size="sm"
+        title="Confirm"
+        description={&lt;&gt;Opened by adding &lt;code&gt;.is-open&lt;/code&gt;.&lt;/&gt;}
+        footer={&lt;ModalClose&gt;Close&lt;/ModalClose&gt;}
+      /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcButton, OcModal } from "@birdycom/omniaui-vue";
+
+// The open state lives in your component: OcModal opens the native &lt;dialog&gt; for you,
+// so you never toggle .is-open yourself (that class is for markup without a &lt;dialog&gt;).
+const open = ref(false);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton variant="outline" @click="open = true"&gt;Open (class toggle)&lt;/OcButton&gt;
+  &lt;OcModal v-model:open="open" size="sm" title="Confirm" description="Opened by adding .is-open."&gt;
+    &lt;template #footer="{ close }"&gt;
+      &lt;OcButton @click="close"&gt;Close&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcModal&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- &lt;x-oc::modal&gt; is a native &lt;dialog&gt;: the trigger opens it with invoker commands, no class toggling or script --}}
+&lt;x-oc::modal id="demo-modal-class" size="sm" title="Confirm" description="Opened by adding .is-open."&gt;
+    &lt;x-slot:trigger&gt;&lt;x-oc::button variant="outline" command="show-modal" commandfor="demo-modal-class"&gt;Open (class toggle)&lt;/x-oc::button&gt;&lt;/x-slot:trigger&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button command="close" commandfor="demo-modal-class"&gt;Close&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class ConfirmNotice extends Component
+{
+    use WithOcModal;
+
+    public function render()
+    {
+        return view('livewire.confirm-notice');
+    }
+}
+
+{{-- resources/views/livewire/confirm-notice.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button variant="outline" wire:click="openOcModal('confirm')"&gt;Open (class toggle)&lt;/x-oc::button&gt;
+    {{-- the open state lives on the server (WithOcModal): no class toggling in the browser --}}
+    &lt;x-oc::wire.modal name="confirm" size="sm" title="Confirm" description="Opened by adding .is-open."&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button wire:click="closeOcModal('confirm')"&gt;Close&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.modal&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -168,6 +626,8 @@
               <tr><td><code>.oc-modal-footer</code></td><td>Actions, aligned to the end.</td></tr>
               <tr><td><code>.oc-modal-close</code></td><td>The × button in the corner. <code>.oc-close--round</code>: a circle.</td></tr>
               <tr><td>React <code>closeButton</code>, <code>closeLabel</code>, <code>closeRound</code>, <code>closeClassName</code></td><td>The close button of <code>Modal</code> and <code>AlertDialog</code> (shown with any of the options), round, with an own class; <code>Sheet</code> and <code>ConfirmDialog</code> always have one and take <code>closeRound</code> / <code>closeClassName</code>. Vue: <code>close-button</code>, <code>close-label</code>, <code>close-round</code>, <code>close-class</code>; Blade: <code>close-button</code>, <code>close</code> (label), <code>close-round</code>, <code>close-class</code>.</td></tr>
+              <tr><td><code>.oc-modal-content--scroll</code></td><td>Header and footer stay in place, only <code>.oc-modal-body</code> scrolls (0.17.0, <code>parts/app-compound-overlays.css</code>).</td></tr>
+              <tr><td>React <code>Dialog</code>, <code>DialogTrigger</code>, <code>DialogContent</code> / <code>DialogScrollContent</code>, <code>DialogHeader</code>, <code>DialogTitle</code>, <code>DialogDescription</code>, <code>DialogBody</code>, <code>DialogFooter</code>, <code>DialogClose</code></td><td>Compound dialog (0.17.0): <code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code> on the root, <code>asChild</code> on trigger and close, <code>size</code>, <code>scroll</code>, <code>closeButton</code> (default on), <code>closeRound</code> on the content. Vue: <code>OcDialog</code> (<code>v-model:open</code>) and the same parts. Blade: <code>&lt;x-oc::dialog id&gt;</code> with <code>.trigger</code>, <code>.content</code>, <code>.header</code>, <code>.title</code>, <code>.description</code>, <code>.body</code>, <code>.footer</code>, <code>.close</code>; <code>model</code> ties the open state to a Livewire property.</td></tr>
               <tr><td><code>div.oc-modal.is-open</code> + <code>.oc-modal-overlay</code></td><td>Class-toggle variant for existing scripts.</td></tr>
             </tbody>
           </table>

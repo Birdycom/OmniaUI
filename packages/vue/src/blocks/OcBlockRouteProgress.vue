@@ -28,8 +28,8 @@ export interface RouteProgressNext {
   tone?: 'default' | 'finish' | 'over'
 }
 const props = withDefaults(
-  defineProps<{ title: string; meta?: string; score?: string | number; scoreLabel?: string; done: number; total: number; progressLabel?: string; next?: RouteProgressNext; steps: RouteProgressStep[] }>(),
-  { scoreLabel: 'points' },
+  defineProps<{ title: string; meta?: string; score?: string | number; scoreLabel?: string; done: number; total: number; progressLabel?: string; next?: RouteProgressNext; steps: RouteProgressStep[]; listLabel?: string }>(),
+  { scoreLabel: 'points', listLabel: 'Steps' },
 )
 const emit = defineEmits<{ next: []; step: [index: number] }>()
 const titleId = useUid('oc-rprogress')
@@ -66,7 +66,7 @@ const itemClass = (st: RouteProgressState = 'todo') => [
       </span>
       <span v-if="next.meta" class="oc-block-route-progress-next-meta">{{ next.meta }}</span>
     </button>
-    <ol class="oc-block-route-progress-list" aria-label="Steps">
+    <ol class="oc-block-route-progress-list" :aria-label="listLabel">
       <li v-for="(s, i) in steps" :key="i" :class="itemClass(s.state)">
         <button class="oc-block-route-progress-link" type="button" :aria-current="s.state === 'current' ? 'step' : undefined" @click="emit('step', i)">
           <span class="oc-block-route-progress-marker"><OcWebicon v-if="isIcon(s.marker)" :name="String(s.marker)" :label="s.markerLabel" bare fallback="iconify" /><template v-else>{{ s.marker ?? i + 1 }}</template></span>

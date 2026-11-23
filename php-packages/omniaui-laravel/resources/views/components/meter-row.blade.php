@@ -1,6 +1,6 @@
 {{-- OmniaUI meter row. Props: label, percent (0-100), value (text after the percentage), reset, level (ok|warn|critical;
      default from the percentage: warn from 75, critical from 90), sub (muted second line), subPercent (its thin bar),
-     subLevel (warn|critical). --}}
+     subLevel (warn|critical). value may also be a named slot (<x-slot:value><a href="/usage">31k / 50k</a></x-slot:value>) for rich markup. --}}
 @props(['label' => '', 'percent' => 0, 'value' => null, 'reset' => null, 'level' => null, 'sub' => null, 'subPercent' => null, 'subLevel' => null])
 @php
     $pct = max(0, min(100, (int) round($percent)));

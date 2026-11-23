@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Login Blocks", "category": "Authentication", "description": "Simple card, split with image, muted page with social buttons, reversed split and a magic-link form.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": [], "pro": "some"}-->
+<!--oc-page {"title": "OmniaUI - Login Blocks", "category": "Authentication", "description": "Login blocks: a simple card, a split screen with a quote panel and a muted page with social buttons, built from fields, password reveal and button.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": [], "pro": "some"}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Login</h1>
         <p class="oc-hero-text">Five sign-in layouts built from the card, field, input, reveal and button components: simple card, split with image, muted page with social buttons, reversed split and a minimal magic-link form. <a href="../blocks.html">All blocks</a>.</p>
@@ -8,14 +8,14 @@
           
         <p class="oc-section-header__desc">Plain HTML and CSS. Each preview shows the markup that builds it, also available as a snippet in <code>packages/blocks/blocks/</code> (the variants marked Pro are part of <a href="../pro.html">OmniaUI Pro</a>): <code>login-01</code>, <code>login-02</code>, <code>login-03</code>, <code>login-04</code>, <code>login-05</code>.</p></div>
         <div class="oc-section-content">
-          <h3 class="oc-section-content__title mt-2" id="login-01">Login 01 - Simple card</h3>
+          <h3 class="oc-section-content__title mt-2" id="login-01">Login 01 - Simple card <span class="oc-badge-version">v0.17.0</span></h3>
           <p>Centered sign-in card with e-mail, password and a link to sign up. Snippet: <code>login-01</code> (<code>npx omniaui add login-01</code>).</p>
           <oc-demo title="Login 01 - Simple card">
 <div class="oc-block-authpage oc-block-authpage--plain">
   <form class="oc-block-authcard" action="#" method="post">
     <span class="oc-block-authcard-logo"><svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/></svg></span>
     <div class="oc-block-authcard-head">
-      <h1 class="oc-block-authcard-title">Login to your account</h1>
+      <h2 class="oc-block-authcard-title">Login to your account</h2>
       <p class="oc-block-authcard-text">Enter your e-mail below to login</p>
     </div>
     <div class="oc-block-authcard-fields">
@@ -35,6 +35,85 @@
     <p class="oc-block-authcard-foot">Don't have an account? <a href="#">Sign up</a></p>
   </form>
 </div>
+<oc-code lang="tsx">import { BlockLogin01 } from "@birdycom/omniaui-react";
+
+// The block draws the card, the fields and the submit button; onSubmit gets { email, password, remember }
+&lt;BlockLogin01 headingLevel={2}
+  action="/login"
+  footer={&lt;&gt;Don&amp;apos;t have an account? &lt;a href="/register"&gt;Sign up&lt;/a&gt;&lt;/&gt;}
+  onSubmit={({ email, password }) =&gt; login(email, password)}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockLogin01 } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ login: [email: string, password: string] }&gt;()
+
+function submit(event: SubmitEvent) {
+  event.preventDefault()
+  const data = new FormData(event.target as HTMLFormElement)
+  emit('login', String(data.get('email')), String(data.get('password')))
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockLogin01 :heading-level="2" action="/login" :footer-link="{ label: 'Sign up', href: '/register' }" @submit="submit" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.login-01 heading-level="2" :form="['action' =&gt; '/login']"&gt;
+    &lt;x-slot:fields&gt;
+        &lt;x-oc::form-field label="E-mail" for="oc-login01-email" name="email"&gt;
+            &lt;x-oc::input id="oc-login01-email" name="email" type="email" :value="old('email')" autocomplete="username" required placeholder="name@company1.example" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::password-input label="Password" id="oc-login01-password" name="password" autocomplete="current-password" required /&gt;
+        &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Login&lt;/x-oc::button&gt;
+    &lt;/x-slot:fields&gt;
+&lt;/x-oc::block.login-01&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class Login extends Component
+{
+    #[Validate('required|email')]
+    public string $email = '';
+
+    #[Validate('required')]
+    public string $password = '';
+
+    public function login(): void
+    {
+        $this-&gt;validate();
+        if (! Auth::attempt($this-&gt;only('email', 'password'))) {
+            $this-&gt;addError('email', 'These credentials do not match our records.');
+
+            return;
+        }
+        $this-&gt;redirect('/dashboard', navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.login');
+    }
+}
+
+{{-- resources/views/livewire/login.blade.php --}}
+&lt;div&gt;
+    {{-- form takes wire:submit; the fields and footer slots replace those regions, the rest comes from the block --}}
+    &lt;x-oc::block.login-01 heading-level="2" :form="['wire:submit' =&gt; 'login']"&gt;
+        &lt;x-slot:fields&gt;
+            &lt;x-oc::form-field label="E-mail" for="oc-login01-email" name="email"&gt;
+                &lt;x-oc::wire.input id="oc-login01-email" model="email" type="email" autocomplete="username" required placeholder="name@company1.example" /&gt;
+            &lt;/x-oc::form-field&gt;
+            {{-- attributes such as wire:model go to the input --}}
+            &lt;x-oc::password-input label="Password" id="oc-login01-password" wire:model="password" autocomplete="current-password" required /&gt;
+            &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Login&lt;/x-oc::button&gt;
+        &lt;/x-slot:fields&gt;
+    &lt;/x-oc::block.login-01&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="login-02">Login 02 - Split with image panel</h3>
@@ -52,7 +131,7 @@
     <div class="oc-block-authduo-form">
       <form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post">
         <div class="oc-block-authcard-head">
-          <h1 class="oc-block-authcard-title">Welcome back</h1>
+          <h2 class="oc-block-authcard-title">Welcome back</h2>
           <p class="oc-block-authcard-text">Sign in to your workspace</p>
         </div>
         <div class="oc-block-authcard-fields">
@@ -78,6 +157,109 @@
     </div>
   </div>
 </div>
+<oc-code lang="tsx">import { BlockLogin02 } from "@birdycom/omniaui-react";
+
+&lt;BlockLogin02 headingLevel={2}
+  action="/login"
+  panel={{ quote: "“This workspace saved me hours of admin every week.”", quoteAuthor: "Customer 1, operations lead" }}
+  forgot={{ label: "Forgot password?", href: "/forgot-password" }}
+  footer={&lt;&gt;No account yet? &lt;a href="/register"&gt;Create one&lt;/a&gt;&lt;/&gt;}
+  onSubmit={({ email, password, remember }) =&gt; login(email, password, remember)}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockLogin02 } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ login: [email: string, password: string, remember: boolean] }&gt;()
+
+function submit(event: SubmitEvent) {
+  event.preventDefault()
+  const data = new FormData(event.target as HTMLFormElement)
+  emit('login', String(data.get('email')), String(data.get('password')), data.get('remember') != null)
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockLogin02 :heading-level="2" action="/login"
+    :panel="{ quote: '“This workspace saved me hours of admin every week.”', quoteAuthor: 'Customer 1, operations lead' }"
+    :forgot="{ label: 'Forgot password?', href: '/forgot-password' }"
+    :footer-link="{ label: 'Create one', href: '/register' }"
+    @submit="submit" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.login-02 heading-level="2" :form="['action' =&gt; '/login']"&gt;
+    &lt;x-slot:fields&gt;
+        &lt;x-oc::form-field label="E-mail" for="oc-login02-email" name="email"&gt;
+            &lt;x-oc::input id="oc-login02-email" name="email" type="email" :value="old('email')" autocomplete="username" required placeholder="name@company1.example" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::password-input label="Password" id="oc-login02-password" name="password" autocomplete="current-password" required /&gt;
+        &lt;div class="oc-block-authcard-row"&gt;
+            &lt;x-oc::checkbox name="remember" label="Remember me" /&gt;
+            &lt;a class="oc-link" href="#"&gt;Forgot password?&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Sign in&lt;/x-oc::button&gt;
+    &lt;/x-slot:fields&gt;
+&lt;/x-oc::block.login-02&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class Login02SplitWithImagePanel extends Component
+{
+    #[Validate('required|email')]
+    public string $email = '';
+
+    #[Validate('required')]
+    public string $password = '';
+
+    public bool $remember = false;
+
+    public function login(): void
+    {
+        $this-&gt;validate();
+        if (! Auth::attempt($this-&gt;only('email', 'password'), $this-&gt;remember)) {
+            $this-&gt;addError('email', 'These credentials do not match our records.');
+
+            return;
+        }
+        $this-&gt;redirect('/dashboard', navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.login02-split-with-image-panel');
+    }
+}
+
+{{-- resources/views/livewire/login02-split-with-image-panel.blade.php --}}
+&lt;div&gt;
+    {{-- form takes wire:submit; the fields and footer slots replace those regions, the rest comes from the block --}}
+    &lt;x-oc::block.login-02 heading-level="2" :form="['wire:submit' =&gt; 'login']"&gt;
+        &lt;x-slot:panel&gt;
+            &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
+                &lt;a class="oc-block-authduo-logo" href="/"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
+                &lt;blockquote class="oc-block-authduo-quote"&gt;
+                    &lt;p&gt;“This workspace saved me hours of admin every week.”&lt;/p&gt;
+                    &lt;footer&gt;Customer 1, operations lead&lt;/footer&gt;
+                &lt;/blockquote&gt;
+            &lt;/aside&gt;
+        &lt;/x-slot:panel&gt;
+        &lt;x-slot:fields&gt;
+            &lt;x-oc::form-field label="E-mail" for="oc-login02-email" name="email"&gt;
+                &lt;x-oc::wire.input id="oc-login02-email" model="email" type="email" autocomplete="username" required placeholder="name@company1.example" /&gt;
+            &lt;/x-oc::form-field&gt;
+            &lt;x-oc::password-input label="Password" id="oc-login02-password" wire:model="password" autocomplete="current-password" required /&gt;
+            &lt;div class="oc-block-authcard-row"&gt;
+                &lt;x-oc::checkbox wire:model="remember" label="Remember me" /&gt;
+                &lt;a class="oc-link" href="/forgot-password" wire:navigate&gt;Forgot password?&lt;/a&gt;
+            &lt;/div&gt;
+            &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Sign in&lt;/x-oc::button&gt;
+        &lt;/x-slot:fields&gt;
+        &lt;x-slot:footer&gt;No account yet? &lt;a href="/register" wire:navigate&gt;Create one&lt;/a&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.login-02&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="login-03">Login 03 - Muted background with social buttons</h3>
@@ -87,7 +269,7 @@
   <form class="oc-block-authcard" action="#" method="post">
     <span class="oc-block-authcard-logo"><svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/></svg></span>
     <div class="oc-block-authcard-head">
-      <h1 class="oc-block-authcard-title">Welcome back</h1>
+      <h2 class="oc-block-authcard-title">Welcome back</h2>
       <p class="oc-block-authcard-text">Login with your Apple or Google account</p>
     </div>
     <div class="oc-block-authsocial">
@@ -113,6 +295,98 @@
     <p class="oc-block-authcard-legal">By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
   </form>
 </div>
+<oc-code lang="tsx">import { BlockLogin03 } from "@birdycom/omniaui-react";
+
+&lt;BlockLogin03 headingLevel={2}
+  action="/login"
+  social={["Apple", "Google"]}
+  onSocial={(index) =&gt; (window.location.href = ["/auth/apple", "/auth/google"][index])}
+  footer={&lt;&gt;Don&amp;apos;t have an account? &lt;a href="/register"&gt;Sign up&lt;/a&gt;&lt;/&gt;}
+  onSubmit={({ email, password }) =&gt; login(email, password)}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockLogin03 } from '@birdycom/omniaui-vue'
+
+const providers = ['/auth/apple', '/auth/google']
+const social = (index: number) =&gt; { window.location.href = providers[index] }
+const emit = defineEmits&lt;{ login: [email: string, password: string] }&gt;()
+
+function submit(event: SubmitEvent) {
+  event.preventDefault()
+  const data = new FormData(event.target as HTMLFormElement)
+  emit('login', String(data.get('email')), String(data.get('password')))
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockLogin03 :heading-level="2" action="/login" :social="['Apple', 'Google']" :footer-link="{ label: 'Sign up', href: '/register' }"
+    @social="social" @submit="submit" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.login-03 heading-level="2" :form="['action' =&gt; '/login']"&gt;
+    &lt;x-slot:social&gt;
+        &lt;x-oc::button variant="outline" href="/auth/apple"&gt;Apple&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline" href="/auth/google"&gt;Google&lt;/x-oc::button&gt;
+    &lt;/x-slot:social&gt;
+    &lt;x-slot:fields&gt;
+        &lt;x-oc::form-field label="E-mail" for="oc-login03-email" name="email"&gt;
+            &lt;x-oc::input id="oc-login03-email" name="email" type="email" :value="old('email')" autocomplete="username" required placeholder="name@company1.example" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::password-input label="Password" id="oc-login03-password" name="password" autocomplete="current-password" required /&gt;
+        &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Login&lt;/x-oc::button&gt;
+    &lt;/x-slot:fields&gt;
+&lt;/x-oc::block.login-03&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class Login03MutedBackgroundWithSocialButtons extends Component
+{
+    #[Validate('required|email')]
+    public string $email = '';
+
+    #[Validate('required')]
+    public string $password = '';
+
+    public function login(): void
+    {
+        $this-&gt;validate();
+        if (! Auth::attempt($this-&gt;only('email', 'password'))) {
+            $this-&gt;addError('email', 'These credentials do not match our records.');
+
+            return;
+        }
+        $this-&gt;redirect('/dashboard', navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.login03-muted-background-with-social-buttons');
+    }
+}
+
+{{-- resources/views/livewire/login03-muted-background-with-social-buttons.blade.php --}}
+&lt;div&gt;
+    {{-- form takes wire:submit; the fields and footer slots replace those regions, the rest comes from the block --}}
+    &lt;x-oc::block.login-03 heading-level="2" :form="['wire:submit' =&gt; 'login']"&gt;
+        &lt;x-slot:social&gt;
+            &lt;x-oc::button variant="outline" href="/auth/apple"&gt;Apple&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="outline" href="/auth/google"&gt;Google&lt;/x-oc::button&gt;
+        &lt;/x-slot:social&gt;
+        &lt;x-slot:fields&gt;
+            &lt;x-oc::form-field label="E-mail" for="oc-login03-email" name="email"&gt;
+                &lt;x-oc::wire.input id="oc-login03-email" model="email" type="email" autocomplete="username" required placeholder="name@company1.example" /&gt;
+            &lt;/x-oc::form-field&gt;
+            &lt;x-oc::password-input label="Password" id="oc-login03-password" wire:model="password" autocomplete="current-password" required /&gt;
+            &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Login&lt;/x-oc::button&gt;
+        &lt;/x-slot:fields&gt;
+        &lt;x-slot:footer&gt;Don't have an account? &lt;a href="/register" wire:navigate&gt;Sign up&lt;/a&gt;&lt;/x-slot:footer&gt;
+        &lt;x-slot:legal&gt;By clicking continue, you agree to our &lt;a href="/terms"&gt;Terms of Service&lt;/a&gt; and &lt;a href="/privacy"&gt;Privacy Policy&lt;/a&gt;.&lt;/x-slot:legal&gt;
+    &lt;/x-oc::block.login-03&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="login-04">Login 04 - Form with image on the right</h3>
@@ -130,7 +404,7 @@
     <div class="oc-block-authduo-form">
       <form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post">
         <div class="oc-block-authcard-head">
-          <h1 class="oc-block-authcard-title">Login to your account</h1>
+          <h2 class="oc-block-authcard-title">Login to your account</h2>
           <p class="oc-block-authcard-text">Choose a provider or use your e-mail</p>
         </div>
         <div class="oc-block-authsocial">
@@ -167,7 +441,7 @@
   <form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post">
     <span class="oc-block-authcard-logo"><svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/></svg></span>
     <div class="oc-block-authcard-head">
-      <h1 class="oc-block-authcard-title">Welcome to Company 1</h1>
+      <h2 class="oc-block-authcard-title">Welcome to Company 1</h2>
       <p class="oc-block-authcard-text">Don't have an account? <a class="oc-link" href="#">Sign up</a></p>
     </div>
     <div class="oc-block-authcard-fields">

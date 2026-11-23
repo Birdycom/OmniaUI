@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Rating", "category": "Forms", "description": "Star rating: show a score with halves, or let people pick 1 to 5 stars. No JavaScript.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Rating", "category": "Forms", "description": "Star rating: show a score with halves or tenths, or let people pick 1 to 5 stars with hover preview and arrow keys as a normal form value. No JavaScript.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/rating.html | Map: hero -> demo -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Rating</h1>
@@ -43,6 +43,65 @@
   &lt;a class="oc-rating-summary__count" href="#reviews"&gt;128 reviews&lt;/a&gt;
 &lt;/div&gt;
 &lt;span class="oc-rating oc-rating--lg" style="--oc-rating: 3" role="img" aria-label="3 out of 5"&gt;&lt;/span&gt;</oc-code>
+<oc-code lang="tsx">import { Rating } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;&gt;
+      &lt;Rating value={4.5} /&gt;
+      &lt;div className="oc-rating-summary"&gt;
+        &lt;Rating value={4.2} size="sm" /&gt;
+        &lt;span className="oc-rating-summary__score"&gt;4.2&lt;/span&gt;
+        &lt;a className="oc-rating-summary__count" href="#reviews"&gt;128 reviews&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;Rating value={3} size="lg" /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcRating } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcRating :value="4.5" /&gt;
+  &lt;div class="oc-rating-summary"&gt;
+    &lt;OcRating :value="4.2" size="sm" /&gt;
+    &lt;span class="oc-rating-summary__score"&gt;4.2&lt;/span&gt;
+    &lt;a class="oc-rating-summary__count" href="#reviews"&gt;128 reviews&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;OcRating :value="3" size="lg" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::rating :value="4.5" /&gt;
+&lt;div class="oc-rating-summary"&gt;
+    &lt;x-oc::rating :value="4.2" size="sm" /&gt;
+    &lt;span class="oc-rating-summary__score"&gt;4.2&lt;/span&gt;
+    &lt;a class="oc-rating-summary__count" href="#reviews"&gt;128 reviews&lt;/a&gt;
+&lt;/div&gt;
+&lt;x-oc::rating :value="3" size="lg" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProductRating extends Component
+{
+    public float $score = 4.2;
+
+    public int $reviews = 128;
+
+    public function render()
+    {
+        return view('livewire.product-rating');
+    }
+}
+
+{{-- resources/views/livewire/product-rating.blade.php --}}
+&lt;div class="oc-rating-summary"&gt;
+    &lt;x-oc::rating :value="$score" size="sm" /&gt;
+    &lt;span class="oc-rating-summary__score"&gt;{{ $score }}&lt;/span&gt;
+    &lt;a class="oc-rating-summary__count" href="#reviews"&gt;{{ $reviews }} reviews&lt;/a&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-2">Pick a rating</h3>
           <p class="oc-section-content__desc">Five radio buttons drawn as stars. Hover them and click one, or use the arrow keys.</p>
@@ -55,6 +114,48 @@
   <label><input type="radio" name="oc-rating-demo" value="4" checked><span>4 stars</span></label>
   <label><input type="radio" name="oc-rating-demo" value="5"><span>5 stars</span></label>
 </fieldset>
+<oc-code lang="tsx">import { useState } from "react";
+import { RatingInput } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [rating, setRating] = useState(4);
+  return &lt;RatingInput name="rating" legend="Your rating" size="lg" value={rating} onChange={setRating} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcRatingInput } from '@birdycom/omniaui-vue'
+
+const rating = ref(4)
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcRatingInput v-model="rating" name="rating" legend="Your rating" size="lg" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::rating-input name="rating" legend="Your rating" size="lg" :value="old('rating', 4)" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class RateProduct extends Component
+{
+    public int $rating = 4;
+
+    public function render()
+    {
+        return view('livewire.rate-product');
+    }
+}
+
+{{-- resources/views/livewire/rate-product.blade.php --}}
+{{-- wire:model goes on the radios, so the stars are written out (&lt;x-oc::rating-input&gt; passes attributes to the fieldset) --}}
+&lt;fieldset class="oc-rating-input oc-rating-input--lg"&gt;
+    &lt;legend&gt;Your rating&lt;/legend&gt;
+    @foreach (range(1, 5) as $n)
+        &lt;label&gt;&lt;input type="radio" value="{{ $n }}" wire:model.live="rating"&gt;&lt;span&gt;{{ $n === 1 ? '1 star' : $n.' stars' }}&lt;/span&gt;&lt;/label&gt;
+    @endforeach
+&lt;/fieldset&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

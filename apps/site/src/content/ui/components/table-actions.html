@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Table actions", "category": "Data", "description": "Small icon buttons or a \"more\" menu.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Table actions", "category": "Data", "description": "Row actions for a data table: a few small icon buttons, or one more button that opens a menu on a native popover, both in the actions cell of the row.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/table-actions.html | Map: hero -> icon actions demo -> overflow menu demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Table actions</h1>
@@ -35,6 +35,129 @@
     </tbody>
   </table>
 </div>
+<oc-code lang="tsx">import { Table, TableActionIcon, TableActions, Webicon } from "@birdycom/omniaui-react";
+
+const contacts = [
+  { id: 1, name: "Contact 1", email: "info@contact1.example", locked: false },
+  { id: 3, name: "Contact 3", email: "info@contact3.example", locked: true },
+];
+
+function remove(id: number) {
+  // ask for confirmation, then delete
+}
+
+export function Example() {
+  return (
+    &lt;Table&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style={{ width: "7rem" }}&gt;&lt;span className="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        {contacts.map((c) =&gt; (
+          &lt;tr key={c.id}&gt;
+            &lt;td&gt;{c.name}&lt;/td&gt;&lt;td&gt;{c.email}&lt;/td&gt;
+            &lt;TableActions className="oc-table-actions--icons"&gt;
+              &lt;TableActionIcon label={`View ${c.name}`} tone="primary" href={`/contacts/${c.id}`}&gt;&lt;Webicon name="mdi:eye-outline" /&gt;&lt;/TableActionIcon&gt;
+              &lt;TableActionIcon label={`Edit ${c.name}`} href={`/contacts/${c.id}/edit`}&gt;&lt;Webicon name="mdi:pencil-outline" /&gt;&lt;/TableActionIcon&gt;
+              &lt;TableActionIcon label={`Delete ${c.name}`} tone="destructive" disabled={c.locked} onClick={() =&gt; remove(c.id)}&gt;&lt;Webicon name="mdi:trash-can-outline" /&gt;&lt;/TableActionIcon&gt;
+            &lt;/TableActions&gt;
+          &lt;/tr&gt;
+        ))}
+      &lt;/tbody&gt;
+    &lt;/Table&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTableActions, OcWebicon } from "@birdycom/omniaui-vue";
+
+const contacts = [
+  { id: 1, name: "Contact 1", email: "info@contact1.example", locked: false },
+  { id: 3, name: "Contact 3", email: "info@contact3.example", locked: true },
+];
+
+function remove(id: number) {
+  // ask for confirmation, then delete
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-table-wrap"&gt;
+    &lt;table class="oc-table"&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:7rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr v-for="c in contacts" :key="c.id"&gt;
+          &lt;td&gt;{{ c.name }}&lt;/td&gt;&lt;td&gt;{{ c.email }}&lt;/td&gt;
+          &lt;OcTableActions&gt;
+            &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" :href="`/contacts/${c.id}`" :aria-label="`View ${c.name}`" title="View"&gt;&lt;OcWebicon name="mdi:eye-outline" /&gt;&lt;/a&gt;
+            &lt;a class="oc-table-actions-icon" :href="`/contacts/${c.id}/edit`" :aria-label="`Edit ${c.name}`" title="Edit"&gt;&lt;OcWebicon name="mdi:pencil-outline" /&gt;&lt;/a&gt;
+            &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" :aria-label="`Delete ${c.name}`" title="Delete" :disabled="c.locked" @click="remove(c.id)"&gt;&lt;OcWebicon name="mdi:trash-can-outline" /&gt;&lt;/button&gt;
+          &lt;/OcTableActions&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:7rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Contact 1&lt;/td&gt;&lt;td&gt;info@contact1.example&lt;/td&gt;
+            &lt;x-oc::table-actions&gt;
+                &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 1" title="View"&gt;&lt;x-oc::webicon name="mdi:eye-outline" /&gt;&lt;/a&gt;
+                &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 1" title="Edit"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;/a&gt;
+                &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 1" title="Delete"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/button&gt;
+            &lt;/x-oc::table-actions&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Contact 3&lt;/td&gt;&lt;td&gt;info@contact3.example&lt;/td&gt;
+            &lt;x-oc::table-actions&gt;
+                &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="#demo" aria-label="View Contact 3" title="View"&gt;&lt;x-oc::webicon name="mdi:eye-outline" /&gt;&lt;/a&gt;
+                &lt;a class="oc-table-actions-icon" href="#demo" aria-label="Edit Contact 3" title="Edit"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;/a&gt;
+                &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete Contact 3" title="Delete (locked)" disabled&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/button&gt;
+            &lt;/x-oc::table-actions&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/x-oc::table&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TableActionsIconActions extends Component
+{
+    public array $contacts = [
+        ['id' =&gt; 1, 'name' =&gt; 'Contact 1', 'email' =&gt; 'info@contact1.example', 'locked' =&gt; false],
+        ['id' =&gt; 3, 'name' =&gt; 'Contact 3', 'email' =&gt; 'info@contact3.example', 'locked' =&gt; true],
+    ];
+
+    public function delete($id): void
+    {
+        $this-&gt;contacts = array_values(array_filter($this-&gt;contacts, fn ($c) =&gt; $c['id'] !== (int) $id || $c['locked']));
+    }
+
+    public function render()
+    {
+        return view('livewire.table-actions-icon-actions');
+    }
+}
+
+{{-- resources/views/livewire/table-actions-icon-actions.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::table&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:7rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($contacts as $contact)
+                &lt;tr wire:key="contact-{{ $contact['id'] }}"&gt;
+                    &lt;td&gt;{{ $contact['name'] }}&lt;/td&gt;&lt;td&gt;{{ $contact['email'] }}&lt;/td&gt;
+                    &lt;x-oc::table-actions&gt;
+                        &lt;a class="oc-table-actions-icon oc-table-actions-icon--primary" href="/contacts/{{ $contact['id'] }}" aria-label="View {{ $contact['name'] }}" title="View"&gt;&lt;x-oc::webicon name="mdi:eye-outline" /&gt;&lt;/a&gt;
+                        &lt;a class="oc-table-actions-icon" href="/contacts/{{ $contact['id'] }}/edit" aria-label="Edit {{ $contact['name'] }}" title="Edit"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;/a&gt;
+                        &lt;button class="oc-table-actions-icon oc-table-actions-icon--destructive" type="button" aria-label="Delete {{ $contact['name'] }}" title="Delete" @disabled($contact['locked']) wire:click="delete({{ $contact['id'] }})" wire:confirm="Delete {{ $contact['name'] }}?"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/button&gt;
+                    &lt;/x-oc::table-actions&gt;
+                &lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="overflow-menu">Overflow menu</h3>
@@ -60,6 +183,109 @@
     </tbody>
   </table>
 </div>
+<oc-code lang="tsx">import { Table, TableActions, TableActionsMenu } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Table&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style={{ width: "4rem" }}&gt;&lt;span className="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
+          &lt;TableActions&gt;
+            &lt;TableActionsMenu label="Actions for Contact 2" id="oc-table-actions-docs-menu"&gt;
+              &lt;a className="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
+              &lt;a className="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
+              &lt;button className="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
+              &lt;div className="oc-dropdown-separator" /&gt;
+              &lt;button className="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
+            &lt;/TableActionsMenu&gt;
+          &lt;/TableActions&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/Table&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTableActions } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-table-wrap"&gt;
+    &lt;table class="oc-table"&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:4rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
+          &lt;OcTableActions menu-label="Actions for Contact 2"&gt;
+            &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
+            &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
+            &lt;button class="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
+            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+            &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
+          &lt;/OcTableActions&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:4rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
+            &lt;x-oc::table-actions menu="Actions for Contact 2" id="oc-table-actions-docs-menu"&gt;
+                &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
+                &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
+                &lt;button class="oc-dropdown-item" type="button"&gt;Duplicate&lt;/button&gt;
+                &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+                &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Delete&lt;/button&gt;
+            &lt;/x-oc::table-actions&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/x-oc::table&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TableActionsOverflowMenu extends Component
+{
+    public function duplicate(int $id): void
+    {
+        // Copy contact $id.
+    }
+
+    public function delete(int $id): void
+    {
+        // Delete contact $id.
+    }
+
+    public function render()
+    {
+        return view('livewire.table-actions-overflow-menu');
+    }
+}
+
+{{-- resources/views/livewire/table-actions-overflow-menu.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::table&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;E-mail&lt;/th&gt;&lt;th style="width:4rem"&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+            &lt;tr&gt;
+                &lt;td&gt;Contact 2&lt;/td&gt;&lt;td&gt;info@contact2.example&lt;/td&gt;
+                &lt;x-oc::table-actions menu="Actions for Contact 2" id="oc-table-actions-docs-menu"&gt;
+                    &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;View&lt;/a&gt;
+                    &lt;a class="oc-dropdown-item" href="#overflow-menu"&gt;Edit&lt;/a&gt;
+                    &lt;button class="oc-dropdown-item" type="button" wire:click="duplicate(2)"&gt;Duplicate&lt;/button&gt;
+                    &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+                    &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" wire:click="delete(2)"&gt;Delete&lt;/button&gt;
+                &lt;/x-oc::table-actions&gt;
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

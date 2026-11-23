@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Neon border and button", "category": "Marketing", "description": "A border that glows from one accent color to the other, and a button with a neon gradient.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Neon border and button", "category": "Marketing", "description": "A border that slowly glows from one accent color to the other, for the one form or card that matters, and a button with a neon gradient. Plain CSS.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/neon.html | Map: hero -> demo -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Neon border and button</h1>
@@ -17,6 +17,90 @@
   <label class="oc-field"><span class="oc-field-label">Email address</span><input class="oc-input" type="email" placeholder="info@company1.example"></label>
   <button type="submit" class="oc-btn oc-btn--neon">START SCAN</button>
 </form>
+<oc-code lang="tsx">import { Button, Input } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+function startScan(email: string) {
+  // call your API
+}
+
+export function Example() {
+  const [email, setEmail] = useState("");
+
+  return (
+    &lt;form
+      className="oc-card oc-glow-border"
+      style={{ display: "grid", gap: "0.75rem", padding: "1.25rem", inlineSize: "min(100%,24rem)" }}
+      onSubmit={(e) =&gt; { e.preventDefault(); startScan(email); }}
+    &gt;
+      &lt;label className="oc-field"&gt;
+        &lt;span className="oc-field-label"&gt;Email address&lt;/span&gt;
+        &lt;Input type="email" placeholder="info@company1.example" value={email} onChange={(e) =&gt; setEmail(e.target.value)} /&gt;
+      &lt;/label&gt;
+      &lt;Button type="submit" variant="neon"&gt;START SCAN&lt;/Button&gt;
+    &lt;/form&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcInput } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const email = ref("");
+
+function startScan() {
+  // call your API with email.value
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;form class="oc-card oc-glow-border" style="display:grid;gap:0.75rem;padding:1.25rem;inline-size:min(100%,24rem)" @submit.prevent="startScan"&gt;
+    &lt;label class="oc-field"&gt;
+      &lt;span class="oc-field-label"&gt;Email address&lt;/span&gt;
+      &lt;OcInput v-model="email" type="email" placeholder="info@company1.example" /&gt;
+    &lt;/label&gt;
+    &lt;OcButton type="submit" variant="neon"&gt;START SCAN&lt;/OcButton&gt;
+  &lt;/form&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;form class="oc-card oc-glow-border" style="display:grid;gap:0.75rem;padding:1.25rem;inline-size:min(100%,24rem)" method="post" action="{{ route('newsletter.subscribe') }}"&gt;
+    @csrf
+    &lt;label class="oc-field"&gt;
+        &lt;span class="oc-field-label"&gt;Email address&lt;/span&gt;
+        &lt;x-oc::input type="email" name="email" placeholder="info@company1.example" /&gt;
+    &lt;/label&gt;
+    &lt;x-oc::button type="submit" variant="neon"&gt;START SCAN&lt;/x-oc::button&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class NeonBorderAndButtonGlowingForm extends Component
+{
+    #[Validate('required|email')]
+    public string $email = '';
+
+    public function startScan(): void
+    {
+        $this-&gt;validate();
+        // Start the scan for $this-&gt;email.
+    }
+
+    public function render()
+    {
+        return view('livewire.neon-border-and-button-glowing-form');
+    }
+}
+
+{{-- resources/views/livewire/neon-border-and-button-glowing-form.blade.php --}}
+&lt;form class="oc-card oc-glow-border" style="display:grid;gap:0.75rem;padding:1.25rem;inline-size:min(100%,24rem)" wire:submit="startScan"&gt;
+    &lt;label class="oc-field"&gt;
+        &lt;span class="oc-field-label"&gt;Email address&lt;/span&gt;
+        &lt;x-oc::wire.input model="email" type="email" placeholder="info@company1.example" /&gt;
+    &lt;/label&gt;
+    &lt;x-oc::button type="submit" variant="neon"&gt;START SCAN&lt;/x-oc::button&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-2">Other colors</h3>
           <p class="oc-section-content__desc">Add an <code>.oc-accent--*</code> preset to pick other colors. Hover the buttons to compare their glow.</p>
@@ -49,6 +133,53 @@
 &lt;button type="button" class="oc-btn oc-btn--neon oc-accent--orange"&gt;Orange&lt;/button&gt;
 &lt;button type="button" class="oc-btn oc-btn--neon" disabled&gt;Disabled&lt;/button&gt;
 &lt;div class="oc-card oc-glow-border oc-accent--violet" style="padding:1rem 1.25rem"&gt;Violet border&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Button } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;&gt;
+      &lt;Button type="button" variant="neon" className="oc-accent--green"&gt;Green&lt;/Button&gt;
+      &lt;Button type="button" variant="neon" className="oc-accent--orange"&gt;Orange&lt;/Button&gt;
+      &lt;Button type="button" variant="neon" disabled&gt;Disabled&lt;/Button&gt;
+      &lt;div className="oc-card oc-glow-border oc-accent--violet" style={{ padding: "1rem 1.25rem" }}&gt;Violet border&lt;/div&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton variant="neon" class="oc-accent--green"&gt;Green&lt;/OcButton&gt;
+  &lt;OcButton variant="neon" class="oc-accent--orange"&gt;Orange&lt;/OcButton&gt;
+  &lt;OcButton variant="neon" disabled&gt;Disabled&lt;/OcButton&gt;
+  &lt;div class="oc-card oc-glow-border oc-accent--violet" style="padding:1rem 1.25rem"&gt;Violet border&lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button variant="neon" class="oc-accent--green"&gt;Green&lt;/x-oc::button&gt;
+&lt;x-oc::button variant="neon" class="oc-accent--orange"&gt;Orange&lt;/x-oc::button&gt;
+&lt;x-oc::button variant="neon" disabled&gt;Disabled&lt;/x-oc::button&gt;
+&lt;div class="oc-card oc-glow-border oc-accent--violet" style="padding:1rem 1.25rem"&gt;Violet border&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class NeonBorderAndButtonOtherColors extends Component
+{
+    public function render()
+    {
+        return view('livewire.neon-border-and-button-other-colors');
+    }
+}
+
+{{-- resources/views/livewire/neon-border-and-button-other-colors.blade.php --}}
+&lt;div class="flex flex-wrap items-center gap-2"&gt;
+    &lt;x-oc::button variant="neon" class="oc-accent--green"&gt;Green&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="neon" class="oc-accent--orange"&gt;Orange&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="neon" disabled&gt;Disabled&lt;/x-oc::button&gt;
+    &lt;div class="oc-card oc-glow-border oc-accent--violet" style="padding:1rem 1.25rem"&gt;Violet border&lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

@@ -20,16 +20,21 @@ export interface TimelineProps extends HTMLAttributes<HTMLOListElement> {
   size?: "default" | "lg";
   /** Line in the accent color. */
   accent?: boolean;
+  /** Compact rows: `<li><strong>date</strong><span>text</span></li>` (no dot, no title). */
+  compact?: boolean;
 }
 
 /** `<ol class="oc-timeline">` with dated entries. Use `className="oc-accent--green"` for another accent. */
 export const Timeline = forwardRef<HTMLOListElement, TimelineProps>(function Timeline(
-  { items, size = "default", accent = false, className, ...rest },
+  { items, size = "default", accent = false, compact = false, className, ...rest },
   ref,
 ) {
   return (
     <ol ref={ref} className={cx("oc-timeline", size === "lg" && "oc-timeline--lg", accent && "oc-timeline--accent", className)} {...rest}>
-      {items.map((item, i) => (
+      {compact && items.map((item, i) => (
+        <li key={i}><strong>{item.date}</strong><span>{item.text ?? item.title}</span></li>
+      ))}
+      {!compact && items.map((item, i) => (
         <li key={i} className={cx("oc-timeline__item", item.current && "oc-timeline__item--current")}>
           {item.dateTime ? (
             <time className="oc-timeline__date" dateTime={item.dateTime}>{item.date}</time>

@@ -1,8 +1,11 @@
 {{-- File: resources/views/components/upgrade-banner.blade.php | Map: aside -> icon slot -> body (title + plan pill, text slot, usage meter) -> actions slot -> dismiss button
      OmniaUI upgrade banner: free-plan limits callout. Needs @birdycom/omniaui CSS.
-     Props: title, plan (pill), used + max + usage (label) for the meter, premium, compact, dismissible, label (aria-label).
+     Props: title, plan (pill), used + max + usage (label) for the meter, premium, compact, dismissible, label (aria-label),
+            dismiss (Livewire method run by the X, wire:click; shows the X), dismiss-attributes (extra attributes for the X, e.g.
+            ['x-on:click' => '$el.closest(\'aside\').remove()']; shows the X), dismiss-label (default "Dismiss").
      Slots: icon, default (text), actions. --}}
-@props(['title', 'plan' => null, 'used' => null, 'max' => null, 'usage' => null, 'premium' => false, 'compact' => false, 'dismissible' => false, 'label' => 'Plan limits', 'icon' => null, 'actions' => null])
+@props(['title', 'plan' => null, 'used' => null, 'max' => null, 'usage' => null, 'premium' => false, 'compact' => false, 'dismissible' => false, 'label' => 'Plan limits', 'icon' => null, 'actions' => null,
+    'dismiss' => null, 'dismissAttributes' => [], 'dismissLabel' => 'Dismiss'])
 <aside {{ $attributes->class(['oc-upgrade-banner', 'oc-upgrade-banner--premium' => $premium, 'oc-upgrade-banner--compact' => $compact])->merge(['aria-label' => $label]) }}>
     @if (isset($icon) && trim((string) $icon) !== '')
         <span class="oc-upgrade-banner-icon" aria-hidden="true">{{ $icon }}</span>
@@ -24,7 +27,7 @@
     @if (isset($actions) && trim((string) $actions) !== '')
         <div class="oc-upgrade-banner-actions">{{ $actions }}</div>
     @endif
-    @if ($dismissible)
-        <button class="oc-upgrade-banner-dismiss" type="button" aria-label="Dismiss">&times;</button>
+    @if ($dismissible || $dismiss || $dismissAttributes)
+        <button {{ (new \Illuminate\View\ComponentAttributeBag((array) $dismissAttributes))->class(['oc-upgrade-banner-dismiss'])->merge(array_filter(['type' => 'button', 'aria-label' => $dismissLabel, 'wire:click' => $dismiss])) }}>&times;</button>
     @endif
 </aside>

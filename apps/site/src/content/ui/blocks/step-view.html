@@ -1,4 +1,4 @@
-<!--oc-page {"title":"OmniaUI - Step view Block","category":"App UX","description":"One step of a route or course as the visitor sees it: picture, text, task, content blocks and a question.","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
+<!--oc-page {"title":"OmniaUI - Step view Block","category":"App UX","description":"One step of a route or course as the visitor sees it: picture, title and place, text, task, content blocks, a countdown and a question with answers.","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
 <!-- File: apps/site/src/content/ui/blocks/step-view.html | Map: hero -> demos -> reference -> frameworks -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Step view</h1>
@@ -109,12 +109,17 @@
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
 import { ref } from 'vue'
 import { OcBlockStepView } from '@birdycom/omniaui-vue'
+
 const answer = ref&lt;number&gt;()
+const time = ref('0:56')
+const left = ref(62)
+const emit = defineEmits&lt;{ send: [answer: number | undefined] }&gt;()
 &lt;/script&gt;
 
 &lt;template&gt;
   &lt;OcBlockStepView v-model:answer="answer" title="Town hall" place="Market street 1" task="Find the year carved above the door." :number="3"
-    :question="{ kicker: 'Question · 20 points', text: 'In which year was the town hall built?', options: ['1890', '1910', '1930', '1950'] }" @send="send"&gt;
+    :question="{ kicker: 'Question · 20 points', text: 'In which year was the town hall built?', options: ['1890', '1910', '1930', '1950'] }"
+    @send="emit('send', answer)"&gt;
     &lt;template #badges&gt;&lt;span class="oc-badge oc-badge--info"&gt;Step 3&lt;/span&gt;&lt;/template&gt;
     &lt;p&gt;The town hall stands on the north side of the square.&lt;/p&gt;
     &lt;template #blocks&gt;
@@ -132,6 +137,72 @@ const answer = ref&lt;number&gt;()
     @endforeach
   &lt;/x-slot:blocks&gt;
 &lt;/x-oc::block.step-view&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class StepScreen extends Component
+{
+    public string $title = 'Town hall';
+
+    /** @var list&lt;string&gt; */
+    public array $options = ['1890', '1910', '1930', '1950'];
+
+    public int $correct = 1;
+
+    public ?int $picked = null;
+
+    public bool $answered = false;
+
+    public function send(): void
+    {
+        if ($this-&gt;picked !== null &amp;&amp; ! $this-&gt;answered) {
+            $this-&gt;answered = true;
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.step-screen');
+    }
+}
+
+{{-- resources/views/livewire/step-screen.blade.php --}}
+&lt;div&gt;
+    {{-- the block keeps its own top row, picture, place and task; title, text, blocks and question come from here --}}
+    &lt;x-oc::block.step-view&gt;
+        &lt;x-slot:title&gt;{{ $title }}&lt;/x-slot:title&gt;
+        &lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;
+        &lt;x-slot:blocks&gt;
+            &lt;x-oc::collapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/x-oc::collapsible&gt;
+            &lt;x-oc::alert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/x-oc::alert&gt;
+            &lt;x-oc::button variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;x-oc::webicon name="mdi:open-in-new" /&gt;&lt;/x-oc::button&gt;
+            &lt;div class="oc-block-step-view-countdown" role="timer" aria-label="Time left" style="--oc-step-view-left: 62%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:56&lt;/b&gt;&lt;/div&gt;
+        &lt;/x-slot:blocks&gt;
+        &lt;x-slot:question&gt;
+            &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
+            &lt;p class="oc-block-step-view-ask" id="step-ask"&gt;In which year was the town hall built?&lt;/p&gt;
+            &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="step-ask"&gt;
+                @foreach ($options as $i =&gt; $option)
+                    &lt;label class="oc-radio-item oc-radio-item--card" wire:key="option-{{ $i }}" @if ($answered &amp;&amp; $i === $correct) data-result="correct" @elseif ($answered &amp;&amp; $i === $picked) data-result="wrong" @endif&gt;
+                        &lt;input class="oc-radio" type="radio" name="answer" value="{{ $i }}" wire:model="picked" @disabled($answered)&gt;&lt;span&gt;{{ $option }}&lt;/span&gt;
+                    &lt;/label&gt;
+                @endforeach
+            &lt;/fieldset&gt;
+            @if ($answered)
+                &lt;x-oc::alert :variant="$picked === $correct ? 'success' : 'danger'" :icon="$picked === $correct ? 'mdi:check-circle-outline' : 'mdi:close-circle-outline'"
+                    :title="$picked === $correct ? 'Right: it was '.$options[$correct] : 'Not quite: it was '.$options[$correct]"&gt;
+                    {{ $picked === $correct ? '20 points' : '0 points' }} for this step.
+                &lt;/x-oc::alert&gt;
+            @else
+                &lt;x-oc::button size="lg" class="oc-block-step-view-send" wire:click="send" :disabled="$picked === null"&gt;Send answer&lt;/x-oc::button&gt;
+                &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
+            @endif
+        &lt;/x-slot:question&gt;
+    &lt;/x-oc::block.step-view&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="demo-2">No picture, little time left <span class="oc-badge-version">v0.16.0</span></h3>
@@ -205,6 +276,270 @@ const answer = ref&lt;number&gt;()
     &lt;p class="oc-block-step-view-hint"&gt;One try: your first answer counts.&lt;/p&gt;
   &lt;/div&gt;
 &lt;/article&gt;</oc-code>
+<oc-code lang="tsx">const [answer, setAnswer] = useState&lt;number | undefined&gt;(1);
+
+{/* No picture: leave picture out and pass number; the countdown turns red with tone="low" */}
+&lt;BlockStepView
+  back={&lt;Button variant="ghost" size="sm" onClick={back}&gt;&lt;Webicon name="mdi:arrow-left" /&gt; All steps&lt;/Button&gt;}
+  distance={&lt;Badge variant="outline"&gt;12 m away&lt;/Badge&gt;}
+  number={3}
+  badges={&lt;&gt;&lt;Badge variant="info"&gt;Step 3&lt;/Badge&gt;&lt;Badge variant="outline"&gt;20 points&lt;/Badge&gt;&lt;/&gt;}
+  title="Town hall"
+  place="Market street 1"
+  task="Find the year carved above the door."
+  blocks={&lt;&gt;
+    &lt;Collapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/Collapsible&gt;
+    &lt;Alert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/Alert&gt;
+    &lt;ButtonLink variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;Webicon name="mdi:open-in-new" /&gt;&lt;/ButtonLink&gt;
+    &lt;StepViewCountdown label="Time left" time="0:08" left={9} tone="low" /&gt;
+  &lt;/&gt;}
+  question={{ kicker: "Question · 20 points", text: "In which year was the town hall built?", options: ["1890", "1910", "1930", "1950"],
+    value: answer, onValueChange: setAnswer, onSend: () =&gt; send(answer), hint: "One try: your first answer counts." }}
+&gt;
+  &lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;
+&lt;/BlockStepView&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcAlert, OcBadge, OcBlockStepView, OcButton, OcCollapsible, OcWebicon } from '@birdycom/omniaui-vue'
+
+const answer = ref&lt;number&gt;(1)
+const emit = defineEmits&lt;{ back: []; send: [answer: number] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- No picture: leave the picture slot empty and pass number --&gt;
+  &lt;OcBlockStepView v-model:answer="answer" :number="3" title="Town hall" place="Market street 1" task="Find the year carved above the door."
+    :question="{ kicker: 'Question · 20 points', text: 'In which year was the town hall built?', options: ['1890', '1910', '1930', '1950'], hint: 'One try: your first answer counts.' }"
+    @send="emit('send', answer)"&gt;
+    &lt;template #back&gt;&lt;OcButton variant="ghost" size="sm" @click="emit('back')"&gt;&lt;OcWebicon name="mdi:arrow-left" /&gt; All steps&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;template #distance&gt;&lt;OcBadge variant="outline"&gt;12 m away&lt;/OcBadge&gt;&lt;/template&gt;
+    &lt;template #badges&gt;&lt;OcBadge variant="info"&gt;Step 3&lt;/OcBadge&gt;&lt;OcBadge variant="outline"&gt;20 points&lt;/OcBadge&gt;&lt;/template&gt;
+    &lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;
+    &lt;template #blocks&gt;
+      &lt;OcCollapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/OcCollapsible&gt;
+      &lt;OcAlert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/OcAlert&gt;
+      &lt;OcButton variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;OcWebicon name="mdi:open-in-new" /&gt;&lt;/OcButton&gt;
+      &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:08&lt;/b&gt;&lt;/div&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockStepView&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- No picture: leave picture out and pass number; the slots win over the props --}}
+&lt;form method="POST" action="/route/steps/3/answer"&gt;
+    @csrf
+    &lt;x-oc::block.step-view title="Town hall" :number="3" place="Market street 1" task="Find the year carved above the door." title-id="step-title"
+        :question="[
+            'kicker' =&gt; 'Question · 20 points',
+            'text' =&gt; 'In which year was the town hall built?',
+            'options' =&gt; ['1890', '1910', '1930', '1950'],
+            'name' =&gt; 'answer',
+            'value' =&gt; (int) old('answer', 1),
+            'hint' =&gt; 'One try: your first answer counts.',
+            'sendAttributes' =&gt; ['type' =&gt; 'submit'],
+        ]"&gt;
+        &lt;x-slot:back&gt;&lt;x-oc::button variant="ghost" size="sm" href="/route"&gt;&lt;x-oc::webicon name="mdi:arrow-left" /&gt; All steps&lt;/x-oc::button&gt;&lt;/x-slot:back&gt;
+        &lt;x-slot:distance&gt;&lt;x-oc::badge variant="outline"&gt;12 m away&lt;/x-oc::badge&gt;&lt;/x-slot:distance&gt;
+        &lt;x-slot:badges&gt;&lt;x-oc::badge variant="info"&gt;Step 3&lt;/x-oc::badge&gt;&lt;x-oc::badge variant="outline"&gt;20 points&lt;/x-oc::badge&gt;&lt;/x-slot:badges&gt;
+        &lt;x-slot:blocks&gt;
+            &lt;x-oc::collapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/x-oc::collapsible&gt;
+            &lt;x-oc::alert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/x-oc::alert&gt;
+            &lt;x-oc::button variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;x-oc::webicon name="mdi:open-in-new" /&gt;&lt;/x-oc::button&gt;
+            &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:08&lt;/b&gt;&lt;/div&gt;
+        &lt;/x-slot:blocks&gt;
+        &lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;
+    &lt;/x-oc::block.step-view&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
+use Livewire\Component;
+
+class StepNoPicture extends Component
+{
+    public int $number = 3;
+
+    public int $secondsLeft = 8;
+
+    /** @var list&lt;string&gt; */
+    public array $options = ['1890', '1910', '1930', '1950'];
+
+    public int $correct = 1;
+
+    public ?int $picked = 1;
+
+    public bool $answered = false;
+
+    public function send(): void
+    {
+        if ($this-&gt;picked !== null &amp;&amp; ! $this-&gt;answered) {
+            $this-&gt;answered = true;
+        }
+    }
+
+    /** The question prop of the block: wire:model on every answer, wire:click on send; after sending the result and the feedback. */
+    public function question(): array
+    {
+        $right = $this-&gt;picked === $this-&gt;correct;
+
+        return [
+            'kicker' =&gt; 'Question · 20 points',
+            'text' =&gt; 'In which year was the town hall built?',
+            'options' =&gt; $this-&gt;options,
+            'name' =&gt; 'answer',
+            'value' =&gt; $this-&gt;picked,
+            'hint' =&gt; $this-&gt;answered ? null : 'One try: your first answer counts.',
+            'result' =&gt; $this-&gt;answered ? ['picked' =&gt; $this-&gt;picked, 'correct' =&gt; $this-&gt;correct] : null,
+            'feedback' =&gt; new HtmlString(Blade::render('&lt;x-oc::alert :variant="$variant" :title="$title"&gt;{{ $points }} points for this step.&lt;/x-oc::alert&gt;', [
+                'variant' =&gt; $right ? 'success' : 'danger',
+                'title' =&gt; ($right ? 'Right: it was ' : 'Not quite: it was ').$this-&gt;options[$this-&gt;correct],
+                'points' =&gt; $right ? 20 : 0,
+            ])),
+            'inputAttributes' =&gt; ['wire:model' =&gt; 'picked'],
+            'sendAttributes' =&gt; ['wire:click' =&gt; 'send'],
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.step-no-picture');
+    }
+}
+
+{{-- resources/views/livewire/step-no-picture.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.step-view title="Town hall" :number="$number" place="Market street 1" task="Find the year carved above the door." title-id="step-title" :question="$this-&gt;question()"&gt;
+        &lt;x-slot:back&gt;&lt;x-oc::button variant="ghost" size="sm" href="/route" wire:navigate&gt;&lt;x-oc::webicon name="mdi:arrow-left" /&gt; All steps&lt;/x-oc::button&gt;&lt;/x-slot:back&gt;
+        &lt;x-slot:distance&gt;&lt;x-oc::badge variant="outline"&gt;12 m away&lt;/x-oc::badge&gt;&lt;/x-slot:distance&gt;
+        &lt;x-slot:badges&gt;&lt;x-oc::badge variant="info"&gt;Step {{ $number }}&lt;/x-oc::badge&gt;&lt;x-oc::badge variant="outline"&gt;20 points&lt;/x-oc::badge&gt;&lt;/x-slot:badges&gt;
+        &lt;x-slot:blocks&gt;
+            &lt;x-oc::collapsible dense title="Tip"&gt;The year is written in Roman numerals.&lt;/x-oc::collapsible&gt;
+            &lt;x-oc::alert variant="warning" role="note"&gt;Mind the traffic when you cross to the door.&lt;/x-oc::alert&gt;
+            &lt;x-oc::button variant="outline" href="https://example.com/town-hall" target="_blank" rel="noopener noreferrer"&gt;More about the town hall &lt;x-oc::webicon name="mdi:open-in-new" /&gt;&lt;/x-oc::button&gt;
+            &lt;div class="oc-block-step-view-countdown oc-block-step-view-countdown--low" role="timer" aria-label="Time left" style="--oc-step-view-left: 9%"&gt;&lt;span class="oc-block-step-view-countdown-label"&gt;Time left&lt;/span&gt;&lt;b class="oc-block-step-view-countdown-time"&gt;0:{{ sprintf('%02d', $secondsLeft) }}&lt;/b&gt;&lt;/div&gt;
+        &lt;/x-slot:blocks&gt;
+        &lt;p&gt;The town hall stands on the north side of the square. Look at the stone above the main door.&lt;/p&gt;
+    &lt;/x-oc::block.step-view&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="demo-answered">After the answer: right and wrong <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Once the answer is checked, <code>data-result="correct"</code> or <code>"wrong"</code> on an answer card gives it a green or red edge and a mark; the other cards fade and the radios lock. The result itself is an <a href="../components/alert.html">alert with an icon</a> in place of the send button. A hidden word ("Correct", "Wrong") in the marked cards tells a screen reader the same. React and Vue: <code>question.result = { picked, correct }</code>, and <code>feedback</code> (React prop, Vue slot); Blade: <code>result</code> in the <code>question</code> array and a <code>feedback</code> slot.</p>
+          <oc-demo title="Step view - after the answer">
+<div style="inline-size:min(100%,28rem)">
+  <div class="oc-block-step-view-question" data-answered>
+    <span class="oc-block-step-view-kicker">Question · 20 points</span>
+    <p class="oc-block-step-view-ask" id="oc-stepview-done-ask">In which year was the town hall built?</p>
+    <fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-done-ask">
+      <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-stepview-done" value="a" disabled><span>1890</span></label>
+      <label class="oc-radio-item oc-radio-item--card" data-result="correct"><input class="oc-radio" type="radio" name="oc-stepview-done" value="b" disabled><span>1910</span><span class="oc-visually-hidden"> Correct</span></label>
+      <label class="oc-radio-item oc-radio-item--card" data-result="wrong"><input class="oc-radio" type="radio" name="oc-stepview-done" value="c" disabled checked><span>1930</span><span class="oc-visually-hidden"> Wrong</span></label>
+      <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-stepview-done" value="d" disabled><span>1950</span></label>
+    </fieldset>
+    <div class="oc-alert oc-alert--danger" role="status">
+      <span class="oc-alert-icon" aria-hidden="true"><iconify-icon icon="mdi:close-circle-outline"></iconify-icon></span>
+      <div class="oc-alert-body">
+        <h4 class="oc-alert-title">Not quite: it was 1910</h4>
+        <p class="oc-alert-description">0 points for this step. Walk on to the clock.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;div style="inline-size:min(100%,28rem)"&gt;
+  &lt;div class="oc-block-step-view-question" data-answered&gt;
+    &lt;span class="oc-block-step-view-kicker"&gt;Question · 20 points&lt;/span&gt;
+    &lt;p class="oc-block-step-view-ask" id="oc-stepview-done-ask"&gt;In which year was the town hall built?&lt;/p&gt;
+    &lt;fieldset class="oc-block-step-view-answers" aria-labelledby="oc-stepview-done-ask"&gt;
+      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="a" disabled&gt;&lt;span&gt;1890&lt;/span&gt;&lt;/label&gt;
+      &lt;label class="oc-radio-item oc-radio-item--card" data-result="correct"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="b" disabled&gt;&lt;span&gt;1910&lt;/span&gt;&lt;span class="oc-visually-hidden"&gt; Correct&lt;/span&gt;&lt;/label&gt;
+      &lt;label class="oc-radio-item oc-radio-item--card" data-result="wrong"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="c" disabled checked&gt;&lt;span&gt;1930&lt;/span&gt;&lt;span class="oc-visually-hidden"&gt; Wrong&lt;/span&gt;&lt;/label&gt;
+      &lt;label class="oc-radio-item oc-radio-item--card"&gt;&lt;input class="oc-radio" type="radio" name="oc-stepview-done" value="d" disabled&gt;&lt;span&gt;1950&lt;/span&gt;&lt;/label&gt;
+    &lt;/fieldset&gt;
+    &lt;div class="oc-alert oc-alert--danger" role="status"&gt;
+      &lt;span class="oc-alert-icon" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:close-circle-outline"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+      &lt;div class="oc-alert-body"&gt;
+        &lt;h4 class="oc-alert-title"&gt;Not quite: it was 1910&lt;/h4&gt;
+        &lt;p class="oc-alert-description"&gt;0 points for this step. Walk on to the clock.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;BlockStepView
+  title="Old gate"
+  question={{
+    text: "In which year was the town hall built?",
+    options: ["1890", "1910", "1930", "1950"],
+    result: { picked: 2, correct: 1 },
+    feedback: &lt;Alert variant="danger" icon="mdi:close-circle-outline" title="Not quite: it was 1910"&gt;0 points for this step.&lt;/Alert&gt;,
+  }}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcBlockStepView title="Old gate" :question="{ text: 'In which year …', options: ['1890', '1910', '1930', '1950'], result: { picked: 2, correct: 1 } }"&gt;
+  &lt;template #feedback&gt;&lt;OcAlert variant="danger" icon="mdi:close-circle-outline" title="Not quite: it was 1910"&gt;0 points for this step.&lt;/OcAlert&gt;&lt;/template&gt;
+&lt;/OcBlockStepView&gt;</oc-code>
+<oc-code lang="blade">{{-- after checking: result locks the answers and marks the right and the wrong one; the feedback slot takes the place of the send button --}}
+&lt;x-oc::block.step-view title="Old gate" :question="[
+    'kicker' =&gt; 'Question · 20 points',
+    'text' =&gt; 'In which year was the town hall built?',
+    'options' =&gt; ['1890', '1910', '1930', '1950'],
+    'result' =&gt; ['picked' =&gt; 2, 'correct' =&gt; 1],
+]"&gt;
+    &lt;x-slot:feedback&gt;
+        &lt;x-oc::alert variant="danger" icon="mdi:close-circle-outline" title="Not quite: it was 1910"&gt;0 points for this step. Walk on to the clock.&lt;/x-oc::alert&gt;
+    &lt;/x-slot:feedback&gt;
+&lt;/x-oc::block.step-view&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class StepAnswer extends Component
+{
+    /** @var list&lt;string&gt; */
+    public array $options = ['1890', '1910', '1930', '1950'];
+
+    public int $correct = 1;
+
+    public ?int $picked = 2;
+
+    public bool $answered = true;
+
+    public function send(): void
+    {
+        if ($this-&gt;picked !== null &amp;&amp; ! $this-&gt;answered) {
+            $this-&gt;answered = true;
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.step-answer');
+    }
+}
+
+{{-- resources/views/livewire/step-answer.blade.php --}}
+&lt;div&gt;
+    {{-- the whole block: once answered, result locks the answers and marks them, and the feedback slot replaces the send button --}}
+    &lt;x-oc::block.step-view title="Old gate" :question="[
+        'kicker' =&gt; 'Question · 20 points',
+        'text' =&gt; 'In which year was the town hall built?',
+        'options' =&gt; $options,
+        'name' =&gt; 'answer',
+        'value' =&gt; $picked,
+        'result' =&gt; $answered ? ['picked' =&gt; $picked, 'correct' =&gt; $correct] : null,
+        'hint' =&gt; $answered ? null : 'One try: your first answer counts.',
+        'inputAttributes' =&gt; ['wire:model' =&gt; 'picked'],
+        'sendAttributes' =&gt; ['wire:click' =&gt; 'send'],
+    ]"&gt;
+        &lt;x-slot:feedback&gt;
+            &lt;x-oc::alert :variant="$picked === $correct ? 'success' : 'danger'" :icon="$picked === $correct ? 'mdi:check-circle-outline' : 'mdi:close-circle-outline'"
+                :title="$picked === $correct ? 'Right: it was '.$options[$correct] : 'Not quite: it was '.$options[$correct]"&gt;
+                {{ $picked === $correct ? '20 points' : '0 points' }} for this step.
+            &lt;/x-oc::alert&gt;
+        &lt;/x-slot:feedback&gt;
+    &lt;/x-oc::block.step-view&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

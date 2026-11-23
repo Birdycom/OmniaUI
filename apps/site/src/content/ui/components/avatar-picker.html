@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Avatar picker", "category": "Forms", "description": "Avatar or company logo with a preview, Upload and Remove, and drag and drop.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>", "<script type=\"module\" src=\"/js/oc-form-extras.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Avatar picker", "category": "Forms", "description": "Avatar or company logo picker with a preview, Upload and Remove buttons, drag and drop, a size limit in the browser and a server error message.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>", "<script type=\"module\" src=\"/js/oc-form-extras.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/avatar-picker.html | Map: hero -> demo -> reference -> frameworks -> browser support -> source -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Avatar picker</h1>
@@ -11,7 +11,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/avatar-picker.html</code>.</p>
         </div>
         <div class="oc-section-content">
-          <h3 class="oc-section-content__title" id="demo-1">Avatar and logo <span class="oc-badge-version">v0.12.6</span></h3>
+          <h3 class="oc-section-content__title" id="demo-1">Avatar and logo <span class="oc-badge-version">v0.12.6</span> <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Only images are taken: pick a PDF through "All files" and the picker refuses it with a message. The profile picture also has a 2 MB limit (<code>data-oc-max-kb</code>).</p>
           <oc-demo title="Avatar picker">
 <div style="display:grid;gap:1.5rem">
@@ -44,6 +44,115 @@
   </div>
 </div>
 </div>
+<oc-code lang="tsx">import { AvatarPicker } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [avatar, setAvatar] = useState&lt;File | null&gt;(null);
+  const [logo, setLogo] = useState&lt;File | null&gt;(null);
+
+  return (
+    &lt;div style={{ display: "grid", gap: "1.5rem" }}&gt;
+      &lt;AvatarPicker
+        name="avatar"
+        initials="C1"
+        accept="image/png,image/jpeg,image/webp"
+        maxKb={2048}
+        hint="PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle."
+        onChange={(file) =&gt; setAvatar(file)}
+      /&gt;
+      &lt;AvatarPicker
+        name="logo"
+        initials="CO"
+        label="Company logo"
+        logo
+        accept="image/svg+xml,image/png"
+        hint="SVG or PNG on a transparent background."
+        onChange={(file) =&gt; setLogo(file)}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAvatarPicker } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const avatar = ref&lt;File | null&gt;(null);
+const logo = ref&lt;File | null&gt;(null);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;gap:1.5rem"&gt;
+    &lt;OcAvatarPicker
+      name="avatar"
+      initials="C1"
+      accept="image/png,image/jpeg,image/webp"
+      :max-kb="2048"
+      hint="PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle."
+      @change="avatar = $event"
+    /&gt;
+    &lt;OcAvatarPicker
+      name="logo"
+      initials="CO"
+      label="Company logo"
+      logo
+      accept="image/svg+xml,image/png"
+      hint="SVG or PNG on a transparent background."
+      @change="logo = $event"
+    /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;gap:1.5rem"&gt;
+    &lt;x-oc::avatar-picker name="avatar" id="oc-avatar-me" initials="C1" accept="image/png,image/jpeg,image/webp" :max-kb="2048"
+        hint="PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle." /&gt;
+    &lt;x-oc::avatar-picker name="logo" id="oc-logo-company" initials="CO" label="Company logo" logo accept="image/svg+xml,image/png"
+        hint="SVG or PNG on a transparent background." /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+
+class AvatarPicker extends Component
+{
+    use WithFileUploads;
+
+    #[Validate('nullable|image|mimes:png,jpg,jpeg,webp|max:2048')]
+    public $avatar;
+
+    #[Validate('nullable|mimes:svg,png|max:1024')]
+    public $logo;
+
+    public function save(): void
+    {
+        $this-&gt;validate();
+
+        if ($this-&gt;avatar) {
+            $this-&gt;avatar-&gt;store('avatars', 'public');
+        }
+        if ($this-&gt;logo) {
+            $this-&gt;logo-&gt;store('logos', 'public');
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.avatar-picker');
+    }
+}
+
+{{-- resources/views/livewire/avatar-picker.blade.php --}}
+&lt;form wire:submit="save" style="display:grid;gap:1.5rem"&gt;
+    {{-- wire:model goes to the file input; the preview shows the new image at once --}}
+    &lt;x-oc::avatar-picker name="avatar" wire:model="avatar" id="oc-avatar-me" initials="C1" accept="image/png,image/jpeg,image/webp" :max-kb="2048"
+        hint="PNG, JPG or WebP up to 2 MB, at least 256 × 256 px. Drop an image on the circle." /&gt;
+    &lt;x-oc::avatar-picker name="logo" wire:model="logo" id="oc-logo-company" initials="CO" label="Company logo" logo accept="image/svg+xml,image/png"
+        hint="SVG or PNG on a transparent background." /&gt;
+    &lt;div&gt;&lt;x-oc::button type="submit"&gt;Save&lt;/x-oc::button&gt;&lt;/div&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -67,6 +176,6 @@
               <tr><td><code>oc-avatar-invalid</code></td><td>Event with <code>detail.file</code> and <code>detail.reason</code> when a file is refused.</td></tr>
             </tbody>
           </table>
-          <p class="oc-section-content__desc mt-2">Send the file with the form (the input has a <code>name</code> in your app) or upload it yourself on <code>oc-avatar-change</code>. Check the type and size on the server too: the browser check is for the user, not for security.</p>
+          <p class="oc-section-content__desc mt-2">Send the file with the form (the input has a <code>name</code> in your app) or upload it yourself on <code>oc-avatar-change</code>. In Blade, <code>wire:model</code> (0.17.0) goes to the file input, so a Livewire component with <code>WithFileUploads</code> receives the file (see the Livewire tab); <code>input-attributes</code> adds more attributes to the input. Check the type and size on the server too: the browser check is for the user, not for security.</p>
         </div>
       </section>

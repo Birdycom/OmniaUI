@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Site header", "category": "Navigation", "description": "Top bar with brand, pill navigation, actions and a CSS-only mobile menu (<code>.oc-topbar</code>).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Site header", "category": "Navigation", "description": "Top bar with brand, pill or plain navigation, actions and a CSS-only mobile menu: centred, dark or brand colour, floating and with a strip above.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Site header</h1>
         <p class="oc-hero-text"><strong>Site header</strong> with brand, navigation and actions, in several styles: pill or plain links, centred, dark or brand colour, floating, with a strip above. For a marketing header with a mega menu or glass see the <a href="../blocks/site-header.html">Site header block</a>. With search and actions (for example the <a href="theme-switch.html">theme switch</a>). This is the bar at the top of every OmniaCSS page: <code>.oc-topbar</code> contains the brand, a <code>.oc-navmenu.oc-navmenu--site</code> and an actions slot. <a href="../components.html">All components</a>.</p>
@@ -25,10 +25,84 @@
   </nav>
   <div class="oc-topbar-actions"><a class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" href="#" aria-label="Sign in"><iconify-icon icon="mdi:account-circle-outline" aria-hidden="true"></iconify-icon></a><a class="oc-btn oc-btn--sm" href="#">Get started</a></div>
 </header>
+<oc-code lang="tsx">import { ButtonLink, Topbar, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Topbar
+      brand="Company 1"
+      logo="mdi:lightning-bolt"
+      links={[
+        { label: "Product", href: "#", current: true },
+        { label: "Solutions", href: "#" },
+        { label: "Pricing", href: "#" },
+        { label: "About", href: "#" },
+      ]}
+      actions={&lt;&gt;&lt;ButtonLink variant="ghost" icon size="sm" href="#" aria-label="Sign in"&gt;&lt;Webicon name="mdi:account-circle-outline" /&gt;&lt;/ButtonLink&gt;&lt;ButtonLink size="sm" href="#"&gt;Get started&lt;/ButtonLink&gt;&lt;/&gt;}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcTopbar, OcWebicon } from '@birdycom/omniaui-vue'
+
+const links = [
+  { label: 'Product', href: '#', current: true },
+  { label: 'Solutions', href: '#' },
+  { label: 'Pricing', href: '#' },
+  { label: 'About', href: '#' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTopbar brand="Company 1" logo="mdi:lightning-bolt" :links="links"&gt;
+    &lt;template #actions&gt;&lt;OcButton variant="ghost" icon size="sm" href="#" aria-label="Sign in"&gt;&lt;OcWebicon name="mdi:account-circle-outline" /&gt;&lt;/OcButton&gt;&lt;OcButton size="sm" href="#"&gt;Get started&lt;/OcButton&gt;&lt;/template&gt;
+  &lt;/OcTopbar&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" id="oc-topbar-default" :links="[['label' =&gt; 'Product', 'href' =&gt; '#', 'current' =&gt; true], ['label' =&gt; 'Solutions', 'href' =&gt; '#'], ['label' =&gt; 'Pricing', 'href' =&gt; '#'], ['label' =&gt; 'About', 'href' =&gt; '#']]"&gt;
+    &lt;x-slot:actions&gt;&lt;x-oc::button variant="ghost" icon size="sm" href="#" aria-label="Sign in"&gt;&lt;x-oc::webicon name="mdi:account-circle-outline" /&gt;&lt;/x-oc::button&gt;&lt;x-oc::button size="sm" href="#"&gt;Get started&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+&lt;/x-oc::topbar&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SiteHeaderDefault extends Component
+{
+    public string $page = 'Product';
+
+    /** @var array&lt;string, string&gt; */
+    public array $pages = [
+        'Product' =&gt; '/product',
+        'Solutions' =&gt; '/solutions',
+        'Pricing' =&gt; '/pricing',
+        'About' =&gt; '/about',
+    ];
+
+    /** The menu of the topbar; the open page gets aria-current. */
+    public function links(): array
+    {
+        return [
+            ...collect($this-&gt;pages)-&gt;map(fn (string $href, string $label) =&gt; ['label' =&gt; $label, 'href' =&gt; $href, 'current' =&gt; $label === $this-&gt;page])-&gt;values()-&gt;all(),
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.site-header-default');
+    }
+}
+
+{{-- resources/views/livewire/site-header-default.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" id="oc-topbar-default" :links="$this-&gt;links()"&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button variant="ghost" icon size="sm" href="#" aria-label="Sign in"&gt;&lt;x-oc::webicon name="mdi:account-circle-outline" /&gt;&lt;/x-oc::button&gt;&lt;x-oc::button size="sm" href="#"&gt;Get started&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::topbar&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-center">Centred menu, plain links <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc"><code>--center</code> puts the menu in the middle, <code>--plain</code> drops the pill frames and underlines the current page.</p>
-          <oc-demo title="Site header - centred menu, plain links">
+          <oc-demo title="Site header - centred menu, plain links" hint="Below 47.5rem the menu folds into the burger: open it, or pick the widest preview to see the centred menu.">
 <header class="oc-topbar oc-topbar--collapsible oc-topbar--center oc-topbar--plain">
   <a class="oc-topbar-brand" href="#"><span class="oc-topbar-logo" aria-hidden="true"><iconify-icon icon="mdi:lightning-bolt"></iconify-icon></span>Company 1</a>
   <input type="checkbox" id="oc-topbar-center" class="oc-topbar-toggle" aria-label="Toggle menu">
@@ -43,6 +117,82 @@
   </nav>
   <div class="oc-topbar-actions"><a class="oc-btn oc-btn--sm" href="#">Get started</a></div>
 </header>
+<oc-code lang="tsx">import { ButtonLink, Topbar } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Topbar
+      brand="Company 1"
+      logo="mdi:lightning-bolt"
+      center
+      plain
+      links={[
+        { label: "Product", href: "#" },
+        { label: "Solutions", href: "#", current: true },
+        { label: "Pricing", href: "#" },
+        { label: "About", href: "#" },
+      ]}
+      actions={&lt;ButtonLink size="sm" href="#"&gt;Get started&lt;/ButtonLink&gt;}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcTopbar } from '@birdycom/omniaui-vue'
+
+const links = [
+  { label: 'Product', href: '#' },
+  { label: 'Solutions', href: '#', current: true },
+  { label: 'Pricing', href: '#' },
+  { label: 'About', href: '#' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTopbar brand="Company 1" logo="mdi:lightning-bolt" center plain :links="links"&gt;
+    &lt;template #actions&gt;&lt;OcButton size="sm" href="#"&gt;Get started&lt;/OcButton&gt;&lt;/template&gt;
+  &lt;/OcTopbar&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" center plain id="oc-topbar-center" :links="[['label' =&gt; 'Product', 'href' =&gt; '#'], ['label' =&gt; 'Solutions', 'href' =&gt; '#', 'current' =&gt; true], ['label' =&gt; 'Pricing', 'href' =&gt; '#'], ['label' =&gt; 'About', 'href' =&gt; '#']]"&gt;
+    &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" href="#"&gt;Get started&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+&lt;/x-oc::topbar&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SiteHeaderCentredPlain extends Component
+{
+    public string $page = 'Solutions';
+
+    /** @var array&lt;string, string&gt; */
+    public array $pages = [
+        'Product' =&gt; '/product',
+        'Solutions' =&gt; '/solutions',
+        'Pricing' =&gt; '/pricing',
+        'About' =&gt; '/about',
+    ];
+
+    /** The menu of the topbar; the open page gets aria-current. */
+    public function links(): array
+    {
+        return [
+            ...collect($this-&gt;pages)-&gt;map(fn (string $href, string $label) =&gt; ['label' =&gt; $label, 'href' =&gt; $href, 'current' =&gt; $label === $this-&gt;page])-&gt;values()-&gt;all(),
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.site-header-centred-plain');
+    }
+}
+
+{{-- resources/views/livewire/site-header-centred-plain.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" center plain id="oc-topbar-center" :links="$this-&gt;links()"&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" href="#"&gt;Get started&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::topbar&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-strip">With a strip above <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc"><code>.oc-topbar-strip</code>: a small row above the bar for contact details, language or the account.</p>
@@ -64,6 +214,93 @@
   <div class="oc-topbar-actions"><a class="oc-btn oc-btn--sm" href="#">Get started</a></div>
 </header>
 </div>
+<oc-code lang="tsx">import { ButtonLink, Topbar } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="w-full"&gt;
+      &lt;Topbar
+        brand="Company 1"
+        logo="mdi:lightning-bolt"
+        plain
+        links={[
+          { label: "Product", href: "#", current: true },
+          { label: "Solutions", href: "#" },
+          { label: "Pricing", href: "#" },
+          { label: "About", href: "#" },
+        ]}
+        strip={&lt;&gt;&lt;span&gt;&lt;a href="#"&gt;info@company1.example&lt;/a&gt;&lt;a href="#"&gt;+32 012 34 56 71&lt;/a&gt;&lt;/span&gt;&lt;span&gt;&lt;a href="#"&gt;NL&lt;/a&gt;&lt;a href="#" aria-current="true"&gt;EN&lt;/a&gt;&lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/span&gt;&lt;/&gt;}
+        actions={&lt;ButtonLink size="sm" href="#"&gt;Get started&lt;/ButtonLink&gt;}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcTopbar } from '@birdycom/omniaui-vue'
+
+const links = [
+  { label: 'Product', href: '#', current: true },
+  { label: 'Solutions', href: '#' },
+  { label: 'Pricing', href: '#' },
+  { label: 'About', href: '#' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="w-full"&gt;
+    &lt;OcTopbar brand="Company 1" logo="mdi:lightning-bolt" plain :links="links"&gt;
+      &lt;template #strip&gt;&lt;span&gt;&lt;a href="#"&gt;info@company1.example&lt;/a&gt;&lt;a href="#"&gt;+32 012 34 56 71&lt;/a&gt;&lt;/span&gt;&lt;span&gt;&lt;a href="#"&gt;NL&lt;/a&gt;&lt;a href="#" aria-current="true"&gt;EN&lt;/a&gt;&lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/span&gt;&lt;/template&gt;
+      &lt;template #actions&gt;&lt;OcButton size="sm" href="#"&gt;Get started&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcTopbar&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="w-full"&gt;
+    &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" plain id="oc-topbar-strip" :links="[['label' =&gt; 'Product', 'href' =&gt; '#', 'current' =&gt; true], ['label' =&gt; 'Solutions', 'href' =&gt; '#'], ['label' =&gt; 'Pricing', 'href' =&gt; '#'], ['label' =&gt; 'About', 'href' =&gt; '#']]"&gt;
+        &lt;x-slot:strip&gt;&lt;span&gt;&lt;a href="#"&gt;info@company1.example&lt;/a&gt;&lt;a href="#"&gt;+32 012 34 56 71&lt;/a&gt;&lt;/span&gt;&lt;span&gt;&lt;a href="#"&gt;NL&lt;/a&gt;&lt;a href="#" aria-current="true"&gt;EN&lt;/a&gt;&lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/span&gt;&lt;/x-slot:strip&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" href="#"&gt;Get started&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::topbar&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SiteHeaderWithStrip extends Component
+{
+    public string $page = 'Product';
+
+    /** @var array&lt;string, string&gt; */
+    public array $pages = [
+        'Product' =&gt; '/product',
+        'Solutions' =&gt; '/solutions',
+        'Pricing' =&gt; '/pricing',
+        'About' =&gt; '/about',
+    ];
+
+    /** The menu of the topbar; the open page gets aria-current. */
+    public function links(): array
+    {
+        return [
+            ...collect($this-&gt;pages)-&gt;map(fn (string $href, string $label) =&gt; ['label' =&gt; $label, 'href' =&gt; $href, 'current' =&gt; $label === $this-&gt;page])-&gt;values()-&gt;all(),
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.site-header-with-strip');
+    }
+}
+
+{{-- resources/views/livewire/site-header-with-strip.blade.php --}}
+&lt;div&gt;
+    &lt;div class="w-full"&gt;
+        &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" plain id="oc-topbar-strip" :links="$this-&gt;links()"&gt;
+            &lt;x-slot:strip&gt;&lt;span&gt;&lt;a href="#"&gt;info@company1.example&lt;/a&gt;&lt;a href="#"&gt;+32 012 34 56 71&lt;/a&gt;&lt;/span&gt;&lt;span&gt;&lt;a href="#"&gt;NL&lt;/a&gt;&lt;a href="#" aria-current="true"&gt;EN&lt;/a&gt;&lt;a href="#"&gt;Sign in&lt;/a&gt;&lt;/span&gt;&lt;/x-slot:strip&gt;
+            &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" href="#"&gt;Get started&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+        &lt;/x-oc::topbar&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-dark">Dark and brand colour <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc"><code>--dark</code> and <code>--brand</code> (the accent gradient; pick one with <code>.oc-accent--*</code>): light text, links as soft pills.</p>
@@ -98,6 +335,111 @@
   <div class="oc-topbar-actions"><a class="oc-btn oc-btn--secondary oc-btn--sm" href="#">Try for free</a></div>
 </header>
 </div>
+<oc-code lang="tsx">import { ButtonLink, Topbar } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="grid gap-1 w-full"&gt;
+      &lt;Topbar
+        brand="Company 1"
+        logo="mdi:lightning-bolt"
+        variant="dark"
+        links={[
+          { label: "Product", href: "#", current: true },
+          { label: "Solutions", href: "#" },
+          { label: "Pricing", href: "#" },
+          { label: "About", href: "#" },
+        ]}
+        actions={&lt;ButtonLink variant="secondary" size="sm" href="#"&gt;Contact&lt;/ButtonLink&gt;}
+      /&gt;
+      &lt;Topbar
+        brand="Company 1"
+        logo="mdi:lightning-bolt"
+        variant="brand"
+        className="oc-accent--violet"
+        links={[
+          { label: "Product", href: "#", current: true },
+          { label: "Solutions", href: "#" },
+          { label: "Pricing", href: "#" },
+          { label: "About", href: "#" },
+        ]}
+        actions={&lt;ButtonLink variant="secondary" size="sm" href="#"&gt;Try for free&lt;/ButtonLink&gt;}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcTopbar } from '@birdycom/omniaui-vue'
+
+const links = [
+  { label: 'Product', href: '#', current: true },
+  { label: 'Solutions', href: '#' },
+  { label: 'Pricing', href: '#' },
+  { label: 'About', href: '#' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="grid gap-1 w-full"&gt;
+    &lt;OcTopbar brand="Company 1" logo="mdi:lightning-bolt" variant="dark" :links="links"&gt;
+      &lt;template #actions&gt;&lt;OcButton variant="secondary" size="sm" href="#"&gt;Contact&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcTopbar&gt;
+    &lt;OcTopbar brand="Company 1" logo="mdi:lightning-bolt" variant="brand" class="oc-accent--violet" :links="links"&gt;
+      &lt;template #actions&gt;&lt;OcButton variant="secondary" size="sm" href="#"&gt;Try for free&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcTopbar&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="grid gap-1 w-full"&gt;
+    &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" variant="dark" id="oc-topbar-dark" :links="[['label' =&gt; 'Product', 'href' =&gt; '#', 'current' =&gt; true], ['label' =&gt; 'Solutions', 'href' =&gt; '#'], ['label' =&gt; 'Pricing', 'href' =&gt; '#'], ['label' =&gt; 'About', 'href' =&gt; '#']]"&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button variant="secondary" size="sm" href="#"&gt;Contact&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::topbar&gt;
+    &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" variant="brand" class="oc-accent--violet" id="oc-topbar-brand" :links="[['label' =&gt; 'Product', 'href' =&gt; '#', 'current' =&gt; true], ['label' =&gt; 'Solutions', 'href' =&gt; '#'], ['label' =&gt; 'Pricing', 'href' =&gt; '#'], ['label' =&gt; 'About', 'href' =&gt; '#']]"&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button variant="secondary" size="sm" href="#"&gt;Try for free&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::topbar&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SiteHeaderDarkAndBrand extends Component
+{
+    public string $page = 'Product';
+
+    /** @var array&lt;string, string&gt; */
+    public array $pages = [
+        'Product' =&gt; '/product',
+        'Solutions' =&gt; '/solutions',
+        'Pricing' =&gt; '/pricing',
+        'About' =&gt; '/about',
+    ];
+
+    /** The menu of the topbar; the open page gets aria-current. */
+    public function links(): array
+    {
+        return [
+            ...collect($this-&gt;pages)-&gt;map(fn (string $href, string $label) =&gt; ['label' =&gt; $label, 'href' =&gt; $href, 'current' =&gt; $label === $this-&gt;page])-&gt;values()-&gt;all(),
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.site-header-dark-and-brand');
+    }
+}
+
+{{-- resources/views/livewire/site-header-dark-and-brand.blade.php --}}
+&lt;div&gt;
+    &lt;div class="grid gap-1 w-full"&gt;
+        &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" variant="dark" id="oc-topbar-dark" :links="$this-&gt;links()"&gt;
+            &lt;x-slot:actions&gt;&lt;x-oc::button variant="secondary" size="sm" href="#"&gt;Contact&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+        &lt;/x-oc::topbar&gt;
+        &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" variant="brand" class="oc-accent--violet" id="oc-topbar-brand" :links="$this-&gt;links()"&gt;
+            &lt;x-slot:actions&gt;&lt;x-oc::button variant="secondary" size="sm" href="#"&gt;Try for free&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+        &lt;/x-oc::topbar&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-floating">Floating <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc"><code>--floating</code>: a rounded bar with room around it and a soft shadow, for over a hero or a photo.</p>
@@ -118,8 +460,92 @@
   <div class="oc-topbar-actions"><a class="oc-btn oc-btn--sm" href="#">Get started</a></div>
 </header>
 </div>
+<oc-code lang="tsx">import { ButtonLink, Topbar } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="w-full p-1 rounded-lg" style={{ background: "linear-gradient(135deg, var(--color-skycyan-20), var(--color-violet-20))" }}&gt;
+      &lt;Topbar
+        brand="Company 1"
+        logo="mdi:lightning-bolt"
+        variant="floating"
+        plain
+        links={[
+          { label: "Product", href: "#", current: true },
+          { label: "Solutions", href: "#" },
+          { label: "Pricing", href: "#" },
+          { label: "About", href: "#" },
+        ]}
+        actions={&lt;ButtonLink size="sm" href="#"&gt;Get started&lt;/ButtonLink&gt;}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcTopbar } from '@birdycom/omniaui-vue'
+
+const links = [
+  { label: 'Product', href: '#', current: true },
+  { label: 'Solutions', href: '#' },
+  { label: 'Pricing', href: '#' },
+  { label: 'About', href: '#' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="w-full p-1 rounded-lg" style="background: linear-gradient(135deg, var(--color-skycyan-20), var(--color-violet-20))"&gt;
+    &lt;OcTopbar brand="Company 1" logo="mdi:lightning-bolt" variant="floating" plain :links="links"&gt;
+      &lt;template #actions&gt;&lt;OcButton size="sm" href="#"&gt;Get started&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcTopbar&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="w-full p-1 rounded-lg" style="background: linear-gradient(135deg, var(--color-skycyan-20), var(--color-violet-20))"&gt;
+    &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" variant="floating" plain id="oc-topbar-floating" :links="[['label' =&gt; 'Product', 'href' =&gt; '#', 'current' =&gt; true], ['label' =&gt; 'Solutions', 'href' =&gt; '#'], ['label' =&gt; 'Pricing', 'href' =&gt; '#'], ['label' =&gt; 'About', 'href' =&gt; '#']]"&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" href="#"&gt;Get started&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::topbar&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SiteHeaderFloating extends Component
+{
+    public string $page = 'Product';
+
+    /** @var array&lt;string, string&gt; */
+    public array $pages = [
+        'Product' =&gt; '/product',
+        'Solutions' =&gt; '/solutions',
+        'Pricing' =&gt; '/pricing',
+        'About' =&gt; '/about',
+    ];
+
+    /** The menu of the topbar; the open page gets aria-current. */
+    public function links(): array
+    {
+        return [
+            ...collect($this-&gt;pages)-&gt;map(fn (string $href, string $label) =&gt; ['label' =&gt; $label, 'href' =&gt; $href, 'current' =&gt; $label === $this-&gt;page])-&gt;values()-&gt;all(),
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.site-header-floating');
+    }
+}
+
+{{-- resources/views/livewire/site-header-floating.blade.php --}}
+&lt;div&gt;
+    &lt;div class="w-full p-1 rounded-lg" style="background: linear-gradient(135deg, var(--color-skycyan-20), var(--color-violet-20))"&gt;
+        &lt;x-oc::topbar brand="Company 1" logo="mdi:lightning-bolt" variant="floating" plain id="oc-topbar-floating" :links="$this-&gt;links()"&gt;
+            &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" href="#"&gt;Get started&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+        &lt;/x-oc::topbar&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
-          <h3 class="oc-section-content__title mt-2" id="demo-docs">With an icon link and the theme switch</h3>
+          <h3 class="oc-section-content__title mt-2" id="demo-docs">With an icon link and the theme switch <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">The bar of the OmniaCSS pages: the pill menu, an icon link and the <a href="theme-switch.html">theme switch</a> in the actions slot.</p>
           <oc-demo title="Site header - docs">
 <header class="oc-topbar oc-topbar--collapsible">
@@ -143,6 +569,85 @@
     </fieldset>
   </div>
 </header>
+<oc-code lang="tsx">import { ThemeSwitch, Topbar } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Topbar
+      brand={&lt;&gt;OmniaCSS &lt;span className="oc-badge-version"&gt;v1&lt;/span&gt;&lt;/&gt;}
+      links={[
+        { label: "Home", href: "#" },
+        { label: "Docs", href: "#", current: true },
+        { label: "Components", href: "#" },
+        { label: "Blocks", href: "#" },
+        { label: "GitHub", href: "#", icon: "mdi:github" },
+      ]}
+      actions={&lt;ThemeSwitch name="oc-topbar-theme" defaultValue="system" /&gt;}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcThemeSwitch, OcTopbar } from '@birdycom/omniaui-vue'
+
+const links = [
+  { label: 'Home', href: '#' },
+  { label: 'Docs', href: '#', current: true },
+  { label: 'Components', href: '#' },
+  { label: 'Blocks', href: '#' },
+  { label: 'GitHub', href: '#', icon: 'mdi:github' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTopbar :links="links"&gt;
+    &lt;template #brand&gt;OmniaCSS &lt;span class="oc-badge-version"&gt;v1&lt;/span&gt;&lt;/template&gt;
+    &lt;template #actions&gt;&lt;OcThemeSwitch name="oc-topbar-theme" /&gt;&lt;/template&gt;
+  &lt;/OcTopbar&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::topbar id="oc-topbar-demo" :links="[['label' =&gt; 'Home', 'href' =&gt; '#'], ['label' =&gt; 'Docs', 'href' =&gt; '#', 'current' =&gt; true], ['label' =&gt; 'Components', 'href' =&gt; '#'], ['label' =&gt; 'Blocks', 'href' =&gt; '#'], ['label' =&gt; 'GitHub', 'href' =&gt; '#', 'icon' =&gt; 'mdi:github']]"&gt;
+    &lt;x-slot:brand&gt;OmniaCSS &lt;span class="oc-badge-version"&gt;v1&lt;/span&gt;&lt;/x-slot:brand&gt;
+    &lt;x-slot:actions&gt;&lt;x-oc::theme-switch name="oc-topbar-theme" value="system" /&gt;&lt;/x-slot:actions&gt;
+&lt;/x-oc::topbar&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SiteHeaderDocs extends Component
+{
+    public string $page = 'Docs';
+
+    /** @var array&lt;string, string&gt; */
+    public array $pages = [
+        'Home' =&gt; '/home',
+        'Docs' =&gt; '/docs',
+        'Components' =&gt; '/components',
+        'Blocks' =&gt; '/blocks',
+    ];
+
+    /** The menu of the topbar; the open page gets aria-current. */
+    public function links(): array
+    {
+        return [
+            ...collect($this-&gt;pages)-&gt;map(fn (string $href, string $label) =&gt; ['label' =&gt; $label, 'href' =&gt; $href, 'current' =&gt; $label === $this-&gt;page])-&gt;values()-&gt;all(),
+            ['label' =&gt; 'GitHub', 'href' =&gt; 'https://github.com/', 'icon' =&gt; 'mdi:github'],
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.site-header-docs');
+    }
+}
+
+{{-- resources/views/livewire/site-header-docs.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::topbar id="oc-topbar-demo" :links="$this-&gt;links()"&gt;
+        &lt;x-slot:brand&gt;OmniaCSS &lt;span class="oc-badge-version"&gt;v1&lt;/span&gt;&lt;/x-slot:brand&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::theme-switch name="oc-topbar-theme" value="system" /&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::topbar&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

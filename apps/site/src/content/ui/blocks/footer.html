@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Footer Block", "category": "Marketing", "description": "Multi-column footer with link groups and bottom bar.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Footer Block", "category": "Marketing", "description": "Multi-column site footer with a brand column, groups of links and a bottom bar with copyright. Plain HTML and CSS, also a React, Vue and Blade block.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Footer Block</h1>
         <p class="oc-hero-text">Multi-column footer with link groups and bottom bar. <a href="../blocks.html">All blocks</a>.</p>
@@ -51,6 +51,125 @@
               <span>Built with OmniaCSS</span>
             </div>
           </div>
+<oc-code lang="tsx">import { BlockFooter } from "@birdycom/omniaui-react";
+
+const columns = [
+  {
+    title: "Product",
+    links: [{ label: "Features", href: "#" }, { label: "Pricing", href: "#" }, { label: "Changelog", href: "#" }],
+  },
+  {
+    title: "Docs",
+    links: [{ label: "Getting started", href: "#" }, { label: "Components", href: "#" }, { label: "Blocks", href: "#" }],
+  },
+  {
+    title: "Community",
+    links: [{ label: "GitHub", href: "#" }, { label: "Discord", href: "#" }, { label: "Twitter", href: "#" }],
+  },
+  {
+    title: "Legal",
+    links: [{ label: "Privacy", href: "#" }, { label: "Terms", href: "#" }, { label: "License", href: "#" }],
+  },
+];
+
+export function Example() {
+  return &lt;BlockFooter columns={columns} copyright="© 2026 Company 1. All rights reserved." credit="Built with OmniaCSS" /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockFooter } from '@birdycom/omniaui-vue'
+
+const columns = [
+  {
+    title: 'Product',
+    links: [{ label: 'Features', href: '#' }, { label: 'Pricing', href: '#' }, { label: 'Changelog', href: '#' }],
+  },
+  {
+    title: 'Docs',
+    links: [{ label: 'Getting started', href: '#' }, { label: 'Components', href: '#' }, { label: 'Blocks', href: '#' }],
+  },
+  {
+    title: 'Community',
+    links: [{ label: 'GitHub', href: '#' }, { label: 'Discord', href: '#' }, { label: 'Twitter', href: '#' }],
+  },
+  {
+    title: 'Legal',
+    links: [{ label: 'Privacy', href: '#' }, { label: 'Terms', href: '#' }, { label: 'License', href: '#' }],
+  },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockFooter :columns="columns" copyright="© 2026 Company 1. All rights reserved." credit="Built with OmniaCSS" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php
+    $columns = [
+        'Product' =&gt; ['Features' =&gt; '#', 'Pricing' =&gt; '#', 'Changelog' =&gt; '#'],
+        'Docs' =&gt; ['Getting started' =&gt; '#', 'Components' =&gt; '#', 'Blocks' =&gt; '#'],
+        'Community' =&gt; ['GitHub' =&gt; '#', 'Discord' =&gt; '#', 'Twitter' =&gt; '#'],
+        'Legal' =&gt; ['Privacy' =&gt; '#', 'Terms' =&gt; '#', 'License' =&gt; '#'],
+    ];
+@endphp
+
+&lt;x-oc::block.footer&gt;
+    &lt;div class="oc-block-footer-grid"&gt;
+        @foreach ($columns as $title =&gt; $links)
+            &lt;div class="oc-block-footer-col"&gt;
+                &lt;h4&gt;{{ $title }}&lt;/h4&gt;
+                &lt;ul&gt;
+                    @foreach ($links as $label =&gt; $href)
+                        &lt;li&gt;&lt;a href="{{ $href }}"&gt;{{ $label }}&lt;/a&gt;&lt;/li&gt;
+                    @endforeach
+                &lt;/ul&gt;
+            &lt;/div&gt;
+        @endforeach
+    &lt;/div&gt;
+    &lt;div class="oc-block-footer-bottom"&gt;
+        &lt;span&gt;&amp;copy; {{ date('Y') }} Company 1. All rights reserved.&lt;/span&gt;
+        &lt;span&gt;Built with OmniaCSS&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/x-oc::block.footer&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Footer extends Component
+{
+    public array $columns = [
+        'Product' =&gt; ['Features' =&gt; '#', 'Pricing' =&gt; '#', 'Changelog' =&gt; '#'],
+        'Docs' =&gt; ['Getting started' =&gt; '#', 'Components' =&gt; '#', 'Blocks' =&gt; '#'],
+        'Community' =&gt; ['GitHub' =&gt; '#', 'Discord' =&gt; '#', 'Twitter' =&gt; '#'],
+        'Legal' =&gt; ['Privacy' =&gt; '#', 'Terms' =&gt; '#', 'License' =&gt; '#'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.footer');
+    }
+}
+
+{{-- resources/views/livewire/footer.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.footer&gt;
+        &lt;div class="oc-block-footer-grid"&gt;
+            @foreach ($columns as $title =&gt; $links)
+                &lt;div class="oc-block-footer-col"&gt;
+                    &lt;h4&gt;{{ $title }}&lt;/h4&gt;
+                    &lt;ul&gt;
+                        @foreach ($links as $label =&gt; $href)
+                            &lt;li&gt;&lt;a href="{{ $href }}"&gt;{{ $label }}&lt;/a&gt;&lt;/li&gt;
+                        @endforeach
+                    &lt;/ul&gt;
+                &lt;/div&gt;
+            @endforeach
+        &lt;/div&gt;
+        &lt;div class="oc-block-footer-bottom"&gt;
+            &lt;span&gt;&amp;copy; {{ date('Y') }} Company 1. All rights reserved.&lt;/span&gt;
+            &lt;span&gt;Built with OmniaCSS&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::block.footer&gt;
+&lt;/div&gt;</oc-code>
         </oc-demo>
         </div>
       </section>

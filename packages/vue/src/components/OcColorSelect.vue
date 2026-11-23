@@ -9,6 +9,8 @@ export interface ColorSelectItem {
   /** CSS color, use Omnia tokens: "var(--color-red-70)". */
   color: string
   disabled?: boolean
+  /** Hover text on the swatch, e.g. "Purple, in use" for a disabled color. */
+  title?: string
 }
 defineProps<{
   options: ColorSelectItem[]
@@ -24,7 +26,7 @@ const uid = useUid('oc-color')
 
 <template>
   <fieldset :class="['oc-color-select', list && 'oc-color-select--list', size === 'sm' && 'oc-color-select--sm']" role="radiogroup" :aria-label="label">
-    <label v-for="option in options" :key="option.value" class="oc-color-select-option" :style="{ '--oc-swatch': option.color }">
+    <label v-for="option in options" :key="option.value" class="oc-color-select-option" :style="{ '--oc-swatch': option.color }" :title="option.title">
       <input v-model="model" type="radio" :name="name ?? uid" :value="option.value" :disabled="option.disabled" />
       <span class="oc-color-select-swatch"></span>
       <span class="oc-color-select-name">{{ option.label }}</span>

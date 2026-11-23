@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Quantity", "category": "Forms", "description": "Number field with minus and plus buttons for amounts in carts, orders and stock.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Quantity", "category": "Forms", "description": "Number field with minus and plus buttons for amounts in carts, orders and stock. The buttons step within min, max and step and switch off at the limits.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/quantity.html | Map: hero -> demo -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Quantity</h1>
@@ -29,6 +29,60 @@
 </div>
 <oc-code lang="html">&lt;div class="oc-quantity"&gt;&lt;button class="oc-quantity__step" type="button" data-oc-step="-1" aria-label="Decrease quantity"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13H5v-2h14z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;input class="oc-quantity__input" id="oc-qty-demo-1" type="number" inputmode="numeric" name="quantity" value="1" min="1" max="10" step="1" aria-label="Quantity"&gt;&lt;button class="oc-quantity__step" type="button" data-oc-step="1" aria-label="Increase quantity"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;
 &lt;div class="oc-quantity oc-quantity--sm"&gt;&lt;button class="oc-quantity__step" type="button" data-oc-step="-1" aria-label="Decrease pieces"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13H5v-2h14z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;input class="oc-quantity__input" id="oc-qty-demo-2" type="number" inputmode="numeric" name="quantity" value="12" min="0" max="500" step="1" aria-label="Pieces"&gt;&lt;button class="oc-quantity__step" type="button" data-oc-step="1" aria-label="Increase pieces"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { Quantity } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [quantity, setQuantity] = useState(1);
+  const [pieces, setPieces] = useState(12);
+  return (
+    &lt;&gt;
+      &lt;Quantity id="oc-qty-demo-1" name="quantity" value={quantity} onChange={setQuantity} min={1} max={10} /&gt;
+      &lt;Quantity id="oc-qty-demo-2" name="quantity" size="sm" label="Pieces" value={pieces} onChange={setPieces} min={0} max={500} /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcQuantity } from "@birdycom/omniaui-vue";
+
+const quantity = ref(1);
+const pieces = ref(12);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcQuantity id="oc-qty-demo-1" v-model="quantity" name="quantity" :min="1" :max="10" /&gt;
+  &lt;OcQuantity id="oc-qty-demo-2" v-model="pieces" name="quantity" size="sm" label="Pieces" :min="0" :max="500" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::quantity id="oc-qty-demo-1" :value="1" :min="1" :max="10" /&gt;
+&lt;x-oc::quantity id="oc-qty-demo-2" size="sm" label="Pieces" :value="12" :min="0" :max="500" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class CartLine extends Component
+{
+    #[Validate('required|integer|min:1|max:10')]
+    public int $quantity = 1;
+
+    #[Validate('required|integer|min:0|max:500')]
+    public int $pieces = 12;
+
+    public function render()
+    {
+        return view('livewire.cart-line');
+    }
+}
+
+{{-- resources/views/livewire/cart-line.blade.php --}}
+&lt;div&gt;
+    {{-- other attributes (wire:model …) go to the number field --}}
+    &lt;x-oc::quantity id="oc-qty-demo-1" wire:model.live="quantity" :min="1" :max="10" /&gt;
+    &lt;x-oc::quantity id="oc-qty-demo-2" size="sm" label="Pieces" wire:model.live="pieces" :min="0" :max="500" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

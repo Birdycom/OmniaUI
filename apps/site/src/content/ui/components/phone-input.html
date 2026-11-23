@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Phone input", "category": "Forms", "description": "Country dial code select joined to a phone number field.", "nav": "Phone input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Phone input", "category": "Forms", "description": "Country dial code select joined to a phone number field, with an error state and a small size; the code and the number post as two fields.", "nav": "Phone input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/phone-input.html | Map: hero -> demo (default, invalid + small) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Phone input</h1>
@@ -28,9 +28,63 @@
   </div>
   <p class="oc-field-description">Digits only; spaces are fine.</p>
 </div>
+<oc-code lang="tsx">const [phone, setPhone] = useState("");
+
+&lt;FormField label="Mobile number" description="Digits only; spaces are fine." style={{ maxInlineSize: "22rem" }}&gt;
+  &lt;PhoneInput name="phone" value={phone} onChange={setPhone} defaultDial="+32" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}" /&gt;
+&lt;/FormField&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFormField, OcPhoneInput } from '@birdycom/omniaui-vue'
+
+const phone = ref('')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Mobile number" description="Digits only; spaces are fine." style="max-inline-size:22rem" v-slot="f"&gt;
+    &lt;OcPhoneInput :id="f.id" v-model="phone" name="phone" default-dial="+32" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}" :aria-describedby="f.describedBy" /&gt;
+  &lt;/OcFormField&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Mobile number" for="phone" name="phone" description="Digits only; spaces are fine." style="max-inline-size:22rem"&gt;
+    &lt;x-oc::phone-input id="phone" name="phone" dial-name="phone_dial" :dial="old('phone_dial', '+32')" :value="old('phone')" placeholder="470 12 34 56" pattern="[0-9 ]{8,14}" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class MobileNumber extends Component
+{
+    public string $dial = '+32';
+
+    public string $phone = '';
+
+    public function save(): void
+    {
+        $this-&gt;validate([
+            'dial' =&gt; ['required', 'in:+32,+31,+33,+49'],
+            'phone' =&gt; ['required', 'regex:/^[0-9 ]{8,14}$/'],
+        ]);
+        // store the full number: $this-&gt;dial.' '.$this-&gt;phone
+    }
+
+    public function render()
+    {
+        return view('livewire.mobile-number');
+    }
+}
+
+{{-- resources/views/livewire/mobile-number.blade.php --}}
+&lt;form wire:submit="save"&gt;
+    {{-- dial-model binds the country code (wire:model on the select); wire:model binds the number --}}
+    &lt;x-oc::form-field label="Mobile number" for="phone" name="phone" description="Digits only; spaces are fine." style="max-inline-size:22rem"&gt;
+        &lt;x-oc::phone-input id="phone" dial-model="dial" wire:model.blur="phone" :error="$errors-&gt;has('phone')" placeholder="470 12 34 56" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
 
-          <h3 class="oc-section-content__title mt-2">Invalid and small</h3>
+          <h3 class="oc-section-content__title mt-2">Invalid and small <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Set <code>aria-invalid="true"</code> on the number (server error), or let <code>:user-invalid</code> mark a wrong pattern after typing. <code>--sm</code> makes it compact.</p>
           <oc-demo title="Phone input - states">
 <div class="oc-eg">
@@ -68,6 +122,65 @@
 &lt;div class="oc-phone-input oc-phone-input--sm" style="max-inline-size:16rem"&gt;
   &lt;select class="oc-phone-input-dial" aria-label="Country code"&gt;&lt;option&gt;BE +32&lt;/option&gt;&lt;/select&gt;
   &lt;input class="oc-phone-input-number" type="tel" placeholder="470 12 34 56" aria-label="Phone (small)"&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;FormField label="Phone" error="This number is too short." style={{ maxInlineSize: "22rem" }}&gt;
+  &lt;PhoneInput defaultValue="+3112" defaultDial="+31" countries={[{ dial: "+31", label: "NL +31" }]} error /&gt;
+&lt;/FormField&gt;
+&lt;PhoneInput size="sm" style={{ maxInlineSize: "16rem" }} countries={[{ dial: "+32", label: "BE +32" }]} placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormField label="Phone" error="This number is too short." style="max-inline-size:22rem" v-slot="f"&gt;
+  &lt;OcPhoneInput :id="f.id" model-value="+3112" :countries="[{ dial: '+31', label: 'NL +31' }]" error :aria-describedby="f.describedBy" /&gt;
+&lt;/OcFormField&gt;
+&lt;OcPhoneInput size="sm" style="max-inline-size:16rem" :countries="[{ dial: '+32', label: 'BE +32' }]" placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Phone" for="phone-error" error="This number is too short." style="max-inline-size:22rem"&gt;
+    &lt;x-oc::phone-input id="phone-error" dial="+31" :countries="['+31' =&gt; 'NL +31']" value="12" error aria-describedby="phone-error-error" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;div style="max-inline-size:16rem"&gt;
+    &lt;x-oc::phone-input size="sm" :countries="['+32' =&gt; 'BE +32']" placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class PhoneCheck extends Component
+{
+    public string $phone = '12';
+
+    public function mount(): void
+    {
+        $this-&gt;validateOnly('phone');
+    }
+
+    public function updatedPhone(): void
+    {
+        $this-&gt;validateOnly('phone');
+    }
+
+    protected function rules(): array
+    {
+        return ['phone' =&gt; ['required', 'min:8']];
+    }
+
+    protected function messages(): array
+    {
+        return ['phone.min' =&gt; 'This number is too short.'];
+    }
+
+    public function render()
+    {
+        return view('livewire.phone-check');
+    }
+}
+
+{{-- resources/views/livewire/phone-check.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::form-field label="Phone" for="phone" name="phone" style="max-inline-size:22rem"&gt;
+        &lt;x-oc::phone-input id="phone" dial="+31" :countries="['+31' =&gt; 'NL +31']" wire:model.blur="phone" :error="$errors-&gt;has('phone')" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;div style="max-inline-size:16rem"&gt;
+        &lt;x-oc::phone-input size="sm" :countries="['+32' =&gt; 'BE +32']" placeholder="470 12 34 56" aria-label="Phone (small)" /&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

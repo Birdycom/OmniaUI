@@ -7,7 +7,7 @@
 // - Clean URLs: "/ui/pro" serves ui/pro.html (links have no .html, scripts/clean-urls.mjs).
 // - Old CSS docs URLs ("/docs/*", "/pages/*"): 301 redirect to the OmniaCSS site
 //   (same base URL as OMNIACSS_URL in apps/site/src/lib/site.mjs).
-// - Anything else: 404.
+// - Anything else: 404 with public/404.html.
 
 declare(strict_types=1);
 
@@ -45,5 +45,11 @@ if (str_starts_with($normalizedPath, "/docs/") || str_starts_with($normalizedPat
     exit;
 }
 
+// The "not found" page, as on the live site (ErrorDocument 404 in the .htaccess from scripts/deploy.mjs).
 http_response_code(404);
+if (is_file(__DIR__ . "/404.html")) {
+    header("Content-Type: text/html; charset=utf-8");
+    readfile(__DIR__ . "/404.html");
+    exit;
+}
 echo "Not Found";

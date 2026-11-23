@@ -2,6 +2,7 @@
 import { forwardRef, useId } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
+import { webiconNode } from "../components/Webicon";
 
 export interface ContactGridLine {
   text: ReactNode;
@@ -12,7 +13,7 @@ export interface ContactGridLine {
 export interface ContactGridCard {
   title: ReactNode;
   lines: ContactGridLine[];
-  /** Glyph in a soft product mark. */
+  /** Glyph or a webicon name ("mdi:email-outline"), shown in front of the title in the accent color. */
   icon?: ReactNode;
   /** Accent preset of the mark (green, violet, ...). */
   accent?: string;
@@ -24,14 +25,14 @@ export interface BlockContactGridProps extends Omit<HTMLAttributes<HTMLElement>,
   eyebrow?: ReactNode;
   title?: ReactNode;
   lead?: ReactNode;
-  cards: ContactGridCard[];
+  cards?: ContactGridCard[];
   /** No card frames. */
   plain?: boolean;
 }
 
 /** `.oc-block-contact`: contact info cards (e-mail, phone, address, hours). */
 export const BlockContactGrid = forwardRef<HTMLElement, BlockContactGridProps>(function BlockContactGrid(
-  { eyebrow, title, lead, cards, plain = false, className, ...rest },
+  { eyebrow, title, lead, cards = [], plain = false, className, ...rest },
   ref,
 ) {
   const titleId = `oc-contact-title-${useId().replace(/[^\w-]/g, "")}`;
@@ -52,7 +53,7 @@ export const BlockContactGrid = forwardRef<HTMLElement, BlockContactGridProps>(f
           return (
             <Card className="oc-block-contact-card" key={i}>
               {card.icon != null && (
-                <span className={cx("oc-product-mark oc-product-mark--sm oc-product-mark--soft", card.accent && `oc-accent--${card.accent}`)} aria-hidden="true">{card.icon}</span>
+                <span className={cx("oc-product-mark oc-product-mark--sm oc-product-mark--soft", card.accent && `oc-accent--${card.accent}`)} aria-hidden="true">{webiconNode(card.icon)}</span>
               )}
               <Title className="oc-block-contact-title">{card.title}</Title>
               {card.lines.map((line, j) =>

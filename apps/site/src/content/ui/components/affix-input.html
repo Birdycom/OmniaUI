@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Affix input", "category": "Forms", "description": "Input group variant with a prefix or suffix inside the field (<code>.oc-input-group--affix</code>).", "nav": "Affix input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Affix input", "category": "Forms", "description": "Input group variant with a prefix or suffix inside the field: the symbol sits in its own column with a divider. Error and disabled states included.", "nav": "Affix input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/affix-input.html | Map: hero -> demo (currency / percent / email, states) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Affix input</h1>
@@ -14,7 +14,7 @@
         </div>
         <div class="oc-section-content">
           <oc-demo title="Currency, percent, email">
-<div style="display:grid;gap:0.75rem;max-inline-size:22rem">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:0.75rem;inline-size:100%">
   <div class="oc-field">
     <label class="oc-field-label" for="oc-price">Selling price excl. VAT</label>
     <div class="oc-input-group oc-input-group--affix">
@@ -37,6 +37,101 @@
     </div>
   </div>
 </div>
+<oc-code lang="tsx">import { AffixInput, FormField } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [price, setPrice] = useState("5,15");
+  const [margin, setMargin] = useState("30");
+
+  return (
+    &lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 12rem), 1fr))", gap: "0.75rem", inlineSize: "100%" }}&gt;
+      &lt;FormField label="Selling price excl. VAT"&gt;
+        &lt;AffixInput variant="currency" id="oc-price" name="price" value={price} onChange={(e) =&gt; setPrice(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Margin %"&gt;
+        &lt;AffixInput variant="percent" id="oc-margin" name="margin" value={margin} onChange={(e) =&gt; setMargin(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Email"&gt;
+        &lt;AffixInput variant="email" id="oc-mail" name="email" placeholder="info@company1.example" /&gt;
+      &lt;/FormField&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAffixInput, OcFormField } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const price = ref("5,15");
+const margin = ref("30");
+const email = ref("");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:0.75rem;inline-size:100%"&gt;
+    &lt;OcFormField label="Selling price excl. VAT" for="oc-price"&gt;
+      &lt;OcAffixInput v-model="price" variant="currency" id="oc-price" name="price" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Margin %" for="oc-margin"&gt;
+      &lt;OcAffixInput v-model="margin" variant="percent" id="oc-margin" name="margin" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Email" for="oc-mail"&gt;
+      &lt;OcAffixInput v-model="email" variant="email" id="oc-mail" name="email" placeholder="info@company1.example" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:0.75rem;inline-size:100%"&gt;
+    &lt;x-oc::form-field label="Selling price excl. VAT" for="oc-price" name="price"&gt;
+        &lt;x-oc::affix-input variant="currency" id="oc-price" name="price" value="5,15" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Margin %" for="oc-margin" name="margin"&gt;
+        &lt;x-oc::affix-input variant="percent" id="oc-margin" name="margin" value="30" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Email" for="oc-mail" name="email"&gt;
+        &lt;x-oc::affix-input variant="email" id="oc-mail" name="email" placeholder="info@company1.example" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class AffixInputCurrencyPercentEmail extends Component
+{
+    #[Validate('required|regex:/^\d+(,\d{1,2})?$/')]
+    public string $price = '5,15';
+
+    #[Validate('required|numeric|between:0,100')]
+    public string $margin = '30';
+
+    #[Validate('nullable|email')]
+    public string $email = '';
+
+    public function updated(string $property): void
+    {
+        $this-&gt;validateOnly($property);
+    }
+
+    public function render()
+    {
+        return view('livewire.affix-input-currency-percent-email');
+    }
+}
+
+{{-- resources/views/livewire/affix-input-currency-percent-email.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:0.75rem;inline-size:100%"&gt;
+    &lt;x-oc::form-field label="Selling price excl. VAT" for="oc-price" name="price"&gt;
+        &lt;x-oc::affix-input variant="currency" id="oc-price" wire:model.blur="price" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Margin %" for="oc-margin" name="margin"&gt;
+        &lt;x-oc::affix-input variant="percent" id="oc-margin" wire:model.blur="margin" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Email" for="oc-mail" name="email"&gt;
+        &lt;x-oc::affix-input variant="email" id="oc-mail" wire:model.blur="email" placeholder="info@company1.example" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Error and disabled</h3>
@@ -76,6 +171,54 @@
 &lt;div class="oc-input-group oc-input-group--affix"&gt;
   &lt;span class="oc-input-addon" aria-hidden="true"&gt;&amp;euro;&lt;/span&gt;
   &lt;input class="oc-input" type="text" value="99,00" disabled aria-label="Fixed price"&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { AffixInput } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;&gt;
+      {/* Error */}
+      &lt;AffixInput variant="email" defaultValue="name@" error aria-label="Email (invalid)" /&gt;
+
+      {/* Disabled */}
+      &lt;AffixInput variant="currency" defaultValue="99,00" disabled aria-label="Fixed price" /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAffixInput } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Error --&gt;
+  &lt;OcAffixInput model-value="name@" variant="email" error aria-label="Email (invalid)" /&gt;
+
+  &lt;!-- Disabled --&gt;
+  &lt;OcAffixInput model-value="99,00" variant="currency" disabled aria-label="Fixed price" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Error --}}
+&lt;x-oc::affix-input variant="email" value="name@" error aria-label="Email (invalid)" /&gt;
+
+{{-- Disabled --}}
+&lt;x-oc::affix-input variant="currency" value="99,00" disabled aria-label="Fixed price" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AffixInputStates extends Component
+{
+    public function render()
+    {
+        return view('livewire.affix-input-states');
+    }
+}
+
+{{-- resources/views/livewire/affix-input-states.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:0.75rem;inline-size:100%"&gt;
+    &lt;x-oc::affix-input variant="email" value="name@" error aria-label="Email (invalid)" /&gt;
+    &lt;x-oc::affix-input variant="currency" value="99,00" disabled aria-label="Fixed price" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

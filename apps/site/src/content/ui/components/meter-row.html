@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Meter row", "category": "Data", "description": "Usage line with a label, the amount as text, a colored bar and when it resets.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Meter row", "category": "Data", "description": "Usage line with a label, the percentage and amount as text, a colored bar that turns warn or critical, a reset time and an optional sub-line.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/meter-row.html | Map: hero -> demo -> reference -> frameworks -> browser support -> source -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Meter row</h1>
@@ -11,7 +11,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/meter-row.html</code>.</p>
         </div>
         <div class="oc-section-content">
-          <h3 class="oc-section-content__title" id="demo-1">Usage</h3>
+          <h3 class="oc-section-content__title" id="demo-1">Usage <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Label and value above a bar, and a reset line under it. The bar turns orange and red with <code>data-level</code>.</p>
           <oc-demo title="Meter row">
 <div class="oc-meter-list" style="inline-size:min(100%,28rem)">
@@ -34,6 +34,71 @@
     <span class="oc-meter-row__reset"><iconify-icon icon="mdi:timer-sand" aria-hidden="true"></iconify-icon>Upgrade or clean up to keep syncing</span>
   </div>
 </div>
+<oc-code lang="tsx">import { MeterRow, Webicon } from "@birdycom/omniaui-react";
+
+const meters = [
+  { label: "Session (5 hours)", percent: 62, value: "31k / 50k tokens", reset: "Resets in 2 h 14 min" },
+  { label: "Week", percent: 81, value: "1.6M / 2M tokens", reset: "Resets Monday 09:00" },
+  { label: "Storage", percent: 96, value: "9.6 / 10 GB", reset: "Upgrade or clean up to keep syncing" },
+];
+
+// The level (warn from 75%, critical from 90%) follows from the percentage.
+export function Example() {
+  return (
+    &lt;div className="oc-meter-list" style={{ inlineSize: "min(100%,28rem)" }}&gt;
+      {meters.map((m) =&gt; (
+        &lt;MeterRow key={m.label} label={m.label} percent={m.percent} value={m.value} reset={&lt;&gt;&lt;Webicon name="mdi:timer-sand" /&gt;{m.reset}&lt;/&gt;} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcMeterRow } from '@birdycom/omniaui-vue'
+
+const meters = [
+  { label: 'Session (5 hours)', percent: 62, value: '31k / 50k tokens', reset: 'Resets in 2 h 14 min' },
+  { label: 'Week', percent: 81, value: '1.6M / 2M tokens', reset: 'Resets Monday 09:00' },
+  { label: 'Storage', percent: 96, value: '9.6 / 10 GB', reset: 'Upgrade or clean up to keep syncing' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- The level (warn from 75%, critical from 90%) follows from the percentage. --&gt;
+  &lt;div class="oc-meter-list" style="inline-size:min(100%,28rem)"&gt;
+    &lt;OcMeterRow v-for="m in meters" :key="m.label" :label="m.label" :percent="m.percent" :value="m.value" :reset="m.reset" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-meter-list" style="inline-size:min(100%,28rem)"&gt;
+    &lt;x-oc::meter-row label="Session (5 hours)" :percent="62" value="31k / 50k tokens" reset="Resets in 2 h 14 min" /&gt;
+    &lt;x-oc::meter-row label="Week" :percent="81" value="1.6M / 2M tokens" reset="Resets Monday 09:00" /&gt;
+    &lt;x-oc::meter-row label="Storage" :percent="96" value="9.6 / 10 GB" reset="Upgrade or clean up to keep syncing" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class UsageMeters extends Component
+{
+    public array $meters = [
+        ['label' =&gt; 'Session (5 hours)', 'percent' =&gt; 62, 'value' =&gt; '31k / 50k tokens', 'reset' =&gt; 'Resets in 2 h 14 min'],
+        ['label' =&gt; 'Week', 'percent' =&gt; 81, 'value' =&gt; '1.6M / 2M tokens', 'reset' =&gt; 'Resets Monday 09:00'],
+        ['label' =&gt; 'Storage', 'percent' =&gt; 96, 'value' =&gt; '9.6 / 10 GB', 'reset' =&gt; 'Upgrade or clean up to keep syncing'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.usage-meters');
+    }
+}
+
+{{-- resources/views/livewire/usage-meters.blade.php --}}
+&lt;div class="oc-meter-list" style="inline-size:min(100%,28rem)"&gt;
+    @foreach ($meters as $meter)
+        &lt;x-oc::meter-row :label="$meter['label']" :percent="$meter['percent']" :value="$meter['value']" :reset="$meter['reset']" /&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-2">Sub-line and dense list <span class="oc-badge-version">v0.14.0</span></h3>
           <p class="oc-section-content__desc">A muted second reading under the bar with its own thin bar (<code>.oc-meter-row__sub</code>, <code>.oc-meter-row__subbar</code>), and <code>.oc-meter-list--dense</code> for a tray widget. A meter that updates every few seconds can carry its own fill element (<code>.oc-meter-row__fill</code>) and patch its inline width in place. The temperatures are <a href="reading.html">readings</a>.</p>
@@ -57,6 +122,72 @@
     <span class="oc-meter-row__sub">Swap 1.2 / 4 GB<span class="oc-meter-row__subbar"><span class="oc-meter-row__fill" style="inline-size: 30%"></span></span></span>
   </div>
 </div>
+<oc-code lang="tsx">import { MeterRow, Reading } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="oc-meter-list oc-meter-list--dense" style={{ inlineSize: "min(100%,24rem)" }}&gt;
+      &lt;MeterRow label="CPU" percent={34} value={&lt;Reading&gt;52 °C&lt;/Reading&gt;} /&gt;
+      &lt;MeterRow label="GPU" percent={81} value={&lt;Reading level="warm"&gt;74 °C&lt;/Reading&gt;} sub="VRAM 2.7 / 8.0 GB" subPercent={34} /&gt;
+      &lt;MeterRow label="Memory" percent={58} value="18.6 / 32 GB" sub="Swap 1.2 / 4 GB" subPercent={30} /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcMeterRow, OcReading } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-meter-list oc-meter-list--dense" style="inline-size:min(100%,24rem)"&gt;
+    &lt;OcMeterRow label="CPU" :percent="34"&gt;
+      &lt;template #value&gt;&lt;OcReading&gt;52 °C&lt;/OcReading&gt;&lt;/template&gt;
+    &lt;/OcMeterRow&gt;
+    &lt;OcMeterRow label="GPU" :percent="81" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34"&gt;
+      &lt;template #value&gt;&lt;OcReading level="warm"&gt;74 °C&lt;/OcReading&gt;&lt;/template&gt;
+    &lt;/OcMeterRow&gt;
+    &lt;OcMeterRow label="Memory" :percent="58" value="18.6 / 32 GB" sub="Swap 1.2 / 4 GB" :sub-percent="30" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-meter-list oc-meter-list--dense" style="inline-size:min(100%,24rem)"&gt;
+    &lt;x-oc::meter-row label="CPU" :percent="34"&gt;
+        &lt;x-slot:value&gt;&lt;x-oc::reading&gt;52 °C&lt;/x-oc::reading&gt;&lt;/x-slot:value&gt;
+    &lt;/x-oc::meter-row&gt;
+    &lt;x-oc::meter-row label="GPU" :percent="81" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34"&gt;
+        &lt;x-slot:value&gt;&lt;x-oc::reading level="warm"&gt;74 °C&lt;/x-oc::reading&gt;&lt;/x-slot:value&gt;
+    &lt;/x-oc::meter-row&gt;
+    &lt;x-oc::meter-row label="Memory" :percent="58" value="18.6 / 32 GB" sub="Swap 1.2 / 4 GB" :sub-percent="30" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SystemMeters extends Component
+{
+    public int $cpu = 34;
+
+    public int $gpu = 81;
+
+    public int $memory = 58;
+
+    public function render()
+    {
+        // Fill the numbers from your monitoring here; wire:poll asks for them again every 5 seconds.
+        return view('livewire.system-meters');
+    }
+}
+
+{{-- resources/views/livewire/system-meters.blade.php --}}
+&lt;div wire:poll.5s class="oc-meter-list oc-meter-list--dense" style="inline-size:min(100%,24rem)"&gt;
+    &lt;x-oc::meter-row label="CPU" :percent="$cpu"&gt;
+        &lt;x-slot:value&gt;&lt;x-oc::reading&gt;52 °C&lt;/x-oc::reading&gt;&lt;/x-slot:value&gt;
+    &lt;/x-oc::meter-row&gt;
+    &lt;x-oc::meter-row label="GPU" :percent="$gpu" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34"&gt;
+        &lt;x-slot:value&gt;&lt;x-oc::reading level="warm"&gt;74 °C&lt;/x-oc::reading&gt;&lt;/x-slot:value&gt;
+    &lt;/x-oc::meter-row&gt;
+    &lt;x-oc::meter-row label="Memory" :percent="$memory" value="18.6 / 32 GB" sub="Swap 1.2 / 4 GB" :sub-percent="30" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

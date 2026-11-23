@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Button group", "category": "Actions", "description": "Joined buttons with shared borders: horizontal, vertical, text addon.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Button group", "category": "Actions", "description": "Button group: joined buttons with shared borders, side by side or stacked, with a text cell for a count. The text cell is not a button.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Button group</h1>
         <p class="oc-hero-text">Joins several buttons into one segmented control: shared borders, rounded outer corners only. It is the existing <code>.oc-btn-group</code>, now registered with its own snippet, a vertical modifier and a text addon. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/button-group.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React component <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Three buttons joined into one control: the inner corners are square and the borders touch. Tab through them to see the focus ring on each button.</p>
           <oc-demo title="Button group">
 <div class="oc-btn-group" role="group" aria-label="Text alignment">
@@ -15,8 +16,57 @@
   <button class="oc-btn oc-btn--outline" type="button">Center</button>
   <button class="oc-btn oc-btn--outline" type="button">Right</button>
 </div>
+<oc-code lang="tsx">import { Button, ButtonGroup } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;ButtonGroup label="Text alignment"&gt;
+      &lt;Button variant="outline"&gt;Left&lt;/Button&gt;
+      &lt;Button variant="outline"&gt;Center&lt;/Button&gt;
+      &lt;Button variant="outline"&gt;Right&lt;/Button&gt;
+    &lt;/ButtonGroup&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcButtonGroup } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButtonGroup label="Text alignment"&gt;
+    &lt;OcButton variant="outline"&gt;Left&lt;/OcButton&gt;
+    &lt;OcButton variant="outline"&gt;Center&lt;/OcButton&gt;
+    &lt;OcButton variant="outline"&gt;Right&lt;/OcButton&gt;
+  &lt;/OcButtonGroup&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button-group label="Text alignment"&gt;
+    &lt;x-oc::button variant="outline"&gt;Left&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline"&gt;Center&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline"&gt;Right&lt;/x-oc::button&gt;
+&lt;/x-oc::button-group&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ButtonGroup extends Component
+{
+    public function render()
+    {
+        return view('livewire.button-group');
+    }
+}
+
+{{-- resources/views/livewire/button-group.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button-group label="Text alignment"&gt;
+        &lt;x-oc::button variant="outline"&gt;Left&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline"&gt;Center&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline"&gt;Right&lt;/x-oc::button&gt;
+    &lt;/x-oc::button-group&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
-        <h3 id="vertical" class="oc-section-content__title mt-2">Vertical and with text</h3><p class="oc-section-content__desc"><code>--vertical</code> stacks the buttons; <code>.oc-btn-group-text</code> adds a non-interactive cell.</p>
+        <h3 id="vertical" class="oc-section-content__title mt-2">Vertical and with text <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc"><code>--vertical</code> stacks the buttons; <code>.oc-btn-group-text</code> adds a non-interactive cell.</p>
           <oc-demo title="Vertical and with text">
 <div class="oc-eg">
   <div class="oc-eg__panels" style="--eg-min: 15rem">
@@ -52,6 +102,90 @@
   &lt;span class="oc-btn-group-text"&gt;3 items&lt;/span&gt;
   &lt;button class="oc-btn oc-btn--outline" type="button" aria-label="Increase"&gt;+&lt;/button&gt;
 &lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { Button, ButtonGroup, ButtonGroupText } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [items, setItems] = useState(3);
+  return (
+    &lt;&gt;
+      &lt;ButtonGroup vertical label="Zoom"&gt;
+        &lt;Button variant="outline"&gt;Zoom in&lt;/Button&gt;
+        &lt;Button variant="outline"&gt;Zoom out&lt;/Button&gt;
+      &lt;/ButtonGroup&gt;
+      &lt;ButtonGroup label="Quantity"&gt;
+        &lt;Button variant="outline" aria-label="Decrease" onClick={() =&gt; setItems((n) =&gt; Math.max(0, n - 1))}&gt;−&lt;/Button&gt;
+        &lt;ButtonGroupText&gt;{items} items&lt;/ButtonGroupText&gt;
+        &lt;Button variant="outline" aria-label="Increase" onClick={() =&gt; setItems((n) =&gt; n + 1)}&gt;+&lt;/Button&gt;
+      &lt;/ButtonGroup&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcButton, OcButtonGroup, OcButtonGroupText } from "@birdycom/omniaui-vue";
+
+const items = ref(3);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButtonGroup vertical label="Zoom"&gt;
+    &lt;OcButton variant="outline"&gt;Zoom in&lt;/OcButton&gt;
+    &lt;OcButton variant="outline"&gt;Zoom out&lt;/OcButton&gt;
+  &lt;/OcButtonGroup&gt;
+  &lt;OcButtonGroup label="Quantity"&gt;
+    &lt;OcButton variant="outline" aria-label="Decrease" @click="items = Math.max(0, items - 1)"&gt;−&lt;/OcButton&gt;
+    &lt;OcButtonGroupText&gt;{{ items }} items&lt;/OcButtonGroupText&gt;
+    &lt;OcButton variant="outline" aria-label="Increase" @click="items++"&gt;+&lt;/OcButton&gt;
+  &lt;/OcButtonGroup&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button-group vertical label="Zoom"&gt;
+    &lt;x-oc::button variant="outline"&gt;Zoom in&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline"&gt;Zoom out&lt;/x-oc::button&gt;
+&lt;/x-oc::button-group&gt;
+&lt;x-oc::button-group label="Quantity"&gt;
+    &lt;x-oc::button variant="outline" aria-label="Decrease"&gt;−&lt;/x-oc::button&gt;
+    &lt;x-oc::button-group.text&gt;3 items&lt;/x-oc::button-group.text&gt;
+    &lt;x-oc::button variant="outline" aria-label="Increase"&gt;+&lt;/x-oc::button&gt;
+&lt;/x-oc::button-group&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ItemCount extends Component
+{
+    public int $items = 3;
+
+    public function decrease(): void
+    {
+        $this-&gt;items = max(0, $this-&gt;items - 1);
+    }
+
+    public function increase(): void
+    {
+        $this-&gt;items++;
+    }
+
+    public function render()
+    {
+        return view('livewire.item-count');
+    }
+}
+
+{{-- resources/views/livewire/item-count.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button-group vertical label="Zoom"&gt;
+        &lt;x-oc::button variant="outline"&gt;Zoom in&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline"&gt;Zoom out&lt;/x-oc::button&gt;
+    &lt;/x-oc::button-group&gt;
+    &lt;x-oc::button-group label="Quantity"&gt;
+        &lt;x-oc::button variant="outline" aria-label="Decrease" wire:click="decrease"&gt;−&lt;/x-oc::button&gt;
+        &lt;x-oc::button-group.text&gt;{{ $items }} items&lt;/x-oc::button-group.text&gt;
+        &lt;x-oc::button variant="outline" aria-label="Increase" wire:click="increase"&gt;+&lt;/x-oc::button&gt;
+    &lt;/x-oc::button-group&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -65,7 +199,7 @@
             <tbody>
               <tr><td><code>.oc-btn-group</code></td><td>Wrapper; joins radius and borders of its buttons</td></tr>
               <tr><td><code>.oc-btn-group--vertical</code></td><td>Stack the buttons vertically</td></tr>
-              <tr><td><code>.oc-btn-group-text</code></td><td>Static text cell</td></tr>
+              <tr><td><code>.oc-btn-group-text</code></td><td>Static text cell (React <code>ButtonGroupText</code>, Vue <code>OcButtonGroupText</code>, Blade <code>&lt;x-oc::button-group.text&gt;</code>)</td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>

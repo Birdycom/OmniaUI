@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Expandable table and toggle button", "category": "Docs UI", "description": "\"Show more / Show less\" for tables and any content (<code>.oc-btn--toggle</code>).", "nav": "Expandable table", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Expandable table and toggle button", "category": "Docs UI", "since": "0.11.0", "description": "Table that shows its first rows and fades the last one, with a Show more / Show less toggle button for the rest; CSS only, also for any text.", "nav": "Expandable table", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Expandable table and toggle button</h1>
         <p class="oc-hero-text"><strong>Show more / Show less</strong>: a table that displays its first rows and reveals the rest with a button, plus the generic toggle button <code>.oc-btn--toggle</code> behind it. Both are pure CSS (a hidden checkbox and <code>:has()</code>). This is how every reference table on this site works. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/expandable-table.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-1">Reference table and show more <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Expandable table and toggle button">
 <div class="oc-expandable-table">
   <table class="oc-table-ref">
@@ -30,6 +31,117 @@
   <p class="oc-showmore__extra">Extra text that appears after pressing the button.</p>
   <label class="oc-btn oc-btn--outline oc-btn--toggle"><input type="checkbox"><span class="oc-btn-toggle__off">Show more</span><span class="oc-btn-toggle__on">Show less</span></label>
 </div>
+<oc-code lang="tsx">import { ExpandableTable, ShowMore } from "@birdycom/omniaui-react";
+
+const columns = [
+  { key: "cls", label: "Class" },
+  { key: "text", label: "Description" },
+];
+const rows = [
+  { cls: &lt;code&gt;.oc-btn&lt;/code&gt;, text: "Primary button" },
+  { cls: &lt;code&gt;.oc-btn--secondary&lt;/code&gt;, text: "Quiet button" },
+  { cls: &lt;code&gt;.oc-btn--outline&lt;/code&gt;, text: "Outlined button" },
+  { cls: &lt;code&gt;.oc-btn--ghost&lt;/code&gt;, text: "Frameless button" },
+  { cls: &lt;code&gt;.oc-btn--link&lt;/code&gt;, text: "Looks like a link" },
+];
+
+export function Example() {
+  return (
+    &lt;&gt;
+      {/* visible={3}: two rows, the third one faded, the rest behind "Show more" (CSS only) */}
+      &lt;ExpandableTable columns={columns} rows={rows} visible={3} /&gt;
+
+      &lt;ShowMore extra={&lt;p&gt;Extra text that appears after pressing the button.&lt;/p&gt;}&gt;
+        &lt;p&gt;Short text that is always visible.&lt;/p&gt;
+      &lt;/ShowMore&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcExpandableTable, OcShowMore } from "@birdycom/omniaui-vue";
+
+const columns = [
+  { key: "cls", label: "Class" },
+  { key: "text", label: "Description" },
+];
+const rows = [
+  { cls: ".oc-btn", text: "Primary button" },
+  { cls: ".oc-btn--secondary", text: "Quiet button" },
+  { cls: ".oc-btn--outline", text: "Outlined button" },
+  { cls: ".oc-btn--ghost", text: "Frameless button" },
+  { cls: ".oc-btn--link", text: "Looks like a link" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- :visible="3": two rows, the third one faded, the rest behind "Show more" (CSS only) --&gt;
+  &lt;OcExpandableTable :columns="columns" :rows="rows" :visible="3"&gt;
+    &lt;template #cell="{ row, column }"&gt;
+      &lt;code v-if="column.key === 'cls'"&gt;{{ row.cls }}&lt;/code&gt;
+      &lt;template v-else&gt;{{ row[column.key] }}&lt;/template&gt;
+    &lt;/template&gt;
+  &lt;/OcExpandableTable&gt;
+
+  &lt;OcShowMore&gt;
+    &lt;p&gt;Short text that is always visible.&lt;/p&gt;
+    &lt;template #extra&gt;&lt;p&gt;Extra text that appears after pressing the button.&lt;/p&gt;&lt;/template&gt;
+  &lt;/OcShowMore&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- visible="3": two rows, the third one faded, the rest behind "Show more" (CSS only) --}}
+&lt;x-oc::expandable-table visible="3" :columns="['cls' =&gt; 'Class', 'text' =&gt; 'Description']" :rows="[
+    ['cls' =&gt; new Illuminate\Support\HtmlString('&lt;code&gt;.oc-btn&lt;/code&gt;'), 'text' =&gt; 'Primary button'],
+    ['cls' =&gt; new Illuminate\Support\HtmlString('&lt;code&gt;.oc-btn--secondary&lt;/code&gt;'), 'text' =&gt; 'Quiet button'],
+    ['cls' =&gt; new Illuminate\Support\HtmlString('&lt;code&gt;.oc-btn--outline&lt;/code&gt;'), 'text' =&gt; 'Outlined button'],
+    ['cls' =&gt; new Illuminate\Support\HtmlString('&lt;code&gt;.oc-btn--ghost&lt;/code&gt;'), 'text' =&gt; 'Frameless button'],
+    ['cls' =&gt; new Illuminate\Support\HtmlString('&lt;code&gt;.oc-btn--link&lt;/code&gt;'), 'text' =&gt; 'Looks like a link'],
+]" /&gt;
+
+&lt;x-oc::show-more&gt;
+    &lt;p&gt;Short text that is always visible.&lt;/p&gt;
+    &lt;x-slot:extra&gt;&lt;p&gt;Extra text that appears after pressing the button.&lt;/p&gt;&lt;/x-slot:extra&gt;
+&lt;/x-oc::show-more&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Support\HtmlString;
+use Livewire\Component;
+
+class ExpandableTableAndToggleButton extends Component
+{
+    /** @var array&lt;string, string&gt; class =&gt; description */
+    public array $buttons = [
+        '.oc-btn' =&gt; 'Primary button',
+        '.oc-btn--secondary' =&gt; 'Quiet button',
+        '.oc-btn--outline' =&gt; 'Outlined button',
+        '.oc-btn--ghost' =&gt; 'Frameless button',
+        '.oc-btn--link' =&gt; 'Looks like a link',
+    ];
+
+    public function rows(): array
+    {
+        return collect($this-&gt;buttons)
+            -&gt;map(fn ($text, $cls) =&gt; ['cls' =&gt; new HtmlString('&lt;code&gt;'.e($cls).'&lt;/code&gt;'), 'text' =&gt; $text])
+            -&gt;values()
+            -&gt;all();
+    }
+
+    public function render()
+    {
+        return view('livewire.expandable-table-and-toggle-button');
+    }
+}
+
+{{-- resources/views/livewire/expandable-table-and-toggle-button.blade.php --}}
+&lt;div&gt;
+    {{-- visible="3": two rows, the third one faded, the rest behind "Show more" (CSS only) --}}
+    &lt;x-oc::expandable-table visible="3" :columns="['cls' =&gt; 'Class', 'text' =&gt; 'Description']" :rows="$this-&gt;rows()" /&gt;
+
+    &lt;x-oc::show-more&gt;
+        &lt;p&gt;Short text that is always visible.&lt;/p&gt;
+        &lt;x-slot:extra&gt;&lt;p&gt;Extra text that appears after pressing the button.&lt;/p&gt;&lt;/x-slot:extra&gt;
+    &lt;/x-oc::show-more&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

@@ -1,0 +1,206 @@
+<!--oc-page {"title":"OmniaUI - Countdown","category":"Feedback","description":"Time left for a task, a round or a reservation: inline, a pill or large digits, with an optional bar. Turns orange when time runs low and red at zero.","nav":"Countdown","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
+<!-- File: apps/site/src/content/ui/components/countdown.html | Map: hero -> demos (inline, pill, bar; large digits) -> reference -> frameworks -> browser support -> source footer -->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Countdown <span class="oc-badge-version">v0.17.0</span></h1>
+        <p class="oc-hero-text">The time left for a task, a round of a game or a reservation. Inline next to a title, as a small pill in a header, or in large digits on a screen people look at from a distance, with an optional bar that shrinks. It turns orange when little time is left and red at zero, and it is a <code>role="timer"</code>, so a screen reader does not read every second. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <p class="oc-section-header__desc">The clocks below really run (the small script <code>oc-countdown.js</code>). The pill starts in its orange "low" state; the bar shrinks every second.</p>
+        </div>
+        <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="kinds">Inline, pill and bar</h3>
+          <oc-demo title="Countdown">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1.5rem;align-items:center;justify-items:start;inline-size:100%">
+  <div class="oc-countdown" role="timer" aria-label="Time left" data-oc-countdown data-oc-countdown-seconds="300">
+    <span class="oc-countdown-label">Time left</span>
+    <b class="oc-countdown-time">5:00</b>
+  </div>
+  <div class="oc-countdown oc-countdown--pill" role="timer" aria-label="Round ends in" data-oc-countdown data-oc-countdown-seconds="75" data-oc-countdown-total="300" data-oc-countdown-low="90">
+    <span class="oc-countdown-label">Round ends in</span>
+    <b class="oc-countdown-time">1:15</b>
+  </div>
+  <div class="oc-countdown oc-countdown--bar" style="inline-size:100%" role="timer" aria-label="Answer within" data-oc-countdown data-oc-countdown-seconds="45" data-oc-countdown-total="120">
+    <span class="oc-countdown-label">Answer within</span>
+    <b class="oc-countdown-time">0:45</b>
+  </div>
+</div>
+<oc-code lang="html">&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1.5rem;align-items:center;justify-items:start;inline-size:100%"&gt;
+  &lt;div class="oc-countdown" role="timer" aria-label="Time left" data-oc-countdown data-oc-countdown-seconds="300"&gt;
+    &lt;span class="oc-countdown-label"&gt;Time left&lt;/span&gt;
+    &lt;b class="oc-countdown-time"&gt;5:00&lt;/b&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-countdown oc-countdown--pill" role="timer" aria-label="Round ends in" data-oc-countdown data-oc-countdown-seconds="75" data-oc-countdown-total="300" data-oc-countdown-low="90"&gt;
+    &lt;span class="oc-countdown-label"&gt;Round ends in&lt;/span&gt;
+    &lt;b class="oc-countdown-time"&gt;1:15&lt;/b&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-countdown oc-countdown--bar" style="inline-size:100%" role="timer" aria-label="Answer within" data-oc-countdown data-oc-countdown-seconds="45" data-oc-countdown-total="120"&gt;
+    &lt;span class="oc-countdown-label"&gt;Answer within&lt;/span&gt;
+    &lt;b class="oc-countdown-time"&gt;0:45&lt;/b&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-countdown.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">&lt;Countdown seconds={300} /&gt;
+&lt;Countdown variant="pill" until={round.endsAt} total={300} low={90} label="Round ends in" /&gt;
+&lt;Countdown bar seconds={45} total={120} label="Answer within" onEnd={submit} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcCountdown :seconds="300" /&gt;
+&lt;OcCountdown variant="pill" :until="round.endsAt" :total="300" :low="90" label="Round ends in" /&gt;
+&lt;OcCountdown bar :seconds="45" :total="120" label="Answer within" @end="submit" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::countdown :seconds="300" /&gt;
+&lt;x-oc::countdown variant="pill" :until="$round-&gt;ends_at" :total="300" :low="90" label="Round ends in" /&gt;
+{{-- + &lt;script type="module" src="/js/oc-countdown.js"&gt;&lt;/script&gt; --}}</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class QuizTimers extends Component
+{
+    public int $roundSeconds = 75;
+
+    public bool $timeUp = false;
+
+    public function timeUp(): void
+    {
+        $this-&gt;timeUp = true;
+        // close the round, save the answers …
+    }
+
+    public function render()
+    {
+        return view('livewire.quiz-timers');
+    }
+}
+
+{{-- resources/views/livewire/quiz-timers.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1.5rem;align-items:center;justify-items:start;inline-size:100%"&gt;
+    {{-- oc-countdown.js ticks in the browser (wire:ignore) and fires oc-countdown-end at zero --}}
+    &lt;x-oc::countdown wire:ignore :seconds="300" /&gt;
+    &lt;x-oc::countdown wire:ignore variant="pill" :seconds="$roundSeconds" :total="300" :low="90" label="Round ends in" x-on:oc-countdown-end="$wire.timeUp()" /&gt;
+    &lt;x-oc::countdown wire:ignore bar :seconds="45" :total="120" label="Answer within" style="inline-size:100%" /&gt;
+    @if ($timeUp)
+        &lt;p role="status"&gt;Time is up.&lt;/p&gt;
+    @endif
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="display">Large digits</h3>
+          <p class="oc-section-content__desc">For a screen on a wall or a laptop at a desk: <code>--display</code> puts the time in large digits, here with the bar under it.</p>
+          <oc-demo title="Countdown - large digits">
+<div style="display:grid;justify-items:center;inline-size:100%">
+  <div class="oc-countdown oc-countdown--display oc-countdown--bar" role="timer" aria-label="Until the finish" data-oc-countdown data-oc-countdown-seconds="1800" style="inline-size:min(100%,22rem)" data-oc-countdown-total="3600">
+    <span class="oc-countdown-label">Until the finish</span>
+    <b class="oc-countdown-time">30:00</b>
+  </div>
+</div>
+<oc-code lang="html">&lt;div style="display:grid;justify-items:center;inline-size:100%"&gt;
+  &lt;div class="oc-countdown oc-countdown--display oc-countdown--bar" role="timer" aria-label="Until the finish" data-oc-countdown data-oc-countdown-seconds="1800" style="inline-size:min(100%,22rem)" data-oc-countdown-total="3600"&gt;
+    &lt;span class="oc-countdown-label"&gt;Until the finish&lt;/span&gt;
+    &lt;b class="oc-countdown-time"&gt;30:00&lt;/b&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Countdown } from "@birdycom/omniaui-react";
+
+export function Example({ onFinish }: { onFinish: () =&gt; void }) {
+  return (
+    &lt;div style={{ display: "grid", justifyItems: "center", inlineSize: "100%" }}&gt;
+      &lt;Countdown variant="display" bar seconds={1800} total={3600} label="Until the finish" style={{ inlineSize: "min(100%,22rem)" }} onEnd={onFinish} /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCountdown } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ finish: [] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;justify-items:center;inline-size:100%"&gt;
+    &lt;OcCountdown variant="display" bar :seconds="1800" :total="3600" label="Until the finish" style="inline-size:min(100%,22rem)" @end="emit('finish')" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;justify-items:center;inline-size:100%"&gt;
+    &lt;x-oc::countdown variant="display" bar :seconds="1800" :total="3600" label="Until the finish" style="inline-size:min(100%,22rem)" /&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-countdown.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class FinishCountdown extends Component
+{
+    public function finish(): void
+    {
+        // the time is up: close the race …
+    }
+
+    public function render()
+    {
+        return view('livewire.finish-countdown');
+    }
+}
+
+{{-- resources/views/livewire/finish-countdown.blade.php --}}
+&lt;div style="display:grid;justify-items:center;inline-size:100%"&gt;
+    {{-- oc-countdown.js (loaded once in the layout) ticks in the browser and fires oc-countdown-end at zero --}}
+    &lt;x-oc::countdown wire:ignore variant="display" bar :seconds="1800" :total="3600" label="Until the finish" style="inline-size:min(100%,22rem)" x-on:oc-countdown-end="$wire.finish()" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/app-countdown.css</code>. Colors are theme tokens (<code>--oc-*</code>), so light and dark mode work without extra classes.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>.oc-countdown[role=timer]</code></td><td>The countdown: <code>.oc-countdown-label</code> and <code>.oc-countdown-time</code>. Give it an <code>aria-label</code>.</td></tr>
+              <tr><td><code>--pill / --display / --bar</code></td><td>A small tinted pill, large digits, a bar that shrinks (<code>--oc-countdown-left</code>, 1 to 0)</td></tr>
+              <tr><td><code>[data-state=low|done]</code></td><td>Orange when little time is left, red at zero</td></tr>
+              <tr><td><code>[data-oc-countdown]</code></td><td>Turns on <code>oc-countdown.js</code>: <code>data-oc-countdown-end</code> (ISO or ms) or <code>-seconds</code>, <code>-total</code> (for the bar), <code>-low</code> (seconds; default 20% of the total, at most 60). Event: <code>oc-countdown-end</code>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="frameworks">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Framework wrappers</h2>
+          <p class="oc-section-header__desc"><code>until</code> (an end time) or <code>seconds</code> (from when it appears), <code>total</code>, <code>low</code>, <code>label</code>, <code>variant</code> (<code>inline</code>, <code>pill</code>, <code>display</code>), <code>bar</code>, <code>paused</code>; React <code>onEnd</code>, Vue <code>@end</code>. Blade renders the time and needs <code>oc-countdown.js</code> to tick. <code>formatCountdown(seconds)</code> gives "1:30" or "1:02:05".</p>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="support">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Browser support</h2>
+        </div>
+        <div class="oc-section-content">
+          <oc-compat features="css.types.color.light-dark css.types.color.color-mix"></oc-compat>
+        </div>
+        <div class="oc-section-footer">
+          <h2 class="oc-section-footer__title" id="source">Source &amp; Further Reading</h2>
+          <p class="oc-section-footer__desc">See <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/timer_role" target="_blank" rel="noopener">MDN: ARIA timer role</a>.</p>
+          <div class="oc-section-content">
+            <h3 class="oc-section-content__title">Source files</h3>
+            <table class="oc-table-ref">
+              <thead><tr><th class="w-perc-1/3">File</th><th>Contains</th></tr></thead>
+              <tbody>
+                <tr><td><code>packages/ui/src/parts/app-countdown.css</code></td><td>Styles</td></tr>
+                <tr><td><code>packages/ui/src/countdown.js</code></td><td>Ticking (<code>formatCountdown</code>, <code>bindCountdown</code>, <code>initCountdown</code>)</td></tr>
+                <tr><td><code>packages/ui/snippets/countdown.html</code></td><td>Copy-paste markup</td></tr>
+                <tr><td><code>packages/react/src/components/Countdown.tsx / packages/vue/src/components/OcCountdown.vue</code></td><td>Wrappers</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+<script type="module" src="/js/oc-countdown.js"></script>

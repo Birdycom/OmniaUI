@@ -1,4 +1,4 @@
-<!--oc-page {"title":"OmniaUI - Logo","category":"Media","description":"A customer logo in its own colors and ratio, with a neutral plate only in the theme where it would disappear.","nav":"Logo","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
+<!--oc-page {"title":"OmniaUI - Logo","category":"Media","description":"A customer logo in its own colors and ratio, never tinted, with a neutral plate only in the theme where it would disappear. Set by script or by hand.","nav":"Logo","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
 <!-- File: apps/site/src/content/ui/components/logo.html | Map: hero -> demos (plate per theme, same box) -> reference -> how the plate is chosen -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Logo</h1>
@@ -52,6 +52,35 @@
 <oc-code lang="blade">&lt;x-oc::logo src="/uploads/logo-company-1.svg" alt="Company 1" /&gt;
 &lt;x-oc::logo :src="$customer-&gt;logo_url" :alt="$customer-&gt;name" plate="auto" /&gt;
 &lt;script type="module" src="/js/oc-logo.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CustomerLogos extends Component
+{
+    public array $customers = [
+        ['name' =&gt; 'Company 1', 'logo' =&gt; '/img/samples/logo-company-1.svg'],
+        ['name' =&gt; 'Company 2', 'logo' =&gt; '/img/samples/logo-company-2.svg'],
+        ['name' =&gt; 'Company 3', 'logo' =&gt; '/img/samples/logo-company-3.svg'],
+        ['name' =&gt; 'Company 4', 'logo' =&gt; '/img/samples/logo-company-4.svg'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.customer-logos');
+    }
+}
+
+{{-- resources/views/livewire/customer-logos.blade.php --}}
+&lt;div&gt;
+    {{-- plate="auto": oc-logo.js measures each logo and adds a plate only where it would disappear --}}
+    @foreach ($customers as $customer)
+        &lt;x-oc::logo :src="$customer['logo']" :alt="$customer['name']" wire:key="logo-{{ $loop-&gt;index }}" /&gt;
+    @endforeach
+    &lt;script type="module" src="/js/oc-logo.js"&gt;&lt;/script&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="box">The same box for every logo</h3>
@@ -73,6 +102,37 @@
 <oc-code lang="tsx">&lt;Logo src={logo} alt="Company 1" fit="box" maxWidth="10rem" height="2rem" /&gt;</oc-code>
 <oc-code lang="vue">&lt;OcLogo :src="logo" alt="Company 1" fit="box" max-width="10rem" height="2rem" /&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::logo :src="$logo" alt="Company 1" fit="box" max-width="10rem" height="2rem" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CustomerLogoGrid extends Component
+{
+    public array $customers = [
+        ['name' =&gt; 'Company 1', 'logo' =&gt; '/img/samples/logo-company-1.svg'],
+        ['name' =&gt; 'Company 2', 'logo' =&gt; '/img/samples/logo-company-2.svg'],
+        ['name' =&gt; 'Company 3', 'logo' =&gt; '/img/samples/logo-company-3.svg'],
+        ['name' =&gt; 'Company 4', 'logo' =&gt; '/img/samples/logo-company-4.svg'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.customer-logo-grid');
+    }
+}
+
+{{-- resources/views/livewire/customer-logo-grid.blade.php --}}
+&lt;div&gt;
+    {{-- fit="box": every logo in the same 10rem x 2rem box --}}
+    &lt;div class="grid gap-1 w-full" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); justify-items: center"&gt;
+        @foreach ($customers as $customer)
+            &lt;x-oc::logo :src="$customer['logo']" :alt="$customer['name']" fit="box" max-width="10rem" height="2rem" wire:key="logo-{{ $loop-&gt;index }}" /&gt;
+        @endforeach
+    &lt;/div&gt;
+    &lt;script type="module" src="/js/oc-logo.js"&gt;&lt;/script&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

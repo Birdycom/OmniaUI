@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Profile header Block", "category": "Marketing", "description": "Banner, overlapping avatar, bio, actions and tabs.", "nav": "Profile header", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Profile header Block", "category": "Marketing", "description": "Top of a profile or channel page: a banner, an avatar over its edge, name, meta line, bio, actions and a tab bar, plus a compact variant with an accent.", "nav": "Profile header", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/blocks/profile-header.html | Map: hero -> demos (full, compact) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Profile header</h1>
@@ -12,13 +12,14 @@
           <p class="oc-section-header__desc">The banner uses a soft tint of the accent color; set <code>style="--oc-profile-banner: url(…)"</code> on the banner for an image. The active tab has <code>aria-current="page"</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title">Profile header <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Profile header" size="tall">
 <section class="oc-block-profile oc-accent--violet" aria-labelledby="oc-profile-name">
-  <div class="oc-block-profile-banner" aria-hidden="true"></div>
+  <div class="oc-block-profile-banner" style="--oc-profile-banner: url(/img/blocks/auth-split-photo.webp)" aria-hidden="true"></div>
   <div class="oc-block-profile-bar">
     <span class="oc-avatar oc-block-profile-avatar" aria-hidden="true">C1</span>
     <div class="oc-block-profile-info">
-      <h1 class="oc-block-profile-name" id="oc-profile-name">Company 1</h1>
+      <h2 class="oc-block-profile-name" id="oc-profile-name">Company 1</h2>
       <p class="oc-block-profile-meta">@company1 &middot; 12.4K followers &middot; 86 videos</p>
       <p class="oc-block-profile-bio">Short tutorials about web design, CSS and building small business apps.</p>
     </div>
@@ -35,19 +36,179 @@
   </div>
   <div class="oc-block-profile-panels">
     <div class="oc-block-profile-panel">
-      <ul class="oc-block-profile-grid"><li><span class="oc-block-profile-thumb"></span><strong>Video 1</strong><small>Container queries in 8 minutes</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 2</strong><small>Colors in OKLCH</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 3</strong><small>A form without JavaScript</small></li></ul>
+      <ul class="oc-block-profile-grid"><li><img class="oc-block-profile-thumb" src="/img/blocks/hero-code.jpg" alt="" loading="lazy"><strong>Video 1</strong><small>Container queries in 8 minutes</small></li><li><img class="oc-block-profile-thumb" src="/img/blocks/charts.jpg" alt="" loading="lazy"><strong>Video 2</strong><small>Colors in OKLCH</small></li><li><img class="oc-block-profile-thumb" src="/img/blocks/form-page.jpg" alt="" loading="lazy"><strong>Video 3</strong><small>A form without JavaScript</small></li></ul>
     </div>
     <div class="oc-block-profile-panel">
-      <ul class="oc-block-profile-grid"><li><span class="oc-block-profile-thumb"></span><strong>Video 4</strong><small>Scroll snap carousel</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 5</strong><small>Anchor positioning</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 6</strong><small>Dark mode with light-dark()</small></li><li><span class="oc-block-profile-thumb"></span><strong>Video 7</strong><small>Dialogs and popovers</small></li></ul>
+      <ul class="oc-block-profile-grid"><li><img class="oc-block-profile-thumb" src="/img/blocks/hero-code.jpg" alt="" loading="lazy"><strong>Video 4</strong><small>Scroll snap carousel</small></li><li><img class="oc-block-profile-thumb" src="/img/blocks/charts.jpg" alt="" loading="lazy"><strong>Video 5</strong><small>Anchor positioning</small></li><li><img class="oc-block-profile-thumb" src="/img/blocks/form-page.jpg" alt="" loading="lazy"><strong>Video 6</strong><small>Dark mode with light-dark()</small></li><li><img class="oc-block-profile-thumb" src="/img/blocks/calendars.jpg" alt="" loading="lazy"><strong>Video 7</strong><small>Dialogs and popovers</small></li></ul>
     </div>
     <div class="oc-block-profile-panel">
-      <ul class="oc-block-profile-grid"><li><span class="oc-block-profile-thumb"></span><strong>Playlist 1</strong><small>Modern CSS · 12 videos</small></li><li><span class="oc-block-profile-thumb"></span><strong>Playlist 2</strong><small>Small business apps · 8 videos</small></li></ul>
+      <ul class="oc-block-profile-grid"><li><img class="oc-block-profile-thumb" src="/img/blocks/hero-code.jpg" alt="" loading="lazy"><strong>Playlist 1</strong><small>Modern CSS · 12 videos</small></li><li><img class="oc-block-profile-thumb" src="/img/blocks/charts.jpg" alt="" loading="lazy"><strong>Playlist 2</strong><small>Small business apps · 8 videos</small></li></ul>
     </div>
     <div class="oc-block-profile-panel">
       <p class="oc-block-profile-bio" style="margin:0">Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.</p>
     </div>
   </div>
 </section>
+<oc-code lang="tsx">import { BlockProfileHeader, Button } from "@birdycom/omniaui-react";
+
+const thumbs = ["/img/blocks/hero-code.jpg", "/img/blocks/charts.jpg", "/img/blocks/form-page.jpg", "/img/blocks/calendars.jpg"];
+
+const grid = (items: [string, string][]) =&gt; (
+  &lt;ul className="oc-block-profile-grid"&gt;
+    {items.map(([title, text], i) =&gt; &lt;li key={title}&gt;&lt;img className="oc-block-profile-thumb" src={thumbs[i % thumbs.length]} alt="" loading="lazy" /&gt;&lt;strong&gt;{title}&lt;/strong&gt;&lt;small&gt;{text}&lt;/small&gt;&lt;/li&gt;)}
+  &lt;/ul&gt;
+);
+
+export function Example() {
+  // tabs with content switch on the page (radios, no JavaScript); tabs with href are links
+  return (
+    &lt;BlockProfileHeader
+      className="oc-accent--violet"
+      headingLevel={2}
+      banner="/img/blocks/auth-split-photo.webp"
+      avatar="C1"
+      name="Company 1"
+      meta="@company1 · 12.4K followers · 86 videos"
+      bio="Short tutorials about web design, CSS and building small business apps."
+      actions={&lt;&gt;
+        &lt;Button&gt;Follow&lt;/Button&gt;
+        &lt;Button variant="outline"&gt;Share&lt;/Button&gt;
+      &lt;/&gt;}
+      tabsLabel="Profile sections"
+      tabs={[
+        { label: "Home", current: true, content: grid([["Video 1", "Container queries in 8 minutes"], ["Video 2", "Colors in OKLCH"], ["Video 3", "A form without JavaScript"]]) },
+        { label: "Videos", content: grid([["Video 4", "Scroll snap carousel"], ["Video 5", "Anchor positioning"], ["Video 6", "Dark mode with light-dark()"], ["Video 7", "Dialogs and popovers"]]) },
+        { label: "Playlists", content: grid([["Playlist 1", "Modern CSS · 12 videos"], ["Playlist 2", "Small business apps · 8 videos"]]) },
+        { label: "About", content: &lt;p className="oc-block-profile-bio" style={{ margin: 0 }}&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt; },
+      ]}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockProfileHeader, OcButton } from "@birdycom/omniaui-vue";
+
+const thumbs = ["/img/blocks/hero-code.jpg", "/img/blocks/charts.jpg", "/img/blocks/form-page.jpg", "/img/blocks/calendars.jpg"];
+const panels = [
+  [["Video 1", "Container queries in 8 minutes"], ["Video 2", "Colors in OKLCH"], ["Video 3", "A form without JavaScript"]],
+  [["Video 4", "Scroll snap carousel"], ["Video 5", "Anchor positioning"], ["Video 6", "Dark mode with light-dark()"], ["Video 7", "Dialogs and popovers"]],
+  [["Playlist 1", "Modern CSS · 12 videos"], ["Playlist 2", "Small business apps · 8 videos"]],
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- with panel-N slots the tabs switch on the page (radios, no JavaScript) --&gt;
+  &lt;OcBlockProfileHeader
+    :heading-level="2"
+    class="oc-accent--violet"
+    banner="/img/blocks/auth-split-photo.webp"
+    initials="C1"
+    name="Company 1"
+    meta="@company1 · 12.4K followers · 86 videos"
+    bio="Short tutorials about web design, CSS and building small business apps."
+    tabs-label="Profile sections"
+    :tabs="[{ label: 'Home', current: true }, { label: 'Videos' }, { label: 'Playlists' }, { label: 'About' }]"
+  &gt;
+    &lt;template #actions&gt;
+      &lt;OcButton&gt;Follow&lt;/OcButton&gt;
+      &lt;OcButton variant="outline"&gt;Share&lt;/OcButton&gt;
+    &lt;/template&gt;
+    &lt;template v-for="(items, i) in panels" :key="i" #[`panel-${i}`]&gt;
+      &lt;ul class="oc-block-profile-grid"&gt;
+        &lt;li v-for="([title, text], n) in items" :key="title"&gt;&lt;img class="oc-block-profile-thumb" :src="thumbs[n % thumbs.length]" alt="" loading="lazy"&gt;&lt;strong&gt;{{ title }}&lt;/strong&gt;&lt;small&gt;{{ text }}&lt;/small&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/template&gt;
+    &lt;template #panel-3&gt;
+      &lt;p class="oc-block-profile-bio" style="margin:0"&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockProfileHeader&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php
+    $panels = [
+        ['Video 1' =&gt; 'Container queries in 8 minutes', 'Video 2' =&gt; 'Colors in OKLCH', 'Video 3' =&gt; 'A form without JavaScript'],
+        ['Video 4' =&gt; 'Scroll snap carousel', 'Video 5' =&gt; 'Anchor positioning', 'Video 6' =&gt; 'Dark mode with light-dark()', 'Video 7' =&gt; 'Dialogs and popovers'],
+        ['Playlist 1' =&gt; 'Modern CSS · 12 videos', 'Playlist 2' =&gt; 'Small business apps · 8 videos'],
+    ];
+    $thumbs = ['/img/blocks/hero-code.jpg', '/img/blocks/charts.jpg', '/img/blocks/form-page.jpg', '/img/blocks/calendars.jpg'];
+@endphp
+&lt;x-oc::block.profile-header heading-level="2" class="oc-accent--violet" style="--oc-profile-banner: url(/img/blocks/auth-split-photo.webp)"&gt;
+    &lt;x-slot:avatar&gt;C1&lt;/x-slot:avatar&gt;
+    &lt;x-slot:name&gt;Company 1&lt;/x-slot:name&gt;
+    &lt;x-slot:meta&gt;@company1 · 12.4K followers · 86 videos&lt;/x-slot:meta&gt;
+    &lt;x-slot:bio&gt;Short tutorials about web design, CSS and building small business apps.&lt;/x-slot:bio&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button&gt;Follow&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="outline"&gt;Share&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+    &lt;x-slot:tabs&gt;
+        @foreach (['Home', 'Videos', 'Playlists', 'About'] as $tab)
+            &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" @checked($loop-&gt;first)&gt;{{ $tab }}&lt;/label&gt;
+        @endforeach
+    &lt;/x-slot:tabs&gt;
+    @foreach ($panels as $items)
+        &lt;div class="oc-block-profile-panel"&gt;
+            &lt;ul class="oc-block-profile-grid"&gt;
+                @foreach ($items as $title =&gt; $text)
+                    &lt;li&gt;&lt;img class="oc-block-profile-thumb" src="{{ $thumbs[$loop-&gt;index % count($thumbs)] }}" alt="" loading="lazy"&gt;&lt;strong&gt;{{ $title }}&lt;/strong&gt;&lt;small&gt;{{ $text }}&lt;/small&gt;&lt;/li&gt;
+                @endforeach
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    @endforeach
+    &lt;div class="oc-block-profile-panel"&gt;
+        &lt;p class="oc-block-profile-bio" style="margin:0"&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/x-oc::block.profile-header&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProfileHeader extends Component
+{
+    public function render()
+    {
+        return view('livewire.profile-header');
+    }
+}
+
+{{-- resources/views/livewire/profile-header.blade.php --}}
+&lt;div&gt;
+    @php
+        $panels = [
+            ['Video 1' =&gt; 'Container queries in 8 minutes', 'Video 2' =&gt; 'Colors in OKLCH', 'Video 3' =&gt; 'A form without JavaScript'],
+            ['Video 4' =&gt; 'Scroll snap carousel', 'Video 5' =&gt; 'Anchor positioning', 'Video 6' =&gt; 'Dark mode with light-dark()', 'Video 7' =&gt; 'Dialogs and popovers'],
+            ['Playlist 1' =&gt; 'Modern CSS · 12 videos', 'Playlist 2' =&gt; 'Small business apps · 8 videos'],
+        ];
+        $thumbs = ['/img/blocks/hero-code.jpg', '/img/blocks/charts.jpg', '/img/blocks/form-page.jpg', '/img/blocks/calendars.jpg'];
+    @endphp
+    &lt;x-oc::block.profile-header heading-level="2" class="oc-accent--violet" style="--oc-profile-banner: url(/img/blocks/auth-split-photo.webp)"&gt;
+        &lt;x-slot:avatar&gt;C1&lt;/x-slot:avatar&gt;
+        &lt;x-slot:name&gt;Company 1&lt;/x-slot:name&gt;
+        &lt;x-slot:meta&gt;@company1 · 12.4K followers · 86 videos&lt;/x-slot:meta&gt;
+        &lt;x-slot:bio&gt;Short tutorials about web design, CSS and building small business apps.&lt;/x-slot:bio&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button&gt;Follow&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="outline"&gt;Share&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+        &lt;x-slot:tabs&gt;
+            @foreach (['Home', 'Videos', 'Playlists', 'About'] as $tab)
+                &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-tab" @checked($loop-&gt;first)&gt;{{ $tab }}&lt;/label&gt;
+            @endforeach
+        &lt;/x-slot:tabs&gt;
+        @foreach ($panels as $items)
+            &lt;div class="oc-block-profile-panel"&gt;
+                &lt;ul class="oc-block-profile-grid"&gt;
+                    @foreach ($items as $title =&gt; $text)
+                        &lt;li&gt;&lt;img class="oc-block-profile-thumb" src="{{ $thumbs[$loop-&gt;index % count($thumbs)] }}" alt="" loading="lazy"&gt;&lt;strong&gt;{{ $title }}&lt;/strong&gt;&lt;small&gt;{{ $text }}&lt;/small&gt;&lt;/li&gt;
+                    @endforeach
+                &lt;/ul&gt;
+            &lt;/div&gt;
+        @endforeach
+        &lt;div class="oc-block-profile-panel"&gt;
+            &lt;p class="oc-block-profile-bio" style="margin:0"&gt;Company 1 makes short tutorials about web design and CSS. New videos every Tuesday. Contact: info@company1.example.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::block.profile-header&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc"><code>--compact</code>: a lower banner and a smaller avatar, here with the green accent.</p>
           <oc-demo title="Compact, green accent" size="tall">
@@ -72,6 +233,95 @@
     <div class="oc-block-profile-panel"><p class="oc-block-profile-bio" style="margin:0">Project 1 · kitchen · in progress.</p></div>
   </div>
 </section>
+<oc-code lang="tsx">import { BlockProfileHeader, Button } from "@birdycom/omniaui-react";
+
+const bio = (text: string) =&gt; &lt;p className="oc-block-profile-bio" style={{ margin: 0 }}&gt;{text}&lt;/p&gt;;
+
+export function Example() {
+  return (
+    &lt;BlockProfileHeader
+      headingLevel={2}
+      compact
+      className="oc-accent--green"
+      avatar="C1"
+      name="Customer 1"
+      meta="City 1 · Customer since 2021"
+      actions={&lt;Button size="sm" variant="outline"&gt;Edit&lt;/Button&gt;}
+      tabsLabel="Customer sections"
+      tabs={[
+        { label: "Overview", current: true, content: bio("Customer 1 · info@customer1.example · 3 open quotes.") },
+        { label: "Invoices", content: bio("INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.") },
+        { label: "Projects", content: bio("Project 1 · kitchen · in progress.") },
+      ]}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockProfileHeader, OcButton } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockProfileHeader
+    :heading-level="2"
+    compact
+    class="oc-accent--green"
+    initials="C1"
+    name="Customer 1"
+    meta="City 1 · Customer since 2021"
+    tabs-label="Customer sections"
+    :tabs="[{ label: 'Overview', current: true }, { label: 'Invoices' }, { label: 'Projects' }]"
+  &gt;
+    &lt;template #actions&gt;&lt;OcButton size="sm" variant="outline"&gt;Edit&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;template #panel-0&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/template&gt;
+    &lt;template #panel-1&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/template&gt;
+    &lt;template #panel-2&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/template&gt;
+  &lt;/OcBlockProfileHeader&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.profile-header heading-level="2" class="oc-block-profile--compact oc-accent--green" name-id="oc-profile-compact-name"&gt;
+    &lt;x-slot:avatar&gt;C1&lt;/x-slot:avatar&gt;
+    &lt;x-slot:name&gt;Customer 1&lt;/x-slot:name&gt;
+    &lt;x-slot:meta&gt;City 1 · Customer since 2021&lt;/x-slot:meta&gt;
+    &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" variant="outline"&gt;Edit&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;x-slot:tabs&gt;
+        @foreach (['Overview', 'Invoices', 'Projects'] as $tab)
+            &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" @checked($loop-&gt;first)&gt;{{ $tab }}&lt;/label&gt;
+        @endforeach
+    &lt;/x-slot:tabs&gt;
+    &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/div&gt;
+    &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/div&gt;
+&lt;/x-oc::block.profile-header&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProfileHeaderCompactGreenAccent extends Component
+{
+    public function render()
+    {
+        return view('livewire.profile-header-compact-green-accent');
+    }
+}
+
+{{-- resources/views/livewire/profile-header-compact-green-accent.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.profile-header heading-level="2" class="oc-block-profile--compact oc-accent--green" name-id="oc-profile-compact-name"&gt;
+        &lt;x-slot:avatar&gt;C1&lt;/x-slot:avatar&gt;
+        &lt;x-slot:name&gt;Customer 1&lt;/x-slot:name&gt;
+        &lt;x-slot:meta&gt;City 1 · Customer since 2021&lt;/x-slot:meta&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" variant="outline"&gt;Edit&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+        &lt;x-slot:tabs&gt;
+            @foreach (['Overview', 'Invoices', 'Projects'] as $tab)
+                &lt;label class="oc-block-profile-tab"&gt;&lt;input type="radio" name="oc-profile-compact-tab" @checked($loop-&gt;first)&gt;{{ $tab }}&lt;/label&gt;
+            @endforeach
+        &lt;/x-slot:tabs&gt;
+        &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Customer 1 · info@customer1.example · 3 open quotes.&lt;/p&gt;&lt;/div&gt;
+        &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;INV-2026-0418 · € 360,58 · paid. INV-2026-0421 · € 180,29 · open.&lt;/p&gt;&lt;/div&gt;
+        &lt;div class="oc-block-profile-panel"&gt;&lt;p class="oc-block-profile-bio" style="margin:0"&gt;Project 1 · kitchen · in progress.&lt;/p&gt;&lt;/div&gt;
+    &lt;/x-oc::block.profile-header&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

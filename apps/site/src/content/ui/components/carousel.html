@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Carousel", "category": "Media", "description": "CSS scroll-snap with ::scroll-button arrows and ::scroll-marker dots, fallback links.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Carousel", "category": "Media", "description": "Carousel on CSS scroll snap, with ::scroll-button arrows, ::scroll-marker dots and fallback links. A loop form wraps from the last slide to the first.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Carousel</h1>
         <p class="oc-hero-text">A swipeable, snapping row of slides built from CSS scroll-snap. Where the browser supports <code>::scroll-button()</code> and <code>::scroll-marker</code> (Chromium 135+), the arrows and dot indicators are drawn by CSS itself; elsewhere anchor-link dots take over. No JavaScript. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/carousel.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React, Vue and Blade component <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Use the round arrows, the dots under the slides, a swipe, or Tab to the slides and press the arrow keys. The first slide has no back arrow and the last no next arrow: the row stops at the ends.</p>
           <oc-demo title="Carousel">
 <div class="oc-carousel" style="display:block;inline-size:min(100%, 34rem)">
@@ -37,6 +38,71 @@
     &lt;a class="oc-carousel-dot" href="#oc-slide-3" aria-label="Slide 3"&gt;&lt;/a&gt;
     &lt;a class="oc-carousel-dot" href="#oc-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
   &lt;/nav&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { AspectRatio, Carousel, CarouselItem } from "@birdycom/omniaui-react";
+
+// CSS scroll snap does the work; Carousel numbers the slides ("1 of 4") and adds the fallback dots
+const slides = ["Slide 1", "Slide 2", "Slide 3", "Slide 4"];
+
+export function Example() {
+  return (
+    &lt;Carousel label="Highlights" style={{ inlineSize: "min(100%, 34rem)" }}&gt;
+      {slides.map((title, i) =&gt; (
+        &lt;CarouselItem key={title} id={"slide-" + (i + 1)}&gt;
+          &lt;AspectRatio ratio="wide" center&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;{title}&lt;/span&gt;&lt;/AspectRatio&gt;
+        &lt;/CarouselItem&gt;
+      ))}
+    &lt;/Carousel&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAspectRatio, OcCarousel, OcCarouselItem } from '@birdycom/omniaui-vue'
+
+// CSS scroll snap does the work; OcCarousel numbers the slides ("1 of 4") and adds the fallback dots
+const slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4']
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCarousel label="Highlights" style="inline-size:min(100%, 34rem)"&gt;
+    &lt;OcCarouselItem v-for="(title, i) in slides" :key="title" :id="'slide-' + (i + 1)"&gt;
+      &lt;OcAspectRatio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ title }}&lt;/span&gt;&lt;/OcAspectRatio&gt;
+    &lt;/OcCarouselItem&gt;
+  &lt;/OcCarousel&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php($slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4'])
+&lt;x-oc::carousel label="Highlights" style="inline-size:min(100%, 34rem)"&gt;
+    @foreach ($slides as $i =&gt; $title)
+        &lt;x-oc::carousel.item id="slide-{{ $i + 1 }}"&gt;
+            &lt;x-oc::aspect-ratio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ $title }}&lt;/span&gt;&lt;/x-oc::aspect-ratio&gt;
+        &lt;/x-oc::carousel.item&gt;
+    @endforeach
+&lt;/x-oc::carousel&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Highlights extends Component
+{
+    /** @var list&lt;string&gt; */
+    public array $slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4'];
+
+    public function render()
+    {
+        return view('livewire.highlights');
+    }
+}
+
+{{-- resources/views/livewire/highlights.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::carousel label="Highlights" style="inline-size:min(100%, 34rem)"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;x-oc::carousel.item id="slide-{{ $i + 1 }}" wire:key="slide-{{ $i }}"&gt;
+                &lt;x-oc::aspect-ratio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ $title }}&lt;/span&gt;&lt;/x-oc::aspect-ratio&gt;
+            &lt;/x-oc::carousel.item&gt;
+        @endforeach
+    &lt;/x-oc::carousel&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
@@ -77,6 +143,73 @@
     &lt;a class="oc-carousel-dot" href="#oc-loop-slide-3" aria-label="Slide 3"&gt;&lt;/a&gt;
     &lt;a class="oc-carousel-dot" href="#oc-loop-slide-4" aria-label="Slide 4"&gt;&lt;/a&gt;
   &lt;/nav&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { AspectRatio, Carousel } from "@birdycom/omniaui-react";
+
+// loop: real prev / next buttons; Carousel wires them (carousel.js) after mount
+const slides = ["Slide 1", "Slide 2", "Slide 3", "Slide 4 (next: back to 1)"];
+
+export function Example() {
+  return (
+    &lt;Carousel id="loop-carousel" loop label="Looping highlights" style={{ inlineSize: "min(100%, 34rem)" }}&gt;
+      {slides.map((title) =&gt; (
+        &lt;AspectRatio key={title} ratio="wide" center&gt;&lt;span className="oc-item-title" style={{ fontSize: "1.75rem" }}&gt;{title}&lt;/span&gt;&lt;/AspectRatio&gt;
+      ))}
+    &lt;/Carousel&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAspectRatio, OcCarousel, OcCarouselItem } from '@birdycom/omniaui-vue'
+
+// loop: real prev / next buttons; OcCarousel wires them (carousel.js) after mount
+const slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4 (next: back to 1)']
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCarousel id="loop-carousel" loop label="Looping highlights" style="inline-size:min(100%, 34rem)"&gt;
+    &lt;OcCarouselItem v-for="title in slides" :key="title"&gt;
+      &lt;OcAspectRatio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ title }}&lt;/span&gt;&lt;/OcAspectRatio&gt;
+    &lt;/OcCarouselItem&gt;
+  &lt;/OcCarousel&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Once per page: the loop buttons need the carousel script (npx omniaui copy-js carousel) --}}
+&lt;script type="module" src="/js/oc-carousel.js"&gt;&lt;/script&gt;
+
+@php($slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4 (next: back to 1)'])
+&lt;x-oc::carousel id="loop-carousel" loop label="Looping highlights" style="inline-size:min(100%, 34rem)"&gt;
+    @foreach ($slides as $i =&gt; $title)
+        &lt;x-oc::carousel.item id="loop-slide-{{ $i + 1 }}"&gt;
+            &lt;x-oc::aspect-ratio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ $title }}&lt;/span&gt;&lt;/x-oc::aspect-ratio&gt;
+        &lt;/x-oc::carousel.item&gt;
+    @endforeach
+&lt;/x-oc::carousel&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class LoopHighlights extends Component
+{
+    /** @var list&lt;string&gt; */
+    public array $slides = ['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4 (next: back to 1)'];
+
+    public function render()
+    {
+        return view('livewire.loop-highlights');
+    }
+}
+
+{{-- resources/views/livewire/loop-highlights.blade.php --}}
+{{-- once in the layout: &lt;script type="module" src="/js/oc-carousel.js"&gt;&lt;/script&gt; (npx omniaui copy-js carousel) --}}
+&lt;div&gt;
+    &lt;x-oc::carousel id="loop-carousel" loop label="Looping highlights" style="inline-size:min(100%, 34rem)"&gt;
+        @foreach ($slides as $i =&gt; $title)
+            &lt;x-oc::carousel.item id="loop-slide-{{ $i + 1 }}" wire:key="slide-{{ $i }}"&gt;
+                &lt;x-oc::aspect-ratio ratio="wide" center&gt;&lt;span class="oc-item-title" style="font-size:1.75rem"&gt;{{ $title }}&lt;/span&gt;&lt;/x-oc::aspect-ratio&gt;
+            &lt;/x-oc::carousel.item&gt;
+        @endforeach
+    &lt;/x-oc::carousel&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
 <script type="module" src="/js/oc-carousel.js"></script>

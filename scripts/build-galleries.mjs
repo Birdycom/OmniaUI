@@ -5,6 +5,8 @@
 // Run: "npm run gen:galleries" (part of "npm run site:build"). Do not edit the two overview pages by hand.
 //
 // Card text = "description" in the meta, else the manifest description, else the first sentence of the hero.
+// "What is new" (#whats-new, in the hero): the pages the newest release brought ("new") or added to ("updated"), as links.
+// Same design as the block that stood on the docs home of omniacss.eu (.dx-new); every page is listed, nothing folded away.
 // Thumbnails (light + "-dark.jpg", 16:10) are screenshots of the first demo; a block without one gets a text card.
 
 import fs from "node:fs";
@@ -12,6 +14,7 @@ import path from "node:path";
 import { COMPONENT_CATEGORIES, BLOCK_CATEGORIES, byCategoryOrder } from "./lib/categories.mjs";
 import { freshness, introducedIn, newestOnPages } from "./lib/page-version.mjs";
 import { proLabel } from "../apps/site/src/lib/pro.mjs";
+import { RELEASES } from "../apps/site/src/lib/site.mjs";
 
 const root = process.cwd();
 const contentDir = path.join(root, "apps/site/src/content/ui");
@@ -151,7 +154,40 @@ const CSS = `
     .gx-card:hover .gx-shot img { scale: 1.03; }
     .gx-new--updated { color: light-dark(var(--color-teal-80), var(--color-teal-10)); background: oklch(from var(--color-teal-60) l c h / 0.16); }
     .gx-pro { flex: none; padding: 0.1rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oc-primary-foreground); background: var(--ocd-accent); }
-    @media (prefers-reduced-motion: reduce) { .gx-card, .gx-card::before, .gx-shot img, .gx-chip { transition: none; } }`;
+    /* What is new (#whats-new): the same panel as the one on the docs home of omniacss.eu. */
+    .dx-new { display: grid; gap: 1rem; margin-block: 0.5rem; padding: 1.1rem 1.25rem; border: 1px solid color-mix(in oklch, var(--color-green-60) 45%, var(--oc-border)); border-radius: 14px; background: linear-gradient(160deg, oklch(from var(--color-green-60) l c h / 0.1), transparent 60%); }
+    .dx-new-head { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 0.35rem 0.75rem; }
+    .dx-new-head h2 { margin: 0; font: 600 1.15rem var(--ocd-display); }
+    .dx-new-head p { grid-column: 1 / -1; margin: 0; font-size: 0.875rem; color: var(--oc-muted-foreground); }
+    .dx-new-badge { padding: 0.15rem 0.5rem; border-radius: 999px; font: 700 0.65rem var(--ocd-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-white-50); background: linear-gradient(135deg, var(--color-green-70), var(--color-teal-70)); }
+    .dx-new-group h3 { margin: 0 0 0.5rem; font: 600 0.72rem var(--ocd-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--oc-muted-foreground); }
+    .dx-new-group h3 small { font-weight: 500; }
+    .dx-new-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .dx-new-chip { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.7rem; border: 1px solid var(--oc-border); border-radius: 999px; background: var(--oc-card); color: inherit; font-size: 0.85rem; text-decoration: none; transition: border-color 0.2s; }
+    .dx-new-chip:hover { border-color: var(--color-green-60); }
+    .dx-new-chip:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
+    .dx-new-chip em { padding: 0.05rem 0.35rem; border-radius: 999px; font: 700 0.58rem var(--ocd-mono); font-style: normal; text-transform: uppercase; color: var(--oc-primary-foreground); background: var(--ocd-accent); }
+    @media (prefers-reduced-motion: reduce) { .gx-card, .gx-card::before, .gx-shot img, .gx-chip, .dx-new-chip { transition: none; } }`;
+
+const dateText = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
+/** The "What is new" panel of one gallery: the new pages, then the updated ones, all as chips (Pro ones marked). */
+function freshPanel(kind, pages, newest) {
+  if (!newest) return "";
+  const byTitle = (a, b) => a.title.localeCompare(b.title);
+  const fresh = pages.filter((p) => freshness(p.src, newest) === "new").sort(byTitle);
+  const updated = pages.filter((p) => freshness(p.src, newest) === "updated").sort(byTitle);
+  if (!fresh.length && !updated.length) return "";
+  const chip = (p) => `<a class="dx-new-chip" href="${kind}/${p.name}.html">${esc(p.title)}${p.pro === "all" ? "<em>Pro</em>" : ""}</a>`;
+  const group = (title, items) => items.length ? `<div class="dx-new-group"><h3>${title} <small>${items.length}</small></h3><div class="dx-new-chips">${items.map(chip).join("")}</div></div>` : "";
+  const latest = RELEASES[0];
+  return `
+        <aside class="dx-new" id="whats-new" aria-labelledby="whats-new-title">
+          <div class="dx-new-head"><span class="dx-new-badge">New</span><h2 id="whats-new-title">What is new in v${newest}</h2>
+          ${latest ? `<p>Latest release <b>v${esc(latest.version)}</b> on ${dateText(latest.date)}. <a href="components.html">All components</a> · <a href="blocks.html">All blocks</a></p>` : ""}</div>
+          ${group(`New ${kind}`, fresh)}${group(`Updated ${kind}`, updated)}
+        </aside>`;
+}
 
 const USED_BY_DOCS = `
       <section class="oc-docs-section" id="used-by-docs">
@@ -233,8 +269,8 @@ for (const [kind, k] of Object.entries(KINDS)) {
   const single = kind === "blocks" ? "block" : "component";
   const body = `<section class="oc-hero gx-hero" id="overview" data-oc-no-compat>
         ${k.hero}
-        <ul class="gx-stats"><li><b>${counts.total}</b>${kind}</li><li><b>${counts.free}</b>free</li><li><b>${counts.pro}</b>Pro</li>${freshCount ? `<li><b>${freshCount}</b>new in v${newest}</li>` : ""}${updatedCount ? `<li><b>${updatedCount}</b>updated in v${newest}</li>` : ""}<li><b>${groups.length}</b>categories</li><li><b>4</b>flavours: HTML, Vue, React, Blade</li></ul>
-        <nav class="gx-jump" aria-label="Categories">${groups.map((g) => `<a class="gx-chip" href="#${slug(g.title)}" style="${tone(g.tone)}">${esc(g.title)} <small>${g.items.length}</small></a>`).join("")}</nav>
+        <ul class="gx-stats"><li><b>${counts.total}</b>${kind}</li><li><b>${counts.free}</b>free</li><li><b>${counts.pro}</b>Pro</li>${freshCount ? `<li><b>${freshCount}</b>new in v${newest}</li>` : ""}${updatedCount ? `<li><b>${updatedCount}</b>updated in v${newest}</li>` : ""}<li><b>${groups.length}</b>categories</li><li><b>5</b>flavours: HTML, React, Vue, Blade, Livewire</li></ul>
+        <nav class="gx-jump" aria-label="Categories">${groups.map((g) => `<a class="gx-chip" href="#${slug(g.title)}" style="${tone(g.tone)}">${esc(g.title)} <small>${g.items.length}</small></a>`).join("")}</nav>${freshPanel(kind, pages, newest)}
       </section>
 
       <section class="oc-docs-section" id="install">
@@ -257,7 +293,8 @@ ${groups.map((g) => `
       </section>`).join("\n")}
 ${k.tail}`;
   const total = `${counts.total} ${kind} (${counts.free} free, ${counts.pro} Pro)`;
-  const description = `${total} for OmniaCSS in ${groups.length} categories, as HTML, Vue, React and Blade.`;
+  // 120-155 characters (search result snippet): the counts plus what every page in the gallery offers.
+  const description = `${total} for OmniaCSS in ${groups.length} categories, as HTML, React, Vue, Blade and Livewire, each with a live demo and copy-ready code.`;
   const meta = { title: `OmniaUI - ${kind === "blocks" ? "Blocks" : "Components"}`, description, layout: "sidebar", shell: "ui", shellClass: "ocd-shell", bodyClass: "", head: [`<style>${CSS}\n  </style>`] };
   fs.writeFileSync(path.join(contentDir, `${kind}.html`), `<!--oc-page ${JSON.stringify(meta)}-->\n<!-- Generated by scripts/build-galleries.mjs from the meta lines of ui/${kind}/*.html. Do not edit by hand. -->\n${body}`);
   const missing = pages.filter((p) => !p.desc).map((p) => p.name);

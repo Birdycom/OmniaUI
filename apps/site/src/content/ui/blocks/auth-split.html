@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Auth split Block", "category": "Authentication", "description": "Sign-in with a brand panel (logo, quote) next to the form.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Auth split Block", "category": "Authentication", "description": "Sign-in screen with a brand panel next to the form: logo, quote and an optional photo, then e-mail, password, remember me and a forgot-password link.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Auth split</h1>
         <p class="oc-hero-text">Two-column authentication layout; the brand panel is hidden below 62rem. Reuses the form-field, input, reveal and button components. <a href="../blocks.html">All blocks</a>.</p>
@@ -10,6 +10,8 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. Below: the markup that builds it, also available as the snippet <code>packages/blocks/blocks/auth-split.html</code>. The demo uses the <code>--photo</code> variant; photo: hieroglyphs in the Valley of the Kings by Serge Cools (Birdycom).</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="demo-photo">Photo panel and form attributes <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">The brand panel takes a photo with <code>photo</code>, the logo link goes to <code>logoHref</code>, and extra attributes for the form (such as <code>wire:submit</code> in Livewire) go in <code>form</code> (Blade), <code>formProps</code> (React) or <code>formAttrs</code> (Vue).</p>
           <oc-demo title="Auth split">
 <div class="oc-block-authsplit">
   <aside class="oc-block-authsplit-brand oc-block-authsplit-brand--photo" style="--oc-authsplit-photo: url('/img/blocks/auth-split-photo.webp')">
@@ -21,7 +23,7 @@
   </aside>
   <div class="oc-block-authsplit-form">
     <form class="oc-block-authsplit-card" action="#" method="post">
-      <h1 class="oc-block-authsplit-title">Welcome back</h1>
+      <h2 class="oc-block-authsplit-title">Welcome back</h2>
       <p class="oc-block-authsplit-subtitle">Sign in to your workspace</p>
       <div class="oc-block-authsplit-fields">
         <div class="oc-field">
@@ -44,6 +46,143 @@
     </form>
   </div>
 </div>
+<oc-code lang="tsx">import { BlockAuthSplit, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockAuthSplit headingLevel={2}
+      photo="/img/blocks/auth-split-photo.webp"
+      logo={&lt;&gt;&lt;Webicon name="mdi:home-outline" /&gt; Company 1&lt;/&gt;}
+      logoHref="/"
+      quote="“One calm place for contacts, invoices and the day-to-day work.”"
+      quoteAuthor="User 1, founder"
+      title="Welcome back"
+      subtitle="Sign in to your workspace"
+      forgotHref="/forgot-password"
+      formProps={{ action: "/login", noValidate: true }}
+      onSubmit={(values) =&gt; fetch("/login", { method: "POST", body: JSON.stringify(values) })}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcBlockAuthSplit, OcCheckbox, OcFormField, OcInput, OcPasswordInput, OcWebicon } from '@birdycom/omniaui-vue'
+
+const email = ref('')
+const password = ref('')
+const remember = ref(false)
+
+function signIn(event: SubmitEvent) {
+  event.preventDefault()
+  // post email, password and remember to your API
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockAuthSplit :heading-level="2"
+    photo="/img/blocks/auth-split-photo.webp"
+    logo-href="/"
+    title="Welcome back"
+    subtitle="Sign in to your workspace"
+    quote="“One calm place for contacts, invoices and the day-to-day work.”"
+    quote-author="User 1, founder"
+    :form-attrs="{ novalidate: true }"
+    @submit="signIn"
+  &gt;
+    &lt;template #logo&gt;&lt;OcWebicon name="mdi:home-outline" /&gt; Company 1&lt;/template&gt;
+    &lt;OcFormField label="E-mail" v-slot="f"&gt;
+      &lt;OcInput :id="f.id" v-model="email" name="email" type="email" autocomplete="username" placeholder="name@company1.example" required /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Password" v-slot="f"&gt;
+      &lt;OcPasswordInput :id="f.id" v-model="password" name="password" autocomplete="current-password" required /&gt;
+    &lt;/OcFormField&gt;
+    &lt;template #row&gt;
+      &lt;OcCheckbox v-model="remember" name="remember" label="Remember me" /&gt;
+      &lt;a class="oc-link" href="/forgot-password"&gt;Forgot password?&lt;/a&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockAuthSplit&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.auth-split heading-level="2" action="/login" photo="/img/blocks/auth-split-photo.webp" logo-href="/"&gt;
+    &lt;x-slot:logo&gt;&lt;x-oc::webicon name="mdi:home-outline" /&gt; Company 1&lt;/x-slot:logo&gt;
+    &lt;x-slot:quote&gt;
+        &lt;p&gt;&amp;ldquo;One calm place for contacts, invoices and the day-to-day work.&amp;rdquo;&lt;/p&gt;
+        &lt;footer&gt;User 1, founder&lt;/footer&gt;
+    &lt;/x-slot:quote&gt;
+    &lt;x-slot:title&gt;Welcome back&lt;/x-slot:title&gt;
+    &lt;x-slot:subtitle&gt;Sign in to your workspace&lt;/x-slot:subtitle&gt;
+    &lt;x-slot:fields&gt;
+        &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;
+            &lt;x-oc::input id="email" name="email" type="email" :value="old('email')" autocomplete="username" placeholder="name@company1.example" required /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::password-input label="Password" id="password" name="password" required /&gt;
+        &lt;div class="oc-block-authsplit-row"&gt;
+            &lt;x-oc::checkbox name="remember" label="Remember me" /&gt;
+            &lt;a class="oc-link" href="/forgot-password"&gt;Forgot password?&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;x-oc::button type="submit" style="width:100%"&gt;Sign in&lt;/x-oc::button&gt;
+    &lt;/x-slot:fields&gt;
+&lt;/x-oc::block.auth-split&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class AuthSplit extends Component
+{
+    #[Validate('required|email')]
+    public string $email = '';
+
+    #[Validate('required')]
+    public string $password = '';
+
+    public bool $remember = false;
+
+    public function login()
+    {
+        $this-&gt;validate();
+
+        if (! Auth::attempt(['email' =&gt; $this-&gt;email, 'password' =&gt; $this-&gt;password], $this-&gt;remember)) {
+            $this-&gt;addError('email', 'These credentials do not match our records.');
+
+            return;
+        }
+
+        return redirect()-&gt;intended('/dashboard');
+    }
+
+    public function render()
+    {
+        return view('livewire.auth-split');
+    }
+}
+
+{{-- resources/views/livewire/auth-split.blade.php --}}
+&lt;div&gt;
+    {{-- form: extra attributes on the &lt;form&gt;; wire:submit sends it to login() --}}
+    &lt;x-oc::block.auth-split heading-level="2" photo="/img/blocks/auth-split-photo.webp" logo-href="/" :form="['wire:submit' =&gt; 'login']"&gt;
+        &lt;x-slot:logo&gt;&lt;x-oc::webicon name="mdi:home-outline" /&gt; Company 1&lt;/x-slot:logo&gt;
+        &lt;x-slot:quote&gt;
+            &lt;p&gt;&amp;ldquo;One calm place for contacts, invoices and the day-to-day work.&amp;rdquo;&lt;/p&gt;
+            &lt;footer&gt;User 1, founder&lt;/footer&gt;
+        &lt;/x-slot:quote&gt;
+        &lt;x-slot:title&gt;Welcome back&lt;/x-slot:title&gt;
+        &lt;x-slot:subtitle&gt;Sign in to your workspace&lt;/x-slot:subtitle&gt;
+        &lt;x-slot:fields&gt;
+            &lt;x-oc::form-field label="E-mail" for="email"&gt;
+                &lt;x-oc::wire.input model="email" id="email" name="email" type="email" autocomplete="username" placeholder="name@company1.example" required /&gt;
+            &lt;/x-oc::form-field&gt;
+            &lt;x-oc::password-input label="Password" id="password" name="password" wire:model="password" required /&gt;
+            &lt;div class="oc-block-authsplit-row"&gt;
+                &lt;x-oc::wire.checkbox model="remember" label="Remember me" /&gt;
+                &lt;a class="oc-link" href="/forgot-password" wire:navigate&gt;Forgot password?&lt;/a&gt;
+            &lt;/div&gt;
+            &lt;x-oc::button type="submit" style="width:100%"&gt;Sign in&lt;/x-oc::button&gt;
+        &lt;/x-slot:fields&gt;
+    &lt;/x-oc::block.auth-split&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

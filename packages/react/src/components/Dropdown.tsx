@@ -1,32 +1,84 @@
-import { forwardRef, useId } from "react";
+import { createContext, forwardRef, useContext, useEffect, useId, useRef } from "react";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes, MouseEvent, ReactNode } from "react";
 import { attrs, cx } from "../utils";
+import { useControllable } from "../hooks";
 import { Button } from "./Button";
 import type { ButtonProps } from "./Button";
 import { webiconNode } from "./Webicon";
 
+export interface DropdownTriggerArgs {
+  /** Id of the menu: put it on your trigger as `popoverTarget` (already in `props`). */
+  id: string;
+  /** Props for your trigger element: `{ popoverTarget }` (popover mode) or `{ onClick, aria-expanded, aria-controls }`
+   *  (toggle mode). Spread them on your trigger. */
+  props: { popoverTarget?: string; onClick?: () => void; "aria-expanded"?: boolean; "aria-controls"?: string };
+  /** Toggle mode: is the menu open now. */
+  open?: boolean;
+}
+
+/** Closes the menu of a toggle-mode Dropdown (items call it after a click). */
+const ToggleClose = createContext<(() => void) | null>(null);
+
 export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
   /** Content of the trigger button. */
-  trigger: ReactNode;
+  trigger?: ReactNode;
   /** Props for the trigger button (default variant `outline`). */
   triggerProps?: ButtonProps;
+  /** Your own trigger instead of the outline button (an icon button, a breadcrumb ellipsis, an avatar):
+   *  `renderTrigger={({ props }) => <button className="oc-breadcrumb-ellipsis" {...props}>…</button>}`. */
+  renderTrigger?: (args: DropdownTriggerArgs) => ReactNode;
+  /** `popover` (default): native popover in the top layer, no state. `toggle`: your own open state on a wrapper
+   *  (`.oc-dropdown.is-open`), the menu stays in the page; it closes on an item click, an outside click and Esc. */
+  mode?: "popover" | "toggle";
+  /** Toggle mode: open state (controlled); with `onOpenChange`. */
+  open?: boolean;
+  /** Toggle mode: open on the first render (uncontrolled). */
+  defaultOpen?: boolean;
+  /** Toggle mode: called with the new open state. */
+  onOpenChange?: (open: boolean) => void;
+  /** Toggle mode: class of the `.oc-dropdown` wrapper (`className` goes to the menu). */
+  wrapperClassName?: string;
 }
 
 /**
  * Trigger button + `<div class="oc-dropdown-menu" popover>`, wired with `popoverTarget`
- * (native popover and anchor positioning, no state needed).
+ * (native popover and anchor positioning, no state needed). `mode="toggle"`: `.oc-dropdown` + `.is-open` with state.
  */
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropdown(
-  { trigger, triggerProps, className, id, children, ...rest },
+  { trigger, triggerProps, renderTrigger, mode = "popover", open, defaultOpen = false, onOpenChange, wrapperClassName, className, id, children, ...rest },
   ref,
 ) {
   const auto = useId();
   const menuId = id ?? `oc-menu-${auto.replace(/:/g, "")}`;
+  const [isOpen, setOpen] = useControllable<boolean>(open, defaultOpen, onOpenChange);
+  const wrap = useRef<HTMLDivElement>(null);
+  const toggle = mode === "toggle";
+  useEffect(() => {
+    if (!toggle || !isOpen) return;
+    const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) setOpen(false); };
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", esc);
+    return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", esc); };
+  }, [toggle, isOpen, setOpen]);
+  if (toggle) {
+    const props = { onClick: () => setOpen(!isOpen), "aria-expanded": isOpen, "aria-controls": menuId };
+    return (
+      <div ref={wrap} className={cx("oc-dropdown", isOpen && "is-open", wrapperClassName)}>
+        {renderTrigger ? renderTrigger({ id: menuId, props, open: isOpen }) : <Button variant="outline" {...triggerProps} {...props}>{trigger}</Button>}
+        <ToggleClose.Provider value={() => setOpen(false)}>
+          <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...rest}>
+            {children}
+          </div>
+        </ToggleClose.Provider>
+      </div>
+    );
+  }
   return (
     <>
-      <Button variant="outline" {...triggerProps} popoverTarget={menuId}>{trigger}</Button>
+      {renderTrigger ? renderTrigger({ id: menuId, props: { popoverTarget: menuId } }) : <Button variant="outline" {...triggerProps} popoverTarget={menuId}>{trigger}</Button>}
       <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...attrs({ popover: "" })} {...rest}>
-        {children}
+        <ToggleClose.Provider value={null}>{children}</ToggleClose.Provider>
       </div>
     </>
   );
@@ -51,7 +103,17 @@ interface ItemExtras {
   icon?: ReactNode;
   /** Keep the menu open after a click. Default: a check item stays open, every other item closes the menu. */
   keepOpen?: boolean;
+  /** Muted second line under the label (may wrap): what the choice does. */
+  description?: ReactNode;
+  /** The icon in a soft tinted square of this color. */
+  iconTone?: DropdownIconTone;
+  /** A red item for a destructive action (`oc-dropdown-item--destructive`). */
+  destructive?: boolean;
+  /** With `checked`: a radio item (role menuitemradio) instead of a check item. */
+  radio?: boolean;
 }
+
+export type DropdownIconTone = "primary" | "success" | "warning" | "destructive" | "muted";
 type ItemProps = ItemExtras & ((AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) | (ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined }));
 
 /** Closes the popover menu around the clicked item (unless the click handler called preventDefault). */
@@ -61,25 +123,52 @@ export function closeMenu(event: MouseEvent<HTMLElement>) {
   try { event.currentTarget.closest<HTMLElement>("[popover]")?.hidePopover?.(); } catch { /* already closed */ }
 }
 
-/** `.oc-dropdown-item`: an anchor when `href` is set, otherwise a button. A click closes the menu (`keepOpen` to stop that). */
-export function DropdownItem({ className, checked, hint, icon, keepOpen, children, ...props }: ItemProps) {
+/** `.oc-dropdown-item`: an anchor when `href` is set, otherwise a button. A click closes the menu (`keepOpen` to stop that).
+ *  `checked` makes a check item (`radio`: a radio item), `destructive` a red one. */
+export function DropdownItem({ className, checked, hint, icon, keepOpen, description, iconTone, destructive, radio, children, ...props }: ItemProps) {
   const check = checked !== undefined;
+  const closeToggle = useContext(ToggleClose);
   const userClick = props.onClick as ((e: MouseEvent<HTMLElement>) => void) | undefined;
   const onClick = (e: MouseEvent<HTMLElement>) => {
     userClick?.(e);
-    if (!(keepOpen ?? check)) closeMenu(e);
+    if (keepOpen ?? check) return;
+    if (closeToggle) { if (!e.defaultPrevented) closeToggle(); }
+    else closeMenu(e);
   };
   const content = (
     <>
       {check && <span className="oc-dropdown-check" aria-hidden="true" />}
-      {icon != null && <span className="oc-dropdown-icon" aria-hidden="true">{webiconNode(icon)}</span>}
-      {children}
+      {icon != null && <span className={cx("oc-dropdown-icon", iconTone && `oc-dropdown-icon--${iconTone}`)} aria-hidden="true">{webiconNode(icon)}</span>}
+      {description != null ? <span className="oc-dropdown-text"><span>{children}</span><span className="oc-dropdown-desc">{description}</span></span> : children}
       {hint != null && <span className="oc-dropdown-hint">{hint}</span>}
     </>
   );
-  const extra = check ? { role: "menuitemcheckbox", "aria-checked": checked } : {};
+  const extra = check ? { role: radio ? "menuitemradio" : "menuitemcheckbox", "aria-checked": checked } : {};
+  const cls = cx("oc-dropdown-item", destructive && "oc-dropdown-item--destructive", className);
   if (props.href !== undefined) {
-    return <a className={cx("oc-dropdown-item", className)} {...extra} {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)} onClick={onClick}>{content}</a>;
+    return <a className={cls} {...extra} {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)} onClick={onClick}>{content}</a>;
   }
-  return <button type="button" className={cx("oc-dropdown-item", className)} {...extra} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)} onClick={onClick}>{content}</button>;
+  return <button type="button" className={cls} {...extra} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)} onClick={onClick}>{content}</button>;
+}
+
+export interface DropdownSubProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Text of the item that opens the sub-menu. */
+  label: ReactNode;
+  /** Icon in front of the label: a webicon name ("mdi:share-variant") or any node. */
+  icon?: ReactNode;
+  /** Props for the sub-menu panel (`.oc-dropdown-submenu`). */
+  menuProps?: HTMLAttributes<HTMLDivElement>;
+}
+
+/** `.oc-dropdown-sub`: an item that opens a nested menu on hover and focus (children = the items of the sub-menu). */
+export function DropdownSub({ label, icon, menuProps, className, children, ...rest }: DropdownSubProps) {
+  return (
+    <div className={cx("oc-dropdown-sub", className)} {...rest}>
+      <button type="button" className="oc-dropdown-item" role="menuitem" aria-haspopup="menu">
+        {icon != null && <span className="oc-dropdown-icon" aria-hidden="true">{webiconNode(icon)}</span>}
+        {label}
+      </button>
+      <div role="menu" {...menuProps} className={cx("oc-dropdown-submenu", menuProps?.className)}>{children}</div>
+    </div>
+  );
 }

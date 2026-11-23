@@ -10,7 +10,7 @@
     }
 @endphp
 <div @class(['oc-date-field', 'oc-date-field--sm' => $size === 'sm'])>
-    <span class="oc-date-field__icon"><iconify-icon icon="mdi:calendar-blank-outline" aria-hidden="true"></iconify-icon></span>
+    <span class="oc-date-field__icon"><x-oc::webicon name="mdi:calendar-blank-outline" bare fallback="iconify" /></span>
     <input {{ $attributes->class(['oc-date-field__input'])->merge(['type' => 'date', 'name' => $name, 'id' => $id, 'value' => $value]) }}>
     @if ($week)
         <output class="oc-date-field__week" @if($id) for="{{ $id }}" @endif data-oc-week="{{ $weekLabel }}">{{ $label }}</output>

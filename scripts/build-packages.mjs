@@ -92,6 +92,8 @@ async function main() {
   await fs.copyFile(r("packages/ui/src/barcode.js"), r("public/js/oc-barcode.js"));
   await fs.copyFile(r("packages/ui/src/form-extras.js"), r("public/js/oc-form-extras.js"));
   await fs.copyFile(r("packages/ui/src/lazy.js"), r("public/js/oc-lazy.js"));
+  // Back link with a fallback (.oc-back-link[data-oc-back]): history.back() within the site, else its href.
+  await fs.copyFile(r("packages/ui/src/back-link.js"), r("public/js/oc-back-link.js"));
   await fs.copyFile(r("packages/ui/src/contact-form.js"), r("public/js/oc-contact-form.js"));
   await fs.copyFile(r("packages/ui/src/fly.js"), r("public/js/oc-fly.js"));
   await fs.copyFile(r("packages/ui/src/particles.js"), r("public/js/oc-particles.js"));
@@ -99,7 +101,16 @@ async function main() {
   await fs.copyFile(r("packages/ui/src/theme.js"), r("public/js/oc-theme.js"));
   await fs.copyFile(r("packages/ui/src/language-select.js"), r("public/js/oc-language-select.js"));
   await fs.copyFile(r("packages/ui/src/combobox.js"), r("public/js/oc-combobox.js"));
+  await fs.copyFile(r("packages/ui/src/calendar.js"), r("public/js/oc-calendar.js"));
+  await fs.copyFile(r("packages/ui/src/countdown.js"), r("public/js/oc-countdown.js"));
+  // Glass lens (.oc-glass, .oc-glass-bar): the displacement filter per sheet size, Chromium only.
+  await fs.copyFile(r("packages/ui/src/glass-lens.js"), r("public/js/oc-glass-lens.js"));
   await fs.copyFile(r("packages/ui/src/logo.js"), r("public/js/oc-logo.js"));
+  await fs.copyFile(r("packages/ui/src/tabs.js"), r("public/js/oc-tabs.js"));
+  // 0.17.0: input masks/validation (data-oc-mask), app header "More" overflow (data-oc-nav-overflow), sidebar provider.
+  await fs.copyFile(r("packages/ui/src/input-mask.js"), r("public/js/oc-input-mask.js"));
+  await fs.copyFile(r("packages/ui/src/nav-overflow.js"), r("public/js/oc-nav-overflow.js"));
+  await fs.copyFile(r("packages/ui/src/sidebar.js"), r("public/js/oc-sidebar.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
 

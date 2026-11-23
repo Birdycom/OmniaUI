@@ -1,8 +1,8 @@
-<!--oc-page {"title": "OmniaUI - Tree", "category": "Data", "description": "Nested list of folders and items on native details/summary.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Tree", "category": "Data", "description": "Nested list of folders and items on native details and summary, with icons, counts, row actions, a current item, a sticky head row and a quiet look.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/tree.html | Map: hero -> tree demo (sticky actions) -> quiet + flush variant -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Tree</h1>
-        <p class="oc-hero-text">A nested list of folders and items. Folders are native <code>&lt;details&gt;</code>, so they open and close without JavaScript. Long names scroll sideways, while the action column stays pinned to the end edge with <code>position: sticky</code>. <a href="../components.html">All components</a>.</p>
+        <p class="oc-hero-text">A nested list of folders and items. Folders are native <code>&lt;details&gt;</code>, so they open and close without JavaScript. Long names scroll sideways (or end in an ellipsis with <code>--ellipsis</code>), while the action column stays pinned to the end edge with <code>position: sticky</code>. <a href="../components.html">All components</a>.</p>
       </section><section class="oc-docs-section" id="demo">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Demo</h2>
@@ -10,34 +10,165 @@
           
           
         <p class="oc-section-header__desc">Plain HTML and CSS; each example shows its markup in the HTML tab.</p></div>
-        <div class="oc-section-content"><h3 class="oc-section-content__title">Tree with sticky actions</h3><p class="oc-section-content__desc">The box is 18rem high (<code>--oc-tree-height</code>) and scrolls. Scroll sideways on the long file name: the rename button stays visible. The current item has <code>aria-current="true"</code> on its link. Snippet: <code>packages/ui/snippets/tree.html</code>.</p>
+        <div class="oc-section-content"><h3 class="oc-section-content__title">Tree with sticky actions <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">The box is 18rem high (<code>--oc-tree-height</code>) and scrolls. <code>.oc-tree--ellipsis</code> (prop <code>ellipsis</code>) ends a long name in an ellipsis, with the full name in its title; without it the name scrolls sideways under the pinned rename button. The current item has <code>aria-current="true"</code> on its link. Snippet: <code>packages/ui/snippets/tree.html</code>.</p>
           <oc-demo title="Tree">
-<div class="oc-tree" aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem">
-  <div class="oc-tree-row oc-tree-head"><span class="oc-tree-label">All projects</span><span class="oc-tree-actions"><button class="oc-btn oc-btn--ghost oc-btn--xs" type="button">New</button></span></div>
+<div class="oc-tree oc-tree--ellipsis" aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem">
+  <div class="oc-tree-row oc-tree-head"><span class="oc-tree-label" title="All projects">All projects</span><span class="oc-tree-actions"><button class="oc-btn oc-btn--ghost oc-btn--xs" type="button">New</button></span></div>
   <ul class="oc-tree-list">
     <li>
       <details class="oc-tree-node" open>
         <summary class="oc-tree-row">
           <span class="oc-tree-icon" aria-hidden="true"><svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/></svg></span>
-          <span class="oc-tree-label">Kitchen renovation - Main street 12</span><span class="oc-tree-count">2</span>
+          <span class="oc-tree-label" title="Kitchen renovation - Main street 12">Kitchen renovation - Main street 12</span><span class="oc-tree-count">2</span>
           <span class="oc-tree-actions"><button class="oc-table-actions-icon" type="button" aria-label="Add to Kitchen renovation" title="Add">+</button></span>
         </summary>
         <ul class="oc-tree-list">
           <li><div class="oc-tree-row"><span class="oc-tree-icon" aria-hidden="true"><svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/></svg></span><a class="oc-tree-label" href="#demo" aria-current="true">Quote v2.pdf</a><span class="oc-tree-actions"><button class="oc-table-actions-icon" type="button" aria-label="Rename Quote v2.pdf" title="Rename">✎</button></span></div></li>
-          <li><div class="oc-tree-row"><span class="oc-tree-icon" aria-hidden="true"><svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/></svg></span><a class="oc-tree-label" href="#demo">Floor plan with a very long file name that scrolls.dwg</a><span class="oc-tree-actions"><button class="oc-table-actions-icon" type="button" aria-label="Rename Floor plan" title="Rename">✎</button></span></div></li>
+          <li><div class="oc-tree-row"><span class="oc-tree-icon" aria-hidden="true"><svg data-icon="mdi:file-document-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 2h7v5h5v11H6zm2 8v2h8v-2zm0 4v2h5v-2z"/></svg></span><a class="oc-tree-label" href="#demo" title="Floor plan with a very long file name for the ground floor.dwg">Floor plan with a very long file name for the ground floor.dwg</a><span class="oc-tree-actions"><button class="oc-table-actions-icon" type="button" aria-label="Rename Floor plan" title="Rename">✎</button></span></div></li>
         </ul>
       </details>
     </li>
     <li>
       <details class="oc-tree-node">
-        <summary class="oc-tree-row"><span class="oc-tree-icon" aria-hidden="true"><svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/></svg></span><span class="oc-tree-label">Bathroom</span><span class="oc-tree-count">1</span></summary>
+        <summary class="oc-tree-row"><span class="oc-tree-icon" aria-hidden="true"><svg data-icon="mdi:folder-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 18H4V8h16m0-2h-8l-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"/></svg></span><span class="oc-tree-label" title="Bathroom">Bathroom</span><span class="oc-tree-count">1</span></summary>
         <ul class="oc-tree-list">
-          <li><div class="oc-tree-row is-muted"><span class="oc-tree-label">Photos (archived)</span></div></li>
+          <li><div class="oc-tree-row is-muted"><span class="oc-tree-label" title="Photos (archived)">Photos (archived)</span></div></li>
         </ul>
       </details>
     </li>
   </ul>
 </div>
+<oc-code lang="tsx">import { Button, TableActionIcon, Tree, Webicon } from "@birdycom/omniaui-react";
+import type { CSSProperties } from "react";
+
+const folder = &lt;Webicon name="mdi:folder-outline" /&gt;;
+const file = &lt;Webicon name="mdi:file-document-outline" /&gt;;
+
+export function Example() {
+  return (
+    &lt;Tree
+      aria-label="Projects"
+      style={{ "--oc-tree-height": "18rem", maxWidth: "22rem" } as CSSProperties}
+      head="All projects"
+      ellipsis
+      headActions={&lt;Button type="button" variant="ghost" size="xs"&gt;New&lt;/Button&gt;}
+      items={[
+        {
+          label: "Kitchen renovation - Main street 12", icon: folder, count: 2, open: true,
+          actions: &lt;TableActionIcon label="Add to Kitchen renovation"&gt;+&lt;/TableActionIcon&gt;,
+          children: [
+            { label: "Quote v2.pdf", href: "#demo", icon: file, current: true, actions: &lt;TableActionIcon label="Rename Quote v2.pdf"&gt;✎&lt;/TableActionIcon&gt; },
+            { label: "Floor plan with a very long file name for the ground floor.dwg", href: "#demo", icon: file, actions: &lt;TableActionIcon label="Rename Floor plan"&gt;✎&lt;/TableActionIcon&gt; },
+          ],
+        },
+        { label: "Bathroom", icon: folder, count: 1, children: [{ label: "Photos (archived)", muted: true }] },
+      ]}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcButton, OcTree } from "@birdycom/omniaui-vue";
+import type { OcTreeAction, OcTreeItem } from "@birdycom/omniaui-vue";
+
+const folder = "mdi:folder-outline";
+const file = "mdi:file-document-outline";
+
+const items: OcTreeItem[] = [
+  {
+    label: "Kitchen renovation - Main street 12", icon: folder, count: 2, open: true,
+    actions: [{ label: "Add to Kitchen renovation", text: "+", name: "add" }],
+    children: [
+      { label: "Quote v2.pdf", href: "#demo", icon: file, current: true, actions: [{ label: "Rename Quote v2.pdf", text: "✎", name: "rename" }] },
+      { label: "Floor plan with a very long file name for the ground floor.dwg", href: "#demo", icon: file, actions: [{ label: "Rename Floor plan", text: "✎", name: "rename" }] },
+    ],
+  },
+  { label: "Bathroom", icon: folder, count: 1, children: [{ label: "Photos (archived)", muted: true }] },
+];
+
+// A button in a folder row does not open or close the folder; the tree reports it with @action.
+const status = ref("");
+function onAction(action: OcTreeAction, item: OcTreeItem) {
+  status.value = `${action.name}: ${item.label}`;
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTree :items="items" head="All projects" ellipsis aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem" @action="onAction"&gt;
+    &lt;template #head-actions&gt;&lt;OcButton variant="ghost" size="xs"&gt;New&lt;/OcButton&gt;&lt;/template&gt;
+  &lt;/OcTree&gt;
+  &lt;p class="oc-note" aria-live="polite"&gt;{{ status }}&lt;/p&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tree head="All projects" ellipsis aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem" :items="[
+    [
+        'label' =&gt; 'Kitchen renovation - Main street 12', 'icon' =&gt; 'mdi:folder-outline', 'count' =&gt; 2, 'open' =&gt; true,
+        'actions' =&gt; [['label' =&gt; 'Add to Kitchen renovation', 'text' =&gt; '+']],
+        'children' =&gt; [
+            ['label' =&gt; 'Quote v2.pdf', 'href' =&gt; '#demo', 'icon' =&gt; 'mdi:file-document-outline', 'current' =&gt; true, 'actions' =&gt; [['label' =&gt; 'Rename Quote v2.pdf', 'text' =&gt; '✎']]],
+            ['label' =&gt; 'Floor plan with a very long file name for the ground floor.dwg', 'href' =&gt; '#demo', 'icon' =&gt; 'mdi:file-document-outline', 'actions' =&gt; [['label' =&gt; 'Rename Floor plan', 'text' =&gt; '✎']]],
+        ],
+    ],
+    ['label' =&gt; 'Bathroom', 'icon' =&gt; 'mdi:folder-outline', 'count' =&gt; 1, 'children' =&gt; [['label' =&gt; 'Photos (archived)', 'muted' =&gt; true]]],
+]"&gt;
+    {{-- the slot: actions in the head row --}}
+    &lt;x-oc::button variant="ghost" size="xs"&gt;New&lt;/x-oc::button&gt;
+&lt;/x-oc::tree&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Tree extends Component
+{
+    public string $status = '';
+
+    public function items(): array
+    {
+        // 'attributes' go on the action button; a button in a folder row does not open or close the folder.
+        $rename = fn (string $file, string $label) =&gt; [['label' =&gt; $label, 'text' =&gt; '✎', 'attributes' =&gt; ['wire:click' =&gt; "rename('{$file}')"]]];
+
+        return [
+            [
+                'label' =&gt; 'Kitchen renovation - Main street 12', 'icon' =&gt; 'mdi:folder-outline', 'count' =&gt; 2, 'open' =&gt; true,
+                'actions' =&gt; [['label' =&gt; 'Add to Kitchen renovation', 'text' =&gt; '+', 'attributes' =&gt; ['wire:click' =&gt; "add('Kitchen renovation')"]]],
+                'children' =&gt; [
+                    ['label' =&gt; 'Quote v2.pdf', 'href' =&gt; '#demo', 'icon' =&gt; 'mdi:file-document-outline', 'current' =&gt; true, 'actions' =&gt; $rename('Quote v2.pdf', 'Rename Quote v2.pdf')],
+                    ['label' =&gt; 'Floor plan with a very long file name for the ground floor.dwg', 'href' =&gt; '#demo', 'icon' =&gt; 'mdi:file-document-outline', 'actions' =&gt; $rename('Floor plan.dwg', 'Rename Floor plan')],
+                ],
+            ],
+            ['label' =&gt; 'Bathroom', 'icon' =&gt; 'mdi:folder-outline', 'count' =&gt; 1, 'children' =&gt; [['label' =&gt; 'Photos (archived)', 'muted' =&gt; true]]],
+        ];
+    }
+
+    public function newProject(): void
+    {
+        $this-&gt;status = 'New project';
+    }
+
+    public function add(string $folder): void
+    {
+        $this-&gt;status = "Add a file to {$folder}";
+    }
+
+    public function rename(string $file): void
+    {
+        $this-&gt;status = "Rename {$file}";
+    }
+
+    public function render()
+    {
+        return view('livewire.tree');
+    }
+}
+
+{{-- resources/views/livewire/tree.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::tree head="All projects" ellipsis aria-label="Projects" style="--oc-tree-height:18rem;max-width:22rem" :items="$this-&gt;items()"&gt;
+        &lt;x-oc::button variant="ghost" size="xs" wire:click="newProject"&gt;New&lt;/x-oc::button&gt;
+    &lt;/x-oc::tree&gt;
+    &lt;p class="oc-note" aria-live="polite"&gt;{{ $status }}&lt;/p&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="quiet-flush">Quiet and flush</h3>
@@ -59,6 +190,110 @@
     </ul>
   </div>
 </div>
+<oc-code lang="tsx">import { Card, TableActionIcon, Tree } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Card style={{ maxWidth: "20rem" }}&gt;
+      &lt;Tree
+        quiet
+        flush
+        aria-label="Categories"
+        items={[
+          {
+            label: "Furniture", open: true,
+            actions: &lt;TableActionIcon label="Add to Furniture"&gt;+&lt;/TableActionIcon&gt;,
+            children: [
+              { label: "Tables", count: 12, current: true, actions: &lt;TableActionIcon label="Rename Tables"&gt;✎&lt;/TableActionIcon&gt; },
+              { label: "Chairs", count: 8, actions: &lt;TableActionIcon label="Rename Chairs"&gt;✎&lt;/TableActionIcon&gt; },
+            ],
+          },
+          { label: "Lighting", count: 5, actions: &lt;TableActionIcon label="Rename Lighting"&gt;✎&lt;/TableActionIcon&gt; },
+        ]}
+      /&gt;
+    &lt;/Card&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCard, OcTree } from "@birdycom/omniaui-vue";
+import type { OcTreeItem } from "@birdycom/omniaui-vue";
+
+const items: OcTreeItem[] = [
+  {
+    label: "Furniture", open: true,
+    actions: [{ label: "Add to Furniture", text: "+" }],
+    children: [
+      { label: "Tables", count: 12, current: true, actions: [{ label: "Rename Tables", text: "✎" }] },
+      { label: "Chairs", count: 8, actions: [{ label: "Rename Chairs", text: "✎" }] },
+    ],
+  },
+  { label: "Lighting", count: 5, actions: [{ label: "Rename Lighting", text: "✎" }] },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCard style="max-width:20rem"&gt;
+    &lt;OcTree quiet flush aria-label="Categories" :items="items" /&gt;
+  &lt;/OcCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::card style="max-width:20rem"&gt;
+    &lt;x-oc::tree quiet flush aria-label="Categories" :items="[
+        [
+            'label' =&gt; 'Furniture', 'open' =&gt; true,
+            'actions' =&gt; [['label' =&gt; 'Add to Furniture', 'text' =&gt; '+']],
+            'children' =&gt; [
+                ['label' =&gt; 'Tables', 'count' =&gt; 12, 'current' =&gt; true, 'actions' =&gt; [['label' =&gt; 'Rename Tables', 'text' =&gt; '✎']]],
+                ['label' =&gt; 'Chairs', 'count' =&gt; 8, 'actions' =&gt; [['label' =&gt; 'Rename Chairs', 'text' =&gt; '✎']]],
+            ],
+        ],
+        ['label' =&gt; 'Lighting', 'count' =&gt; 5, 'actions' =&gt; [['label' =&gt; 'Rename Lighting', 'text' =&gt; '✎']]],
+    ]" /&gt;
+&lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TreeQuietFlushTreeInACard extends Component
+{
+    /** @var array&lt;string, int&gt; category =&gt; number of products */
+    public array $furniture = ['Tables' =&gt; 12, 'Chairs' =&gt; 8];
+
+    public string $current = 'Tables';
+
+    public function items(): array
+    {
+        $rename = fn (string $name) =&gt; [['label' =&gt; "Rename {$name}", 'text' =&gt; '✎', 'attributes' =&gt; ['wire:click' =&gt; "rename('{$name}')"]]];
+        $children = [];
+        foreach ($this-&gt;furniture as $name =&gt; $count) {
+            $children[] = ['label' =&gt; $name, 'count' =&gt; $count, 'current' =&gt; $name === $this-&gt;current, 'actions' =&gt; $rename($name)];
+        }
+
+        return [
+            ['label' =&gt; 'Furniture', 'open' =&gt; true, 'actions' =&gt; [['label' =&gt; 'Add to Furniture', 'text' =&gt; '+']], 'children' =&gt; $children],
+            ['label' =&gt; 'Lighting', 'count' =&gt; 5, 'current' =&gt; $this-&gt;current === 'Lighting', 'actions' =&gt; $rename('Lighting')],
+        ];
+    }
+
+    /** The row you rename becomes the current one (open your rename form here). */
+    public function rename(string $name): void
+    {
+        $this-&gt;current = $name;
+    }
+
+    public function render()
+    {
+        return view('livewire.tree-quiet-flush-tree-in-a-card');
+    }
+}
+
+{{-- resources/views/livewire/tree-quiet-flush-tree-in-a-card.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::card style="max-width:20rem"&gt;
+        &lt;x-oc::tree quiet flush aria-label="Categories" :items="$this-&gt;items()" /&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -70,12 +305,12 @@
           <table class="oc-table-ref">
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td><code>.oc-tree</code></td><td>Scroll box with a card frame. Modifiers: <code>--flush</code>, <code>--quiet</code></td></tr>
+              <tr><td><code>.oc-tree</code></td><td>Scroll box with a card frame. Modifiers: <code>--flush</code>, <code>--quiet</code>, <code>--ellipsis</code> (long names end in an ellipsis)</td></tr>
               <tr><td><code>.oc-tree-head</code></td><td>Root row that sticks to the top</td></tr>
               <tr><td><code>ul.oc-tree-list</code></td><td>List; nested lists indent one step</td></tr>
               <tr><td><code>details.oc-tree-node</code> + <code>summary.oc-tree-row</code></td><td>Folder; the chevron turns when open</td></tr>
               <tr><td><code>div.oc-tree-row</code></td><td>Leaf row. States: <code>aria-current="true"</code> (row or label link), <code>.is-selected</code>, <code>.is-muted</code></td></tr>
-              <tr><td><code>.oc-tree-icon / -label / -count</code></td><td>Icon, name (never wraps; may be a link), count</td></tr>
+              <tr><td><code>.oc-tree-icon / -label / -count</code></td><td>Icon, name (never wraps; may be a link; the components put the full name in its title), count</td></tr>
               <tr><td><code>.oc-tree-actions</code></td><td>Buttons pinned to the end edge (sticky)</td></tr>
             </tbody>
           </table>

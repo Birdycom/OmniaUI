@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Time input", "category": "Forms", "description": "24-hour time field with optional suggested time slots.", "nav": "Time input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Time input", "category": "Forms", "description": "A 24-hour time field (HH:mm) that looks the same in every locale: a short text field with a pattern and an optional list of suggested time slots.", "nav": "Time input", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/time-input.html | Map: hero -> demo (field + datalist, slot list) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Time input</h1>
@@ -24,6 +24,57 @@
     <option value="09:30"></option>
   </datalist>
 </div>
+<oc-code lang="tsx">import { FormField, TimeInput } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [start, setStart] = useState("08:30");
+
+  return (
+    &lt;FormField label="Start time"&gt;
+      &lt;TimeInput id="oc-time-demo" name="start" value={start} onChange={setStart} slots={["08:00", "08:30", "09:00", "09:30"]} /&gt;
+    &lt;/FormField&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcFormField, OcTimeInput } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const start = ref("08:30");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Start time" for="oc-time-demo"&gt;
+    &lt;OcTimeInput id="oc-time-demo" v-model="start" name="start" :slots="['08:00', '08:30', '09:00', '09:30']" /&gt;
+  &lt;/OcFormField&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Start time" for="oc-time-demo" name="start"&gt;
+    &lt;x-oc::time-input id="oc-time-demo" name="start" value="08:30" :slots="['08:00', '08:30', '09:00', '09:30']" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class TimeInputTimeFieldWithSuggestions extends Component
+{
+    #[Validate(['required', 'regex:/^([01][0-9]|2[0-3]):[0-5][0-9]$/'])]
+    public string $start = '08:30';
+
+    public function render()
+    {
+        return view('livewire.time-input-time-field-with-suggestions');
+    }
+}
+
+{{-- resources/views/livewire/time-input-time-field-with-suggestions.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::form-field label="Start time" for="oc-time-demo" name="start"&gt;
+        &lt;x-oc::time-input id="oc-time-demo" wire:model.blur="start" :slots="['08:00', '08:30', '09:00', '09:30']" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Slot list</h3>
@@ -39,6 +90,76 @@
   <label class="oc-time-slot"><input type="radio" name="slot" value="13:00" disabled> 13:00</label>
   <label class="oc-time-slot"><input type="radio" name="slot" value="13:30"> 13:30</label>
 </div>
+<oc-code lang="tsx">export function Example() {
+  return (
+    &lt;div className="oc-time-slots" role="radiogroup" aria-label="Pick a time slot" style={{ maxInlineSize: "24rem" }}&gt;
+      &lt;label className="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="09:00" /&gt; 09:00&lt;/label&gt;
+      &lt;label className="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="09:30" defaultChecked /&gt; 09:30&lt;/label&gt;
+      &lt;label className="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="10:00" disabled /&gt; 10:00&lt;/label&gt;
+      &lt;label className="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="10:30" /&gt; 10:30&lt;/label&gt;
+      &lt;label className="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="11:00" /&gt; 11:00&lt;/label&gt;
+      &lt;label className="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="11:30" /&gt; 11:30&lt;/label&gt;
+      &lt;label className="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="13:00" disabled /&gt; 13:00&lt;/label&gt;
+      &lt;label className="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="13:30" /&gt; 13:30&lt;/label&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;template&gt;
+  &lt;div class="oc-time-slots" role="radiogroup" aria-label="Pick a time slot" style="max-inline-size:24rem"&gt;
+    &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="09:00" /&gt; 09:00&lt;/label&gt;
+    &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="09:30" checked /&gt; 09:30&lt;/label&gt;
+    &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="10:00" disabled /&gt; 10:00&lt;/label&gt;
+    &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="10:30" /&gt; 10:30&lt;/label&gt;
+    &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="11:00" /&gt; 11:00&lt;/label&gt;
+    &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="11:30" /&gt; 11:30&lt;/label&gt;
+    &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="13:00" disabled /&gt; 13:00&lt;/label&gt;
+    &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="13:30" /&gt; 13:30&lt;/label&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-time-slots" role="radiogroup" aria-label="Pick a time slot" style="max-inline-size:24rem"&gt;
+  &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="09:00"&gt; 09:00&lt;/label&gt;
+  &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="09:30" checked&gt; 09:30&lt;/label&gt;
+  &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="10:00" disabled&gt; 10:00&lt;/label&gt;
+  &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="10:30"&gt; 10:30&lt;/label&gt;
+  &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="11:00"&gt; 11:00&lt;/label&gt;
+  &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="11:30"&gt; 11:30&lt;/label&gt;
+  &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="13:00" disabled&gt; 13:00&lt;/label&gt;
+  &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="slot" value="13:30"&gt; 13:30&lt;/label&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TimeInputTimeSlots extends Component
+{
+    public string $chosen = '09:30';
+
+    /** Time =&gt; still free. */
+    public array $times = [
+        '09:00' =&gt; true,
+        '09:30' =&gt; true,
+        '10:00' =&gt; false,
+        '10:30' =&gt; true,
+        '11:00' =&gt; true,
+        '11:30' =&gt; true,
+        '13:00' =&gt; false,
+        '13:30' =&gt; true,
+    ];
+
+    public function render()
+    {
+        return view('livewire.time-input-time-slots');
+    }
+}
+
+{{-- resources/views/livewire/time-input-time-slots.blade.php --}}
+&lt;div class="oc-time-slots" role="radiogroup" aria-label="Pick a time slot" style="max-inline-size:24rem"&gt;
+    @foreach ($times as $time =&gt; $free)
+        &lt;label class="oc-time-slot"&gt;&lt;input type="radio" wire:model.live="chosen" value="{{ $time }}" @disabled(! $free)&gt; {{ $time }}&lt;/label&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

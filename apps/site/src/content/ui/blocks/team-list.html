@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Team list Block", "category": "Marketing", "description": "Member rows with avatar, role badge and a row action menu.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Team list Block", "category": "Marketing", "description": "A bordered list of team members: each row has the user with avatar, name and e-mail, a role badge and a dropdown menu with the actions for that member.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Team list</h1>
         <p class="oc-hero-text">A bordered list of members. Each row is a user info component, a role badge and a dropdown for actions. <a href="../blocks.html">All blocks</a>.</p>
@@ -34,6 +34,122 @@
     <div class="oc-block-team-meta"><span class="oc-badge oc-badge--warning">Invited</span></div>
   </div>
 </div>
+<oc-code lang="tsx">import { BlockTeamList, DropdownItem, DropdownSeparator } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockTeamList
+      members={[
+        { name: "Contact 1", email: "info@contact1.example", initials: "C1", role: "Owner" },
+        {
+          name: "Contact 2",
+          email: "info@contact2.example",
+          initials: "C2",
+          role: "Accountant",
+          roleVariant: "secondary",
+          menuLabel: "Member actions",
+          menu: &lt;&gt;
+            &lt;DropdownItem href="#"&gt;View profile&lt;/DropdownItem&gt;
+            &lt;DropdownItem href="#"&gt;Change role&lt;/DropdownItem&gt;
+            &lt;DropdownSeparator /&gt;
+            &lt;DropdownItem onClick={() =&gt; console.log("remove")}&gt;Remove&lt;/DropdownItem&gt;
+          &lt;/&gt;,
+        },
+        { name: "Contact 3", email: "info@contact3.example", initials: "C3", role: "Invited", roleVariant: "warning" },
+      ]}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockTeamList, type TeamAction, type TeamMember } from "@birdycom/omniaui-vue";
+
+const members: TeamMember[] = [
+  { name: "Contact 1", email: "info@contact1.example", initials: "C1", role: "Owner" },
+  {
+    name: "Contact 2", email: "info@contact2.example", initials: "C2", role: "Accountant", roleVariant: "secondary",
+    actions: [{ label: "View profile", href: "#" }, { label: "Change role", href: "#" }, { label: "Remove", separator: true }],
+  },
+  { name: "Contact 3", email: "info@contact3.example", initials: "C3", role: "Invited", roleVariant: "warning" },
+];
+const onAction = ({ member, action }: { member: TeamMember; action: TeamAction }) =&gt; console.log(action.label, member.name);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockTeamList :members="members" actions-label="Member actions" @action="onAction" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php
+    $members = [
+        ['name' =&gt; 'Contact 1', 'email' =&gt; 'info@contact1.example', 'initials' =&gt; 'C1', 'role' =&gt; 'Owner', 'variant' =&gt; 'default', 'menu' =&gt; false],
+        ['name' =&gt; 'Contact 2', 'email' =&gt; 'info@contact2.example', 'initials' =&gt; 'C2', 'role' =&gt; 'Accountant', 'variant' =&gt; 'secondary', 'menu' =&gt; true],
+        ['name' =&gt; 'Contact 3', 'email' =&gt; 'info@contact3.example', 'initials' =&gt; 'C3', 'role' =&gt; 'Invited', 'variant' =&gt; 'warning', 'menu' =&gt; false],
+    ];
+@endphp
+&lt;x-oc::block.team-list&gt;
+    @foreach ($members as $i =&gt; $member)
+        &lt;div class="oc-block-team-row"&gt;
+            &lt;x-oc::user :name="$member['name']" :email="$member['email']" :initials="$member['initials']" /&gt;
+            &lt;div class="oc-block-team-meta"&gt;
+                &lt;x-oc::badge :variant="$member['variant']"&gt;{{ $member['role'] }}&lt;/x-oc::badge&gt;
+                @if ($member['menu'])
+                    &lt;x-oc::button variant="ghost" size="sm" icon popovertarget="oc-team-menu-{{ $i }}" aria-label="Member actions"&gt;…&lt;/x-oc::button&gt;
+                    &lt;div class="oc-dropdown-menu" id="oc-team-menu-{{ $i }}" popover&gt;
+                        &lt;a class="oc-dropdown-item" href="#"&gt;View profile&lt;/a&gt;
+                        &lt;a class="oc-dropdown-item" href="#"&gt;Change role&lt;/a&gt;
+                        &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+                        &lt;button class="oc-dropdown-item" type="button"&gt;Remove&lt;/button&gt;
+                    &lt;/div&gt;
+                @endif
+            &lt;/div&gt;
+        &lt;/div&gt;
+    @endforeach
+&lt;/x-oc::block.team-list&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TeamMembers extends Component
+{
+    public array $members = [
+        ['id' =&gt; 1, 'name' =&gt; 'Contact 1', 'email' =&gt; 'info@contact1.example', 'initials' =&gt; 'C1', 'role' =&gt; 'Owner', 'variant' =&gt; 'default'],
+        ['id' =&gt; 2, 'name' =&gt; 'Contact 2', 'email' =&gt; 'info@contact2.example', 'initials' =&gt; 'C2', 'role' =&gt; 'Accountant', 'variant' =&gt; 'secondary'],
+        ['id' =&gt; 3, 'name' =&gt; 'Contact 3', 'email' =&gt; 'info@contact3.example', 'initials' =&gt; 'C3', 'role' =&gt; 'Invited', 'variant' =&gt; 'warning'],
+    ];
+
+    public function remove(int|string $id): void
+    {
+        $this-&gt;members = array_values(array_filter($this-&gt;members, fn ($m) =&gt; $m['id'] !== (int) $id));
+    }
+
+    public function render()
+    {
+        return view('livewire.team-members');
+    }
+}
+
+{{-- resources/views/livewire/team-members.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.team-list&gt;
+        @foreach ($members as $member)
+            &lt;div class="oc-block-team-row" wire:key="member-{{ $member['id'] }}"&gt;
+                &lt;x-oc::user :name="$member['name']" :email="$member['email']" :initials="$member['initials']" /&gt;
+                &lt;div class="oc-block-team-meta"&gt;
+                    &lt;x-oc::badge :variant="$member['variant']"&gt;{{ $member['role'] }}&lt;/x-oc::badge&gt;
+                    @if ($member['role'] !== 'Owner')
+                        &lt;x-oc::button variant="ghost" size="sm" icon popovertarget="oc-team-menu-{{ $member['id'] }}" aria-label="Member actions"&gt;…&lt;/x-oc::button&gt;
+                        &lt;div class="oc-dropdown-menu" id="oc-team-menu-{{ $member['id'] }}" popover&gt;
+                            &lt;a class="oc-dropdown-item" href="#"&gt;View profile&lt;/a&gt;
+                            &lt;a class="oc-dropdown-item" href="#"&gt;Change role&lt;/a&gt;
+                            &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+                            &lt;button class="oc-dropdown-item" type="button" wire:click="remove({{ $member['id'] }})" wire:confirm="Remove {{ $member['name'] }} from the team?"&gt;Remove&lt;/button&gt;
+                        &lt;/div&gt;
+                    @endif
+                &lt;/div&gt;
+            &lt;/div&gt;
+        @endforeach
+    &lt;/x-oc::block.team-list&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

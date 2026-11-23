@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Hero with orbit Block", "category": "Marketing", "description": "Hero variant with product marks orbiting a central visual.", "nav": "Hero orbit", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Hero with orbit Block", "category": "Marketing", "description": "Hero with product marks that orbit a code window, float around it or circle a big centre mark, with options for heading level, speed and mark size.", "nav": "Hero orbit", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/blocks/hero-orbit.html | Map: hero -> demos (code window, product mark center) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Hero with orbit</h1>
@@ -17,7 +17,7 @@
   <div class="oc-container oc-split">
     <div>
       <p class="oc-eyebrow">Software studio &middot; since 2012</p>
-      <h1 class="oc-display">One team for all your <span class="oc-text-gradient">software</span>.</h1>
+      <h2 class="oc-display oc-display--md">One team for all your <span class="oc-text-gradient">software</span>.</h2>
       <p class="oc-lead">Business apps, websites and desktop tools. We design, build and maintain them, and stay your single point of contact.</p>
       <div class="flex flex-wrap gap-1 mt-2">
         <a class="oc-btn oc-btn--gradient oc-btn--lg" href="#products">See our products &rarr;</a>
@@ -45,6 +45,141 @@
     </div>
   </div>
 </section>
+<oc-code lang="tsx">import { BlockHeroOrbit, ButtonLink } from "@birdycom/omniaui-react";
+
+const code = `return [
+  'erp'    =&gt; Product 1::class,
+  'shop'   =&gt; Product 2::class,
+  'design' =&gt; Product 3::class,
+  'next'   =&gt; YourProject::class,
+];`;
+
+export function Example() {
+  return (
+    &lt;BlockHeroOrbit
+      headingLevel={2}
+      eyebrow="Software studio · since 2012"
+      title={&lt;&gt;One team for all your &lt;span className="oc-text-gradient"&gt;software&lt;/span&gt;.&lt;/&gt;}
+      lead="Business apps, websites and desktop tools. We design, build and maintain them, and stay your single point of contact."
+      actions={
+        &lt;&gt;
+          &lt;ButtonLink variant="gradient" size="lg" href="#products"&gt;See our products →&lt;/ButtonLink&gt;
+          &lt;ButtonLink variant="glass" size="lg" href="#contact"&gt;Start a project&lt;/ButtonLink&gt;
+        &lt;/&gt;
+      }
+      marks={[
+        { glyph: "◆", accent: "green" },
+        { glyph: "◉", accent: "violet" },
+        { glyph: "▲", accent: "orange" },
+        { glyph: "★", accent: "cyan" },
+        { glyph: "♥", accent: "red" },
+        { glyph: "☀", accent: "yellow" },
+      ]}
+      codeTitle="products.php"
+      code={code}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockHeroOrbit, OcButton } from '@birdycom/omniaui-vue'
+
+const code = `return [
+  'erp'    =&gt; Product 1::class,
+  'shop'   =&gt; Product 2::class,
+  'design' =&gt; Product 3::class,
+  'next'   =&gt; YourProject::class,
+];`
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockHeroOrbit
+    :heading-level="2"
+    eyebrow="Software studio · since 2012"
+    title="One team for all your"
+    highlight="software"
+    title-end="."
+    lead="Business apps, websites and desktop tools. We design, build and maintain them, and stay your single point of contact."
+    code-title="products.php"
+    :code="code"
+  &gt;
+    &lt;template #actions&gt;
+      &lt;OcButton variant="gradient" size="lg" href="#products"&gt;See our products →&lt;/OcButton&gt;
+      &lt;OcButton variant="glass" size="lg" href="#contact"&gt;Start a project&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockHeroOrbit&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php
+    $code = &lt;&lt;&lt;'PHP'
+    return [
+      'erp'    =&gt; Product 1::class,
+      'shop'   =&gt; Product 2::class,
+      'design' =&gt; Product 3::class,
+      'next'   =&gt; YourProject::class,
+    ];
+    PHP;
+@endphp
+&lt;x-oc::block.hero-orbit :heading-level="2" eyebrow="Software studio · since 2012"
+    lead="Business apps, websites and desktop tools. We design, build and maintain them, and stay your single point of contact."
+    :marks="[
+        ['glyph' =&gt; '◆', 'accent' =&gt; 'green'],
+        ['glyph' =&gt; '◉', 'accent' =&gt; 'violet'],
+        ['glyph' =&gt; '▲', 'accent' =&gt; 'orange'],
+        ['glyph' =&gt; '★', 'accent' =&gt; 'cyan'],
+        ['glyph' =&gt; '♥', 'accent' =&gt; 'red'],
+        ['glyph' =&gt; '☀', 'accent' =&gt; 'yellow'],
+    ]"
+    code-title="products.php" :code="$code"&gt;
+    &lt;x-slot:title&gt;One team for all your &lt;span class="oc-text-gradient"&gt;software&lt;/span&gt;.&lt;/x-slot:title&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button variant="gradient" size="lg" href="#products"&gt;See our products →&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="glass" size="lg" href="#contact"&gt;Start a project&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.hero-orbit&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class HeroOrbit extends Component
+{
+    /** @var list&lt;array{glyph: string, accent: string}&gt; */
+    public array $products = [
+        ['glyph' =&gt; '◆', 'accent' =&gt; 'green'],
+        ['glyph' =&gt; '◉', 'accent' =&gt; 'violet'],
+        ['glyph' =&gt; '▲', 'accent' =&gt; 'orange'],
+        ['glyph' =&gt; '★', 'accent' =&gt; 'cyan'],
+        ['glyph' =&gt; '♥', 'accent' =&gt; 'red'],
+        ['glyph' =&gt; '☀', 'accent' =&gt; 'yellow'],
+    ];
+
+    public string $code = &lt;&lt;&lt;'PHP'
+        return [
+          'erp'    =&gt; Product 1::class,
+          'shop'   =&gt; Product 2::class,
+          'design' =&gt; Product 3::class,
+          'next'   =&gt; YourProject::class,
+        ];
+        PHP;
+
+    public function render()
+    {
+        return view('livewire.hero-orbit');
+    }
+}
+
+{{-- resources/views/livewire/hero-orbit.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.hero-orbit :heading-level="2" eyebrow="Software studio · since 2012"
+        lead="Business apps, websites and desktop tools. We design, build and maintain them, and stay your single point of contact."
+        :marks="$products" code-title="products.php" :code="$code"&gt;
+        &lt;x-slot:title&gt;One team for all your &lt;span class="oc-text-gradient"&gt;software&lt;/span&gt;.&lt;/x-slot:title&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button variant="gradient" size="lg" href="#products"&gt;See our products →&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="glass" size="lg" href="#contact"&gt;Start a project&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::block.hero-orbit&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-float">Floating marks <span class="oc-badge-version">v0.13.0</span></h3>
           <p class="oc-section-content__desc"><code>.oc-block-orbit-visual--float</code>: up to eight marks float on fixed places around the window instead of turning on a ring, the window gets a see-through card background, and on a phone the marks are hidden. Hand-written code uses the <a href="../components/showcase.html#code-tokens">token classes</a>.</p>
@@ -53,7 +188,7 @@
   <div class="oc-container oc-split oc-split--lead">
     <div>
       <p class="oc-eyebrow">Software studio &middot; since 2012</p>
-      <h1 class="oc-display">Software that <span class="oc-text-gradient">fits</span>.</h1>
+      <h2 class="oc-display oc-display--md">Software that <span class="oc-text-gradient">fits</span>.</h2>
       <p class="oc-lead">Business apps, websites and IT from one team.</p>
       <div class="oc-actions">
         <a class="oc-btn oc-btn--gradient oc-btn--lg" href="#products">See our products</a>
@@ -82,8 +217,139 @@
     </div>
   </div>
 </section>
+<oc-code lang="tsx">import { BlockHeroOrbit, ButtonLink } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockHeroOrbit
+      headingLevel={2}
+      splitLead
+      float
+      eyebrow="Software studio · since 2012"
+      title={&lt;&gt;Software that &lt;span className="oc-text-gradient"&gt;fits&lt;/span&gt;.&lt;/&gt;}
+      lead="Business apps, websites and IT from one team."
+      actions={
+        &lt;&gt;
+          &lt;ButtonLink variant="gradient" size="lg" href="#products"&gt;See our products&lt;/ButtonLink&gt;
+          &lt;ButtonLink variant="glass" size="lg" href="#contact"&gt;Start a project&lt;/ButtonLink&gt;
+        &lt;/&gt;
+      }
+      marks={[
+        { glyph: "◆", accent: "green" },
+        { glyph: "◉", accent: "violet" },
+        { glyph: "▲", accent: "orange" },
+        { glyph: "★", accent: "cyan" },
+        { glyph: "♥", accent: "red" },
+        { glyph: "☀", accent: "yellow" },
+        { glyph: "■", accent: "blue" },
+        { glyph: "●", accent: "green" },
+      ]}
+      center={
+        &lt;div className="oc-code-window oc-block-orbit-center"&gt;
+          &lt;div className="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span className="oc-code-window__title"&gt;company.ts&lt;/span&gt;&lt;/div&gt;
+          &lt;pre className="oc-code-window__body"&gt;&lt;span className="oc-tok-k"&gt;export const&lt;/span&gt; company = {"{"}{"\n"}  name: &lt;span className="oc-tok-s"&gt;"Company 1"&lt;/span&gt;,{"\n"}  since: &lt;span className="oc-tok-c"&gt;2012&lt;/span&gt;,{"\n"}  apps: &lt;span className="oc-tok-f"&gt;build&lt;/span&gt;(), &lt;span className="oc-tok-m"&gt;// web&lt;/span&gt;{"\n"}{"};"}&lt;/pre&gt;
+        &lt;/div&gt;
+      }
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockHeroOrbit, OcButton } from '@birdycom/omniaui-vue'
+
+const marks = [
+  { glyph: '◆', accent: 'green' },
+  { glyph: '◉', accent: 'violet' },
+  { glyph: '▲', accent: 'orange' },
+  { glyph: '★', accent: 'cyan' },
+  { glyph: '♥', accent: 'red' },
+  { glyph: '☀', accent: 'yellow' },
+  { glyph: '■', accent: 'blue' },
+  { glyph: '●', accent: 'green' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockHeroOrbit :heading-level="2" split-lead float eyebrow="Software studio · since 2012" title="Software that" highlight="fits" title-end="."
+    lead="Business apps, websites and IT from one team." :marks="marks"&gt;
+    &lt;template #actions&gt;
+      &lt;OcButton variant="gradient" size="lg" href="#products"&gt;See our products&lt;/OcButton&gt;
+      &lt;OcButton variant="glass" size="lg" href="#contact"&gt;Start a project&lt;/OcButton&gt;
+    &lt;/template&gt;
+    &lt;template #center&gt;
+      &lt;div class="oc-code-window oc-block-orbit-center"&gt;
+        &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;company.ts&lt;/span&gt;&lt;/div&gt;
+        &lt;pre class="oc-code-window__body"&gt;&lt;span class="oc-tok-k"&gt;export const&lt;/span&gt; company = {
+  name: &lt;span class="oc-tok-s"&gt;"Company 1"&lt;/span&gt;,
+  since: &lt;span class="oc-tok-c"&gt;2012&lt;/span&gt;,
+  apps: &lt;span class="oc-tok-f"&gt;build&lt;/span&gt;(), &lt;span class="oc-tok-m"&gt;// web&lt;/span&gt;
+};&lt;/pre&gt;
+      &lt;/div&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockHeroOrbit&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.hero-orbit :heading-level="2" split-lead float eyebrow="Software studio · since 2012" lead="Business apps, websites and IT from one team."
+    :marks="[
+        ['glyph' =&gt; '◆', 'accent' =&gt; 'green'], ['glyph' =&gt; '◉', 'accent' =&gt; 'violet'], ['glyph' =&gt; '▲', 'accent' =&gt; 'orange'], ['glyph' =&gt; '★', 'accent' =&gt; 'cyan'],
+        ['glyph' =&gt; '♥', 'accent' =&gt; 'red'], ['glyph' =&gt; '☀', 'accent' =&gt; 'yellow'], ['glyph' =&gt; '■', 'accent' =&gt; 'blue'], ['glyph' =&gt; '●', 'accent' =&gt; 'green'],
+    ]"&gt;
+    &lt;x-slot:title&gt;Software that &lt;span class="oc-text-gradient"&gt;fits&lt;/span&gt;.&lt;/x-slot:title&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button variant="gradient" size="lg" href="#products"&gt;See our products&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="glass" size="lg" href="#contact"&gt;Start a project&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+    {{-- the center slot fills the code window: here with token classes --}}
+    &lt;x-slot:center&gt;
+        &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;company.ts&lt;/span&gt;&lt;/div&gt;
+&lt;pre class="oc-code-window__body"&gt;&lt;span class="oc-tok-k"&gt;export const&lt;/span&gt; company = {
+  name: &lt;span class="oc-tok-s"&gt;"Company 1"&lt;/span&gt;,
+  since: &lt;span class="oc-tok-c"&gt;2012&lt;/span&gt;,
+  apps: &lt;span class="oc-tok-f"&gt;build&lt;/span&gt;(), &lt;span class="oc-tok-m"&gt;// web&lt;/span&gt;
+};&lt;/pre&gt;
+    &lt;/x-slot:center&gt;
+&lt;/x-oc::block.hero-orbit&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class HeroOrbitFloat extends Component
+{
+    /** @var list&lt;array{glyph: string, accent: string}&gt; */
+    public array $marks = [
+        ['glyph' =&gt; '◆', 'accent' =&gt; 'green'], ['glyph' =&gt; '◉', 'accent' =&gt; 'violet'], ['glyph' =&gt; '▲', 'accent' =&gt; 'orange'], ['glyph' =&gt; '★', 'accent' =&gt; 'cyan'],
+        ['glyph' =&gt; '♥', 'accent' =&gt; 'red'], ['glyph' =&gt; '☀', 'accent' =&gt; 'yellow'], ['glyph' =&gt; '■', 'accent' =&gt; 'blue'], ['glyph' =&gt; '●', 'accent' =&gt; 'green'],
+    ];
+
+    public string $company = 'Company 1';
+
+    public function render()
+    {
+        return view('livewire.hero-orbit-float');
+    }
+}
+
+{{-- resources/views/livewire/hero-orbit-float.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.hero-orbit :heading-level="2" split-lead float eyebrow="Software studio · since 2012" lead="Business apps, websites and IT from one team." :marks="$marks"&gt;
+        &lt;x-slot:title&gt;Software that &lt;span class="oc-text-gradient"&gt;fits&lt;/span&gt;.&lt;/x-slot:title&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button variant="gradient" size="lg" href="#products"&gt;See our products&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="glass" size="lg" href="#contact"&gt;Start a project&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+        &lt;x-slot:center&gt;
+            &lt;div class="oc-code-window__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-code-window__title"&gt;company.ts&lt;/span&gt;&lt;/div&gt;
+&lt;pre class="oc-code-window__body"&gt;&lt;span class="oc-tok-k"&gt;export const&lt;/span&gt; company = {
+  name: &lt;span class="oc-tok-s"&gt;"{{ $company }}"&lt;/span&gt;,
+  since: &lt;span class="oc-tok-c"&gt;2012&lt;/span&gt;,
+  apps: &lt;span class="oc-tok-f"&gt;build&lt;/span&gt;(), &lt;span class="oc-tok-m"&gt;// web&lt;/span&gt;
+};&lt;/pre&gt;
+        &lt;/x-slot:center&gt;
+    &lt;/x-oc::block.hero-orbit&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
-          <p class="oc-section-content__desc">A big product mark in the middle with the small marks turning around it on a faster orbit.</p>
+          <h3 class="oc-section-content__title mt-2" id="demo-center-mark">Big product mark in the center <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">A big product mark in the middle with the small marks turning around it on a faster orbit: <code>centerMark</code>, <code>softMarks</code>, <code>markSize</code>, <code>startAngle</code> and <code>duration</code>, with <code>headingLevel</code> 2 for a hero lower on the page.</p>
           <oc-demo title="Big product mark in the center, faster orbit" size="tall">
 <section class="oc-block-orbit oc-section-pad">
   <div class="oc-container oc-split">
@@ -103,6 +369,79 @@
     </div>
   </div>
 </section>
+<oc-code lang="tsx">import { BlockHeroOrbit } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockHeroOrbit
+      headingLevel={2}
+      eyebrow="Product 1"
+      title={&lt;&gt;Every module, &lt;span className="oc-text-gradient"&gt;one app&lt;/span&gt;.&lt;/&gt;}
+      lead="Invoicing, stock, planning and CRM share one database and one login."
+      duration="30s"
+      startAngle={45}
+      markSize="md"
+      softMarks
+      marks={[
+        { glyph: "€", accent: "green" },
+        { glyph: "▦", accent: "orange" },
+        { glyph: "◷", accent: "cyan" },
+        { glyph: "☻", accent: "violet" },
+      ]}
+      centerMark={{ glyph: "◆", accent: "blue" }}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockHeroOrbit } from '@birdycom/omniaui-vue'
+
+const marks = [
+  { glyph: '€', accent: 'green' },
+  { glyph: '▦', accent: 'orange' },
+  { glyph: '◷', accent: 'cyan' },
+  { glyph: '☻', accent: 'violet' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockHeroOrbit :heading-level="2" eyebrow="Product 1" title="Every module," highlight="one app" title-end="."
+    lead="Invoicing, stock, planning and CRM share one database and one login."
+    duration="30s" :start-angle="45" mark-size="md" soft-marks :marks="marks" :center-mark="{ glyph: '◆', accent: 'blue' }" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.hero-orbit :heading-level="2" eyebrow="Product 1" lead="Invoicing, stock, planning and CRM share one database and one login." :actions="false"
+    duration="30s" :start-angle="45" mark-size="md" soft-marks :center-mark="['glyph' =&gt; '◆', 'accent' =&gt; 'blue']"
+    :marks="[['glyph' =&gt; '€', 'accent' =&gt; 'green'], ['glyph' =&gt; '▦', 'accent' =&gt; 'orange'], ['glyph' =&gt; '◷', 'accent' =&gt; 'cyan'], ['glyph' =&gt; '☻', 'accent' =&gt; 'violet']]"&gt;
+    &lt;x-slot:title&gt;Every module, &lt;span class="oc-text-gradient"&gt;one app&lt;/span&gt;.&lt;/x-slot:title&gt;
+&lt;/x-oc::block.hero-orbit&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class HeroOrbitCenterMark extends Component
+{
+    /** @var list&lt;array{glyph: string, accent: string}&gt; */
+    public array $modules = [
+        ['glyph' =&gt; '€', 'accent' =&gt; 'green'],
+        ['glyph' =&gt; '▦', 'accent' =&gt; 'orange'],
+        ['glyph' =&gt; '◷', 'accent' =&gt; 'cyan'],
+        ['glyph' =&gt; '☻', 'accent' =&gt; 'violet'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.hero-orbit-center-mark');
+    }
+}
+
+{{-- resources/views/livewire/hero-orbit-center-mark.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.hero-orbit :heading-level="2" eyebrow="Product 1" lead="Invoicing, stock, planning and CRM share one database and one login." :actions="false"
+        duration="30s" :start-angle="45" mark-size="md" soft-marks :marks="$modules" :center-mark="['glyph' =&gt; '◆', 'accent' =&gt; 'blue']"&gt;
+        &lt;x-slot:title&gt;Every module, &lt;span class="oc-text-gradient"&gt;one app&lt;/span&gt;.&lt;/x-slot:title&gt;
+    &lt;/x-oc::block.hero-orbit&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

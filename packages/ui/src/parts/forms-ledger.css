@@ -1,0 +1,98 @@
+/* File: packages/ui/src/parts/forms-ledger.css
+   Map: ledger tokens on the controls -> input / select / textarea / combobox / input group -> ledger field (label + control)
+        -> focus in the module colour -> forced colors
+   Ledger look (variant="ledger"): compact, flat bookkeeping fields for dense forms and line items. About 2rem high,
+   0.8125rem tabular figures, a lightly tinted background, a 1px border and a small radius; the focus border and ring use
+   the module colour (--oc-module, set by the app or by [data-module]) and fall back to the theme ring. It only sets the
+   existing field tokens (--oc-input-*), so the base .oc-input / .oc-select rules keep doing the drawing. No gradient, no glow. */
+
+.oc-input--ledger,
+.oc-select--ledger,
+.oc-textarea--ledger,
+.oc-combobox--ledger,
+.oc-input-group--ledger,
+.oc-field--ledger {
+  --oc-input-size: 0.8125rem;
+  --oc-input-padding: 0 0.5rem;
+  --oc-input-radius: calc(var(--oc-radius) - 2px);
+  --oc-input-border: var(--oc-border);
+  --oc-input-bg: color-mix(in oklab, var(--oc-muted) 45%, transparent);
+  --oc-ring-width: 2px;
+  --oc-ring-alpha: 20%;
+  --oc-ledger-height: 2rem;
+  --oc-ledger-focus: var(--oc-module, var(--oc-ring));
+}
+
+/* Controls: fixed height, tabular figures. */
+.oc-input.oc-input--ledger,
+.oc-select.oc-select--ledger,
+.oc-field--ledger :is(.oc-input:not(textarea), .oc-select) {
+  block-size: var(--oc-ledger-height);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+}
+.oc-select.oc-select--ledger,
+.oc-field--ledger .oc-select {
+  padding-inline-end: 1.75rem;
+  background-position: right 8px center;
+  background-size: 12px 12px;
+}
+textarea.oc-textarea--ledger,
+.oc-field--ledger textarea.oc-input {
+  --oc-input-padding: 0.375rem 0.5rem;
+  --oc-textarea-min: 4rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+}
+
+/* Combobox: the field is a ledger input; the chevron sits a little closer to the end. */
+.oc-combobox--ledger .oc-combobox-input { padding-inline-end: 1.75rem; }
+.oc-combobox--ledger::after {
+  /* Whole pixels and a slightly thinner stroke: a small chevron that stays sharp and symmetric. */
+  inset-block-start: calc(var(--oc-ledger-height) / 2 - 6px);
+  inset-inline-end: 0.7rem;
+  inline-size: 6px;
+  block-size: 6px;
+  border-inline-end-width: 1.5px;
+  border-block-end-width: 1.5px;
+}
+.oc-combobox--ledger .oc-combobox-list { font-size: 0.8125rem; }
+
+/* Input group: addons at the same height and size. */
+.oc-input-group--ledger .oc-input-addon,
+.oc-field--ledger .oc-input-addon {
+  padding-inline: 0.5rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  border-color: var(--oc-border);
+}
+.oc-input-group--ledger .oc-input:first-child,
+.oc-input-group--ledger .oc-input-addon:first-child { border-start-start-radius: var(--oc-input-radius); border-end-start-radius: var(--oc-input-radius); }
+.oc-input-group--ledger .oc-input:last-child,
+.oc-input-group--ledger .oc-input-addon:last-child { border-start-end-radius: var(--oc-input-radius); border-end-end-radius: var(--oc-input-radius); }
+
+/* Field: small muted label, tight gap. */
+.oc-field--ledger { gap: 4px; margin-bottom: 10px; }
+.oc-field--ledger .oc-field-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--oc-muted-foreground);
+}
+.oc-field--ledger :is(.oc-field-description, .oc-field-error) { font-size: 0.75rem; }
+
+/* Focus: module colour with the theme ring as fallback. */
+:is(.oc-input--ledger, .oc-select--ledger, .oc-textarea--ledger):focus,
+:is(.oc-combobox--ledger, .oc-input-group--ledger, .oc-field--ledger) :is(.oc-input, .oc-select):focus {
+  border-color: var(--oc-ledger-focus);
+  box-shadow: 0 0 0 var(--oc-ring-width) color-mix(in srgb, var(--oc-ledger-focus) var(--oc-ring-alpha), transparent);
+}
+/* An error keeps its own colour. */
+:is(.oc-input--ledger, .oc-textarea--ledger, .oc-field--ledger .oc-input):is([aria-invalid="true"], .oc-input--error) {
+  border-color: var(--oc-destructive);
+}
+
+@media (forced-colors: active) {
+  :is(.oc-input--ledger, .oc-select--ledger, .oc-textarea--ledger, .oc-field--ledger .oc-input, .oc-field--ledger .oc-select) {
+    border-color: CanvasText;
+  }
+}

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Navigation menu", "category": "Navigation", "description": "Horizontal navigation links with optional dropdown children.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Navigation menu", "category": "Navigation", "description": "Horizontal navigation links with dropdown children and group headings, plus the outlined site variant with the current page marked in the primary color.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Navigation menu</h1>
         <p class="oc-hero-text">Header navigation. Items with children combine <code>.oc-navmenu-link--caret</code> with the dropdown component (popover + anchor positioning). <a href="../components.html">All components</a>.</p>
@@ -26,8 +26,78 @@
     <li><a class="oc-navmenu-link" href="#reports">Reports</a></li>
   </ul>
 </nav>
+<oc-code lang="tsx">&lt;Navmenu label="Module navigation"&gt;
+  &lt;NavmenuItem&gt;&lt;NavmenuLink href="#overview" current&gt;Overview&lt;/NavmenuLink&gt;&lt;/NavmenuItem&gt;
+  &lt;NavmenuItem&gt;&lt;NavmenuLink href="#contacts"&gt;Contacts&lt;/NavmenuLink&gt;&lt;/NavmenuItem&gt;
+  &lt;NavmenuDropdown label="Sales"&gt;
+    &lt;DropdownLabel&gt;Documents&lt;/DropdownLabel&gt;
+    &lt;DropdownItem href="#quotes"&gt;Quotes&lt;/DropdownItem&gt;
+    &lt;DropdownItem href="#orders"&gt;Orders&lt;/DropdownItem&gt;
+    &lt;DropdownItem href="#invoices"&gt;Invoices&lt;/DropdownItem&gt;
+  &lt;/NavmenuDropdown&gt;
+  &lt;NavmenuItem&gt;&lt;NavmenuLink href="#reports"&gt;Reports&lt;/NavmenuLink&gt;&lt;/NavmenuItem&gt;
+&lt;/Navmenu&gt;</oc-code>
+<oc-code lang="vue">&lt;!-- children may hold { group } headings: the "Documents" label in the Sales dropdown --&gt;
+&lt;OcNavmenu label="Module navigation" :items="[
+  { label: 'Overview', href: '#overview', current: true },
+  { label: 'Contacts', href: '#contacts' },
+  { label: 'Sales', children: [
+    { group: 'Documents' },
+    { label: 'Quotes', href: '#quotes' },
+    { label: 'Orders', href: '#orders' },
+    { label: 'Invoices', href: '#invoices' },
+  ] },
+  { label: 'Reports', href: '#reports' },
+]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::navmenu label="Module navigation" :items="[
+    ['label' =&gt; 'Overview', 'href' =&gt; '#overview', 'current' =&gt; true],
+    ['label' =&gt; 'Contacts', 'href' =&gt; '#contacts'],
+    ['label' =&gt; 'Sales', 'children' =&gt; [
+        ['group' =&gt; 'Documents'],
+        ['label' =&gt; 'Quotes', 'href' =&gt; '#quotes'],
+        ['label' =&gt; 'Orders', 'href' =&gt; '#orders'],
+        ['label' =&gt; 'Invoices', 'href' =&gt; '#invoices'],
+    ]],
+    ['label' =&gt; 'Reports', 'href' =&gt; '#reports'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ModuleNav extends Component
+{
+    public string $current = 'overview';
+
+    /** @return list&lt;array&lt;string, mixed&gt;&gt; */
+    public function items(): array
+    {
+        return [
+            ['label' =&gt; 'Overview', 'href' =&gt; '/overview', 'current' =&gt; $this-&gt;current === 'overview'],
+            ['label' =&gt; 'Contacts', 'href' =&gt; '/contacts', 'current' =&gt; $this-&gt;current === 'contacts'],
+            ['label' =&gt; 'Sales', 'children' =&gt; [
+                ['group' =&gt; 'Documents'],
+                ['label' =&gt; 'Quotes', 'href' =&gt; '/quotes'],
+                ['label' =&gt; 'Orders', 'href' =&gt; '/orders'],
+                ['label' =&gt; 'Invoices', 'href' =&gt; '/invoices'],
+            ]],
+            ['label' =&gt; 'Reports', 'href' =&gt; '/reports', 'current' =&gt; $this-&gt;current === 'reports'],
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.module-nav');
+    }
+}
+
+{{-- resources/views/livewire/module-nav.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::navmenu label="Module navigation" :items="$this-&gt;items()" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
-        <h3 id="site-variant" class="oc-section-content__title mt-2">Site variant: <code>.oc-navmenu--site</code></h3><p class="oc-section-content__desc">The menu in the header of this site: outlined pills with the current section marked by a primary colored border. Use it inside a <a href="site-header.html">Site header</a> or any toolbar.</p>
+        <h3 id="site-variant" class="oc-section-content__title mt-2">Site variant: <code>.oc-navmenu--site</code> <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">The menu in the header of this site: outlined pills with the current section marked by a primary colored border. Use it inside a <a href="site-header.html">Site header</a> or any toolbar. In React, Vue and Blade it is <code>variant="site"</code> on the menu.</p>
           <oc-demo title="Site navigation">
 <nav aria-label="Site">
   <ul class="oc-navmenu oc-navmenu--site">
@@ -37,6 +107,54 @@
     <li><a class="oc-navmenu-link" href="#blocks">Blocks</a></li>
   </ul>
 </nav>
+<oc-code lang="tsx">&lt;Navmenu label="Site" variant="site"&gt;
+  &lt;NavmenuItem&gt;&lt;NavmenuLink href="#home"&gt;Home&lt;/NavmenuLink&gt;&lt;/NavmenuItem&gt;
+  &lt;NavmenuItem&gt;&lt;NavmenuLink href="#docs" current&gt;Docs&lt;/NavmenuLink&gt;&lt;/NavmenuItem&gt;
+  &lt;NavmenuItem&gt;&lt;NavmenuLink href="#components"&gt;Components&lt;/NavmenuLink&gt;&lt;/NavmenuItem&gt;
+  &lt;NavmenuItem&gt;&lt;NavmenuLink href="#blocks"&gt;Blocks&lt;/NavmenuLink&gt;&lt;/NavmenuItem&gt;
+&lt;/Navmenu&gt;</oc-code>
+<oc-code lang="vue">&lt;OcNavmenu label="Site" variant="site" :items="[
+  { label: 'Home', href: '#home' },
+  { label: 'Docs', href: '#docs', current: true },
+  { label: 'Components', href: '#components' },
+  { label: 'Blocks', href: '#blocks' },
+]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::navmenu label="Site" variant="site" :items="[
+    ['label' =&gt; 'Home', 'href' =&gt; '#home'],
+    ['label' =&gt; 'Docs', 'href' =&gt; '#docs', 'current' =&gt; true],
+    ['label' =&gt; 'Components', 'href' =&gt; '#components'],
+    ['label' =&gt; 'Blocks', 'href' =&gt; '#blocks'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SiteNav extends Component
+{
+    /** @var array&lt;string, string&gt; label =&gt; url */
+    public array $links = ['Home' =&gt; '/', 'Docs' =&gt; '/docs', 'Components' =&gt; '/components', 'Blocks' =&gt; '/blocks'];
+
+    /** The links as navmenu items; the one for the current URL is marked. */
+    public function items(): array
+    {
+        return collect($this-&gt;links)
+            -&gt;map(fn (string $href, string $label) =&gt; ['label' =&gt; $label, 'href' =&gt; $href, 'current' =&gt; request()-&gt;is(ltrim($href, '/') ?: '/')])
+            -&gt;values()
+            -&gt;all();
+    }
+
+    public function render()
+    {
+        return view('livewire.site-nav');
+    }
+}
+
+{{-- resources/views/livewire/site-nav.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::navmenu label="Site" variant="site" :items="$this-&gt;items()" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <p>Keyboard: <kbd>Tab</kbd> through the links, <kbd>Enter</kbd> to follow. The list wraps onto more lines on narrow screens; for a collapsing menu use <code>.oc-topbar--collapsible</code> (CSS only, see Site header).</p>
         </div>

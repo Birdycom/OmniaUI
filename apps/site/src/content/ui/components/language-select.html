@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Language select", "category": "Forms", "description": "Compact locale or currency switcher for a site header.", "nav": "Language select", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Language select", "category": "Forms", "description": "A compact locale or currency switcher for a site header: a native select in a small pill with a leading icon, so phones get the system picker.", "nav": "Language select", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/language-select.html | Map: hero -> demo (language + currency, ghost in a header bar, code, open list, switch page, dropdown, menu with flags, icon only) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Language select</h1>
@@ -33,6 +33,92 @@
     </select>
   </label>
 </div>
+<oc-code lang="tsx">import { useState } from "react";
+import { LanguageSelect } from "@birdycom/omniaui-react";
+
+const languages = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Nederlands" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+];
+const currencies = [
+  { value: "EUR", label: "EUR" },
+  { value: "USD", label: "USD" },
+  { value: "GBP", label: "GBP" },
+];
+
+export function Example() {
+  const [locale, setLocale] = useState("en");
+  const [currency, setCurrency] = useState("EUR");
+  return (
+    &lt;div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}&gt;
+      &lt;LanguageSelect name="locale" options={languages} value={locale} onChange={setLocale} /&gt;
+      {/* currency: the € symbol in the primary color; pass icon="$" for another symbol */}
+      &lt;LanguageSelect currency name="currency" options={currencies} value={currency} onChange={setCurrency} /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcLanguageSelect } from "@birdycom/omniaui-vue";
+
+const languages = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Nederlands" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+];
+const currencies = [
+  { value: "EUR", label: "EUR" },
+  { value: "USD", label: "USD" },
+  { value: "GBP", label: "GBP" },
+];
+const locale = ref("en");
+const currency = ref("EUR");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center"&gt;
+    &lt;OcLanguageSelect v-model="locale" name="locale" :options="languages" /&gt;
+    &lt;OcLanguageSelect v-model="currency" currency name="currency" :options="currencies" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center"&gt;
+    &lt;x-oc::language-select name="locale" :value="app()-&gt;getLocale()" :options="['en' =&gt; 'English', 'nl' =&gt; 'Nederlands', 'fr' =&gt; 'Français', 'de' =&gt; 'Deutsch']" /&gt;
+    &lt;x-oc::language-select currency name="currency" value="EUR" :options="['EUR' =&gt; 'EUR', 'USD' =&gt; 'USD', 'GBP' =&gt; 'GBP']" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ShopSettings extends Component
+{
+    public string $locale = 'en';
+
+    public string $currency = 'EUR';
+
+    public function updatedLocale(string $value): void
+    {
+        app()-&gt;setLocale($value);
+    }
+
+    public function render()
+    {
+        return view('livewire.shop-settings');
+    }
+}
+
+{{-- resources/views/livewire/shop-settings.blade.php --}}
+&lt;div&gt;
+    {{-- attributes such as wire:model go to the select --}}
+    &lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center"&gt;
+        &lt;x-oc::language-select wire:model.live="locale" :value="$locale" :options="['en' =&gt; 'English', 'nl' =&gt; 'Nederlands', 'fr' =&gt; 'Français', 'de' =&gt; 'Deutsch']" /&gt;
+        &lt;x-oc::language-select currency wire:model.live="currency" :value="$currency" :options="['EUR' =&gt; 'EUR', 'USD' =&gt; 'USD', 'GBP' =&gt; 'GBP']" /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Ghost, in a header bar</h3>
@@ -51,6 +137,67 @@
     </label>
   </div>
 </div>
+<oc-code lang="tsx">import { LanguageSelect } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.5rem 1rem", border: "1px solid var(--oc-border)", borderRadius: "var(--oc-radius)" }}&gt;
+      &lt;strong&gt;Brand&lt;/strong&gt;
+      &lt;div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}&gt;
+        &lt;LanguageSelect ghost defaultValue="NL" options={["EN", "NL", "FR"].map((l) =&gt; ({ value: l, label: l }))} /&gt;
+        &lt;LanguageSelect ghost currency icon="$" options={["USD", "EUR"].map((c) =&gt; ({ value: c, label: c }))} /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcLanguageSelect } from "@birdycom/omniaui-vue";
+
+const lang = ref("NL");
+const currency = ref("USD");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 1rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+    &lt;strong&gt;Brand&lt;/strong&gt;
+    &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+      &lt;OcLanguageSelect v-model="lang" ghost :options="['EN', 'NL', 'FR'].map((l) =&gt; ({ value: l, label: l }))" /&gt;
+      &lt;OcLanguageSelect v-model="currency" ghost currency icon="$" :options="['USD', 'EUR'].map((c) =&gt; ({ value: c, label: c }))" /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 1rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+    &lt;strong&gt;Brand&lt;/strong&gt;
+    &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+        &lt;x-oc::language-select ghost value="NL" :options="['EN' =&gt; 'EN', 'NL' =&gt; 'NL', 'FR' =&gt; 'FR']" /&gt;
+        &lt;x-oc::language-select ghost currency icon="$" :options="['USD' =&gt; 'USD', 'EUR' =&gt; 'EUR']" /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class LanguageSelectGhost extends Component
+{
+    public function render()
+    {
+        return view('livewire.language-select-ghost');
+    }
+}
+
+{{-- resources/views/livewire/language-select-ghost.blade.php --}}
+&lt;div&gt;
+    &lt;div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 1rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+        &lt;strong&gt;Brand&lt;/strong&gt;
+        &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+            &lt;x-oc::language-select ghost value="NL" :options="['EN' =&gt; 'EN', 'NL' =&gt; 'NL', 'FR' =&gt; 'FR']" /&gt;
+            &lt;x-oc::language-select ghost currency icon="$" :options="['USD' =&gt; 'USD', 'EUR' =&gt; 'EUR']" /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Only the code, in a title bar <span class="oc-badge-version">v0.14.0</span></h3>
@@ -67,6 +214,71 @@
     </select>
   </label>
 </div>
+<oc-code lang="tsx">import { LanguageSelect } from "@birdycom/omniaui-react";
+
+const languages = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Nederlands" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+];
+
+export function Example() {
+  return (
+    &lt;div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", inlineSize: "min(100%,20rem)", padding: "0.25rem 0.25rem 0.25rem 0.75rem", border: "1px solid var(--oc-border)", borderRadius: "var(--oc-radius)" }}&gt;
+      &lt;strong&gt;App 1&lt;/strong&gt;
+      {/* closed it shows only the code of the chosen language ("NL") */}
+      &lt;LanguageSelect ghost code defaultValue="nl" options={languages} /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcLanguageSelect } from "@birdycom/omniaui-vue";
+
+const languages = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Nederlands" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+];
+const locale = ref("nl");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:flex;justify-content:space-between;align-items:center;inline-size:min(100%,20rem);padding:0.25rem 0.25rem 0.25rem 0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+    &lt;strong&gt;App 1&lt;/strong&gt;
+    &lt;!-- closed it shows only the code of the chosen language ("NL") --&gt;
+    &lt;OcLanguageSelect v-model="locale" ghost code :options="languages" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:flex;justify-content:space-between;align-items:center;inline-size:min(100%,20rem);padding:0.25rem 0.25rem 0.25rem 0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+    &lt;strong&gt;App 1&lt;/strong&gt;
+    {{-- closed it shows only the code of the chosen language ("NL") --}}
+    &lt;x-oc::language-select ghost code value="nl" :options="['en' =&gt; 'English', 'nl' =&gt; 'Nederlands', 'fr' =&gt; 'Français', 'de' =&gt; 'Deutsch']" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class LanguageSelectCode extends Component
+{
+    public function render()
+    {
+        return view('livewire.language-select-code');
+    }
+}
+
+{{-- resources/views/livewire/language-select-code.blade.php --}}
+&lt;div&gt;
+    &lt;div style="display:flex;justify-content:space-between;align-items:center;inline-size:min(100%,20rem);padding:0.25rem 0.25rem 0.25rem 0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+        &lt;strong&gt;App 1&lt;/strong&gt;
+        {{-- closed it shows only the code of the chosen language ("NL") --}}
+        &lt;x-oc::language-select ghost code value="nl" :options="['en' =&gt; 'English', 'nl' =&gt; 'Nederlands', 'fr' =&gt; 'Français', 'de' =&gt; 'Deutsch']" /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="open-list">The open list <span class="oc-badge-version">v0.14.1</span></h3>
@@ -82,7 +294,7 @@
 &lt;script type="module" src="/js/oc-language-select.js"&gt;&lt;/script&gt;</oc-code>
           <h3 class="oc-section-content__title mt-2">With the OmniaUI dropdown</h3>
           <p class="oc-section-content__desc">The pill as a <code>&lt;button&gt;</code> opens an <a href="dropdown.html">OmniaUI dropdown</a> (<code>popovertarget</code> + <code>.oc-dropdown-menu</code>), styled like every other menu, without JavaScript. Use links to the translated pages (<code>hreflang</code>); <code>role="menuitemradio"</code> with <code>aria-checked="true"</code> marks the current language.</p>
-          <oc-demo title="Language select - dropdown" size="tall">
+          <oc-demo title="Language select - dropdown" size="tall" hint="Open the select: the list opens below it.">
 <button type="button" class="oc-language-select" popovertarget="oc-language-menu" aria-label="Language: Nederlands">
   <span class="oc-language-select-icon" aria-hidden="true"><svg data-icon="mdi:web" viewBox="0 0 24 24" fill="currentColor"><path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span>
   Nederlands
@@ -105,11 +317,70 @@
   &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=fr" hreflang="fr" lang="fr"&gt;Français&lt;/a&gt;
   &lt;a class="oc-dropdown-item" role="menuitemradio" aria-checked="false" href="?lang=de" hreflang="de" lang="de"&gt;Deutsch&lt;/a&gt;
 &lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { LanguageMenu } from "@birdycom/omniaui-react";
+
+const languages = [
+  { value: "en", label: "English", href: "?lang=en" },
+  { value: "nl", label: "Nederlands", href: "?lang=nl" },
+  { value: "fr", label: "Français", href: "?lang=fr" },
+  { value: "de", label: "Deutsch", href: "?lang=de" },
+];
+
+export function Example() {
+  // a button that opens a popover menu; with href every item is a link with hreflang
+  return &lt;LanguageMenu id="oc-language-menu" options={languages} value="nl" show="name" /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcLanguageMenu } from "@birdycom/omniaui-vue";
+
+const languages = [
+  { value: "en", label: "English", href: "?lang=en" },
+  { value: "nl", label: "Nederlands", href: "?lang=nl" },
+  { value: "fr", label: "Français", href: "?lang=fr" },
+  { value: "de", label: "Deutsch", href: "?lang=de" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- a button that opens a popover menu; with href every item is a link with hreflang --&gt;
+  &lt;OcLanguageMenu :options="languages" model-value="nl" show="name" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- a button that opens a popover menu; with href every item is a link with hreflang --}}
+&lt;x-oc::language-menu id="oc-language-menu" show="name" :value="app()-&gt;getLocale()" :options="[
+    'en' =&gt; ['label' =&gt; 'English', 'href' =&gt; '?lang=en'],
+    'nl' =&gt; ['label' =&gt; 'Nederlands', 'href' =&gt; '?lang=nl'],
+    'fr' =&gt; ['label' =&gt; 'Français', 'href' =&gt; '?lang=fr'],
+    'de' =&gt; ['label' =&gt; 'Deutsch', 'href' =&gt; '?lang=de'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class LanguageSelectDropdown extends Component
+{
+    public function render()
+    {
+        return view('livewire.language-select-dropdown');
+    }
+}
+
+{{-- resources/views/livewire/language-select-dropdown.blade.php --}}
+&lt;div&gt;
+    {{-- a button that opens a popover menu; with href every item is a link with hreflang --}}
+    &lt;x-oc::language-menu id="oc-language-menu" show="name" :value="app()-&gt;getLocale()" :options="[
+        'en' =&gt; ['label' =&gt; 'English', 'href' =&gt; '?lang=en'],
+        'nl' =&gt; ['label' =&gt; 'Nederlands', 'href' =&gt; '?lang=nl'],
+        'fr' =&gt; ['label' =&gt; 'Français', 'href' =&gt; '?lang=fr'],
+        'de' =&gt; ['label' =&gt; 'Deutsch', 'href' =&gt; '?lang=de'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="menu-flags">Menu with flags <span class="oc-badge-version">v0.16.0</span></h3>
-          <p class="oc-section-content__desc">The language menu of an app header: the button shows the flag and the code of the current language, the list shows each language with its flag, its name in that language (<code>lang="…"</code>, so screen readers read it right), its code, and a check at the current one (<code>aria-current="true"</code>). It is a popover (<code>popovertarget</code>), so it opens, closes with <kbd>Esc</kbd> or a click outside, and works with the keyboard without any script. On your site each item is a link to the page in that language (<code>hreflang</code>); in this demo the items only close the menu. React <code>LanguageMenu</code> and Vue <code>OcLanguageMenu</code> draw the flags as inline SVG (see <a href="webicon.html">Webicon</a>), without the Iconify script: <code>flag:nl-4x3</code>, <code>be</code>, <code>fr</code>, <code>de</code>, <code>gb</code>, <code>it</code> and <code>us</code> are built in, any other flag you register once with <code>addWebicons</code>.</p>
-          <oc-demo title="Language select - menu with flags" size="tall">
+          <p class="oc-section-content__desc">The language menu of an app header: the button shows the flag and the code of the current language, the list shows each language with its flag, its name in that language (<code>lang="…"</code>, so screen readers read it right), its code, and a check at the current one (<code>aria-current="true"</code>). It is a popover (<code>popovertarget</code>), so it opens, closes with <kbd>Esc</kbd> or a click outside, and works with the keyboard without any script. On your site each item is a link to the page in that language (<code>hreflang</code>); in this demo the items only close the menu. React <code>LanguageMenu</code>, Vue <code>OcLanguageMenu</code> and Blade <code>React <code>LanguageMenu</code> and Vue <code>OcLanguageMenu</code> draw the flags as inline SVGlt;x-oc::language-menuReact <code>LanguageMenu</code> and Vue <code>OcLanguageMenu</code> draw the flags as inline SVGgt;</code> (since v0.17.0) draw the flags as inline SVG (see <a href="webicon.html">Webicon</a>), without the Iconify script: <code>flag:nl-4x3</code>, <code>be</code>, <code>fr</code>, <code>de</code>, <code>gb</code>, <code>it</code> and <code>us</code> are built in, any other flag you register once with <code>addWebicons</code>.</p>
+          <oc-demo title="Language select - menu with flags" size="tall" hint="Open the select: the list opens below it.">
 <div class="flex justify-between gap-1 w-full" style="align-items: center; padding: 0.5rem 0.75rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius)">
   <strong>Company 1</strong>
   <button type="button" class="oc-language-select oc-language-select--ghost" popovertarget="oc-lang-flags" aria-label="Language: Nederlands">
@@ -156,11 +427,103 @@
     'nl' =&gt; ['label' =&gt; 'Nederlands', 'flag' =&gt; 'flag:nl-4x3', 'href' =&gt; '/nl/'],
     'fr' =&gt; ['label' =&gt; 'Français', 'flag' =&gt; 'flag:fr-4x3', 'href' =&gt; '/fr/'],
 ]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class LanguageSelectMenuWithFlags extends Component
+{
+    public function render()
+    {
+        return view('livewire.language-select-menu-with-flags');
+    }
+}
+
+{{-- resources/views/livewire/language-select-menu-with-flags.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::language-menu ghost :value="app()-&gt;getLocale()" :options="[
+        'en' =&gt; ['label' =&gt; 'English', 'flag' =&gt; 'flag:gb-4x3', 'href' =&gt; '/en/'],
+        'nl' =&gt; ['label' =&gt; 'Nederlands', 'flag' =&gt; 'flag:nl-4x3', 'href' =&gt; '/nl/'],
+        'fr' =&gt; ['label' =&gt; 'Français', 'flag' =&gt; 'flag:fr-4x3', 'href' =&gt; '/fr/'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="menu-auto-flags">Flags from the language code <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">With <code>flags="auto"</code> you leave <code>flag</code> out of the options: the menu takes the flag from the language code. A region in the code wins (<code>nl-BE</code> shows Belgium, <code>en-US</code> the United States), otherwise the usual country of the language (<code>en</code> gb, <code>da</code> dk, <code>nl</code> nl). A <code>flag</code> on an option still wins, and <code>flagFor(code)</code> sets your own choice per language. The same rule is exported as <code>languageFlag(code)</code> (React, Vue) and <code>Webicons::languageFlag()</code> (Laravel). Flags other than the built-in seven you add with <code>npx omniaui webicons flag:es-4x3</code>.</p>
+          <oc-demo title="Language select - flags from the language code" size="tall" hint="Open the select: the list opens below it.">
+<div class="flex justify-between gap-1 w-full" style="align-items: center; padding: 0.5rem 0.75rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius)">
+  <strong>Company 1</strong>
+  <button type="button" class="oc-language-select oc-language-select--ghost" popovertarget="oc-lang-auto" aria-label="Language: Nederlands (België)">
+    <span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:be-4x3" aria-hidden="true"></iconify-icon></span>
+    <span class="oc-language-select-code">NL</span>
+  </button>
+  <div class="oc-dropdown-menu oc-language-menu" id="oc-lang-auto" popover aria-label="Language">
+    <button type="button" class="oc-dropdown-item" lang="en" popovertarget="oc-lang-auto" popovertargetaction="hide"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:gb-4x3" aria-hidden="true"></iconify-icon></span><span>English</span><span class="oc-language-menu-code" aria-hidden="true">EN</span></button>
+    <button type="button" class="oc-dropdown-item" lang="nl-BE" popovertarget="oc-lang-auto" popovertargetaction="hide" aria-current="true"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:be-4x3" aria-hidden="true"></iconify-icon></span><span>Nederlands</span><span class="oc-language-menu-code" aria-hidden="true">NL</span></button>
+    <button type="button" class="oc-dropdown-item" lang="fr-BE" popovertarget="oc-lang-auto" popovertargetaction="hide"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:be-4x3" aria-hidden="true"></iconify-icon></span><span>Français</span><span class="oc-language-menu-code" aria-hidden="true">FR</span></button>
+    <button type="button" class="oc-dropdown-item" lang="de" popovertarget="oc-lang-auto" popovertargetaction="hide"><span class="oc-language-flag" aria-hidden="true"><iconify-icon icon="flag:de-4x3" aria-hidden="true"></iconify-icon></span><span>Deutsch</span><span class="oc-language-menu-code" aria-hidden="true">DE</span></button>
+  </div>
+</div>
+<oc-code lang="html">&lt;div class="flex justify-between gap-1 w-full" style="align-items: center; padding: 0.5rem 0.75rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius)"&gt;
+  &lt;strong&gt;Company 1&lt;/strong&gt;
+  &lt;button type="button" class="oc-language-select oc-language-select--ghost" popovertarget="oc-lang-auto" aria-label="Language: Nederlands (België)"&gt;
+    &lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:be-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;
+    &lt;span class="oc-language-select-code"&gt;NL&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="oc-dropdown-menu oc-language-menu" id="oc-lang-auto" popover aria-label="Language"&gt;
+    &lt;button type="button" class="oc-dropdown-item" lang="en" popovertarget="oc-lang-auto" popovertargetaction="hide"&gt;&lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:gb-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span&gt;English&lt;/span&gt;&lt;span class="oc-language-menu-code" aria-hidden="true"&gt;EN&lt;/span&gt;&lt;/button&gt;
+    &lt;button type="button" class="oc-dropdown-item" lang="nl-BE" popovertarget="oc-lang-auto" popovertargetaction="hide" aria-current="true"&gt;&lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:be-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span&gt;Nederlands&lt;/span&gt;&lt;span class="oc-language-menu-code" aria-hidden="true"&gt;NL&lt;/span&gt;&lt;/button&gt;
+    &lt;button type="button" class="oc-dropdown-item" lang="fr-BE" popovertarget="oc-lang-auto" popovertargetaction="hide"&gt;&lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:be-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span&gt;Français&lt;/span&gt;&lt;span class="oc-language-menu-code" aria-hidden="true"&gt;FR&lt;/span&gt;&lt;/button&gt;
+    &lt;button type="button" class="oc-dropdown-item" lang="de" popovertarget="oc-lang-auto" popovertargetaction="hide"&gt;&lt;span class="oc-language-flag" aria-hidden="true"&gt;&lt;iconify-icon icon="flag:de-4x3" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span&gt;Deutsch&lt;/span&gt;&lt;span class="oc-language-menu-code" aria-hidden="true"&gt;DE&lt;/span&gt;&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">const languages = [
+  { value: "en", label: "English" },              // gb
+  { value: "nl-BE", label: "Nederlands", code: "NL" }, // be
+  { value: "fr-BE", label: "Français", code: "FR" },   // be
+  { value: "de", label: "Deutsch" },              // de
+];
+
+&lt;LanguageMenu options={languages} value={lang} onChange={setLang} flags="auto" ghost /&gt;
+// Your own choice for one language:
+&lt;LanguageMenu options={languages} flags="auto" flagFor={(code) =&gt; (code === "en" ? "flag:us-4x3" : undefined)} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcLanguageMenu v-model="lang" :options="languages" flags="auto" ghost /&gt;
+&lt;!-- languages: [{ value: 'nl-BE', label: 'Nederlands', code: 'NL' }, …] --&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::language-menu flags="auto" ghost :value="app()-&gt;getLocale()" :options="[
+    'en' =&gt; ['label' =&gt; 'English'],
+    'nl-BE' =&gt; ['label' =&gt; 'Nederlands', 'code' =&gt; 'NL'],
+    'fr-BE' =&gt; ['label' =&gt; 'Français', 'code' =&gt; 'FR'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class LanguageSelectFlagsFromTheLanguageCode extends Component
+{
+    public function render()
+    {
+        return view('livewire.language-select-flags-from-the-language-code');
+    }
+}
+
+{{-- resources/views/livewire/language-select-flags-from-the-language-code.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::language-menu flags="auto" ghost :value="app()-&gt;getLocale()" :options="[
+        'en' =&gt; ['label' =&gt; 'English'],
+        'nl-BE' =&gt; ['label' =&gt; 'Nederlands', 'code' =&gt; 'NL'],
+        'fr-BE' =&gt; ['label' =&gt; 'Français', 'code' =&gt; 'FR'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="menu-icon">Icon only, for a compact header <span class="oc-badge-version">v0.16.0</span></h3>
           <p class="oc-section-content__desc"><code>--icon</code> makes the trigger a round button with only the current flag, or the globe when you do not use flags. The name goes in <code>aria-label</code> and in a tooltip under the button (<code>oc-tooltip oc-tooltip--bottom</code>), which steps aside while the menu is open. Hover or <kbd>Tab</kbd> to a button to see the tooltip, press <kbd>Enter</kbd> to open the list.</p>
-          <oc-demo title="Language select - icon only" size="tall">
+          <oc-demo title="Language select - icon only" size="tall" hint="Open the select: the list opens below it.">
 <div class="flex justify-between gap-1 w-full" style="align-items: center; padding: 0.5rem 0.75rem; border: 1px solid var(--oc-border); border-radius: var(--oc-radius)">
   <strong>Company 1</strong>
   <div class="flex gap-1" style="align-items: center">
@@ -213,6 +576,25 @@
 &lt;OcLanguageMenu v-model="lang" :options="[{ value: 'en', label: 'English' }, { value: 'nl', label: 'Nederlands' }]" compact /&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::language-menu compact ghost value="fr" :options="['fr' =&gt; ['label' =&gt; 'Français', 'flag' =&gt; 'flag:fr-4x3', 'href' =&gt; '/fr/'], 'en' =&gt; ['label' =&gt; 'English', 'flag' =&gt; 'flag:gb-4x3', 'href' =&gt; '/en/']]" /&gt;
 &lt;x-oc::language-menu compact value="en" :options="['en' =&gt; ['label' =&gt; 'English', 'href' =&gt; '/en/'], 'nl' =&gt; ['label' =&gt; 'Nederlands', 'href' =&gt; '/nl/']]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class LanguageSelectIconOnly extends Component
+{
+    public function render()
+    {
+        return view('livewire.language-select-icon-only');
+    }
+}
+
+{{-- resources/views/livewire/language-select-icon-only.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::language-menu compact ghost value="fr" :options="['fr' =&gt; ['label' =&gt; 'Français', 'flag' =&gt; 'flag:fr-4x3', 'href' =&gt; '/fr/'], 'en' =&gt; ['label' =&gt; 'English', 'flag' =&gt; 'flag:gb-4x3', 'href' =&gt; '/en/']]" /&gt;
+    &lt;x-oc::language-menu compact value="en" :options="['en' =&gt; ['label' =&gt; 'English', 'href' =&gt; '/en/'], 'nl' =&gt; ['label' =&gt; 'Nederlands', 'href' =&gt; '/nl/']]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

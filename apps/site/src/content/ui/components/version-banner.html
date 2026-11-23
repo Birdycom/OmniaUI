@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Version banner", "category": "App UX", "description": "\"New version available - reload\" chip for long-running apps.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Version banner", "category": "App UX", "description": "\"New version available - reload\" chip for long-running apps, in a warning, info or success tone, with a reload link, a button or a link of your own.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/version-banner.html | Map: hero -> chip in a header demo -> tones demo -> usage -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Version banner</h1>
@@ -10,7 +10,7 @@
           
           
         <p class="oc-section-header__desc">Plain HTML and CSS; each example shows its markup in the HTML tab.</p></div>
-        <div class="oc-section-content"><h3 class="oc-section-content__title">In the app header</h3><p class="oc-section-content__desc">Place it at the end of the header or breadcrumb row. Below 40rem the long text is replaced by the short one. It has <code>role="status"</code>, so screen readers announce it when it appears. Snippet: <code>packages/ui/snippets/version-banner.html</code>.</p>
+        <div class="oc-section-content"><h3 class="oc-section-content__title">In the app header <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">Place it at the end of the header or breadcrumb row. Below 40rem the long text is replaced by the short one. It has <code>role="status"</code>, so screen readers announce it when it appears. Snippet: <code>packages/ui/snippets/version-banner.html</code>.</p>
           <oc-demo title="Version banner">
 <div style="display:flex;align-items:center;gap:1rem;width:100%;padding:.5rem .75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)">
   <strong>Projects</strong>
@@ -22,6 +22,57 @@
     <a class="oc-version-banner-action" href="">Reload</a>
   </div>
 </div>
+<oc-code lang="tsx">import { VersionBanner } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%", padding: ".5rem .75rem", border: "1px solid var(--oc-border)", borderRadius: "var(--oc-radius)" }}&gt;
+      &lt;strong&gt;Projects&lt;/strong&gt;
+      &lt;span style={{ marginInlineStart: "auto" }} /&gt;
+      {/* renders nothing while version is empty: set it when your build check finds a new one */}
+      &lt;VersionBanner version="v0.6.0" /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcVersionBanner } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:flex;align-items:center;gap:1rem;width:100%;padding:.5rem .75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+    &lt;strong&gt;Projects&lt;/strong&gt;
+    &lt;span style="margin-inline-start:auto"&gt;&lt;/span&gt;
+    &lt;!-- renders nothing while version is empty: set it when your build check finds a new one --&gt;
+    &lt;OcVersionBanner version="v0.6.0" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:flex;align-items:center;gap:1rem;width:100%;padding:.5rem .75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+    &lt;strong&gt;Projects&lt;/strong&gt;
+    &lt;span style="margin-inline-start:auto"&gt;&lt;/span&gt;
+    &lt;x-oc::version-banner version="v0.6.0" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class VersionBanner extends Component
+{
+    public function render()
+    {
+        return view('livewire.version-banner');
+    }
+}
+
+{{-- resources/views/livewire/version-banner.blade.php --}}
+&lt;div&gt;
+    &lt;div style="display:flex;align-items:center;gap:1rem;width:100%;padding:.5rem .75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius)"&gt;
+        &lt;strong&gt;Projects&lt;/strong&gt;
+        &lt;span style="margin-inline-start:auto"&gt;&lt;/span&gt;
+        &lt;x-oc::version-banner version="v0.6.0" /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="tones">Tones</h3>
@@ -46,7 +97,68 @@
   </div>
 </div>
 <oc-code lang="html">&lt;div class="oc-version-banner oc-version-banner--info" role="status"&gt;&lt;span class="oc-version-banner-dot" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-version-banner-text"&gt;Update ready&lt;/span&gt;&lt;button class="oc-version-banner-action" type="button"&gt;Install&lt;/button&gt;&lt;/div&gt;
-&lt;div class="oc-version-banner oc-version-banner--success" role="status"&gt;&lt;span class="oc-version-banner-dot" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-version-banner-text"&gt;Updated to v0.6.0&lt;/span&gt;&lt;a class="oc-version-banner-action" href="/changelog"&gt;What's new&lt;/a&gt;&lt;/div&gt;</oc-code></oc-demo>
+&lt;div class="oc-version-banner oc-version-banner--success" role="status"&gt;&lt;span class="oc-version-banner-dot" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-version-banner-text"&gt;Updated to v0.6.0&lt;/span&gt;&lt;a class="oc-version-banner-action" href="/changelog"&gt;What's new&lt;/a&gt;&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { VersionBanner } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;&gt;
+      {/* onReload: the action is a button */}
+      &lt;VersionBanner version="v0.6.0" tone="info" text="Update ready" short="" actionLabel="Install" onReload={() =&gt; location.reload()} /&gt;
+      {/* href: the action links elsewhere, here to the release notes */}
+      &lt;VersionBanner version="v0.6.0" tone="success" text="Updated to v0.6.0" short="" actionLabel="What's new" href="/changelog" /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcVersionBanner } from "@birdycom/omniaui-vue";
+
+const install = () =&gt; location.reload();
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- on-reload: the action is a button --&gt;
+  &lt;OcVersionBanner version="v0.6.0" tone="info" short="" action-label="Install" :on-reload="install"&gt;Update ready&lt;/OcVersionBanner&gt;
+  &lt;!-- href: the action links elsewhere, here to the release notes --&gt;
+  &lt;OcVersionBanner version="v0.6.0" tone="success" short="" action-label="What's new" href="/changelog"&gt;Updated to v0.6.0&lt;/OcVersionBanner&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- button: the action is a &lt;button&gt;; action-attributes go on it (here an onclick) --}}
+&lt;x-oc::version-banner version="v0.6.0" tone="info" short="" action="Install" button :action-attributes="['onclick' =&gt; 'location.reload()']"&gt;Update ready&lt;/x-oc::version-banner&gt;
+{{-- href: the action links elsewhere, here to the release notes --}}
+&lt;x-oc::version-banner version="v0.6.0" tone="success" short="" action="What's new" href="/changelog"&gt;Updated to v0.6.0&lt;/x-oc::version-banner&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class VersionBannerTones extends Component
+{
+    public string $version = 'v0.6.0';
+
+    public bool $installed = false;
+
+    public function install(): void
+    {
+        // Install the update here; afterwards the banner turns green and links to the release notes.
+        $this-&gt;installed = true;
+    }
+
+    public function render()
+    {
+        return view('livewire.version-banner-tones');
+    }
+}
+
+{{-- resources/views/livewire/version-banner-tones.blade.php --}}
+&lt;div&gt;
+    @if (! $installed)
+        &lt;x-oc::version-banner :version="$version" tone="info" short="" :action="'Install'" button :action-attributes="['wire:click' =&gt; 'install']"&gt;Update ready&lt;/x-oc::version-banner&gt;
+    @else
+        &lt;x-oc::version-banner :version="$version" tone="success" short="" action="What's new" href="/changelog"&gt;Updated to {{ $version }}&lt;/x-oc::version-banner&gt;
+    @endif
+&lt;/div&gt;</oc-code>
+</oc-demo>
 
           <h3 id="usage">When to show it</h3>
           <p class="desc">Keep the chip <code>hidden</code> by default. Your app compares its own build number with a small <code>version.json</code> on the server (every few minutes or when the tab gets focus) and removes <code>hidden</code> when they differ. The React and Vue wrappers take a <code>version</code> prop and render nothing when it is empty.</p>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Document viewer", "category": "Media", "description": "PDF, video or image in a card with a label and a full-screen view on a dialog.", "nav": "Document viewer", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Document viewer", "category": "Media", "description": "PDF, video or image in a card with a label and a full-screen view on a native dialog, opened with invoker commands. No JavaScript needed.", "nav": "Document viewer", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/doc-viewer.html | Map: hero -> demo -> usage -> reference -> platform features -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Document viewer</h1>
@@ -59,6 +59,57 @@
     <img src="/img/blocks/auth-split-photo.webp" alt="Site visit video" style="display:block;inline-size:100%;block-size:100%;object-fit:contain" loading="lazy">
   </div>
 </dialog>
+<oc-code lang="tsx">import { DocViewer } from "@birdycom/omniaui-react";
+
+const documents = [
+  { label: "Quote 1", meta: "PDF · 2.4 MB", src: "/files/quote-1.pdf", alt: "First page of Quote 1", download: "/files/quote-1.pdf" },
+  { label: "Site visit", meta: "1:42", type: "video" as const, src: "/files/site-visit.mp4", alt: "Video still: site visit" },
+];
+
+export function Example() {
+  return (
+    &lt;DocViewer idPrefix="oc-doc-viewer-demo" items={documents} /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDocViewer } from "@birdycom/omniaui-vue";
+
+const documents = [
+  { label: "Quote 1", meta: "PDF · 2.4 MB", src: "/files/quote-1.pdf", alt: "First page of Quote 1", download: "/files/quote-1.pdf" },
+  { label: "Site visit", meta: "1:42", type: "video" as const, src: "/files/site-visit.mp4", alt: "Video still: site visit" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDocViewer id-prefix="oc-doc-viewer-demo" :items="documents" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::doc-viewer id="oc-doc-viewer-demo" :items="[
+    ['label' =&gt; 'Quote 1', 'meta' =&gt; 'PDF · 2.4 MB', 'src' =&gt; '/files/quote-1.pdf', 'alt' =&gt; 'First page of Quote 1', 'download' =&gt; '/files/quote-1.pdf'],
+    ['label' =&gt; 'Site visit', 'meta' =&gt; '1:42', 'type' =&gt; 'video', 'src' =&gt; '/files/site-visit.mp4', 'alt' =&gt; 'Video still: site visit'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class DocViewerDocumentViewer extends Component
+{
+    public array $documents = [
+        ['label' =&gt; 'Quote 1', 'meta' =&gt; 'PDF · 2.4 MB', 'src' =&gt; '/files/quote-1.pdf', 'alt' =&gt; 'First page of Quote 1', 'download' =&gt; '/files/quote-1.pdf'],
+        ['label' =&gt; 'Site visit', 'meta' =&gt; '1:42', 'type' =&gt; 'video', 'src' =&gt; '/files/site-visit.mp4', 'alt' =&gt; 'Video still: site visit'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.doc-viewer-document-viewer');
+    }
+}
+
+{{-- resources/views/livewire/doc-viewer-document-viewer.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::doc-viewer id="oc-doc-viewer-demo" :items="$documents" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

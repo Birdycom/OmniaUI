@@ -13,8 +13,9 @@
           <h3 class="oc-section-content__title" id="demo-1">Legal page with a table of contents <span class="oc-badge-version">v0.14.1</span></h3>
           <p class="oc-section-content__desc">Group labels (<code>.oc-toc-group-label</code>) split the articles from the annexes; <code>.oc-prose--ruled</code> draws a line under every article title. Click an article in the contents: the text scrolls to it inside the example.</p>
           <oc-demo title="Document layout - legal page">
-<!-- Demo only: a scroll box, so the links scroll the text inside it and not the whole page -->
-<div style="inline-size:100%;max-block-size:28rem;overflow:auto">
+<!-- Demo only: a framed scroll box, so the links scroll the text inside it and not the whole page; a narrower side
+     column and gap than on a full page (--oc-doc-aside, --oc-doc-gap), so the text keeps a readable width in the preview -->
+<div style="inline-size:100%;max-block-size:28rem;overflow:auto;padding:1rem 1.25rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);--oc-doc-aside:10rem;--oc-doc-gap:1.5rem 2rem">
 <div class="oc-doc-layout" style="inline-size:100%">
   <aside class="oc-doc-layout__aside">
     <nav class="oc-toc" aria-label="On this page">
@@ -45,6 +46,141 @@
   </div>
 </div>
 </div>
+<oc-code lang="tsx">import { DocLayout, Prose, Toc } from "@birdycom/omniaui-react";
+
+const groups = [
+  {
+    label: "Articles",
+    items: [
+      { href: "#doc-who", label: "1. Who we are", current: true },
+      { href: "#doc-data", label: "2. What data we keep" },
+      { href: "#doc-rights", label: "3. Your rights" },
+    ],
+  },
+  { label: "Annexes", items: [{ href: "#doc-cookies", label: "A. Cookies" }] },
+];
+
+export function Example() {
+  return (
+    &lt;DocLayout aside={&lt;Toc groups={groups} /&gt;}&gt;
+      &lt;Prose as="div" className="oc-prose--legal oc-prose--ruled"&gt;
+        &lt;h2 id="doc-who"&gt;1. Who we are&lt;/h2&gt;
+        &lt;p&gt;Company 1 builds and maintains software for small teams. You can reach us at info@company1.example.&lt;/p&gt;
+        &lt;h2 id="doc-data"&gt;2. What data we keep&lt;/h2&gt;
+        &lt;p&gt;Only what we need to deliver the service: your name, your e-mail address and the invoices of your plan.&lt;/p&gt;
+        &lt;ul&gt;&lt;li&gt;Account data, as long as the account exists.&lt;/li&gt;&lt;li&gt;Invoices, for seven years.&lt;/li&gt;&lt;/ul&gt;
+        &lt;h2 id="doc-rights"&gt;3. Your rights&lt;/h2&gt;
+        &lt;p&gt;You can ask to see, correct or delete your data at any time. We answer within 30 days.&lt;/p&gt;
+        &lt;h2 id="doc-cookies"&gt;A. Cookies&lt;/h2&gt;
+        &lt;p&gt;We only use the cookies that keep you signed in and remember your language.&lt;/p&gt;
+      &lt;/Prose&gt;
+    &lt;/DocLayout&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDocLayout, OcProse, OcToc } from '@birdycom/omniaui-vue'
+
+const groups = [
+  {
+    label: 'Articles',
+    items: [
+      { href: '#doc-who', label: '1. Who we are', current: true },
+      { href: '#doc-data', label: '2. What data we keep' },
+      { href: '#doc-rights', label: '3. Your rights' },
+    ],
+  },
+  { label: 'Annexes', items: [{ href: '#doc-cookies', label: 'A. Cookies' }] },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDocLayout&gt;
+    &lt;template #aside&gt;
+      &lt;OcToc :groups="groups" /&gt;
+    &lt;/template&gt;
+    &lt;OcProse as="div" class="oc-prose--legal oc-prose--ruled"&gt;
+      &lt;h2 id="doc-who"&gt;1. Who we are&lt;/h2&gt;
+      &lt;p&gt;Company 1 builds and maintains software for small teams. You can reach us at info@company1.example.&lt;/p&gt;
+      &lt;h2 id="doc-data"&gt;2. What data we keep&lt;/h2&gt;
+      &lt;p&gt;Only what we need to deliver the service: your name, your e-mail address and the invoices of your plan.&lt;/p&gt;
+      &lt;ul&gt;&lt;li&gt;Account data, as long as the account exists.&lt;/li&gt;&lt;li&gt;Invoices, for seven years.&lt;/li&gt;&lt;/ul&gt;
+      &lt;h2 id="doc-rights"&gt;3. Your rights&lt;/h2&gt;
+      &lt;p&gt;You can ask to see, correct or delete your data at any time. We answer within 30 days.&lt;/p&gt;
+      &lt;h2 id="doc-cookies"&gt;A. Cookies&lt;/h2&gt;
+      &lt;p&gt;We only use the cookies that keep you signed in and remember your language.&lt;/p&gt;
+    &lt;/OcProse&gt;
+  &lt;/OcDocLayout&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::doc-layout&gt;
+    &lt;x-slot:aside&gt;
+        &lt;x-oc::toc :groups="[
+            ['label' =&gt; 'Articles', 'items' =&gt; [
+                ['href' =&gt; '#doc-who', 'label' =&gt; '1. Who we are', 'current' =&gt; true],
+                ['href' =&gt; '#doc-data', 'label' =&gt; '2. What data we keep'],
+                ['href' =&gt; '#doc-rights', 'label' =&gt; '3. Your rights'],
+            ]],
+            ['label' =&gt; 'Annexes', 'items' =&gt; [
+                ['href' =&gt; '#doc-cookies', 'label' =&gt; 'A. Cookies'],
+            ]],
+        ]" /&gt;
+    &lt;/x-slot:aside&gt;
+    &lt;x-oc::prose as="div" class="oc-prose--legal oc-prose--ruled"&gt;
+        &lt;h2 id="doc-who"&gt;1. Who we are&lt;/h2&gt;
+        &lt;p&gt;Company 1 builds and maintains software for small teams. You can reach us at info@company1.example.&lt;/p&gt;
+        &lt;h2 id="doc-data"&gt;2. What data we keep&lt;/h2&gt;
+        &lt;p&gt;Only what we need to deliver the service: your name, your e-mail address and the invoices of your plan.&lt;/p&gt;
+        &lt;ul&gt;&lt;li&gt;Account data, as long as the account exists.&lt;/li&gt;&lt;li&gt;Invoices, for seven years.&lt;/li&gt;&lt;/ul&gt;
+        &lt;h2 id="doc-rights"&gt;3. Your rights&lt;/h2&gt;
+        &lt;p&gt;You can ask to see, correct or delete your data at any time. We answer within 30 days.&lt;/p&gt;
+        &lt;h2 id="doc-cookies"&gt;A. Cookies&lt;/h2&gt;
+        &lt;p&gt;We only use the cookies that keep you signed in and remember your language.&lt;/p&gt;
+    &lt;/x-oc::prose&gt;
+&lt;/x-oc::doc-layout&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class PrivacyPage extends Component
+{
+    /** @var list&lt;array{label: string, items: list&lt;array{href: string, label: string}&gt;}&gt; */
+    public array $groups = [
+        ['label' =&gt; 'Articles', 'items' =&gt; [
+            ['href' =&gt; '#doc-who', 'label' =&gt; '1. Who we are', 'current' =&gt; true],
+            ['href' =&gt; '#doc-data', 'label' =&gt; '2. What data we keep'],
+            ['href' =&gt; '#doc-rights', 'label' =&gt; '3. Your rights'],
+        ]],
+        ['label' =&gt; 'Annexes', 'items' =&gt; [
+            ['href' =&gt; '#doc-cookies', 'label' =&gt; 'A. Cookies'],
+        ]],
+    ];
+
+    public function render()
+    {
+        return view('livewire.privacy-page');
+    }
+}
+
+{{-- resources/views/livewire/privacy-page.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::doc-layout&gt;
+        &lt;x-slot:aside&gt;
+            &lt;x-oc::toc :groups="$groups" /&gt;
+        &lt;/x-slot:aside&gt;
+        &lt;x-oc::prose as="div" class="oc-prose--legal oc-prose--ruled"&gt;
+            &lt;h2 id="doc-who"&gt;1. Who we are&lt;/h2&gt;
+            &lt;p&gt;Company 1 builds and maintains software for small teams. You can reach us at info@company1.example.&lt;/p&gt;
+            &lt;h2 id="doc-data"&gt;2. What data we keep&lt;/h2&gt;
+            &lt;p&gt;Only what we need to deliver the service: your name, your e-mail address and the invoices of your plan.&lt;/p&gt;
+            &lt;ul&gt;&lt;li&gt;Account data, as long as the account exists.&lt;/li&gt;&lt;li&gt;Invoices, for seven years.&lt;/li&gt;&lt;/ul&gt;
+            &lt;h2 id="doc-rights"&gt;3. Your rights&lt;/h2&gt;
+            &lt;p&gt;You can ask to see, correct or delete your data at any time. We answer within 30 days.&lt;/p&gt;
+            &lt;h2 id="doc-cookies"&gt;A. Cookies&lt;/h2&gt;
+            &lt;p&gt;We only use the cookies that keep you signed in and remember your language.&lt;/p&gt;
+        &lt;/x-oc::prose&gt;
+    &lt;/x-oc::doc-layout&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="offset">

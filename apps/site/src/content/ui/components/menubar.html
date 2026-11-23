@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Menubar", "category": "Overlays", "description": "Horizontal menu bar built from popover dropdown menus.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Menubar", "category": "Overlays", "description": "Menubar: a horizontal bar of popover dropdown menus with shortcuts, a sub-menu, check items and separators. The React and Vue versions add arrow keys.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Menubar</h1>
         <p class="oc-hero-text">A horizontal bar of menus (File, Edit, View). Each trigger is a button with <code>popovertarget</code>; each menu is the regular <a href="dropdown.html">dropdown menu</a>, so sub-menus, check items and shortcuts work unchanged. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/menubar.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React, Vue and Blade component <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Click File or View to open a menu. Hover Share for its sub-menu; Escape or a click outside closes it.</p>
           <oc-demo title="Menubar" size="tall">
 <div class="oc-menubar" role="menubar" aria-label="Application">
@@ -34,6 +35,148 @@
   <div class="oc-dropdown-separator" role="separator"></div>
   <button class="oc-dropdown-item" type="button" role="menuitem">Reload <span class="oc-dropdown-shortcut">Ctrl R</span></button>
 </div>
+<oc-code lang="tsx">import { useState } from "react";
+import { Menubar } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [bookmarks, setBookmarks] = useState(true);
+  const [fullUrls, setFullUrls] = useState(false);
+  // each menu is a popover; an item closes it after a click, a check item (checked: true|false) stays open
+  return (
+    &lt;Menubar
+      label="Application"
+      menus={[
+        {
+          label: "File",
+          id: "oc-mb-file",
+          items: [
+            { label: "New tab", shortcut: "Ctrl T" },
+            { label: "New window", shortcut: "Ctrl N" },
+            { separator: true },
+            { label: "Share", items: [{ label: "E-mail link" }, { label: "Messages" }] },
+            { separator: true },
+            { label: "Print", shortcut: "Ctrl P", onSelect: () =&gt; print() },
+          ],
+        },
+        {
+          label: "View",
+          id: "oc-mb-view",
+          items: [
+            { label: "Always show bookmarks", checked: bookmarks, onSelect: () =&gt; setBookmarks(!bookmarks) },
+            { label: "Always show full URLs", checked: fullUrls, onSelect: () =&gt; setFullUrls(!fullUrls) },
+            { separator: true },
+            { label: "Reload", shortcut: "Ctrl R", onSelect: () =&gt; location.reload() },
+          ],
+        },
+      ]}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { computed, ref } from "vue";
+import { OcMenubar } from "@birdycom/omniaui-vue";
+
+const bookmarks = ref(true);
+const fullUrls = ref(false);
+// each menu is a popover; an item closes it after a click, a check item (checked: true|false) stays open
+const menus = computed(() =&gt; [
+  {
+    label: "File",
+    id: "oc-mb-file",
+    items: [
+      { label: "New tab", shortcut: "Ctrl T" },
+      { label: "New window", shortcut: "Ctrl N" },
+      { separator: true as const },
+      { label: "Share", items: [{ label: "E-mail link" }, { label: "Messages" }] },
+      { separator: true as const },
+      { label: "Print", shortcut: "Ctrl P", onSelect: () =&gt; print() },
+    ],
+  },
+  {
+    label: "View",
+    id: "oc-mb-view",
+    items: [
+      { label: "Always show bookmarks", checked: bookmarks.value, onSelect: () =&gt; (bookmarks.value = !bookmarks.value) },
+      { label: "Always show full URLs", checked: fullUrls.value, onSelect: () =&gt; (fullUrls.value = !fullUrls.value) },
+      { separator: true as const },
+      { label: "Reload", shortcut: "Ctrl R", onSelect: () =&gt; location.reload() },
+    ],
+  },
+]);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcMenubar label="Application" :menus="menus" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- No JavaScript: every trigger opens its menu with popovertarget --}}
+&lt;x-oc::menubar label="Application" :menus="[
+    ['label' =&gt; 'File', 'id' =&gt; 'oc-mb-file', 'items' =&gt; [
+        ['label' =&gt; 'New tab', 'shortcut' =&gt; 'Ctrl T'],
+        ['label' =&gt; 'New window', 'shortcut' =&gt; 'Ctrl N'],
+        ['separator' =&gt; true],
+        ['label' =&gt; 'Share', 'items' =&gt; [['label' =&gt; 'E-mail link'], ['label' =&gt; 'Messages']]],
+        ['separator' =&gt; true],
+        ['label' =&gt; 'Print', 'shortcut' =&gt; 'Ctrl P'],
+    ]],
+    ['label' =&gt; 'View', 'id' =&gt; 'oc-mb-view', 'items' =&gt; [
+        ['label' =&gt; 'Always show bookmarks', 'checked' =&gt; true],
+        ['label' =&gt; 'Always show full URLs', 'checked' =&gt; false],
+        ['separator' =&gt; true],
+        ['label' =&gt; 'Reload', 'shortcut' =&gt; 'Ctrl R'],
+    ]],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AppMenubar extends Component
+{
+    public bool $bookmarks = true;
+
+    public bool $fullUrls = false;
+
+    public function toggle(string $setting): void
+    {
+        if (in_array($setting, ['bookmarks', 'fullUrls'], true)) {
+            $this-&gt;{$setting} = ! $this-&gt;{$setting};
+        }
+    }
+
+    public function newTab(): void
+    {
+        // $this-&gt;redirect(route('tabs.create'));
+    }
+
+    public function render()
+    {
+        return view('livewire.app-menubar');
+    }
+}
+
+{{-- resources/views/livewire/app-menubar.blade.php --}}
+{{-- 'attributes' puts wire:click (or x-on:click) on an item; a menu with 'slot' takes its items from that named slot --}}
+&lt;div&gt;
+    &lt;x-oc::menubar label="Application" :menus="[
+        ['label' =&gt; 'File', 'id' =&gt; 'oc-mb-file', 'items' =&gt; [
+            ['label' =&gt; 'New tab', 'shortcut' =&gt; 'Ctrl T', 'attributes' =&gt; ['wire:click' =&gt; 'newTab']],
+            ['label' =&gt; 'New window', 'shortcut' =&gt; 'Ctrl N'],
+            ['separator' =&gt; true],
+            ['label' =&gt; 'Share', 'items' =&gt; [['label' =&gt; 'E-mail link'], ['label' =&gt; 'Messages']]],
+            ['separator' =&gt; true],
+            ['label' =&gt; 'Print', 'shortcut' =&gt; 'Ctrl P', 'attributes' =&gt; ['x-on:click' =&gt; 'print()']],
+        ]],
+        ['label' =&gt; 'View', 'id' =&gt; 'oc-mb-view', 'slot' =&gt; 'view'],
+    ]"&gt;
+        &lt;x-slot:view&gt;
+            &lt;x-oc::dropdown.item :checked="$bookmarks" wire:click="toggle('bookmarks')"&gt;Always show bookmarks&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.item :checked="$fullUrls" wire:click="toggle('fullUrls')"&gt;Always show full URLs&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.separator /&gt;
+            &lt;x-oc::dropdown.item role="menuitem" hint="Ctrl R" x-on:click="location.reload()"&gt;Reload&lt;/x-oc::dropdown.item&gt;
+        &lt;/x-slot:view&gt;
+    &lt;/x-oc::menubar&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

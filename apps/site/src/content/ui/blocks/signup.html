@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Signup Blocks", "category": "Authentication", "description": "Simple card, split with image panel, muted page with social sign-up.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": [], "pro": "some"}-->
+<!--oc-page {"title": "OmniaUI - Signup Blocks", "category": "Authentication", "description": "Sign-up blocks: a simple card with name, e-mail and password fields, and a split screen with a quote panel and a terms checkbox before signing up.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": [], "pro": "some"}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Signup</h1>
         <p class="oc-hero-text">Three account-creation layouts: simple card, split with image panel and a muted page with social sign-up. Same parts as the login blocks. <a href="../blocks.html">All blocks</a>.</p>
@@ -8,14 +8,14 @@
           
         <p class="oc-section-header__desc">Plain HTML and CSS. Each preview shows the markup that builds it, also available as a snippet in <code>packages/blocks/blocks/</code> (the variants marked Pro are part of <a href="../pro.html">OmniaUI Pro</a>): <code>signup-01</code>, <code>signup-02</code>, <code>signup-03</code>.</p></div>
         <div class="oc-section-content">
-          <h3 class="oc-section-content__title mt-2" id="signup-01">Signup 01 - Simple card</h3>
+          <h3 class="oc-section-content__title mt-2" id="signup-01">Signup 01 - Simple card <span class="oc-badge-version">v0.17.0</span></h3>
           <p>Create-account card with name, e-mail, password and confirmation. Snippet: <code>signup-01</code> (<code>npx omniaui add signup-01</code>).</p>
           <oc-demo title="Signup 01 - Simple card">
 <div class="oc-block-authpage oc-block-authpage--plain">
   <form class="oc-block-authcard" action="#" method="post">
     <span class="oc-block-authcard-logo"><svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/></svg></span>
     <div class="oc-block-authcard-head">
-      <h1 class="oc-block-authcard-title">Create an account</h1>
+      <h2 class="oc-block-authcard-title">Create an account</h2>
       <p class="oc-block-authcard-text">Enter your information to get started</p>
     </div>
     <div class="oc-block-authcard-fields">
@@ -47,6 +47,87 @@
     <p class="oc-block-authcard-foot">Already have an account? <a href="#">Sign in</a></p>
   </form>
 </div>
+<oc-code lang="tsx">import { BlockSignup01 } from "@birdycom/omniaui-react";
+
+// Full name, e-mail, password and confirm field come with the block; onSubmit gets { name, email, password, confirm, terms }
+&lt;BlockSignup01 headingLevel={2}
+  action="/register"
+  footer={&lt;&gt;Already have an account? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/&gt;}
+  onSubmit={(values) =&gt; register(values)}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockSignup01 } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ register: [form: FormData] }&gt;()
+
+function submit(event: SubmitEvent) {
+  event.preventDefault()
+  emit('register', new FormData(event.target as HTMLFormElement))
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockSignup01 :heading-level="2" action="/register" :footer-link="{ label: 'Sign in', href: '/login' }" @submit="submit" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.signup-01 heading-level="2" :form="['action' =&gt; '/register']"&gt;
+    &lt;x-slot:fields&gt;
+        &lt;x-oc::form-field label="Full name" for="name" name="name"&gt;&lt;x-oc::input id="name" name="name" :value="old('name')" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;&lt;x-oc::input id="email" name="email" type="email" :value="old('email')" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;x-oc::password-input label="Password" id="password" name="password" autocomplete="new-password" required /&gt;
+        &lt;x-oc::password-input label="Confirm password" id="password_confirmation" name="password_confirmation" autocomplete="new-password" required /&gt;
+        &lt;p class="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
+        &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/x-oc::button&gt;
+    &lt;/x-slot:fields&gt;
+    &lt;x-slot:footer&gt;Already have an account? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/x-slot:footer&gt;
+&lt;/x-oc::block.signup-01&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class Register extends Component
+{
+    #[Validate('required|string|max:255')]
+    public string $name = '';
+
+    #[Validate('required|email|max:255')]
+    public string $email = '';
+
+    #[Validate('required|min:8|confirmed')]
+    public string $password = '';
+
+    public string $password_confirmation = '';
+
+    public function register(): void
+    {
+        $this-&gt;validate();
+        // create the user, log in and redirect
+    }
+
+    public function render()
+    {
+        return view('livewire.register');
+    }
+}
+
+{{-- resources/views/livewire/register.blade.php --}}
+&lt;div&gt;
+    {{-- form takes wire:submit; the fields and footer slots replace those regions, the rest comes from the block --}}
+    &lt;x-oc::block.signup-01 heading-level="2" :form="['wire:submit' =&gt; 'register']"&gt;
+        &lt;x-slot:fields&gt;
+            &lt;x-oc::form-field label="Full name" for="name" name="name"&gt;&lt;x-oc::wire.input id="name" model="name" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;&lt;x-oc::wire.input id="email" model="email" blur type="email" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::password-input label="Password" id="password" wire:model="password" autocomplete="new-password" :error="$errors-&gt;has('password')" required /&gt;
+            @error('password') &lt;p class="oc-field-error"&gt;{{ $message }}&lt;/p&gt; @enderror
+            &lt;x-oc::password-input label="Confirm password" id="password_confirmation" wire:model="password_confirmation" autocomplete="new-password" required /&gt;
+            &lt;p class="oc-block-authcard-hint"&gt;Must be at least 8 characters long.&lt;/p&gt;
+            &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/x-oc::button&gt;
+        &lt;/x-slot:fields&gt;
+        &lt;x-slot:footer&gt;Already have an account? &lt;a href="/login" wire:navigate&gt;Sign in&lt;/a&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.signup-01&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="signup-02">Signup 02 - Split with image panel</h3>
@@ -64,7 +145,7 @@
     <div class="oc-block-authduo-form">
       <form class="oc-block-authcard oc-block-authcard--flat" action="#" method="post">
         <div class="oc-block-authcard-head">
-          <h1 class="oc-block-authcard-title">Create your account</h1>
+          <h2 class="oc-block-authcard-title">Create your account</h2>
           <p class="oc-block-authcard-text">Free for 14 days, no card needed</p>
         </div>
         <div class="oc-block-authcard-fields">
@@ -91,6 +172,109 @@
     </div>
   </div>
 </div>
+<oc-code lang="tsx">import { BlockSignup02 } from "@birdycom/omniaui-react";
+
+&lt;BlockSignup02 headingLevel={2}
+  action="/register"
+  panel={{ quote: "“Setup took ten minutes and the whole team was on board by lunch.”", quoteAuthor: "Customer 3, product manager" }}
+  terms={&lt;&gt;I agree to the &lt;a className="oc-link" href="/terms"&gt;terms&lt;/a&gt;&lt;/&gt;}
+  footer={&lt;&gt;Already registered? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/&gt;}
+  onSubmit={(values) =&gt; register(values)}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockSignup02 } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ register: [form: FormData] }&gt;()
+
+function submit(event: SubmitEvent) {
+  event.preventDefault()
+  emit('register', new FormData(event.target as HTMLFormElement))
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockSignup02 :heading-level="2" action="/register"
+    :panel="{ quote: '“Setup took ten minutes and the whole team was on board by lunch.”', quoteAuthor: 'Customer 3, product manager' }"
+    terms="I agree to the" :terms-link="{ label: 'terms', href: '/terms' }"
+    :footer-link="{ label: 'Sign in', href: '/login' }"
+    @submit="submit" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.signup-02 heading-level="2" :form="['action' =&gt; '/register']"&gt;
+    &lt;x-slot:panel&gt;
+        &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
+            &lt;a class="oc-block-authduo-logo" href="/"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
+            &lt;blockquote class="oc-block-authduo-quote"&gt;
+                &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
+                &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
+            &lt;/blockquote&gt;
+        &lt;/aside&gt;
+    &lt;/x-slot:panel&gt;
+    &lt;x-slot:fields&gt;
+        &lt;x-oc::form-field label="Full name" for="name" name="name"&gt;&lt;x-oc::input id="name" name="name" :value="old('name')" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;&lt;x-oc::input id="email" name="email" type="email" :value="old('email')" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/x-oc::form-field&gt;
+        &lt;x-oc::password-input label="Password" id="password" name="password" autocomplete="new-password" required /&gt;
+        &lt;x-oc::checkbox name="terms" required&gt;I agree to the &lt;a class="oc-link" href="/terms"&gt;terms&lt;/a&gt;&lt;/x-oc::checkbox&gt;
+        &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/x-oc::button&gt;
+    &lt;/x-slot:fields&gt;
+    &lt;x-slot:footer&gt;Already registered? &lt;a href="/login"&gt;Sign in&lt;/a&gt;&lt;/x-slot:footer&gt;
+&lt;/x-oc::block.signup-02&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class RegisterSplit extends Component
+{
+    #[Validate('required|string|max:255')]
+    public string $name = '';
+
+    #[Validate('required|email|max:255')]
+    public string $email = '';
+
+    #[Validate('required|min:8')]
+    public string $password = '';
+
+    #[Validate('accepted')]
+    public bool $terms = false;
+
+    public function register(): void
+    {
+        $this-&gt;validate();
+        // create the user and the 14-day trial, then redirect
+    }
+
+    public function render()
+    {
+        return view('livewire.register-split');
+    }
+}
+
+{{-- resources/views/livewire/register-split.blade.php --}}
+&lt;div&gt;
+    {{-- form takes wire:submit; the fields and footer slots replace those regions, the rest comes from the block --}}
+    &lt;x-oc::block.signup-02 heading-level="2" :form="['wire:submit' =&gt; 'register']"&gt;
+        &lt;x-slot:panel&gt;
+            &lt;aside class="oc-block-authduo-panel oc-block-authduo-panel--image"&gt;
+                &lt;a class="oc-block-authduo-logo" href="/"&gt;&lt;x-oc::webicon name="mdi:layers-outline" /&gt; Company 1&lt;/a&gt;
+                &lt;blockquote class="oc-block-authduo-quote"&gt;
+                    &lt;p&gt;“Setup took ten minutes and the whole team was on board by lunch.”&lt;/p&gt;
+                    &lt;footer&gt;Customer 3, product manager&lt;/footer&gt;
+                &lt;/blockquote&gt;
+            &lt;/aside&gt;
+        &lt;/x-slot:panel&gt;
+        &lt;x-slot:fields&gt;
+            &lt;x-oc::form-field label="Full name" for="name" name="name"&gt;&lt;x-oc::wire.input id="name" model="name" autocomplete="name" required placeholder="Contact 1" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::form-field label="E-mail" for="email" name="email"&gt;&lt;x-oc::wire.input id="email" model="email" blur type="email" autocomplete="email" required placeholder="name@company1.example" /&gt;&lt;/x-oc::form-field&gt;
+            &lt;x-oc::password-input label="Password" id="password" wire:model="password" autocomplete="new-password" :error="$errors-&gt;has('password')" required /&gt;
+            &lt;x-oc::wire.checkbox model="terms" required&gt;I agree to the &lt;a class="oc-link" href="/terms"&gt;terms&lt;/a&gt;&lt;/x-oc::wire.checkbox&gt;
+            @error('terms') &lt;p class="oc-field-error"&gt;{{ $message }}&lt;/p&gt; @enderror
+            &lt;x-oc::button type="submit" class="oc-block-authcard-submit"&gt;Create account&lt;/x-oc::button&gt;
+        &lt;/x-slot:fields&gt;
+        &lt;x-slot:footer&gt;Already registered? &lt;a href="/login" wire:navigate&gt;Sign in&lt;/a&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::block.signup-02&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="signup-03">Signup 03 - Muted background with social buttons</h3>
@@ -100,7 +284,7 @@
   <form class="oc-block-authcard" action="#" method="post">
     <span class="oc-block-authcard-logo"><svg data-icon="mdi:layers-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 18.54l7.37-5.74L21 14.07l-9 7l-9-7l1.62-1.26zM12 16L3 9l9-7l9 7zm0-11.47L6.26 9L12 13.47L17.74 9z"/></svg></span>
     <div class="oc-block-authcard-head">
-      <h1 class="oc-block-authcard-title">Create your account</h1>
+      <h2 class="oc-block-authcard-title">Create your account</h2>
       <p class="oc-block-authcard-text">Sign up with your Apple or Google account</p>
     </div>
     <div class="oc-block-authsocial">

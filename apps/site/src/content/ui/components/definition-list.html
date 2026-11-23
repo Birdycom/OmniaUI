@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Definition list", "category": "Layout", "description": "Label / value rows in a panel (dl).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Definition list", "category": "Layout", "description": "A semantic dl of label and value rows in a titled panel. Two columns from 40rem and stacked below, and long values wrap instead of overlapping.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Definition list</h1>
         <p class="oc-hero-text">A semantic <code>&lt;dl&gt;</code> in a titled panel. Two columns from 40rem, stacked below; long values wrap instead of overlapping the label. <a href="../components.html">All components</a>.</p>
@@ -21,6 +21,81 @@
   </dl>
   <div class="oc-dl-footer"><button class="oc-btn oc-btn--sm" type="button">Use these details</button></div>
 </div>
+<oc-code lang="tsx">import { Button, DefinitionList } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;DefinitionList
+      aria-label="Company data"
+      title="Company data found"
+      description="Retrieved from the VAT register."
+      items={[
+        { term: "Name", detail: "Company 1 BV" },
+        { term: "Enterprise number", detail: "BE 0123.456.789" },
+        { term: "Address", detail: "Main Street 1, 2000 Antwerp" },
+      ]}
+      footer={&lt;Button type="button" size="sm"&gt;Use these details&lt;/Button&gt;}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcDefinitionList } from "@birdycom/omniaui-vue";
+
+const rows = [
+  { term: "Name", detail: "Company 1 BV" },
+  { term: "Enterprise number", detail: "BE 0123.456.789" },
+  { term: "Address", detail: "Main Street 1, 2000 Antwerp" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDefinitionList title="Company data found" description="Retrieved from the VAT register." label="Company data" :rows="rows"&gt;
+    &lt;template #footer&gt;&lt;OcButton size="sm"&gt;Use these details&lt;/OcButton&gt;&lt;/template&gt;
+  &lt;/OcDefinitionList&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::definition-list title="Company data found" description="Retrieved from the VAT register." label="Company data" :items="[
+    'Name' =&gt; 'Company 1 BV',
+    'Enterprise number' =&gt; 'BE 0123.456.789',
+    'Address' =&gt; 'Main Street 1, 2000 Antwerp',
+]"&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button size="sm"&gt;Use these details&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::definition-list&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class DefinitionList extends Component
+{
+    /** Found in the VAT register (term =&gt; detail). */
+    public array $company = [
+        'Name' =&gt; 'Company 1 BV',
+        'Enterprise number' =&gt; 'BE 0123.456.789',
+        'Address' =&gt; 'Main Street 1, 2000 Antwerp',
+    ];
+
+    public function useDetails(): void
+    {
+        $this-&gt;dispatch('company-details', details: $this-&gt;company);
+    }
+
+    public function render()
+    {
+        return view('livewire.definition-list');
+    }
+}
+
+{{-- resources/views/livewire/definition-list.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::definition-list title="Company data found" description="Retrieved from the VAT register." label="Company data" :items="$company"&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button size="sm" wire:click="useDetails"&gt;Use these details&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::definition-list&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title" id="glossary">Glossary <span class="oc-badge-version">v0.14.1</span></h3>
           <p class="oc-section-content__desc"><code>.oc-dl--glossary</code> on the <code>dl</code> for a term and its explanation: the term bold, the explanation normal text, and both start on the same line. Term column <code>--oc-dl-term-width</code> (30%).</p>
@@ -33,6 +108,139 @@
     <div class="oc-dl-row"><dt class="oc-dl-term">Personal data</dt><dd class="oc-dl-detail">Any information about a person who can be identified, directly or indirectly.</dd></div>
   </dl>
 </div>
+<oc-code lang="tsx">import { DefinitionList } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;DefinitionList
+      aria-label="Definitions"
+      title="Definitions"
+      glossary
+      items={[
+        { term: "Service", detail: "The software and the support that Company 1 delivers under this agreement." },
+        { term: "Customer", detail: "The person or company that orders the service and pays the invoices." },
+        { term: "Personal data", detail: "Any information about a person who can be identified, directly or indirectly." },
+      ]}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDefinitionList } from "@birdycom/omniaui-vue";
+
+const rows = [
+  { term: "Service", detail: "The software and the support that Company 1 delivers under this agreement." },
+  { term: "Customer", detail: "The person or company that orders the service and pays the invoices." },
+  { term: "Personal data", detail: "Any information about a person who can be identified, directly or indirectly." },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDefinitionList title="Definitions" glossary :rows="rows" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::definition-list title="Definitions" glossary :items="[
+    'Service' =&gt; 'The software and the support that Company 1 delivers under this agreement.',
+    'Customer' =&gt; 'The person or company that orders the service and pays the invoices.',
+    'Personal data' =&gt; 'Any information about a person who can be identified, directly or indirectly.',
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class DefinitionListGlossary extends Component
+{
+    public function render()
+    {
+        return view('livewire.definition-list-glossary');
+    }
+}
+
+{{-- resources/views/livewire/definition-list-glossary.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::definition-list title="Definitions" glossary :items="[
+        'Service' =&gt; 'The software and the support that Company 1 delivers under this agreement.',
+        'Customer' =&gt; 'The person or company that orders the service and pays the invoices.',
+        'Personal data' =&gt; 'Any information about a person who can be identified, directly or indirectly.',
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+          <h3 class="oc-section-content__title" id="numbered">Numbered <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc"><code>.oc-dl--numbered</code> on the <code>dl</code> puts a counter above each term: 01, 02, 03 (a CSS counter with <code>decimal-leading-zero</code>, in the muted color with tabular figures). The numbers are not in the HTML, so screen readers read the terms as they are. It works with <code>--glossary</code>, and with <code>--flush</code> on a <code>dl</code> without a panel (a list of services on a page). Start at another number with <code>style="counter-reset: oc-dl 4"</code>.</p>
+          <oc-demo title="Definition list - numbered">
+<div class="oc-dl-panel" role="region" aria-label="Services">
+  <h3 class="oc-dl-title">Services</h3>
+  <dl class="oc-dl oc-dl--glossary oc-dl--numbered">
+    <div class="oc-dl-row"><dt class="oc-dl-term">Software on demand</dt><dd class="oc-dl-detail">A web application built around the way Company 1 works, from the first sketch to the release.</dd></div>
+    <div class="oc-dl-row"><dt class="oc-dl-term">Hosting and support</dt><dd class="oc-dl-detail">Updates, backups and a person to call when something does not work.</dd></div>
+    <div class="oc-dl-row"><dt class="oc-dl-term">Training</dt><dd class="oc-dl-detail">Short sessions for the team, with a written guide to keep.</dd></div>
+  </dl>
+</div>
+<oc-code lang="html">&lt;div class="oc-dl-panel" role="region" aria-label="Services"&gt;
+  &lt;h3 class="oc-dl-title"&gt;Services&lt;/h3&gt;
+  &lt;dl class="oc-dl oc-dl--glossary oc-dl--numbered"&gt;
+    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Software on demand&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;A web application built around the way Company 1 works, from the first sketch to the release.&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Hosting and support&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Updates, backups and a person to call when something does not work.&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Training&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;Short sessions for the team, with a written guide to keep.&lt;/dd&gt;&lt;/div&gt;
+  &lt;/dl&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { DefinitionList } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;DefinitionList
+      aria-label="Services"
+      title="Services"
+      glossary
+      numbered
+      items={[
+        { term: "Software on demand", detail: "A web application built around the way Company 1 works, from the first sketch to the release." },
+        { term: "Hosting and support", detail: "Updates, backups and a person to call when something does not work." },
+        { term: "Training", detail: "Short sessions for the team, with a written guide to keep." },
+      ]}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDefinitionList } from "@birdycom/omniaui-vue";
+
+const rows = [
+  { term: "Software on demand", detail: "A web application built around the way Company 1 works, from the first sketch to the release." },
+  { term: "Hosting and support", detail: "Updates, backups and a person to call when something does not work." },
+  { term: "Training", detail: "Short sessions for the team, with a written guide to keep." },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDefinitionList title="Services" glossary numbered :rows="rows" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::definition-list title="Services" glossary numbered :items="[
+    'Software on demand' =&gt; 'A web application built around the way Company 1 works, from the first sketch to the release.',
+    'Hosting and support' =&gt; 'Updates, backups and a person to call when something does not work.',
+    'Training' =&gt; 'Short sessions for the team, with a written guide to keep.',
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class DefinitionListNumbered extends Component
+{
+    public function render()
+    {
+        return view('livewire.definition-list-numbered');
+    }
+}
+
+{{-- resources/views/livewire/definition-list-numbered.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::definition-list title="Services" glossary numbered :items="[
+        'Software on demand' =&gt; 'A web application built around the way Company 1 works, from the first sketch to the release.',
+        'Hosting and support' =&gt; 'Updates, backups and a person to call when something does not work.',
+        'Training' =&gt; 'Short sessions for the team, with a written guide to keep.',
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -53,6 +261,7 @@
               <tr><td><code>.oc-dl-term / .oc-dl-detail</code></td><td><code>dt</code> / <code>dd</code></td></tr>
               <tr><td><code>.oc-dl-footer</code></td><td>Optional footer (actions)</td></tr>
               <tr><td><code>.oc-dl--glossary</code></td><td>On the <code>dl</code>: term bold in the foreground, explanation normal and muted, first lines on one line. Wrappers: <code>glossary</code> prop.</td></tr>
+              <tr><td><code>.oc-dl--numbered</code></td><td>On the <code>dl</code>: a counter (01, 02, ...) above each term, muted, tabular figures. Wrappers: <code>numbered</code> prop.</td></tr>
               <tr><td><code>.oc-dl--flush</code></td><td>On the <code>dl</code>: no margin and no line above it, for a list without a title above it. Inside <code>.oc-prose</code> the rows keep their own spacing and the <code>dd</code> is not indented; glossary terms hyphenate (<code>hyphens: auto</code>, set <code>lang</code> on the page).</td></tr>
             </tbody>
           </table>

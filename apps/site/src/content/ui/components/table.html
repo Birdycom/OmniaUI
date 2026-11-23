@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Table", "category": "Data", "description": "Semantic table and expandable table (“Show more” after first rows).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Table", "category": "Data", "description": "Semantic data table with column widths, auto layout, columns that hide on small screens, row actions and an expandable variant with Show more.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Table</h1>
         <p class="oc-hero-text">Semantic HTML tables styled with the OmniaCSS theme tokens: borders, header background and a row hover, in light and dark mode. Use <code>.oc-table</code> for data tables and the <strong>expandable table</strong> to show a few rows with a CSS-only "Show more" toggle.</p>
@@ -32,7 +32,69 @@
       &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;span class="oc-badge oc-badge--success"&gt;Active&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
     &lt;/tbody&gt;
   &lt;/table&gt;
-&lt;/div&gt;</oc-code></oc-demo>
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;Table caption="Team members"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;Badge variant="success"&gt;Active&lt;/Badge&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/Table&gt;</oc-code>
+<oc-code lang="vue">&lt;OcTable caption="Team members" :columns="[
+  { key: 'name', label: 'Name' },
+  { key: 'role', label: 'Role' },
+  { key: 'status', label: 'Status' },
+]" :rows="[{ id: 1, name: 'User 1', role: 'Admin', status: 'Active' }]"&gt;
+  &lt;template #cell-status="{ value }"&gt;&lt;OcBadge variant="success"&gt;{{ value }}&lt;/OcBadge&gt;&lt;/template&gt;
+&lt;/OcTable&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table caption="Team members"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;&lt;x-oc::badge variant="success"&gt;Active&lt;/x-oc::badge&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/x-oc::table&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TeamMembers extends Component
+{
+    /** @var list&lt;array{name: string, role: string, active: bool}&gt; */
+    public array $members = [
+        ['name' =&gt; 'User 1', 'role' =&gt; 'Admin', 'active' =&gt; true],
+    ];
+
+    public function render()
+    {
+        return view('livewire.team-members');
+    }
+}
+
+{{-- resources/views/livewire/team-members.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::table caption="Team members"&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;&lt;th scope="col"&gt;Name&lt;/th&gt;&lt;th scope="col"&gt;Role&lt;/th&gt;&lt;th scope="col"&gt;Status&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            @forelse ($members as $member)
+                &lt;tr wire:key="member-{{ $loop-&gt;index }}"&gt;
+                    &lt;td&gt;{{ $member['name'] }}&lt;/td&gt;
+                    &lt;td&gt;{{ $member['role'] }}&lt;/td&gt;
+                    &lt;td&gt;&lt;x-oc::badge :variant="$member['active'] ? 'success' : 'secondary'"&gt;{{ $member['active'] ? 'Active' : 'Inactive' }}&lt;/x-oc::badge&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+            @empty
+                &lt;x-oc::table.empty :colspan="3" title="No team members yet" /&gt;
+            @endforelse
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
+&lt;/div&gt;</oc-code>
+</oc-demo>
 
           <h3 class="oc-section-content__title" id="column-widths">Column widths</h3>
           <p class="oc-section-content__desc"><code>.oc-table</code> uses <code>table-layout: fixed</code>, so a width utility on a header cell fixes that column (<code>.w-10</code>, <code>.w-perc-1/3</code>, …); the other columns share the rest.</p>
@@ -49,6 +111,192 @@
                 </tbody>
               </table>
             </div>
+<oc-code lang="tsx">&lt;Table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th className="w-6"&gt;#&lt;/th&gt;&lt;th className="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;&lt;td&gt;Editor&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;&lt;td&gt;Viewer&lt;/td&gt;&lt;td&gt;Inactive&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/Table&gt;</oc-code>
+<oc-code lang="vue">&lt;!-- width: a CSS width per column; columns without one share the rest --&gt;
+&lt;OcTable :columns="[
+  { key: 'id', label: '#', width: '1.5rem' },
+  { key: 'name', label: 'Name (1/3)', width: '33.333%' },
+  { key: 'role', label: 'Role (rest)' },
+  { key: 'status', label: 'Status (rest)' },
+]" :rows="[
+  { id: 1, name: 'User 1', role: 'Admin', status: 'Active' },
+  { id: 2, name: 'User 2', role: 'Editor', status: 'Active' },
+  { id: 3, name: 'User 3', role: 'Viewer', status: 'Inactive' },
+]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;&lt;th class="w-6"&gt;#&lt;/th&gt;&lt;th class="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;User 1&lt;/td&gt;&lt;td&gt;Admin&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;User 2&lt;/td&gt;&lt;td&gt;Editor&lt;/td&gt;&lt;td&gt;Active&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;User 3&lt;/td&gt;&lt;td&gt;Viewer&lt;/td&gt;&lt;td&gt;Inactive&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/x-oc::table&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class UserTable extends Component
+{
+    /** @var list&lt;array{name: string, role: string, status: string}&gt; */
+    public array $users = [
+        ['name' =&gt; 'User 1', 'role' =&gt; 'Admin', 'status' =&gt; 'Active'],
+        ['name' =&gt; 'User 2', 'role' =&gt; 'Editor', 'status' =&gt; 'Active'],
+        ['name' =&gt; 'User 3', 'role' =&gt; 'Viewer', 'status' =&gt; 'Inactive'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.user-table');
+    }
+}
+
+{{-- resources/views/livewire/user-table.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::table&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;&lt;th class="w-6"&gt;#&lt;/th&gt;&lt;th class="w-perc-1/3"&gt;Name (1/3)&lt;/th&gt;&lt;th&gt;Role (rest)&lt;/th&gt;&lt;th&gt;Status (rest)&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($users as $user)
+                &lt;tr wire:key="user-{{ $loop-&gt;index }}"&gt;&lt;td&gt;{{ $loop-&gt;iteration }}&lt;/td&gt;&lt;td&gt;{{ $user['name'] }}&lt;/td&gt;&lt;td&gt;{{ $user['role'] }}&lt;/td&gt;&lt;td&gt;{{ $user['status'] }}&lt;/td&gt;&lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="auto-hide">Columns by their content, fewer on a narrow screen <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc"><code>.oc-table--auto</code> sizes the columns by what is in them: the actions stay narrow and the name gets the room (the default <code>fixed</code> layout shares the width equally). <code>data-hide-below="md"</code> on a <code>th</code> and its <code>td</code>s hides that column when the table area is narrower than 32rem (<code>sm</code> 24rem, <code>lg</code> 48rem); such a table gets narrower instead of scrolling; it measures the table, not the window, so it also works in a side panel. <code>.oc-table-action-label</code> next to an action icon shows the text on a wide table and only the icon on a narrow one (or always with <code>.oc-table-actions--compact</code>); the title stays as tooltip. Use the tablet and phone buttons above the demo.</p>
+          <oc-demo title="Table - auto widths and hidden columns">
+<div class="oc-table-wrap">
+  <table class="oc-table oc-table--auto">
+    <thead>
+      <tr><th>Name</th><th data-hide-below="md">Date</th><th data-hide-below="sm" data-numeric>Players</th><th><span class="oc-visually-hidden">Actions</span></th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Route 1 through the old town</td>
+        <td data-hide-below="md">8 November 2026</td>
+        <td data-hide-below="sm" data-numeric>42</td>
+        <td class="oc-table-actions oc-table-actions--icons"><button class="oc-table-actions-icon oc-table-actions-icon--primary" type="button" aria-label="Edit" title="Edit"><iconify-icon icon="mdi:pencil-outline" aria-hidden="true"></iconify-icon><span class="oc-table-action-label">Edit</span></button><button class="oc-table-actions-icon" type="button" aria-label="Copy" title="Copy"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon><span class="oc-table-action-label">Copy</span></button></td>
+      </tr>
+      <tr>
+        <td>Route 2</td>
+        <td data-hide-below="md">15 November 2026</td>
+        <td data-hide-below="sm" data-numeric>18</td>
+        <td class="oc-table-actions oc-table-actions--icons"><button class="oc-table-actions-icon oc-table-actions-icon--primary" type="button" aria-label="Edit" title="Edit"><iconify-icon icon="mdi:pencil-outline" aria-hidden="true"></iconify-icon><span class="oc-table-action-label">Edit</span></button><button class="oc-table-actions-icon" type="button" aria-label="Copy" title="Copy"><iconify-icon icon="mdi:content-copy" aria-hidden="true"></iconify-icon><span class="oc-table-action-label">Copy</span></button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<oc-code lang="html">&lt;div class="oc-table-wrap"&gt;
+  &lt;table class="oc-table oc-table--auto"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th data-hide-below="md"&gt;Date&lt;/th&gt;&lt;th data-hide-below="sm" data-numeric&gt;Players&lt;/th&gt;&lt;th&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Route 1 through the old town&lt;/td&gt;
+        &lt;td data-hide-below="md"&gt;8 November 2026&lt;/td&gt;
+        &lt;td data-hide-below="sm" data-numeric&gt;42&lt;/td&gt;
+        &lt;td class="oc-table-actions oc-table-actions--icons"&gt;&lt;button class="oc-table-actions-icon oc-table-actions-icon--primary" type="button" aria-label="Edit" title="Edit"&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span class="oc-table-action-label"&gt;Edit&lt;/span&gt;&lt;/button&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Copy" title="Copy"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span class="oc-table-action-label"&gt;Copy&lt;/span&gt;&lt;/button&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Route 2&lt;/td&gt;
+        &lt;td data-hide-below="md"&gt;15 November 2026&lt;/td&gt;
+        &lt;td data-hide-below="sm" data-numeric&gt;18&lt;/td&gt;
+        &lt;td class="oc-table-actions oc-table-actions--icons"&gt;&lt;button class="oc-table-actions-icon oc-table-actions-icon--primary" type="button" aria-label="Edit" title="Edit"&gt;&lt;iconify-icon icon="mdi:pencil-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span class="oc-table-action-label"&gt;Edit&lt;/span&gt;&lt;/button&gt;&lt;button class="oc-table-actions-icon" type="button" aria-label="Copy" title="Copy"&gt;&lt;iconify-icon icon="mdi:content-copy" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;span class="oc-table-action-label"&gt;Copy&lt;/span&gt;&lt;/button&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;Table layout="auto"&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th data-hide-below="md"&gt;Date&lt;/th&gt;&lt;th data-hide-below="sm" data-numeric&gt;Players&lt;/th&gt;&lt;th /&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Route 1&lt;/td&gt;&lt;td data-hide-below="md"&gt;8 November 2026&lt;/td&gt;&lt;td data-hide-below="sm" data-numeric&gt;42&lt;/td&gt;
+      &lt;TableActions className="oc-table-actions--icons"&gt;
+        &lt;TableActionIcon label="Edit" tone="primary" showLabel&gt;&lt;Webicon name="mdi:pencil-outline" /&gt;&lt;/TableActionIcon&gt;
+      &lt;/TableActions&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/Table&gt;</oc-code>
+<oc-code lang="vue">&lt;OcTable layout="auto" :columns="[
+  { key: 'name', label: 'Name' },
+  { key: 'date', label: 'Date', hideBelow: 'md' },
+  { key: 'players', label: 'Players', numeric: true, hideBelow: 'sm' },
+]" :rows="games" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::table layout="auto"&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th data-hide-below="md"&gt;Date&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    …
+&lt;/x-oc::table&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class RouteTable extends Component
+{
+    /** @var list&lt;array{id: int, name: string, date: string, players: int}&gt; */
+    public array $routes = [
+        ['id' =&gt; 1, 'name' =&gt; 'Route 1 through the old town', 'date' =&gt; '8 November 2026', 'players' =&gt; 42],
+        ['id' =&gt; 2, 'name' =&gt; 'Route 2', 'date' =&gt; '15 November 2026', 'players' =&gt; 18],
+    ];
+
+    public function edit(int|string $id): void
+    {
+        $this-&gt;redirect('/routes/'.$id.'/edit', navigate: true);
+    }
+
+    public function copy(int|string $id): void
+    {
+        $route = collect($this-&gt;routes)-&gt;firstWhere('id', (int) $id);
+        if ($route) {
+            $this-&gt;routes[] = ['id' =&gt; count($this-&gt;routes) + 1, 'name' =&gt; $route['name'].' (copy)', 'date' =&gt; $route['date'], 'players' =&gt; 0];
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.route-table');
+    }
+}
+
+{{-- resources/views/livewire/route-table.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::table layout="auto"&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th data-hide-below="md"&gt;Date&lt;/th&gt;&lt;th data-hide-below="sm" data-numeric&gt;Players&lt;/th&gt;&lt;th&gt;&lt;span class="oc-visually-hidden"&gt;Actions&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($routes as $route)
+                &lt;tr wire:key="route-{{ $route['id'] }}"&gt;
+                    &lt;td&gt;{{ $route['name'] }}&lt;/td&gt;
+                    &lt;td data-hide-below="md"&gt;{{ $route['date'] }}&lt;/td&gt;
+                    &lt;td data-hide-below="sm" data-numeric&gt;{{ $route['players'] }}&lt;/td&gt;
+                    &lt;x-oc::table-actions&gt;
+                        &lt;button class="oc-table-actions-icon oc-table-actions-icon--primary" type="button" aria-label="Edit" title="Edit" wire:click="edit({{ $route['id'] }})"&gt;&lt;x-oc::webicon name="mdi:pencil-outline" /&gt;&lt;span class="oc-table-action-label"&gt;Edit&lt;/span&gt;&lt;/button&gt;
+                        &lt;button class="oc-table-actions-icon" type="button" aria-label="Copy" title="Copy" wire:click="copy({{ $route['id'] }})"&gt;&lt;x-oc::webicon name="mdi:content-copy" /&gt;&lt;span class="oc-table-action-label"&gt;Copy&lt;/span&gt;&lt;/button&gt;
+                    &lt;/x-oc::table-actions&gt;
+                &lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/x-oc::table&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="expandable-table" class="oc-section-content__title mt-2">Expandable table (CSS only)</h3><p class="oc-section-content__desc">Show the first rows and hide the rest behind a toggle: rows with <code>.oc-expandable-table__row-more</code> stay hidden until the checkbox inside the toggle label is checked (<code>:has()</code>). This is the table used for every class reference in these docs.</p>
           <oc-demo title="Expandable table">
@@ -82,7 +330,94 @@
       &lt;span class="oc-expandable-table__less"&gt;Show less&lt;/span&gt;
     &lt;/label&gt;
   &lt;/div&gt;
-&lt;/div&gt;</oc-code></oc-demo>
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { ExpandableTable } from "@birdycom/omniaui-react";
+
+// Your own &lt;table&gt; as children (for the column width); the toggle under it is CSS only.
+const rows = [[".p-1", "padding: 1rem"], [".p-2", "padding: 2rem"], [".p-3", "padding: 3rem"], [".p-4", "padding: 4rem"], [".p-5", "padding: 5rem"]];
+const visible = 3;
+
+export function Example() {
+  return (
+    &lt;ExpandableTable className="w-full"&gt;
+      &lt;table className="oc-table-ref"&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th className="w-perc-1/3"&gt;Class&lt;/th&gt;&lt;th&gt;CSS&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+          {rows.map(([cls, css], i) =&gt; (
+            &lt;tr key={cls} className={i === visible - 1 ? "oc-expandable-table__row-dimmed" : i &gt;= visible ? "oc-expandable-table__row-more" : undefined}&gt;
+              &lt;td&gt;&lt;code&gt;{cls}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;{css}&lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/ExpandableTable&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcExpandableTable } from "@birdycom/omniaui-vue";
+
+// Your own &lt;table&gt; in the slot (for the column width); the toggle under it is CSS only.
+const rows = [['.p-1', 'padding: 1rem'], ['.p-2', 'padding: 2rem'], ['.p-3', 'padding: 3rem'], ['.p-4', 'padding: 4rem'], ['.p-5', 'padding: 5rem']]
+const visible = 3
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcExpandableTable class="w-full"&gt;
+    &lt;table class="oc-table-ref"&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th class="w-perc-1/3"&gt;Class&lt;/th&gt;&lt;th&gt;CSS&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr v-for="([cls, css], i) in rows" :key="cls" :class="{ 'oc-expandable-table__row-dimmed': i === visible - 1, 'oc-expandable-table__row-more': i &gt;= visible }"&gt;
+          &lt;td&gt;&lt;code&gt;{{ cls }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;{{ css }}&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/OcExpandableTable&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Your own &lt;table&gt; in the slot (for the column width); the toggle under it is CSS only. --}}
+@php($rows = ['.p-1' =&gt; 'padding: 1rem', '.p-2' =&gt; 'padding: 2rem', '.p-3' =&gt; 'padding: 3rem', '.p-4' =&gt; 'padding: 4rem', '.p-5' =&gt; 'padding: 5rem'])
+&lt;x-oc::expandable-table class="w-full"&gt;
+    &lt;table class="oc-table-ref"&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th class="w-perc-1/3"&gt;Class&lt;/th&gt;&lt;th&gt;CSS&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+            @foreach ($rows as $class =&gt; $css)
+                &lt;tr @class(['oc-expandable-table__row-dimmed' =&gt; $loop-&gt;iteration === 3, 'oc-expandable-table__row-more' =&gt; $loop-&gt;iteration &gt; 3])&gt;&lt;td&gt;&lt;code&gt;{{ $class }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;{{ $css }}&lt;/td&gt;&lt;/tr&gt;
+            @endforeach
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/x-oc::expandable-table&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SpacingReference extends Component
+{
+    /** @var array&lt;string, string&gt; class =&gt; css */
+    public array $rows = ['.p-1' =&gt; 'padding: 1rem', '.p-2' =&gt; 'padding: 2rem', '.p-3' =&gt; 'padding: 3rem', '.p-4' =&gt; 'padding: 4rem', '.p-5' =&gt; 'padding: 5rem'];
+
+    public int $visible = 3;
+
+    public function render()
+    {
+        return view('livewire.spacing-reference');
+    }
+}
+
+{{-- resources/views/livewire/spacing-reference.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::expandable-table class="w-full"&gt;
+        &lt;table class="oc-table-ref"&gt;
+            &lt;thead&gt;&lt;tr&gt;&lt;th class="w-perc-1/3"&gt;Class&lt;/th&gt;&lt;th&gt;CSS&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+            &lt;tbody&gt;
+                @foreach ($rows as $class =&gt; $css)
+                    &lt;tr wire:key="row-{{ $loop-&gt;index }}" @class(['oc-expandable-table__row-dimmed' =&gt; $loop-&gt;iteration === $visible, 'oc-expandable-table__row-more' =&gt; $loop-&gt;iteration &gt; $visible])&gt;&lt;td&gt;&lt;code&gt;{{ $class }}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;{{ $css }}&lt;/td&gt;&lt;/tr&gt;
+                @endforeach
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+    &lt;/x-oc::expandable-table&gt;
+&lt;/div&gt;</oc-code>
+</oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
@@ -95,6 +430,9 @@
               <tbody>
                 <tr><td><code>.oc-table</code></td><td>Data table: borders, header background, row hover, fixed layout</td></tr>
                 <tr><td><code>.oc-table-wrap</code></td><td>Horizontal scroll container for wide tables</td></tr>
+                <tr><td><code>.oc-table--auto</code></td><td>Columns sized by their content (React / Vue / Blade <code>layout="auto"</code>)</td></tr>
+                <tr><td><code>[data-hide-below=sm|md|lg]</code></td><td>On a <code>th</code> and its <code>td</code>s: hidden when the table area is narrower than 24 / 32 / 48rem (Vue column <code>hideBelow</code>)</td></tr>
+                <tr><td><code>.oc-table-action-label</code></td><td>Text next to an action icon; hidden in a narrow table or in <code>.oc-table-actions--compact</code> (React <code>TableActionIcon showLabel</code>, <code>TableActions compact</code>)</td></tr>
                 <tr><td><code>.oc-table-ref</code></td><td>Compact reference table (class / value), used in the docs</td></tr>
                 <tr><td><code>.oc-expandable-table</code></td><td>Wrapper for a table with a "Show more" toggle</td></tr>
                 <tr><td><code>.oc-expandable-table__row-more</code></td><td>Row hidden until the toggle is checked</td></tr>

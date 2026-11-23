@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Browser frame", "category": "Media", "description": "Fake browser chrome around a screenshot, video or live HTML.", "nav": "Browser frame", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Browser frame", "category": "Media", "description": "Fake browser chrome around a screenshot, video or live HTML: an address pill, actions, a caption, and minimal, dark, tilted and auto-height variants.", "nav": "Browser frame", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/browser-frame.html | Map: hero -> demo -> minimal / dark / tilt + live content -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Browser frame</h1>
@@ -25,6 +25,54 @@
   </div>
   <figcaption class="oc-browser-frame__caption">Spring collection, 2026 redesign</figcaption>
 </figure>
+<oc-code lang="tsx">import { BrowserFrame } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BrowserFrame url="shop.example.com/collections/spring" actions="↻ ⋮" caption="Spring collection, 2026 redesign" style={{ maxInlineSize: "36rem" }}&gt;
+      {/* your screenshot: src="/img/spring.png" alt="…" instead of this placeholder */}
+      &lt;div className="oc-media-art oc-media-art--5" role="img" aria-label="Screenshot of the spring collection page" /&gt;
+    &lt;/BrowserFrame&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBrowserFrame } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBrowserFrame url="shop.example.com/collections/spring" caption="Spring collection, 2026 redesign" style="max-inline-size:36rem"&gt;
+    &lt;template #actions&gt;↻ ⋮&lt;/template&gt;
+    &lt;!-- your screenshot: src="/img/spring.png" alt="…" instead of this placeholder --&gt;
+    &lt;div class="oc-media-art oc-media-art--5" role="img" aria-label="Screenshot of the spring collection page"&gt;&lt;/div&gt;
+  &lt;/OcBrowserFrame&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::browser-frame url="shop.example.com/collections/spring" caption="Spring collection, 2026 redesign" style="max-inline-size:36rem"&gt;
+    &lt;x-slot:actions&gt;↻ ⋮&lt;/x-slot:actions&gt;
+    {{-- your screenshot: src="/img/spring.png" alt="…" instead of this placeholder --}}
+    &lt;div class="oc-media-art oc-media-art--5" role="img" aria-label="Screenshot of the spring collection page"&gt;&lt;/div&gt;
+&lt;/x-oc::browser-frame&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class BrowserFrame extends Component
+{
+    public function render()
+    {
+        return view('livewire.browser-frame');
+    }
+}
+
+{{-- resources/views/livewire/browser-frame.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::browser-frame url="shop.example.com/collections/spring" caption="Spring collection, 2026 redesign" style="max-inline-size:36rem"&gt;
+        &lt;x-slot:actions&gt;↻ ⋮&lt;/x-slot:actions&gt;
+        {{-- your screenshot: src="/img/spring.png" alt="…" instead of this placeholder --}}
+        &lt;div class="oc-media-art oc-media-art--5" role="img" aria-label="Screenshot of the spring collection page"&gt;&lt;/div&gt;
+    &lt;/x-oc::browser-frame&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="variants" class="oc-section-content__title mt-2">Minimal, dark, tilt and live content</h3><p class="oc-section-content__desc"><code>--minimal</code> keeps only the dots; <code>--dark</code> darkens the chrome in both themes; <code>--tilt</code> adds a 3D angle that straightens on hover. With <code>--auto</code> the view takes the height of live content, here a <a href="card.html">Card</a>.</p>
           <oc-demo title="Variants">
@@ -92,6 +140,208 @@
     &lt;div class="oc-card"&gt;&lt;div class="oc-card-header"&gt;&lt;h3 class="oc-card-title"&gt;Live HTML&lt;/h3&gt;&lt;p class="oc-card-description"&gt;Any markup can sit in the view.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
   &lt;/div&gt;
 &lt;/figure&gt;</oc-code>
+<oc-code lang="tsx">import { BrowserFrame, Card, CardDescription, CardHeader, CardTitle } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;&gt;
+      &lt;BrowserFrame minimal&gt;
+        &lt;div className="oc-media-art oc-media-art--2" role="img" aria-label="Dashboard screenshot" /&gt;
+      &lt;/BrowserFrame&gt;
+      &lt;BrowserFrame dark url="app.example.com" actions="⋮"&gt;
+        &lt;div className="oc-media-art oc-media-art--3" role="img" aria-label="App screenshot" /&gt;
+      &lt;/BrowserFrame&gt;
+      &lt;BrowserFrame tilt url="shop.example.com"&gt;
+        &lt;div className="oc-media-art oc-media-art--4" role="img" aria-label="Shop screenshot" /&gt;
+      &lt;/BrowserFrame&gt;
+      &lt;BrowserFrame auto url="localhost:5173" actions="↻"&gt;
+        &lt;div style={{ padding: "1rem" }}&gt;
+          &lt;Card&gt;
+            &lt;CardHeader&gt;
+              &lt;CardTitle&gt;Live HTML&lt;/CardTitle&gt;
+              &lt;CardDescription&gt;Any markup can sit in the view.&lt;/CardDescription&gt;
+            &lt;/CardHeader&gt;
+          &lt;/Card&gt;
+        &lt;/div&gt;
+      &lt;/BrowserFrame&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBrowserFrame, OcCard } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBrowserFrame minimal&gt;
+    &lt;div class="oc-media-art oc-media-art--2" role="img" aria-label="Dashboard screenshot"&gt;&lt;/div&gt;
+  &lt;/OcBrowserFrame&gt;
+  &lt;OcBrowserFrame dark url="app.example.com"&gt;
+    &lt;template #actions&gt;⋮&lt;/template&gt;
+    &lt;div class="oc-media-art oc-media-art--3" role="img" aria-label="App screenshot"&gt;&lt;/div&gt;
+  &lt;/OcBrowserFrame&gt;
+  &lt;OcBrowserFrame tilt url="shop.example.com"&gt;
+    &lt;div class="oc-media-art oc-media-art--4" role="img" aria-label="Shop screenshot"&gt;&lt;/div&gt;
+  &lt;/OcBrowserFrame&gt;
+  &lt;OcBrowserFrame auto url="localhost:5173"&gt;
+    &lt;template #actions&gt;↻&lt;/template&gt;
+    &lt;div style="padding:1rem"&gt;
+      &lt;OcCard title="Live HTML" description="Any markup can sit in the view." /&gt;
+    &lt;/div&gt;
+  &lt;/OcBrowserFrame&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::browser-frame minimal&gt;
+    &lt;div class="oc-media-art oc-media-art--2" role="img" aria-label="Dashboard screenshot"&gt;&lt;/div&gt;
+&lt;/x-oc::browser-frame&gt;
+&lt;x-oc::browser-frame dark url="app.example.com"&gt;
+    &lt;x-slot:actions&gt;⋮&lt;/x-slot:actions&gt;
+    &lt;div class="oc-media-art oc-media-art--3" role="img" aria-label="App screenshot"&gt;&lt;/div&gt;
+&lt;/x-oc::browser-frame&gt;
+&lt;x-oc::browser-frame tilt url="shop.example.com"&gt;
+    &lt;div class="oc-media-art oc-media-art--4" role="img" aria-label="Shop screenshot"&gt;&lt;/div&gt;
+&lt;/x-oc::browser-frame&gt;
+&lt;x-oc::browser-frame auto url="localhost:5173"&gt;
+    &lt;x-slot:actions&gt;↻&lt;/x-slot:actions&gt;
+    &lt;div style="padding:1rem"&gt;
+        &lt;x-oc::card title="Live HTML" description="Any markup can sit in the view." /&gt;
+    &lt;/div&gt;
+&lt;/x-oc::browser-frame&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class BrowserFrameVariants extends Component
+{
+    public function render()
+    {
+        return view('livewire.browser-frame-variants');
+    }
+}
+
+{{-- resources/views/livewire/browser-frame-variants.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::browser-frame minimal&gt;
+        &lt;div class="oc-media-art oc-media-art--2" role="img" aria-label="Dashboard screenshot"&gt;&lt;/div&gt;
+    &lt;/x-oc::browser-frame&gt;
+    &lt;x-oc::browser-frame dark url="app.example.com"&gt;
+        &lt;x-slot:actions&gt;⋮&lt;/x-slot:actions&gt;
+        &lt;div class="oc-media-art oc-media-art--3" role="img" aria-label="App screenshot"&gt;&lt;/div&gt;
+    &lt;/x-oc::browser-frame&gt;
+    &lt;x-oc::browser-frame tilt url="shop.example.com"&gt;
+        &lt;div class="oc-media-art oc-media-art--4" role="img" aria-label="Shop screenshot"&gt;&lt;/div&gt;
+    &lt;/x-oc::browser-frame&gt;
+    &lt;x-oc::browser-frame auto url="localhost:5173"&gt;
+        &lt;x-slot:actions&gt;↻&lt;/x-slot:actions&gt;
+        &lt;div style="padding:1rem"&gt;
+            &lt;x-oc::card title="Live HTML" description="Any markup can sit in the view." /&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::browser-frame&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+        <h3 id="glow" class="oc-section-content__title mt-2">Glow in the accent color <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc"><code>--glow</code> gives the frame a soft shadow in the accent color (<code>--oc-accent-from</code>, set with an <code>oc-accent--*</code> class around it); on hover the screenshot zooms in a little. The zoom stops under reduced motion.</p>
+          <oc-demo title="Browser frame - glow">
+<div class="oc-accent--violet" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;align-items:start;inline-size:100%;padding:0.5rem">
+<figure class="oc-browser-frame oc-browser-frame--glow">
+  <div class="oc-browser-frame__bar"><i></i><i></i><i></i><span class="oc-browser-frame__address">app.example.com/customers</span></div>
+  <div class="oc-browser-frame__view"><img src="/img/blocks/data-table.jpg" alt="Customer list with filters"></div>
+</figure>
+</div>
+<oc-code lang="html">&lt;div class="oc-accent--violet" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;align-items:start;inline-size:100%;padding:0.5rem"&gt;
+&lt;figure class="oc-browser-frame oc-browser-frame--glow"&gt;
+  &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;span class="oc-browser-frame__address"&gt;app.example.com/customers&lt;/span&gt;&lt;/div&gt;
+  &lt;div class="oc-browser-frame__view"&gt;&lt;img src="/img/blocks/data-table.jpg" alt="Customer list with filters"&gt;&lt;/div&gt;
+&lt;/figure&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { BrowserFrame } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="oc-accent--violet" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 16rem), 1fr))", gap: "1.5rem", alignItems: "start", inlineSize: "100%", padding: "0.5rem" }}&gt;
+      &lt;BrowserFrame glow url="app.example.com/customers" src="/img/blocks/data-table.jpg" alt="Customer list with filters" /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBrowserFrame } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-accent--violet" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;align-items:start;inline-size:100%;padding:0.5rem"&gt;
+    &lt;OcBrowserFrame glow url="app.example.com/customers" src="/img/blocks/data-table.jpg" alt="Customer list with filters" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-accent--violet" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;align-items:start;inline-size:100%;padding:0.5rem"&gt;
+    &lt;x-oc::browser-frame glow url="app.example.com/customers" src="/img/blocks/data-table.jpg" alt="Customer list with filters" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class BrowserFrameGlow extends Component
+{
+    public string $screenshot = '/img/blocks/data-table.jpg';
+
+    public function render()
+    {
+        return view('livewire.browser-frame-glow');
+    }
+}
+
+{{-- resources/views/livewire/browser-frame-glow.blade.php --}}
+&lt;div class="oc-accent--violet" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;align-items:start;inline-size:100%;padding:0.5rem"&gt;
+    &lt;x-oc::browser-frame glow url="app.example.com/customers" :src="$screenshot" alt="Customer list with filters" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+        <h3 id="body" class="oc-section-content__title mt-2">Compact frame with a body <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">The short form used in the <a href="showcase.html#code-window">showcase</a>: a <code>div.oc-browser-frame</code> with only the bar and one <code>.oc-browser-frame__body</code> (16 / 10, cropped from the top). The body is the screenshot itself, or a div for your own content. In the components: the <code>body</code> prop, with <code>bodyStyle</code> / <code>body-style</code> for the body.</p>
+          <oc-demo title="Browser frame - compact body">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;align-items:start;inline-size:100%;padding:0.5rem">
+<div class="oc-browser-frame">
+  <div class="oc-browser-frame__bar"><i></i><i></i><i></i></div>
+  <img class="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard with the figures of the day">
+</div>
+</div>
+<oc-code lang="html">&lt;div class="oc-browser-frame"&gt;
+  &lt;div class="oc-browser-frame__bar"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+  &lt;img class="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard with the figures of the day"&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { BrowserFrame } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return &lt;BrowserFrame body src="/img/blocks/dashboard-01.jpg" alt="Dashboard with the figures of the day" style={{ inlineSize: "min(100%, 24rem)" }} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBrowserFrame } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBrowserFrame body src="/img/blocks/dashboard-01.jpg" alt="Dashboard with the figures of the day" style="inline-size:min(100%, 24rem)" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::browser-frame body src="/img/blocks/dashboard-01.jpg" alt="Dashboard with the figures of the day" style="inline-size:min(100%, 24rem)" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class BrowserFrameBody extends Component
+{
+    public string $screenshot = '/img/blocks/dashboard-01.jpg';
+
+    public function render()
+    {
+        return view('livewire.browser-frame-body');
+    }
+}
+
+{{-- resources/views/livewire/browser-frame-body.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::browser-frame body :src="$screenshot" alt="Dashboard with the figures of the day" style="inline-size:min(100%, 24rem)" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -105,6 +355,8 @@
             <tbody>
               <tr><td><code>.oc-browser-frame</code></td><td>Frame (a <code>&lt;figure&gt;</code>)</td></tr>
               <tr><td><code>.oc-browser-frame--minimal / --dark / --tilt / --auto</code></td><td>Dots only / dark chrome / 3D angle / free height</td></tr>
+              <tr><td><code>.oc-browser-frame--glow</code></td><td>Shadow in the accent color, the screenshot zooms in a little on hover</td></tr>
+              <tr><td><code>div.oc-browser-frame</code> + <code>.oc-browser-frame__body</code></td><td>Compact frame: the bar and one body (16 / 10), the screenshot itself or a div; <code>body</code> prop in the components</td></tr>
               <tr><td><code>.oc-browser-frame__bar</code></td><td>Chrome bar with three <code>&lt;i&gt;</code> dots</td></tr>
               <tr><td><code>.oc-browser-frame__address</code></td><td>Address pill with a lock, ellipsis when narrow</td></tr>
               <tr><td><code>.oc-browser-frame__actions</code></td><td>Small glyphs on the right</td></tr>

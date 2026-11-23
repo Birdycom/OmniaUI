@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Radio group", "category": "Forms", "description": "Native inputs, stacked or row, descriptions, card style.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Radio group", "category": "Forms", "description": "Radio group on native inputs in a fieldset with a legend: stacked or in a row, a disabled option, a second line of description and a bordered card style.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Radio group</h1>
         <p class="oc-hero-text">Native radio inputs with the theme accent. <code>.oc-radio</code> styles the input; <code>.oc-radio-group</code> and <code>.oc-radio-item</code> lay out the choices, optionally as selectable cards using <code>:has(:checked)</code>. <a href="../components.html">All components</a>.</p>
@@ -8,6 +8,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/radio.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React component <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">Click a plan or use the arrow keys. Team is disabled.</p>
           <oc-demo title="Radio group">
 <fieldset class="oc-radio-group">
@@ -16,6 +17,38 @@
   <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-plan" value="pro"> Pro</label>
   <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-plan" value="team" disabled> Team (soon)</label>
 </fieldset>
+<oc-code lang="tsx">const [plan, setPlan] = useState&lt;string | number&gt;("free");
+
+&lt;RadioGroup value={plan} onValueChange={setPlan} legend="Plan" name="plan"
+  options={[{ value: "free", label: "Free" }, { value: "pro", label: "Pro" }, { value: "team", label: "Team (soon)", disabled: true }]} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcRadioGroup v-model="plan" legend="Plan" name="plan"
+  :options="[{ value: 'free', label: 'Free' }, { value: 'pro', label: 'Pro' }, { value: 'team', label: 'Team (soon)', disabled: true }]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::radio name="plan" legend="Plan" value="free" :options="['free' =&gt; 'Free', 'pro' =&gt; 'Pro', 'team' =&gt; ['label' =&gt; 'Team (soon)', 'disabled' =&gt; true]]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ChoosePlan extends Component
+{
+    public string $plan = 'free';
+
+    public function render()
+    {
+        return view('livewire.choose-plan');
+    }
+}
+
+{{-- resources/views/livewire/choose-plan.blade.php --}}
+{{-- x-oc::radio draws the fieldset and legend; the Livewire-bound radios go in its slot --}}
+&lt;div&gt;
+    &lt;x-oc::radio name="plan" legend="Plan"&gt;
+        &lt;x-oc::wire.checkbox radio model="plan" value="free" label="Free" class="oc-radio-item" /&gt;
+        &lt;x-oc::wire.checkbox radio model="plan" value="pro" label="Pro" class="oc-radio-item" /&gt;
+        &lt;x-oc::wire.checkbox radio model="plan" value="team" label="Team (soon)" class="oc-radio-item" disabled /&gt;
+    &lt;/x-oc::radio&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="cards" class="oc-section-content__title mt-2">Descriptions and card style</h3><p class="oc-section-content__desc">Put a <code>&lt;small&gt;</code> in the label for a description; <code>--card</code> turns each option into a selectable card.</p>
           <oc-demo title="Descriptions and card style">
@@ -23,6 +56,129 @@
   <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-bill" value="month" checked><span>Monthly<small>Billed every month, cancel anytime.</small></span></label>
   <label class="oc-radio-item oc-radio-item--card"><input class="oc-radio" type="radio" name="oc-bill" value="year"><span>Yearly<small>Two months free.</small></span></label>
 </div>
+<oc-code lang="tsx">const [billing, setBilling] = useState&lt;string | number&gt;("month");
+
+&lt;RadioGroup value={billing} onValueChange={setBilling} name="billing" card&gt;
+  &lt;Radio value="month" description="Billed every month, cancel anytime."&gt;Monthly&lt;/Radio&gt;
+  &lt;Radio value="year" description="Two months free."&gt;Yearly&lt;/Radio&gt;
+&lt;/RadioGroup&gt;</oc-code>
+<oc-code lang="vue">&lt;OcRadioGroup v-model="billing" card
+  :options="[{ value: 'month', label: 'Monthly', description: 'Billed every month, cancel anytime.' }, { value: 'year', label: 'Yearly', description: 'Two months free.' }]" /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::radio name="billing" card value="month" :options="[
+    'month' =&gt; ['label' =&gt; 'Monthly', 'description' =&gt; 'Billed every month, cancel anytime.'],
+    'year' =&gt; ['label' =&gt; 'Yearly', 'description' =&gt; 'Two months free.'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Billing extends Component
+{
+    public string $billing = 'month';
+
+    public function render()
+    {
+        return view('livewire.billing');
+    }
+}
+
+{{-- resources/views/livewire/billing.blade.php --}}
+{{-- x-oc::radio draws the group; the Livewire-bound radios go in its slot --}}
+&lt;div&gt;
+    &lt;x-oc::radio name="billing"&gt;
+        &lt;x-oc::wire.checkbox radio model="billing" value="month" class="oc-radio-item oc-radio-item--card"&gt;&lt;span&gt;Monthly&lt;small&gt;Billed every month, cancel anytime.&lt;/small&gt;&lt;/span&gt;&lt;/x-oc::wire.checkbox&gt;
+        &lt;x-oc::wire.checkbox radio model="billing" value="year" class="oc-radio-item oc-radio-item--card"&gt;&lt;span&gt;Yearly&lt;small&gt;Two months free.&lt;/small&gt;&lt;/span&gt;&lt;/x-oc::wire.checkbox&gt;
+    &lt;/x-oc::radio&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="error">With an error <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Nothing chosen yet where a choice is required: <code>error</code> puts the message under the options (<code>.oc-field-error</code>) and links every radio to it with <code>aria-invalid</code> and <code>aria-describedby</code>, so a screen reader reads the message with each option. Blade also takes <code>:error="true"</code> (only the invalid state) and marks the radios when the validator has an error for the name.</p>
+          <oc-demo title="Radio group - error">
+<fieldset class="oc-radio-group">
+  <legend class="oc-label">Delivery</legend>
+  <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-delivery" value="pickup" aria-invalid="true" aria-describedby="delivery-error"> Pick up at the shop</label>
+  <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-delivery" value="courier" aria-invalid="true" aria-describedby="delivery-error"> Courier</label>
+  <label class="oc-radio-item"><input class="oc-radio" type="radio" name="oc-delivery" value="post" aria-invalid="true" aria-describedby="delivery-error"> Post</label>
+  <p class="oc-field-error" id="delivery-error">Choose how you want to receive the order.</p>
+</fieldset>
+<oc-code lang="html">&lt;fieldset class="oc-radio-group"&gt;
+  &lt;legend class="oc-label"&gt;Delivery&lt;/legend&gt;
+  &lt;label class="oc-radio-item"&gt;&lt;input class="oc-radio" type="radio" name="delivery" value="pickup" aria-invalid="true" aria-describedby="delivery-error"&gt; Pick up at the shop&lt;/label&gt;
+  &lt;label class="oc-radio-item"&gt;&lt;input class="oc-radio" type="radio" name="delivery" value="courier" aria-invalid="true" aria-describedby="delivery-error"&gt; Courier&lt;/label&gt;
+  &lt;label class="oc-radio-item"&gt;&lt;input class="oc-radio" type="radio" name="delivery" value="post" aria-invalid="true" aria-describedby="delivery-error"&gt; Post&lt;/label&gt;
+  &lt;p class="oc-field-error" id="delivery-error" role="alert"&gt;Choose how you want to receive the order.&lt;/p&gt;
+&lt;/fieldset&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { RadioGroup } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [delivery, setDelivery] = useState&lt;string | number | undefined&gt;(undefined);
+  return (
+    &lt;RadioGroup
+      name="delivery"
+      legend="Delivery"
+      value={delivery}
+      onValueChange={setDelivery}
+      error={delivery === undefined ? "Choose how you want to receive the order." : undefined}
+      options={[
+        { value: "pickup", label: "Pick up at the shop" },
+        { value: "courier", label: "Courier" },
+        { value: "post", label: "Post" },
+      ]}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcRadioGroup } from "@birdycom/omniaui-vue";
+
+const delivery = ref&lt;string | number&gt;();
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcRadioGroup
+    v-model="delivery"
+    name="delivery"
+    legend="Delivery"
+    :error="delivery === undefined ? 'Choose how you want to receive the order.' : undefined"
+    :options="[{ value: 'pickup', label: 'Pick up at the shop' }, { value: 'courier', label: 'Courier' }, { value: 'post', label: 'Post' }]"
+  /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::radio name="delivery" legend="Delivery" error="Choose how you want to receive the order."
+    :options="['pickup' =&gt; 'Pick up at the shop', 'courier' =&gt; 'Courier', 'post' =&gt; 'Post']" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ChooseDelivery extends Component
+{
+    public ?string $delivery = null;
+
+    public function save(): void
+    {
+        $this-&gt;validate(['delivery' =&gt; 'required'], ['delivery.required' =&gt; 'Choose how you want to receive the order.']);
+    }
+
+    public function render()
+    {
+        return view('livewire.choose-delivery');
+    }
+}
+
+{{-- resources/views/livewire/choose-delivery.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::radio name="delivery" legend="Delivery" :error="$errors-&gt;first('delivery') ?: null"&gt;
+        &lt;x-oc::wire.checkbox radio model="delivery" value="pickup" label="Pick up at the shop" class="oc-radio-item" /&gt;
+        &lt;x-oc::wire.checkbox radio model="delivery" value="courier" label="Courier" class="oc-radio-item" /&gt;
+        &lt;x-oc::wire.checkbox radio model="delivery" value="post" label="Post" class="oc-radio-item" /&gt;
+    &lt;/x-oc::radio&gt;
+    &lt;x-oc::button wire:click="save"&gt;Continue&lt;/x-oc::button&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -39,6 +195,7 @@
               <tr><td><code>.oc-radio-group--row</code></td><td>Items in a wrapping row</td></tr>
               <tr><td><code>.oc-radio-item</code></td><td>Label that aligns input and text</td></tr>
               <tr><td><code>.oc-radio-item--card</code></td><td>Bordered option, highlighted when checked</td></tr>
+              <tr><td><code>.oc-field-error</code> in the group</td><td>The message under the options; every radio gets <code>aria-invalid="true"</code> and <code>aria-describedby</code> with its id. Prop <code>error</code> (React, Vue, Blade).</td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>

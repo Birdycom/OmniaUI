@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Color field", "category": "Forms", "description": "Native color picker next to a hex text input.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Color field", "category": "Forms", "description": "Native color picker next to a hex text input, with an optional contrast check: text on the color and the color on the light and the dark page.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Color field</h1>
         <p class="oc-hero-text">The native <code>&lt;input type="color"&gt;</code> plus a text field for the value. Keeping both in sync is the wrapper's job. <a href="../components.html">All components</a>.</p>
@@ -19,6 +19,166 @@
     <input class="oc-input" type="text" value="#3366cc" aria-label="Color value" pattern="#[0-9a-fA-F]{6}" onchange="if (this.checkValidity()) this.previousElementSibling.value = this.value">
   </div>
 </div>
+<oc-code lang="tsx">import { ColorField, FormField } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [brand, setBrand] = useState("#3366cc");
+
+  return (
+    &lt;FormField label="Brand color" htmlFor="oc-color-demo"&gt;
+      &lt;ColorField id="oc-color-demo" value={brand} onChange={setBrand} /&gt;
+    &lt;/FormField&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcColorField, OcFormField } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const brand = ref("#3366cc");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Brand color"&gt;
+    &lt;OcColorField v-model="brand" /&gt;
+  &lt;/OcFormField&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::color-field label="Brand color" id="oc-color-demo" name="brand_color" value="#3366cc" pattern="#[0-9a-fA-F]{6}" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class ColorField extends Component
+{
+    #[Validate('required|regex:/^#[0-9a-fA-F]{6}$/')]
+    public string $brandColor = '#3366cc';
+
+    public function updatedBrandColor(): void
+    {
+        $this-&gt;validateOnly('brandColor');
+    }
+
+    public function render()
+    {
+        return view('livewire.color-field');
+    }
+}
+
+{{-- resources/views/livewire/color-field.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::color-field label="Brand color" id="oc-color-demo" wire:model.blur="brandColor" :value="$brandColor" pattern="#[0-9a-fA-F]{6}" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="contrast">Contrast check for a customer's color <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">When a customer picks a brand color, show at once whether it works. <code>contrastAgainst</code> lists the page backgrounds; the field checks text on the color (light or dark text, whichever reads best, at least 4.5:1) and the color on each background (at least 3:1, so a button or a link stands out). A word says the result, the color only repeats it. The yellow is fine for text but disappears on the light page. The same math is exported: <code>contrastRatio(a, b)</code> and <code>pickOnColor(color)</code> (React, Vue); colors may be theme tokens such as <code>var(--oc-background)</code>.</p>
+          <oc-demo title="Color field - contrast check">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;inline-size:100%">
+<div class="oc-field">
+  <label class="oc-field-label" for="oc-color-c1">Brand color</label>
+  <div class="oc-color-field">
+    <input type="color" value="#2f80ed" aria-label="Pick a color">
+    <input class="oc-input" type="text" id="oc-color-c1" value="#2f80ed" aria-label="Color value">
+    <ul class="oc-color-field-report" aria-live="polite">
+      <li class="oc-color-field-check" data-ok="true"><span class="oc-color-field-sample" aria-hidden="true" style="background: #2f80ed; color: #0b1020">Aa</span><span>Text on this color</span><span class="oc-color-field-ratio">4.9:1 · OK</span></li>
+      <li class="oc-color-field-check" data-ok="true"><span class="oc-color-field-sample" aria-hidden="true" style="background: #ffffff"><i style="background: #2f80ed"></i></span><span>On the light page</span><span class="oc-color-field-ratio">3.9:1 · OK</span></li>
+      <li class="oc-color-field-check" data-ok="true"><span class="oc-color-field-sample" aria-hidden="true" style="background: #0b1020"><i style="background: #2f80ed"></i></span><span>On the dark page</span><span class="oc-color-field-ratio">4.9:1 · OK</span></li>
+    </ul>
+  </div>
+</div>
+<div class="oc-field">
+  <label class="oc-field-label" for="oc-color-c2">Brand color</label>
+  <div class="oc-color-field">
+    <input type="color" value="#f2c94c" aria-label="Pick a color">
+    <input class="oc-input" type="text" id="oc-color-c2" value="#f2c94c" aria-label="Color value">
+    <ul class="oc-color-field-report" aria-live="polite">
+      <li class="oc-color-field-check" data-ok="true"><span class="oc-color-field-sample" aria-hidden="true" style="background: #f2c94c; color: #0b1020">Aa</span><span>Text on this color</span><span class="oc-color-field-ratio">11.9:1 · OK</span></li>
+      <li class="oc-color-field-check" data-ok="false"><span class="oc-color-field-sample" aria-hidden="true" style="background: #ffffff"><i style="background: #f2c94c"></i></span><span>On the light page</span><span class="oc-color-field-ratio">1.6:1 · Too low</span></li>
+      <li class="oc-color-field-check" data-ok="true"><span class="oc-color-field-sample" aria-hidden="true" style="background: #0b1020"><i style="background: #f2c94c"></i></span><span>On the dark page</span><span class="oc-color-field-ratio">11.9:1 · OK</span></li>
+    </ul>
+  </div>
+</div>
+</div>
+<oc-code lang="html">&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;inline-size:100%"&gt;
+&lt;div class="oc-field"&gt;
+  &lt;label class="oc-field-label" for="oc-color-c1"&gt;Brand color&lt;/label&gt;
+  &lt;div class="oc-color-field"&gt;
+    &lt;input type="color" value="#2f80ed" aria-label="Pick a color"&gt;
+    &lt;input class="oc-input" type="text" id="oc-color-c1" value="#2f80ed" aria-label="Color value"&gt;
+    &lt;ul class="oc-color-field-report" aria-live="polite"&gt;
+      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #2f80ed; color: #0b1020"&gt;Aa&lt;/span&gt;&lt;span&gt;Text on this color&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;4.9:1 · OK&lt;/span&gt;&lt;/li&gt;
+      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #ffffff"&gt;&lt;i style="background: #2f80ed"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the light page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;3.9:1 · OK&lt;/span&gt;&lt;/li&gt;
+      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #0b1020"&gt;&lt;i style="background: #2f80ed"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the dark page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;4.9:1 · OK&lt;/span&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="oc-field"&gt;
+  &lt;label class="oc-field-label" for="oc-color-c2"&gt;Brand color&lt;/label&gt;
+  &lt;div class="oc-color-field"&gt;
+    &lt;input type="color" value="#f2c94c" aria-label="Pick a color"&gt;
+    &lt;input class="oc-input" type="text" id="oc-color-c2" value="#f2c94c" aria-label="Color value"&gt;
+    &lt;ul class="oc-color-field-report" aria-live="polite"&gt;
+      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #f2c94c; color: #0b1020"&gt;Aa&lt;/span&gt;&lt;span&gt;Text on this color&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;11.9:1 · OK&lt;/span&gt;&lt;/li&gt;
+      &lt;li class="oc-color-field-check" data-ok="false"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #ffffff"&gt;&lt;i style="background: #f2c94c"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the light page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;1.6:1 · Too low&lt;/span&gt;&lt;/li&gt;
+      &lt;li class="oc-color-field-check" data-ok="true"&gt;&lt;span class="oc-color-field-sample" aria-hidden="true" style="background: #0b1020"&gt;&lt;i style="background: #f2c94c"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span&gt;On the dark page&lt;/span&gt;&lt;span class="oc-color-field-ratio"&gt;11.9:1 · OK&lt;/span&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;ColorField
+  value={brand}
+  onChange={setBrand}
+  contrastAgainst={[
+    { name: "the light page", color: "#ffffff" },
+    { name: "the dark page", color: "#0b1020" },
+  ]}
+/&gt;
+// Pick the text color for a button in that color:
+const ink = pickOnColor(brand); // "#ffffff" or "#0b1020"</oc-code>
+<oc-code lang="vue">&lt;OcColorField v-model="brand" :contrast-against="[{ name: 'the light page', color: '#ffffff' }, { name: 'the dark page', color: '#0b1020' }]" /&gt;</oc-code>
+<oc-code lang="blade">{{-- contrast-against: the color on each background (at least 3:1), plus text on the color (at least 4.5:1).
+     The server measures the first value; the script of the component measures again while the customer picks. --}}
+@php($pages = [['name' =&gt; 'the light page', 'color' =&gt; '#ffffff'], ['name' =&gt; 'the dark page', 'color' =&gt; '#0b1020']])
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1.5rem;inline-size:100%"&gt;
+    &lt;x-oc::color-field label="Brand color" id="oc-color-c1" name="brand" value="#2f80ed" :contrast-against="$pages" /&gt;
+    &lt;x-oc::color-field label="Brand color" id="oc-color-c2" name="brand_alt" value="#f2c94c" :contrast-against="$pages" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ColorFieldContrastCheck extends Component
+{
+    public string $brand = '#2f80ed';
+
+    /** The backgrounds the brand color must stand out on (at least 3:1). */
+    public array $pages = [
+        ['name' =&gt; 'the light page', 'color' =&gt; '#ffffff'],
+        ['name' =&gt; 'the dark page', 'color' =&gt; '#0b1020'],
+    ];
+
+    public function save(): void
+    {
+        $this-&gt;validate(['brand' =&gt; ['required', 'regex:/^#[0-9a-fA-F]{6}$/']]);
+    }
+
+    public function render()
+    {
+        return view('livewire.color-field-contrast-check');
+    }
+}
+
+{{-- resources/views/livewire/color-field-contrast-check.blade.php --}}
+&lt;form wire:submit="save" style="display:grid;gap:1rem;max-inline-size:20rem"&gt;
+    {{-- wire:model.blur: the server measures the contrast again when the field loses focus --}}
+    &lt;x-oc::color-field label="Brand color" id="brand" name="brand" :value="$brand" :contrast-against="$pages" wire:model.blur="brand" /&gt;
+    &lt;x-oc::button type="submit"&gt;Save&lt;/x-oc::button&gt;
+&lt;/form&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -32,6 +192,7 @@
           <table class="oc-table-ref">
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
+              <tr><td><code>.oc-color-field-report</code> &gt; <code>.oc-color-field-check[data-ok]</code></td><td>Contrast report under the field: <code>.oc-color-field-sample</code> (Aa on the color, or the color on a background) and <code>.oc-color-field-ratio</code>. React / Vue <code>contrastAgainst</code>, <code>contrast</code></td></tr>
               <tr><td><code>.oc-color-field</code></td><td>Row wrapper</td></tr>
               <tr><td><code>input[type=color]</code></td><td>Native picker swatch</td></tr>
               <tr><td><code>.oc-input</code></td><td>Text field with the value (monospaced)</td></tr>

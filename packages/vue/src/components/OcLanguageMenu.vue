@@ -8,6 +8,7 @@
 import { computed } from 'vue'
 import { useUid } from '../composables/useUid'
 import OcWebicon from './OcWebicon.vue'
+import { languageFlag } from '../webicons'
 
 export interface LanguageMenuItem {
   value: string
@@ -19,7 +20,13 @@ export interface LanguageMenuItem {
 }
 
 const props = withDefaults(
-  defineProps<{ options: LanguageMenuItem[]; show?: 'code' | 'name'; compact?: boolean; ghost?: boolean; label?: string }>(),
+  defineProps<{
+    options: LanguageMenuItem[]; show?: 'code' | 'name'; compact?: boolean; ghost?: boolean; label?: string
+    /** 'auto': a flag from the language code when an option has none (en -> gb, nl-BE -> be). */
+    flags?: 'auto'
+    /** Your own flag (webicon name) per language code; undefined falls back to flags="auto" or no flag. */
+    flagFor?: (value: string) => string | undefined
+  }>(),
   { show: 'code', label: 'Language' },
 )
 const model = defineModel<string>()
@@ -27,6 +34,9 @@ const menuId = useUid('oc-language-menu')
 const cur = computed(() => props.options.find((o) => o.value === model.value) ?? props.options[0])
 const name = computed(() => `${props.label}: ${cur.value?.label ?? ''}`)
 const codeOf = (o: LanguageMenuItem) => o.code ?? o.value.toUpperCase()
+const flagOf = (o: LanguageMenuItem | undefined) =>
+  o && (o.flag ?? props.flagFor?.(o.value) ?? (props.flags === 'auto' ? languageFlag(o.value) : undefined))
+const curFlag = computed(() => flagOf(cur.value))
 
 function pick(o: LanguageMenuItem, event: MouseEvent) {
   model.value = o.value
@@ -43,11 +53,11 @@ function pick(o: LanguageMenuItem, event: MouseEvent) {
     :popovertarget="menuId"
   >
     <template v-if="compact">
-      <span v-if="cur?.flag" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="cur.flag" bare fallback="iconify" /></span>
+      <span v-if="curFlag" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="curFlag" bare fallback="iconify" /></span>
       <span v-else class="oc-language-select-icon" aria-hidden="true"><OcWebicon name="mdi:web" bare fallback="iconify" /></span>
     </template>
     <template v-else>
-      <span v-if="cur?.flag" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="cur.flag" bare fallback="iconify" /></span>
+      <span v-if="curFlag" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="curFlag" bare fallback="iconify" /></span>
       <span v-if="show === 'name'" :lang="cur?.value">{{ cur?.label }}</span>
       <span v-else class="oc-language-select-code">{{ cur && codeOf(cur) }}</span>
     </template>
@@ -65,7 +75,7 @@ function pick(o: LanguageMenuItem, event: MouseEvent) {
       :aria-current="o.value === cur?.value ? 'true' : undefined"
       @click="pick(o, $event)"
     >
-      <span v-if="o.flag" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="o.flag" bare fallback="iconify" /></span>
+      <span v-if="flagOf(o)" class="oc-language-flag" aria-hidden="true"><OcWebicon :name="flagOf(o)!" bare fallback="iconify" /></span>
       <span>{{ o.label }}</span>
       <span class="oc-language-menu-code" aria-hidden="true">{{ codeOf(o) }}</span>
     </component>

@@ -175,6 +175,9 @@
 :root:has(.oc-theme-switch input[value="dark"]:checked:not(.oc-theme-scope *)) { color-scheme: dark; }
 .oc-theme-scope:has(.oc-theme-switch input[value="light"]:checked) { color-scheme: light; }
 .oc-theme-scope:has(.oc-theme-switch input[value="dark"]:checked) { color-scheme: dark; }
+/* A scope with a theme of its own (data-theme from a toggle button, or a light / dark switch inside it) takes the text
+   color of that theme: the color of the page was resolved for the page's theme and would be inherited as it is. */
+.oc-theme-scope:is([data-theme="light"], [data-theme="dark"], :has(.oc-theme-switch input:is([value="light"], [value="dark"]):checked)) { color: var(--oc-foreground); }
 
 /* Base surface; :where() keeps specificity at zero so any project body style wins. */
 :where(body) {
@@ -973,6 +976,10 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
   color: var(--oc-destructive-foreground);
 }
 
+/* Badge with a webicon (0.17.0): the icon sits before the text, 1em, never squeezed. */
+.oc-badge > :is(svg, iconify-icon) { flex-shrink: 0; inline-size: 1em; block-size: 1em; }
+.oc-badge:has(> :is(svg, iconify-icon)) { gap: 0.25rem; }
+
 /* Badge pill (source file) */
 .oc-badge-source {
   display: inline-block;
@@ -1063,15 +1070,13 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
    =================================================================== */
 
 .oc-section-header {
-  display: grid;
-  grid-template-columns: auto auto auto auto 1fr auto;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    "title source scss file . version"
-    "desc desc desc desc desc desc";
+  /* Flex with wrap (not a fixed grid): the badges sit next to the title when there is room and wrap below it
+     otherwise, so they never overlap a title that breaks over two lines in a narrow column. */
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   padding: 1rem;
-  gap: 0 8px;
+  gap: 0.375rem 0.5rem;
   border-bottom: 1px solid var(--oc-border);
 }
 /* A header without content below it closes the card: no second line on top of the card border. */
@@ -1079,43 +1084,37 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Section header */
 .oc-section-header__title {
-  grid-area: title;
+  flex: 0 1 auto;
   min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
   margin: var(--oc-section-header-title-margin);
+  margin-inline-end: 0.25rem;
   font-size: var(--oc-section-header-title-font-size);
 }
 
-.oc-section-header__badge-source {
-  grid-area: source;
-  margin-left: 0;
-}
-
-.oc-section-header__badge-scss {
-  grid-area: scss;
-  margin-left: 0;
-}
-
+.oc-section-header__badge-source,
+.oc-section-header__badge-scss,
 .oc-section-header__badge-file {
-  grid-area: file;
+  flex: none;
   margin-left: 0;
 }
 
+/* The version badge sits at the far right of its row. */
 .oc-section-header__badge-version {
-  grid-area: version;
+  flex: none;
+  margin-inline-start: auto;
 }
 
 .oc-section-header__desc {
-  grid-area: desc;
+  flex: 1 0 100%;
   margin: var(--oc-section-header-desc-margin);
   font-size: var(--oc-section-header-desc-font-size);
 }
 
-/* Phone: the title and the badges no longer fit on one row, so the row wraps (title first, badges below it in
-   source order, description last) instead of pushing the card wider than the screen. */
+/* Phone: title on its own row, the badges below it in source order, description last. */
 @media (max-width: 40rem) {
-  .oc-section-header { display: flex; flex-wrap: wrap; gap: 0.375rem 0.5rem; }
   .oc-section-header__title { flex: 1 0 100%; }
-  .oc-section-header__desc { flex: 1 0 100%; }
 }
 
 /* Section content */
@@ -1133,6 +1132,12 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
   padding: var(--oc-section-content-padding);
   background: var(--oc-section-content-background);
   border-radius: var(--oc-section-content-border-radius);
+}
+/* The last part of a section card follows the card's rounded bottom corners, so its own background never covers the
+   card border there (a smaller radius left the corners square and the bottom edge looked cut off). */
+:is(.oc-section, .oc-docs-section) > :last-child:is(.oc-section-content, .oc-section-footer) {
+  border-end-start-radius: calc(var(--oc-section-border-radius) - 1px);
+  border-end-end-radius: calc(var(--oc-section-border-radius) - 1px);
 }
 
 /* Section footer */
@@ -1193,6 +1198,55 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 .oc-alert--danger {
   border-color: color-mix(in srgb, var(--oc-destructive) 40%, transparent);
   background: color-mix(in srgb, var(--oc-destructive) 5%, var(--oc-background));
+}
+
+/* Icon and actions (0.17.0): .oc-alert-icon on the left, the text in .oc-alert-body, buttons in .oc-alert-actions on the
+   right (under the text when there is no room). */
+.oc-alert:has(> .oc-alert-body) { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.oc-alert-body { flex: 1 1 14rem; min-inline-size: 0; }
+.oc-alert-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  font-size: 1.25rem;
+  color: var(--oc-alert-tone, var(--oc-primary));
+  background: color-mix(in oklch, var(--oc-alert-tone, var(--oc-primary)) 14%, transparent);
+  border-radius: 50%;
+}
+.oc-alert-icon > :is(svg, iconify-icon) { inline-size: 1.25rem; block-size: 1.25rem; font-size: 1.25rem; }
+.oc-alert-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-inline-start: auto; }
+.oc-alert--success { --oc-alert-tone: var(--oc-success); }
+.oc-alert--warning { --oc-alert-tone: var(--oc-warning); }
+.oc-alert--danger { --oc-alert-tone: var(--oc-destructive); }
+
+/* Alarm (0.17.0): an urgent message that must be seen (a help request, a failed payment). data-state="new": a thick edge
+   in the tone and a slow pulse until someone acknowledges it (the app then sets data-state="seen"); seen: calm, until
+   it is closed. Use role="alert" for a new one, and a tone (--danger, --warning). With reduced motion: no pulse, a ring. */
+.oc-alert--alarm[data-state="new"] {
+  position: relative;
+  border: 2px solid var(--oc-alert-tone);
+  background: color-mix(in oklch, var(--oc-alert-tone) 9%, var(--oc-background));
+}
+/* The pulse is a ring around the alert that fades in and out (opacity only, so the GPU draws it). */
+.oc-alert--alarm[data-state="new"]::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 5px oklch(from var(--oc-alert-tone) l c h / 0.35);
+  opacity: 0;
+  pointer-events: none;
+  animation: oc-alarm-pulse 1.6s ease-in-out infinite;
+}
+.oc-alert--alarm[data-state="new"] .oc-alert-title { color: var(--oc-foreground); }
+@keyframes oc-alarm-pulse {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-alert--alarm[data-state="new"]::before { animation: none; opacity: 1; }
 }
 
 /* Inline: a short message right under a field or a form (an error, a hint), tinted, without the box spacing. */
@@ -1917,6 +1971,8 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
   font-weight: 600;
   color: var(--oc-foreground);
 }
+/* Inside the framed scroll box the caption sits inside the border, so it gets the cell padding. */
+.oc-table-wrap:has(> .oc-table) > .oc-table > caption { padding: 0.75rem 0.75rem 0.5rem; }
 .oc-table-wrap {
   /* position: containing block for visually hidden labels in cells, else they escape the scroll clip and widen the page */
   position: relative;
@@ -1931,6 +1987,21 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 .oc-table-wrap > .oc-table :is(th, td):last-child { border-inline-end: 0; }
 .oc-table-wrap > .oc-table > :first-child > tr:first-child > * { border-block-start: 0; }
 .oc-table-wrap > .oc-table > :last-child > tr:last-child > * { border-block-end: 0; }
+
+/* 0.17.0: .oc-table--auto sizes the columns by their content (the action column stays narrow, a name gets the room).
+   data-hide-below="sm | md | lg" on a th and its tds hides that column when the table area is narrower than 24, 32 or
+   48rem; the wrap becomes the size reference only when a table uses it (so a table in a flex row keeps its width), and
+   such a table drops the 32rem minimum width of the wrap: it gets narrower instead of scrolling.
+   .oc-table-action-label: the text next to an action icon, hidden (still read out) in a narrow table or in
+   .oc-table-actions--compact; the button keeps its title as tooltip. */
+.oc-table.oc-table--auto { table-layout: auto; }
+.oc-table-wrap:has([data-hide-below], .oc-table-action-label) { container: oc-table / inline-size; }
+.oc-table-wrap:has([data-hide-below]) > .oc-table { min-inline-size: 0; }
+/* The same switch in the data table component (hideBelow on a column): its scroll box is the size reference. */
+.oc-data-table-scroll:has([data-hide-below]) { container: oc-table / inline-size; }
+@container oc-table (max-width: 48rem) { .oc-table :is(th, td)[data-hide-below~="lg"] { display: none; } }
+@container oc-table (max-width: 32rem) { .oc-table :is(th, td)[data-hide-below~="md"] { display: none; } }
+@container oc-table (max-width: 24rem) { .oc-table :is(th, td)[data-hide-below~="sm"] { display: none; } }
 
 /* ===================================================================
    Shared docs utility table styles (dark theme)
@@ -1964,8 +2035,10 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 .oc-expandable-table {
   margin-bottom: 2rem;
  }
-.oc-expandable-table__row-dimmed {
-  opacity: 0.6;
+/* The last visible row is a hint that more rows follow. It is dimmed with the muted text color (code included),
+   not with opacity: that kept the text below the AA contrast of 4.5:1 in light and dark. */
+.oc-expandable-table:not(.is-expanded):not(:has(.oc-expandable-table__toggle:checked)):has(.oc-expandable-table__row-more) .oc-expandable-table__row-dimmed :is(td, th, code) {
+  color: var(--oc-muted-foreground);
 }
 .oc-expandable-table .oc-expandable-table__row-more {
   display: none;
@@ -1973,9 +2046,6 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 /* CSS-only toggle: <label class="oc-expandable-table__trigger"><input type="checkbox" class="oc-expandable-table__toggle"> … */
 .oc-expandable-table:has(.oc-expandable-table__toggle:checked) .oc-expandable-table__row-more {
   display: table-row;
-}
-.oc-expandable-table:has(.oc-expandable-table__toggle:checked) .oc-expandable-table__row-dimmed {
-  opacity: 1;
 }
 /* The label is the containing block, so the hidden checkbox stays inside it and cannot stretch the page */
 .oc-expandable-table__trigger:has(.oc-expandable-table__toggle) {
@@ -2001,13 +2071,6 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .oc-expandable-table.is-expanded .oc-expandable-table__row-more {
   display: table-row;
-}
-.oc-expandable-table.is-expanded .oc-expandable-table__row-dimmed {
-  opacity: 1;
-}
-/* Nothing hidden below it: the row is simply the last one, so it is not dimmed */
-.oc-expandable-table:not(:has(.oc-expandable-table__row-more)) .oc-expandable-table__row-dimmed {
-  opacity: 1;
 }
 /* Hide trigger when there are no hidden rows */
 .oc-expandable-table:not(:has(.oc-expandable-table__row-more)) .oc-expandable-table__wrap {
@@ -2314,29 +2377,34 @@ button.oc-pagination-item:focus-visible {
    Usage: add class .oc-scrollbar to any overflow:auto element.
    =================================================================== */
 
+/* Tokens (0.17.0): set them on the element, a parent or :root to restyle the bar; without them it keeps the look it
+   always had. --oc-scrollbar-thumb(-hover) default to --oc-muted(-foreground), which already follow light and dark
+   mode. --oc-scrollbar-size is the WebKit width (Firefox only knows thin, see scrollbar-width below).
+   --oc-scrollbar-size: 8px (thin 5px), --oc-scrollbar-thumb, --oc-scrollbar-thumb-hover, --oc-scrollbar-track: transparent */
+
 /* Webkit (Chrome, Edge, Safari) */
-.oc-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
-.oc-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 4px; }
+.oc-scrollbar::-webkit-scrollbar { width: var(--oc-scrollbar-size, 8px); height: var(--oc-scrollbar-size, 8px); }
+.oc-scrollbar::-webkit-scrollbar-track { background: var(--oc-scrollbar-track, transparent); border-radius: 4px; }
 .oc-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--oc-muted, oklch(from var(--color-gray-30) l c h / 0.3));
+  background: var(--oc-scrollbar-thumb, var(--oc-muted, oklch(from var(--color-gray-30) l c h / 0.3)));
   border-radius: 4px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 .oc-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--oc-muted-foreground, oklch(from var(--color-gray-30) l c h / 0.5));
+  background: var(--oc-scrollbar-thumb-hover, var(--oc-muted-foreground, oklch(from var(--color-gray-30) l c h / 0.5)));
   background-clip: content-box;
 }
 
 /* Thin variant */
-.oc-scrollbar--thin::-webkit-scrollbar { width: 5px; height: 5px; }
+.oc-scrollbar--thin::-webkit-scrollbar { width: var(--oc-scrollbar-size, 5px); height: var(--oc-scrollbar-size, 5px); }
 
 /* Hidden — hides scrollbar but keeps scroll */
 .oc-scrollbar--hidden::-webkit-scrollbar { display: none; }
 .oc-scrollbar--hidden { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* Firefox */
-.oc-scrollbar { scrollbar-width: thin; scrollbar-color: var(--oc-muted, oklch(from var(--color-gray-30) l c h / 0.3)) transparent; }
+.oc-scrollbar { scrollbar-width: thin; scrollbar-color: var(--oc-scrollbar-thumb, var(--oc-muted, oklch(from var(--color-gray-30) l c h / 0.3))) var(--oc-scrollbar-track, transparent); }
 .oc-scrollbar--thin { scrollbar-width: thin; }
 
 /* ===================================================================
@@ -2517,7 +2585,8 @@ details.oc-accordion-item[open]::details-content {
 }
 .oc-tabset > .oc-tab-list--vertical { grid-row: 1 / span 6; }
 .oc-tabset .oc-tab-list--vertical .oc-tab-trigger { justify-content: flex-start; }
-.oc-tabset:has(> .oc-tab-list--vertical) > .oc-tab-panel { grid-column: 2; grid-row: 1; padding-block: 0.25rem; }
+/* The panel's first line sits level with the label of the first tab (same top padding as a tab trigger). */
+.oc-tabset:has(> .oc-tab-list--vertical) > .oc-tab-panel { grid-column: 2; grid-row: 1; padding-block: 0.5rem 0.25rem; }
 .oc-tabset .oc-tab-list--vertical .oc-tab-trigger:has(input:checked) {
   border-bottom-color: transparent;
   border-right-color: var(--oc-foreground);
@@ -2717,6 +2786,27 @@ details.oc-accordion-item[open]::details-content {
 .oc-empty-title { margin: 0; font-size: 1rem; font-weight: 600; color: var(--oc-foreground); }
 .oc-empty-text { margin: 0; max-inline-size: 28rem; font-size: 0.875rem; }
 .oc-empty-actions { display: flex; gap: 0.5rem; margin-block-start: 0.5rem; }
+/* Locked (0.17.0): content that opens later (in a zone, after scanning a code, at a time). A dashed frame, the lock in the
+   brand color, and .oc-empty-meta for what is left ("120 m to go", "opens at 14:00"). */
+.oc-empty--locked {
+  border: 1px dashed var(--oc-border-strong);
+  border-radius: calc(var(--oc-radius) + 4px);
+  background: var(--oc-surface);
+}
+.oc-empty--locked .oc-empty-icon {
+  color: var(--oc-primary);
+  background: color-mix(in oklch, var(--oc-primary) 12%, transparent);
+}
+.oc-empty-icon > :is(svg, iconify-icon) { inline-size: 1.25rem; block-size: 1.25rem; font-size: 1.25rem; }
+.oc-empty-meta {
+  padding: 0.15rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--oc-foreground);
+  background: var(--oc-muted);
+  border-radius: 999px;
+}
 
 /* ---- Badge: info ---- */
 .oc-badge--info {
@@ -2856,6 +2946,14 @@ details.oc-sidebar-collapsible[open] > summary::after { transform: rotate(225deg
 
 /* Icon-only mode */
 .oc-sidebar--collapsed { inline-size: var(--oc-sidebar-width-icon); }
+/* Overlay (0.17.0): for a tablet. The layout keeps only the rail width (a negative margin), so opening the sidebar does
+   not push the page: it lies over the content, which darkens (a wide shadow of the sidebar itself). A click outside it
+   and Escape close it; the components do that. Collapsed it is the normal rail. */
+.oc-sidebar.oc-sidebar--overlay { position: relative; z-index: 60; }
+.oc-sidebar.oc-sidebar--overlay:not(.oc-sidebar--collapsed) {
+  margin-inline-end: calc(var(--oc-sidebar-width-icon) - var(--oc-sidebar-width));
+  box-shadow: 0 0 0 100vmax oklch(from var(--color-black-60) l c h / 0.32), 0 0 40px -12px oklch(from var(--color-black-60) l c h / 0.45);
+}
 .oc-sidebar--collapsed .oc-sidebar-menu-label,
 .oc-sidebar--collapsed .oc-sidebar-menu-badge,
 .oc-sidebar--collapsed .oc-sidebar-menu-sub,
@@ -2863,6 +2961,11 @@ details.oc-sidebar-collapsible[open] > summary::after { transform: rotate(225deg
 .oc-sidebar--collapsed .oc-user-text,
 .oc-sidebar--collapsed details.oc-sidebar-collapsible > summary::after { display: none; }
 .oc-sidebar--collapsed .oc-sidebar-menu-button { justify-content: center; padding-inline: 0; }
+/* Collapsed (0.17.0): a menu button with .oc-tooltip.oc-tooltip--right and data-tooltip shows its label as a tooltip on
+   hover and keyboard focus, anchored to the button and fixed, so the scrolling menu does not clip it. In the open
+   sidebar the label is visible: no tooltip. The components add it for you. */
+.oc-sidebar-menu-button.oc-tooltip { cursor: pointer; }
+.oc-sidebar:not(.oc-sidebar--collapsed) .oc-sidebar-menu-button.oc-tooltip::after { content: none; }
 .oc-sidebar--collapsed .oc-sidebar-header,
 .oc-sidebar--collapsed .oc-sidebar-footer { align-items: center; padding-inline: 0.5rem; }
 
@@ -3247,6 +3350,8 @@ dialog.oc-sheet--bottom .oc-sheet-content { border-block-start: 1px solid var(--
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  /* Full width of its column, also as a flex or grid item (it does not shrink to the longest label). */
+  inline-size: 100%;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -3389,6 +3494,28 @@ details.oc-collapsible[open] > summary { border-end-start-radius: 0; border-end-
 .oc-collapsible-content { padding: 1.5rem; border-block-start: 1px solid var(--oc-border); }
 .oc-collapsible--dense > summary { padding: 0.75rem; }
 .oc-collapsible--dense .oc-collapsible-content { padding: 1rem; }
+/* Meta in the header (0.17.0): a pill before the chevron (a count, "−5 points"). */
+.oc-collapsible-meta {
+  margin-inline-start: auto;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--oc-foreground);
+  background: var(--oc-muted);
+  border-radius: 999px;
+}
+details.oc-collapsible > summary:has(> .oc-collapsible-meta)::after { margin-inline-start: 0.75rem; }
+/* Hint (0.17.0): a tip the player opens on purpose, maybe at a cost. A dashed frame in the warning tone until it is
+   opened; the cost sits in .oc-collapsible-meta. With "once" the components keep it open: a seen hint stays seen. */
+details.oc-collapsible.oc-collapsible--hint {
+  border-style: dashed;
+  border-color: oklch(from var(--oc-warning) l c h / 0.6);
+  background: color-mix(in oklch, var(--oc-warning) 6%, var(--oc-card, var(--oc-background)));
+}
+details.oc-collapsible.oc-collapsible--hint[open] { border-style: solid; }
+.oc-collapsible--hint .oc-collapsible-icon { color: light-dark(oklch(from var(--oc-warning) min(l, 0.55) c h), var(--oc-warning)); }
+.oc-collapsible--hint .oc-collapsible-meta { background: color-mix(in oklch, var(--oc-warning) 22%, transparent); }
 details.oc-collapsible::details-content {
   block-size: 0;
   overflow: clip;
@@ -3518,19 +3645,36 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
 
 /* ===================================================================
    OTP — one-time code: ONE real <input> drawn as separate cells (paste, autofill and password managers work).
-   Cells: set --oc-otp-length (default 6) to the input's maxlength.
+   Cells: set --oc-otp-length (default 6) to the input's maxlength. --fit: cells shrink with the parent; --group: a
+   divider after every --oc-otp-group cells (0.17.0). --oc-otp-size sets the digit size (default 1.5rem).
+   Each character advances one cell (1ch + letter-spacing), but letter-spacing sits AFTER every character, also after
+   the last one. Centring the digits with a start padding therefore made a full code half a cell wider than the field:
+   with focus the caret at the end scrolled the text ~11px to the left (first digit cut off). Since 0.17.0 the text
+   starts at the left edge of each cell (so a full code fits exactly and the caret never scrolls) and the visible
+   digits are a text-shadow moved half a cell gap to the right; the real glyphs are transparent. Selection, caret,
+   paste and autofill still work on the real text. The field also sets its own block-size and font-size, so a global
+   app rule like input { height: 2rem } does not squash the cells.
    =================================================================== */
 .oc-otp {
   --oc-otp-length: 6;
   --oc-otp-cell: 2.75ch;
+  --oc-otp-shift: calc((var(--oc-otp-cell) - 1ch) / 2);
+  box-sizing: border-box;
   inline-size: calc(var(--oc-otp-length) * var(--oc-otp-cell));
   max-inline-size: 100%;
-  padding: 0.6rem 0 0.6rem calc((var(--oc-otp-cell) - 1ch) / 2);
+  block-size: calc(1lh + 1.2rem + 2px);
+  min-block-size: 0;
+  padding: 0.6rem 0;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 1.5rem;
+  font-size: var(--oc-otp-size, 1.5rem);
+  line-height: 1.2;
   letter-spacing: calc(var(--oc-otp-cell) - 1ch);
   text-align: start;
+  text-indent: 0;
   color: var(--oc-foreground);
+  -webkit-text-fill-color: transparent;
+  text-shadow: var(--oc-otp-shift) 0 0 var(--oc-foreground);
+  caret-color: var(--oc-foreground);
   background-color: var(--oc-background);
   background-image: repeating-linear-gradient(
     90deg in srgb,
@@ -3547,6 +3691,43 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
 .oc-otp:focus { box-shadow: 0 0 0 2px oklch(from var(--oc-ring) l c h / 0.35); }
 .oc-otp[aria-invalid="true"] { border-block-color: var(--oc-destructive); }
 .oc-otp:disabled { opacity: 0.5; cursor: not-allowed; }
+.oc-otp::placeholder { -webkit-text-fill-color: transparent; text-shadow: var(--oc-otp-shift) 0 0 var(--oc-muted-foreground); opacity: 1; }
+/* the selection covers the real (transparent) glyph boxes = exactly the cells; the shadow keeps the digit visible */
+.oc-otp::selection {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-color: oklch(from var(--oc-ring) l c h / 0.25);
+  text-shadow: var(--oc-otp-shift) 0 0 var(--oc-foreground);
+}
+/* forced colours drop text-shadow: show the real glyphs again (start of each cell) */
+@media (forced-colors: active) {
+  .oc-otp, .oc-otp::placeholder { -webkit-text-fill-color: currentColor; text-shadow: none; }
+}
+
+/* --fit (0.17.0): the cells shrink with the room the parent gives (a phone with an 8-character code). The parent
+   becomes the size reference (container-type: inline-size), at most the normal 1.5rem. */
+:where(*:has(> .oc-otp--fit)) { container-type: inline-size; }
+.oc-otp.oc-otp--fit { font-size: min(1.5rem, calc(100cqi / (var(--oc-otp-length) * 1.75))); }
+/* --group (0.17.0): a darker divider after every --oc-otp-group cells (default 4: "ABCD EFGH"), so a long code reads
+   in parts. Still one input: paste, autofill and the caret work as before. */
+.oc-otp.oc-otp--group {
+  --oc-otp-group: 4;
+  background-image:
+    repeating-linear-gradient(
+      90deg in srgb,
+      transparent 0 calc(var(--oc-otp-group) * var(--oc-otp-cell) - 2px),
+      var(--oc-muted-foreground) calc(var(--oc-otp-group) * var(--oc-otp-cell) - 2px) calc(var(--oc-otp-group) * var(--oc-otp-cell))
+    ),
+    repeating-linear-gradient(
+      90deg in srgb,
+      var(--oc-input) 0 1px,
+      transparent 1px calc(var(--oc-otp-cell) - 1px),
+      var(--oc-input) calc(var(--oc-otp-cell) - 1px) var(--oc-otp-cell)
+    );
+  /* the divider layer stops half a cell before the end: no heavy line on the right edge */
+  background-size: calc((var(--oc-otp-length) - 0.5) * var(--oc-otp-cell)) 100%, auto;
+  background-repeat: no-repeat, repeat;
+}
 
 /* ===================================================================
    REVEAL — password field with a show/hide button. A script flips input.type (see snippet).
@@ -3617,6 +3798,35 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
 /* Keyboard focus on the value (to select it by hand): ring around the whole field. */
 .oc-copy-field:has(.oc-copy-field-value:focus-visible) { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 
+/* --display (0.17.0): a code people read and type over (a join code under a QR, a voucher): large, centred, spaced
+   monospace. Show it in groups ("K7QM 2XPA") and put the raw code in data-copy on the button: that is what gets copied.
+   .oc-copy-field-caption is a short explanation in the frame under the code (also on paper; the button is not printed).
+   --lg for a code that is read from a distance. The size shrinks to fit a narrow field: set --oc-copy-chars to the
+   number of characters shown (the components do). */
+.oc-copy-field--display { container-type: inline-size; flex-wrap: wrap; background: var(--oc-card); }
+.oc-copy-field--display .oc-copy-field-value {
+  padding: 0.75rem 1rem;
+  font-size: min(1.5rem, calc((100cqi - 6rem) / (var(--oc-copy-chars, 9) * 0.75)));
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-overflow: clip;
+}
+.oc-copy-field--display.oc-copy-field--lg .oc-copy-field-value { padding-block: 1rem; font-size: min(2.25rem, calc((100cqi - 6rem) / (var(--oc-copy-chars, 9) * 0.75))); }
+.oc-copy-field--display .oc-copy-field-button { padding-inline: 1rem; font-size: 0.8125rem; }
+.oc-copy-field-caption {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  text-align: center;
+  color: var(--oc-muted-foreground);
+  border-block-start: 1px solid var(--oc-border);
+}
+@media print {
+  .oc-copy-field--display .oc-copy-field-button { display: none; }
+}
+
 /* ===================================================================
    COLOR FIELD — native <input type="color"> next to a text value
    =================================================================== */
@@ -3632,6 +3842,35 @@ details.oc-collapsible[open]::details-content { block-size: auto; }
 }
 .oc-color-field > input[type="color"]:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 .oc-color-field > .oc-input { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+/* Contrast report under the field (0.17.0): text on the picked color (light or dark text, whichever reads best; 4.5:1)
+   and the color against the page backgrounds you pass (3:1, so a button or a link stands out). A word says the result,
+   the color only repeats it. */
+.oc-color-field:has(> .oc-color-field-report) { flex-wrap: wrap; }
+.oc-color-field-report {
+  display: grid;
+  flex-basis: 100%;
+  gap: 0.35rem;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+}
+.oc-color-field-check { display: flex; align-items: center; gap: 0.5rem; }
+.oc-color-field-sample {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.25rem;
+  block-size: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid var(--oc-border);
+  border-radius: calc(var(--oc-radius) - 2px);
+}
+.oc-color-field-sample > i { inline-size: 0.8rem; block-size: 0.8rem; border-radius: 50%; }
+.oc-color-field-ratio { margin-inline-start: auto; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.oc-color-field-check[data-ok="true"] .oc-color-field-ratio { color: var(--oc-success); }
+.oc-color-field-check[data-ok="false"] .oc-color-field-ratio { color: var(--oc-destructive); }
 
 /* ===================================================================
    DROPZONE — file upload target. A <label> around a real <input type="file">; click and keyboard work natively.

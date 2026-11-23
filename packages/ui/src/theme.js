@@ -7,7 +7,8 @@
 //   <fieldset class="oc-theme-switch"> … radios name="oc-theme" value="system | light | dark"
 //   <button data-oc-theme-toggle>           one button: light <-> dark (aria-pressed = dark)
 //   <button data-oc-theme-set="dark">       a button for one value (cards on a settings page; aria-pressed)
-// Switches inside .oc-theme-scope theme only their own element and are left alone.
+// Switches inside .oc-theme-scope theme only their own element and are left alone. A toggle or set button inside a
+// .oc-theme-scope sets data-theme on that scope only (no <html>, no storage); the scope gets an "oc-theme-change" event.
 // Against a flash of the wrong theme on load: put THEME_HEAD_SCRIPT inline in <head>, before the stylesheets.
 
 const VALUES = ["system", "light", "dark"];
@@ -71,11 +72,12 @@ export function initTheme(doc = document, { storageKey = "oc-theme", darkClass =
 
   const radios = () => [...doc.querySelectorAll(".oc-theme-switch input[type=radio]")]
     .filter((input) => !input.closest(".oc-theme-scope") && (!name || input.name === name));
+  const unscoped = (selector) => [...doc.querySelectorAll(selector)].filter((el) => !el.closest(".oc-theme-scope"));
   const sync = () => {
     const shown = applyTheme(root, choice, { darkClass, prefersDark: !!media?.matches });
     for (const input of radios()) input.checked = input.value === choice;
-    for (const button of doc.querySelectorAll("[data-oc-theme-toggle]")) button.setAttribute("aria-pressed", shown === "dark" ? "true" : "false");
-    for (const button of doc.querySelectorAll("[data-oc-theme-set]")) button.setAttribute("aria-pressed", button.getAttribute("data-oc-theme-set") === choice ? "true" : "false");
+    for (const button of unscoped("[data-oc-theme-toggle]")) button.setAttribute("aria-pressed", shown === "dark" ? "true" : "false");
+    for (const button of unscoped("[data-oc-theme-set]")) button.setAttribute("aria-pressed", button.getAttribute("data-oc-theme-set") === choice ? "true" : "false");
     root.dispatchEvent(new win.CustomEvent("oc-theme-change", { detail: { choice, theme: shown } }));
   };
   const set = (value) => {
@@ -90,9 +92,23 @@ export function initTheme(doc = document, { storageKey = "oc-theme", darkClass =
   };
   const onClick = (event) => {
     const toggle = event.target.closest?.("[data-oc-theme-toggle]");
+    const one = toggle ? null : event.target.closest?.("[data-oc-theme-set]");
+    const scope = (toggle || one)?.closest?.(".oc-theme-scope");
+    if (scope) return setScope(scope, toggle ? null : one.getAttribute("data-oc-theme-set"));
     if (toggle) return set(effectiveTheme(choice, !!media?.matches) === "dark" ? "light" : "dark");
-    const one = event.target.closest?.("[data-oc-theme-set]");
     if (one) set(one.getAttribute("data-oc-theme-set"));
+  };
+  // A button inside a .oc-theme-scope (a demo box, a preview) themes only that scope.
+  const setScope = (scope, value) => {
+    const current = scope.dataset.theme || (/^\s*dark/.test(win?.getComputedStyle?.(scope)?.colorScheme ?? "") ? "dark" : "light");
+    const pick = value == null ? (current === "dark" ? "light" : "dark") : normalizeTheme(value);
+    const shown = effectiveTheme(pick, !!media?.matches);
+    if (pick === "system") delete scope.dataset.theme;
+    else scope.dataset.theme = pick;
+    const own = (el) => el.closest(".oc-theme-scope") === scope;
+    for (const button of scope.querySelectorAll("[data-oc-theme-toggle]")) if (own(button)) button.setAttribute("aria-pressed", shown === "dark" ? "true" : "false");
+    for (const button of scope.querySelectorAll("[data-oc-theme-set]")) if (own(button)) button.setAttribute("aria-pressed", button.getAttribute("data-oc-theme-set") === pick ? "true" : "false");
+    scope.dispatchEvent(new win.CustomEvent("oc-theme-change", { detail: { choice: pick, theme: shown, scope: true } }));
   };
   // Another tab changed the choice, or the operating system switched while the choice is "system".
   const onStorage = (event) => { if (event.key === storageKey) { choice = readTheme(storage, storageKey); sync(); } };

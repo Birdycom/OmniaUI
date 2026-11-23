@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Dropdown menu extras", "category": "Overlays", "description": "Sub-menus, checkbox and radio items, shortcuts, destructive/disabled items.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Dropdown menu extras", "category": "Overlays", "description": "Dropdown menu extras: sub-menus, checkbox and radio items, keyboard shortcuts, icons, a second line of description and destructive or disabled items.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Dropdown menu extras</h1>
         <p class="oc-hero-text">Sub-menus, checkbox items, radio items, shortcuts, destructive and disabled items for the <a href="dropdown.html">dropdown</a>. The same classes work in the menubar and the context menu. <a href="../components.html">All components</a>.</p>
@@ -8,7 +8,9 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/dropdown-menu.html</code>.</p>
         </div>
         <div class="oc-section-content">
-          <oc-demo title="Dropdown menu extras" size="tall">
+          <h3 class="oc-section-content__title" id="extras">Sub-menu, check items and a destructive item <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Check and radio items, a key hint, a sub-menu that opens on hover and focus, a disabled and a red item. As components: <code>DropdownSub</code> / <code>OcDropdownSub</code> / <code>&lt;x-oc::dropdown.sub&gt;</code>, and <code>checked</code>, <code>radio</code> and <code>destructive</code> on the item.</p>
+          <oc-demo title="Dropdown menu extras" size="tall" hint="Click the button: the menu opens below it.">
 <button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-dd-extras">Open menu</button>
 <div class="oc-dropdown-menu" id="oc-dd-extras" popover="" role="menu">
   <div class="oc-dropdown-label">Appearance</div>
@@ -29,11 +31,134 @@
   <button class="oc-dropdown-item" type="button" role="menuitem" aria-disabled="true">Disabled item</button>
   <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" role="menuitem">Delete</button>
 </div>
+<oc-code lang="tsx">const [statusBar, setStatusBar] = useState(true);
+const [activityBar, setActivityBar] = useState(false);
+const [panel, setPanel] = useState&lt;"top" | "bottom"&gt;("bottom");
+
+&lt;Dropdown trigger="Open menu" role="menu"&gt;
+  &lt;DropdownLabel&gt;Appearance&lt;/DropdownLabel&gt;
+  &lt;DropdownItem checked={statusBar} hint="Ctrl B" onClick={() =&gt; setStatusBar(!statusBar)}&gt;Status bar&lt;/DropdownItem&gt;
+  &lt;DropdownItem checked={activityBar} onClick={() =&gt; setActivityBar(!activityBar)}&gt;Activity bar&lt;/DropdownItem&gt;
+  &lt;DropdownSeparator role="separator" /&gt;
+  &lt;DropdownLabel&gt;Panel position&lt;/DropdownLabel&gt;
+  &lt;DropdownItem checked={panel === "top"} radio onClick={() =&gt; setPanel("top")}&gt;Top&lt;/DropdownItem&gt;
+  &lt;DropdownItem checked={panel === "bottom"} radio onClick={() =&gt; setPanel("bottom")}&gt;Bottom&lt;/DropdownItem&gt;
+  &lt;DropdownSeparator role="separator" /&gt;
+  &lt;DropdownSub label="More tools"&gt;
+    &lt;DropdownItem role="menuitem" onClick={savePage}&gt;Save page as…&lt;/DropdownItem&gt;
+    &lt;DropdownItem role="menuitem" onClick={openDevTools}&gt;Developer tools&lt;/DropdownItem&gt;
+  &lt;/DropdownSub&gt;
+  &lt;DropdownItem role="menuitem" aria-disabled="true"&gt;Disabled item&lt;/DropdownItem&gt;
+  &lt;DropdownItem role="menuitem" destructive onClick={remove}&gt;Delete&lt;/DropdownItem&gt;
+&lt;/Dropdown&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcDropdown, OcDropdownItem, OcDropdownLabel, OcDropdownSeparator, OcDropdownSub } from '@birdycom/omniaui-vue'
+
+const statusBar = ref(true)
+const activityBar = ref(false)
+const panel = ref&lt;'top' | 'bottom'&gt;('bottom')
+const emit = defineEmits&lt;{ savePage: []; devTools: []; remove: [] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDropdown label="Open menu" role="menu"&gt;
+    &lt;OcDropdownLabel&gt;Appearance&lt;/OcDropdownLabel&gt;
+    &lt;OcDropdownItem :checked="statusBar" hint="Ctrl B" @click="statusBar = !statusBar"&gt;Status bar&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem :checked="activityBar" @click="activityBar = !activityBar"&gt;Activity bar&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator role="separator" /&gt;
+    &lt;OcDropdownLabel&gt;Panel position&lt;/OcDropdownLabel&gt;
+    &lt;OcDropdownItem :checked="panel === 'top'" radio @click="panel = 'top'"&gt;Top&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem :checked="panel === 'bottom'" radio @click="panel = 'bottom'"&gt;Bottom&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator role="separator" /&gt;
+    &lt;OcDropdownSub label="More tools"&gt;
+      &lt;OcDropdownItem role="menuitem" @click="emit('savePage')"&gt;Save page as…&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownItem role="menuitem" @click="emit('devTools')"&gt;Developer tools&lt;/OcDropdownItem&gt;
+    &lt;/OcDropdownSub&gt;
+    &lt;OcDropdownItem role="menuitem" aria-disabled="true"&gt;Disabled item&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem role="menuitem" destructive @click="emit('remove')"&gt;Delete&lt;/OcDropdownItem&gt;
+  &lt;/OcDropdown&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::dropdown label="Open menu" id="dd-extras" role="menu"&gt;
+    &lt;x-oc::dropdown.label&gt;Appearance&lt;/x-oc::dropdown.label&gt;
+    &lt;x-oc::dropdown.item :checked="true" hint="Ctrl B"&gt;Status bar&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item :checked="false"&gt;Activity bar&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.separator /&gt;
+    &lt;x-oc::dropdown.label&gt;Panel position&lt;/x-oc::dropdown.label&gt;
+    &lt;x-oc::dropdown.item :checked="false" radio&gt;Top&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item :checked="true" radio&gt;Bottom&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.separator /&gt;
+    &lt;x-oc::dropdown.sub label="More tools"&gt;
+        &lt;x-oc::dropdown.item role="menuitem" href="/page/save"&gt;Save page as…&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" href="/tools/developer"&gt;Developer tools&lt;/x-oc::dropdown.item&gt;
+    &lt;/x-oc::dropdown.sub&gt;
+    &lt;x-oc::dropdown.item role="menuitem" disabled&gt;Disabled item&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item role="menuitem" destructive&gt;Delete&lt;/x-oc::dropdown.item&gt;
+&lt;/x-oc::dropdown&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ViewMenu extends Component
+{
+    public bool $statusBar = true;
+
+    public bool $activityBar = false;
+
+    public string $panel = 'bottom';
+
+    public function toggleStatusBar(): void
+    {
+        $this-&gt;statusBar = ! $this-&gt;statusBar;
+    }
+
+    public function toggleActivityBar(): void
+    {
+        $this-&gt;activityBar = ! $this-&gt;activityBar;
+    }
+
+    public function setPanel(string $position): void
+    {
+        $this-&gt;panel = in_array($position, ['top', 'bottom'], true) ? $position : 'bottom';
+    }
+
+    public function delete(): void
+    {
+        // delete the item, then redirect or toast
+    }
+
+    public function render()
+    {
+        return view('livewire.view-menu');
+    }
+}
+
+{{-- resources/views/livewire/view-menu.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::dropdown label="Open menu" id="dd-extras" role="menu"&gt;
+        &lt;x-oc::dropdown.label&gt;Appearance&lt;/x-oc::dropdown.label&gt;
+        &lt;x-oc::dropdown.item :checked="$statusBar" hint="Ctrl B" wire:click="toggleStatusBar"&gt;Status bar&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item :checked="$activityBar" wire:click="toggleActivityBar"&gt;Activity bar&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.label&gt;Panel position&lt;/x-oc::dropdown.label&gt;
+        &lt;x-oc::dropdown.item :checked="$panel === 'top'" radio wire:click="setPanel('top')"&gt;Top&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item :checked="$panel === 'bottom'" radio wire:click="setPanel('bottom')"&gt;Bottom&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.sub label="More tools"&gt;
+            &lt;x-oc::dropdown.item role="menuitem" href="/page/save" wire:navigate&gt;Save page as…&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.item role="menuitem" href="/tools/developer" wire:navigate&gt;Developer tools&lt;/x-oc::dropdown.item&gt;
+        &lt;/x-oc::dropdown.sub&gt;
+        &lt;x-oc::dropdown.item role="menuitem" disabled&gt;Disabled item&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" destructive wire:click="delete" wire:confirm="Delete this item?"&gt;Delete&lt;/x-oc::dropdown.item&gt;
+    &lt;/x-oc::dropdown&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="icons">With icons <span class="oc-badge-version">v0.16.0</span></h3>
           <p class="oc-section-content__desc">Put a <code>.oc-dropdown-icon</code> first in an item: a 1rem webicon in the muted color that takes the text color on hover (and red on a destructive item). "Mark as paid" has no icon and its label still starts in the same column. Open the menu and move through it with <kbd>Tab</kbd>.</p>
-          <oc-demo title="Dropdown menu - with icons" size="tall">
+          <oc-demo title="Dropdown menu - with icons" size="tall" hint="Click the button: the menu opens below it.">
 <button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-dd-icons">Actions</button>
 <div class="oc-dropdown-menu" id="oc-dd-icons" popover="" role="menu">
   <div class="oc-dropdown-label">Invoice 1</div>
@@ -61,7 +186,7 @@
   &lt;DropdownItem icon="mdi:email-outline"&gt;Send to Customer 1&lt;/DropdownItem&gt;
   &lt;DropdownItem&gt;Mark as paid&lt;/DropdownItem&gt;
   &lt;DropdownSeparator /&gt;
-  &lt;DropdownItem icon="mdi:delete-outline" className="oc-dropdown-item--destructive"&gt;Delete&lt;/DropdownItem&gt;
+  &lt;DropdownItem icon="mdi:delete-outline" destructive&gt;Delete&lt;/DropdownItem&gt;
 &lt;/Dropdown&gt;</oc-code>
 <oc-code lang="vue">&lt;OcDropdown label="Actions"&gt;
   &lt;OcDropdownLabel&gt;Invoice 1&lt;/OcDropdownLabel&gt;
@@ -70,7 +195,7 @@
   &lt;OcDropdownItem icon="mdi:email-outline"&gt;Send to Customer 1&lt;/OcDropdownItem&gt;
   &lt;OcDropdownItem&gt;Mark as paid&lt;/OcDropdownItem&gt;
   &lt;OcDropdownSeparator /&gt;
-  &lt;OcDropdownItem icon="mdi:delete-outline" class="oc-dropdown-item--destructive"&gt;Delete&lt;/OcDropdownItem&gt;
+  &lt;OcDropdownItem icon="mdi:delete-outline" destructive&gt;Delete&lt;/OcDropdownItem&gt;
 &lt;/OcDropdown&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::dropdown label="Actions" :items="[
     ['group' =&gt; 'Invoice 1'],
@@ -78,7 +203,137 @@
     ['label' =&gt; 'Duplicate', 'href' =&gt; '/invoices/1/copy', 'icon' =&gt; 'mdi:content-copy'],
     ['label' =&gt; 'Send to Customer 1', 'href' =&gt; '/invoices/1/send', 'icon' =&gt; 'mdi:email-outline'],
     ['label' =&gt; 'Mark as paid', 'href' =&gt; '/invoices/1/paid'],
+    ['separator' =&gt; true],
+]"&gt;
+    &lt;form method="POST" action="/invoices/1" style="display:contents"&gt;
+        @csrf
+        @method('DELETE')
+        &lt;x-oc::dropdown.item type="submit" icon="mdi:delete-outline" destructive&gt;Delete&lt;/x-oc::dropdown.item&gt;
+    &lt;/form&gt;
+&lt;/x-oc::dropdown&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceActions extends Component
+{
+    public int $invoice = 1;
+
+    public string $customer = 'Customer 1';
+
+    public function duplicate(): void
+    {
+        // copy the invoice, then redirect to the copy
+    }
+
+    public function send(): void
+    {
+        // mail the invoice to the customer
+    }
+
+    public function markPaid(): void
+    {
+        // set the payment date
+    }
+
+    public function delete(): void
+    {
+        // delete the invoice
+    }
+
+    public function render()
+    {
+        return view('livewire.invoice-actions');
+    }
+}
+
+{{-- resources/views/livewire/invoice-actions.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::dropdown label="Actions" role="menu"&gt;
+        &lt;x-oc::dropdown.label&gt;Invoice {{ $invoice }}&lt;/x-oc::dropdown.label&gt;
+        &lt;x-oc::dropdown.item role="menuitem" href="/invoices/{{ $invoice }}/edit" icon="mdi:pencil-outline" hint="E" wire:navigate&gt;Edit&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" icon="mdi:content-copy" wire:click="duplicate"&gt;Duplicate&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" icon="mdi:email-outline" wire:click="send"&gt;Send to {{ $customer }}&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item role="menuitem" wire:click="markPaid"&gt;Mark as paid&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.item role="menuitem" icon="mdi:delete-outline" destructive wire:click="delete" wire:confirm="Delete invoice {{ $invoice }}?"&gt;Delete&lt;/x-oc::dropdown.item&gt;
+    &lt;/x-oc::dropdown&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="descriptions">With a description and a tinted icon <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">For a menu where each choice needs a word of explanation: wrap the label in <code>.oc-dropdown-text</code> and add a <code>.oc-dropdown-desc</code> under it, a muted second line that may wrap (the menu stays at most 22rem wide). <code>.oc-dropdown-icon--primary</code>, <code>--success</code>, <code>--warning</code>, <code>--destructive</code> or <code>--muted</code> put the icon in a soft tinted square of that color, so the kinds are easy to tell apart. React and Vue: <code>description</code> and <code>iconTone</code> on the item; Blade: <code>'description'</code> and <code>'tone'</code>.</p>
+          <oc-demo title="Dropdown menu - with a description" size="tall" hint="Click the button: the menu opens below it.">
+<button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-dd-desc">New step</button>
+<div class="oc-dropdown-menu" id="oc-dd-desc" popover="" role="menu">
+  <button class="oc-dropdown-item" type="button" role="menuitem"><span class="oc-dropdown-icon oc-dropdown-icon--primary" aria-hidden="true"><iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"></iconify-icon></span><span class="oc-dropdown-text"><span>Location</span><span class="oc-dropdown-desc">Reached when the visitor is near the spot</span></span></button>
+  <button class="oc-dropdown-item" type="button" role="menuitem"><span class="oc-dropdown-icon oc-dropdown-icon--success" aria-hidden="true"><iconify-icon icon="mdi:qrcode" aria-hidden="true"></iconify-icon></span><span class="oc-dropdown-text"><span>Scan</span><span class="oc-dropdown-desc">Unlocked by scanning a printed code</span></span></button>
+  <button class="oc-dropdown-item" type="button" role="menuitem"><span class="oc-dropdown-icon oc-dropdown-icon--warning" aria-hidden="true"><iconify-icon icon="mdi:help-circle-outline" aria-hidden="true"></iconify-icon></span><span class="oc-dropdown-text"><span>Question</span><span class="oc-dropdown-desc">A question with one or more right answers</span></span></button>
+  <button class="oc-dropdown-item" type="button" role="menuitem"><span class="oc-dropdown-icon oc-dropdown-icon--muted" aria-hidden="true"><iconify-icon icon="mdi:text" aria-hidden="true"></iconify-icon></span><span class="oc-dropdown-text"><span>Text only</span><span class="oc-dropdown-desc">Information without a task</span></span></button>
+</div>
+<oc-code lang="html">&lt;button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-dd-desc"&gt;New step&lt;/button&gt;
+&lt;div class="oc-dropdown-menu" id="oc-dd-desc" popover="" role="menu"&gt;
+  &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;&lt;span class="oc-dropdown-icon oc-dropdown-icon--primary" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span class="oc-dropdown-text"&gt;&lt;span&gt;Location&lt;/span&gt;&lt;span class="oc-dropdown-desc"&gt;Reached when the visitor is near the spot&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
+  &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;&lt;span class="oc-dropdown-icon oc-dropdown-icon--success" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:qrcode" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span class="oc-dropdown-text"&gt;&lt;span&gt;Scan&lt;/span&gt;&lt;span class="oc-dropdown-desc"&gt;Unlocked by scanning a printed code&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
+  &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;&lt;span class="oc-dropdown-icon oc-dropdown-icon--warning" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:help-circle-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span class="oc-dropdown-text"&gt;&lt;span&gt;Question&lt;/span&gt;&lt;span class="oc-dropdown-desc"&gt;A question with one or more right answers&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
+  &lt;button class="oc-dropdown-item" type="button" role="menuitem"&gt;&lt;span class="oc-dropdown-icon oc-dropdown-icon--muted" aria-hidden="true"&gt;&lt;iconify-icon icon="mdi:text" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/span&gt;&lt;span class="oc-dropdown-text"&gt;&lt;span&gt;Text only&lt;/span&gt;&lt;span class="oc-dropdown-desc"&gt;Information without a task&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;Dropdown trigger="New step"&gt;
+  &lt;DropdownItem icon="mdi:map-marker-outline" iconTone="primary" description="Reached when the visitor is near the spot"&gt;Location&lt;/DropdownItem&gt;
+  &lt;DropdownItem icon="mdi:qrcode" iconTone="success" description="Unlocked by scanning a printed code"&gt;Scan&lt;/DropdownItem&gt;
+  &lt;DropdownItem icon="mdi:help-circle-outline" iconTone="warning" description="A question with one or more right answers"&gt;Question&lt;/DropdownItem&gt;
+  &lt;DropdownItem icon="mdi:text" iconTone="muted" description="Information without a task"&gt;Text only&lt;/DropdownItem&gt;
+&lt;/Dropdown&gt;</oc-code>
+<oc-code lang="vue">&lt;OcDropdown label="New step"&gt;
+  &lt;OcDropdownItem icon="mdi:map-marker-outline" icon-tone="primary" description="Reached when the visitor is near the spot"&gt;Location&lt;/OcDropdownItem&gt;
+  &lt;OcDropdownItem icon="mdi:qrcode" icon-tone="success" description="Unlocked by scanning a printed code"&gt;Scan&lt;/OcDropdownItem&gt;
+  &lt;OcDropdownItem icon="mdi:help-circle-outline" icon-tone="warning" description="A question with one or more right answers"&gt;Question&lt;/OcDropdownItem&gt;
+  &lt;OcDropdownItem icon="mdi:text" icon-tone="muted" description="Information without a task"&gt;Text only&lt;/OcDropdownItem&gt;
+&lt;/OcDropdown&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::dropdown label="New step" :items="[
+    ['label' =&gt; 'Location', 'href' =&gt; '/steps/new/location', 'icon' =&gt; 'mdi:map-marker-outline', 'tone' =&gt; 'primary', 'description' =&gt; 'Reached when the visitor is near the spot'],
+    ['label' =&gt; 'Scan', 'href' =&gt; '/steps/new/scan', 'icon' =&gt; 'mdi:qrcode', 'tone' =&gt; 'success', 'description' =&gt; 'Unlocked by scanning a printed code'],
+    ['label' =&gt; 'Question', 'href' =&gt; '/steps/new/question', 'icon' =&gt; 'mdi:help-circle-outline', 'tone' =&gt; 'warning', 'description' =&gt; 'A question with one or more right answers'],
+    ['label' =&gt; 'Text only', 'href' =&gt; '/steps/new/text', 'icon' =&gt; 'mdi:text', 'tone' =&gt; 'muted', 'description' =&gt; 'Information without a task'],
 ]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class NewStepMenu extends Component
+{
+    /** @var array&lt;string, array{icon: string, tone: string, label: string, description: string}&gt; */
+    public array $types = [
+        'location' =&gt; ['icon' =&gt; 'mdi:map-marker-outline', 'tone' =&gt; 'primary', 'label' =&gt; 'Location', 'description' =&gt; 'Reached when the visitor is near the spot'],
+        'scan' =&gt; ['icon' =&gt; 'mdi:qrcode', 'tone' =&gt; 'success', 'label' =&gt; 'Scan', 'description' =&gt; 'Unlocked by scanning a printed code'],
+        'question' =&gt; ['icon' =&gt; 'mdi:help-circle-outline', 'tone' =&gt; 'warning', 'label' =&gt; 'Question', 'description' =&gt; 'A question with one or more right answers'],
+        'text' =&gt; ['icon' =&gt; 'mdi:text', 'tone' =&gt; 'muted', 'label' =&gt; 'Text only', 'description' =&gt; 'Information without a task'],
+    ];
+
+    public ?string $added = null;
+
+    public function add(string $type): void
+    {
+        $this-&gt;added = array_key_exists($type, $this-&gt;types) ? $type : null;
+    }
+
+    public function render()
+    {
+        return view('livewire.new-step-menu');
+    }
+}
+
+{{-- resources/views/livewire/new-step-menu.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::dropdown label="New step" role="menu"&gt;
+        @foreach ($types as $type =&gt; $step)
+            &lt;x-oc::dropdown.item role="menuitem" :icon="$step['icon']" :tone="$step['tone']" :description="$step['description']" wire:click="add('{{ $type }}')"&gt;{{ $step['label'] }}&lt;/x-oc::dropdown.item&gt;
+        @endforeach
+    &lt;/x-oc::dropdown&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -95,8 +350,11 @@
               <tr><td><code>.oc-dropdown-shortcut</code></td><td>Key hint</td></tr>
               <tr><td><code>.oc-dropdown-item--destructive</code></td><td>Red item</td></tr>
               <tr><td><code>.oc-dropdown-icon</code></td><td>Icon in front of the label (svg, <code>iconify-icon</code> or img, 1rem). Plain items without one line up with the others. React / Vue: <code>icon="mdi:…"</code> on the item; Blade: <code>'icon'</code> in an item</td></tr>
+              <tr><td><code>.oc-dropdown-icon--primary|success|warning|destructive|muted</code></td><td>The icon in a soft tinted square (1.75rem). React / Vue: <code>iconTone</code>; Blade: <code>'tone'</code></td></tr>
+              <tr><td><code>.oc-dropdown-text &gt; span + .oc-dropdown-desc</code></td><td>Label with a muted second line under it. React / Vue: <code>description</code>; Blade: <code>'description'</code></td></tr>
               <tr><td>React <code>&lt;DropdownItem&gt;</code>, Vue <code>&lt;OcDropdownItem&gt;</code></td><td>A click closes the menu around the item (<code>hidePopover()</code>). <code>keepOpen</code> / <code>keep-open</code> keeps it open; a check item (<code>checked</code>) stays open by default, and <code>event.preventDefault()</code> in your click handler also keeps it open.</td></tr>
               <tr><td><code>.oc-dropdown-item[aria-disabled=true]</code></td><td>Disabled item</td></tr>
+              <tr><td>Components (0.17.0)</td><td>React <code>&lt;DropdownSub label&gt;</code>, Vue <code>&lt;OcDropdownSub&gt;</code>, Blade <code>&lt;x-oc::dropdown.sub&gt;</code> for a sub-menu; <code>destructive</code> and <code>radio</code> (with <code>checked</code>) on the item. Blade <code>&lt;x-oc::dropdown.item&gt;</code> takes <code>href</code>, <code>icon</code>, <code>tone</code>, <code>description</code>, <code>hint</code>, <code>checked</code>, <code>radio</code>, <code>destructive</code> and <code>disabled</code>; other attributes (<code>wire:click</code>) go to the item</td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>

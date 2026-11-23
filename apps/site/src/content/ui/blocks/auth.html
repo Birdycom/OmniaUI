@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Authentication Block", "category": "Authentication", "description": "Centered card with fields and optional social login.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Authentication Block", "category": "Authentication", "description": "Sign-in or registration block: a centred card with a title, form fields, a submit button and optional social login, as HTML, React, Vue and Blade.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Authentication Block</h1>
         <p class="oc-hero-text">Login/registration form block: centered card with fields and optional social login. <a href="../blocks.html">All blocks</a>.</p>
@@ -21,7 +21,7 @@
               </div>
               <div class="oc-form-group">
                 <label class="oc-label">Password</label>
-                <input class="oc-input" type="password" placeholder="********">
+                <input class="oc-input" type="password">
               </div>
               <button class="oc-btn" style="width:100%;">Sign in</button>
               <div class="oc-block-auth-divider">or continue with</div>
@@ -31,6 +31,130 @@
               Don't have an account? <a href="#">Sign up</a>
             </div>
           </div>
+<oc-code lang="tsx">import { BlockAuth } from "@birdycom/omniaui-react";
+
+async function signIn(email: string, password: string) {
+  // POST to your auth endpoint
+}
+
+export function Example() {
+  return (
+    &lt;BlockAuth
+      title="Sign in"
+      subtitle="Enter your credentials to continue"
+      submitLabel="Sign in"
+      socialLabel="Sign in with Google"
+      dividerLabel="or continue with"
+      footer={&lt;&gt;Don't have an account? &lt;a href="/register"&gt;Sign up&lt;/a&gt;&lt;/&gt;}
+      onSubmit={({ email, password }) =&gt; signIn(email, password)}
+      onSocial={() =&gt; (window.location.href = "/auth/google/redirect")}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockAuth, OcButton, OcFormField, OcInput } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const email = ref("");
+const password = ref("");
+
+async function signIn() {
+  // POST email.value and password.value to your auth endpoint
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockAuth title="Sign in" subtitle="Enter your credentials to continue" divider="or continue with"&gt;
+    &lt;form id="oc-auth-form" @submit.prevent="signIn"&gt;
+      &lt;OcFormField label="Email" for="auth-email" class="oc-form-group"&gt;
+        &lt;OcInput id="auth-email" v-model="email" type="email" placeholder="name@company1.example" autocomplete="email" /&gt;
+      &lt;/OcFormField&gt;
+      &lt;OcFormField label="Password" for="auth-password" class="oc-form-group"&gt;
+        &lt;OcInput id="auth-password" v-model="password" type="password" autocomplete="current-password" /&gt;
+      &lt;/OcFormField&gt;
+    &lt;/form&gt;
+    &lt;template #actions&gt;
+      &lt;OcButton type="submit" form="oc-auth-form" style="width:100%;"&gt;Sign in&lt;/OcButton&gt;
+    &lt;/template&gt;
+    &lt;template #social&gt;
+      &lt;OcButton variant="outline" href="/auth/google/redirect" style="width:100%;"&gt;Sign in with Google&lt;/OcButton&gt;
+    &lt;/template&gt;
+    &lt;template #footer&gt;Don't have an account? &lt;a href="/register"&gt;Sign up&lt;/a&gt;&lt;/template&gt;
+  &lt;/OcBlockAuth&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.auth&gt;
+    &lt;form method="post" action="/login"&gt;
+        @csrf
+        &lt;h2&gt;Sign in&lt;/h2&gt;
+        &lt;p class="oc-block-subtitle"&gt;Enter your credentials to continue&lt;/p&gt;
+        &lt;x-oc::form-field label="Email" for="auth-email" name="email" class="oc-form-group"&gt;
+            &lt;x-oc::input name="email" id="auth-email" type="email" placeholder="name@company1.example" autocomplete="email" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="Password" for="auth-password" name="password" class="oc-form-group"&gt;
+            &lt;x-oc::input name="password" id="auth-password" type="password" autocomplete="current-password" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::button type="submit" style="width:100%;"&gt;Sign in&lt;/x-oc::button&gt;
+    &lt;/form&gt;
+    &lt;div class="oc-block-auth-divider"&gt;or continue with&lt;/div&gt;
+    &lt;x-oc::button variant="outline" href="/auth/google/redirect" style="width:100%;"&gt;Sign in with Google&lt;/x-oc::button&gt;
+    &lt;x-slot:footer&gt;
+        Don't have an account? &lt;a href="/register"&gt;Sign up&lt;/a&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::block.auth&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class AuthAuthentication extends Component
+{
+    #[Validate('required|email')]
+    public string $email = '';
+
+    #[Validate('required')]
+    public string $password = '';
+
+    public function login()
+    {
+        $this-&gt;validate();
+
+        if (! Auth::attempt(['email' =&gt; $this-&gt;email, 'password' =&gt; $this-&gt;password])) {
+            $this-&gt;addError('email', 'These credentials do not match our records.');
+
+            return;
+        }
+
+        return redirect()-&gt;intended('/');
+    }
+
+    public function render()
+    {
+        return view('livewire.auth-authentication');
+    }
+}
+
+{{-- resources/views/livewire/auth-authentication.blade.php --}}
+&lt;x-oc::block.auth&gt;
+    &lt;form wire:submit="login"&gt;
+        &lt;h2&gt;Sign in&lt;/h2&gt;
+        &lt;p class="oc-block-subtitle"&gt;Enter your credentials to continue&lt;/p&gt;
+        &lt;x-oc::form-field label="Email" for="auth-email" name="email" class="oc-form-group"&gt;
+            &lt;x-oc::wire.input model="email" id="auth-email" type="email" placeholder="name@company1.example" autocomplete="email" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="Password" for="auth-password" name="password" class="oc-form-group"&gt;
+            &lt;x-oc::wire.input model="password" id="auth-password" type="password" autocomplete="current-password" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::button type="submit" style="width:100%;"&gt;Sign in&lt;/x-oc::button&gt;
+    &lt;/form&gt;
+    &lt;div class="oc-block-auth-divider"&gt;or continue with&lt;/div&gt;
+    &lt;x-oc::button variant="outline" href="/auth/google/redirect" style="width:100%;"&gt;Sign in with Google&lt;/x-oc::button&gt;
+    &lt;x-slot:footer&gt;
+        Don't have an account? &lt;a href="/register"&gt;Sign up&lt;/a&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::block.auth&gt;</oc-code>
         </oc-demo>
         </div>
       </section>

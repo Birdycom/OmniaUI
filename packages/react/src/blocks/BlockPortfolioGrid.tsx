@@ -1,8 +1,10 @@
 // File: packages/react/src/blocks/BlockPortfolioGrid.tsx | Map: types -> BlockPortfolioGrid (head (title, lead, link) -> grid of ProjectCard)
-import { forwardRef, useId } from "react";
+import { forwardRef, isValidElement, useId } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
 import { ProjectCard } from "../components/ProjectCard";
+import { LinkArrow } from "../components/LinkArrow";
+import type { LinkArrowProps } from "../components/LinkArrow";
 import type { ProjectCardProps } from "../components/ProjectCard";
 
 export type PortfolioGridProject = ProjectCardProps & {
@@ -15,8 +17,12 @@ export interface BlockPortfolioGridProps extends Omit<HTMLAttributes<HTMLElement
   /** Display title; wrap a word in `<span className="oc-text-gradient">`. */
   title: ReactNode;
   lead?: ReactNode;
-  /** Link at the right of the head, e.g. <LinkArrow href="/work">All projects</LinkArrow>. */
+  /** Link at the right of the head, e.g. <LinkArrow href="/work">All projects</LinkArrow>, or just its text with `linkHref`. */
   link?: ReactNode;
+  /** With a text `link`: renders it as a LinkArrow to this URL. */
+  linkHref?: string;
+  /** Tone of that LinkArrow (default, accent, muted). */
+  linkTone?: LinkArrowProps["tone"];
   projects: PortfolioGridProject[];
   /** Wider cards. */
   two?: boolean;
@@ -24,7 +30,7 @@ export interface BlockPortfolioGridProps extends Omit<HTMLAttributes<HTMLElement
 
 /** `.oc-block-portfolio`: heading plus a grid of project cards. */
 export const BlockPortfolioGrid = forwardRef<HTMLElement, BlockPortfolioGridProps>(function BlockPortfolioGrid(
-  { eyebrow, title, lead, link, projects, two = false, className, ...rest },
+  { eyebrow, title, lead, link, linkHref, linkTone, projects, two = false, className, ...rest },
   ref,
 ) {
   const titleId = `oc-portfolio-title-${useId().replace(/[^\w-]/g, "")}`;
@@ -37,7 +43,7 @@ export const BlockPortfolioGrid = forwardRef<HTMLElement, BlockPortfolioGridProp
             <h2 className="oc-display oc-display--md" id={titleId}>{title}</h2>
             {lead != null && <p className="oc-block-portfolio-lead">{lead}</p>}
           </div>
-          {link}
+          {linkHref != null && link != null && !isValidElement(link) ? <LinkArrow href={linkHref} tone={linkTone}>{link}</LinkArrow> : link}
         </div>
         <div className="oc-block-portfolio-grid">
           {projects.map(({ accent, className: cardClass, ...card }, i) => (

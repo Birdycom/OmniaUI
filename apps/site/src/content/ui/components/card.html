@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Card", "category": "Layout", "description": "Structured card with header, content, footer; optional compact variant.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Card", "category": "Layout", "description": "Card with a header, title, description, content and footer: a compact size, tone and accent borders, a footer line and equal-height cards in a grid.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/card.html | Map: hero -> demo (basic, header action, compact grid) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Card</h1>
@@ -34,10 +34,117 @@
     <button type="button" class="oc-btn">Deploy</button>
   </div>
 </div>
+<oc-code lang="tsx">import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FormField, Input, Select } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [name, setName] = useState("");
+  const [framework, setFramework] = useState("Laravel");
+
+  return (
+    &lt;Card style={{ inlineSize: "min(100%, 24rem)" }}&gt;
+      &lt;CardHeader&gt;
+        &lt;CardTitle&gt;Create project&lt;/CardTitle&gt;
+        &lt;CardDescription&gt;Deploy your new project in one click.&lt;/CardDescription&gt;
+      &lt;/CardHeader&gt;
+      &lt;CardContent&gt;
+        &lt;FormField label="Name"&gt;
+          &lt;Input id="card-project-name" placeholder="My project" value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;
+        &lt;/FormField&gt;
+        &lt;FormField label="Framework"&gt;
+          &lt;Select id="card-framework" options={["Laravel", "Vue", "React"]} value={framework} onChange={(e) =&gt; setFramework(e.target.value)} /&gt;
+        &lt;/FormField&gt;
+      &lt;/CardContent&gt;
+      &lt;CardFooter&gt;
+        &lt;Button type="button" variant="outline"&gt;Cancel&lt;/Button&gt;
+        &lt;Button type="button"&gt;Deploy&lt;/Button&gt;
+      &lt;/CardFooter&gt;
+    &lt;/Card&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcCard, OcFormField, OcInput, OcSelect } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const name = ref("");
+const framework = ref("Laravel");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCard title="Create project" description="Deploy your new project in one click." style="inline-size:min(100%, 24rem)"&gt;
+    &lt;OcFormField label="Name" for="card-project-name"&gt;
+      &lt;OcInput id="card-project-name" v-model="name" placeholder="My project" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Framework" for="card-framework"&gt;
+      &lt;OcSelect id="card-framework" v-model="framework" :options="['Laravel', 'Vue', 'React']" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;template #footer&gt;
+      &lt;OcButton variant="outline"&gt;Cancel&lt;/OcButton&gt;
+      &lt;OcButton&gt;Deploy&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::card title="Create project" description="Deploy your new project in one click." style="inline-size:min(100%, 24rem)"&gt;
+    &lt;x-oc::form-field label="Name" for="card-project-name" name="name"&gt;
+        &lt;x-oc::input id="card-project-name" name="name" placeholder="My project" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Framework" for="card-framework" name="framework"&gt;
+        &lt;x-oc::select id="card-framework" name="framework" :options="['laravel' =&gt; 'Laravel', 'vue' =&gt; 'Vue', 'react' =&gt; 'React']" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button type="submit"&gt;Deploy&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+class Card extends Component
+{
+    #[Validate('required|min:2')]
+    public string $name = '';
+
+    #[Validate('required|in:laravel,vue,react')]
+    public string $framework = 'laravel';
+
+    public function cancel(): void
+    {
+        $this-&gt;reset();
+    }
+
+    public function deploy(): void
+    {
+        $this-&gt;validate();
+        // Create the project and start the deploy.
+    }
+
+    public function render()
+    {
+        return view('livewire.card');
+    }
+}
+
+{{-- resources/views/livewire/card.blade.php --}}
+&lt;x-oc::card title="Create project" description="Deploy your new project in one click." style="inline-size:min(100%, 24rem)"&gt;
+    &lt;x-oc::form-field label="Name" for="card-project-name" name="name"&gt;
+        &lt;x-oc::wire.input id="card-project-name" model="name" placeholder="My project" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Framework" for="card-framework" name="framework"&gt;
+        &lt;x-oc::wire.select id="card-framework" model="framework" :options="['laravel' =&gt; 'Laravel', 'vue' =&gt; 'Vue', 'react' =&gt; 'React']" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::button variant="outline" wire:click="cancel"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button wire:click="deploy"&gt;Deploy&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::card&gt;</oc-code>
           </oc-demo>
 
-          <h3 class="oc-section-content__title mt-2">Header action</h3>
-          <p class="oc-section-content__desc"><code>.oc-card-action</code> inside the header sits in the top-right corner: a menu, a badge or a close button.</p>
+          <h3 class="oc-section-content__title mt-2">Header action <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc"><code>.oc-card-action</code> inside the header sits in the top-right corner: a menu, a badge or a close button. React: <code>CardAction</code>, <code>CardText</code> and <code>CardLink</code>; Vue and Blade: the <code>action</code> slot, the <code>text</code> prop and <code>OcCardLink</code> / <code>&lt;x-oc::card.link&gt;</code>.</p>
           <oc-demo title="Card - header action">
 <div class="oc-card" style="inline-size:min(100%, 24rem)">
   <div class="oc-card-header">
@@ -65,6 +172,71 @@
     &lt;a class="oc-card-link" href="/projects/1/members"&gt;Manage members&lt;/a&gt;
   &lt;/div&gt;
 &lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Badge, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardLink, CardText, CardTitle } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Card style={{ inlineSize: "min(100%, 24rem)" }}&gt;
+      &lt;CardHeader&gt;
+        &lt;CardTitle&gt;Team members&lt;/CardTitle&gt;
+        &lt;CardDescription&gt;Invite colleagues to this project.&lt;/CardDescription&gt;
+        &lt;CardAction&gt;&lt;Badge variant="secondary"&gt;3 / 5&lt;/Badge&gt;&lt;/CardAction&gt;
+      &lt;/CardHeader&gt;
+      &lt;CardContent&gt;
+        &lt;CardText&gt;User 1, User 2 and User 3 have access. Two seats are left on your plan.&lt;/CardText&gt;
+      &lt;/CardContent&gt;
+      &lt;CardFooter&gt;
+        &lt;CardLink href="/projects/1/members"&gt;Manage members&lt;/CardLink&gt;
+      &lt;/CardFooter&gt;
+    &lt;/Card&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBadge, OcCard, OcCardLink } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCard
+    style="inline-size:min(100%, 24rem)"
+    title="Team members"
+    description="Invite colleagues to this project."
+    text="User 1, User 2 and User 3 have access. Two seats are left on your plan."
+  &gt;
+    &lt;template #action&gt;&lt;OcBadge variant="secondary"&gt;3 / 5&lt;/OcBadge&gt;&lt;/template&gt;
+    &lt;template #footer&gt;
+      &lt;OcCardLink href="/projects/1/members"&gt;Manage members&lt;/OcCardLink&gt;
+    &lt;/template&gt;
+  &lt;/OcCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::card style="inline-size:min(100%, 24rem)" title="Team members" description="Invite colleagues to this project."
+    text="User 1, User 2 and User 3 have access. Two seats are left on your plan."&gt;
+    &lt;x-slot:action&gt;&lt;x-oc::badge variant="secondary"&gt;3 / 5&lt;/x-oc::badge&gt;&lt;/x-slot:action&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::card.link href="/projects/1/members"&gt;Manage members&lt;/x-oc::card.link&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CardHeaderAction extends Component
+{
+    public function render()
+    {
+        return view('livewire.card-header-action');
+    }
+}
+
+{{-- resources/views/livewire/card-header-action.blade.php --}}
+&lt;x-oc::card style="inline-size:min(100%, 24rem)" title="Team members" description="Invite colleagues to this project."
+    text="User 1, User 2 and User 3 have access. Two seats are left on your plan."&gt;
+    &lt;x-slot:action&gt;&lt;x-oc::badge variant="secondary"&gt;3 / 5&lt;/x-oc::badge&gt;&lt;/x-slot:action&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::card.link href="/projects/1/members" wire:navigate&gt;Manage members&lt;/x-oc::card.link&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::card&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Compact cards in a grid</h3>
@@ -84,6 +256,74 @@
     <div class="oc-card-content"><strong>238</strong></div>
   </div>
 </div>
+<oc-code lang="tsx">import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@birdycom/omniaui-react";
+
+const stats = [
+  { title: "Revenue", description: "This month", value: "€ 12,480" },
+  { title: "Invoices", description: "Open", value: "14" },
+  { title: "Customers", description: "Active", value: "238" },
+];
+
+export function Example() {
+  return (
+    &lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(12rem, 1fr))", gap: "1rem", inlineSize: "100%" }}&gt;
+      {stats.map((s) =&gt; (
+        &lt;Card key={s.title} className="oc-card--sm"&gt;
+          &lt;CardHeader&gt;&lt;CardTitle&gt;{s.title}&lt;/CardTitle&gt;&lt;CardDescription&gt;{s.description}&lt;/CardDescription&gt;&lt;/CardHeader&gt;
+          &lt;CardContent&gt;&lt;strong&gt;{s.value}&lt;/strong&gt;&lt;/CardContent&gt;
+        &lt;/Card&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCard } from "@birdycom/omniaui-vue";
+
+const stats = [
+  { title: "Revenue", description: "This month", value: "€ 12,480" },
+  { title: "Invoices", description: "Open", value: "14" },
+  { title: "Customers", description: "Active", value: "238" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(12rem, 1fr));gap:1rem;inline-size:100%"&gt;
+    &lt;OcCard v-for="s in stats" :key="s.title" size="sm" :title="s.title" :description="s.description"&gt;
+      &lt;strong&gt;{{ s.value }}&lt;/strong&gt;
+    &lt;/OcCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(12rem, 1fr));gap:1rem;inline-size:100%"&gt;
+    &lt;x-oc::card size="sm" title="Revenue" description="This month"&gt;&lt;strong&gt;€ 12,480&lt;/strong&gt;&lt;/x-oc::card&gt;
+    &lt;x-oc::card size="sm" title="Invoices" description="Open"&gt;&lt;strong&gt;14&lt;/strong&gt;&lt;/x-oc::card&gt;
+    &lt;x-oc::card size="sm" title="Customers" description="Active"&gt;&lt;strong&gt;238&lt;/strong&gt;&lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CardCompactGrid extends Component
+{
+    public array $stats = [
+        ['title' =&gt; 'Revenue', 'description' =&gt; 'This month', 'value' =&gt; '€ 12,480'],
+        ['title' =&gt; 'Invoices', 'description' =&gt; 'Open', 'value' =&gt; '14'],
+        ['title' =&gt; 'Customers', 'description' =&gt; 'Active', 'value' =&gt; '238'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.card-compact-grid');
+    }
+}
+
+{{-- resources/views/livewire/card-compact-grid.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(12rem, 1fr));gap:1rem;inline-size:100%"&gt;
+    @foreach ($stats as $stat)
+        &lt;x-oc::card size="sm" :title="$stat['title']" :description="$stat['description']"&gt;&lt;strong&gt;{{ $stat['value'] }}&lt;/strong&gt;&lt;/x-oc::card&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="tone">Tone, footer line and equal height <span class="oc-badge-version">v0.16.0</span></h3>
           <p class="oc-section-content__desc"><code>data-tone</code> gives a card a border in the tone and a bar on the start side, for a card that asks for attention. <code>.oc-card--fill</code> makes the card as high as its grid cell and keeps the footer at the bottom; <code>.oc-card-footer--divider</code> draws a line above the footer and <code>--end</code> puts the actions on the end side. The three cards are as high as the tallest one and their footers line up. Drag the preview to tablet width to see them wrap.</p>
@@ -105,6 +345,112 @@
     <div class="oc-card-footer oc-card-footer--divider oc-card-footer--end"><button class="oc-btn oc-btn--outline oc-btn--sm" type="button">Try again</button></div>
   </article>
 </div>
+<oc-code lang="tsx">import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@birdycom/omniaui-react";
+
+// fill: as high as the grid cell, footer at the bottom. CardFooter divider: a line above it; end: actions on the end side.
+export function Example() {
+  return (
+    &lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 14rem), 1fr))", gap: "1rem", gridAutoRows: "1fr", inlineSize: "100%" }}&gt;
+      &lt;Card fill className="oc-card--sm" data-tone="primary"&gt;
+        &lt;CardHeader&gt;&lt;CardTitle&gt;Import&lt;/CardTitle&gt;&lt;CardDescription&gt;Working&lt;/CardDescription&gt;&lt;/CardHeader&gt;
+        &lt;CardContent&gt;Reading 240 of 1,200 rows.&lt;/CardContent&gt;
+        &lt;CardFooter divider end&gt;&lt;Button type="button" variant="outline" size="sm"&gt;Stop&lt;/Button&gt;&lt;/CardFooter&gt;
+      &lt;/Card&gt;
+      &lt;Card fill className="oc-card--sm" data-tone="warning"&gt;
+        &lt;CardHeader&gt;&lt;CardTitle&gt;Export&lt;/CardTitle&gt;&lt;CardDescription&gt;Waiting for you&lt;/CardDescription&gt;&lt;/CardHeader&gt;
+        &lt;CardContent&gt;Choose the period before the export can start. The file is ready a few seconds later.&lt;/CardContent&gt;
+        &lt;CardFooter divider end&gt;&lt;Button type="button" size="sm"&gt;Choose&lt;/Button&gt;&lt;/CardFooter&gt;
+      &lt;/Card&gt;
+      &lt;Card fill className="oc-card--sm" data-tone="destructive"&gt;
+        &lt;CardHeader&gt;&lt;CardTitle&gt;Backup&lt;/CardTitle&gt;&lt;CardDescription&gt;Failed&lt;/CardDescription&gt;&lt;/CardHeader&gt;
+        &lt;CardContent&gt;The disk is full.&lt;/CardContent&gt;
+        &lt;CardFooter divider end&gt;&lt;Button type="button" variant="outline" size="sm"&gt;Try again&lt;/Button&gt;&lt;/CardFooter&gt;
+      &lt;/Card&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- fill: as high as the grid cell, footer at the bottom. footer-divider: a line above the footer; footer-end: actions on the end side. --&gt;
+  &lt;div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr));gap:1rem;grid-auto-rows:1fr;inline-size:100%"&gt;
+    &lt;OcCard size="sm" fill footer-divider footer-end v-bind="{ 'data-tone': 'primary' }" title="Import" description="Working"&gt;
+      Reading 240 of 1,200 rows.
+      &lt;template #footer&gt;&lt;OcButton variant="outline" size="sm"&gt;Stop&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcCard&gt;
+    &lt;OcCard size="sm" fill footer-divider footer-end v-bind="{ 'data-tone': 'warning' }" title="Export" description="Waiting for you"&gt;
+      Choose the period before the export can start. The file is ready a few seconds later.
+      &lt;template #footer&gt;&lt;OcButton size="sm"&gt;Choose&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcCard&gt;
+    &lt;OcCard size="sm" fill footer-divider footer-end v-bind="{ 'data-tone': 'destructive' }" title="Backup" description="Failed"&gt;
+      The disk is full.
+      &lt;template #footer&gt;&lt;OcButton variant="outline" size="sm"&gt;Try again&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- fill: as high as the grid cell, footer at the bottom. footer-divider: a line above the footer; footer-end: actions on the end side. --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr));gap:1rem;grid-auto-rows:1fr;inline-size:100%"&gt;
+    &lt;x-oc::card size="sm" fill footer-divider footer-end data-tone="primary" title="Import" description="Working"&gt;
+        Reading 240 of 1,200 rows.
+        &lt;x-slot:footer&gt;&lt;x-oc::button variant="outline" size="sm"&gt;Stop&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card size="sm" fill footer-divider footer-end data-tone="warning" title="Export" description="Waiting for you"&gt;
+        Choose the period before the export can start. The file is ready a few seconds later.
+        &lt;x-slot:footer&gt;&lt;x-oc::button size="sm"&gt;Choose&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card size="sm" fill footer-divider footer-end data-tone="destructive" title="Backup" description="Failed"&gt;
+        The disk is full.
+        &lt;x-slot:footer&gt;&lt;x-oc::button variant="outline" size="sm"&gt;Try again&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CardToneFooterLineAndEqualHeight extends Component
+{
+    /** One card per job: tone, status and text. */
+    public array $jobs = [
+        'import' =&gt; ['tone' =&gt; 'primary', 'status' =&gt; 'Working', 'text' =&gt; 'Reading 240 of 1,200 rows.'],
+        'export' =&gt; ['tone' =&gt; 'warning', 'status' =&gt; 'Waiting for you', 'text' =&gt; 'Choose the period before the export can start. The file is ready a few seconds later.'],
+        'backup' =&gt; ['tone' =&gt; 'destructive', 'status' =&gt; 'Failed', 'text' =&gt; 'The disk is full.'],
+    ];
+
+    public function stop(): void
+    {
+        $this-&gt;jobs['import'] = ['tone' =&gt; 'warning', 'status' =&gt; 'Stopped', 'text' =&gt; 'Stopped after 240 of 1,200 rows.'];
+    }
+
+    public function retry(): void
+    {
+        $this-&gt;jobs['backup'] = ['tone' =&gt; 'primary', 'status' =&gt; 'Working', 'text' =&gt; 'Writing the backup again.'];
+    }
+
+    public function render()
+    {
+        return view('livewire.card-tone-footer-line-and-equal-height');
+    }
+}
+
+{{-- resources/views/livewire/card-tone-footer-line-and-equal-height.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 14rem), 1fr));gap:1rem;grid-auto-rows:1fr;inline-size:100%"&gt;
+    &lt;x-oc::card size="sm" fill footer-divider footer-end :data-tone="$jobs['import']['tone']" title="Import" :description="$jobs['import']['status']"&gt;
+        {{ $jobs['import']['text'] }}
+        &lt;x-slot:footer&gt;&lt;x-oc::button variant="outline" size="sm" wire:click="stop"&gt;Stop&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card size="sm" fill footer-divider footer-end :data-tone="$jobs['export']['tone']" title="Export" :description="$jobs['export']['status']"&gt;
+        {{ $jobs['export']['text'] }}
+        &lt;x-slot:footer&gt;&lt;x-oc::button size="sm"&gt;Choose&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card size="sm" fill footer-divider footer-end :data-tone="$jobs['backup']['tone']" title="Backup" :description="$jobs['backup']['status']"&gt;
+        {{ $jobs['backup']['text'] }}
+        &lt;x-slot:footer&gt;&lt;x-oc::button variant="outline" size="sm" wire:click="retry"&gt;Try again&lt;/x-oc::button&gt;&lt;/x-slot:footer&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="accent">Accent band <span class="oc-badge-version">v0.16.0</span></h3>
@@ -180,6 +526,175 @@
     &lt;x-slot:band&gt;&lt;x-oc::card-band title="Codes for the live round" description="For the players on the day itself."&gt;&lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="live" size="lg" /&gt;&lt;/x-slot:start&gt;&lt;/x-oc::card-band&gt;&lt;/x-slot:band&gt;
     Team codes start with L. Hand them out on the day.
 &lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CardAccentBand extends Component
+{
+    public function render()
+    {
+        return view('livewire.card-accent-band');
+    }
+}
+
+{{-- resources/views/livewire/card-accent-band.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::card accent="test" fill&gt;
+        &lt;x-slot:band&gt;
+            &lt;x-oc::card-band title="Codes for the test round" description="Try the route with your own team first."&gt;
+                &lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="test" size="lg" /&gt;&lt;/x-slot:start&gt;
+                &lt;x-oc::badge variant="outline"&gt;Now active&lt;/x-oc::badge&gt;
+            &lt;/x-oc::card-band&gt;
+        &lt;/x-slot:band&gt;
+        Team codes start with T. They stop working when the live round starts.
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card accent="live" inactive fill&gt;
+        &lt;x-slot:band&gt;&lt;x-oc::card-band title="Codes for the live round" description="For the players on the day itself."&gt;&lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="live" size="lg" /&gt;&lt;/x-slot:start&gt;&lt;/x-oc::card-band&gt;&lt;/x-slot:band&gt;
+        Team codes start with L. Hand them out on the day.
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="bands">Bands in a row, without a fixed height <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Put the cards in an <code>.oc-card-grid--bands</code> (React <code>&lt;CardGrid bands&gt;</code>, Vue <code>&lt;OcCardGrid bands&gt;</code>, Blade <code>&lt;x-oc::card.grid bands&gt;</code>; <code>min</code> and <code>gap</code> set the column width and the gap): the cards share their rows (CSS subgrid), so the bands of the cards side by side are as high as the highest band, also with a longer translation or larger text, and the content below starts on one line. No <code>--oc-card-band-min-h</code> to guess. A card with a footer takes three rows, and the footers line up too.</p>
+          <oc-demo title="Card - bands in a row">
+<div class="oc-card-grid oc-card-grid--bands w-full" style="--oc-card-min: 15rem; --oc-card-gap: 1rem">
+  <article class="oc-card oc-card--accent" data-tone="test">
+    <div class="oc-card-band">
+      <span class="oc-mode-badge oc-mode-badge--lg" data-mode="test">Test</span>
+      <p class="oc-card-band__title">Codes for the test round<small>Try the route with your own team first, before the players arrive.</small></p>
+      <span class="oc-badge oc-badge--outline">Now active</span>
+    </div>
+    <div class="oc-card-content">Team codes start with T.</div>
+  </article>
+  <article class="oc-card oc-card--accent" data-tone="live" data-active="false">
+    <div class="oc-card-band">
+      <span class="oc-mode-badge oc-mode-badge--lg" data-mode="live">Live</span>
+      <p class="oc-card-band__title">Codes for the live round<small>For the players.</small></p>
+    </div>
+    <div class="oc-card-content">Team codes start with L. Hand them out on the day.</div>
+  </article>
+</div>
+<oc-code lang="html">&lt;div class="oc-card-grid oc-card-grid--bands w-full" style="--oc-card-min: 15rem; --oc-card-gap: 1rem"&gt;
+  &lt;article class="oc-card oc-card--accent" data-tone="test"&gt;
+    &lt;div class="oc-card-band"&gt;
+      &lt;span class="oc-mode-badge oc-mode-badge--lg" data-mode="test"&gt;Test&lt;/span&gt;
+      &lt;p class="oc-card-band__title"&gt;Codes for the test round&lt;small&gt;Try the route with your own team first, before the players arrive.&lt;/small&gt;&lt;/p&gt;
+      &lt;span class="oc-badge oc-badge--outline"&gt;Now active&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-card-content"&gt;Team codes start with T.&lt;/div&gt;
+  &lt;/article&gt;
+  &lt;article class="oc-card oc-card--accent" data-tone="live" data-active="false"&gt;
+    &lt;div class="oc-card-band"&gt;
+      &lt;span class="oc-mode-badge oc-mode-badge--lg" data-mode="live"&gt;Live&lt;/span&gt;
+      &lt;p class="oc-card-band__title"&gt;Codes for the live round&lt;small&gt;For the players.&lt;/small&gt;&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-card-content"&gt;Team codes start with L. Hand them out on the day.&lt;/div&gt;
+  &lt;/article&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Badge, Card, CardBand, CardContent, CardGrid, ModeBadge } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;CardGrid bands min="15rem" gap="1rem" className="w-full"&gt;
+      &lt;Card accent="test"&gt;
+        &lt;CardBand
+          start={&lt;ModeBadge mode="test" size="lg" /&gt;}
+          title="Codes for the test round"
+          description="Try the route with your own team first, before the players arrive."
+        &gt;
+          &lt;Badge variant="outline"&gt;Now active&lt;/Badge&gt;
+        &lt;/CardBand&gt;
+        &lt;CardContent&gt;Team codes start with T.&lt;/CardContent&gt;
+      &lt;/Card&gt;
+      &lt;Card accent="live" inactive&gt;
+        &lt;CardBand start={&lt;ModeBadge mode="live" size="lg" /&gt;} title="Codes for the live round" description="For the players." /&gt;
+        &lt;CardContent&gt;Team codes start with L. Hand them out on the day.&lt;/CardContent&gt;
+      &lt;/Card&gt;
+    &lt;/CardGrid&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBadge, OcCard, OcCardBand, OcCardGrid, OcModeBadge } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCardGrid bands min="15rem" gap="1rem" class="w-full"&gt;
+    &lt;OcCard accent="test"&gt;
+      &lt;template #band&gt;
+        &lt;OcCardBand title="Codes for the test round" description="Try the route with your own team first, before the players arrive."&gt;
+          &lt;template #start&gt;&lt;OcModeBadge mode="test" size="lg" /&gt;&lt;/template&gt;
+          &lt;OcBadge variant="outline"&gt;Now active&lt;/OcBadge&gt;
+        &lt;/OcCardBand&gt;
+      &lt;/template&gt;
+      Team codes start with T.
+    &lt;/OcCard&gt;
+    &lt;OcCard accent="live" inactive&gt;
+      &lt;template #band&gt;
+        &lt;OcCardBand title="Codes for the live round" description="For the players."&gt;
+          &lt;template #start&gt;&lt;OcModeBadge mode="live" size="lg" /&gt;&lt;/template&gt;
+        &lt;/OcCardBand&gt;
+      &lt;/template&gt;
+      Team codes start with L. Hand them out on the day.
+    &lt;/OcCard&gt;
+  &lt;/OcCardGrid&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::card.grid bands min="15rem" gap="1rem" class="w-full"&gt;
+    &lt;x-oc::card accent="test"&gt;
+        &lt;x-slot:band&gt;
+            &lt;x-oc::card-band title="Codes for the test round" description="Try the route with your own team first, before the players arrive."&gt;
+                &lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="test" size="lg" /&gt;&lt;/x-slot:start&gt;
+                &lt;x-oc::badge variant="outline"&gt;Now active&lt;/x-oc::badge&gt;
+            &lt;/x-oc::card-band&gt;
+        &lt;/x-slot:band&gt;
+        Team codes start with T.
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card accent="live" inactive&gt;
+        &lt;x-slot:band&gt;
+            &lt;x-oc::card-band title="Codes for the live round" description="For the players."&gt;
+                &lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="live" size="lg" /&gt;&lt;/x-slot:start&gt;
+            &lt;/x-oc::card-band&gt;
+        &lt;/x-slot:band&gt;
+        Team codes start with L. Hand them out on the day.
+    &lt;/x-oc::card&gt;
+&lt;/x-oc::card.grid&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CardBandsInARow extends Component
+{
+    public function render()
+    {
+        return view('livewire.card-bands-in-a-row');
+    }
+}
+
+{{-- resources/views/livewire/card-bands-in-a-row.blade.php --}}
+&lt;x-oc::card.grid bands min="15rem" gap="1rem" class="w-full"&gt;
+    &lt;x-oc::card accent="test"&gt;
+        &lt;x-slot:band&gt;
+            &lt;x-oc::card-band title="Codes for the test round" description="Try the route with your own team first, before the players arrive."&gt;
+                &lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="test" size="lg" /&gt;&lt;/x-slot:start&gt;
+                &lt;x-oc::badge variant="outline"&gt;Now active&lt;/x-oc::badge&gt;
+            &lt;/x-oc::card-band&gt;
+        &lt;/x-slot:band&gt;
+        Team codes start with T.
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card accent="live" inactive&gt;
+        &lt;x-slot:band&gt;
+            &lt;x-oc::card-band title="Codes for the live round" description="For the players."&gt;
+                &lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="live" size="lg" /&gt;&lt;/x-slot:start&gt;
+            &lt;/x-oc::card-band&gt;
+        &lt;/x-slot:band&gt;
+        Team codes start with L. Hand them out on the day.
+    &lt;/x-oc::card&gt;
+&lt;/x-oc::card.grid&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -205,6 +720,7 @@
               <tr><td><code>.oc-card--fill</code></td><td>The card takes the full height of its grid or flex cell; the content grows and the footer stays at the bottom. React / Vue / Blade: <code>fill</code>.</td></tr>
               <tr><td><code>data-tone="primary | info | success | warning | destructive"</code></td><td>A border in the tone and a 3px bar on the start side. Own color: <code>--oc-card-tone</code>.</td></tr>
               <tr><td><code>.oc-card--accent[data-tone]</code></td><td>A 2px border in the tone: <code>primary</code>, <code>info</code>, <code>success</code>, <code>warning</code>, <code>destructive</code>, or the modes <code>test</code> / <code>live</code>. <code>data-active="false"</code>: dashed, for a set that is not in use now. React / Vue / Blade: <code>accent</code>, <code>inactive</code>.</td></tr>
+              <tr><td><code>.oc-card-grid--bands</code></td><td>On an <code>.oc-card-grid</code>: the cards share their rows (subgrid), so bands, content and footers of cards side by side line up without a fixed height.</td></tr>
               <tr><td><code>.oc-card-band</code></td><td>Soft band at the top of an accent card, from border to border, at least <code>--oc-card-band-min-h</code> (4.25rem) high: a badge, <code>.oc-card-band__title</code> (with a <code>&lt;small&gt;</code> line) and a status. React <code>&lt;CardBand&gt;</code>, Vue <code>&lt;OcCardBand&gt;</code> (slot <code>band</code> of the card), Blade <code>&lt;x-oc::card-band&gt;</code>.</td></tr>
               <tr><td><code>.oc-card-link</code> / <code>.oc-card-text</code></td><td>A text link in the primary color / muted body text.</td></tr>
             </tbody>
@@ -215,7 +731,7 @@
       <section class="oc-docs-section" id="frameworks">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Framework wrappers</h2>
-          <p class="oc-section-header__desc">React exports one component per part; Vue and Blade take <code>title</code>, <code>description</code> and <code>size</code> props with a <code>footer</code> slot.</p>
+          <p class="oc-section-header__desc">React exports one component per part; Vue and Blade take <code>title</code>, <code>description</code> and <code>size</code> props with a <code>footer</code> slot. The footer line and end-side actions: <code>&lt;CardFooter divider end&gt;</code> in React, <code>footer-divider</code> / <code>footer-end</code> on the card in Vue and Blade; <code>bare</code> puts the content in without the <code>.oc-card-content</code> wrapper.</p>
         </div>
         <div class="oc-section-content">
           <oc-code lang="html">&lt;!-- React --&gt;

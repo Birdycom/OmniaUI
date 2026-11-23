@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Top progress", "category": "App UX", "description": "Thin loading bar at the top of the window.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Top progress", "category": "App UX", "description": "A thin loading bar at the top of the window on a native progress element: indeterminate without a value, filling up with value and max attributes.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/top-progress.html | Map: hero -> indeterminate + determinate demo -> colors demo -> usage -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Top progress</h1>
@@ -16,17 +16,126 @@
   <progress class="oc-top-progress oc-top-progress--static" aria-label="Loading page"></progress>
   <progress class="oc-top-progress oc-top-progress--static" value="40" max="100" aria-label="Uploading, 40 percent"></progress>
 </div>
+<oc-code lang="tsx">&lt;div style={{ display: "grid", gap: "1.25rem", width: "100%" }}&gt;
+  &lt;TopProgress static aria-label="Loading page" /&gt;
+  &lt;TopProgress static value={40} max={100} aria-label="Uploading, 40 percent" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+  &lt;OcTopProgress static aria-label="Loading page" /&gt;
+  &lt;OcTopProgress static :value="40" :max="100" aria-label="Uploading, 40 percent" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+    &lt;x-oc::top-progress static label="Loading page" /&gt;
+    &lt;x-oc::top-progress static :value="40" label="Uploading, 40 percent" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class UploadStatus extends Component
+{
+    public int $uploaded = 40;
+
+    public function render()
+    {
+        return view('livewire.upload-status');
+    }
+}
+
+{{-- resources/views/livewire/upload-status.blade.php --}}
+&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+    {{-- indeterminate while a request runs: wire:loading shows it --}}
+    &lt;x-oc::top-progress static label="Loading page" wire:loading /&gt;
+    &lt;x-oc::top-progress static :value="$uploaded" label="Uploading, {{ $uploaded }} percent" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="colors">Colors and size</h3>
           <p class="desc">Tone modifiers use the theme tokens. <code>--lg</code> makes the bar 4px high. You can also set <code>--oc-top-progress-color</code> to any Omnia color token.</p>
           <oc-demo title="Colors">
-<div style="display:grid;gap:1.25rem;width:100%">
-  <progress class="oc-top-progress oc-top-progress--static oc-top-progress--success oc-top-progress--lg" value="100" max="100" aria-label="Saved"></progress>
-  <progress class="oc-top-progress oc-top-progress--static oc-top-progress--warning" value="70" max="100" aria-label="Syncing, 70 percent"></progress>
-  <progress class="oc-top-progress oc-top-progress--static oc-top-progress--danger" value="25" max="100" aria-label="Retrying, 25 percent"></progress>
-  <progress class="oc-top-progress oc-top-progress--static oc-top-progress--brand" aria-label="Loading"></progress>
+<div class="oc-eg">
+  <div class="oc-eg__panels" style="--eg-min: 13rem">
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">--success --lg</code>
+      <div class="oc-eg__note">Done: green and 4px high.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-items:center;padding:0.75rem">
+        <progress class="oc-top-progress oc-top-progress--static oc-top-progress--success oc-top-progress--lg" value="100" max="100" aria-label="Saved"></progress>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">--warning</code>
+      <div class="oc-eg__note">Takes longer than usual.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-items:center;padding:0.75rem">
+        <progress class="oc-top-progress oc-top-progress--static oc-top-progress--warning" value="70" max="100" aria-label="Syncing, 70 percent"></progress>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">--danger</code>
+      <div class="oc-eg__note">Something went wrong; trying again.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-items:center;padding:0.75rem">
+        <progress class="oc-top-progress oc-top-progress--static oc-top-progress--danger" value="25" max="100" aria-label="Retrying, 25 percent"></progress>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">--brand</code>
+      <div class="oc-eg__note">No value: the sliding glow, in the brand color.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-items:center;padding:0.75rem">
+        <progress class="oc-top-progress oc-top-progress--static oc-top-progress--brand" aria-label="Loading"></progress>
+      </div>
+    </div>
+  </div>
 </div>
+<oc-code lang="html">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--success oc-top-progress--lg" value="100" max="100" aria-label="Saved"&gt;&lt;/progress&gt;
+  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--warning" value="70" max="100" aria-label="Syncing, 70 percent"&gt;&lt;/progress&gt;
+  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--danger" value="25" max="100" aria-label="Retrying, 25 percent"&gt;&lt;/progress&gt;
+  &lt;progress class="oc-top-progress oc-top-progress--static oc-top-progress--brand" aria-label="Loading"&gt;&lt;/progress&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;div style={{ display: "grid", gap: "1.25rem", width: "100%" }}&gt;
+  &lt;TopProgress static tone="success" large value={100} max={100} aria-label="Saved" /&gt;
+  &lt;TopProgress static tone="warning" value={70} max={100} aria-label="Syncing, 70 percent" /&gt;
+  &lt;TopProgress static tone="danger" value={25} max={100} aria-label="Retrying, 25 percent" /&gt;
+  &lt;TopProgress static tone="brand" aria-label="Loading" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="vue">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+  &lt;OcTopProgress static tone="success" large :value="100" :max="100" aria-label="Saved" /&gt;
+  &lt;OcTopProgress static tone="warning" :value="70" :max="100" aria-label="Syncing, 70 percent" /&gt;
+  &lt;OcTopProgress static tone="danger" :value="25" :max="100" aria-label="Retrying, 25 percent" /&gt;
+  &lt;OcTopProgress static tone="brand" aria-label="Loading" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+    &lt;x-oc::top-progress static tone="success" lg :value="100" label="Saved" /&gt;
+    &lt;x-oc::top-progress static tone="warning" :value="70" label="Syncing, 70 percent" /&gt;
+    &lt;x-oc::top-progress static tone="danger" :value="25" label="Retrying, 25 percent" /&gt;
+    &lt;x-oc::top-progress static tone="brand" label="Loading" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SyncStatus extends Component
+{
+    public int $synced = 70;
+
+    public int $retry = 25;
+
+    public function render()
+    {
+        return view('livewire.sync-status');
+    }
+}
+
+{{-- resources/views/livewire/sync-status.blade.php --}}
+&lt;div style="display:grid;gap:1.25rem;width:100%"&gt;
+    &lt;x-oc::top-progress static tone="success" lg :value="100" label="Saved" /&gt;
+    &lt;x-oc::top-progress static tone="warning" :value="$synced" label="Syncing, {{ $synced }} percent" /&gt;
+    &lt;x-oc::top-progress static tone="danger" :value="$retry" label="Retrying, {{ $retry }} percent" /&gt;
+    &lt;x-oc::top-progress static tone="brand" label="Loading" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="usage">Usage in an app</h3>

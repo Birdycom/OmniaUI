@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Upgrade banner", "category": "App UX", "description": "Soft free-plan callout with usage meter and upgrade action.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Upgrade banner", "category": "App UX", "description": "Soft free-plan callout with the plan, a usage meter, upgrade and compare actions and a dismiss button, plus a premium and a compact variant.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/upgrade-banner.html | Map: hero -> free plan demo (meter) -> premium + compact demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Upgrade banner</h1>
@@ -10,7 +10,7 @@
           
           
         <p class="oc-section-header__desc">Plain HTML and CSS; each example shows its markup in the HTML tab.</p></div>
-        <div class="oc-section-content"><h3 class="oc-section-content__title">Free plan with usage</h3><p class="oc-section-content__desc">The warning tone is friendly, not alarming. The dismiss button is optional: your app sets <code>hidden</code> on the banner and remembers the choice. Snippet: <code>packages/ui/snippets/upgrade-banner.html</code>.</p>
+        <div class="oc-section-content"><h3 class="oc-section-content__title">Free plan with usage <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">The warning tone is friendly, not alarming. The dismiss button is optional: your app sets <code>hidden</code> on the banner and remembers the choice. Snippet: <code>packages/ui/snippets/upgrade-banner.html</code>.</p>
           <oc-demo title="Upgrade banner">
 <aside class="oc-upgrade-banner" aria-label="Plan limits" style="width:100%">
   <span class="oc-upgrade-banner-icon" aria-hidden="true"><svg data-icon="mdi:creation-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m9 4l2.5 5.5L17 12l-5.5 2.5L9 20l-2.5-5.5L1 12l5.5-2.5zm0 4.83L8 11l-2.17 1L8 13l1 2.17L10 13l2.17-1L10 11zM19 9l-1.26-2.74L15 5l2.74-1.25L19 1l1.25 2.75L23 5l-2.75 1.26zm0 14l-1.26-2.74L15 19l2.74-1.25L19 15l1.25 2.75L23 19l-2.75 1.26z"/></svg></span>
@@ -29,6 +29,103 @@
   </div>
   <button class="oc-upgrade-banner-dismiss" type="button" aria-label="Dismiss">×</button>
 </aside>
+<oc-code lang="tsx">import { useState } from "react";
+import { ButtonLink, UpgradeBanner, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [shown, setShown] = useState(true);
+  if (!shown) return null;
+  return (
+    &lt;UpgradeBanner
+      aria-label="Plan limits"
+      style={{ width: "100%" }}
+      icon={&lt;Webicon name="mdi:creation-outline" /&gt;}
+      title="You are on the free plan"
+      plan="Free"
+      text={&lt;&gt;Free accounts keep up to 5 projects. Groups, exports and unlimited history come with &lt;a href="/pricing"&gt;Premium&lt;/a&gt;.&lt;/&gt;}
+      usage={{ label: "Projects", value: 4, max: 5 }}
+      actions={
+        &lt;&gt;
+          &lt;ButtonLink size="sm" href="/billing/upgrade"&gt;Upgrade&lt;/ButtonLink&gt;
+          &lt;ButtonLink variant="ghost" size="sm" href="/pricing"&gt;Compare plans&lt;/ButtonLink&gt;
+        &lt;/&gt;
+      }
+      onDismiss={() =&gt; setShown(false)}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcButton, OcUpgradeBanner, OcWebicon } from '@birdycom/omniaui-vue'
+
+const shown = ref(true)
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcUpgradeBanner
+    v-if="shown"
+    style="width:100%"
+    title="You are on the free plan"
+    plan="Free"
+    :usage="{ label: 'Projects', value: 4, max: 5 }"
+    dismissible
+    @dismiss="shown = false"
+  &gt;
+    &lt;template #icon&gt;&lt;OcWebicon name="mdi:creation-outline" /&gt;&lt;/template&gt;
+    Free accounts keep up to 5 projects. Groups, exports and unlimited history come with &lt;a href="/pricing"&gt;Premium&lt;/a&gt;.
+    &lt;template #actions&gt;
+      &lt;OcButton size="sm" href="/billing/upgrade"&gt;Upgrade&lt;/OcButton&gt;
+      &lt;OcButton variant="ghost" size="sm" href="/pricing"&gt;Compare plans&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcUpgradeBanner&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- dismiss-attributes: what the × does; here it removes the banner (Alpine), or use dismiss="method" in Livewire --}}
+&lt;x-oc::upgrade-banner title="You are on the free plan" plan="Free" usage="Projects" :used="4" :max="5" style="width:100%"
+    :dismiss-attributes="['x-data' =&gt; '', 'x-on:click' =&gt; '$el.closest(\'aside\').remove()']"&gt;
+    &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:creation-outline" /&gt;&lt;/x-slot:icon&gt;
+    Free accounts keep up to 5 projects. Groups, exports and unlimited history come with &lt;a href="/pricing"&gt;Premium&lt;/a&gt;.
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button size="sm" href="/billing/upgrade"&gt;Upgrade&lt;/x-oc::button&gt;
+        &lt;x-oc::button variant="ghost" size="sm" href="/pricing"&gt;Compare plans&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::upgrade-banner&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class PlanLimits extends Component
+{
+    public int $projects = 4;
+
+    public bool $dismissed = false;
+
+    public function dismiss(): void
+    {
+        $this-&gt;dismissed = true;
+    }
+
+    public function render()
+    {
+        return view('livewire.plan-limits');
+    }
+}
+
+{{-- resources/views/livewire/plan-limits.blade.php --}}
+&lt;div&gt;
+    {{-- dismiss="dismiss": the × runs dismiss() (wire:click); "Not now" does the same --}}
+    @unless ($dismissed)
+        &lt;x-oc::upgrade-banner title="You are on the free plan" plan="Free" usage="Projects" :used="$projects" :max="5" dismiss="dismiss" style="width:100%"&gt;
+            &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:creation-outline" /&gt;&lt;/x-slot:icon&gt;
+            Free accounts keep up to 5 projects. Groups, exports and unlimited history come with &lt;a href="/pricing"&gt;Premium&lt;/a&gt;.
+            &lt;x-slot:actions&gt;
+                &lt;x-oc::button size="sm" href="/billing/upgrade"&gt;Upgrade&lt;/x-oc::button&gt;
+                &lt;x-oc::button variant="ghost" size="sm" wire:click="dismiss"&gt;Not now&lt;/x-oc::button&gt;
+            &lt;/x-slot:actions&gt;
+        &lt;/x-oc::upgrade-banner&gt;
+    @endunless
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="premium-compact">Premium and compact</h3>
@@ -51,6 +148,82 @@
     <div class="oc-upgrade-banner-actions"><a class="oc-btn oc-btn--outline oc-btn--sm" href="#premium-compact">Upgrade</a></div>
   </aside>
 </div>
+<oc-code lang="tsx">import { ButtonLink, UpgradeBanner, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div style={{ display: "grid", gap: ".75rem", width: "100%" }}&gt;
+      &lt;UpgradeBanner
+        premium
+        aria-label="Try Premium"
+        icon={&lt;Webicon name="mdi:creation-outline" /&gt;}
+        title="Try Premium free for 14 days"
+        plan="New"
+        text="Shared groups, a category sidebar and an unlimited feed."
+        actions={&lt;ButtonLink size="sm" href="/billing/trial"&gt;Start trial&lt;/ButtonLink&gt;}
+      /&gt;
+      &lt;UpgradeBanner
+        compact
+        aria-label="Plan limits"
+        title="Free plan"
+        text="The sidebar shows at most 50 of your 72 subscriptions."
+        actions={&lt;ButtonLink variant="outline" size="sm" href="/billing/upgrade"&gt;Upgrade&lt;/ButtonLink&gt;}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcUpgradeBanner, OcWebicon } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;gap:.75rem;width:100%"&gt;
+    &lt;OcUpgradeBanner premium aria-label="Try Premium" title="Try Premium free for 14 days" plan="New" text="Shared groups, a category sidebar and an unlimited feed."&gt;
+      &lt;template #icon&gt;&lt;OcWebicon name="mdi:creation-outline" /&gt;&lt;/template&gt;
+      &lt;template #actions&gt;&lt;OcButton size="sm" href="/billing/trial"&gt;Start trial&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcUpgradeBanner&gt;
+    &lt;OcUpgradeBanner compact aria-label="Plan limits" title="Free plan" text="The sidebar shows at most 50 of your 72 subscriptions."&gt;
+      &lt;template #actions&gt;&lt;OcButton variant="outline" size="sm" href="/billing/upgrade"&gt;Upgrade&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;/OcUpgradeBanner&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;gap:.75rem;width:100%"&gt;
+    &lt;x-oc::upgrade-banner premium title="Try Premium free for 14 days" plan="New" label="Try Premium"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:creation-outline" /&gt;&lt;/x-slot:icon&gt;
+        Shared groups, a category sidebar and an unlimited feed.
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" href="/billing/trial"&gt;Start trial&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::upgrade-banner&gt;
+    &lt;x-oc::upgrade-banner compact title="Free plan"&gt;
+        The sidebar shows at most 50 of your 72 subscriptions.
+        &lt;x-slot:actions&gt;&lt;x-oc::button variant="outline" size="sm" href="/billing/upgrade"&gt;Upgrade&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::upgrade-banner&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class PlanBanners extends Component
+{
+    public function render()
+    {
+        return view('livewire.plan-banners');
+    }
+}
+
+{{-- resources/views/livewire/plan-banners.blade.php --}}
+&lt;div style="display:grid;gap:.75rem;width:100%"&gt;
+    &lt;x-oc::upgrade-banner premium title="Try Premium free for 14 days" plan="New" label="Try Premium"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:creation-outline" /&gt;&lt;/x-slot:icon&gt;
+        Shared groups, a category sidebar and an unlimited feed.
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" href="/billing/trial"&gt;Start trial&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::upgrade-banner&gt;
+    &lt;x-oc::upgrade-banner compact title="Free plan"&gt;
+        The sidebar shows at most 50 of your 72 subscriptions.
+        &lt;x-slot:actions&gt;&lt;x-oc::button variant="outline" size="sm" href="/billing/upgrade"&gt;Upgrade&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+    &lt;/x-oc::upgrade-banner&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Stat card", "category": "App UX", "description": "Icon, big number, label and optional trend.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Stat card", "category": "App UX", "description": "Compact KPI tile with an icon, a big number, a label and an optional trend chip; as a div, a link or a button, in an accent, success or warning tone.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/stat-card.html | Map: hero -> KPI row demo -> tones + clickable demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Stat card</h1>
@@ -10,7 +10,7 @@
           
           
         <p class="oc-section-header__desc">Plain HTML and CSS; each example shows its markup in the HTML tab.</p></div>
-        <div class="oc-section-content"><h3 class="oc-section-content__title">KPI row</h3><p class="oc-section-content__desc"><code>.oc-stat-card-grid</code> fits as many cards per row as there is room for (at least 12rem each). The third card is a link with <code>--accent</code>: "needs attention". Snippet: <code>packages/ui/snippets/stat-card.html</code>.</p>
+        <div class="oc-section-content"><h3 class="oc-section-content__title">KPI row <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc"><code>.oc-stat-card-grid</code> fits as many cards per row as there is room for (at least 12rem each). The third card is a link with <code>--accent</code>: "needs attention". Snippet: <code>packages/ui/snippets/stat-card.html</code>.</p>
           <oc-demo title="Stat cards">
 <div class="oc-stat-card-grid" style="width:100%">
   <div class="oc-stat-card">
@@ -26,6 +26,65 @@
     <span class="oc-stat-card-body"><span class="oc-stat-card-value">7</span><span class="oc-stat-card-label">Open orders - needs attention</span></span>
   </a>
 </div>
+<oc-code lang="tsx">&lt;StatCardGrid style={{ width: "100%" }}&gt;
+  &lt;StatCard icon={&lt;Webicon name="mdi:account-outline" bare /&gt;} value="248" label="Active customers" /&gt;
+  &lt;StatCard tone="success" icon={&lt;Webicon name="mdi:trending-up" bare /&gt;} value="€18.4k" trend="+12%" label="Revenue this month" /&gt;
+  &lt;StatCard tone="accent" stripe href="/orders" icon={&lt;Webicon name="mdi:package-variant-closed" bare /&gt;} value="7" label="Open orders - needs attention" /&gt;
+&lt;/StatCardGrid&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="oc-stat-card-grid" style="width:100%"&gt;
+  &lt;OcStatCard value="248" label="Active customers"&gt;
+    &lt;template #icon&gt;&lt;OcWebicon name="mdi:account-outline" bare /&gt;&lt;/template&gt;
+  &lt;/OcStatCard&gt;
+  &lt;OcStatCard tone="success" value="€18.4k" trend="+12%" label="Revenue this month"&gt;
+    &lt;template #icon&gt;&lt;OcWebicon name="mdi:trending-up" bare /&gt;&lt;/template&gt;
+  &lt;/OcStatCard&gt;
+  &lt;OcStatCard tone="accent" stripe href="/orders" value="7" label="Open orders - needs attention"&gt;
+    &lt;template #icon&gt;&lt;OcWebicon name="mdi:package-variant-closed" bare /&gt;&lt;/template&gt;
+  &lt;/OcStatCard&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-stat-card-grid" style="width:100%"&gt;
+    &lt;x-oc::stat-card value="248" label="Active customers"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:account-outline" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+    &lt;x-oc::stat-card tone="success" value="€18.4k" trend="+12%" label="Revenue this month"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:trending-up" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+    &lt;x-oc::stat-card tone="accent" stripe href="/orders" value="7" label="Open orders - needs attention"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:package-variant-closed" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class DashboardStats extends Component
+{
+    public int $customers = 248;
+
+    public string $revenue = '€18.4k';
+
+    public int $openOrders = 7;
+
+    public function render()
+    {
+        return view('livewire.dashboard-stats');
+    }
+}
+
+{{-- resources/views/livewire/dashboard-stats.blade.php --}}
+&lt;div class="oc-stat-card-grid" style="width:100%"&gt;
+    &lt;x-oc::stat-card :value="$customers" label="Active customers"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:account-outline" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+    &lt;x-oc::stat-card tone="success" :value="$revenue" trend="+12%" label="Revenue this month"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:trending-up" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+    &lt;x-oc::stat-card tone="accent" stripe href="/orders" wire:navigate :value="$openOrders" label="Open orders - needs attention"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:package-variant-closed" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="tones">Tones and trends</h3>
@@ -41,6 +100,62 @@
     <div class="oc-stat-card-body"><span class="oc-stat-card-value">41<span class="oc-stat-card-trend oc-stat-card-trend--down">-8%</span></span><span class="oc-stat-card-label">New leads</span></div>
   </div>
 </div>
+<oc-code lang="tsx">&lt;StatCardGrid style={{ width: "100%" }}&gt;
+  &lt;StatCard tone="warning" stripe onClick={() =&gt; setFilter("overdue")} icon={&lt;Webicon name="mdi:alert-outline" bare /&gt;} value="3" label="Invoices overdue" /&gt;
+  &lt;StatCard icon={&lt;Webicon name="mdi:trending-up" bare /&gt;} value="41" trend="-8%" trendDirection="down" label="New leads" /&gt;
+&lt;/StatCardGrid&gt;</oc-code>
+<oc-code lang="vue">&lt;div class="oc-stat-card-grid" style="width:100%"&gt;
+  &lt;OcStatCard tone="warning" stripe button value="3" label="Invoices overdue" @click="filter = 'overdue'"&gt;
+    &lt;template #icon&gt;&lt;OcWebicon name="mdi:alert-outline" bare /&gt;&lt;/template&gt;
+  &lt;/OcStatCard&gt;
+  &lt;OcStatCard value="41" trend="-8%" trend-direction="down" label="New leads"&gt;
+    &lt;template #icon&gt;&lt;OcWebicon name="mdi:trending-up" bare /&gt;&lt;/template&gt;
+  &lt;/OcStatCard&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="blade">{{-- button: the card is a &lt;button type="button"&gt;; add onclick, wire:click or popovertarget as attributes --}}
+&lt;div class="oc-stat-card-grid" style="width:100%"&gt;
+    &lt;x-oc::stat-card tone="warning" stripe button value="3" label="Invoices overdue"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:alert-outline" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+    &lt;x-oc::stat-card value="41" trend="-8%" down label="New leads"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:trending-up" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceStats extends Component
+{
+    public int $overdue = 3;
+
+    public int $leads = 41;
+
+    public ?string $filter = null;
+
+    public function showOverdue(): void
+    {
+        $this-&gt;filter = 'overdue';
+    }
+
+    public function render()
+    {
+        return view('livewire.invoice-stats');
+    }
+}
+
+{{-- resources/views/livewire/invoice-stats.blade.php --}}
+&lt;div class="oc-stat-card-grid" style="width:100%"&gt;
+    {{-- button: the card is a &lt;button type="button"&gt; and wire:click goes on it --}}
+    &lt;x-oc::stat-card tone="warning" stripe button :value="$overdue" label="Invoices overdue" wire:click="showOverdue"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:alert-outline" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+    &lt;x-oc::stat-card :value="$leads" trend="-8%" down label="New leads"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:trending-up" bare /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::stat-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

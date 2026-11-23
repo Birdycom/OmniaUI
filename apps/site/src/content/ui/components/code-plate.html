@@ -1,4 +1,4 @@
-<!--oc-page {"title":"OmniaUI - Code plate","category":"Media","description":"A QR code or barcode on its own white plate, with a caption on the plate itself.","nav":"Code plate","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
+<!--oc-page {"title":"OmniaUI - Code plate","category":"Media","description":"A QR code or barcode on its own white plate, with a caption on the plate itself, so it scans in both themes and prints well. Plain HTML and CSS.","nav":"Code plate","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
 <!-- File: apps/site/src/content/ui/components/code-plate.html | Map: hero -> demos (captions in the mode colors, in an accent card) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Code plate</h1>
@@ -68,6 +68,40 @@
     &lt;img src="{{ $qrTest }}" alt="QR code to join the test round of Company 1"&gt;
 &lt;/x-oc::code-plate&gt;
 &lt;x-oc::code-plate mode="both" style="inline-size: 11rem"&gt;&lt;img src="{{ $qrShared }}" alt="QR code to join Company 1"&gt;&lt;/x-oc::code-plate&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class JoinCodes extends Component
+{
+    public string $qrTest = '/img/samples/qr-company-1-test.svg';
+
+    public string $qrLive = '/img/samples/qr-company-1-live.svg';
+
+    public function render()
+    {
+        return view('livewire.join-codes');
+    }
+}
+
+{{-- resources/views/livewire/join-codes.blade.php --}}
+&lt;div class="flex flex-wrap gap-2 w-full" style="align-items: flex-start; justify-content: center"&gt;
+    &lt;x-oc::code-plate mode="test" caption="Test" style="inline-size: 11rem"&gt;
+        &lt;img src="{{ $qrTest }}" alt="QR code to join the test round of Company 1" width="176" height="176"&gt;
+    &lt;/x-oc::code-plate&gt;
+    &lt;x-oc::code-plate mode="live" caption="Live" style="inline-size: 11rem"&gt;
+        &lt;img src="{{ $qrLive }}" alt="QR code to join the live round of Company 1" width="176" height="176"&gt;
+    &lt;/x-oc::code-plate&gt;
+    {{-- mode both without a caption shows the two words --}}
+    &lt;x-oc::code-plate mode="both" style="inline-size: 11rem"&gt;
+        &lt;img src="{{ $qrLive }}" alt="QR code to join Company 1, test and live round" width="176" height="176"&gt;
+    &lt;/x-oc::code-plate&gt;
+    &lt;x-oc::code-plate mode="live" caption="Live" size="sm" style="inline-size: 5.5rem"&gt;
+        &lt;img src="{{ $qrLive }}" alt="Small QR code for the live round" width="88" height="88"&gt;
+    &lt;/x-oc::code-plate&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="in-card">In an accent card</h3>
@@ -141,6 +175,51 @@
     &lt;x-slot:band&gt;&lt;x-oc::card-band title="Test round" description="Scan to try the route."&gt;&lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="test" size="lg" /&gt;&lt;/x-slot:start&gt;&lt;/x-oc::card-band&gt;&lt;/x-slot:band&gt;
     &lt;x-oc::code-plate mode="test" caption="Test" style="inline-size: 11rem"&gt;&lt;img src="{{ $qrTest }}" alt="QR code to join the test round of Company 1"&gt;&lt;/x-oc::code-plate&gt;
 &lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class RoundCodes extends Component
+{
+    public string $qrTest = '/img/samples/qr-company-1-test.svg';
+
+    public string $qrLive = '/img/samples/qr-company-1-live.svg';
+
+    public string $active = 'test';
+
+    public function render()
+    {
+        return view('livewire.round-codes');
+    }
+}
+
+{{-- resources/views/livewire/round-codes.blade.php --}}
+&lt;div class="grid gap-2 w-full" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); grid-auto-rows: 1fr"&gt;
+    &lt;x-oc::card accent="test" :inactive="$active !== 'test'" fill&gt;
+        &lt;x-slot:band&gt;
+            &lt;x-oc::card-band title="Test round" description="Scan to try the route."&gt;
+                &lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="test" size="lg" /&gt;&lt;/x-slot:start&gt;
+                @if ($active === 'test')&lt;x-oc::badge variant="outline"&gt;Now active&lt;/x-oc::badge&gt;@endif
+            &lt;/x-oc::card-band&gt;
+        &lt;/x-slot:band&gt;
+        &lt;div class="grid" style="justify-items: center"&gt;
+            &lt;x-oc::code-plate mode="test" caption="Test" style="inline-size: 11rem"&gt;&lt;img src="{{ $qrTest }}" alt="QR code to join the test round of Company 1" width="176" height="176"&gt;&lt;/x-oc::code-plate&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::card&gt;
+    &lt;x-oc::card accent="live" :inactive="$active !== 'live'" fill&gt;
+        &lt;x-slot:band&gt;
+            &lt;x-oc::card-band title="Live round" description="For the players on the day."&gt;
+                &lt;x-slot:start&gt;&lt;x-oc::mode-badge mode="live" size="lg" /&gt;&lt;/x-slot:start&gt;
+                @if ($active === 'live')&lt;x-oc::badge variant="outline"&gt;Now active&lt;/x-oc::badge&gt;@endif
+            &lt;/x-oc::card-band&gt;
+        &lt;/x-slot:band&gt;
+        &lt;div class="grid" style="justify-items: center"&gt;
+            &lt;x-oc::code-plate mode="live" caption="Live" style="inline-size: 11rem"&gt;&lt;img src="{{ $qrLive }}" alt="QR code to join the live round of Company 1" width="176" height="176"&gt;&lt;/x-oc::code-plate&gt;
+        &lt;/div&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Severity card", "category": "App UX", "description": "Expandable card colored by risk level (findings, incidents).", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Severity card", "category": "App UX", "description": "An expandable card colored by risk level for a security finding, an incident or an audit item. A native details element, so it opens without script.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/severity-card.html | Map: hero -> high + resolved demo -> all levels demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Severity card</h1>
@@ -38,6 +38,100 @@
   <div class="oc-severity-card-body"><p>The profile was removed on 2 October 2026.</p></div>
 </details>
 </div>
+<oc-code lang="tsx">import { Button, ButtonLink, SeverityCard, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div style={{ width: "100%" }}&gt;
+      &lt;SeverityCard
+        level="high"
+        title="shop-example.com data breach"
+        tags={["email", "password", "phone"]}
+        icon={&lt;Webicon name="mdi:alert-outline" /&gt;}
+        name="oc-findings-docs"
+        open
+        actions={
+          &lt;&gt;
+            &lt;ButtonLink size="sm" href="#demo"&gt;Change password&lt;/ButtonLink&gt;
+            &lt;Button type="button" variant="outline" size="sm"&gt;Mark as resolved&lt;/Button&gt;
+          &lt;/&gt;
+        }
+      &gt;
+        &lt;p&gt;Your e-mail address and a hashed password appeared in a leak from March 2026. Change the password on this site and everywhere you reused it.&lt;/p&gt;
+      &lt;/SeverityCard&gt;
+      &lt;SeverityCard level="low" title="Old forum profile" levelLabel="Resolved" resolved name="oc-findings-docs"&gt;
+        &lt;p&gt;The profile was removed on 2 October 2026.&lt;/p&gt;
+      &lt;/SeverityCard&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcSeverityCard, OcWebicon } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="width:100%"&gt;
+    &lt;OcSeverityCard level="high" title="shop-example.com data breach" :tags="['email', 'password', 'phone']" name="oc-findings-docs" open&gt;
+      &lt;template #icon&gt;&lt;OcWebicon name="mdi:alert-outline" /&gt;&lt;/template&gt;
+      &lt;p&gt;Your e-mail address and a hashed password appeared in a leak from March 2026. Change the password on this site and everywhere you reused it.&lt;/p&gt;
+      &lt;template #actions&gt;
+        &lt;OcButton size="sm" href="#demo"&gt;Change password&lt;/OcButton&gt;
+        &lt;OcButton variant="outline" size="sm"&gt;Mark as resolved&lt;/OcButton&gt;
+      &lt;/template&gt;
+    &lt;/OcSeverityCard&gt;
+    &lt;OcSeverityCard level="low" title="Old forum profile" level-label="Resolved" resolved name="oc-findings-docs"&gt;
+      &lt;p&gt;The profile was removed on 2 October 2026.&lt;/p&gt;
+    &lt;/OcSeverityCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="width:100%"&gt;
+    &lt;x-oc::severity-card level="high" title="shop-example.com data breach" :tags="['email', 'password', 'phone']" name="oc-findings-docs" open&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:alert-outline" /&gt;&lt;/x-slot:icon&gt;
+        &lt;p&gt;Your e-mail address and a hashed password appeared in a leak from March 2026. Change the password on this site and everywhere you reused it.&lt;/p&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button size="sm" href="#demo"&gt;Change password&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="outline" size="sm"&gt;Mark as resolved&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::severity-card&gt;
+    &lt;x-oc::severity-card level="low" title="Old forum profile" level-label="Resolved" resolved name="oc-findings-docs"&gt;
+        &lt;p&gt;The profile was removed on 2 October 2026.&lt;/p&gt;
+    &lt;/x-oc::severity-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SeverityCardSeverityCards extends Component
+{
+    public bool $resolved = false;
+
+    public function resolve(): void
+    {
+        $this-&gt;resolved = true;
+    }
+
+    public function render()
+    {
+        return view('livewire.severity-card-severity-cards');
+    }
+}
+
+{{-- resources/views/livewire/severity-card-severity-cards.blade.php --}}
+&lt;div style="width:100%"&gt;
+    &lt;x-oc::severity-card level="high" title="shop-example.com data breach" :tags="['email', 'password', 'phone']" name="oc-findings-docs" :resolved="$resolved" :level-label="$resolved ? 'Resolved' : null" :open="! $resolved"&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:alert-outline" /&gt;&lt;/x-slot:icon&gt;
+        &lt;p&gt;Your e-mail address and a hashed password appeared in a leak from March 2026. Change the password on this site and everywhere you reused it.&lt;/p&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button size="sm" href="#demo"&gt;Change password&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="outline" size="sm" wire:click="resolve"&gt;Mark as resolved&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::severity-card&gt;
+    &lt;x-oc::severity-card level="low" title="Old forum profile" level-label="Resolved" resolved name="oc-findings-docs"&gt;
+        &lt;p&gt;The profile was removed on 2 October 2026.&lt;/p&gt;
+    &lt;/x-oc::severity-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="levels">Levels</h3>
@@ -49,6 +143,63 @@
   <details class="oc-severity-card oc-severity-card--high"><summary class="oc-severity-card-head"><span class="oc-severity-card-main"><span class="oc-severity-card-title">Password in a leak</span></span><span class="oc-severity-card-level">High</span></summary><div class="oc-severity-card-body"><p>Change it now.</p></div></details>
   <details class="oc-severity-card oc-severity-card--critical"><summary class="oc-severity-card-head"><span class="oc-severity-card-main"><span class="oc-severity-card-title">Bank details on a dark web market</span></span><span class="oc-severity-card-level">Critical</span></summary><div class="oc-severity-card-body"><p>Call your bank.</p></div></details>
 </div>
+<oc-code lang="tsx">import { SeverityCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div style={{ width: "100%" }}&gt;
+      &lt;SeverityCard level="low" title="Public profile photo"&gt;&lt;p&gt;Visible on two sites.&lt;/p&gt;&lt;/SeverityCard&gt;
+      &lt;SeverityCard level="medium" title="Phone number in a directory"&gt;&lt;p&gt;Ask the directory to remove it.&lt;/p&gt;&lt;/SeverityCard&gt;
+      &lt;SeverityCard level="high" title="Password in a leak"&gt;&lt;p&gt;Change it now.&lt;/p&gt;&lt;/SeverityCard&gt;
+      &lt;SeverityCard level="critical" title="Bank details on a dark web market"&gt;&lt;p&gt;Call your bank.&lt;/p&gt;&lt;/SeverityCard&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcSeverityCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="width:100%"&gt;
+    &lt;OcSeverityCard level="low" title="Public profile photo"&gt;&lt;p&gt;Visible on two sites.&lt;/p&gt;&lt;/OcSeverityCard&gt;
+    &lt;OcSeverityCard level="medium" title="Phone number in a directory"&gt;&lt;p&gt;Ask the directory to remove it.&lt;/p&gt;&lt;/OcSeverityCard&gt;
+    &lt;OcSeverityCard level="high" title="Password in a leak"&gt;&lt;p&gt;Change it now.&lt;/p&gt;&lt;/OcSeverityCard&gt;
+    &lt;OcSeverityCard level="critical" title="Bank details on a dark web market"&gt;&lt;p&gt;Call your bank.&lt;/p&gt;&lt;/OcSeverityCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="width:100%"&gt;
+    &lt;x-oc::severity-card level="low" title="Public profile photo"&gt;&lt;p&gt;Visible on two sites.&lt;/p&gt;&lt;/x-oc::severity-card&gt;
+    &lt;x-oc::severity-card level="medium" title="Phone number in a directory"&gt;&lt;p&gt;Ask the directory to remove it.&lt;/p&gt;&lt;/x-oc::severity-card&gt;
+    &lt;x-oc::severity-card level="high" title="Password in a leak"&gt;&lt;p&gt;Change it now.&lt;/p&gt;&lt;/x-oc::severity-card&gt;
+    &lt;x-oc::severity-card level="critical" title="Bank details on a dark web market"&gt;&lt;p&gt;Call your bank.&lt;/p&gt;&lt;/x-oc::severity-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SeverityCardAllLevels extends Component
+{
+    public array $findings = [
+        ['level' =&gt; 'low', 'title' =&gt; 'Public profile photo', 'advice' =&gt; 'Visible on two sites.'],
+        ['level' =&gt; 'medium', 'title' =&gt; 'Phone number in a directory', 'advice' =&gt; 'Ask the directory to remove it.'],
+        ['level' =&gt; 'high', 'title' =&gt; 'Password in a leak', 'advice' =&gt; 'Change it now.'],
+        ['level' =&gt; 'critical', 'title' =&gt; 'Bank details on a dark web market', 'advice' =&gt; 'Call your bank.'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.severity-card-all-levels');
+    }
+}
+
+{{-- resources/views/livewire/severity-card-all-levels.blade.php --}}
+&lt;div style="width:100%"&gt;
+    @foreach ($findings as $finding)
+        &lt;x-oc::severity-card :level="$finding['level']" :title="$finding['title']"&gt;&lt;p&gt;{{ $finding['advice'] }}&lt;/p&gt;&lt;/x-oc::severity-card&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

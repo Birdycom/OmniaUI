@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Filter counts", "category": "Forms", "description": "View tiles (Active, Deleted, All) that show how many items each holds.", "nav": "Filter counts", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Filter counts", "category": "Forms", "description": "View tiles such as Active, Deleted and All that show how many items each holds, on radio buttons, with tones, a hint line and a compact size.", "nav": "Filter counts", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/filter-counts.html | Map: hero -> demo (tiles, compact pills) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Filter counts</h1>
@@ -34,9 +34,76 @@
     <span class="oc-filter-counts-hint">Everything together</span>
   </label>
 </fieldset>
+<oc-code lang="tsx">import { useState } from "react";
+import { FilterCounts } from "@birdycom/omniaui-react";
+import type { FilterCountsOption } from "@birdycom/omniaui-react";
+
+const options: FilterCountsOption[] = [
+  { value: "active", label: "Active", count: 128, hint: "Visible in reports", tone: "success" },
+  { value: "deleted", label: "Deleted", count: 6, hint: "Can be restored", tone: "destructive" },
+  { value: "all", label: "All", count: 134, hint: "Everything together" },
+];
+
+export function Example() {
+  const [view, setView] = useState("active");
+  return &lt;FilterCounts name="view" aria-label="Show transactions" options={options} value={view} onChange={setView} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFilterCounts } from '@birdycom/omniaui-vue'
+import type { FilterCountsItem } from '@birdycom/omniaui-vue'
+
+const options: FilterCountsItem[] = [
+  { value: 'active', label: 'Active', count: 128, hint: 'Visible in reports', tone: 'success' },
+  { value: 'deleted', label: 'Deleted', count: 6, hint: 'Can be restored', tone: 'destructive' },
+  { value: 'all', label: 'All', count: 134, hint: 'Everything together' },
+]
+const view = ref('active')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFilterCounts v-model="view" name="view" label="Show transactions" :options="options" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::filter-counts
+    name="view"
+    label="Show transactions"
+    :value="request('view', 'active')"
+    :options="[
+        ['value' =&gt; 'active', 'label' =&gt; 'Active', 'count' =&gt; 128, 'hint' =&gt; 'Visible in reports', 'tone' =&gt; 'success'],
+        ['value' =&gt; 'deleted', 'label' =&gt; 'Deleted', 'count' =&gt; 6, 'hint' =&gt; 'Can be restored', 'tone' =&gt; 'destructive'],
+        ['value' =&gt; 'all', 'label' =&gt; 'All', 'count' =&gt; 134, 'hint' =&gt; 'Everything together'],
+    ]"
+/&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TransactionFilter extends Component
+{
+    public string $view = 'active';
+
+    public array $options = [
+        ['value' =&gt; 'active', 'label' =&gt; 'Active', 'count' =&gt; 128, 'hint' =&gt; 'Visible in reports', 'tone' =&gt; 'success'],
+        ['value' =&gt; 'deleted', 'label' =&gt; 'Deleted', 'count' =&gt; 6, 'hint' =&gt; 'Can be restored', 'tone' =&gt; 'destructive'],
+        ['value' =&gt; 'all', 'label' =&gt; 'All', 'count' =&gt; 134, 'hint' =&gt; 'Everything together'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.transaction-filter');
+    }
+}
+
+{{-- resources/views/livewire/transaction-filter.blade.php --}}
+&lt;div&gt;
+    {{-- attributes go to the fieldset: the change of a tile bubbles up and sets $view --}}
+    &lt;x-oc::filter-counts name="view" label="Show transactions" :options="$options" :value="$view" wire:change="$set('view', $event.target.value)" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
-          <h3 class="oc-section-content__title mt-2">Compact</h3>
+          <h3 class="oc-section-content__title mt-2">Compact <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc"><code>--compact</code> turns the tiles into small pills ("Active 128") for a toolbar above a table. The hint is hidden.</p>
           <oc-demo title="Filter counts - compact">
 <fieldset class="oc-filter-counts oc-filter-counts--compact" aria-label="Show invoices">
@@ -45,6 +112,79 @@
   <label class="oc-filter-counts-item oc-filter-counts-item--destructive"><input type="radio" name="inv" value="late"><span class="oc-filter-counts-value">3</span><span class="oc-filter-counts-label">Overdue</span></label>
   <label class="oc-filter-counts-item oc-filter-counts-item--muted"><input type="radio" name="inv" value="draft" disabled><span class="oc-filter-counts-value">0</span><span class="oc-filter-counts-label">Draft</span></label>
 </fieldset>
+<oc-code lang="tsx">import { useState } from "react";
+import { FilterCounts } from "@birdycom/omniaui-react";
+import type { FilterCountsOption } from "@birdycom/omniaui-react";
+
+const options: FilterCountsOption[] = [
+  { value: "open", label: "Open", count: 12 },
+  { value: "paid", label: "Paid", count: 87, tone: "success" },
+  { value: "late", label: "Overdue", count: 3, tone: "destructive" },
+  { value: "draft", label: "Draft", count: 0, tone: "muted", disabled: true },
+];
+
+export function Example() {
+  const [status, setStatus] = useState("open");
+  return &lt;FilterCounts compact name="inv" aria-label="Show invoices" options={options} value={status} onChange={setStatus} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcFilterCounts } from '@birdycom/omniaui-vue'
+import type { FilterCountsItem } from '@birdycom/omniaui-vue'
+
+const options: FilterCountsItem[] = [
+  { value: 'open', label: 'Open', count: 12 },
+  { value: 'paid', label: 'Paid', count: 87, tone: 'success' },
+  { value: 'late', label: 'Overdue', count: 3, tone: 'destructive' },
+  { value: 'draft', label: 'Draft', count: 0, tone: 'muted', disabled: true },
+]
+const status = ref('open')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFilterCounts v-model="status" compact name="inv" label="Show invoices" :options="options" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Draft has no invoices: 'disabled' =&gt; true shows the tile but it cannot be chosen --}}
+&lt;x-oc::filter-counts
+    name="inv"
+    label="Show invoices"
+    compact
+    :value="request('inv', 'open')"
+    :options="[
+        ['value' =&gt; 'open', 'label' =&gt; 'Open', 'count' =&gt; 12],
+        ['value' =&gt; 'paid', 'label' =&gt; 'Paid', 'count' =&gt; 87, 'tone' =&gt; 'success'],
+        ['value' =&gt; 'late', 'label' =&gt; 'Overdue', 'count' =&gt; 3, 'tone' =&gt; 'destructive'],
+        ['value' =&gt; 'draft', 'label' =&gt; 'Draft', 'count' =&gt; 0, 'tone' =&gt; 'muted', 'disabled' =&gt; true],
+    ]"
+/&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceFilter extends Component
+{
+    public string $status = 'open';
+
+    public array $options = [
+        ['value' =&gt; 'open', 'label' =&gt; 'Open', 'count' =&gt; 12],
+        ['value' =&gt; 'paid', 'label' =&gt; 'Paid', 'count' =&gt; 87, 'tone' =&gt; 'success'],
+        ['value' =&gt; 'late', 'label' =&gt; 'Overdue', 'count' =&gt; 3, 'tone' =&gt; 'destructive'],
+        ['value' =&gt; 'draft', 'label' =&gt; 'Draft', 'count' =&gt; 0, 'tone' =&gt; 'muted', 'disabled' =&gt; true],
+    ];
+
+    public function render()
+    {
+        return view('livewire.invoice-filter');
+    }
+}
+
+{{-- resources/views/livewire/invoice-filter.blade.php --}}
+&lt;div&gt;
+    {{-- attributes go to the fieldset: the change of a tile bubbles up and sets $status --}}
+    &lt;x-oc::filter-counts name="inv" label="Show invoices" compact :options="$options" :value="$status" wire:change="$set('status', $event.target.value)" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

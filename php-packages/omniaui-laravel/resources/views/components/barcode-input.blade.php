@@ -1,8 +1,10 @@
 {{-- File: resources/views/components/barcode-input.blade.php | Map: props -> wrapper -> label + field -> preview figure (slot or placeholder bars)
-     OmniaUI barcode input. Props: label, id, name, value, empty (preview text without a code), error.
+     OmniaUI barcode input. Props: label, id, name, value, empty (preview text without a code), error, error-text (with error:
+     the text in the preview instead of the code, e.g. "Use 8 or 13 digits"), hide-preview (only the field).
      Slot `preview`: your own <svg>/<img> barcode instead of the placeholder bars. Attributes go to the input. --}}
-@props(['label' => null, 'id' => null, 'name' => 'barcode', 'value' => null, 'empty' => 'No code yet', 'error' => false, 'preview' => null])
+@props(['label' => null, 'id' => null, 'name' => 'barcode', 'value' => null, 'empty' => 'No code yet', 'error' => false, 'errorText' => null, 'hidePreview' => false, 'preview' => null])
 @php($id = $id ?: 'oc-barcode-'.substr(md5(uniqid('', true)), 0, 6))
+@php($message = $error && filled($errorText) ? $errorText : null)
 <div class="oc-barcode-input">
     @if ($label)
         <label class="oc-field-label" for="{{ $id }}">{{ $label }}</label>
@@ -23,12 +25,14 @@
             'aria-invalid' => $error ? 'true' : null,
         ]) }}>
     </div>
-    <figure @class(['oc-barcode-preview', 'oc-barcode-preview--empty' => blank($value)]) aria-label="Barcode preview">
-        @if ($preview)
+    @unless ($hidePreview)
+    <figure @class(['oc-barcode-preview', 'oc-barcode-preview--empty' => blank($value) || $message]) aria-label="Barcode preview">
+        @if ($preview && ! $message)
             {{ $preview }}
         @else
             <div class="oc-barcode-preview-bars" aria-hidden="true"></div>
         @endif
-        <figcaption class="oc-barcode-preview-code">{{ filled($value) ? $value : $empty }}</figcaption>
+        <figcaption class="oc-barcode-preview-code">{{ $message ?? (filled($value) ? $value : $empty) }}</figcaption>
     </figure>
+    @endunless
 </div>

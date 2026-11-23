@@ -41,11 +41,22 @@ class V0160ComponentsTest extends TestCase
         $this->assertElement($html, 'span', 'oc-language-select-code', [], 'NL');
         $this->assertElement($html, 'div', 'oc-dropdown-menu oc-language-menu', ['id' => 'lang', 'aria-label' => 'Language']);
         $this->assertElement($html, 'a', 'oc-dropdown-item', ['href' => '/nl/', 'hreflang' => 'nl', 'lang' => 'nl', 'aria-current' => 'true']);
-        $this->assertStringContainsString('<iconify-icon icon="flag:gb-4x3"', $html);
+        // built-in flags are inline SVG now (0.17.0)
+        $this->assertStringContainsString('data-webicon="flag:gb-4x3"', $html);
 
         $compact = $this->render('<x-oc::language-menu compact value="en" :options="[\'en\' => [\'label\' => \'English\']]" />');
         $this->assertElement($compact, 'button', 'oc-language-select oc-language-select--icon oc-tooltip oc-tooltip--bottom', ['data-tooltip' => 'Language: English']);
-        $this->assertStringContainsString('icon="mdi:web"', $compact);
+        $this->assertStringContainsString('data-webicon="mdi:web"', $compact);
+
+        // flags="auto": the flag from the language code (en -> gb, nl-BE -> be); an unknown flag falls back to <iconify-icon>
+        $auto = $this->render('<x-oc::language-menu flags="auto" value="en" :options="[\'en\' => [\'label\' => \'English\'], \'nl-BE\' => [\'label\' => \'Vlaams\'], \'es\' => [\'label\' => \'Español\'], \'xx\' => [\'label\' => \'?\', \'flag\' => \'\']]" />');
+        $this->assertSame(2, substr_count($auto, 'data-webicon="flag:gb-4x3"'));
+        $this->assertStringContainsString('data-webicon="flag:be-4x3"', $auto);
+        $this->assertStringContainsString('<iconify-icon icon="flag:xx-4x3"', $auto);
+        $this->assertSame('flag:gb-4x3', \Omniacss\Laravel\Webicons::languageFlag('en'));
+        $this->assertSame('flag:us-4x3', \Omniacss\Laravel\Webicons::languageFlag('en-US'));
+        $this->assertSame('flag:dk-4x3', \Omniacss\Laravel\Webicons::languageFlag('da'));
+        $this->assertNull(\Omniacss\Laravel\Webicons::languageFlag('fil'));
     }
 
     public function test_sheet_options_and_plain_collapsible(): void

@@ -11,7 +11,7 @@
         </div>
         <div class="oc-section-content">
           <h3 class="oc-section-content__title" id="demo-1">Screenshots <span class="oc-badge-version">v0.13.0</span></h3>
-          <p class="oc-section-content__desc">Click a screenshot: it opens large in a <a href="lightbox.html">lightbox</a> (a <code>&lt;dialog&gt;</code> opened with <code>command="show-modal"</code>, no JavaScript). <kbd>Esc</kbd> or a click beside the image closes it.</p>
+          <p class="oc-section-content__desc">Click a screenshot: it opens large in a <a href="lightbox.html">lightbox</a> (a <code>&lt;dialog&gt;</code> opened with <code>command="show-modal"</code>, no JavaScript). In the components this is the <code>lightbox</code> prop (0.17.0) on <code>ShotGrid</code> / <code>Shot</code>, <code>OcShotGrid</code> and <code>&lt;x-oc::shot-grid&gt;</code>. <kbd>Esc</kbd> or a click beside the image closes it.</p>
           <oc-demo title="Screenshot grid - screenshots">
 <div class="oc-shot-grid" style="inline-size:100%">
   <figure class="oc-shot">
@@ -39,8 +39,68 @@
   <div class="oc-lightbox__bar"><h2 class="oc-lightbox__title">Product page with stock and documents</h2><button type="button" class="oc-lightbox__close" command="close" commandfor="oc-shot-view-3" aria-label="Close">✕</button></div>
   <div class="oc-lightbox__track"><figure class="oc-lightbox__slide"><div class="oc-lightbox__media"><img src="/img/blocks/product-detail.jpg" alt="Product page" width="640" height="400"></div></figure></div>
 </dialog>
+<oc-code lang="tsx">import { ShotGrid } from "@birdycom/omniaui-react";
+
+const shots = [
+  { src: "/img/blocks/dashboard-01.jpg", alt: "Dashboard", caption: "Dashboard with the figures of the day" },
+  { src: "/img/blocks/data-table.jpg", alt: "Customer list", caption: "Customer list with filters" },
+  { src: "/img/blocks/product-detail.jpg", alt: "Product page", caption: "Product page with stock and documents" },
+];
+
+export function Example() {
+  // lightbox: every shot is a button that opens the image large (without it, a link to the file).
+  return &lt;ShotGrid lightbox items={shots} style={{ inlineSize: "100%" }} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcShotGrid } from '@birdycom/omniaui-vue'
+
+const shots = [
+  { src: '/img/blocks/dashboard-01.jpg', alt: 'Dashboard', caption: 'Dashboard with the figures of the day' },
+  { src: '/img/blocks/data-table.jpg', alt: 'Customer list', caption: 'Customer list with filters' },
+  { src: '/img/blocks/product-detail.jpg', alt: 'Product page', caption: 'Product page with stock and documents' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- lightbox: every shot is a button that opens the image large (without it, a link to the file). --&gt;
+  &lt;OcShotGrid lightbox :items="shots" style="inline-size:100%" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php
+    $shots = [
+    ['src' =&gt; '/img/blocks/dashboard-01.jpg', 'alt' =&gt; 'Dashboard', 'caption' =&gt; 'Dashboard with the figures of the day'],
+    ['src' =&gt; '/img/blocks/data-table.jpg', 'alt' =&gt; 'Customer list', 'caption' =&gt; 'Customer list with filters'],
+    ['src' =&gt; '/img/blocks/product-detail.jpg', 'alt' =&gt; 'Product page', 'caption' =&gt; 'Product page with stock and documents'],
+];
+@endphp
+
+{{-- lightbox: every shot is a button that opens the image large with command="show-modal" (without it, a link to the file). --}}
+&lt;x-oc::shot-grid lightbox lightbox-id="oc-shot-view" :items="$shots" style="inline-size:100%" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Screenshots extends Component
+{
+    public array $shots = [
+        ['src' =&gt; '/img/blocks/dashboard-01.jpg', 'alt' =&gt; 'Dashboard', 'caption' =&gt; 'Dashboard with the figures of the day'],
+        ['src' =&gt; '/img/blocks/data-table.jpg', 'alt' =&gt; 'Customer list', 'caption' =&gt; 'Customer list with filters'],
+        ['src' =&gt; '/img/blocks/product-detail.jpg', 'alt' =&gt; 'Product page', 'caption' =&gt; 'Product page with stock and documents'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.screenshots');
+    }
+}
+
+{{-- resources/views/livewire/screenshots.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::shot-grid lightbox lightbox-id="oc-shot-view" :items="$shots" style="inline-size:100%" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
-          <h3 class="oc-section-content__title mt-2" id="demo-2">Browser frame with a product mark</h3>
+          <h3 class="oc-section-content__title mt-2" id="demo-2">Browser frame with a product mark <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">The frame has a neutral shadow. Add <code>.oc-browser-frame--glow</code> for a shadow in the accent color and a small zoom on hover.</p>
           <oc-demo title="Screenshot grid - browser frame with a product mark">
 <div class="oc-browser-frame oc-accent--green" style="inline-size:min(100%, 34rem)">
@@ -48,6 +108,61 @@
   <img class="oc-browser-frame__body" src="/img/blocks/dashboard-01.jpg" alt="Dashboard of Product 1" width="640" height="400">
   <span class="oc-browser-frame__mark oc-icon-tile oc-icon-tile--lg oc-accent--green" aria-hidden="true"><iconify-icon icon="mdi:chart-box-outline"></iconify-icon></span>
 </div>
+<oc-code lang="tsx">import { BrowserFrame } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // mark: a webicon name in a large icon tile on the bottom end corner; markAccent colors the tile.
+  return (
+    &lt;BrowserFrame
+      className="oc-accent--green"
+      style={{ inlineSize: "min(100%, 34rem)" }}
+      src="/img/blocks/dashboard-01.jpg"
+      alt="Dashboard of Product 1"
+      mark="mdi:chart-box-outline"
+      markAccent="green"
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBrowserFrame } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- mark: a webicon name in a large icon tile on the bottom end corner; mark-accent colors the tile. --&gt;
+  &lt;OcBrowserFrame
+    class="oc-accent--green"
+    style="inline-size:min(100%, 34rem)"
+    src="/img/blocks/dashboard-01.jpg"
+    alt="Dashboard of Product 1"
+    mark="mdi:chart-box-outline"
+    mark-accent="green"
+  /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- mark: a webicon name in a large icon tile on the bottom end corner; mark-accent colors the tile. --}}
+&lt;x-oc::browser-frame class="oc-accent--green" style="inline-size:min(100%, 34rem)" src="/img/blocks/dashboard-01.jpg" alt="Dashboard of Product 1"
+    mark="mdi:chart-box-outline" mark-accent="green" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ShotGridScreenshotGridBrowserFrameWithA extends Component
+{
+    public string $product = 'Product 1';
+
+    public function render()
+    {
+        return view('livewire.shot-grid-screenshot-grid-browser-frame-with-a');
+    }
+}
+
+{{-- resources/views/livewire/shot-grid-screenshot-grid-browser-frame-with-a.blade.php --}}
+&lt;div&gt;
+    {{-- mark: a webicon name in a large icon tile on the bottom end corner; mark-accent colors the tile. --}}
+    &lt;x-oc::browser-frame class="oc-accent--green" style="inline-size:min(100%, 34rem)" src="/img/blocks/dashboard-01.jpg" :alt="'Dashboard of '.$product"
+        mark="mdi:chart-box-outline" mark-accent="green" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

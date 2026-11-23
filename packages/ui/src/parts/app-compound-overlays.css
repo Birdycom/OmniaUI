@@ -1,0 +1,68 @@
+/* File: packages/ui/src/parts/app-compound-overlays.css | Map: compound tabs root (vertical) -> scrolling dialog content -> popover side/align/offset -> tooltip provider, delay and controlled open */
+/* 0.17.0 compound API for Tabs, Dialog, Popover and Tooltip. Same classes as the props API; this part only adds what the
+   compound parts need: a root for class-toggle tabs, a dialog whose body scrolls between a fixed header and footer, popover
+   placement by data-side / data-align, and the tooltip delay and controlled state. */
+
+/* ---- Tabs: compound root (.oc-tabs) ---- */
+/* Horizontal: the tab list on top, the panel below it over the full width (not in the flex row of the pill-tab .oc-tabs). */
+.oc-tabs:has(> .oc-tab-list) { display: block; inline-size: 100%; }
+.oc-tabs:has(> .oc-tab-list--vertical) {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0 1.5rem;
+  align-items: start;
+}
+.oc-tabs > .oc-tab-list--vertical { grid-row: 1 / span 99; }
+.oc-tabs:has(> .oc-tab-list--vertical) > .oc-tab-panel { grid-column: 2; padding-block: 0.5rem 0.25rem; }
+.oc-tabs .oc-tab-list--vertical .oc-tab-trigger { justify-content: flex-start; }
+.oc-tabs > .oc-tab-panel:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; border-radius: var(--oc-radius); }
+
+/* ---- Dialog: the Blade root wrapper takes no box; header and footer fixed, the body scrolls ---- */
+.oc-dialog { display: contents; }
+.oc-modal-content--scroll { overflow: hidden; }
+.oc-modal-content--scroll > .oc-modal-header,
+.oc-modal-content--scroll > .oc-modal-footer { flex-shrink: 0; }
+.oc-modal-content--scroll > .oc-modal-header { padding-block-end: 16px; border-block-end: 1px solid var(--oc-border); }
+.oc-modal-content--scroll > .oc-modal-body { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; }
+
+/* ---- Popover: side, align and offset (compound PopoverContent sets data-side / data-align) ---- */
+.oc-popover[popover][data-side] { margin: 0; }
+.oc-popover[popover][data-side="bottom"] { margin-block-start: var(--oc-popover-offset, 4px); position-area: block-end span-inline-end; position-try-fallbacks: flip-block, flip-inline; }
+.oc-popover[popover][data-side="bottom"][data-align="center"] { position-area: block-end; }
+.oc-popover[popover][data-side="bottom"][data-align="end"] { position-area: block-end span-inline-start; }
+.oc-popover[popover][data-side="top"] { margin-block-end: var(--oc-popover-offset, 4px); position-area: block-start span-inline-end; position-try-fallbacks: flip-block, flip-inline; }
+.oc-popover[popover][data-side="top"][data-align="center"] { position-area: block-start; }
+.oc-popover[popover][data-side="top"][data-align="end"] { position-area: block-start span-inline-start; }
+.oc-popover[popover][data-side="right"] { margin-inline-start: var(--oc-popover-offset, 4px); position-area: inline-end span-block-end; position-try-fallbacks: flip-inline, flip-block; }
+.oc-popover[popover][data-side="right"][data-align="center"] { position-area: inline-end; }
+.oc-popover[popover][data-side="right"][data-align="end"] { position-area: inline-end span-block-start; }
+.oc-popover[popover][data-side="left"] { margin-inline-end: var(--oc-popover-offset, 4px); position-area: inline-start span-block-end; position-try-fallbacks: flip-inline, flip-block; }
+.oc-popover[popover][data-side="left"][data-align="center"] { position-area: inline-start; }
+.oc-popover[popover][data-side="left"][data-align="end"] { position-area: inline-start span-block-start; }
+
+/* ---- Tooltip: provider, delay, controlled open ---- */
+.oc-tooltip-provider { display: contents; }
+
+/* The delay applies when the bubble appears, not when it goes away. */
+.oc-tooltip:hover::after,
+.oc-tooltip:focus-visible::after,
+.oc-tooltip:has(:focus-visible)::after,
+.oc-tooltip:hover > .oc-tooltip__content,
+.oc-tooltip:focus-visible > .oc-tooltip__content,
+.oc-tooltip:has(:focus-visible) > .oc-tooltip__content {
+  transition-delay: var(--oc-tooltip-delay, 0ms);
+}
+
+/* open=true: shown without hover. open=false: hidden, also on hover and focus. */
+.oc-tooltip.is-open::after,
+.oc-tooltip.is-open > .oc-tooltip__content {
+  opacity: 1;
+  scale: 1;
+}
+.oc-tooltip.is-closed::after,
+.oc-tooltip.is-closed > .oc-tooltip__content {
+  opacity: 0;
+  scale: 0.96;
+}
+/* Rich content may hold links: let the pointer reach it while it is shown. */
+.oc-tooltip.is-open > .oc-tooltip__content { pointer-events: auto; }

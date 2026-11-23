@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Date field", "category": "Forms", "description": "Native date input with a calendar icon zone and the ISO week (Week 45) next to it.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>", "<script type=\"module\" src=\"/js/oc-form-extras.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Date field", "category": "Forms", "description": "Native date input with a calendar icon zone and the ISO week (Week 45) next to it, an optional year in the label and a small size variant.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>", "<script type=\"module\" src=\"/js/oc-form-extras.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/date-field.html | Map: hero -> demo -> reference -> frameworks -> browser support -> source -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Date field</h1>
@@ -11,7 +11,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/date-field.html</code>.</p>
         </div>
         <div class="oc-section-content">
-          <h3 class="oc-section-content__title" id="demo-1">With ISO week</h3>
+          <h3 class="oc-section-content__title" id="demo-1">With ISO week <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Date field">
 <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:end">
 <div class="oc-field">
@@ -47,6 +47,106 @@
   </div>
 </div>
 </div>
+<oc-code lang="tsx">import { DateField, FormField } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [delivery, setDelivery] = useState("2026-11-12");
+
+  return (
+    &lt;div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "end" }}&gt;
+      &lt;FormField label="Delivery date"&gt;
+        &lt;DateField id="oc-date-delivery" value={delivery} onChange={(e) =&gt; setDelivery(e.target.value)} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Start of works"&gt;
+        &lt;DateField id="oc-date-start" defaultValue="2027-01-01" weekLabel="Week {week} · {year}" /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Without week"&gt;
+        &lt;DateField id="oc-date-plain" defaultValue="2026-12-24" week={false} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Small"&gt;
+        &lt;DateField id="oc-date-small" defaultValue="2026-11-03" size="sm" /&gt;
+      &lt;/FormField&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDateField, OcFormField } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const delivery = ref("2026-11-12");
+const start = ref("2027-01-01");
+const plain = ref("2026-12-24");
+const small = ref("2026-11-03");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:end"&gt;
+    &lt;OcFormField label="Delivery date" for="oc-date-delivery"&gt;
+      &lt;OcDateField id="oc-date-delivery" v-model="delivery" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Start of works" for="oc-date-start"&gt;
+      &lt;OcDateField id="oc-date-start" v-model="start" week-label="Week {week} · {year}" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Without week" for="oc-date-plain"&gt;
+      &lt;OcDateField id="oc-date-plain" v-model="plain" :week="false" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Small" for="oc-date-small"&gt;
+      &lt;OcDateField id="oc-date-small" v-model="small" size="sm" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:end"&gt;
+    &lt;x-oc::form-field label="Delivery date" for="oc-date-delivery"&gt;
+        &lt;x-oc::date-field id="oc-date-delivery" name="delivery" value="2026-11-12" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Start of works" for="oc-date-start"&gt;
+        &lt;x-oc::date-field id="oc-date-start" name="start" value="2027-01-01" week-label="Week {week} · {year}" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Without week" for="oc-date-plain"&gt;
+        &lt;x-oc::date-field id="oc-date-plain" name="plain" value="2026-12-24" :week="false" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Small" for="oc-date-small"&gt;
+        &lt;x-oc::date-field id="oc-date-small" name="small" value="2026-11-03" size="sm" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class DateField extends Component
+{
+    public string $delivery = '2026-11-12';
+
+    public string $start = '2027-01-01';
+
+    public string $plain = '2026-12-24';
+
+    public string $small = '2026-11-03';
+
+    public function render()
+    {
+        return view('livewire.date-field');
+    }
+}
+
+{{-- resources/views/livewire/date-field.blade.php --}}
+&lt;div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:end"&gt;
+    &lt;x-oc::form-field label="Delivery date" for="oc-date-delivery"&gt;
+        &lt;x-oc::date-field id="oc-date-delivery" wire:model="delivery" :value="$delivery" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Start of works" for="oc-date-start"&gt;
+        &lt;x-oc::date-field id="oc-date-start" wire:model="start" :value="$start" week-label="Week {week} · {year}" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Without week" for="oc-date-plain"&gt;
+        &lt;x-oc::date-field id="oc-date-plain" wire:model="plain" :value="$plain" :week="false" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Small" for="oc-date-small"&gt;
+        &lt;x-oc::date-field id="oc-date-small" wire:model="small" :value="$small" size="sm" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

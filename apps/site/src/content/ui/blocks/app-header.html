@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - App header Block", "category": "App UX", "description": "Top bar with sidebar toggle, module navigation and user actions.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - App header Block", "category": "App UX", "description": "App header block: top bar with a sidebar toggle, module navigation with a More menu for overflow, a search field, a theme switch and a user menu.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">App header</h1>
         <p class="oc-hero-text">A sticky-height header bar: collapse toggle, module navigation (navmenu component), theme switch and a user menu (dropdown). <a href="../blocks.html">All blocks</a>.</p>
@@ -10,6 +10,7 @@
           <p class="oc-section-header__desc">The top bar of an app: menu button, section links, a light/dark switch and the user avatar on one line. Snippet: <code>packages/blocks/blocks/app-header.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title">App header <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="App header" size="tall">
 <header class="oc-block-appbar">
   <label class="oc-btn oc-btn--ghost oc-btn--icon" for="oc-appbar-toggle" title="Toggle sidebar"><svg data-icon="mdi:menu" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg><span class="oc-visually-hidden">Toggle sidebar</span></label>
@@ -35,6 +36,264 @@
     </div>
   </div>
 </header>
+<oc-code lang="tsx">import { Avatar, BlockAppHeader, Button, Dropdown, DropdownItem, DropdownLabel, DropdownSeparator, ThemeSwitch } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockAppHeader
+      toggleFor="oc-appbar-toggle"
+      nav={[
+        { label: "Contacts", href: "#", current: true },
+        { label: "Companies", href: "#" },
+        { label: "Segments", href: "#" },
+      ]}
+      actions={
+        &lt;&gt;
+          &lt;ThemeSwitch as="div" modes={["light", "dark"]} name="oc-appbar-theme" aria-label="Theme" /&gt;
+          {/* renderTrigger: the avatar button opens the user menu */}
+          &lt;Dropdown
+            id="oc-appbar-user"
+            renderTrigger={({ props }) =&gt; (
+              &lt;Button type="button" variant="ghost" icon aria-label="User menu" {...props}&gt;&lt;Avatar size="sm"&gt;U1&lt;/Avatar&gt;&lt;/Button&gt;
+            )}
+          &gt;
+            &lt;DropdownLabel&gt;user1@company1.example&lt;/DropdownLabel&gt;
+            &lt;DropdownItem href="#"&gt;Profile&lt;/DropdownItem&gt;
+            &lt;DropdownItem href="#"&gt;Settings&lt;/DropdownItem&gt;
+            &lt;DropdownSeparator /&gt;
+            &lt;DropdownItem href="#"&gt;Log out&lt;/DropdownItem&gt;
+          &lt;/Dropdown&gt;
+        &lt;/&gt;
+      }
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcAvatar, OcBlockAppHeader, OcButton, OcDropdown, OcDropdownItem, OcDropdownLabel, OcDropdownSeparator, OcThemeSwitch } from "@birdycom/omniaui-vue";
+
+const modules = [
+  { label: "Contacts", href: "#", current: true },
+  { label: "Companies", href: "#" },
+  { label: "Segments", href: "#" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockAppHeader toggle-for="oc-appbar-toggle" :nav-items="modules"&gt;
+    &lt;template #actions&gt;
+      &lt;OcThemeSwitch as="div" :options="['light', 'dark']" name="oc-appbar-theme" label="Theme" /&gt;
+      &lt;!-- the trigger slot: the avatar button opens the user menu --&gt;
+      &lt;OcDropdown id="oc-appbar-user"&gt;
+        &lt;template #trigger="{ id }"&gt;
+          &lt;OcButton variant="ghost" icon :popovertarget="id" aria-label="User menu"&gt;&lt;OcAvatar size="sm"&gt;U1&lt;/OcAvatar&gt;&lt;/OcButton&gt;
+        &lt;/template&gt;
+        &lt;OcDropdownLabel&gt;user1@company1.example&lt;/OcDropdownLabel&gt;
+        &lt;OcDropdownItem href="#"&gt;Profile&lt;/OcDropdownItem&gt;
+        &lt;OcDropdownItem href="#"&gt;Settings&lt;/OcDropdownItem&gt;
+        &lt;OcDropdownSeparator /&gt;
+        &lt;OcDropdownItem href="#"&gt;Log out&lt;/OcDropdownItem&gt;
+      &lt;/OcDropdown&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockAppHeader&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.app-header&gt;
+    &lt;x-slot:toggle&gt;
+        &lt;label class="oc-btn oc-btn--ghost oc-btn--icon" for="oc-appbar-toggle" title="Toggle sidebar"&gt;&lt;x-oc::webicon name="mdi:menu" /&gt;&lt;span class="oc-visually-hidden"&gt;Toggle sidebar&lt;/span&gt;&lt;/label&gt;
+    &lt;/x-slot:toggle&gt;
+    {{-- The block puts the nav slot in its own &lt;nav&gt;, so the list goes in as it is --}}
+    &lt;x-slot:nav&gt;
+        &lt;ul class="oc-navmenu"&gt;
+            &lt;li&gt;&lt;a class="oc-navmenu-link" href="#" aria-current="page"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a class="oc-navmenu-link" href="#"&gt;Companies&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a class="oc-navmenu-link" href="#"&gt;Segments&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/x-slot:nav&gt;
+    &lt;x-slot:actions&gt;
+        {{-- options: only light and dark --}}
+        &lt;x-oc::theme-switch name="oc-appbar-theme" label="Theme" :options="['light', 'dark']" /&gt;
+        &lt;x-oc::dropdown id="oc-appbar-user" :items="[
+            ['group' =&gt; 'user1@company1.example'],
+            ['label' =&gt; 'Profile', 'href' =&gt; '#'],
+            ['label' =&gt; 'Settings', 'href' =&gt; '#'],
+            ['separator' =&gt; true],
+            ['label' =&gt; 'Log out', 'href' =&gt; '#'],
+        ]"&gt;
+            &lt;x-slot:trigger&gt;
+                &lt;x-oc::button variant="ghost" icon popovertarget="oc-appbar-user" aria-label="User menu"&gt;&lt;x-oc::avatar size="sm"&gt;U1&lt;/x-oc::avatar&gt;&lt;/x-oc::button&gt;
+            &lt;/x-slot:trigger&gt;
+        &lt;/x-oc::dropdown&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.app-header&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AppHeader extends Component
+{
+    public array $modules = [
+        ['label' =&gt; 'Contacts', 'href' =&gt; '#', 'current' =&gt; true],
+        ['label' =&gt; 'Companies', 'href' =&gt; '#', 'current' =&gt; false],
+        ['label' =&gt; 'Segments', 'href' =&gt; '#', 'current' =&gt; false],
+    ];
+
+    public string $email = 'user1@company1.example';
+
+    public function logout()
+    {
+        auth()-&gt;logout();
+
+        return redirect('/');
+    }
+
+    public function render()
+    {
+        return view('livewire.app-header');
+    }
+}
+
+{{-- resources/views/livewire/app-header.blade.php --}}
+&lt;x-oc::block.app-header&gt;
+    &lt;x-slot:toggle&gt;
+        &lt;label class="oc-btn oc-btn--ghost oc-btn--icon" for="oc-appbar-toggle" title="Toggle sidebar"&gt;&lt;x-oc::webicon name="mdi:menu" /&gt;&lt;span class="oc-visually-hidden"&gt;Toggle sidebar&lt;/span&gt;&lt;/label&gt;
+    &lt;/x-slot:toggle&gt;
+    &lt;x-slot:nav&gt;
+        &lt;ul class="oc-navmenu"&gt;
+            @foreach ($modules as $module)
+                &lt;li&gt;&lt;a class="oc-navmenu-link" href="{{ $module['href'] }}" @if ($module['current']) aria-current="page" @endif&gt;{{ $module['label'] }}&lt;/a&gt;&lt;/li&gt;
+            @endforeach
+        &lt;/ul&gt;
+    &lt;/x-slot:nav&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::theme-switch name="oc-appbar-theme" label="Theme" :options="['light', 'dark']" /&gt;
+        &lt;x-oc::dropdown id="oc-appbar-user" :items="[
+            ['group' =&gt; $email],
+            ['label' =&gt; 'Profile', 'href' =&gt; '#'],
+            ['label' =&gt; 'Settings', 'href' =&gt; '#'],
+            ['separator' =&gt; true],
+        ]"&gt;
+            &lt;x-slot:trigger&gt;
+                &lt;x-oc::button variant="ghost" icon popovertarget="oc-appbar-user" aria-label="User menu"&gt;&lt;x-oc::avatar size="sm"&gt;U1&lt;/x-oc::avatar&gt;&lt;/x-oc::button&gt;
+            &lt;/x-slot:trigger&gt;
+            &lt;x-oc::dropdown.item wire:click="logout"&gt;Log out&lt;/x-oc::dropdown.item&gt;
+        &lt;/x-oc::dropdown&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.app-header&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="overflow">Overflow and search <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">With many modules the links no longer scroll sideways: with <code>overflow</code> the links that do not fit move into a <strong>More</strong> menu at the end of the navigation (a ResizeObserver measures again when the bar gets wider or narrower). When the current page sits in that menu, the More button is marked current too. <code>moreLabel</code> sets its text. The <code>search</code> slot puts a field between the navigation and the actions. Blade: <code>:overflow="true"</code> with the script <code>oc-nav-overflow.js</code> (<code>npx omniaui copy-js nav-overflow</code>) and <code>&lt;x-slot:search&gt;</code>; Vue: <code>overflow</code> and <code>#search</code>. Make the window narrower to see links move into More.</p>
+          <oc-demo title="App header - overflow and search" size="tall">
+<header class="oc-block-appbar">
+  <nav class="oc-block-appbar-nav" aria-label="Module navigation" data-oc-nav-overflow data-more-label="More">
+    <ul class="oc-navmenu">
+      <li><a class="oc-navmenu-link" href="#">Contacts</a></li>
+      <li><a class="oc-navmenu-link" href="#">Companies</a></li>
+      <li><a class="oc-navmenu-link" href="#">Quotes</a></li>
+      <li><a class="oc-navmenu-link" href="#">Invoices</a></li>
+      <li><a class="oc-navmenu-link" href="#">Products</a></li>
+      <li><a class="oc-navmenu-link" href="#">Stock</a></li>
+      <li><a class="oc-navmenu-link" href="#" aria-current="page">Reports</a></li>
+      <li><a class="oc-navmenu-link" href="#">Settings</a></li>
+    </ul>
+  </nav>
+  <div class="oc-block-appbar-search"><input class="oc-input" type="search" placeholder="Search" aria-label="Search"></div>
+  <div class="oc-block-appbar-actions">
+    <button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" aria-label="User menu"><span class="oc-avatar oc-avatar--sm">U1</span></button>
+  </div>
+</header>
+<oc-code lang="tsx">import { Avatar, BlockAppHeader, Button, Input } from "@birdycom/omniaui-react";
+
+const modules = ["Contacts", "Companies", "Quotes", "Invoices", "Products", "Stock", "Reports", "Settings"];
+
+export function Example() {
+  return (
+    &lt;BlockAppHeader
+      overflow
+      moreLabel="More"
+      nav={modules.map((label) =&gt; ({ label, href: "#", current: label === "Reports" }))}
+      search={&lt;Input type="search" placeholder="Search" aria-label="Search" /&gt;}
+      actions={&lt;Button variant="ghost" icon aria-label="User menu"&gt;&lt;Avatar size="sm"&gt;U1&lt;/Avatar&gt;&lt;/Button&gt;}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcAvatar, OcBlockAppHeader, OcButton, OcInput } from "@birdycom/omniaui-vue";
+
+const query = ref("");
+const modules = ["Contacts", "Companies", "Quotes", "Invoices", "Products", "Stock", "Reports", "Settings"].map((label) =&gt; ({ label, href: "#", current: label === "Reports" }));
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockAppHeader overflow more-label="More" :nav-items="modules"&gt;
+    &lt;template #search&gt;
+      &lt;OcInput v-model="query" type="search" placeholder="Search" aria-label="Search" /&gt;
+    &lt;/template&gt;
+    &lt;template #actions&gt;
+      &lt;OcButton variant="ghost" icon aria-label="User menu"&gt;&lt;OcAvatar size="sm"&gt;U1&lt;/OcAvatar&gt;&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcBlockAppHeader&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- :overflow="true" + oc-nav-overflow.js: the links that do not fit go into the More menu. --}}
+&lt;x-oc::block.app-header :overflow="true" more-label="More"&gt;
+    &lt;x-slot:nav&gt;
+        &lt;ul class="oc-navmenu"&gt;
+            @foreach (['Contacts', 'Companies', 'Quotes', 'Invoices', 'Products', 'Stock', 'Reports', 'Settings'] as $label)
+                &lt;li&gt;&lt;a class="oc-navmenu-link" href="#" @if ($label === 'Reports') aria-current="page" @endif&gt;{{ $label }}&lt;/a&gt;&lt;/li&gt;
+            @endforeach
+        &lt;/ul&gt;
+    &lt;/x-slot:nav&gt;
+    &lt;x-slot:search&gt;
+        &lt;x-oc::input type="search" name="q" placeholder="Search" aria-label="Search" /&gt;
+    &lt;/x-slot:search&gt;
+    &lt;x-slot:actions&gt;
+        &lt;x-oc::button variant="ghost" icon aria-label="User menu"&gt;&lt;x-oc::avatar size="sm"&gt;U1&lt;/x-oc::avatar&gt;&lt;/x-oc::button&gt;
+    &lt;/x-slot:actions&gt;
+&lt;/x-oc::block.app-header&gt;
+
+&lt;script type="module" src="/js/oc-nav-overflow.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AppHeaderSearch extends Component
+{
+    public string $query = '';
+
+    public array $modules = ['Contacts', 'Companies', 'Quotes', 'Invoices', 'Products', 'Stock', 'Reports', 'Settings'];
+
+    public string $current = 'Reports';
+
+    public function render()
+    {
+        return view('livewire.app-header-search');
+    }
+}
+
+{{-- resources/views/livewire/app-header-search.blade.php --}}
+&lt;div&gt;
+    {{-- wire:ignore on the nav keeps the More menu that oc-nav-overflow.js built when Livewire redraws the search. --}}
+    &lt;x-oc::block.app-header :overflow="true" more-label="More"&gt;
+        &lt;x-slot:nav&gt;
+            &lt;ul class="oc-navmenu" wire:ignore&gt;
+                @foreach ($modules as $label)
+                    &lt;li&gt;&lt;a class="oc-navmenu-link" href="#" @if ($label === $current) aria-current="page" @endif&gt;{{ $label }}&lt;/a&gt;&lt;/li&gt;
+                @endforeach
+            &lt;/ul&gt;
+        &lt;/x-slot:nav&gt;
+        &lt;x-slot:search&gt;
+            &lt;x-oc::wire.input model="query" type="search" placeholder="Search" aria-label="Search" /&gt;
+        &lt;/x-slot:search&gt;
+        &lt;x-slot:actions&gt;
+            &lt;x-oc::button variant="ghost" icon aria-label="User menu"&gt;&lt;x-oc::avatar size="sm"&gt;U1&lt;/x-oc::avatar&gt;&lt;/x-oc::button&gt;
+        &lt;/x-slot:actions&gt;
+    &lt;/x-oc::block.app-header&gt;
+    &lt;script type="module" src="/js/oc-nav-overflow.js"&gt;&lt;/script&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -52,7 +311,12 @@
               <tr><td><code>.oc-block-appbar-nav</code></td><td>Navigation area; contains an <code>.oc-navmenu</code></td></tr>
               <tr><td><code>.oc-block-appbar-actions</code></td><td>Right-aligned actions (theme switch, switchers, user menu)</td></tr>
               <tr><td><code>.oc-block-appbar-title</code></td><td>Optional page title</td></tr>
+              <tr><td><code>.oc-block-appbar-search</code></td><td>Search field between the navigation and the actions (0.17.0); React <code>search</code>, Vue <code>#search</code>, Blade <code>&lt;x-slot:search&gt;</code>.</td></tr>
+              <tr><td><code>[data-oc-nav-overflow]</code> on <code>.oc-block-appbar-nav</code></td><td>Links that do not fit move into a More menu (0.17.0): React and Vue <code>overflow</code> (+ <code>moreLabel</code> / <code>more-label</code>), Blade <code>:overflow="true"</code> with <code>oc-nav-overflow.js</code>. Hidden links keep <code>data-oc-hidden</code> so they can be measured again; event <code>oc-nav-overflow</code> ({ visible, hidden }).</td></tr>
+              <tr><td><code>.oc-block-appbar-more</code></td><td>The More button (<code>li[data-oc-nav-more]</code> with an <code>.oc-dropdown-menu[popover]</code>); <code>aria-current="page"</code> when the current page is in the menu. Styles in <code>packages/blocks/src/parts/app-appbar-overflow.css</code>.</td></tr>
+              <tr><td><code>data-module</code></td><td>Module color of the bar (0.17.0): React and Vue <code>module</code>, Blade <code>module</code>.</td></tr>
             </tbody>
           </table>
         </div>
       </section>
+<script type="module" src="/js/oc-nav-overflow.js"></script>

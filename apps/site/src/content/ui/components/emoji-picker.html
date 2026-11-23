@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Emoji picker", "category": "Media", "description": "Grid of emoji buttons in a popover above its trigger.", "nav": "Emoji picker", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Emoji picker", "category": "Media", "description": "A compact grid of emoji buttons in a popover above its trigger. Opening, closing, Esc and click-outside come from the popover attribute itself.", "nav": "Emoji picker", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/emoji-picker.html | Map: hero -> demo (popover + field) -> inline panel -> how it works -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Emoji picker</h1>
@@ -12,7 +12,7 @@
           <p class="oc-section-header__desc">Click the smiley, pick an emoji: it lands at the cursor in the field.</p>
         </div>
         <div class="oc-section-content">
-          <oc-demo title="Emoji picker" size="tall">
+          <oc-demo title="Emoji picker" size="tall" hint="Click the smiley: the picker opens below it.">
 <div style="display:flex;gap:0.5rem;align-items:center">
   <input class="oc-input" id="oc-emoji-field" placeholder="Say something nice" style="inline-size:16rem">
   <button type="button" class="oc-emoji-picker__trigger" popovertarget="oc-emoji-demo" aria-label="Insert emoji"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10m-12-3.5c0 .8-.7 1.5-1.5 1.5S7 9.3 7 8.5S7.7 7 8.5 7s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 9.3 14 8.5S14.7 7 15.5 7s1.5.7 1.5 1.5m-5 9.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/></svg></button>
@@ -49,6 +49,77 @@ document.addEventListener("click", (e) => {
   field.focus();
 });
 </script>
+<oc-code lang="tsx">import { useState } from "react";
+import { EmojiPicker, Input } from "@birdycom/omniaui-react";
+
+const groups = [
+  { label: "Smileys", emojis: ["😀", "😃", "😄", "😁", "😂", "🙂", "😉", "😍", "🤔", "😎", "😢", "😴", "😯", "🥳", "😤", "🤗"] },
+  { label: "Gestures", emojis: ["👍", "👎", "👏", "🙌", "👋", "🙏", "✌️", "💪"] },
+];
+
+export function Example() {
+  const [message, setMessage] = useState("");
+  return (
+    &lt;div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}&gt;
+      &lt;Input id="oc-emoji-field" placeholder="Say something nice" style={{ inlineSize: "16rem" }} value={message} onChange={(e) =&gt; setMessage(e.target.value)} /&gt;
+      {/* the panel closes itself after a pick */}
+      &lt;EmojiPicker groups={groups} onSelect={(emoji) =&gt; setMessage((m) =&gt; m + emoji)} /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcEmojiPicker, OcInput } from "@birdycom/omniaui-vue";
+
+const groups = [
+  { label: "Smileys", emojis: ["😀", "😃", "😄", "😁", "😂", "🙂", "😉", "😍", "🤔", "😎", "😢", "😴", "😯", "🥳", "😤", "🤗"] },
+  { label: "Gestures", emojis: ["👍", "👎", "👏", "🙌", "👋", "🙏", "✌️", "💪"] },
+];
+const message = ref("");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+    &lt;OcInput id="oc-emoji-field" v-model="message" placeholder="Say something nice" style="inline-size:16rem" /&gt;
+    &lt;!-- the panel closes itself after a pick --&gt;
+    &lt;OcEmojiPicker :groups="groups" @select="message += $event" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- target: the field the insert script from snippets/emoji-picker.html writes the emoji into --}}
+&lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+    &lt;x-oc::input id="oc-emoji-field" name="message" placeholder="Say something nice" style="inline-size:16rem" /&gt;
+    &lt;x-oc::emoji-picker id="oc-emoji-demo" target="#oc-emoji-field" :groups="[
+        'Smileys' =&gt; ['😀', '😃', '😄', '😁', '😂', '🙂', '😉', '😍', '🤔', '😎', '😢', '😴', '😯', '🥳', '😤', '🤗'],
+        'Gestures' =&gt; ['👍', '👎', '👏', '🙌', '👋', '🙏', '✌️', '💪'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class MessageField extends Component
+{
+    public string $message = '';
+
+    public function render()
+    {
+        return view('livewire.message-field');
+    }
+}
+
+{{-- resources/views/livewire/message-field.blade.php --}}
+&lt;div&gt;
+    {{-- the insert script (snippets/emoji-picker.html) fires an input event, so wire:model picks up the emoji --}}
+    &lt;div style="display:flex;gap:0.5rem;align-items:center"&gt;
+        &lt;x-oc::input id="oc-emoji-field" wire:model="message" placeholder="Say something nice" style="inline-size:16rem" /&gt;
+        &lt;x-oc::emoji-picker id="oc-emoji-demo" target="#oc-emoji-field" :groups="[
+            'Smileys' =&gt; ['😀', '😃', '😄', '😁', '😂', '🙂', '😉', '😍', '🤔', '😎', '😢', '😴', '😯', '🥳', '😤', '🤗'],
+            'Gestures' =&gt; ['👍', '👎', '👏', '🙌', '👋', '🙏', '✌️', '💪'],
+        ]" /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="inline" class="oc-section-content__title mt-2">Inline panel</h3><p class="oc-section-content__desc"><code>.oc-emoji-picker--inline</code> without the <code>popover</code> attribute: the same grid, always visible (a reaction bar, a settings field).</p>
           <oc-demo title="Inline panel">
@@ -60,6 +131,48 @@ document.addEventListener("click", (e) => {
     <button type="button" class="oc-emoji-picker__item">🔥</button><button type="button" class="oc-emoji-picker__item">👀</button>
   </div>
 </div>
+<oc-code lang="tsx">import { EmojiPicker } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;EmojiPicker
+      inline
+      aria-label="React with an emoji"
+      groups={[{ emojis: ["👍", "❤️", "😂", "😯", "😢", "🎉", "🔥", "👀"] }]}
+      onSelect={(emoji) =&gt; console.log("reaction", emoji)}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcEmojiPicker } from "@birdycom/omniaui-vue";
+
+const react = (emoji: string) =&gt; console.log("reaction", emoji);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcEmojiPicker inline label="React with an emoji" :groups="[{ emojis: ['👍', '❤️', '😂', '😯', '😢', '🎉', '🔥', '👀'] }]" @select="react" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- a list without a string key: one grid without a group label --}}
+&lt;x-oc::emoji-picker inline label="React with an emoji" :groups="[['👍', '❤️', '😂', '😯', '😢', '🎉', '🔥', '👀']]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class EmojiPickerInlinePanel extends Component
+{
+    public function render()
+    {
+        return view('livewire.emoji-picker-inline-panel');
+    }
+}
+
+{{-- resources/views/livewire/emoji-picker-inline-panel.blade.php --}}
+&lt;div&gt;
+    {{-- a list without a string key: one grid without a group label --}}
+    &lt;x-oc::emoji-picker inline label="React with an emoji" :groups="[['👍', '❤️', '😂', '😯', '😢', '🎉', '🔥', '👀']]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

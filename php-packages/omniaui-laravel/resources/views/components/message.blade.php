@@ -2,7 +2,9 @@
      OmniaUI chat bubble. Props: direction (in|out), sender, avatar (initials), time, datetime, status (sent|read|failed), statusLabel,
      statusIcon (double check), continued (follows the same sender), quote (['href' => ?, 'sender' => …, 'text' => …]), text (one
      escaped paragraph), html (trusted markup), attachments (array: file chips = <x-oc::attachment> props; 'kind' => 'image' | 'thumb'
-     for previews), actions (array of ['name' => …, 'label' => …, 'icon' => reply|delete, 'destructive' => ?]), label (aria-label), id.
+     for previews), actions (array of ['name' => …, 'label' => …, 'icon' => reply|delete, 'destructive' => ?, 'wire' => Livewire call
+     ("reply(5)", becomes wire:click), 'attributes' => extra attributes for the button (['x-on:click' => …], ['wire:click.prevent' => …])]),
+     label (aria-label), id.
      Slot: default = text markup. No JavaScript. --}}
 @props(['direction' => 'in', 'sender' => null, 'avatar' => null, 'time' => null, 'datetime' => null, 'status' => null, 'statusLabel' => null, 'statusIcon' => false,
     'continued' => false, 'quote' => null, 'text' => null, 'html' => null, 'attachments' => [], 'actions' => [], 'label' => null, 'id' => null])
@@ -57,7 +59,7 @@
     @if ($actions)
         <div class="oc-message__actions">
             @foreach ($actions as $a)
-                <button type="button" @class(['oc-message__action', 'oc-message__action--destructive' => $a['destructive'] ?? false]) aria-label="{{ $a['label'] }}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ $icons[$a['icon'] ?? $a['name']] ?? $icons['reply'] }}"/></svg></button>
+                <button {{ (new \Illuminate\View\ComponentAttributeBag((array) ($a['attributes'] ?? [])))->class(['oc-message__action', 'oc-message__action--destructive' => $a['destructive'] ?? false])->merge(array_filter(['type' => 'button', 'aria-label' => $a['label'], 'wire:click' => $a['wire'] ?? null])) }}><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="{{ $icons[$a['icon'] ?? $a['name']] ?? $icons['reply'] }}"/></svg></button>
             @endforeach
         </div>
     @endif

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Project card", "category": "Marketing", "description": "Portfolio card with a browser-like preview, type, name and link.", "nav": "Project card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Project card", "category": "Marketing", "description": "A portfolio card with a small browser-like preview of the screenshot, then the project type, name, sector and a View link. The whole card is a link.", "nav": "Project card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/project-card.html | Map: hero -> demos (single card, grid with flat variant, glow option) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Project card</h1>
@@ -25,6 +25,39 @@
     <span class="oc-project-card__more">View project</span>
   </span>
 </a>
+<oc-code lang="tsx">import { ProjectCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;ProjectCard href="#project" className="oc-accent--green" type="Website" name="Customer 1" meta="Food &amp; retail · Antwerp" imageAlt="Customer 1 website, screenshot" /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcProjectCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcProjectCard href="#project" class="oc-accent--green" type="Website" name="Customer 1" meta="Food &amp; retail · Antwerp" image-alt="Customer 1 website, screenshot" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::project-card href="#project" class="oc-accent--green" type="Website" name="Customer 1" meta="Food &amp; retail · Antwerp" image-alt="Customer 1 website, screenshot" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProjectCard extends Component
+{
+    public function render()
+    {
+        return view('livewire.project-card');
+    }
+}
+
+{{-- resources/views/livewire/project-card.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::project-card href="#project" class="oc-accent--green" type="Website" name="Customer 1" meta="Food &amp; retail · Antwerp" image-alt="Customer 1 website, screenshot" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc">Two cards in a grid; the second one is <code>--flat</code>, with the picture edge to edge and no frame.</p>
           <oc-demo title="Grid, with the flat variant">
@@ -38,6 +71,56 @@
     <span class="oc-project-card__body"><span class="oc-project-card__type">Desktop tool</span><span class="oc-project-card__name">Customer 2</span><span class="oc-project-card__meta">Transport &middot; Rotterdam</span><span class="oc-project-card__more">View project</span></span>
   </a>
 </div>
+<oc-code lang="tsx">import { ProjectCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="oc-card-grid w-full"&gt;
+      &lt;ProjectCard href="#p2" className="oc-accent--violet" type="Web app" name="Customer 3" meta="Interior design · Ghent" imageAlt="Customer 3, screenshot" /&gt;
+      &lt;ProjectCard href="#p3" className="oc-accent--orange" type="Desktop tool" name="Customer 2" meta="Transport · Rotterdam" imageAlt="Customer 2, screenshot" flat /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcProjectCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-card-grid w-full"&gt;
+    &lt;OcProjectCard href="#p2" class="oc-accent--violet" type="Web app" name="Customer 3" meta="Interior design · Ghent" image-alt="Customer 3, screenshot" /&gt;
+    &lt;OcProjectCard href="#p3" class="oc-accent--orange" type="Desktop tool" name="Customer 2" meta="Transport · Rotterdam" image-alt="Customer 2, screenshot" flat /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-card-grid w-full"&gt;
+    &lt;x-oc::project-card href="#p2" class="oc-accent--violet" type="Web app" name="Customer 3" meta="Interior design · Ghent" image-alt="Customer 3, screenshot" /&gt;
+    &lt;x-oc::project-card href="#p3" class="oc-accent--orange" type="Desktop tool" name="Customer 2" meta="Transport · Rotterdam" image-alt="Customer 2, screenshot" flat /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProjectCardGridWithTheFlatVariant extends Component
+{
+    public array $projects = [
+        ['href' =&gt; '#p2', 'accent' =&gt; 'violet', 'type' =&gt; 'Web app', 'name' =&gt; 'Customer 3', 'meta' =&gt; 'Interior design · Ghent', 'alt' =&gt; 'Customer 3, screenshot', 'flat' =&gt; false],
+        ['href' =&gt; '#p3', 'accent' =&gt; 'orange', 'type' =&gt; 'Desktop tool', 'name' =&gt; 'Customer 2', 'meta' =&gt; 'Transport · Rotterdam', 'alt' =&gt; 'Customer 2, screenshot', 'flat' =&gt; true],
+    ];
+
+    public function render()
+    {
+        return view('livewire.project-card-grid-with-the-flat-variant');
+    }
+}
+
+{{-- resources/views/livewire/project-card-grid-with-the-flat-variant.blade.php --}}
+&lt;div class="oc-card-grid w-full"&gt;
+    @foreach ($projects as $project)
+        &lt;x-oc::project-card :href="$project['href']" :class="'oc-accent--'.$project['accent']" :type="$project['type']" :name="$project['name']"
+            :meta="$project['meta']" :image-alt="$project['alt']" :flat="$project['flat']" /&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="demo-glow">Option: glow <span class="oc-badge-version">v0.16.0</span></h3>
           <p class="oc-section-content__desc">The shadow under the preview is neutral. <code>.oc-project-card--glow</code> gives it the accent color.</p>
@@ -54,6 +137,39 @@
     <span class="oc-project-card__more">View project</span>
   </span>
 </a>
+<oc-code lang="tsx">import { ProjectCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;ProjectCard href="#p4" className="oc-accent--blue" type="Website" name="Customer 4" meta="Services · Brussels" imageAlt="Customer 4 website, screenshot" glow /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcProjectCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcProjectCard href="#p4" class="oc-accent--blue" type="Website" name="Customer 4" meta="Services · Brussels" image-alt="Customer 4 website, screenshot" glow /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::project-card href="#p4" class="oc-accent--blue" type="Website" name="Customer 4" meta="Services · Brussels" image-alt="Customer 4 website, screenshot" glow /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProjectCardGlow extends Component
+{
+    public function render()
+    {
+        return view('livewire.project-card-glow');
+    }
+}
+
+{{-- resources/views/livewire/project-card-glow.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::project-card href="#p4" class="oc-accent--blue" type="Website" name="Customer 4" meta="Services · Brussels" image-alt="Customer 4 website, screenshot" glow /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

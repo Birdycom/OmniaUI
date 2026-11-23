@@ -1,19 +1,19 @@
 {{-- OmniaUI block: app-shell - Application layout: sidebar, header bar, breadcrumb strip and scrolling content. Needs @birdycom/omniaui-blocks + @birdycom/omniaui CSS.
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-block-shell: Grid root. Height via --oc-block-shell-height (default 100dvh).
-       .oc-block-shell-toggle: Hidden checkbox that collapses the sidebar (label for it in the header bar)
+       .oc-block-shell-toggle: Hidden checkbox (label for it in the header bar): wide = fold to icons, narrow/small screen = sidebar as overlay
        .oc-sidebar: Sidebar component (first grid child)
        .oc-block-shell-main: Column holding the header bar, breadcrumbs and content
        .oc-block-shell-breadcrumbs: Strip under the header bar
        .oc-block-shell-content: Scrolling page content (the only scroll container)
        .oc-block-shell-menu-button: Shown below 48rem to open the sidebar sheet
      Slots: sidebar, header bar (see App header), breadcrumbs, content (default)
-     Blade: <x-oc::block.app-shell> - attributes merge onto the root element; props: height => null.
+     Blade: <x-oc::block.app-shell> - attributes merge onto the root element; props: height => null, toggleId => oc-shell-toggle.
      Blade slots (each falls back to the snippet content when empty): sidebar, header, breadcrumbs, default.
 --}}
-@props(['height' => null, 'sidebar' => null, 'header' => null, 'breadcrumbs' => null])
+@props(['height' => null, 'toggleId' => 'oc-shell-toggle', 'sidebar' => null, 'header' => null, 'breadcrumbs' => null])
 <div {{ $attributes->merge(['class' => 'oc-block-shell', 'style' => $height ? '--oc-block-shell-height: '.$height : null]) }}>
-  <input class="oc-block-shell-toggle" type="checkbox" id="oc-shell-toggle" aria-label="Collapse sidebar">
+  <input class="oc-block-shell-toggle" type="checkbox" id="{{ $toggleId }}" aria-label="Collapse sidebar">
   @if (isset($sidebar) && trim((string) $sidebar) !== '')
       {{ $sidebar }}
   @else
@@ -62,7 +62,7 @@
         {{ $header }}
     @else
     <header class="oc-block-appbar">
-      <label class="oc-btn oc-btn--ghost oc-btn--icon" for="oc-shell-toggle" title="Toggle sidebar"><svg data-icon="mdi:menu" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg><span class="oc-visually-hidden">Toggle sidebar</span></label>
+      <label class="oc-btn oc-btn--ghost oc-btn--icon" for="{{ $toggleId }}" title="Toggle sidebar"><svg data-icon="mdi:menu" class="" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg><span class="oc-visually-hidden">Toggle sidebar</span></label>
       <nav class="oc-block-appbar-nav" aria-label="Module navigation">
         <ul class="oc-navmenu">
           <li><a class="oc-navmenu-link" href="#" aria-current="page">Contacts</a></li>

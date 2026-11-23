@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - About with timeline Block", "category": "Marketing", "description": "Picture with badge, company story and a timeline.", "nav": "About timeline", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - About with timeline Block", "category": "Marketing", "description": "About-us section: a picture with a floating badge, the story of the company and a timeline of milestones, with a reverse layout and an accent color.", "nav": "About timeline", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/blocks/about-timeline.html | Map: hero -> demos (default, reverse) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">About with timeline</h1>
@@ -12,10 +12,12 @@
           <p class="oc-section-header__desc">Without an <code>img</code> the picture is a soft tint of the accent color. Two columns from a 44rem wide container.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title">About with timeline <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="About with timeline" size="tall">
 <section class="oc-block-about oc-accent--blue" aria-labelledby="oc-about-title">
   <div class="oc-block-about-inner">
-    <figure class="oc-block-about-media" aria-hidden="true">
+    <figure class="oc-block-about-media">
+      <img src="/img/blocks/charts.jpg" alt="Charts in an app built by Company 1" loading="lazy">
       <span class="oc-block-about-badge"><strong>12+</strong>years of building software</span>
     </figure>
     <div class="oc-block-about-copy">
@@ -31,8 +33,89 @@
     </div>
   </div>
 </section>
+<oc-code lang="tsx">import { BlockAboutTimeline } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockAboutTimeline
+      accent="blue"
+      image="/img/blocks/charts.jpg"
+      imageAlt="Charts in an app built by Company 1"
+      eyebrow="About us"
+      title="Software for everyone. Since 2012."
+      badge={&lt;&gt;&lt;strong&gt;12+&lt;/strong&gt;years of building software&lt;/&gt;}
+      timeline={[
+        { date: "2012", text: "Company 1 is founded by two developers." },
+        { date: "2019", text: "New office and a first own product." },
+        { date: "Today", text: "Own products and custom work, from web apps to desktop tools.", current: true },
+      ]}
+    &gt;
+      &lt;p&gt;Company 1 started as an IT partner for local businesses. That practical experience is in every line of code we write today.&lt;/p&gt;
+      &lt;p&gt;You talk directly to the people who build your software. No layers in between.&lt;/p&gt;
+    &lt;/BlockAboutTimeline&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockAboutTimeline } from "@birdycom/omniaui-vue";
+
+const timeline = [
+  { date: "2012", text: "Company 1 is founded by two developers." },
+  { date: "2019", text: "New office and a first own product." },
+  { date: "Today", text: "Own products and custom work, from web apps to desktop tools.", current: true },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockAboutTimeline accent="blue" image="/img/blocks/charts.jpg" image-alt="Charts in an app built by Company 1" eyebrow="About us" title="Software for everyone. Since 2012." :timeline="timeline"&gt;
+    &lt;template #badge&gt;&lt;strong&gt;12+&lt;/strong&gt;years of building software&lt;/template&gt;
+    &lt;p&gt;Company 1 started as an IT partner for local businesses. That practical experience is in every line of code we write today.&lt;/p&gt;
+    &lt;p&gt;You talk directly to the people who build your software. No layers in between.&lt;/p&gt;
+  &lt;/OcBlockAboutTimeline&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.about-timeline image="/img/blocks/charts.jpg" image-alt="Charts in an app built by Company 1" eyebrow="About us" title="Software for everyone. Since 2012." :timeline="[
+    ['date' =&gt; '2012', 'text' =&gt; 'Company 1 is founded by two developers.'],
+    ['date' =&gt; '2019', 'text' =&gt; 'New office and a first own product.'],
+    ['date' =&gt; 'Today', 'text' =&gt; 'Own products and custom work, from web apps to desktop tools.', 'current' =&gt; true],
+]"&gt;
+    &lt;x-slot:badge&gt;&lt;strong&gt;12+&lt;/strong&gt;years of building software&lt;/x-slot:badge&gt;
+    &lt;x-slot:text&gt;
+        &lt;p&gt;Company 1 started as an IT partner for local businesses. That practical experience is in every line of code we write today.&lt;/p&gt;
+        &lt;p&gt;You talk directly to the people who build your software. No layers in between.&lt;/p&gt;
+    &lt;/x-slot:text&gt;
+&lt;/x-oc::block.about-timeline&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AboutTimelineAboutWithTimeline extends Component
+{
+    /** @var list&lt;array&lt;string, mixed&gt;&gt; */
+    public array $milestones = [
+        ['date' =&gt; '2012', 'text' =&gt; 'Company 1 is founded by two developers.'],
+        ['date' =&gt; '2019', 'text' =&gt; 'New office and a first own product.'],
+        ['date' =&gt; 'Today', 'text' =&gt; 'Own products and custom work, from web apps to desktop tools.', 'current' =&gt; true],
+    ];
+
+    public function render()
+    {
+        return view('livewire.about-timeline-about-with-timeline');
+    }
+}
+
+{{-- resources/views/livewire/about-timeline-about-with-timeline.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.about-timeline image="/img/blocks/charts.jpg" image-alt="Charts in an app built by Company 1" eyebrow="About us" title="Software for everyone. Since 2012." :timeline="$milestones"&gt;
+        &lt;x-slot:badge&gt;&lt;strong&gt;12+&lt;/strong&gt;years of building software&lt;/x-slot:badge&gt;
+        &lt;x-slot:text&gt;
+            &lt;p&gt;Company 1 started as an IT partner for local businesses. That practical experience is in every line of code we write today.&lt;/p&gt;
+            &lt;p&gt;You talk directly to the people who build your software. No layers in between.&lt;/p&gt;
+        &lt;/x-slot:text&gt;
+    &lt;/x-oc::block.about-timeline&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
-          <p class="oc-section-content__desc"><code>--reverse</code> puts the picture on the right; <code>oc-accent--green</code> colors the picture and the timeline.</p>
+          <p class="oc-section-content__desc"><code>--reverse</code> puts the picture on the right. Without an <code>img</code> the picture is an accent gradient: <code>oc-accent--green</code> colors it and the timeline.</p>
           <oc-demo title="Reverse (picture right), green accent" size="tall">
 <section class="oc-block-about oc-block-about--reverse oc-accent--green" aria-labelledby="oc-about-rev-title">
   <div class="oc-block-about-inner">
@@ -50,6 +133,75 @@
     </div>
   </div>
 </section>
+<oc-code lang="tsx">import { BlockAboutTimeline } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;BlockAboutTimeline
+      reverse
+      accent="green"
+      timelineAccent
+      eyebrow="Our story"
+      title="Small team, long relations."
+      badge={&lt;&gt;&lt;strong&gt;40&lt;/strong&gt;projects delivered&lt;/&gt;}
+      timeline={[
+        { date: "2016", title: "First client", text: "A web shop for a local bakery." },
+        { date: "2026", title: "Team of eight", text: "Design, development and support under one roof.", current: true },
+      ]}
+    &gt;
+      &lt;p&gt;Most of our clients have been with us for more than five years.&lt;/p&gt;
+    &lt;/BlockAboutTimeline&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBlockAboutTimeline } from "@birdycom/omniaui-vue";
+
+const timeline = [
+  { date: "2016", title: "First client", text: "A web shop for a local bakery." },
+  { date: "2026", title: "Team of eight", text: "Design, development and support under one roof.", current: true },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockAboutTimeline reverse accent="green" timeline-accent eyebrow="Our story" title="Small team, long relations." :timeline="timeline"&gt;
+    &lt;template #badge&gt;&lt;strong&gt;40&lt;/strong&gt;projects delivered&lt;/template&gt;
+    &lt;p&gt;Most of our clients have been with us for more than five years.&lt;/p&gt;
+  &lt;/OcBlockAboutTimeline&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::block.about-timeline reverse accent="green" timeline-accent title-id="oc-about-rev-title" eyebrow="Our story" title="Small team, long relations." :timeline="[
+    ['date' =&gt; '2016', 'title' =&gt; 'First client', 'text' =&gt; 'A web shop for a local bakery.'],
+    ['date' =&gt; '2026', 'title' =&gt; 'Team of eight', 'text' =&gt; 'Design, development and support under one roof.', 'current' =&gt; true],
+]"&gt;
+    &lt;x-slot:badge&gt;&lt;strong&gt;40&lt;/strong&gt;projects delivered&lt;/x-slot:badge&gt;
+    &lt;x-slot:text&gt;&lt;p&gt;Most of our clients have been with us for more than five years.&lt;/p&gt;&lt;/x-slot:text&gt;
+&lt;/x-oc::block.about-timeline&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AboutTimelineReversePictureRightGreenAccent extends Component
+{
+    /** @var list&lt;array&lt;string, mixed&gt;&gt; */
+    public array $milestones = [
+        ['date' =&gt; '2016', 'title' =&gt; 'First client', 'text' =&gt; 'A web shop for a local bakery.'],
+        ['date' =&gt; '2026', 'title' =&gt; 'Team of eight', 'text' =&gt; 'Design, development and support under one roof.', 'current' =&gt; true],
+    ];
+
+    public function render()
+    {
+        return view('livewire.about-timeline-reverse-picture-right-green-accent');
+    }
+}
+
+{{-- resources/views/livewire/about-timeline-reverse-picture-right-green-accent.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.about-timeline reverse accent="green" timeline-accent title-id="oc-about-rev-title" eyebrow="Our story" title="Small team, long relations." :timeline="$milestones"&gt;
+        &lt;x-slot:badge&gt;&lt;strong&gt;40&lt;/strong&gt;projects delivered&lt;/x-slot:badge&gt;
+        &lt;x-slot:text&gt;&lt;p&gt;Most of our clients have been with us for more than five years.&lt;/p&gt;&lt;/x-slot:text&gt;
+    &lt;/x-oc::block.about-timeline&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

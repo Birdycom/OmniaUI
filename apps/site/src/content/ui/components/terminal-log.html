@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Terminal log", "category": "Media", "description": "Dark console window with time-stamped, colored log lines.", "nav": "Terminal log", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Terminal log", "category": "Media", "description": "A dark console window for live output: a title bar, a Live status dot, time-stamped lines with colored levels and a prompt with a blinking cursor.", "nav": "Terminal log", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/terminal-log.html | Map: hero -> demo (scan log) -> build output (no time column) -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Terminal log</h1>
@@ -28,6 +28,81 @@
     <p class="oc-terminal-log__prompt">waiting for next host</p>
   </div>
 </div>
+<oc-code lang="tsx">import { TerminalLog, type TerminalLogLine } from "@birdycom/omniaui-react";
+
+const lines: TerminalLogLine[] = [
+  { time: "09:41:02", level: "info", message: "Starting scan of https://example.com" },
+  { time: "09:41:02", level: "debug", message: "Resolved 3 hosts, 14 paths queued" },
+  { time: "09:41:04", level: "success", message: "TLS certificate valid for 82 days" },
+  { time: "09:41:06", level: "warn", message: "Missing header: Content-Security-Policy" },
+  { time: "09:41:07", level: "error", message: "/admin answered 200 without login" },
+];
+
+export function Example() {
+  return (
+    &lt;TerminalLog
+      title="scan — example.com"
+      status="Live"
+      lines={lines}
+      prompt="waiting for next host"
+      aria-label="Scan output"
+      style={{ maxInlineSize: "40rem" }}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTerminalLog } from "@birdycom/omniaui-vue";
+
+const lines = [
+  { time: "09:41:02", level: "info", message: "Starting scan of https://example.com" },
+  { time: "09:41:02", level: "debug", message: "Resolved 3 hosts, 14 paths queued" },
+  { time: "09:41:04", level: "success", message: "TLS certificate valid for 82 days" },
+  { time: "09:41:06", level: "warn", message: "Missing header: Content-Security-Policy" },
+  { time: "09:41:07", level: "error", message: "/admin answered 200 without login" },
+] as const;
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTerminalLog
+    title="scan — example.com"
+    status="Live"
+    :lines="[...lines]"
+    prompt="waiting for next host"
+    label="Scan output"
+    style="max-inline-size:40rem"
+  /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::terminal-log title="scan — example.com" status="Live" prompt="waiting for next host" label="Scan output" style="max-inline-size:40rem" :lines="[
+    ['time' =&gt; '09:41:02', 'level' =&gt; 'info', 'message' =&gt; 'Starting scan of https://example.com'],
+    ['time' =&gt; '09:41:02', 'level' =&gt; 'debug', 'message' =&gt; 'Resolved 3 hosts, 14 paths queued'],
+    ['time' =&gt; '09:41:04', 'level' =&gt; 'success', 'message' =&gt; 'TLS certificate valid for 82 days'],
+    ['time' =&gt; '09:41:06', 'level' =&gt; 'warn', 'message' =&gt; 'Missing header: Content-Security-Policy'],
+    ['time' =&gt; '09:41:07', 'level' =&gt; 'error', 'message' =&gt; '/admin answered 200 without login'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TerminalLogScanLog extends Component
+{
+    public function render()
+    {
+        return view('livewire.terminal-log-scan-log');
+    }
+}
+
+{{-- resources/views/livewire/terminal-log-scan-log.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::terminal-log title="scan — example.com" status="Live" prompt="waiting for next host" label="Scan output" style="max-inline-size:40rem" :lines="[
+        ['time' =&gt; '09:41:02', 'level' =&gt; 'info', 'message' =&gt; 'Starting scan of https://example.com'],
+        ['time' =&gt; '09:41:02', 'level' =&gt; 'debug', 'message' =&gt; 'Resolved 3 hosts, 14 paths queued'],
+        ['time' =&gt; '09:41:04', 'level' =&gt; 'success', 'message' =&gt; 'TLS certificate valid for 82 days'],
+        ['time' =&gt; '09:41:06', 'level' =&gt; 'warn', 'message' =&gt; 'Missing header: Content-Security-Policy'],
+        ['time' =&gt; '09:41:07', 'level' =&gt; 'error', 'message' =&gt; '/admin answered 200 without login'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="build" class="oc-section-content__title mt-2">Without time stamps, fixed height</h3><p class="oc-section-content__desc">Leave out the <code>&lt;time&gt;</code>: the line drops to two columns by itself (<code>:has()</code>). <code>--oc-terminal-log-height</code> limits the height; the body scrolls.</p>
           <oc-demo title="Build output">
@@ -42,6 +117,65 @@
     <p class="oc-terminal-log__prompt"></p>
   </div>
 </div>
+<oc-code lang="tsx">import { TerminalLog, type TerminalLogLine } from "@birdycom/omniaui-react";
+
+const lines: TerminalLogLine[] = [
+  { level: "info", message: "Building 43 parts…" },
+  { level: "success", message: "dist/components.css (212 kB)" },
+  { level: "success", message: "dist/components.min.css (148 kB)" },
+  { level: "warn", message: "2 snippets without a header comment" },
+  { level: "success", label: "done", message: "Finished in 4.2 s" },
+];
+
+export function Example() {
+  return &lt;TerminalLog title="npm run build" lines={lines} prompt height="9rem" aria-label="Build output" style={{ maxInlineSize: "32rem" }} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTerminalLog } from "@birdycom/omniaui-vue";
+
+const lines = [
+  { level: "info", message: "Building 43 parts…" },
+  { level: "success", message: "dist/components.css (212 kB)" },
+  { level: "success", message: "dist/components.min.css (148 kB)" },
+  { level: "warn", message: "2 snippets without a header comment" },
+  { level: "success", label: "done", message: "Finished in 4.2 s" },
+] as const;
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTerminalLog title="npm run build" :lines="[...lines]" prompt height="9rem" label="Build output" style="max-inline-size:32rem" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::terminal-log title="npm run build" :prompt="true" height="9rem" label="Build output" style="max-inline-size:32rem" :lines="[
+    ['level' =&gt; 'info', 'message' =&gt; 'Building 43 parts…'],
+    ['level' =&gt; 'success', 'message' =&gt; 'dist/components.css (212 kB)'],
+    ['level' =&gt; 'success', 'message' =&gt; 'dist/components.min.css (148 kB)'],
+    ['level' =&gt; 'warn', 'message' =&gt; '2 snippets without a header comment'],
+    ['level' =&gt; 'success', 'label' =&gt; 'done', 'message' =&gt; 'Finished in 4.2 s'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TerminalLogBuildOutput extends Component
+{
+    public function render()
+    {
+        return view('livewire.terminal-log-build-output');
+    }
+}
+
+{{-- resources/views/livewire/terminal-log-build-output.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::terminal-log title="npm run build" :prompt="true" height="9rem" label="Build output" style="max-inline-size:32rem" :lines="[
+        ['level' =&gt; 'info', 'message' =&gt; 'Building 43 parts…'],
+        ['level' =&gt; 'success', 'message' =&gt; 'dist/components.css (212 kB)'],
+        ['level' =&gt; 'success', 'message' =&gt; 'dist/components.min.css (148 kB)'],
+        ['level' =&gt; 'warn', 'message' =&gt; '2 snippets without a header comment'],
+        ['level' =&gt; 'success', 'label' =&gt; 'done', 'message' =&gt; 'Finished in 4.2 s'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

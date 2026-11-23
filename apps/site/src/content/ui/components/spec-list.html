@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Spec list", "category": "Data", "description": "Technical specifications in named groups: label and value rows, two columns when there is room.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Spec list", "category": "Data", "description": "Technical specifications in named groups: label and value rows with digits in columns, two columns of groups when there is room, or one with --stack.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/spec-list.html | Map: hero -> demo -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Spec list</h1>
@@ -39,6 +39,129 @@
     </dl>
   </section>
 </div>
+<oc-code lang="tsx">import { SpecList } from "@birdycom/omniaui-react";
+
+const groups = [
+  {
+    title: "Dimensions",
+    rows: [
+      { label: "Height", value: "52 cm" },
+      { label: "Shade diameter", value: "28 cm" },
+      { label: "Base", value: "18 × 18 cm" },
+      { label: "Weight", value: "2.4 kg" },
+    ],
+  },
+  {
+    title: "Electrical",
+    rows: [
+      { label: "Lamp holder", value: "E27", note: "max. 40 W" },
+      { label: "Cable", value: "1.8 m, with switch" },
+      { label: "Energy class", value: "A+" },
+    ],
+  },
+  {
+    title: "Article",
+    rows: [
+      { label: "Article number", value: "PRD-0001" },
+      { label: "EAN", value: "5400000000010" },
+      { label: "Warranty", value: "24 months" },
+    ],
+  },
+];
+
+export function Example() {
+  return &lt;SpecList groups={groups} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcSpecList } from '@birdycom/omniaui-vue'
+
+const groups = [
+  {
+    title: 'Dimensions',
+    rows: [
+      { label: 'Height', value: '52 cm' },
+      { label: 'Shade diameter', value: '28 cm' },
+      { label: 'Base', value: '18 × 18 cm' },
+      { label: 'Weight', value: '2.4 kg' },
+    ],
+  },
+  {
+    title: 'Electrical',
+    rows: [
+      { label: 'Lamp holder', value: 'E27', note: 'max. 40 W' },
+      { label: 'Cable', value: '1.8 m, with switch' },
+      { label: 'Energy class', value: 'A+' },
+    ],
+  },
+  {
+    title: 'Article',
+    rows: [
+      { label: 'Article number', value: 'PRD-0001' },
+      { label: 'EAN', value: '5400000000010' },
+      { label: 'Warranty', value: '24 months' },
+    ],
+  },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcSpecList :groups="groups" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::spec-list :groups="[
+    ['title' =&gt; 'Dimensions', 'rows' =&gt; [
+        ['label' =&gt; 'Height', 'value' =&gt; '52 cm'],
+        ['label' =&gt; 'Shade diameter', 'value' =&gt; '28 cm'],
+        ['label' =&gt; 'Base', 'value' =&gt; '18 × 18 cm'],
+        ['label' =&gt; 'Weight', 'value' =&gt; '2.4 kg'],
+    ]],
+    ['title' =&gt; 'Electrical', 'rows' =&gt; [
+        ['label' =&gt; 'Lamp holder', 'value' =&gt; 'E27', 'note' =&gt; 'max. 40 W'],
+        ['label' =&gt; 'Cable', 'value' =&gt; '1.8 m, with switch'],
+        ['label' =&gt; 'Energy class', 'value' =&gt; 'A+'],
+    ]],
+    ['title' =&gt; 'Article', 'rows' =&gt; [
+        ['label' =&gt; 'Article number', 'value' =&gt; 'PRD-0001'],
+        ['label' =&gt; 'EAN', 'value' =&gt; '5400000000010'],
+        ['label' =&gt; 'Warranty', 'value' =&gt; '24 months'],
+    ]],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProductSpecs extends Component
+{
+    public array $groups = [
+        ['title' =&gt; 'Dimensions', 'rows' =&gt; [
+            ['label' =&gt; 'Height', 'value' =&gt; '52 cm'],
+            ['label' =&gt; 'Shade diameter', 'value' =&gt; '28 cm'],
+            ['label' =&gt; 'Base', 'value' =&gt; '18 × 18 cm'],
+            ['label' =&gt; 'Weight', 'value' =&gt; '2.4 kg'],
+        ]],
+        ['title' =&gt; 'Electrical', 'rows' =&gt; [
+            ['label' =&gt; 'Lamp holder', 'value' =&gt; 'E27', 'note' =&gt; 'max. 40 W'],
+            ['label' =&gt; 'Cable', 'value' =&gt; '1.8 m, with switch'],
+            ['label' =&gt; 'Energy class', 'value' =&gt; 'A+'],
+        ]],
+        ['title' =&gt; 'Article', 'rows' =&gt; [
+            ['label' =&gt; 'Article number', 'value' =&gt; 'PRD-0001'],
+            ['label' =&gt; 'EAN', 'value' =&gt; '5400000000010'],
+            ['label' =&gt; 'Warranty', 'value' =&gt; '24 months'],
+        ]],
+    ];
+
+    public function render()
+    {
+        return view('livewire.product-specs');
+    }
+}
+
+{{-- resources/views/livewire/product-specs.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::spec-list :groups="$groups" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

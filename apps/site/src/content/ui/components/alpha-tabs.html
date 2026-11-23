@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Alpha tabs", "category": "Data", "description": "\"All + A to Z\" letter bar to filter a long list.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Alpha tabs", "category": "Data", "description": "An \"All + A to Z\" letter bar to filter a long list such as a dictionary or contacts. Links or buttons; on small screens the bar scrolls sideways.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/alpha-tabs.html | Map: hero -> scrolling bar demo -> wrap + small demo -> reference -> browser support -> source & further reading -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Alpha tabs</h1>
@@ -70,6 +70,53 @@
   &lt;a class="oc-alpha-tabs-item" href="?letter=y"&gt;Y&lt;/a&gt;
   &lt;a class="oc-alpha-tabs-item" href="?letter=z"&gt;Z&lt;/a&gt;
 &lt;/nav&gt;</oc-code>
+<oc-code lang="tsx">import { AlphaTabs } from "@birdycom/omniaui-react";
+
+// Letters with entries; E, Q and X have none and are disabled.
+const available = ["A", "B", "C", "D", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "V", "W", "Y", "Z"];
+
+export function Example() {
+  return &lt;AlphaTabs value="B" available={available} href={(letter) =&gt; `?letter=${letter.toLowerCase()}`} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcAlphaTabs } from '@birdycom/omniaui-vue'
+
+// Letters with entries; E, Q and X have none and are disabled.
+const available = ['A', 'B', 'C', 'D', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z']
+const letter = ref('B')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcAlphaTabs v-model="letter" :available="available" href="?letter={letter}" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- The controller filters on request('letter'); E, Q and X have no entries --}}
+&lt;x-oc::alpha-tabs :current="strtoupper(request('letter', 'B'))" :available="['A', 'B', 'C', 'D', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z']" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Url;
+use Livewire\Component;
+
+class AlphaTabs extends Component
+{
+    #[Url]
+    public string $letter = 'B';
+
+    public array $available = ['A', 'B', 'C', 'D', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z'];
+
+    public function render()
+    {
+        return view('livewire.alpha-tabs');
+    }
+}
+
+{{-- resources/views/livewire/alpha-tabs.blade.php --}}
+&lt;div&gt;
+    {{-- Links: the letter goes in the query string (#[Url]), Livewire reads it back --}}
+    &lt;x-oc::alpha-tabs :current="$letter" :available="$available" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 id="wrap-small">Wrap, small and plain</h3>
@@ -110,6 +157,102 @@
     }
   });
 </script>
+<oc-code lang="tsx">import { useState } from "react";
+import { AlphaTabs } from "@birdycom/omniaui-react";
+
+const products = ["Apricot jam", "Brown bread", "Butter", "Cheddar", "Dates", "Flour", "Grapes", "Honey", "Iced tea", "Jam jars", "Ketchup", "Lemons"];
+const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+const available = letters.filter((l) =&gt; products.some((p) =&gt; p.startsWith(l)));
+
+export function Example() {
+  const [letter, setLetter] = useState("all");
+  const shown = products.filter((p) =&gt; letter === "all" || p.startsWith(letter));
+  return (
+    &lt;div style={{ display: "grid", gap: "0.75rem", maxInlineSize: "20rem" }}&gt;
+      &lt;AlphaTabs letters={letters} available={available} value={letter} onChange={setLetter} wrap size="sm" /&gt;
+      &lt;ul style={{ margin: 0, paddingInlineStart: "1.25rem", display: "grid", gap: "0.25rem", fontSize: "0.875rem" }}&gt;
+        {shown.map((p) =&gt; &lt;li key={p}&gt;{p}&lt;/li&gt;)}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { computed, ref } from 'vue'
+import { OcAlphaTabs } from '@birdycom/omniaui-vue'
+
+const products = ['Apricot jam', 'Brown bread', 'Butter', 'Cheddar', 'Dates', 'Flour', 'Grapes', 'Honey', 'Iced tea', 'Jam jars', 'Ketchup', 'Lemons']
+const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
+const available = letters.filter((l) =&gt; products.some((p) =&gt; p.startsWith(l)))
+const letter = ref('all')
+const shown = computed(() =&gt; products.filter((p) =&gt; letter.value === 'all' || p.startsWith(letter.value)))
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;gap:0.75rem;max-inline-size:20rem"&gt;
+    &lt;OcAlphaTabs v-model="letter" :letters="letters" :available="available" wrap size="sm" /&gt;
+    &lt;ul style="margin:0;padding-inline-start:1.25rem;display:grid;gap:0.25rem;font-size:0.875rem"&gt;
+      &lt;li v-for="p in shown" :key="p"&gt;{{ p }}&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">@php
+    $products = ['Apricot jam', 'Brown bread', 'Butter', 'Cheddar', 'Dates', 'Flour', 'Grapes', 'Honey', 'Iced tea', 'Jam jars', 'Ketchup', 'Lemons'];
+    $letters = range('A', 'L');
+    $letter = strtoupper(request('letter', 'all'));
+    $available = array_values(array_filter($letters, fn ($l) =&gt; collect($products)-&gt;contains(fn ($p) =&gt; str_starts_with($p, $l))));
+@endphp
+
+&lt;div style="display:grid;gap:0.75rem;max-inline-size:20rem"&gt;
+    &lt;x-oc::alpha-tabs :letters="$letters" :available="$available" :current="$letter === 'ALL' ? 'all' : $letter" wrap size="sm" /&gt;
+    &lt;ul style="margin:0;padding-inline-start:1.25rem;display:grid;gap:0.25rem;font-size:0.875rem"&gt;
+        @foreach ($products as $product)
+            @if ($letter === 'ALL' || str_starts_with($product, $letter))
+                &lt;li&gt;{{ $product }}&lt;/li&gt;
+            @endif
+        @endforeach
+    &lt;/ul&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AlphaFilter extends Component
+{
+    public string $letter = 'all';
+
+    public array $products = ['Apricot jam', 'Brown bread', 'Butter', 'Cheddar', 'Dates', 'Flour', 'Grapes', 'Honey', 'Iced tea', 'Jam jars', 'Ketchup', 'Lemons'];
+
+    public function pick(string $letter): void
+    {
+        $this-&gt;letter = $letter;
+    }
+
+    public function render()
+    {
+        return view('livewire.alpha-filter');
+    }
+}
+
+{{-- resources/views/livewire/alpha-filter.blade.php --}}
+{{-- Buttons instead of links (&lt;x-oc::alpha-tabs&gt; renders links): the letter is a property --}}
+&lt;div style="display:grid;gap:0.75rem;max-inline-size:20rem"&gt;
+    &lt;div class="oc-alpha-tabs oc-alpha-tabs--wrap oc-alpha-tabs--sm" role="group" aria-label="Filter by letter"&gt;
+        &lt;button type="button" class="oc-alpha-tabs-item oc-alpha-tabs-item--all" wire:click="pick('all')" @if ($letter === 'all') aria-current="true" @endif&gt;All&lt;/button&gt;
+        @foreach (range('A', 'L') as $l)
+            &lt;button type="button" class="oc-alpha-tabs-item" wire:click="pick('{{ $l }}')" @if ($letter === $l) aria-current="true" @endif
+                @disabled(! collect($products)-&gt;contains(fn ($p) =&gt; str_starts_with($p, $l)))&gt;{{ $l }}&lt;/button&gt;
+        @endforeach
+    &lt;/div&gt;
+    &lt;ul style="margin:0;padding-inline-start:1.25rem;display:grid;gap:0.25rem;font-size:0.875rem"&gt;
+        @foreach ($products as $product)
+            @if ($letter === 'all' || str_starts_with($product, $letter))
+                &lt;li&gt;{{ $product }}&lt;/li&gt;
+            @endif
+        @endforeach
+    &lt;/ul&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

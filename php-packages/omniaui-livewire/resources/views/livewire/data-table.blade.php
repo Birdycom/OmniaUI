@@ -1,5 +1,7 @@
-{{-- OmniaCSS data-table block, driven by Omniacss\Livewire\DataTable. Markup/classes follow packages/blocks/blocks/data-table.html. --}}
-<section class="oc-card oc-block-datatable">
+{{-- OmniaCSS data-table block, driven by Omniacss\Livewire\DataTable. Markup/classes follow packages/blocks/blocks/data-table.html.
+     0.17.0: trash pills, column chooser (popover, stays open while Livewire morphs) and skeleton rows while a request runs
+     (wire:loading sets aria-busy on the section; the CSS swaps the rows for the skeleton body). --}}
+<section class="oc-card oc-block-datatable" wire:loading.delay.attr="aria-busy">
     @if ($title || $description)
         <header class="oc-block-datatable-head">
             <div>
@@ -15,14 +17,30 @@
     <div class="oc-block-datatable-body">
         <div class="oc-table-toolbar">
             <input class="oc-input" type="search" wire:model.live.debounce.300ms="search" placeholder="{{ $placeholder }}" aria-label="{{ $placeholder }}">
+            @if (count($trashedOptions) > 1)
+                <div class="oc-filter-pills" role="group" aria-label="{{ $labels['trashFilter'] }}">
+                    @foreach ($trashedOptions as $option)
+                        <button class="oc-filter-pill" type="button" wire:click="setTrashed('{{ $option }}')" @if ($trashed === $option) aria-current="true"@endif>{{ $labels[['active' => 'activeOnly', 'all' => 'includingTrash', 'deleted' => 'trashOnly', 'archived' => 'archiveOnly'][$option] ?? 'activeOnly'] }}</button>
+                    @endforeach
+                </div>
+            @endif
             <span class="oc-table-toolbar-spacer"></span>
+            @if ($chooser)
+                <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" popovertarget="{{ $this->getId() }}-columns">{{ $labels['columns'] }}</button>
+                <div class="oc-dropdown-menu oc-data-table-colpick" id="{{ $this->getId() }}-columns" popover>
+                    <p class="oc-data-table-colpick-title">{{ $labels['columns'] }}</p>
+                    @foreach ($allColumns as $key => $column)
+                        <label class="oc-dropdown-item" wire:key="oc-col-{{ $key }}"><input type="checkbox" wire:click="toggleColumn('{{ $key }}')" @checked(! $column['hideable'] || ! in_array($key, $hidden, true)) @disabled(! $column['hideable'])> {{ $column['label'] }}</label>
+                    @endforeach
+                </div>
+            @endif
         </div>
         <div class="oc-table-wrap">
-            <table class="oc-table">
+            <table class="{{ $tableClass ?? 'oc-table' }}">
                 <thead>
                     <tr>
                         @foreach ($columns as $key => $column)
-                            <th @if ($column['sortable'] && $sortBy === $key) aria-sort="{{ $sortDirection === 'desc' ? 'descending' : 'ascending' }}" @endif @if ($column['numeric']) data-numeric @endif>
+                            <th @if ($column['sortable'] && $sortBy === $key) aria-sort="{{ $sortDirection === 'desc' ? 'descending' : 'ascending' }}" @endif @if ($column['numeric']) data-numeric @endif @if ($column['hideBelow'] ?? null) data-hide-below="{{ $column['hideBelow'] }}" @endif>
                                 @if ($column['sortable'])
                                     <a class="oc-table-sort" href="#" wire:click.prevent="sort('{{ $key }}')">{{ $column['label'] }}</a>
                                 @else
@@ -30,14 +48,24 @@
                                 @endif
                             </th>
                         @endforeach
-                        <th><span class="oc-visually-hidden">Actions</span></th>
+                        <th><span class="oc-visually-hidden">{{ $labels['actions'] }}</span></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="oc-data-table-skeleton-body" aria-hidden="true">
+                    @for ($i = 0; $i < $skeletonRows; $i++)
+                        <tr class="oc-data-table-skeleton">
+                            @foreach ($columns as $key => $column)
+                                <td @if ($column['numeric']) data-numeric @endif @if ($column['hideBelow'] ?? null) data-hide-below="{{ $column['hideBelow'] }}" @endif><span class="oc-skeleton oc-data-table-skeleton-bar"></span></td>
+                            @endforeach
+                            <td></td>
+                        </tr>
+                    @endfor
+                </tbody>
+                <tbody class="oc-block-datatable-rows">
                     @forelse ($rows as $index => $row)
                         <tr wire:key="oc-row-{{ $rows->firstItem() + $index }}">
                             @foreach ($columns as $key => $column)
-                                <td @if ($column['numeric']) data-numeric @endif>{{ $cells[$index][$key] ?? '' }}</td>
+                                <td @if ($column['numeric']) data-numeric @endif @if ($column['hideBelow'] ?? null) data-hide-below="{{ $column['hideBelow'] }}" @endif>{{ $cells[$index][$key] ?? '' }}</td>
                             @endforeach
                             <td class="oc-table-actions">
                                 @foreach ($rowActions[$index] ?? [] as $action)
@@ -62,9 +90,9 @@
                         <tr class="oc-table-empty">
                             <td colspan="{{ count($columns) + 1 }}">
                                 <div class="oc-empty">
-                                    <h3 class="oc-empty-title">No results</h3>
+                                    <h3 class="oc-empty-title">{{ $labels['noResults'] }}</h3>
                                     @if (trim($search) !== '')
-                                        <p class="oc-empty-text">Nothing matches &ldquo;{{ $search }}&rdquo;.</p>
+                                        <p class="oc-empty-text">{{ str_replace('{search}', $search, $labels['nothingMatches']) }}</p>
                                     @endif
                                 </div>
                             </td>
@@ -75,12 +103,12 @@
         </div>
         <div class="oc-table-footer">
             @if ($rows->total() > 0)
-                <span>Showing {{ $rows->firstItem() }} to {{ $rows->lastItem() }} of {{ $rows->total() }} entries</span>
+                <span>{{ str_replace(['{from}', '{to}', '{total}'], [$rows->firstItem(), $rows->lastItem(), $rows->total()], $labels['showing']) }}</span>
             @else
-                <span>No entries</span>
+                <span>{{ $labels['noEntries'] }}</span>
             @endif
-            <label>Rows per page
-                <select class="oc-select" wire:model.live="perPage" aria-label="Rows per page">
+            <label>{{ $labels['rowsPerPage'] }}
+                <select class="oc-select" wire:model.live="perPage" aria-label="{{ $labels['rowsPerPage'] }}">
                     @foreach ($perPageOptions as $option)
                         <option value="{{ $option }}">{{ $option }}</option>
                     @endforeach
@@ -92,16 +120,16 @@
                     $last = $rows->lastPage();
                     $pages = collect(range(1, $last))->filter(fn ($p) => $p === 1 || $p === $last || abs($p - $current) <= 2)->values();
                 @endphp
-                <nav aria-label="Pagination">
+                <nav aria-label="{{ $labels['pagination'] }}">
                     <ul class="oc-pagination">
-                        <li class="oc-pagination-item"><a href="#" wire:click.prevent="previousPage" aria-label="Previous">&lsaquo;</a></li>
+                        <li class="oc-pagination-item"><a href="#" wire:click.prevent="previousPage" aria-label="{{ $labels['previous'] }}">&lsaquo;</a></li>
                         @foreach ($pages as $i => $page)
                             @if ($i > 0 && $page - $pages[$i - 1] > 1)
                                 <li class="oc-pagination-item" aria-hidden="true">&hellip;</li>
                             @endif
                             <li @class(['oc-pagination-item', 'is-active' => $page === $current])><a href="#" wire:click.prevent="gotoPage({{ $page }})" @if ($page === $current) aria-current="page" @endif>{{ $page }}</a></li>
                         @endforeach
-                        <li class="oc-pagination-item"><a href="#" wire:click.prevent="nextPage" aria-label="Next">&rsaquo;</a></li>
+                        <li class="oc-pagination-item"><a href="#" wire:click.prevent="nextPage" aria-label="{{ $labels['next'] }}">&rsaquo;</a></li>
                     </ul>
                 </nav>
             @endif

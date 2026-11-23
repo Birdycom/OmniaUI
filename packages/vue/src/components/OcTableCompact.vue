@@ -17,10 +17,12 @@ withDefaults(
     columns?: TableCompactColumn[]
     rows?: Array<Record<string, unknown>>
     footer?: Record<string, unknown>
+    /** The first footer cell spans this many columns (colspan), e.g. 2 for "Total" under Item + Qty. */
+    footerSpan?: number
     bordered?: boolean
     plain?: boolean
   }>(),
-  { rows: () => [] },
+  { rows: () => [], footerSpan: 1 },
 )
 // data-* attributes only when switched on (an empty string means "present").
 const cellAttrs = (c: TableCompactColumn) => ({ 'data-numeric': c.numeric ? '' : undefined, 'data-wrap': c.wrap ? '' : undefined })
@@ -38,7 +40,11 @@ const cellAttrs = (c: TableCompactColumn) => ({ 'data-numeric': c.numeric ? '' :
         </tr>
       </tbody>
       <tfoot v-if="footer">
-        <tr><td v-for="c in columns" :key="c.key" v-bind="cellAttrs(c)">{{ footer[c.key] }}</td></tr>
+        <tr>
+          <template v-for="(c, i) in columns" :key="c.key">
+            <td v-if="i === 0 || i >= footerSpan" v-bind="cellAttrs(c)" :colspan="i === 0 && footerSpan > 1 ? footerSpan : undefined">{{ footer[c.key] }}</td>
+          </template>
+        </tr>
       </tfoot>
     </table>
     <slot v-else />

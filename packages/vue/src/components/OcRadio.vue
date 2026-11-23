@@ -32,6 +32,8 @@ function onChange() {
       :value="value"
       :checked="checked"
       :disabled="disabled"
+      :aria-invalid="group?.errorId?.value ? 'true' : undefined"
+      :aria-describedby="group?.errorId?.value"
       @change="onChange"
     />
     <span v-if="description"><slot /><small>{{ description }}</small></span>

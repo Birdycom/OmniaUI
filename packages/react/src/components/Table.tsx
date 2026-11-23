@@ -11,11 +11,13 @@ export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
   caption?: ReactNode;
   /** Class for the `oc-table-wrap` scroll container. */
   wrapClassName?: string;
+  /** "auto": columns sized by their content (`.oc-table--auto`); default "fixed". */
+  layout?: "fixed" | "auto";
 }
 
 /** `div.oc-table-wrap > table.oc-table` */
 export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
-  { striped, compact, borderless, sticky, caption, wrapClassName, className, children, ...rest },
+  { striped, compact, borderless, sticky, caption, wrapClassName, layout, className, children, ...rest },
   ref,
 ) {
   return (
@@ -28,6 +30,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
           compact && "oc-table--compact",
           borderless && "oc-table--borderless",
           sticky && "oc-table--sticky",
+          layout === "auto" && "oc-table--auto",
           className,
         )}
         {...rest}
@@ -47,8 +50,9 @@ export const TableSort = forwardRef<HTMLAnchorElement, TableSortProps>(function 
 });
 
 /** `td.oc-table-actions` */
-export function TableActions({ className, ...rest }: TdHTMLAttributes<HTMLTableCellElement>) {
-  return <td className={cx("oc-table-actions", className)} {...rest} />;
+/** `compact`: icons only, the labels of `TableActionIcon showLabel` stay hidden. */
+export function TableActions({ className, compact, ...rest }: TdHTMLAttributes<HTMLTableCellElement> & { compact?: boolean }) {
+  return <td className={cx("oc-table-actions", compact && "oc-table-actions--compact", className)} {...rest} />;
 }
 
 type RowActionProps = {

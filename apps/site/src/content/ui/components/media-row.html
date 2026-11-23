@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Media row", "category": "Media", "description": "Compact horizontal media item with a small thumb.", "nav": "Media row", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Media row", "category": "Media", "description": "A compact horizontal media item: a small thumb, a two-line title and meta text with an optional menu, for up-next lists, search results and playlists.", "nav": "Media row", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/media-row.html | Map: hero -> demo (up next) -> numbered playlist -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Media row</h1>
@@ -30,6 +30,94 @@
   <a class="oc-dropdown-item" href="#demo">Add to queue</a>
   <a class="oc-dropdown-item" href="#demo">Save to playlist</a>
 </div>
+<oc-code lang="tsx">import { DropdownItem, MediaRow, MediaRowList } from "@birdycom/omniaui-react";
+
+const rows = [
+  { title: "Ten knots every sailor should know", meta: "Harbour TV · 98K views", thumb: { art: 3, duration: "6:05" } },
+  { title: "Regatta day: the final race, live from the start line", meta: "Harbour TV · 1.4K watching", thumb: { art: 5, live: true } },
+];
+
+export function Example() {
+  return (
+    &lt;MediaRowList aria-label="Up next" style={{ maxInlineSize: "26rem" }}&gt;
+      {rows.map((r) =&gt; (
+        &lt;MediaRow
+          key={r.title}
+          href="/watch"
+          {...r}
+          menu={
+            &lt;&gt;
+              &lt;DropdownItem href="/queue"&gt;Add to queue&lt;/DropdownItem&gt;
+              &lt;DropdownItem href="/playlists"&gt;Save to playlist&lt;/DropdownItem&gt;
+            &lt;/&gt;
+          }
+        /&gt;
+      ))}
+    &lt;/MediaRowList&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDropdownItem, OcMediaRow } from '@birdycom/omniaui-vue'
+
+const rows = [
+  { title: 'Ten knots every sailor should know', meta: 'Harbour TV · 98K views', thumb: { art: 3, duration: '6:05' } },
+  { title: 'Regatta day: the final race, live from the start line', meta: 'Harbour TV · 1.4K watching', thumb: { art: 5, live: true } },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;ul class="oc-media-row-list" aria-label="Up next" style="max-inline-size:26rem"&gt;
+    &lt;OcMediaRow v-for="r in rows" :key="r.title" href="/watch" :title="r.title" :meta="r.meta" :thumb="r.thumb"&gt;
+      &lt;template #menu&gt;
+        &lt;OcDropdownItem href="/queue"&gt;Add to queue&lt;/OcDropdownItem&gt;
+        &lt;OcDropdownItem href="/playlists"&gt;Save to playlist&lt;/OcDropdownItem&gt;
+      &lt;/template&gt;
+    &lt;/OcMediaRow&gt;
+  &lt;/ul&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;ul class="oc-media-row-list" aria-label="Up next" style="max-inline-size:26rem"&gt;
+    &lt;x-oc::media-row href="/watch" title="Ten knots every sailor should know" meta="Harbour TV · 98K views" :thumb="['art' =&gt; 3, 'duration' =&gt; '6:05']"&gt;
+        &lt;x-slot:menu&gt;
+            &lt;a class="oc-dropdown-item" href="/queue"&gt;Add to queue&lt;/a&gt;
+            &lt;a class="oc-dropdown-item" href="/playlists"&gt;Save to playlist&lt;/a&gt;
+        &lt;/x-slot:menu&gt;
+    &lt;/x-oc::media-row&gt;
+    &lt;x-oc::media-row href="/watch" title="Regatta day: the final race, live from the start line" meta="Harbour TV · 1.4K watching" :thumb="['art' =&gt; 5, 'live' =&gt; true]"&gt;
+        &lt;x-slot:menu&gt;
+            &lt;a class="oc-dropdown-item" href="/queue"&gt;Add to queue&lt;/a&gt;
+            &lt;a class="oc-dropdown-item" href="/playlists"&gt;Save to playlist&lt;/a&gt;
+        &lt;/x-slot:menu&gt;
+    &lt;/x-oc::media-row&gt;
+&lt;/ul&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class UpNext extends Component
+{
+    public function render()
+    {
+        return view('livewire.up-next');
+    }
+}
+
+{{-- resources/views/livewire/up-next.blade.php --}}
+&lt;ul class="oc-media-row-list" aria-label="Up next" style="max-inline-size:26rem"&gt;
+    &lt;x-oc::media-row href="/watch" title="Ten knots every sailor should know" meta="Harbour TV · 98K views" :thumb="['art' =&gt; 3, 'duration' =&gt; '6:05']"&gt;
+        &lt;x-slot:menu&gt;
+            &lt;a class="oc-dropdown-item" href="/queue"&gt;Add to queue&lt;/a&gt;
+            &lt;a class="oc-dropdown-item" href="/playlists"&gt;Save to playlist&lt;/a&gt;
+        &lt;/x-slot:menu&gt;
+    &lt;/x-oc::media-row&gt;
+    &lt;x-oc::media-row href="/watch" title="Regatta day: the final race, live from the start line" meta="Harbour TV · 1.4K watching" :thumb="['art' =&gt; 5, 'live' =&gt; true]"&gt;
+        &lt;x-slot:menu&gt;
+            &lt;a class="oc-dropdown-item" href="/queue"&gt;Add to queue&lt;/a&gt;
+            &lt;a class="oc-dropdown-item" href="/playlists"&gt;Save to playlist&lt;/a&gt;
+        &lt;/x-slot:menu&gt;
+    &lt;/x-oc::media-row&gt;
+&lt;/ul&gt;</oc-code>
           </oc-demo>
         <h3 id="numbered" class="oc-section-content__title mt-2">Numbered playlist</h3><p class="oc-section-content__desc"><code>.oc-media-row-list--numbered</code> on an <code>&lt;ol&gt;</code> adds a number column from a CSS counter. <code>aria-current="true"</code> tints the row and swaps the number for a play mark.</p>
           <oc-demo title="Numbered playlist">
@@ -47,6 +135,67 @@
     <div class="oc-media-row__text"><h3 class="oc-media-row__title"><a href="#numbered">Part 3: the roof goes on</a></h3><p class="oc-media-row__meta">North Studio</p></div>
   </li>
 </ol>
+<oc-code lang="tsx">import { MediaRow, MediaRowList } from "@birdycom/omniaui-react";
+
+const parts = [
+  { title: "Part 1: clearing the site", meta: "North Studio", thumb: { duration: "9:12", watched: true } },
+  { title: "Part 2: walls and windows", meta: "North Studio", current: true, thumb: { art: 2, duration: "14:40", progress: 30 } },
+  { title: "Part 3: the roof goes on", meta: "North Studio", thumb: { art: 4, duration: "18:32" } },
+];
+
+export function Example() {
+  return (
+    &lt;MediaRowList numbered aria-label="Playlist: Cabin build" style={{ maxInlineSize: "26rem" }}&gt;
+      {parts.map((p) =&gt; &lt;MediaRow key={p.title} href="/watch" {...p} /&gt;)}
+    &lt;/MediaRowList&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcMediaRow } from '@birdycom/omniaui-vue'
+
+const parts = [
+  { title: 'Part 1: clearing the site', meta: 'North Studio', current: false, thumb: { duration: '9:12', watched: true } },
+  { title: 'Part 2: walls and windows', meta: 'North Studio', current: true, thumb: { art: 2, duration: '14:40', progress: 30 } },
+  { title: 'Part 3: the roof goes on', meta: 'North Studio', current: false, thumb: { art: 4, duration: '18:32' } },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;ol class="oc-media-row-list oc-media-row-list--numbered" aria-label="Playlist: Cabin build" style="max-inline-size:26rem"&gt;
+    &lt;OcMediaRow v-for="p in parts" :key="p.title" href="/watch" :title="p.title" :meta="p.meta" :current="p.current" :thumb="p.thumb" /&gt;
+  &lt;/ol&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;ol class="oc-media-row-list oc-media-row-list--numbered" aria-label="Playlist: Cabin build" style="max-inline-size:26rem"&gt;
+    &lt;x-oc::media-row href="/watch" title="Part 1: clearing the site" meta="North Studio" :thumb="['duration' =&gt; '9:12', 'watched' =&gt; true]" /&gt;
+    &lt;x-oc::media-row href="/watch" title="Part 2: walls and windows" meta="North Studio" current :thumb="['art' =&gt; 2, 'duration' =&gt; '14:40', 'progress' =&gt; 30]" /&gt;
+    &lt;x-oc::media-row href="/watch" title="Part 3: the roof goes on" meta="North Studio" :thumb="['art' =&gt; 4, 'duration' =&gt; '18:32']" /&gt;
+&lt;/ol&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class Playlist extends Component
+{
+    public array $parts = [
+        ['title' =&gt; 'Part 1: clearing the site', 'meta' =&gt; 'North Studio', 'current' =&gt; false, 'thumb' =&gt; ['duration' =&gt; '9:12', 'watched' =&gt; true]],
+        ['title' =&gt; 'Part 2: walls and windows', 'meta' =&gt; 'North Studio', 'current' =&gt; true, 'thumb' =&gt; ['art' =&gt; 2, 'duration' =&gt; '14:40', 'progress' =&gt; 30]],
+        ['title' =&gt; 'Part 3: the roof goes on', 'meta' =&gt; 'North Studio', 'current' =&gt; false, 'thumb' =&gt; ['art' =&gt; 4, 'duration' =&gt; '18:32']],
+    ];
+
+    public function render()
+    {
+        return view('livewire.playlist');
+    }
+}
+
+{{-- resources/views/livewire/playlist.blade.php --}}
+&lt;ol class="oc-media-row-list oc-media-row-list--numbered" aria-label="Playlist: Cabin build" style="max-inline-size:26rem"&gt;
+    @foreach ($parts as $part)
+        &lt;x-oc::media-row href="/watch" :title="$part['title']" :meta="$part['meta']" :current="$part['current']" :thumb="$part['thumb']" /&gt;
+    @endforeach
+&lt;/ol&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

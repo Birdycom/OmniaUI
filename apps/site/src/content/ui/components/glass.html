@@ -1,8 +1,8 @@
 <!--oc-page {"title": "OmniaUI - Glass", "category": "Layout", "description": "See-through glass sheet and panels with a light top edge, for widgets and panels over a photo, a gradient or the desktop.", "nav": "Glass", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
-<!-- File: apps/site/src/content/ui/components/glass.html | Map: hero -> demos (widget over a photo, desktop window) -> tokens -> reference -> frameworks -->
+<!-- File: apps/site/src/content/ui/components/glass.html | Map: hero -> demos (lens over a landscape, widget over a photo, desktop window, liquid bar, amount) -> lens (recipe, browsers, pitfall) -> tokens -> reference -> frameworks -> oc-glass-lens.js -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Glass</h1>
-        <p class="oc-hero-text">See-through surfaces in the "liquid glass" style: a sheet that blurs what is behind it, with a light top edge and a soft shadow, and lighter panels inside it. For a widget or a floating panel over a photo or a gradient, and for a desktop window (Electron, Tauri) with Windows acrylic or macOS vibrancy behind a transparent page. Cards inside a sheet turn into glass panels by themselves. With "reduce transparency" switched on, the surfaces turn solid. <a href="../components.html">All components</a>.</p>
+        <p class="oc-hero-text">See-through surfaces in the "liquid glass" style: a see-through sheet with light inside its edge and a soft shadow, and lighter panels inside it. In Chrome and Edge the small script <code>oc-glass-lens.js</code> turns it into a real lens: the backdrop stays sharp and bends along the edge; other browsers show frosted glass. For a widget or a floating panel over a photo or a gradient, and for a desktop window (Electron, Tauri) with Windows acrylic or macOS vibrancy behind a transparent page. Cards inside a sheet turn into glass panels by themselves. With "reduce transparency" switched on, the surfaces turn solid. <a href="../components.html">All components</a>.</p>
       </section>
 
       <section class="oc-docs-section" id="demo">
@@ -10,13 +10,134 @@
           <h2 class="oc-section-header__title">Demo</h2>
           <span class="oc-section-header__badge-file oc-badge-source-file">snippets/glass.html</span>
           <span class="oc-section-header__badge-version oc-badge-version">v0.12.3</span>
-          <p class="oc-section-header__desc">A usage widget over a photo: the sheet, a panel with a meter, a card, a hairline.</p>
+          <p class="oc-section-header__desc">The lens over a landscape, then a usage widget over a photo: the sheet, a panel with a meter, a card, a hairline. The backdrop stays recognisable through the glass. This page loads <code>oc-glass-lens.js</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="lens-demo">Lens over a landscape <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc"><strong>Tip: drag the glass card with your mouse or finger (or focus it and use the arrow keys) to see the effect.</strong> With <code>oc-glass-lens.js</code> on the page, Chrome and Edge show real liquid glass: the backdrop stays sharp in the middle and bends along the edge, as through a thick piece of glass. Drag the card over the landscape (with the mouse, a finger, or focus it and use the arrow keys) and watch the horizon and the sun bend at its edge. Firefox and Safari show frosted glass instead. See <a href="#lens">Lens</a> for how it works.</p>
+          <oc-demo title="Glass - lens">
+<div class="oc-glass-stage oc-glass-stage--landscape relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 26rem; align-content: space-between; justify-items: center">
+  <div class="oc-glass p-1 grid gap-0.5 w-full" data-oc-glass-drag style="max-inline-size: 20rem; margin-block-start: 4rem">
+    <div class="flex align-items-center justify-between gap-0.5"><strong>City 1</strong><span class="font-0.8">Today</span></div>
+    <div class="flex align-items-center gap-0.5"><iconify-icon icon="mdi:weather-partly-cloudy" aria-hidden="true" style="font-size: 2rem"></iconify-icon><span style="font-size: 2.5rem; font-weight: 600; line-height: 1">21°</span></div>
+    <p class="m-0 font-0.8">Sunny spells, light wind from the west.</p>
+  </div>
+  <nav class="oc-glass-bar" aria-label="Weather"><a class="oc-glass-bar__item" href="#lens-demo" aria-current="page"><iconify-icon icon="mdi:weather-sunny" aria-hidden="true"></iconify-icon><span>Today</span></a><a class="oc-glass-bar__item" href="#lens-demo"><iconify-icon icon="mdi:calendar-week" aria-hidden="true"></iconify-icon><span>Week</span></a><a class="oc-glass-bar__item" href="#lens-demo"><iconify-icon icon="mdi:map-outline" aria-hidden="true"></iconify-icon><span>Map</span></a></nav>
+</div>
+<oc-code lang="tsx">import { Glass, GlassBar, Webicon } from "@birdycom/omniaui-react";
+// Glass and GlassBar load the lens themselves (lens={false} switches it off); draggable: move the card with mouse, finger or arrow keys.
+
+const tabs = [
+  { label: "Today", icon: "mdi:weather-sunny", href: "#today", current: true },
+  { label: "Week", icon: "mdi:calendar-week", href: "#week" },
+  { label: "Map", icon: "mdi:map-outline", href: "#map" },
+];
+
+export function Example() {
+  return (
+    &lt;div className="oc-glass-stage oc-glass-stage--landscape relative w-full grid p-2 overflow-hidden rounded-lg" style={{ minBlockSize: "26rem", alignContent: "space-between", justifyItems: "center" }}&gt;
+      &lt;Glass draggable className="p-1 grid gap-0.5 w-full" style={{ maxInlineSize: "20rem", marginBlockStart: "4rem" }}&gt;
+        &lt;div className="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;City 1&lt;/strong&gt;&lt;span className="font-0.8"&gt;Today&lt;/span&gt;&lt;/div&gt;
+        &lt;div className="flex align-items-center gap-0.5"&gt;
+          &lt;Webicon name="mdi:weather-partly-cloudy" size="xl" /&gt;
+          &lt;span style={{ fontSize: "2.5rem", fontWeight: 600, lineHeight: 1 }}&gt;21°&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;p className="m-0 font-0.8"&gt;Sunny spells, light wind from the west.&lt;/p&gt;
+      &lt;/Glass&gt;
+      &lt;GlassBar label="Weather" items={tabs} /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+// OcGlass and OcGlassBar load the lens themselves (:lens="false" switches it off); draggable: move the card with mouse, finger or arrow keys.
+import { OcGlass, OcGlassBar, OcWebicon } from '@birdycom/omniaui-vue'
+
+const tabs = [
+  { label: 'Today', href: '#today', current: true },
+  { label: 'Week', href: '#week' },
+  { label: 'Map', href: '#map' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-glass-stage oc-glass-stage--landscape relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 26rem; align-content: space-between; justify-items: center"&gt;
+    &lt;OcGlass draggable class="p-1 grid gap-0.5 w-full" style="max-inline-size: 20rem; margin-block-start: 4rem"&gt;
+      &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;City 1&lt;/strong&gt;&lt;span class="font-0.8"&gt;Today&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="flex align-items-center gap-0.5"&gt;
+        &lt;OcWebicon name="mdi:weather-partly-cloudy" size="xl" /&gt;
+        &lt;span style="font-size: 2.5rem; font-weight: 600; line-height: 1"&gt;21°&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;p class="m-0 font-0.8"&gt;Sunny spells, light wind from the west.&lt;/p&gt;
+    &lt;/OcGlass&gt;
+    &lt;OcGlassBar label="Weather" :items="tabs"&gt;
+      &lt;template #icon-0&gt;&lt;OcWebicon name="mdi:weather-sunny" /&gt;&lt;/template&gt;
+      &lt;template #icon-1&gt;&lt;OcWebicon name="mdi:calendar-week" /&gt;&lt;/template&gt;
+      &lt;template #icon-2&gt;&lt;OcWebicon name="mdi:map-outline" /&gt;&lt;/template&gt;
+    &lt;/OcGlassBar&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Once in the layout (the lens and the drag): npx omniaui copy-js glass-lens, then --}}
+{{-- &lt;script type="module" src="/js/oc-glass-lens.js"&gt;&lt;/script&gt; --}}
+&lt;div class="oc-glass-stage oc-glass-stage--landscape relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 26rem; align-content: space-between; justify-items: center"&gt;
+    &lt;x-oc::glass draggable class="p-1 grid gap-0.5 w-full" style="max-inline-size: 20rem; margin-block-start: 4rem"&gt;
+        &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;City 1&lt;/strong&gt;&lt;span class="font-0.8"&gt;Today&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="flex align-items-center gap-0.5"&gt;
+            &lt;x-oc::webicon name="mdi:weather-partly-cloudy" size="xl" /&gt;
+            &lt;span style="font-size: 2.5rem; font-weight: 600; line-height: 1"&gt;21°&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;p class="m-0 font-0.8"&gt;Sunny spells, light wind from the west.&lt;/p&gt;
+    &lt;/x-oc::glass&gt;
+    &lt;x-oc::glass-bar label="Weather" :items="[
+        ['label' =&gt; 'Today', 'icon' =&gt; 'mdi:weather-sunny', 'href' =&gt; '#today', 'current' =&gt; true],
+        ['label' =&gt; 'Week', 'icon' =&gt; 'mdi:calendar-week', 'href' =&gt; '#week'],
+        ['label' =&gt; 'Map', 'icon' =&gt; 'mdi:map-outline', 'href' =&gt; '#map'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class WeatherCard extends Component
+{
+    public string $city = 'City 1';
+
+    public int $temperature = 21;
+
+    public string $tab = 'today';
+
+    public function render()
+    {
+        return view('livewire.weather-card');
+    }
+}
+
+{{-- resources/views/livewire/weather-card.blade.php --}}
+{{-- oc-glass-lens.js (loaded once in the layout) sizes the lens and moves the card; wire:ignore.self keeps their attributes when Livewire morphs --}}
+&lt;div class="oc-glass-stage oc-glass-stage--landscape relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 26rem; align-content: space-between; justify-items: center"&gt;
+    &lt;x-oc::glass wire:ignore.self draggable class="p-1 grid gap-0.5 w-full" style="max-inline-size: 20rem; margin-block-start: 4rem"&gt;
+        &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;{{ $city }}&lt;/strong&gt;&lt;span class="font-0.8"&gt;Today&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="flex align-items-center gap-0.5"&gt;
+            &lt;x-oc::webicon name="mdi:weather-partly-cloudy" size="xl" /&gt;
+            &lt;span style="font-size: 2.5rem; font-weight: 600; line-height: 1"&gt;{{ $temperature }}°&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;p class="m-0 font-0.8"&gt;Sunny spells, light wind from the west.&lt;/p&gt;
+    &lt;/x-oc::glass&gt;
+    &lt;x-oc::glass-bar wire:ignore.self label="Weather" :items="[
+        ['label' =&gt; 'Today', 'icon' =&gt; 'mdi:weather-sunny', 'href' =&gt; '#today', 'current' =&gt; $tab === 'today'],
+        ['label' =&gt; 'Week', 'icon' =&gt; 'mdi:calendar-week', 'href' =&gt; '#week', 'current' =&gt; $tab === 'week'],
+        ['label' =&gt; 'Map', 'icon' =&gt; 'mdi:map-outline', 'href' =&gt; '#map', 'current' =&gt; $tab === 'map'],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="photo">Glass over a photo <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc"><strong>Tip: drag the glass widget over the photo to see the effect.</strong> A widget with a lot of small text over a busy photo: <code>--frost</code> keeps the text readable (4.5:1 or more wherever you drag it), the lens still bends the edge.</p>
           <oc-demo title="Glass over a photo">
-<div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 22rem">
-  <img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy">
-  <div class="oc-glass p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem">
+<div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 26rem">
+  <img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover; object-position: center 40%">
+  <div class="oc-glass oc-glass--frost p-1 grid gap-0.7 w-full" data-oc-glass-drag style="max-inline-size: 22rem">
     <div class="flex align-items-center justify-between gap-0.5"><strong>Usage today</strong><span class="oc-badge oc-badge--outline">Pro plan</span></div>
     <div class="oc-glass-panel p-0.7 grid gap-0.5">
       <div class="flex justify-between font-0.8"><span>Session</span><span class="font-num-tabular">34%</span></div>
@@ -29,6 +150,97 @@
     <p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)">Resets at 18:00.</p>
   </div>
 </div>
+<oc-code lang="tsx">import { Badge, Card, Glass, GlassPanel, Progress, Status } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style={{ minBlockSize: "26rem" }}&gt;
+      &lt;img className="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style={{ objectFit: "cover", objectPosition: "center 40%" }} /&gt;
+      &lt;Glass draggable className="oc-glass--frost p-1 grid gap-0.7 w-full" style={{ maxInlineSize: "22rem" }}&gt;
+        &lt;div className="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;Badge variant="outline"&gt;Pro plan&lt;/Badge&gt;&lt;/div&gt;
+        &lt;GlassPanel className="p-0.7 grid gap-0.5"&gt;
+          &lt;div className="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span className="font-num-tabular"&gt;34%&lt;/span&gt;&lt;/div&gt;
+          &lt;Progress value={34} size="sm" glow marker={20} aria-label="Session usage, schedule 20 %" /&gt;
+        &lt;/GlassPanel&gt;
+        &lt;Card className="p-0.7"&gt;
+          &lt;Status tone="working" meta="4:10"&gt;Agent working on the docs&lt;/Status&gt;
+        &lt;/Card&gt;
+        &lt;hr className="oc-glass-divider" /&gt;
+        &lt;p className="m-0 font-0.8" style={{ color: "var(--oc-muted-foreground)" }}&gt;Resets at 18:00.&lt;/p&gt;
+      &lt;/Glass&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBadge, OcCard, OcGlass, OcGlassPanel, OcProgress, OcStatus } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 26rem"&gt;
+    &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover; object-position: center 40%" /&gt;
+    &lt;OcGlass draggable class="oc-glass--frost p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
+      &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;OcBadge variant="outline"&gt;Pro plan&lt;/OcBadge&gt;&lt;/div&gt;
+      &lt;OcGlassPanel class="p-0.7 grid gap-0.5"&gt;
+        &lt;div class="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span class="font-num-tabular"&gt;34%&lt;/span&gt;&lt;/div&gt;
+        &lt;OcProgress :value="34" size="sm" glow :marker="20" label="Session usage, schedule 20 %" /&gt;
+      &lt;/OcGlassPanel&gt;
+      &lt;OcCard class="p-0.7"&gt;
+        &lt;OcStatus tone="working" meta="4:10"&gt;Agent working on the docs&lt;/OcStatus&gt;
+      &lt;/OcCard&gt;
+      &lt;hr class="oc-glass-divider" /&gt;
+      &lt;p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)"&gt;Resets at 18:00.&lt;/p&gt;
+    &lt;/OcGlass&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- /js/oc-glass-lens.js once in the layout (the lens and the drag) --}}
+&lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 26rem"&gt;
+    &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover; object-position: center 40%"&gt;
+    &lt;x-oc::glass draggable class="oc-glass--frost p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
+        &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;x-oc::badge variant="outline"&gt;Pro plan&lt;/x-oc::badge&gt;&lt;/div&gt;
+        &lt;x-oc::glass-panel class="p-0.7 grid gap-0.5"&gt;
+            &lt;div class="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span class="font-num-tabular"&gt;34%&lt;/span&gt;&lt;/div&gt;
+            &lt;x-oc::progress :value="34" size="sm" glow :marker="20" label="Session usage, schedule 20 %" /&gt;
+        &lt;/x-oc::glass-panel&gt;
+        &lt;x-oc::card class="p-0.7"&gt;
+            &lt;x-oc::status tone="working" meta="4:10"&gt;Agent working on the docs&lt;/x-oc::status&gt;
+        &lt;/x-oc::card&gt;
+        &lt;hr class="oc-glass-divider"&gt;
+        &lt;p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)"&gt;Resets at 18:00.&lt;/p&gt;
+    &lt;/x-oc::glass&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class UsageCard extends Component
+{
+    public int $session = 34;
+
+    public function render()
+    {
+        return view('livewire.usage-card');
+    }
+}
+
+{{-- resources/views/livewire/usage-card.blade.php --}}
+{{-- /js/oc-glass-lens.js once in the layout; wire:ignore.self keeps the lens and the drag when Livewire morphs --}}
+&lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 26rem"&gt;
+    &lt;img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover; object-position: center 40%"&gt;
+    &lt;x-oc::glass wire:ignore.self draggable class="oc-glass--frost p-1 grid gap-0.7 w-full" style="max-inline-size: 22rem"&gt;
+        &lt;div class="flex align-items-center justify-between gap-0.5"&gt;&lt;strong&gt;Usage today&lt;/strong&gt;&lt;x-oc::badge variant="outline"&gt;Pro plan&lt;/x-oc::badge&gt;&lt;/div&gt;
+        &lt;x-oc::glass-panel class="p-0.7 grid gap-0.5"&gt;
+            &lt;div class="flex justify-between font-0.8"&gt;&lt;span&gt;Session&lt;/span&gt;&lt;span class="font-num-tabular"&gt;{{ $session }}%&lt;/span&gt;&lt;/div&gt;
+            &lt;x-oc::progress :value="$session" size="sm" glow :marker="20" label="Session usage, schedule 20 %" /&gt;
+        &lt;/x-oc::glass-panel&gt;
+        &lt;x-oc::card class="p-0.7"&gt;
+            &lt;x-oc::status tone="working" meta="4:10"&gt;Agent working on the docs&lt;/x-oc::status&gt;
+        &lt;/x-oc::card&gt;
+        &lt;hr class="oc-glass-divider"&gt;
+        &lt;p class="m-0 font-0.8" style="color: var(--oc-muted-foreground)"&gt;Resets at 18:00.&lt;/p&gt;
+    &lt;/x-oc::glass&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="desktop">Desktop window</h3>
@@ -48,12 +260,96 @@
     </div>
   </div>
 </div>
+<oc-code lang="tsx">import { Glass, GlassPanel, Titlebar, TitlebarBody, TitlebarButton, Webicon } from "@birdycom/omniaui-react";
+
+export function Example({ onClose }: { onClose: () =&gt; void }) {
+  return (
+    &lt;div
+      className="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg"
+      style={{ minBlockSize: "20rem", background: "linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))" }}
+    &gt;
+      &lt;Glass flat className="oc-titlebar-window w-full" style={{ maxInlineSize: "22rem", blockSize: "16rem" }}&gt;
+        &lt;Titlebar title="Widget" subtitle="Overview"&gt;
+          &lt;TitlebarButton label="Close" close onClick={onClose}&gt;&lt;Webicon name="mdi:close" /&gt;&lt;/TitlebarButton&gt;
+        &lt;/Titlebar&gt;
+        &lt;TitlebarBody className="p-1 grid gap-0.7 align-start"&gt;
+          &lt;GlassPanel className="p-0.7"&gt;First panel&lt;/GlassPanel&gt;
+          &lt;GlassPanel strong className="p-0.7"&gt;Strong panel&lt;/GlassPanel&gt;
+          &lt;GlassPanel className="p-0.7"&gt;Scroll for the hairline&lt;/GlassPanel&gt;
+          &lt;GlassPanel className="p-0.7"&gt;Last panel&lt;/GlassPanel&gt;
+        &lt;/TitlebarBody&gt;
+      &lt;/Glass&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcGlass, OcGlassPanel, OcTitlebar, OcTitlebarBody, OcTitlebarButton, OcWebicon } from '@birdycom/omniaui-vue'
+
+const emit = defineEmits&lt;{ close: [] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 20rem; background: linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))"&gt;
+    &lt;OcGlass flat class="oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
+      &lt;OcTitlebar title="Widget" subtitle="Overview"&gt;
+        &lt;OcTitlebarButton label="Close" close @click="emit('close')"&gt;&lt;OcWebicon name="mdi:close" /&gt;&lt;/OcTitlebarButton&gt;
+      &lt;/OcTitlebar&gt;
+      &lt;OcTitlebarBody class="p-1 grid gap-0.7 align-start"&gt;
+        &lt;OcGlassPanel class="p-0.7"&gt;First panel&lt;/OcGlassPanel&gt;
+        &lt;OcGlassPanel strong class="p-0.7"&gt;Strong panel&lt;/OcGlassPanel&gt;
+        &lt;OcGlassPanel class="p-0.7"&gt;Scroll for the hairline&lt;/OcGlassPanel&gt;
+        &lt;OcGlassPanel class="p-0.7"&gt;Last panel&lt;/OcGlassPanel&gt;
+      &lt;/OcTitlebarBody&gt;
+    &lt;/OcGlass&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 20rem; background: linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))"&gt;
+    &lt;x-oc::glass flat class="oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
+        &lt;x-oc::titlebar title="Widget" subtitle="Overview"&gt;
+            &lt;x-oc::titlebar-button label="Close" close&gt;&lt;x-oc::webicon name="mdi:close" /&gt;&lt;/x-oc::titlebar-button&gt;
+        &lt;/x-oc::titlebar&gt;
+        &lt;x-oc::titlebar-body class="p-1 grid gap-0.7 align-start"&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;First panel&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel strong class="p-0.7"&gt;Strong panel&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;Scroll for the hairline&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;Last panel&lt;/x-oc::glass-panel&gt;
+        &lt;/x-oc::titlebar-body&gt;
+    &lt;/x-oc::glass&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class GlassWidget extends Component
+{
+    public function render()
+    {
+        return view('livewire.glass-widget');
+    }
+}
+
+{{-- resources/views/livewire/glass-widget.blade.php --}}
+&lt;div class="relative w-full grid place-items-center p-2 overflow-hidden rounded-lg" style="min-block-size: 20rem; background: linear-gradient(135deg, var(--color-duskblue-60), var(--color-violet-60) 55%, var(--color-orange-60))"&gt;
+    &lt;x-oc::glass flat class="oc-titlebar-window w-full" style="max-inline-size: 22rem; block-size: 16rem"&gt;
+        &lt;x-oc::titlebar title="Widget" subtitle="Overview"&gt;
+            &lt;x-oc::titlebar-button label="Close" close&gt;&lt;x-oc::webicon name="mdi:close" /&gt;&lt;/x-oc::titlebar-button&gt;
+        &lt;/x-oc::titlebar&gt;
+        &lt;x-oc::titlebar-body class="p-1 grid gap-0.7 align-start"&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;First panel&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel strong class="p-0.7"&gt;Strong panel&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;Scroll for the hairline&lt;/x-oc::glass-panel&gt;
+            &lt;x-oc::glass-panel class="p-0.7"&gt;Last panel&lt;/x-oc::glass-panel&gt;
+        &lt;/x-oc::titlebar-body&gt;
+    &lt;/x-oc::glass&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="liquid">Liquid glass menu bar <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc"><code>.oc-glass-bar</code>: a floating pill with a strong blur, extra colour from the backdrop, light inside the edge and a specular rim. The current item sits in a raised bubble (<code>aria-current</code>, <code>aria-pressed</code> or a checked radio). Next to it a round button (<code>--round</code>); <code>--icons</code> for a tool bar. <code>.oc-glass--liquid</code> gives any glass sheet the same look. CSS only; with "reduce transparency" it becomes a solid bar.</p>
           <oc-demo title="Glass - liquid menu bar">
-<div class="relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 24rem; align-content: space-between; justify-items: center">
-  <img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="object-fit: cover" loading="lazy">
+<div class="oc-glass-stage relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 24rem; align-content: space-between; justify-items: center">
+  <img class="absolute inset-0 h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="inline-size: 58%; object-fit: cover" loading="lazy">
   <nav class="oc-glass-bar oc-glass-bar--icons" aria-label="Tools"><label class="oc-glass-bar__item" title="Draw"><input type="radio" name="oc-glass-demo-tools" aria-label="Draw" checked><iconify-icon icon="mdi:pencil-outline" aria-hidden="true"></iconify-icon></label><label class="oc-glass-bar__item" title="Text"><input type="radio" name="oc-glass-demo-tools" aria-label="Text"><iconify-icon icon="mdi:format-text" aria-hidden="true"></iconify-icon></label><label class="oc-glass-bar__item" title="Shapes"><input type="radio" name="oc-glass-demo-tools" aria-label="Shapes"><iconify-icon icon="mdi:shape-outline" aria-hidden="true"></iconify-icon></label><label class="oc-glass-bar__item" title="Images"><input type="radio" name="oc-glass-demo-tools" aria-label="Images"><iconify-icon icon="mdi:image-outline" aria-hidden="true"></iconify-icon></label><span class="oc-glass-bar__sep" aria-hidden="true"></span><label class="oc-glass-bar__item" title="Share"><input type="radio" name="oc-glass-demo-tools" aria-label="Share"><iconify-icon icon="mdi:share-variant-outline" aria-hidden="true"></iconify-icon></label></nav>
   <div class="oc-glass oc-glass--liquid p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px">
     <strong>Now playing</strong>
@@ -64,6 +360,185 @@
     <div class="oc-glass-bar oc-glass-bar--round"><button class="oc-glass-bar__item" type="button" aria-label="Search"><iconify-icon icon="mdi:magnify" aria-hidden="true"></iconify-icon></button></div>
   </div>
 </div>
+<oc-code lang="tsx">import { useState } from "react";
+import { GlassBar, Glass, Webicon } from "@birdycom/omniaui-react";
+
+const tools = [
+  { label: "Draw", icon: "mdi:pencil-outline" },
+  { label: "Text", icon: "mdi:format-text" },
+  { label: "Shapes", icon: "mdi:shape-outline" },
+  { label: "Images", icon: "mdi:image-outline" },
+  { label: "Share", icon: "mdi:share-variant-outline" },
+];
+
+const sections = [
+  { label: "Home", icon: "mdi:home-variant" },
+  { label: "Explore", icon: "mdi:compass-outline" },
+  { label: "Library", icon: "mdi:play-box-multiple-outline" },
+  { label: "Profile", icon: "mdi:account-circle-outline" },
+];
+
+export function Example() {
+  const [tool, setTool] = useState(0);
+  const [section, setSection] = useState(0);
+  const toolItems = tools.map((t, i) =&gt; ({ ...t, current: i === tool, onClick: () =&gt; setTool(i) }));
+  return (
+    &lt;div className="oc-glass-stage relative w-full grid p-2 overflow-hidden rounded-lg" style={{ minBlockSize: "24rem", alignContent: "space-between", justifyItems: "center" }}&gt;
+      &lt;img className="absolute inset-0 h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style={{ inlineSize: "58%", objectFit: "cover" }} loading="lazy" /&gt;
+      {/* { sep: true } draws the divider before Share */}
+      &lt;GlassBar icons label="Tools" items={[...toolItems.slice(0, 4), { sep: true }, toolItems[4]]} /&gt;
+      &lt;Glass liquid className="p-1 grid gap-0.5" style={{ maxInlineSize: "18rem", borderRadius: "22px" }}&gt;
+        &lt;strong&gt;Now playing&lt;/strong&gt;
+        &lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
+      &lt;/Glass&gt;
+      &lt;div className="flex align-items-center gap-0.5"&gt;
+        &lt;GlassBar label="Main" items={sections.map((s, i) =&gt; ({ ...s, current: i === section, onClick: () =&gt; setSection(i) }))} /&gt;
+        &lt;div className="oc-glass-bar oc-glass-bar--round"&gt;&lt;button className="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;Webicon name="mdi:magnify" bare /&gt;&lt;/button&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { computed, ref } from 'vue'
+import { OcGlass, OcGlassBar, OcWebicon } from '@birdycom/omniaui-vue'
+
+const tool = ref(0)
+const toolItems = computed(() =&gt; [
+  { label: 'Draw', current: tool.value === 0 },
+  { label: 'Text', current: tool.value === 1 },
+  { label: 'Shapes', current: tool.value === 2 },
+  { label: 'Images', current: tool.value === 3 },
+  { sep: true as const }, // the divider counts in the index, so Share is 5
+  { label: 'Share', current: tool.value === 5 },
+])
+
+const section = ref(0)
+const sections = [
+  { label: 'Home', icon: 'mdi:home-variant' },
+  { label: 'Explore', icon: 'mdi:compass-outline' },
+  { label: 'Library', icon: 'mdi:play-box-multiple-outline' },
+  { label: 'Profile', icon: 'mdi:account-circle-outline' },
+]
+const items = computed(() =&gt; sections.map((s, i) =&gt; ({ ...s, current: i === section.value })))
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-glass-stage relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 24rem; align-content: space-between; justify-items: center"&gt;
+    &lt;img class="absolute inset-0 h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="inline-size: 58%; object-fit: cover" loading="lazy" /&gt;
+    &lt;OcGlassBar icons label="Tools" :items="toolItems" @select="tool = $event"&gt;
+      &lt;template #icon-0&gt;&lt;OcWebicon name="mdi:pencil-outline" bare /&gt;&lt;/template&gt;
+      &lt;template #icon-1&gt;&lt;OcWebicon name="mdi:format-text" bare /&gt;&lt;/template&gt;
+      &lt;template #icon-2&gt;&lt;OcWebicon name="mdi:shape-outline" bare /&gt;&lt;/template&gt;
+      &lt;template #icon-3&gt;&lt;OcWebicon name="mdi:image-outline" bare /&gt;&lt;/template&gt;
+      &lt;template #icon-5&gt;&lt;OcWebicon name="mdi:share-variant-outline" bare /&gt;&lt;/template&gt;
+    &lt;/OcGlassBar&gt;
+    &lt;OcGlass liquid class="p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
+      &lt;strong&gt;Now playing&lt;/strong&gt;
+      &lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
+    &lt;/OcGlass&gt;
+    &lt;div class="flex align-items-center gap-0.5"&gt;
+      &lt;OcGlassBar label="Main" :items="items" @select="section = $event"&gt;
+        &lt;template #icon-0&gt;&lt;OcWebicon name="mdi:home-variant" bare /&gt;&lt;/template&gt;
+        &lt;template #icon-1&gt;&lt;OcWebicon name="mdi:compass-outline" bare /&gt;&lt;/template&gt;
+        &lt;template #icon-2&gt;&lt;OcWebicon name="mdi:play-box-multiple-outline" bare /&gt;&lt;/template&gt;
+        &lt;template #icon-3&gt;&lt;OcWebicon name="mdi:account-circle-outline" bare /&gt;&lt;/template&gt;
+      &lt;/OcGlassBar&gt;
+      &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;OcWebicon name="mdi:magnify" bare /&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-glass-stage relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 24rem; align-content: space-between; justify-items: center"&gt;
+    &lt;img class="absolute inset-0 h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="inline-size: 58%; object-fit: cover" loading="lazy"&gt;
+    {{-- ['sep' =&gt; true] draws the divider before Share --}}
+    &lt;x-oc::glass-bar icons label="Tools" :items="[
+        ['label' =&gt; 'Draw', 'icon' =&gt; 'mdi:pencil-outline', 'href' =&gt; '?tool=draw', 'current' =&gt; true],
+        ['label' =&gt; 'Text', 'icon' =&gt; 'mdi:format-text', 'href' =&gt; '?tool=text'],
+        ['label' =&gt; 'Shapes', 'icon' =&gt; 'mdi:shape-outline', 'href' =&gt; '?tool=shapes'],
+        ['label' =&gt; 'Images', 'icon' =&gt; 'mdi:image-outline', 'href' =&gt; '?tool=images'],
+        ['sep' =&gt; true],
+        ['label' =&gt; 'Share', 'icon' =&gt; 'mdi:share-variant-outline', 'href' =&gt; '?tool=share'],
+    ]" /&gt;
+    &lt;x-oc::glass liquid class="p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
+        &lt;strong&gt;Now playing&lt;/strong&gt;
+        &lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
+    &lt;/x-oc::glass&gt;
+    &lt;div class="flex align-items-center gap-0.5"&gt;
+        &lt;x-oc::glass-bar label="Main" :items="[
+            ['label' =&gt; 'Home', 'icon' =&gt; 'mdi:home-variant', 'href' =&gt; '/home', 'current' =&gt; true],
+            ['label' =&gt; 'Explore', 'icon' =&gt; 'mdi:compass-outline', 'href' =&gt; '/explore'],
+            ['label' =&gt; 'Library', 'icon' =&gt; 'mdi:play-box-multiple-outline', 'href' =&gt; '/library'],
+            ['label' =&gt; 'Profile', 'icon' =&gt; 'mdi:account-circle-outline', 'href' =&gt; '/profile'],
+        ]" /&gt;
+        &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;x-oc::webicon name="mdi:magnify" bare /&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Url;
+use Livewire\Component;
+
+class MediaBars extends Component
+{
+    #[Url]
+    public string $tool = 'draw';
+
+    public string $section = 'home';
+
+    public array $tools = [
+        'draw' =&gt; ['Draw', 'mdi:pencil-outline'],
+        'text' =&gt; ['Text', 'mdi:format-text'],
+        'shapes' =&gt; ['Shapes', 'mdi:shape-outline'],
+        'images' =&gt; ['Images', 'mdi:image-outline'],
+        'share' =&gt; ['Share', 'mdi:share-variant-outline'],
+    ];
+
+    public array $sections = [
+        'home' =&gt; ['Home', 'mdi:home-variant'],
+        'explore' =&gt; ['Explore', 'mdi:compass-outline'],
+        'library' =&gt; ['Library', 'mdi:play-box-multiple-outline'],
+        'profile' =&gt; ['Profile', 'mdi:account-circle-outline'],
+    ];
+
+    /** Items for x-oc::glass-bar, with a divider before Share. */
+    public function toolItems(): array
+    {
+        $items = [];
+        foreach ($this-&gt;tools as $key =&gt; [$label, $icon]) {
+            if ($key === 'share') {
+                $items[] = ['sep' =&gt; true];
+            }
+            $items[] = ['label' =&gt; $label, 'icon' =&gt; $icon, 'href' =&gt; '?tool='.$key, 'current' =&gt; $this-&gt;tool === $key];
+        }
+
+        return $items;
+    }
+
+    public function render()
+    {
+        return view('livewire.media-bars');
+    }
+}
+
+{{-- resources/views/livewire/media-bars.blade.php --}}
+&lt;div class="oc-glass-stage relative w-full grid p-2 overflow-hidden rounded-lg" style="min-block-size: 24rem; align-content: space-between; justify-items: center"&gt;
+    &lt;img class="absolute inset-0 h-full" src="/img/blocks/auth-split-photo.webp" alt="Hieroglyphs in the Valley of the Kings, photo by Serge Cools" style="inline-size: 58%; object-fit: cover" loading="lazy"&gt;
+    {{-- ['sep' =&gt; true] draws the divider before Share; the links set ?tool= --}}
+    &lt;x-oc::glass-bar icons label="Tools" :items="$this-&gt;toolItems()" /&gt;
+    &lt;x-oc::glass liquid class="p-1 grid gap-0.5" style="max-inline-size: 18rem; border-radius: 22px"&gt;
+        &lt;strong&gt;Now playing&lt;/strong&gt;
+        &lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;
+    &lt;/x-oc::glass&gt;
+    &lt;div class="flex align-items-center gap-0.5"&gt;
+        &lt;nav class="oc-glass-bar" aria-label="Main"&gt;
+            @foreach ($sections as $key =&gt; [$label, $icon])
+                &lt;button type="button" class="oc-glass-bar__item" wire:click="$set('section', '{{ $key }}')" aria-pressed="{{ $section === $key ? 'true' : 'false' }}"&gt;&lt;x-oc::webicon :name="$icon" bare /&gt;&lt;span&gt;{{ $label }}&lt;/span&gt;&lt;/button&gt;
+            @endforeach
+        &lt;/nav&gt;
+        &lt;div class="oc-glass-bar oc-glass-bar--round"&gt;&lt;button class="oc-glass-bar__item" type="button" aria-label="Search"&gt;&lt;x-oc::webicon name="mdi:magnify" bare /&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="amount">Amount of glass <span class="oc-badge-version">v0.12.6</span></h3>
           <p class="oc-section-content__desc"><code>--clear</code> lets more of the backdrop through, <code>--frost</code> hides more of it; without either you get the default. Works on <code>.oc-glass</code>, <code>.oc-glass--liquid</code> and <code>.oc-glass-bar</code>.</p>
@@ -73,24 +548,21 @@
     <div class="oc-eg__panel">
       <code class="oc-eg__name">.oc-glass--clear</code>
       <div class="oc-eg__note">Lets most of the backdrop through. Use it over a calm photo, or text gets hard to read.</div>
-      <div class="oc-eg__stage oc-eg__stage--plain" style="position:relative;overflow:hidden;display:grid;place-items:center;padding:1.25rem;min-block-size:11rem">
-        <img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="" style="object-fit: cover" loading="lazy">
+      <div class="oc-eg__stage oc-glass-stage" style="position:relative;overflow:hidden;display:grid;place-items:center;padding:1.25rem;min-block-size:11rem">
         <div class="oc-glass oc-glass--liquid oc-glass--clear p-1 grid gap-0.3 relative" style="border-radius: 20px"><strong>Now playing</strong><span class="font-0.8">Track 1 · Artist 1</span></div>
       </div>
     </div>
     <div class="oc-eg__panel">
       <code class="oc-eg__name">.oc-glass--liquid</code>
       <div class="oc-eg__note">The default amount: a strong blur and a light edge.</div>
-      <div class="oc-eg__stage oc-eg__stage--plain" style="position:relative;overflow:hidden;display:grid;place-items:center;padding:1.25rem;min-block-size:11rem">
-        <img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="" style="object-fit: cover" loading="lazy">
+      <div class="oc-eg__stage oc-glass-stage" style="position:relative;overflow:hidden;display:grid;place-items:center;padding:1.25rem;min-block-size:11rem">
         <div class="oc-glass oc-glass--liquid p-1 grid gap-0.3 relative" style="border-radius: 20px"><strong>Now playing</strong><span class="font-0.8">Track 1 · Artist 1</span></div>
       </div>
     </div>
     <div class="oc-eg__panel">
       <code class="oc-eg__name">.oc-glass--frost</code>
       <div class="oc-eg__note">Hides most of the backdrop, so text stays readable on any photo.</div>
-      <div class="oc-eg__stage oc-eg__stage--plain" style="position:relative;overflow:hidden;display:grid;place-items:center;padding:1.25rem;min-block-size:11rem">
-        <img class="absolute inset-0 w-full h-full" src="/img/blocks/auth-split-photo.webp" alt="" style="object-fit: cover" loading="lazy">
+      <div class="oc-eg__stage oc-glass-stage" style="position:relative;overflow:hidden;display:grid;place-items:center;padding:1.25rem;min-block-size:11rem">
         <div class="oc-glass oc-glass--liquid oc-glass--frost p-1 grid gap-0.3 relative" style="border-radius: 20px"><strong>Now playing</strong><span class="font-0.8">Track 1 · Artist 1</span></div>
       </div>
     </div>
@@ -100,9 +572,80 @@
 &lt;div class="oc-glass oc-glass--liquid oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
 &lt;div class="oc-glass oc-glass--liquid p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;
 &lt;div class="oc-glass oc-glass--liquid oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Glass } from "@birdycom/omniaui-react";
+
+// Over a photo or a gradient; --clear and --frost set the amount of blur.
+export function Example() {
+  return (
+    &lt;&gt;
+      &lt;Glass liquid className="oc-glass--clear p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/Glass&gt;
+      &lt;Glass liquid className="p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/Glass&gt;
+      &lt;Glass liquid className="oc-glass--frost p-1 grid gap-0.3" style={{ borderRadius: "20px" }}&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span className="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/Glass&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcGlass } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Over a photo or a gradient; --clear and --frost set the amount of blur --&gt;
+  &lt;OcGlass liquid class="oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/OcGlass&gt;
+  &lt;OcGlass liquid class="p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/OcGlass&gt;
+  &lt;OcGlass liquid class="oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/OcGlass&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Over a photo or a gradient; --clear and --frost set the amount of blur --}}
+&lt;x-oc::glass liquid class="oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+&lt;x-oc::glass liquid class="p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+&lt;x-oc::glass liquid class="oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class GlassAmounts extends Component
+{
+    public function render()
+    {
+        return view('livewire.glass-amounts');
+    }
+}
+
+{{-- resources/views/livewire/glass-amounts.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::glass liquid class="oc-glass--clear p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+    &lt;x-oc::glass liquid class="p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+    &lt;x-oc::glass liquid class="oc-glass--frost p-1 grid gap-0.3" style="border-radius: 20px"&gt;&lt;strong&gt;Now playing&lt;/strong&gt;&lt;span class="font-0.8"&gt;Track 1 · Artist 1&lt;/span&gt;&lt;/x-oc::glass&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
-          <p class="oc-section-content__desc mt-2" id="lens">The lens, where the backdrop bends and shifts colour through the glass, is in OmniaUI Pro: see the <a href="../blocks/glass-nav.html">Glass navigation block</a>.</p>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="lens">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Lens</h2>
+          <span class="oc-section-header__badge-version oc-badge-version">v0.17.0</span>
+          <p class="oc-section-header__desc">Liquid glass is five things: a see-through fill, light inside the edge, a map, one filter and a fallback.</p>
+        </div>
+        <div class="oc-section-content">
+          <ol class="oc-section-content__desc grid gap-0.5">
+            <li><strong>Fill</strong>: a very light white tint (<code>--oc-glass-sheet</code>, 12 %) and a thin white border (35 %), radius 28px.</li>
+            <li><strong>Thickness</strong>: only inset shadows: a bright line just inside the top edge, a weaker one along the bottom and a soft glow all round. No gradient, no rim.</li>
+            <li><strong>Map</strong>: an image the exact size of the sheet. Red runs from left to right, blue from top to bottom; a blurred purple rectangle (half red, half blue: no shift) covers the middle, so only the edge moves.</li>
+            <li><strong>Filter</strong>: an SVG filter reads the map (<code>feImage</code>) and shifts the backdrop with it (<code>feDisplacementMap</code>, scale -80: a bigger number bends more, the minus sign turns the direction); <code>backdrop-filter: url(#&hellip;) blur(2px) saturate(160%)</code> applies it.</li>
+            <li><strong>Fallback</strong>: only Chromium (Chrome, Edge, Opera, Electron) applies an SVG filter in <code>backdrop-filter</code>. Elsewhere, and without the script, the sheet is frosted glass: <code>blur(12px) saturate(160%)</code>. With "reduce transparency" it is solid.</li>
+          </ol>
+          <p class="oc-section-content__desc"><code>oc-glass-lens.js</code> does the map and the filter for you: one hidden <code>&lt;svg&gt;</code> with one filter per sheet size (shared, and removed when no sheet uses it), kept in step with a ResizeObserver. It sets <code>--oc-glass-lens</code> and <code>data-oc-lens</code> on the sheet; outside Chromium it only adds <code>html.oc-no-lens</code>. It skips <code>--flat</code> and <code>data-oc-glass-lens="off"</code>. The same script makes a sheet with <code>data-oc-glass-drag</code> draggable over its backdrop, in every browser: mouse, pen and touch (no page scroll under the finger), and the keyboard (the sheet takes focus, arrow keys move it 16px, Shift 64px, Home puts it back). It stays inside its parent, or the closest <code>data-oc-glass-drag-area</code>; it moves with <code>translate</code>, so the lens filter stays the same, and with reduced motion the keyboard steps do not glide. Links and buttons inside keep their clicks. The React and Vue wrappers load it themselves (<code>lens</code>, default on); in plain HTML and Blade put the script on the page once.</p>
+          <oc-code lang="html">&lt;!-- npx omniaui copy-js glass-lens --&gt;
+&lt;script type="module" src="/js/oc-glass-lens.js"&gt;&lt;/script&gt;
+
+&lt;div class="oc-glass p-1"&gt;&hellip;&lt;/div&gt;
+&lt;div class="oc-glass" data-oc-glass-lens-scale="-40"&gt;&hellip;&lt;/div&gt;   &lt;!-- a softer lens --&gt;
+&lt;div class="oc-glass" data-oc-glass-lens="off"&gt;&hellip;&lt;/div&gt;         &lt;!-- frosted, also in Chrome --&gt;
+&lt;div class="oc-glass" data-oc-glass-drag&gt;&hellip;&lt;/div&gt;              &lt;!-- people can move it --&gt;</oc-code>
+          <p class="oc-section-content__desc"><strong>Pitfall:</strong> in Chrome an outer shadow on the element that carries the lens filter shifts the map, and the glass breaks. Shadows on the glass layer itself are always inset. In <code>.oc-glass</code> the filter sits on a <code>::after</code> layer inside the sheet, so the sheet's own drop shadow is safe; on your own element, put a drop shadow on a wrapper. OmniaUI Pro's <a href="../blocks/glass-nav.html">Glass navigation block</a> keeps its own lens (<code>.oc-glass--lens</code>, a wavy water filter); the free script leaves those sheets alone.</p>
         </div>
       </section>
 
@@ -113,13 +656,19 @@
         </div>
         <div class="oc-section-content">
           <oc-code lang="css">:root {
-  --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.72), oklch(from var(--oc-background) l c h / 0.62));
-  --oc-glass-panel: …;  --oc-glass-panel-strong: …;
-  --oc-glass-edge: …;   --oc-glass-edge-hi: …;   /* border and the light top edge */
+  --oc-glass-sheet: light-dark(oklch(100% 0 0deg / 0.12), oklch(from var(--oc-background) l c h / 0.2));
+  --oc-glass-edge: light-dark(oklch(100% 0 0deg / 0.35), …);   /* the border */
+  --oc-glass-edge-hi: …;  --oc-glass-edge-low: …;  --oc-glass-glow: …;   /* inset light: top line, bottom line, glow all round */
+  --oc-glass-sheen: …;  /* light falloff, only on --frost */
+  --oc-glass-panel: …;  --oc-glass-panel-strong: …;   /* never denser than the sheet */
   --oc-glass-hairline: …;
-  --oc-glass-shadow: …; --oc-glass-panel-shadow: …;
-  --oc-glass-blur: 28px;
-  --oc-glass-radius: 18px; --oc-glass-panel-radius: 14px;
+  --oc-glass-shadow: …; --oc-glass-panel-shadow: …;   /* drop shadow on the sheet, never on the lens layer */
+  --oc-glass-blur: 12px;       /* frosted glass (no lens); the backdrop also gets saturate(160%) */
+  --oc-glass-lens-blur: 2px;   /* blur under the lens */
+  --oc-glass-radius: 28px; --oc-glass-panel-radius: 16px;
+  --oc-glass-fg: var(--oc-foreground);   /* text on glass */
+  --oc-glass-fg-muted: …;   /* muted text on glass, closer to the foreground than the page's grey; also used for --oc-muted-foreground inside a sheet */
+  /* set per sheet by oc-glass-lens.js: --oc-glass-lens: url(#oc-lens-WxH) */
 }</oc-code>
         </div>
       </section>
@@ -133,19 +682,24 @@
           <table class="oc-table-ref">
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td><code>.oc-glass</code></td><td>The sheet: see-through, blurred background, light top edge, soft shadow. <code>.oc-card</code> inside becomes a glass panel. The blur sits on a <code>::after</code> layer behind the content, so a tooltip inside still appears next to its anchor.</td></tr>
+              <tr><td><code>.oc-glass</code></td><td>The sheet: a see-through white fill, a thin white border, light inside the edge (inset shadows only) and a soft drop shadow. Frosted glass by default; a lens in Chromium with <code>oc-glass-lens.js</code>. Put it over colour and shapes, as in the demos. <code>.oc-card</code> inside becomes a glass panel. Fill, light and filter sit on a <code>::after</code> layer behind the content, so a tooltip inside still appears next to its anchor and the drop shadow does not break the lens.</td></tr>
+              <tr><td><code>oc-glass-lens.js</code></td><td>The lens for <code>.oc-glass</code>, <code>.oc-glass--liquid</code> and <code>.oc-glass-bar</code> (and any <code>[data-oc-glass-lens]</code>): one SVG filter per sheet size, <code>--oc-glass-lens</code> + <code>data-oc-lens</code> on the sheet. Exports <code>initGlassLens</code>, <code>bindGlassLens</code>, <code>supportsGlassLens</code>, <code>lensMap</code>.</td></tr>
+              <tr><td><code>data-oc-glass-drag</code> / <code>data-oc-glass-drag-area</code></td><td>The sheet can be moved over its backdrop (mouse, touch, arrow keys, Home) / the element it stays inside (default: the parent). Fires <code>oc-glass-move</code> with <code>{ x, y }</code>. Exports <code>initGlassDrag</code>, <code>bindGlassDrag</code>, <code>moveGlass</code>.</td></tr>
+              <tr><td><code>data-oc-glass-lens="off"</code> / <code>data-oc-glass-lens-scale</code></td><td>No lens on this sheet (frosted glass) / a different strength (default <code>-80</code>)</td></tr>
+              <tr><td><code>html.oc-no-lens</code></td><td>Set by the script outside Chromium: frosted glass (<code>blur(12px) saturate(160%)</code>)</td></tr>
               <tr><td><code>.oc-glass-panel</code></td><td>A lighter layer inside a sheet</td></tr>
               <tr><td><code>--strong</code></td><td>On the sheet or a panel: more opaque, for text-heavy content</td></tr>
-              <tr><td><code>.oc-glass--flat</code></td><td>Desktop window where the OS draws the blur: no own blur, no drop shadow</td></tr>
+              <tr><td><code>.oc-glass--flat</code></td><td>Desktop window where the OS draws the blur: no own blur, no lens, no drop shadow</td></tr>
               <tr><td><code>.oc-glass-divider</code></td><td>Hairline (<code>&lt;hr&gt;</code>) in the glass color</td></tr>
               <tr><td><code>.oc-glass--liquid</code></td><td>Liquid glass: clear tint, strong blur and saturation, light inside the edge, specular rim</td></tr>
               <tr><td><code>.oc-glass-bar</code> / <code>__item</code></td><td>Floating menu bar of items (icon + label); the current item (<code>aria-current</code>, <code>aria-pressed</code>, checked radio) sits in a raised bubble</td></tr>
               <tr><td><code>--icons</code> / <code>--round</code> / <code>__sep</code></td><td>Icon-only items / a single round button next to the bar / a divider</td></tr>
-              <tr><td><code>--clear</code> / <code>--frost</code></td><td>More see-through / more frosted glass (on <code>.oc-glass</code>, <code>--liquid</code> and <code>.oc-glass-bar</code>)</td></tr>
+              <tr><td><code>--clear</code> / <code>--frost</code></td><td>More see-through / more frosted glass with a fine grain (on <code>.oc-glass</code>, <code>--liquid</code> and <code>.oc-glass-bar</code>)</td></tr>
               <tr><td><code>.oc-glass-bar--light</code></td><td>White icons and labels for a dark or colourful backdrop</td></tr>
-              <tr><td><code>.oc-glass-stage</code></td><td>Moving colour background to show glass on (stops with reduced motion)</td></tr>
+              <tr><td><code>.oc-glass-stage</code> / <code>--landscape</code></td><td>Moving colour background to show glass on (stops with reduced motion) / a still landscape: sky, sun and hills (night in dark mode)</td></tr>
               <tr><td><code>--oc-liquid-tint / -edge / -blur</code></td><td>Tint, edge colour and blur of the liquid glass</td></tr>
               <tr><td><code>prefers-reduced-transparency</code></td><td>Solid surfaces and no blur when the person asks for less transparency</td></tr>
+              <tr><td><code>@supports not (backdrop-filter)</code></td><td>Without backdrop-filter the sheet turns nearly solid, so text stays readable</td></tr>
             </tbody>
           </table>
         </div>
@@ -154,14 +708,18 @@
       <section class="oc-docs-section" id="frameworks">
         <div class="oc-section-header">
           <h2 class="oc-section-header__title">Framework wrappers</h2>
-          <p class="oc-section-header__desc">The same markup and classes as React, Vue and Blade components.</p>
+          <p class="oc-section-header__desc">The same markup and classes as React, Vue and Blade components. <code>lens</code> (default on) gives the sheet and the bar the lens; React and Vue load it themselves, Blade needs <code>oc-glass-lens.js</code> on the page.</p>
         </div>
         <div class="oc-section-content">
           <oc-code lang="html">&lt;!-- React --&gt;
 &lt;Glass className="p-1"&gt;&lt;GlassPanel strong&gt;…&lt;/GlassPanel&gt;&lt;/Glass&gt;
+&lt;Glass lens={false}&gt;…&lt;/Glass&gt;
 &lt;!-- Vue --&gt;
 &lt;OcGlass flat&gt;&lt;OcGlassPanel&gt;…&lt;/OcGlassPanel&gt;&lt;/OcGlass&gt;
 &lt;!-- Blade --&gt;
-&lt;x-oc::glass as="section"&gt;&lt;x-oc::glass-panel&gt;…&lt;/x-oc::glass-panel&gt;&lt;/x-oc::glass&gt;</oc-code>
+&lt;x-oc::glass as="section"&gt;&lt;x-oc::glass-panel&gt;…&lt;/x-oc::glass-panel&gt;&lt;/x-oc::glass&gt;
+&lt;x-oc::glass :lens="false"&gt;…&lt;/x-oc::glass&gt;
+&lt;!-- draggable: React &lt;Glass draggable&gt;, Vue &lt;OcGlass draggable&gt;, Blade &lt;x-oc::glass draggable&gt; --&gt;</oc-code>
         </div>
       </section>
+<script type="module" src="/js/oc-glass-lens.js"></script>

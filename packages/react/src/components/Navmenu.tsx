@@ -7,16 +7,18 @@ export interface NavmenuProps extends HTMLAttributes<HTMLUListElement> {
   label?: string;
   /** Class for the wrapping <nav> (e.g. `oc-block-appbar-nav`). */
   navClassName?: string;
+  /** `site`: outlined pill links, the current one with a primary border (`oc-navmenu--site`, the site header menu). */
+  variant?: "site";
 }
 
 /** `<nav><ul class="oc-navmenu">`: horizontal navigation links. */
 export const Navmenu = forwardRef<HTMLUListElement, NavmenuProps>(function Navmenu(
-  { label = "Navigation", navClassName, className, ...rest },
+  { label = "Navigation", navClassName, variant, className, ...rest },
   ref,
 ) {
   return (
     <nav aria-label={label} className={navClassName}>
-      <ul ref={ref} className={cx("oc-navmenu", className)} {...rest} />
+      <ul ref={ref} className={cx("oc-navmenu", variant && `oc-navmenu--${variant}`, className)} {...rest} />
     </nav>
   );
 });

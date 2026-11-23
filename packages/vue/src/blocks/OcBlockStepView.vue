@@ -15,9 +15,19 @@ export interface StepViewQuestion {
   options: string[]
   sendLabel?: string
   hint?: string
+  /** Name of the radio group (default: generated from the title id). */
+  name?: string
+  /** After checking (0.17.0): the picked and the right answer; the answers turn green / red and lock (slot `feedback`). */
+  result?: { picked: number; correct: number }
+  resultLabels?: { correct?: string; wrong?: string }
 }
-defineProps<{ title: string; place?: string; task?: string; number?: string | number; question?: StepViewQuestion }>()
+const props = defineProps<{ title: string; place?: string; task?: string; number?: string | number; question?: StepViewQuestion }>()
 const answer = defineModel<number>('answer')
+const mark = (i: number): 'correct' | 'wrong' | undefined => {
+  const r = props.question?.result
+  if (!r) return undefined
+  return i === r.correct ? 'correct' : i === r.picked ? 'wrong' : undefined
+}
 const emit = defineEmits<{ send: [] }>()
 const titleId = useUid('oc-stepview')
 </script>
@@ -38,11 +48,13 @@ const titleId = useUid('oc-stepview')
       <span v-if="question.kicker" class="oc-block-step-view-kicker">{{ question.kicker }}</span>
       <p :id="`${titleId}-ask`" class="oc-block-step-view-ask">{{ question.text }}</p>
       <fieldset class="oc-block-step-view-answers" :aria-labelledby="`${titleId}-ask`">
-        <label v-for="(o, i) in question.options" :key="i" class="oc-radio-item oc-radio-item--card">
-          <input v-model="answer" class="oc-radio" type="radio" :name="`${titleId}-answer`" :value="i"><span>{{ o }}</span>
+        <label v-for="(o, i) in question.options" :key="i" class="oc-radio-item oc-radio-item--card" :data-result="mark(i)">
+          <input v-model="answer" class="oc-radio" type="radio" :name="question.name ?? `${titleId}-answer`" :value="i" :disabled="!!question.result" :checked="question.result ? question.result.picked === i : undefined"><span>{{ o }}</span>
+          <span v-if="mark(i)" class="oc-visually-hidden"> {{ mark(i) === 'correct' ? (question.resultLabels?.correct ?? 'Correct') : (question.resultLabels?.wrong ?? 'Wrong') }}</span>
         </label>
       </fieldset>
-      <button class="oc-btn oc-btn--lg oc-block-step-view-send" type="button" @click="emit('send')">{{ question.sendLabel ?? 'Send answer' }}</button>
+      <slot v-if="question.result" name="feedback" />
+      <button v-else class="oc-btn oc-btn--lg oc-block-step-view-send" type="button" @click="emit('send')">{{ question.sendLabel ?? 'Send answer' }}</button>
       <p v-if="question.hint" class="oc-block-step-view-hint">{{ question.hint }}</p>
     </div>
   </article>

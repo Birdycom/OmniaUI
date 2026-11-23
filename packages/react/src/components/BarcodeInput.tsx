@@ -17,6 +17,10 @@ export interface BarcodeInputProps extends Omit<InputHTMLAttributes<HTMLInputEle
   /** Text in the preview while the field is empty. */
   emptyText?: string;
   error?: boolean;
+  /** With `error`: the text in the preview instead of the code, e.g. "Use 8 or 13 digits" (faded bars). */
+  errorText?: ReactNode;
+  /** Only the field, without the preview figure. */
+  hidePreview?: boolean;
   /** Your own barcode graphic; replaces the placeholder bars. */
   children?: ReactNode;
   /** Class for the wrapper (`className` goes to the input). */
@@ -25,13 +29,14 @@ export interface BarcodeInputProps extends Omit<InputHTMLAttributes<HTMLInputEle
 
 /** `.oc-barcode-input`: code field + preview. Keeps digits only (hand scanners type like a keyboard). */
 export const BarcodeInput = forwardRef<HTMLInputElement, BarcodeInputProps>(function BarcodeInput(
-  { value, defaultValue, onChange, label, emptyText = "No code yet", error, children, wrapperClassName, className, id, ...rest },
+  { value, defaultValue, onChange, label, emptyText = "No code yet", error, errorText, hidePreview, children, wrapperClassName, className, id, ...rest },
   ref,
 ) {
   const auto = `oc-barcode-${useId().replace(/:/g, "")}`;
   const inputId = id ?? auto;
   const [code, setCode] = useControllable<string>(value, defaultValue ?? "", onChange);
-  const empty = !code;
+  const message = error && errorText != null && errorText !== "" ? errorText : null;
+  const empty = !code || message != null;
   return (
     <div className={cx("oc-barcode-input", wrapperClassName)}>
       {label != null && <label className="oc-field-label" htmlFor={inputId}>{label}</label>}
@@ -55,10 +60,12 @@ export const BarcodeInput = forwardRef<HTMLInputElement, BarcodeInputProps>(func
           {...rest}
         />
       </div>
-      <figure className={cx("oc-barcode-preview", empty && "oc-barcode-preview--empty")} aria-label="Barcode preview">
-        {children ?? <div className="oc-barcode-preview-bars" aria-hidden="true" />}
-        <figcaption className="oc-barcode-preview-code">{empty ? emptyText : code}</figcaption>
-      </figure>
+      {!hidePreview && (
+        <figure className={cx("oc-barcode-preview", empty && "oc-barcode-preview--empty")} aria-label="Barcode preview">
+          {message != null ? <div className="oc-barcode-preview-bars" aria-hidden="true" /> : children ?? <div className="oc-barcode-preview-bars" aria-hidden="true" />}
+          <figcaption className="oc-barcode-preview-code">{message ?? (code ? code : emptyText)}</figcaption>
+        </figure>
+      )}
     </div>
   );
 });

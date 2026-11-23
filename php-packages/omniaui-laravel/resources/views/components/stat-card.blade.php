@@ -1,14 +1,15 @@
-{{-- File: resources/views/components/stat-card.blade.php | Map: card (div / a) -> icon slot -> body (value + trend, label)
+{{-- File: resources/views/components/stat-card.blade.php | Map: card (div / a / button) -> icon slot -> body (value + trend, label)
      OmniaUI stat card: compact KPI tile. Put several in <div class="oc-stat-card-grid">. Needs @birdycom/omniaui CSS.
-     Props: value, label, trend (chip text, e.g. "+12%"), down (trend goes down), tone (accent|success|warning), stripe, href (makes it a link).
+     Props: value, label, trend (chip text, e.g. "+12%"), down (trend goes down), tone (accent|success|warning), stripe, href (makes it a link),
+     button (makes it a <button type="button">; add onclick, wire:click or popovertarget as attributes).
      Slot: icon. --}}
-@props(['value' => null, 'label' => null, 'trend' => null, 'down' => false, 'tone' => null, 'stripe' => false, 'href' => null, 'icon' => null])
-@php($tag = $href ? 'a' : 'div')
+@props(['value' => null, 'label' => null, 'trend' => null, 'down' => false, 'tone' => null, 'stripe' => false, 'href' => null, 'icon' => null, 'button' => false])
+@php($tag = $href ? 'a' : ($button ? 'button' : 'div'))
 <{{ $tag }} {{ $attributes->class([
     'oc-stat-card',
     'oc-stat-card--'.$tone => in_array($tone, ['accent', 'success', 'warning'], true),
     'oc-stat-card--stripe' => $stripe,
-])->merge($href ? ['href' => $href] : []) }}>
+])->merge($href ? ['href' => $href] : ($button ? ['type' => 'button'] : [])) }}>
     @if (isset($icon) && trim((string) $icon) !== '')
         <span class="oc-stat-card-icon" aria-hidden="true">{{ $icon }}</span>
     @endif

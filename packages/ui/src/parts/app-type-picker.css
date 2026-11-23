@@ -1,5 +1,7 @@
-/* File: packages/blocks/src/parts/app-type-picker.css
+/* File: packages/ui/src/parts/app-type-picker.css (in the components CSS since 0.17.0, so an editor that does not load
+   the blocks CSS can use it too)
    Map: frame -> head -> tools (search + category chips) -> grid of type cards (radio, preview, name, hint)
+        -> action mode (buttons: a click adds, cards can be dragged, a reason on a card that is not available)
         -> mini previews (text, image, question, callout, link, countdown, tip, video, code) -> foot -> container sizes
    Type picker: a gallery of the content types a user can add (to a page, a step, a lesson, a form). Each card is a
    label around a radio, so picking works with a click, a tap or the arrow keys, without JavaScript. The small preview
@@ -209,6 +211,52 @@
   .oc-block-type-picker-tools { grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr); }
   .oc-block-type-picker-tools .oc-chip-filter { justify-content: flex-end; }
   .oc-block-type-picker-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 10.5rem), 1fr)); }
+}
+
+/* Action mode (0.17.0): .oc-block-type-picker--action, every card a <button>: a click or Enter adds that type at once,
+   nothing is "selected", the arrow keys only move the focus. A card that cannot be used now keeps the focus
+   (aria-disabled="true", not disabled) and says why in .oc-block-type-picker-reason. [draggable="true"] shows a grab
+   cursor. */
+button.oc-block-type-picker-item {
+  inline-size: 100%;
+  font: inherit;
+  text-align: start;
+  color: inherit;
+  align-content: start;
+}
+.oc-block-type-picker--action .oc-block-type-picker-item::after { content: none; }
+.oc-block-type-picker--action .oc-block-type-picker-item:focus-visible {
+  outline: var(--oc-focus-width, 2px) solid var(--oc-ring);
+  outline-offset: 2px;
+}
+.oc-block-type-picker--action .oc-block-type-picker-item:active:not([aria-disabled="true"]) {
+  border-color: var(--oc-primary);
+  background: oklch(from var(--oc-primary) l c h / 0.07);
+}
+.oc-block-type-picker-item[draggable="true"]:not([aria-disabled="true"]) { cursor: grab; }
+.oc-block-type-picker-item[draggable="true"]:active { cursor: grabbing; }
+.oc-block-type-picker-item[aria-disabled="true"] { cursor: not-allowed; border-style: dashed; }
+.oc-block-type-picker-item[aria-disabled="true"] .oc-block-type-picker-preview { opacity: 0.45; }
+.oc-block-type-picker-item[aria-disabled="true"] .oc-block-type-picker-name { color: var(--oc-muted-foreground); }
+.oc-block-type-picker-item[aria-disabled="true"]:hover { border-color: var(--oc-border); background: var(--oc-card); }
+.oc-block-type-picker-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding-inline: 0.15rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--oc-foreground);
+}
+.oc-block-type-picker-reason::before {
+  content: "";
+  flex: none;
+  inline-size: 0.8rem;
+  block-size: 0.8rem;
+  margin-block-start: 0.1rem;
+  background: var(--oc-warning);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 15h-2v-2h2zm0-4h-2V7h2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 15h-2v-2h2zm0-4h-2V7h2z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 @media (prefers-reduced-motion: reduce) {

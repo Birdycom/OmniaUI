@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Media card", "category": "Media", "description": "Feed card for a video: thumb, title, channel and menu.", "nav": "Media card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Media card", "category": "Media", "description": "Feed card for a video: a thumb with duration and watch progress, the title, an avatar, the channel line and a menu, plus a compact size for grids.", "nav": "Media card", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/media-card.html | Map: hero -> demo -> grid (compact, no avatar) -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Media card</h1>
@@ -12,6 +12,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. Click the ⋮ button for the menu.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title">Media card <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">A video card: picture with duration and progress, then the title, the channel and a menu. Click the three dots for the menu.</p>
           <oc-demo title="Media card" size="tall">
 <article class="oc-media-card" style="max-inline-size:20rem">
@@ -35,6 +36,100 @@
     <a class="oc-dropdown-item" href="#demo">Not interested</a>
   </div>
 </article>
+<oc-code lang="tsx">import { DropdownItem, DropdownSeparator, MediaCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;MediaCard
+      style={{ maxInlineSize: "20rem" }}
+      href="#demo"
+      title="Building a cabin by the lake, part 3: the roof goes on"
+      meta={&lt;&gt;&lt;a href="#demo"&gt;North Studio&lt;/a&gt; · 24K views · 3 days ago&lt;/&gt;}
+      avatar="NS"
+      thumb={{ art: 2, duration: "18:32", progress: 65 }}
+      menu={
+        &lt;&gt;
+          &lt;DropdownItem href="#demo"&gt;Save to playlist&lt;/DropdownItem&gt;
+          &lt;DropdownItem href="#demo"&gt;Share&lt;/DropdownItem&gt;
+          &lt;DropdownSeparator /&gt;
+          &lt;DropdownItem href="#demo"&gt;Not interested&lt;/DropdownItem&gt;
+        &lt;/&gt;
+      }
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDropdownItem, OcDropdownSeparator, OcMediaCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcMediaCard
+    style="max-inline-size:20rem"
+    href="#demo"
+    title="Building a cabin by the lake, part 3: the roof goes on"
+    avatar="NS"
+    :thumb="{ art: 2, duration: '18:32', progress: 65 }"
+  &gt;
+    &lt;template #meta&gt;&lt;a href="#demo"&gt;North Studio&lt;/a&gt; · 24K views · 3 days ago&lt;/template&gt;
+    &lt;template #menu&gt;
+      &lt;OcDropdownItem href="#demo"&gt;Save to playlist&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownItem href="#demo"&gt;Share&lt;/OcDropdownItem&gt;
+      &lt;OcDropdownSeparator /&gt;
+      &lt;OcDropdownItem href="#demo"&gt;Not interested&lt;/OcDropdownItem&gt;
+    &lt;/template&gt;
+  &lt;/OcMediaCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Slot meta: a channel link · views · date (the link stays clickable above the card link) --}}
+&lt;x-oc::media-card style="max-inline-size:20rem" id="oc-media-card" href="#demo"
+    title="Building a cabin by the lake, part 3: the roof goes on"
+    avatar="NS"
+    :thumb="['art' =&gt; 2, 'duration' =&gt; '18:32', 'progress' =&gt; 65]"&gt;
+    &lt;x-slot:meta&gt;&lt;a href="#demo"&gt;North Studio&lt;/a&gt; · 24K views · 3 days ago&lt;/x-slot:meta&gt;
+    &lt;x-slot:menu&gt;
+        &lt;x-oc::dropdown.item href="#demo"&gt;Save to playlist&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item href="#demo"&gt;Share&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.item href="#demo"&gt;Not interested&lt;/x-oc::dropdown.item&gt;
+    &lt;/x-slot:menu&gt;
+&lt;/x-oc::media-card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class MediaCard extends Component
+{
+    public string $channel = 'North Studio';
+
+    public bool $saved = false;
+
+    public function save(): void
+    {
+        $this-&gt;saved = true;
+    }
+
+    public function render()
+    {
+        return view('livewire.media-card');
+    }
+}
+
+{{-- resources/views/livewire/media-card.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::media-card style="max-inline-size:20rem" id="oc-media-card" href="#demo"
+        title="Building a cabin by the lake, part 3: the roof goes on"
+        avatar="NS"
+        :thumb="['art' =&gt; 2, 'duration' =&gt; '18:32', 'progress' =&gt; 65]"&gt;
+        &lt;x-slot:meta&gt;&lt;a href="#demo"&gt;{{ $channel }}&lt;/a&gt; · 24K views · 3 days ago&lt;/x-slot:meta&gt;
+        &lt;x-slot:menu&gt;
+            &lt;x-oc::dropdown.item wire:click="save"&gt;{{ $saved ? 'Saved to playlist' : 'Save to playlist' }}&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.item href="#demo"&gt;Share&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.separator /&gt;
+            &lt;x-oc::dropdown.item href="#demo"&gt;Not interested&lt;/x-oc::dropdown.item&gt;
+        &lt;/x-slot:menu&gt;
+    &lt;/x-oc::media-card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="grid" class="oc-section-content__title mt-2">Compact grid</h3><p class="oc-section-content__desc"><code>--compact</code> for dense grids. Leave out the avatar on a channel page; the body switches to two columns by itself (<code>:has()</code>).</p>
           <oc-demo title="Compact grid">
@@ -52,6 +147,59 @@
     <div class="oc-media-card__body"><div class="oc-media-card__text"><h3 class="oc-media-card__title"><a href="#grid">Rye, spelt and the perfect crust</a></h3><p class="oc-media-card__meta">8.4K views · 1 month ago</p></div></div>
   </article>
 </div>
+<oc-code lang="tsx">import { MediaCard } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(12rem,1fr))", gap: "1.25rem", inlineSize: "100%" }}&gt;
+      &lt;MediaCard compact href="#grid" title="Sourdough in 5 steps" meta="1.2K views · 1 week ago" thumb={{ duration: "4:51" }} /&gt;
+      &lt;MediaCard compact href="#grid" title="Bakery Q&amp;A, live from the kitchen" meta="310 watching" thumb={{ art: 3, badge: "LIVE", live: true }} /&gt;
+      &lt;MediaCard compact href="#grid" title="Rye, spelt and the perfect crust" meta="8.4K views · 1 month ago" thumb={{ art: 6, duration: "11:20", progress: 100, watched: true }} /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcMediaCard } from "@birdycom/omniaui-vue";
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(12rem,1fr));gap:1.25rem;inline-size:100%"&gt;
+    &lt;OcMediaCard compact href="#grid" title="Sourdough in 5 steps" meta="1.2K views · 1 week ago" :thumb="{ duration: '4:51' }" /&gt;
+    &lt;OcMediaCard compact href="#grid" title="Bakery Q&amp;A, live from the kitchen" meta="310 watching" :thumb="{ art: 3, badge: 'LIVE', live: true }" /&gt;
+    &lt;OcMediaCard compact href="#grid" title="Rye, spelt and the perfect crust" meta="8.4K views · 1 month ago" :thumb="{ art: 6, duration: '11:20', progress: 100, watched: true }" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(12rem,1fr));gap:1.25rem;inline-size:100%"&gt;
+    &lt;x-oc::media-card compact href="#grid" title="Sourdough in 5 steps" meta="1.2K views · 1 week ago" :thumb="['duration' =&gt; '4:51']" /&gt;
+    &lt;x-oc::media-card compact href="#grid" title="Bakery Q&amp;A, live from the kitchen" meta="310 watching" :thumb="['art' =&gt; 3, 'badge' =&gt; 'LIVE', 'live' =&gt; true]" /&gt;
+    &lt;x-oc::media-card compact href="#grid" title="Rye, spelt and the perfect crust" meta="8.4K views · 1 month ago" :thumb="['art' =&gt; 6, 'duration' =&gt; '11:20', 'progress' =&gt; 100, 'watched' =&gt; true]" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class MediaCardCompactGrid extends Component
+{
+    public array $videos = [
+        ['title' =&gt; 'Sourdough in 5 steps', 'meta' =&gt; '1.2K views · 1 week ago', 'thumb' =&gt; ['duration' =&gt; '4:51']],
+        ['title' =&gt; 'Bakery Q&amp;A, live from the kitchen', 'meta' =&gt; '310 watching', 'thumb' =&gt; ['art' =&gt; 3, 'badge' =&gt; 'LIVE', 'live' =&gt; true]],
+        ['title' =&gt; 'Rye, spelt and the perfect crust', 'meta' =&gt; '8.4K views · 1 month ago', 'thumb' =&gt; ['art' =&gt; 6, 'duration' =&gt; '11:20', 'progress' =&gt; 100, 'watched' =&gt; true]],
+    ];
+
+    public function render()
+    {
+        return view('livewire.media-card-compact-grid');
+    }
+}
+
+{{-- resources/views/livewire/media-card-compact-grid.blade.php --}}
+&lt;div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(12rem,1fr));gap:1.25rem;inline-size:100%"&gt;
+    @foreach ($videos as $video)
+        &lt;x-oc::media-card compact href="#grid" :title="$video['title']" :meta="$video['meta']" :thumb="$video['thumb']" /&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

@@ -5,6 +5,7 @@
 import { transform } from "../lib/transform.mjs";
 import { leftSidebar, tocSidebar } from "../lib/nav.mjs";
 import { VERSION, HEADER_LINKS, PRO_LINK, GITHUB, OMNIACSS_URL, sectionOf, crossLinks } from "../lib/site.mjs";
+import { SITE, SITE_URL, plainText, canonicalUrl, jsonLd, ldScript } from "./seo.mjs";
 
 interface Props { source: string; route: string }
 const { source, route } = Astro.props;
@@ -21,6 +22,17 @@ const toc = page.toc;
 const section = sectionOf(route);
 // Every sidebar page on this site uses the UI shell (.ocd-shell).
 const isSidebar = meta.layout === "sidebar";
+// Search engines and share previews (layouts/seo.mjs): canonical + og:url on the production address, one share image
+// per site, JSON-LD. The description is decoded once (Astro escapes the attribute itself: "&lt;details&gt;" in the meta
+// becomes <details> in the text, not "<details&amp;gt;"). "robots": "noindex" in the page meta (404 page) drops the
+// canonical and the structured data.
+const title = plainText(meta.title) || SITE.name;
+const description = plainText(meta.description);
+const shareDescription = description || SITE.description;
+const noindex = /noindex/.test(meta.robots || "");
+const canonical = noindex ? null : canonicalUrl(route);
+const shareImage = SITE_URL + SITE.image.path;
+const structured = noindex ? [] : jsonLd({ route, title, description: shareDescription });
 
 // Utilities: the on-demand site build (only the classes the site uses), made by scripts/sync-site.mjs from
 // the vendored OmniaCSS copy. There is no full utility build in public/ (it is 11 MB); in "astro dev" new
@@ -41,9 +53,27 @@ const github = "M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  {meta.description && <meta name="description" content={meta.description.replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&amp;/g, "&")} />}
+  <title>{title}</title>
+  {description && <meta name="description" content={description} />}
+  {noindex && <meta name="robots" content={meta.robots} />}
+  {canonical && <link rel="canonical" href={canonical} />}
+  <meta property="og:type" content={SITE.docs(route) ? "article" : "website"} />
+  <meta property="og:site_name" content={SITE.name} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={shareDescription} />
+  {canonical && <meta property="og:url" content={canonical} />}
+  <meta property="og:image" content={shareImage} />
+  <meta property="og:image:width" content={String(SITE.image.width)} />
+  <meta property="og:image:height" content={String(SITE.image.height)} />
+  <meta property="og:image:alt" content={SITE.image.alt} />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={shareDescription} />
+  <meta name="twitter:image" content={shareImage} />
+  <meta name="twitter:image:alt" content={SITE.image.alt} />
+  {structured.map((data) => <script is:inline type="application/ld+json" set:html={ldScript(data)} />)}
   <meta name="generator" content={`OmniaUI ${VERSION}`}>
-  <title>{meta.title || "OmniaUI"}</title>
   <!-- Favicon: SVG for modern browsers, ICO/PNG as fallback (Safari, Google, /favicon.ico). "icon": "pro" in the
        page meta shows the OmniaUI Pro star instead of the OmniaUI puzzle piece. -->
   <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -62,8 +92,9 @@ const github = "M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9
     addEventListener("click", carryTheme); addEventListener("auxclick", carryTheme);
     addEventListener("change", (e) => { if (e.target.name !== "oc-theme" || !e.target.closest(".ocm-theme")) return; try { localStorage.setItem("oc-theme", e.target.value); } catch {} document.documentElement.dataset.theme = e.target.value === "system" ? "" : e.target.value; syncDemos(); });
     // Theme switches inside demos (app shell, app header …) show the theme the page has now and follow the header switch;
-    // a click in a demo still themes only that demo (.oc-theme-scope).
-    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } };
+    // a click in a demo still themes only that demo (.oc-theme-scope). A demo themed by a toggle button (data-theme on
+    // the scope, set by oc-theme.js) falls back to the page theme when the header switch changes.
+    const syncDemos = () => { const t = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); for (const sw of document.querySelectorAll(".oc-theme-scope .oc-theme-switch")) { const r = sw.querySelector('input[value="system"]') || sw.querySelector(`input[value="${t}"]`); if (r) r.checked = true; } for (const scope of document.querySelectorAll(".oc-theme-scope[data-theme]")) delete scope.dataset.theme; for (const b of document.querySelectorAll(".oc-theme-scope [data-oc-theme-toggle]")) b.setAttribute("aria-pressed", t === "dark" ? "true" : "false"); };
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (!document.documentElement.dataset.theme) syncDemos(); });
     addEventListener("DOMContentLoaded", () => { const t = document.documentElement.dataset.theme || "system"; const r = document.querySelector(`.ocm-theme input[value="${t}"]`); if (r) r.checked = true; syncDemos(); });
   </script>
@@ -72,8 +103,10 @@ const github = "M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9
 </head>
 <body class={meta.bodyClass || undefined}>
   <header class:list={["oc-topbar", { "oc-topbar--fixed": isSidebar }]}>
-    {isSidebar && <input type="checkbox" id="ocd-nav-toggle" class="ocd-nav-toggle" aria-label="Show the menu" />}
-    {isSidebar && <label class="ocd-nav-button" for="ocd-nav-toggle" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></label>}
+    {/* Every page has the menu button: docs pages open the left menu with it (from 900px down), pages without a sidebar
+        only the site links (.ocd-nav-button--site); from 1020px down the site links open with it on every page. */}
+    <input type="checkbox" id="ocd-nav-toggle" class="ocd-nav-toggle" aria-label="Show the menu" />
+    <label class:list={["ocd-nav-button", { "ocd-nav-button--site": !isSidebar }]} for="ocd-nav-toggle" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></label>
     <a class:list={["oc-topbar-brand", { "oc-topbar-brand--pro": meta.icon === "pro" }]} href="/index.html">OmniaUI<span class="oc-badge-version ml-1">v{VERSION}</span></a>
     <nav class="oc-topbar-nav" aria-label="Main">
       <ul class="oc-navmenu oc-navmenu--site">
@@ -113,6 +146,76 @@ const github = "M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9
     <Fragment set:html={html} />
   )}
 
+  {/* "footer": "site" in the page meta (the home): the full site footer, drawn by /css/oc-home.css. Same columns and
+      order as on omniacss.eu (apps/docs/src/layouts/ContentPage.astro in OmniaCSS); the bottom line repeats the bar. */}
+  {meta.footer === "site" ? (
+    <footer class="oc-site-footer hm-footer">
+      <div class="oc-container hm-frame">
+        <div class="oc-site-footer__grid">
+          <div class="oc-site-footer__about">
+            <a class="hm-footer-brand" href="/index.html">OmniaUI</a>
+            <p>CSS-first components and blocks on OmniaCSS: native HTML with Vue, React, Blade and Livewire wrappers. Made by Birdycom in Belgium.</p>
+            <p><span class="oc-pill">v{VERSION} · MIT + Pro</span></p>
+          </div>
+          <nav aria-label="OmniaCSS">
+            <h2 class="oc-site-footer__title">OmniaCSS</h2>
+            <ul class="oc-site-footer__list">
+              <li><a href={`${OMNIACSS_URL}/docs/index.html`}>Docs</a></li>
+              <li><a href={`${OMNIACSS_URL}/docs/colors/system.html`}>Color system</a></li>
+              <li><a href={`${OMNIACSS_URL}/docs/functions/index.html`}>CSS functions</a></li>
+              <li><a href={`${OMNIACSS_URL}/docs/editor.html`}>Editor extension</a></li>
+              <li><a href={`${OMNIACSS_URL}/docs/ai.html`}>AI assistants (MCP)</a></li>
+              <li><a href={`${OMNIACSS_URL}/docs/migrate.html`}>Migrate</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="OmniaUI">
+            <h2 class="oc-site-footer__title">OmniaUI</h2>
+            <ul class="oc-site-footer__list">
+              <li><a href="/index.html">Overview</a></li>
+              <li><a href="/ui/components.html">Components</a></li>
+              <li><a href="/ui/blocks.html">Blocks</a></li>
+              <li><a href="/ui/starter-kits.html">Starter kits</a></li>
+              <li><a href="/ui/webicons.html">Webicons</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="Pro">
+            <h2 class="oc-site-footer__title">Pro</h2>
+            <ul class="oc-site-footer__list">
+              <li><a href="/ui/pro.html">OmniaUI Pro</a></li>
+              <li><a href={PRO_LINK.href}>Pricing</a></li>
+              <li><a href="/legal/pro-license.html">Pro license</a></li>
+              <li><a href="/ui/security.html">Security</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="Resources">
+            <h2 class="oc-site-footer__title">Resources</h2>
+            <ul class="oc-site-footer__list">
+              <li><a href="https://github.com/Birdycom/OmniaCSS">GitHub OmniaCSS</a></li>
+              <li><a href={GITHUB}>GitHub OmniaUI</a></li>
+              <li><a href="https://www.npmjs.com/package/@birdycom/omniacss">npm omniacss</a></li>
+              <li><a href="https://www.npmjs.com/package/@birdycom/omniaui">npm omniaui</a></li>
+              <li><a href="https://marketplace.visualstudio.com/items?itemName=Birdycom.omniacss-intellisense">VS Code extension</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="Legal">
+            <h2 class="oc-site-footer__title">Legal</h2>
+            <ul class="oc-site-footer__list">
+              <li><a href="/legal/terms.html#license">License (MIT)</a></li>
+              <li><a href="https://birdycom.be/en/terms/omniaui-pro">Terms</a></li>
+              <li><a href="https://birdycom.be/en/privacy">Privacy</a></li>
+              <li><a href="https://birdycom.be/en/cookies">Cookies</a></li>
+              <li><a href="mailto:support@omniaui.eu">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="oc-site-footer__bottom">
+          <span>© 2022–2026 Birdycom · OmniaUI v{VERSION} — CSS-first components and blocks on OmniaCSS</span>
+          <span><a href="https://birdycom.be/en">birdycom.be</a></span>
+        </div>
+      </div>
+    </footer>
+  ) : (
   <footer class="oc-footerbar oc-footerbar--fixed">OmniaUI v{VERSION} — CSS-first components and blocks on OmniaCSS{" · "}<a href={`${OMNIACSS_URL}/docs/index.html`}>OmniaCSS docs</a>{" · "}<a href={GITHUB}>GitHub</a>{" · "}<a href="/legal/terms.html#license">License</a>{" · "}<a href="https://birdycom.be/en/terms/omniaui-pro">Terms</a>{" · "}<a href="https://birdycom.be/en/privacy">Privacy</a>{" · "}<a href="https://birdycom.be/en/cookies">Cookies</a></footer>
+  )}
 </body>
 </html>

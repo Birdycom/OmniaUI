@@ -1,0 +1,458 @@
+<!--oc-page {"title": "OmniaUI - Module colour", "category": "App UX", "since": "0.17.0", "description": "Give a part of an app its own accent: data-module with ten colour names or your own --oc-module, followed by buttons, tabs, badges and fields.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<section class="oc-hero" id="overview">
+        <h1 class="oc-hero-title">Module colour</h1>
+        <p class="oc-hero-text">Give each part of an app its own accent with one attribute: <code>data-module="green"</code> on a wrapper, or the <code>module</code> prop on a component. Buttons, tabs, fields, launcher cards, form sections, the module header and the sidebar follow; without it everything stays in the primary colour. <a href="../components.html">All components</a>.</p>
+      </section>
+
+      <section class="oc-docs-section" id="demo">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Demo</h2>
+          <p class="oc-section-header__desc">Plain HTML and CSS: the colour comes from <code>packages/ui/src/parts/app-module-color.css</code>, no JavaScript.</p>
+        </div>
+        <div class="oc-section-content">
+          <h3 class="oc-section-content__title" id="scope">One attribute for a whole module <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Put <code>data-module="green"</code> on the element around a module (the page, a panel, the app shell). Inside it the primary button, the link button, the active tab and the focus ring of every field take the module colour; the other button variants keep their own look. A badge only follows when you ask: <code>variant="module"</code> is a soft tint, a badge with its own <code>module</code> is solid. Click in the field to see the ring.</p>
+          <oc-demo title="Module colour - scope">
+<div data-module="green" style="display:grid;gap:1rem;inline-size:100%">
+  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
+    <button class="oc-btn" type="button">New invoice</button>
+    <button class="oc-btn oc-btn--outline" type="button">Export</button>
+    <button class="oc-btn oc-btn--link" type="button">Settings</button>
+    <span class="oc-badge oc-badge--module">Sales</span>
+    <span class="oc-badge" data-module="green">12 open</span>
+  </div>
+  <div class="oc-tabset">
+    <div class="oc-tab-list" role="tablist">
+      <label class="oc-tab-trigger"><input type="radio" name="oc-module-tabs" checked> Invoices</label>
+      <label class="oc-tab-trigger"><input type="radio" name="oc-module-tabs"> Quotes</label>
+      <label class="oc-tab-trigger"><input type="radio" name="oc-module-tabs"> Payments</label>
+    </div>
+    <div class="oc-tab-panel">Invoices of Company 1.</div>
+    <div class="oc-tab-panel">Quotes waiting for an answer.</div>
+    <div class="oc-tab-panel">Payments received this month.</div>
+  </div>
+  <div class="oc-field" style="max-inline-size:20rem">
+    <label class="oc-field-label" for="oc-module-customer">Customer</label>
+    <input class="oc-input" id="oc-module-customer" value="Customer 1">
+  </div>
+</div>
+<oc-code lang="html">&lt;div data-module="green"&gt;
+  &lt;button class="oc-btn" type="button"&gt;New invoice&lt;/button&gt;
+  &lt;button class="oc-btn oc-btn--outline" type="button"&gt;Export&lt;/button&gt;
+  &lt;button class="oc-btn oc-btn--link" type="button"&gt;Settings&lt;/button&gt;
+  &lt;span class="oc-badge oc-badge--module"&gt;Sales&lt;/span&gt;
+  &lt;span class="oc-badge" data-module="green"&gt;12 open&lt;/span&gt;
+
+  &lt;div class="oc-tabset"&gt;
+    &lt;div class="oc-tab-list" role="tablist"&gt;
+      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-module-tabs" checked&gt; Invoices&lt;/label&gt;
+      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-module-tabs"&gt; Quotes&lt;/label&gt;
+      &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-module-tabs"&gt; Payments&lt;/label&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-tab-panel"&gt;Invoices of Company 1.&lt;/div&gt;
+    &lt;div class="oc-tab-panel"&gt;Quotes waiting for an answer.&lt;/div&gt;
+    &lt;div class="oc-tab-panel"&gt;Payments received this month.&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="oc-field"&gt;
+    &lt;label class="oc-field-label" for="customer"&gt;Customer&lt;/label&gt;
+    &lt;input class="oc-input" id="customer" value="Customer 1"&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Badge, Button, FormField, Input, Tabs } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div data-module="green"&gt;
+      &lt;Button&gt;New invoice&lt;/Button&gt;
+      &lt;Button variant="outline"&gt;Export&lt;/Button&gt;
+      &lt;Button variant="link"&gt;Settings&lt;/Button&gt;
+      &lt;Badge variant="module"&gt;Sales&lt;/Badge&gt;
+      &lt;Badge module="green"&gt;12 open&lt;/Badge&gt;
+      &lt;Tabs
+        name="oc-module-tabs"
+        tabs={[
+          { value: "invoices", label: "Invoices", content: "Invoices of Company 1." },
+          { value: "quotes", label: "Quotes", content: "Quotes waiting for an answer." },
+          { value: "payments", label: "Payments", content: "Payments received this month." },
+        ]}
+      /&gt;
+      &lt;FormField label="Customer"&gt;
+        &lt;Input defaultValue="Customer 1" /&gt;
+      &lt;/FormField&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBadge, OcButton, OcFormField, OcInput, OcTabs } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const tab = ref("invoices");
+const customer = ref("Customer 1");
+const tabs = [
+  { value: "invoices", label: "Invoices" },
+  { value: "quotes", label: "Quotes" },
+  { value: "payments", label: "Payments" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div data-module="green"&gt;
+    &lt;OcButton&gt;New invoice&lt;/OcButton&gt;
+    &lt;OcButton variant="outline"&gt;Export&lt;/OcButton&gt;
+    &lt;OcButton variant="link"&gt;Settings&lt;/OcButton&gt;
+    &lt;OcBadge variant="module"&gt;Sales&lt;/OcBadge&gt;
+    &lt;OcBadge module="green"&gt;12 open&lt;/OcBadge&gt;
+    &lt;OcTabs v-model="tab" name="oc-module-tabs" :tabs="tabs"&gt;
+      &lt;template #invoices&gt;Invoices of Company 1.&lt;/template&gt;
+      &lt;template #quotes&gt;Quotes waiting for an answer.&lt;/template&gt;
+      &lt;template #payments&gt;Payments received this month.&lt;/template&gt;
+    &lt;/OcTabs&gt;
+    &lt;OcFormField label="Customer"&gt;
+      &lt;OcInput v-model="customer" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div data-module="green"&gt;
+    &lt;x-oc::button&gt;New invoice&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="outline"&gt;Export&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="link" href="/settings"&gt;Settings&lt;/x-oc::button&gt;
+    &lt;x-oc::badge variant="module"&gt;Sales&lt;/x-oc::badge&gt;
+    &lt;x-oc::badge module="green"&gt;12 open&lt;/x-oc::badge&gt;
+
+    &lt;x-oc::tabs name="oc-module-tabs" :tabs="['Invoices', 'Quotes', 'Payments']"&gt;
+        &lt;x-oc::tabs.panel&gt;Invoices of Company 1.&lt;/x-oc::tabs.panel&gt;
+        &lt;x-oc::tabs.panel&gt;Quotes waiting for an answer.&lt;/x-oc::tabs.panel&gt;
+        &lt;x-oc::tabs.panel&gt;Payments received this month.&lt;/x-oc::tabs.panel&gt;
+    &lt;/x-oc::tabs&gt;
+
+    &lt;x-oc::form-field label="Customer" for="customer"&gt;
+        &lt;x-oc::input id="customer" name="customer" value="Customer 1" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SalesToolbar extends Component
+{
+    public string $customer = 'Customer 1';
+
+    public int $open = 12;
+
+    public function newInvoice(): void
+    {
+        $this-&gt;redirect('/invoices/create', navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.sales-toolbar');
+    }
+}
+
+{{-- resources/views/livewire/sales-toolbar.blade.php --}}
+&lt;div&gt;
+    &lt;div data-module="green"&gt;
+        &lt;x-oc::button wire:click="newInvoice"&gt;New invoice&lt;/x-oc::button&gt;
+        &lt;x-oc::badge variant="module"&gt;Sales&lt;/x-oc::badge&gt;
+        &lt;x-oc::badge module="green"&gt;{{ $open }} open&lt;/x-oc::badge&gt;
+
+        &lt;x-oc::form-field label="Customer" for="customer"&gt;
+            &lt;x-oc::input id="customer" wire:model.blur="customer" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="colours">The ten colours <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Generic colour names, each a <code>light-dark()</code> pair from the OmniaCSS palette: a dark tone with white text in light mode, a light tone with dark text in dark mode. Every pair reaches 4.5:1 for the text on the button and for module text on the page, so a badge or a link in the module colour stays readable. Switch the theme to compare.</p>
+          <oc-demo title="Module colour - ten colours">
+<div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fill,minmax(7.5rem,1fr));gap:0.75rem;align-items:stretch">
+  <div data-module="blue" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>blue</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="green" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>green</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="purple" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>purple</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="gold" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>gold</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="cyan" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>cyan</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="pink" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>pink</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="red" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>red</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="orange" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>orange</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="teal" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>teal</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+  <div data-module="slate" style="display:grid;gap:0.5rem;align-content:start;padding:0.75rem;border:1px solid var(--oc-border);border-radius:var(--oc-radius);background:var(--oc-card)">
+    <code>slate</code>
+    <button class="oc-btn oc-btn--sm" type="button">Save</button>
+    <span class="oc-badge oc-badge--module" style="justify-self:start">Module</span>
+  </div>
+</div>
+<oc-code lang="html">&lt;!-- blue, green, purple, gold, cyan, pink, red, orange, teal, slate --&gt;
+&lt;div data-module="blue"&gt;
+  &lt;button class="oc-btn oc-btn--sm" type="button"&gt;Save&lt;/button&gt;
+  &lt;span class="oc-badge oc-badge--module"&gt;Module&lt;/span&gt;
+&lt;/div&gt;
+&lt;div data-module="gold"&gt;
+  &lt;button class="oc-btn oc-btn--sm" type="button"&gt;Save&lt;/button&gt;
+  &lt;span class="oc-badge oc-badge--module"&gt;Module&lt;/span&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Badge, Button } from "@birdycom/omniaui-react";
+
+const modules = ["blue", "green", "purple", "gold", "cyan", "pink", "red", "orange", "teal", "slate"];
+
+export function Example() {
+  return (
+    &lt;div className="grid gap-3"&gt;
+      {modules.map((name) =&gt; (
+        &lt;div key={name} data-module={name}&gt;
+          &lt;code&gt;{name}&lt;/code&gt;
+          &lt;Button size="sm"&gt;Save&lt;/Button&gt;
+          &lt;Badge variant="module"&gt;Module&lt;/Badge&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBadge, OcButton } from "@birdycom/omniaui-vue";
+
+const modules = ["blue", "green", "purple", "gold", "cyan", "pink", "red", "orange", "teal", "slate"];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="grid gap-3"&gt;
+    &lt;div v-for="name in modules" :key="name" :data-module="name"&gt;
+      &lt;code&gt;{{ name }}&lt;/code&gt;
+      &lt;OcButton size="sm"&gt;Save&lt;/OcButton&gt;
+      &lt;OcBadge variant="module"&gt;Module&lt;/OcBadge&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="grid gap-3"&gt;
+    @foreach (['blue', 'green', 'purple', 'gold', 'cyan', 'pink', 'red', 'orange', 'teal', 'slate'] as $name)
+        &lt;div data-module="{{ $name }}"&gt;
+            &lt;code&gt;{{ $name }}&lt;/code&gt;
+            &lt;x-oc::button size="sm"&gt;Save&lt;/x-oc::button&gt;
+            &lt;x-oc::badge variant="module"&gt;Module&lt;/x-oc::badge&gt;
+        &lt;/div&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ModuleSwatch extends Component
+{
+    public string $module = 'blue';
+
+    public function save(): void
+    {
+        // ...
+    }
+
+    public function render()
+    {
+        return view('livewire.module-swatch');
+    }
+}
+
+{{-- resources/views/livewire/module-swatch.blade.php --}}
+&lt;div&gt;
+    &lt;div data-module="{{ $module }}"&gt;
+        &lt;x-oc::button size="sm" wire:click="save"&gt;Save&lt;/x-oc::button&gt;
+        &lt;x-oc::badge variant="module"&gt;{{ ucfirst($module) }}&lt;/x-oc::badge&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="own">Your own colour <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">A name that is not in the list sets no colour, so you choose it: set <code>--oc-module</code> on the same element (a <code>light-dark()</code> pair: dark in light mode, light in dark mode). <code>--oc-module-soft</code> is mixed from it; set <code>--oc-module-fg</code> too when white (light mode) and near-black (dark mode) do not fit your colour.</p>
+          <oc-demo title="Module colour - your own colour">
+<div data-module="brand" style="--oc-module: light-dark(var(--color-violet-95), var(--color-violet-50));display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:1rem;align-items:stretch">
+  <div style="display:grid;gap:0.75rem;align-content:start">
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
+      <button class="oc-btn" type="button">New project</button>
+      <span class="oc-badge oc-badge--module">Projects</span>
+    </div>
+    <div class="oc-field">
+      <label class="oc-field-label" for="oc-module-project">Project</label>
+      <input class="oc-input" id="oc-module-project" value="Project 1">
+    </div>
+  </div>
+  <a class="oc-launcher" href="#own" aria-current="true">
+    <span class="oc-launcher-icon" aria-hidden="true"><svg data-icon="mdi:account-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2m0 7c2.67 0 8 1.33 8 4v3H4v-3c0-2.67 5.33-4 8-4m0 1.9c-2.97 0-6.1 1.46-6.1 2.1v1.1h12.2V17c0-.64-3.13-2.1-6.1-2.1"/></svg></span>
+    <h3 class="oc-launcher-title">Projects</h3>
+    <p class="oc-launcher-description">Plans, hours and files per customer.</p>
+  </a>
+</div>
+<oc-code lang="html">&lt;div data-module="brand" style="--oc-module: light-dark(var(--color-violet-95), var(--color-violet-50))"&gt;
+  &lt;button class="oc-btn" type="button"&gt;New project&lt;/button&gt;
+  &lt;span class="oc-badge oc-badge--module"&gt;Projects&lt;/span&gt;
+  &lt;div class="oc-field"&gt;
+    &lt;label class="oc-field-label" for="project"&gt;Project&lt;/label&gt;
+    &lt;input class="oc-input" id="project" value="Project 1"&gt;
+  &lt;/div&gt;
+  &lt;a class="oc-launcher" href="/projects" aria-current="true"&gt;
+    &lt;span class="oc-launcher-icon" aria-hidden="true"&gt;&lt;svg data-icon="mdi:account-outline" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2a2 2 0 0 0 2 2a2 2 0 0 0 2-2a2 2 0 0 0-2-2m0 7c2.67 0 8 1.33 8 4v3H4v-3c0-2.67 5.33-4 8-4m0 1.9c-2.97 0-6.1 1.46-6.1 2.1v1.1h12.2V17c0-.64-3.13-2.1-6.1-2.1"/&gt;&lt;/svg&gt;&lt;/span&gt;
+    &lt;h3 class="oc-launcher-title"&gt;Projects&lt;/h3&gt;
+    &lt;p class="oc-launcher-description"&gt;Plans, hours and files per customer.&lt;/p&gt;
+  &lt;/a&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import type { CSSProperties } from "react";
+import { Badge, Button, FormField, Input, LauncherCard, Webicon } from "@birdycom/omniaui-react";
+
+const brand = { "--oc-module": "light-dark(var(--color-violet-95), var(--color-violet-50))" } as CSSProperties;
+
+export function Example() {
+  return (
+    &lt;div data-module="brand" style={brand}&gt;
+      &lt;Button&gt;New project&lt;/Button&gt;
+      &lt;Badge variant="module"&gt;Projects&lt;/Badge&gt;
+      &lt;FormField label="Project"&gt;
+        &lt;Input defaultValue="Project 1" /&gt;
+      &lt;/FormField&gt;
+      &lt;LauncherCard
+        href="/projects"
+        active
+        icon={&lt;Webicon name="mdi:account-outline" /&gt;}
+        title="Projects"
+        description="Plans, hours and files per customer."
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBadge, OcButton, OcFormField, OcInput, OcLauncherCard, OcWebicon } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const project = ref("Project 1");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div data-module="brand" style="--oc-module: light-dark(var(--color-violet-95), var(--color-violet-50))"&gt;
+    &lt;OcButton&gt;New project&lt;/OcButton&gt;
+    &lt;OcBadge variant="module"&gt;Projects&lt;/OcBadge&gt;
+    &lt;OcFormField label="Project"&gt;
+      &lt;OcInput v-model="project" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcLauncherCard href="/projects" current title="Projects" description="Plans, hours and files per customer."&gt;
+      &lt;template #icon&gt;&lt;OcWebicon name="mdi:account-outline" /&gt;&lt;/template&gt;
+    &lt;/OcLauncherCard&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div data-module="brand" style="--oc-module: light-dark(var(--color-violet-95), var(--color-violet-50))"&gt;
+    &lt;x-oc::button&gt;New project&lt;/x-oc::button&gt;
+    &lt;x-oc::badge variant="module"&gt;Projects&lt;/x-oc::badge&gt;
+    &lt;x-oc::form-field label="Project" for="project"&gt;
+        &lt;x-oc::input id="project" name="project" value="Project 1" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::launcher-card href="/projects" active title="Projects" description="Plans, hours and files per customer."&gt;
+        &lt;x-slot:icon&gt;&lt;x-oc::webicon name="mdi:account-outline" /&gt;&lt;/x-slot:icon&gt;
+    &lt;/x-oc::launcher-card&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProjectsToolbar extends Component
+{
+    // A colour per tenant, from your own settings (a light-dark() pair keeps both themes readable).
+    public string $color = 'light-dark(var(--color-violet-95), var(--color-violet-50))';
+
+    public function create(): void
+    {
+        $this-&gt;redirect('/projects/create', navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.projects-toolbar');
+    }
+}
+
+{{-- resources/views/livewire/projects-toolbar.blade.php --}}
+&lt;div&gt;
+    &lt;div data-module="brand" style="--oc-module: {{ $color }}"&gt;
+        &lt;x-oc::button wire:click="create"&gt;New project&lt;/x-oc::button&gt;
+        &lt;x-oc::badge variant="module"&gt;Projects&lt;/x-oc::badge&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+        </div>
+      </section>
+
+      <section class="oc-docs-section" id="reference">
+        <div class="oc-section-header">
+          <h2 class="oc-section-header__title">Reference</h2>
+          <p class="oc-section-header__desc">Styles live in <code>packages/ui/src/parts/app-module-color.css</code> (module header: <code>packages/blocks/src/parts/app-modulehead-module.css</code>). Every consumer falls back on the primary token, so a page without a module looks as before.</p>
+        </div>
+        <div class="oc-section-content">
+          <table class="oc-table-ref">
+            <thead><tr><th class="w-perc-1/3">Attribute / token</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>data-module="&lt;name&gt;"</code></td><td>On any element: sets the module tokens for everything inside. Names: blue, green, purple, gold, cyan, pink, red, orange, teal, slate. Another name sets no colour (set <code>--oc-module</code> yourself).</td></tr>
+              <tr><td><code>--oc-module</code></td><td>Solid accent: primary button, active tab line, focus ring, launcher border and icon, module header icon. Read as <code>var(--oc-module, var(--oc-primary))</code>.</td></tr>
+              <tr><td><code>--oc-module-soft</code></td><td>Tint (12%) for backgrounds: module badge, launcher icon tile, form section icon, sidebar row, module header band.</td></tr>
+              <tr><td><code>--oc-module-fg</code></td><td>Text on the solid accent (white in light mode, near-black in dark mode). Falls back on <code>--oc-primary-foreground</code>.</td></tr>
+              <tr><td><code>module</code> prop</td><td>React, Vue and Blade on Badge, Button / ButtonLink, LauncherCard, FormSection, Tabs, the form fields and BlockModuleHeader: <code>data-module</code> on that component's root.</td></tr>
+              <tr><td><code>.oc-badge--module</code></td><td>Badge in the soft module tint with module text (<code>variant="module"</code>); a default badge with its own <code>data-module</code> is solid.</td></tr>
+            </tbody>
+          </table>
+          <h3 class="oc-section-content__title mt-2" id="palette">Palette steps</h3>
+          <p class="oc-section-content__desc">The OmniaCSS palette tokens (<code>--color-&lt;name&gt;-&lt;step&gt;</code>) behind each name; a + is a <code>color-mix()</code> in oklab (even, unless a ratio is given).</p>
+          <table class="oc-table-ref">
+            <thead><tr><th>Name</th><th>Light mode</th><th>Dark mode</th></tr></thead>
+            <tbody>
+              <tr><td><code>blue</code></td><td><code>blue-40</code> (chroma max 0.2)</td><td><code>blue-2</code> (chroma max 0.12)</td></tr>
+              <tr><td><code>green</code></td><td><code>green-60</code></td><td><code>green-10</code></td></tr>
+              <tr><td><code>purple</code></td><td><code>indigo-20</code></td><td><code>indigo-2</code></td></tr>
+              <tr><td><code>gold</code></td><td><code>orange-95 + green-95 (80/20)</code></td><td><code>gold-70</code></td></tr>
+              <tr><td><code>cyan</code></td><td><code>teal-70</code></td><td><code>cyan-90</code></td></tr>
+              <tr><td><code>pink</code></td><td><code>magenta-95 + pink-95</code></td><td><code>magenta-60 + pink-80</code></td></tr>
+              <tr><td><code>red</code></td><td><code>red-90</code></td><td><code>red-30</code></td></tr>
+              <tr><td><code>orange</code></td><td><code>red-90 + orange-95 (35/65)</code></td><td><code>red-30 + orange-60 (35/65)</code></td></tr>
+              <tr><td><code>teal</code></td><td><code>teal-70 + green-70</code></td><td><code>teal-10 + green-10</code></td></tr>
+              <tr><td><code>slate</code></td><td><code>stormblue-30</code></td><td><code>stormblue-2</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>

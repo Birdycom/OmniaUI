@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Stock", "category": "Data", "description": "Stock status with a colored dot: in stock, low, out of stock or on order.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Stock", "category": "Data", "description": "Stock status with a colored dot and a word: in stock, low, out of stock or on order. As a line for a product page or as a small badge for a table.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/stock.html | Map: hero -> demo -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Stock</h1>
@@ -59,7 +59,79 @@
 &lt;span class="oc-stock oc-stock--badge" data-level="out"&gt;Out&lt;/span&gt;
 
 &lt;span class="oc-stock" data-level="order"&gt;On order &lt;span class="oc-stock__note"&gt;· expected 14 November&lt;/span&gt;&lt;/span&gt;
-&lt;span class="oc-stock oc-stock--badge" data-level="order"&gt;On order&lt;/span&gt;</oc-code></oc-demo>
+&lt;span class="oc-stock oc-stock--badge" data-level="order"&gt;On order&lt;/span&gt;</oc-code>
+<oc-code lang="tsx">&lt;Stock note="delivered in 1–2 days"&gt;&lt;span&gt;&lt;span className="oc-stock__count"&gt;24&lt;/span&gt; in stock&lt;/span&gt;&lt;/Stock&gt;
+&lt;Stock badge&gt;In stock&lt;/Stock&gt;
+
+&lt;Stock level="low"&gt;Only &lt;span className="oc-stock__count"&gt;3&lt;/span&gt; left&lt;/Stock&gt;
+&lt;Stock level="low" badge&gt;Low&lt;/Stock&gt;
+
+&lt;Stock level="out" /&gt;
+&lt;Stock level="out" badge&gt;Out&lt;/Stock&gt;
+
+&lt;Stock level="order" note="expected 14 November" /&gt;
+&lt;Stock level="order" badge /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcStock note="delivered in 1–2 days"&gt;&lt;span&gt;&lt;span class="oc-stock__count"&gt;24&lt;/span&gt; in stock&lt;/span&gt;&lt;/OcStock&gt;
+&lt;OcStock badge&gt;In stock&lt;/OcStock&gt;
+
+&lt;OcStock level="low"&gt;Only &lt;span class="oc-stock__count"&gt;3&lt;/span&gt; left&lt;/OcStock&gt;
+&lt;OcStock level="low" badge&gt;Low&lt;/OcStock&gt;
+
+&lt;OcStock level="out" /&gt;
+&lt;OcStock level="out" badge&gt;Out&lt;/OcStock&gt;
+
+&lt;OcStock level="order" note="expected 14 November" /&gt;
+&lt;OcStock level="order" badge /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::stock note="delivered in 1–2 days"&gt;&lt;span&gt;&lt;span class="oc-stock__count"&gt;24&lt;/span&gt; in stock&lt;/span&gt;&lt;/x-oc::stock&gt;
+&lt;x-oc::stock badge&gt;In stock&lt;/x-oc::stock&gt;
+
+&lt;x-oc::stock level="low"&gt;Only &lt;span class="oc-stock__count"&gt;3&lt;/span&gt; left&lt;/x-oc::stock&gt;
+&lt;x-oc::stock level="low" badge&gt;Low&lt;/x-oc::stock&gt;
+
+&lt;x-oc::stock level="out" /&gt;
+&lt;x-oc::stock level="out" badge&gt;Out&lt;/x-oc::stock&gt;
+
+&lt;x-oc::stock level="order" note="expected 14 November" /&gt;
+&lt;x-oc::stock level="order" badge /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ArticleStock extends Component
+{
+    public int $quantity = 24;
+
+    public int $lowFrom = 5;
+
+    public function level(): string
+    {
+        return match (true) {
+            $this-&gt;quantity === 0 =&gt; 'out',
+            $this-&gt;quantity &lt;= $this-&gt;lowFrom =&gt; 'low',
+            default =&gt; 'ok',
+        };
+    }
+
+    public function render()
+    {
+        return view('livewire.article-stock');
+    }
+}
+
+{{-- resources/views/livewire/article-stock.blade.php --}}
+&lt;div&gt;
+    @if ($this-&gt;level() === 'ok')
+        &lt;x-oc::stock note="delivered in 1–2 days"&gt;&lt;span&gt;&lt;span class="oc-stock__count"&gt;{{ $quantity }}&lt;/span&gt; in stock&lt;/span&gt;&lt;/x-oc::stock&gt;
+    @elseif ($this-&gt;level() === 'low')
+        &lt;x-oc::stock level="low"&gt;Only &lt;span class="oc-stock__count"&gt;{{ $quantity }}&lt;/span&gt; left&lt;/x-oc::stock&gt;
+    @else
+        &lt;x-oc::stock level="out" /&gt;
+    @endif
+    &lt;x-oc::stock :level="$this-&gt;level()" badge /&gt;
+&lt;/div&gt;</oc-code>
+</oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">

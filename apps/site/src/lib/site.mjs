@@ -35,6 +35,7 @@ export const HEADER_LINKS = [
   { id: "blocks", label: "Blocks", href: "/ui/blocks.html" },
   { id: "starter-kits", label: "Starter kits", href: "/ui/starter-kits.html" },
   { id: "webicons", label: "Webicons", href: "/ui/webicons.html" },
+  { id: "story", label: "Our story", href: `${OMNIACSS_URL}/story.html` },
 ];
 
 // Header button to the Pro pricing (every page, so buyers find it without going through Blocks).
@@ -44,10 +45,14 @@ export const GITHUB = "https://github.com/Birdycom/OmniaUI";
 
 /**
  * Links in the content to CSS docs pages ("/docs/x.html", "../docs/x.html", "/pages/x.html")
- * go to the OmniaCSS site.
+ * go to the OmniaCSS site. A live frame of the OmniaCSS site (<iframe src="https://omniacss.eu/..."> in a demo) loads
+ * the same base URL, so the local site never requests the live one. Code panels are escaped (&lt;iframe) and keep
+ * the public URL.
  */
 export function crossLinks(html) {
-  return html.replace(/href="(?:\/|(?:\.\.\/)+)(docs|pages)\//g, `href="${OMNIACSS_URL}/$1/`);
+  return html
+    .replace(/href="(?:\/|(?:\.\.\/)+)(docs|pages)\//g, `href="${OMNIACSS_URL}/$1/`)
+    .replace(/(<iframe\b[^>]*\bsrc=")https:\/\/omniacss\.eu\//g, `$1${OMNIACSS_URL}/`);
 }
 
 /** Which top-level section a page belongs to (used for the header active state and the sidebar). */

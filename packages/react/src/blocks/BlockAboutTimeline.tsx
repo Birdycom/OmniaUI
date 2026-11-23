@@ -19,16 +19,20 @@ export interface BlockAboutTimelineProps extends Omit<HTMLAttributes<HTMLElement
   badge?: ReactNode;
   /** Picture on the right. */
   reverse?: boolean;
+  /** Accent preset for the picture placeholder and the timeline (`oc-accent--{accent}`: blue, green, ...). */
+  accent?: string;
+  /** Timeline line and dots in the accent color (`oc-timeline--accent`). */
+  timelineAccent?: boolean;
 }
 
 /** `.oc-block-about`: picture next to the company story with a year timeline. */
 export const BlockAboutTimeline = forwardRef<HTMLElement, BlockAboutTimelineProps>(function BlockAboutTimeline(
-  { eyebrow, title, children, timeline = [], image, imageAlt = "", badge, reverse = false, className, ...rest },
+  { eyebrow, title, children, timeline = [], image, imageAlt = "", badge, reverse = false, accent, timelineAccent = false, className, ...rest },
   ref,
 ) {
   const titleId = `oc-about-title-${useId().replace(/[^\w-]/g, "")}`;
   return (
-    <section ref={ref} className={cx("oc-block-about", reverse && "oc-block-about--reverse", className)} aria-labelledby={titleId} {...rest}>
+    <section ref={ref} className={cx("oc-block-about", reverse && "oc-block-about--reverse", accent && `oc-accent--${accent}`, className)} aria-labelledby={titleId} {...rest}>
       <div className="oc-block-about-inner">
         <figure className="oc-block-about-media" aria-hidden={image ? undefined : true}>
           {image && <img src={image} alt={imageAlt} loading="lazy" />}
@@ -38,7 +42,7 @@ export const BlockAboutTimeline = forwardRef<HTMLElement, BlockAboutTimelineProp
           {eyebrow != null && <p className="oc-eyebrow">{eyebrow}</p>}
           <h2 className="oc-block-about-title" id={titleId}>{title}</h2>
           {children}
-          {timeline.length > 0 && <Timeline items={timeline} />}
+          {timeline.length > 0 && <Timeline items={timeline} accent={timelineAccent} />}
         </div>
       </div>
     </section>

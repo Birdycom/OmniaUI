@@ -15,7 +15,7 @@ export interface PhoneInputCountry {
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(
-  defineProps<{ countries?: PhoneInputCountry[]; defaultDial?: string; size?: 'sm' | 'md'; error?: boolean; disabled?: boolean; dialLabel?: string }>(),
+  defineProps<{ countries?: PhoneInputCountry[]; defaultDial?: string; size?: 'sm' | 'md'; error?: boolean; disabled?: boolean; dialLabel?: string; dialName?: string }>(),
   {
     countries: () => [
       { dial: '+32', label: 'BE +32' },
@@ -28,6 +28,8 @@ const props = withDefaults(
   },
 )
 const model = defineModel<string>({ default: '' })
+/** v-model:dial: the chosen dial code on its own ("+31"); wins over the code in the value. */
+const dialModel = defineModel<string>('dial')
 const { root, control } = useAttrsSplit()
 
 // Longest dial code that the value starts with, e.g. "+32" from "+32470...".
@@ -36,8 +38,8 @@ const parsed = computed(() => {
   return match ? { dial: match.dial, national: model.value.slice(match.dial.length) } : { dial: '', national: model.value.replace(/^\+/, '') }
 })
 // Remember the chosen dial code while the number is still empty.
-const dialState = ref(parsed.value.dial || props.defaultDial || props.countries[0]?.dial || '')
-const dial = computed(() => parsed.value.dial || dialState.value)
+const dialState = ref(dialModel.value || parsed.value.dial || props.defaultDial || props.countries[0]?.dial || '')
+const dial = computed(() => dialModel.value || parsed.value.dial || dialState.value)
 
 /** "470123456" -> "470 12 34 56": a group of 3, then pairs. */
 const grouped = computed(() => {
@@ -46,6 +48,7 @@ const grouped = computed(() => {
 })
 
 function emit(nextDial: string, national: string) {
+  if (nextDial !== dial.value) dialModel.value = nextDial
   dialState.value = nextDial
   const digits = national.replace(/\D/g, '')
   model.value = digits ? nextDial + digits : ''
@@ -54,7 +57,7 @@ function emit(nextDial: string, national: string) {
 
 <template>
   <div v-bind="root" :class="['oc-phone-input', size === 'sm' && 'oc-phone-input--sm', error && 'oc-phone-input--error']">
-    <select class="oc-phone-input-dial" :aria-label="dialLabel" :value="dial" :disabled="disabled" @change="emit(($event.target as HTMLSelectElement).value, parsed.national)">
+    <select class="oc-phone-input-dial" :name="dialName" :aria-label="dialLabel" :value="dial" :disabled="disabled" @change="emit(($event.target as HTMLSelectElement).value, parsed.national)">
       <option v-for="c in countries" :key="c.dial" :value="c.dial">{{ c.label }}</option>
     </select>
     <input

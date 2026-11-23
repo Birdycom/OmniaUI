@@ -1,4 +1,4 @@
-<!--oc-page {"title":"OmniaUI - Content blocks Block","category":"App UX","description":"Editor column with the content blocks of a page or step: open, move, drag, remove and add.","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
+<!--oc-page {"title":"OmniaUI - Content blocks Block","category":"App UX","description":"Editor column with the content blocks of a page or step: cards you open and close, move up or down, drag by the handle, remove and add.","layout":"sidebar","shell":"ui","shellClass":"ocd-shell","bodyClass":"","head":[]}-->
 <!-- File: apps/site/src/content/ui/blocks/content-blocks.html | Map: hero -> demos -> reference -> frameworks -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Content blocks</h1>
@@ -517,45 +517,65 @@
     list.addEventListener("dragend", () =&gt; { clear(); dragged?.classList.remove("is-dragging"); if (dragged) dragged.draggable = false; dragged = null; });
   });
 &lt;/script&gt;</oc-code>
-<oc-code lang="tsx">import { BlockContentBlocks, Button, Textarea } from "@birdycom/omniaui-react";
+<oc-code lang="tsx">import { useState } from "react";
+import { BlockContentBlocks, Button, Dropzone, Textarea, type ContentBlockItem } from "@birdycom/omniaui-react";
 
-const [blocks, setBlocks] = useState([
-  { id: "b1", type: "Text", icon: "mdi:text", open: true, content: &lt;Textarea defaultValue="Walk to the old gate." /&gt; },
-  { id: "b2", type: "Image", icon: "mdi:image-outline", color: "var(--color-teal-60)", peek: "old-gate.jpg", content: &lt;Dropzone /&gt; },
-]);
-const moveTo = (id: string, to: number) =&gt; setBlocks((list) =&gt; {
-  const next = list.filter((b) =&gt; b.id !== id);
-  next.splice(to, 0, list.find((b) =&gt; b.id === id)!);
-  return next;
-});
+export function Example() {
+  const [blocks, setBlocks] = useState&lt;ContentBlockItem[]&gt;([
+    { id: "b1", type: "Text", icon: "mdi:text", open: true, content: &lt;Textarea defaultValue="Walk to the old gate." /&gt; },
+    { id: "b2", type: "Image", icon: "mdi:image-outline", color: "var(--color-teal-60)", peek: "old-gate.jpg", content: &lt;Dropzone /&gt; },
+  ]);
+  // keep items in the order the block reports (buttons, keyboard or drag)
+  const moveTo = (id: string, to: number) =&gt; setBlocks((list) =&gt; {
+    const next = list.filter((b) =&gt; b.id !== id);
+    next.splice(to, 0, list.find((b) =&gt; b.id === id)!);
+    return next;
+  });
+  const add = () =&gt; setBlocks((list) =&gt; [...list, { id: `b${list.length + 1}`, type: "Text", icon: "mdi:text", open: true, content: &lt;Textarea /&gt; }]);
 
-&lt;BlockContentBlocks
-  title="Step 3 · Old gate"
-  meta="Route 1 · step 3 of 8"
-  actions={&lt;Button size="sm"&gt;Save&lt;/Button&gt;}
-  items={blocks}
-  onMove={moveTo}
-  onRemove={(id) =&gt; setBlocks((list) =&gt; list.filter((b) =&gt; b.id !== id))}
-  add={&lt;button className="oc-block-content-blocks-add" type="button" onClick={openPicker}&gt;Add block&lt;/button&gt;}
-/&gt;</oc-code>
+  return (
+    &lt;BlockContentBlocks
+      title="Step 3 · Old gate"
+      meta="Route 1 · step 3 of 8"
+      actions={&lt;Button size="sm"&gt;Save&lt;/Button&gt;}
+      items={blocks}
+      onMove={moveTo}
+      onRemove={(id) =&gt; setBlocks((list) =&gt; list.filter((b) =&gt; b.id !== id))}
+      add={&lt;button className="oc-block-content-blocks-add" type="button" onClick={add}&gt;Add block&lt;/button&gt;}
+    /&gt;
+  );
+}</oc-code>
 <oc-code lang="vue">&lt;script setup lang="ts"&gt;
-import { ref } from 'vue'
-import { OcBlockContentBlocks } from '@birdycom/omniaui-vue'
-const blocks = ref([
-  { id: 'b1', type: 'Text', icon: 'mdi:text', open: true, text: 'Walk to the old gate.' },
-  { id: 'b2', type: 'Note', icon: 'mdi:alert-circle-outline', peek: 'Mind the traffic.', text: 'Mind the traffic.' },
-])
+import { ref } from "vue";
+import { OcBlockContentBlocks, OcButton, type ContentBlockItem } from "@birdycom/omniaui-vue";
+
+const blocks = ref&lt;ContentBlockItem[]&gt;([
+  { id: "b1", type: "Text", icon: "mdi:text", open: true },
+  { id: "b2", type: "Note", icon: "mdi:alert-circle-outline", peek: "Mind the traffic." },
+]);
+// the fields of each block live next to the list, by id
+const texts = ref&lt;Record&lt;string, string&gt;&gt;({ b1: "Walk to the old gate.", b2: "Mind the traffic." });
+
 function move(id: string, to: number) {
-  const item = blocks.value.find((b) =&gt; b.id === id)!
-  blocks.value = blocks.value.filter((b) =&gt; b.id !== id)
-  blocks.value.splice(to, 0, item)
+  const item = blocks.value.find((b) =&gt; b.id === id)!;
+  blocks.value = blocks.value.filter((b) =&gt; b.id !== id);
+  blocks.value.splice(to, 0, item);
+}
+function remove(id: string) {
+  blocks.value = blocks.value.filter((b) =&gt; b.id !== id);
+}
+function add() {
+  const id = `b${Date.now()}`;
+  blocks.value.push({ id, type: "Text", icon: "mdi:text", open: true });
+  texts.value[id] = "";
 }
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;OcBlockContentBlocks title="Step 3 · Old gate" meta="Route 1 · step 3 of 8" :items="blocks" @move="move" @remove="(id) =&gt; (blocks = blocks.filter((b) =&gt; b.id !== id))"&gt;
-    &lt;template #block="{ item }"&gt;&lt;textarea v-model="item.text" class="oc-input" rows="3"&gt;&lt;/textarea&gt;&lt;/template&gt;
-    &lt;template #add&gt;&lt;button class="oc-block-content-blocks-add" type="button"&gt;Add block&lt;/button&gt;&lt;/template&gt;
+  &lt;OcBlockContentBlocks title="Step 3 · Old gate" meta="Route 1 · step 3 of 8" :items="blocks" @move="move" @remove="remove"&gt;
+    &lt;template #actions&gt;&lt;OcButton size="sm"&gt;Save&lt;/OcButton&gt;&lt;/template&gt;
+    &lt;template #block="{ item }"&gt;&lt;textarea v-model="texts[item.id]" class="oc-input" rows="3" :aria-label="item.type"&gt;&lt;/textarea&gt;&lt;/template&gt;
+    &lt;template #add&gt;&lt;button class="oc-block-content-blocks-add" type="button" @click="add"&gt;Add block&lt;/button&gt;&lt;/template&gt;
   &lt;/OcBlockContentBlocks&gt;
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">{{-- Your own cards go in the default slot (the ol); the script at the end of the snippet comes along once per page. --}}
@@ -573,6 +593,350 @@ function move(id: string, to: number) {
     &lt;/li&gt;
   @endforeach
 &lt;/x-oc::block.content-blocks&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class StepBlocks extends Component
+{
+    public array $blocks = [
+        ['id' =&gt; 'b1', 'type' =&gt; 'Text', 'peek' =&gt; 'Walk to the old gate and look up at the clock.', 'text' =&gt; 'Walk to the old gate and look up at the clock.'],
+        ['id' =&gt; 'b2', 'type' =&gt; 'Note', 'peek' =&gt; 'Mind the traffic.', 'text' =&gt; 'Mind the traffic.'],
+    ];
+
+    public function move(string $id, int $step): void
+    {
+        $from = array_search($id, array_column($this-&gt;blocks, 'id'), true);
+        $to = $from === false ? false : $from + $step;
+        if ($to === false || ! isset($this-&gt;blocks[$to])) {
+            return;
+        }
+        [$this-&gt;blocks[$from], $this-&gt;blocks[$to]] = [$this-&gt;blocks[$to], $this-&gt;blocks[$from]];
+    }
+
+    public function remove(string $id): void
+    {
+        $this-&gt;blocks = array_values(array_filter($this-&gt;blocks, fn ($b) =&gt; $b['id'] !== $id));
+    }
+
+    public function save(): void
+    {
+        // $this-&gt;step-&gt;blocks()-&gt;sync(...)
+    }
+
+    public function render()
+    {
+        return view('livewire.step-blocks');
+    }
+}
+
+{{-- resources/views/livewire/step-blocks.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::block.content-blocks&gt;
+        &lt;x-slot:title&gt;Step 3 · Old gate&lt;/x-slot:title&gt;
+        &lt;x-slot:meta&gt;Route 1 · step 3 of 8 · {{ count($blocks) }} blocks&lt;/x-slot:meta&gt;
+        &lt;x-slot:actions&gt;&lt;x-oc::button size="sm" wire:click="save"&gt;Save&lt;/x-oc::button&gt;&lt;/x-slot:actions&gt;
+        @foreach ($blocks as $i =&gt; $block)
+            &lt;li class="oc-block-content-blocks-item" data-id="{{ $block['id'] }}" wire:key="{{ $block['id'] }}"&gt;
+                &lt;span class="oc-sortable-row-grip" aria-hidden="true"&gt;&lt;/span&gt;
+                &lt;details class="oc-block-content-blocks-card" @if ($loop-&gt;first) open @endif&gt;
+                    &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;{{ $block['type'] }}&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;{{ $block['peek'] }}&lt;/span&gt;&lt;/summary&gt;
+                    &lt;div class="oc-block-content-blocks-body"&gt;
+                        &lt;textarea class="oc-input" rows="3" aria-label="{{ $block['type'] }}" wire:model.blur="blocks.{{ $i }}.text"&gt;&lt;/textarea&gt;
+                    &lt;/div&gt;
+                &lt;/details&gt;
+                &lt;div class="oc-block-content-blocks-tools"&gt;
+                    &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Move {{ $block['type'] }} up" wire:click="move('{{ $block['id'] }}', -1)" :disabled="$loop-&gt;first"&gt;&lt;x-oc::webicon name="mdi:arrow-up" /&gt;&lt;/x-oc::button&gt;
+                    &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Move {{ $block['type'] }} down" wire:click="move('{{ $block['id'] }}', 1)" :disabled="$loop-&gt;last"&gt;&lt;x-oc::webicon name="mdi:arrow-down" /&gt;&lt;/x-oc::button&gt;
+                    &lt;x-oc::button variant="ghost" size="sm" icon aria-label="Remove {{ $block['type'] }}" wire:click="remove('{{ $block['id'] }}')"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/x-oc::button&gt;
+                &lt;/div&gt;
+            &lt;/li&gt;
+        @endforeach
+    &lt;/x-oc::block.content-blocks&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="pinned-issues">Fixed places, problems and a drop from the drawer <span class="oc-badge-version">v0.17.0</span></h3>
+          <p class="oc-section-content__desc">Some blocks have a fixed place: the arrival text stays first, the way to the next step stays last. <code>pinned</code> shows a pin instead of the grip, leaves out the move buttons, and no move or drop pushes such a block away (Question cannot move up, Image cannot move down). A block your check found a problem in gets <code>issue="error"</code> or <code>"warning"</code>: the card edge takes that color, also while closed, and <code>issues</code> puts the number in the head. With <code>acceptDrop</code> (a drag type such as <code>application/x-block</code>) a new block dragged in from the <a href="type-picker.html#action">type picker</a> shows the same drop line, and <code>onDropNew(data, index)</code> gets it.</p>
+          <oc-demo title="Content blocks - fixed places and problems" size="tall">
+<section class="oc-block-content-blocks" aria-labelledby="oc-cblocks-pin-title">
+  <div class="oc-block-content-blocks-bar">
+    <div class="oc-block-content-blocks-heading">
+      <h2 class="oc-block-content-blocks-title" id="oc-cblocks-pin-title">Step 3 · Old gate</h2>
+      <p class="oc-block-content-blocks-meta">4 blocks · 2 problems</p>
+    </div>
+  </div>
+  <ol class="oc-block-content-blocks-list" aria-label="Blocks">
+    <li class="oc-block-content-blocks-item" data-id="p1">
+      <span class="oc-block-content-blocks-pin" role="img" aria-label="Arrival stays in its place"></span>
+      <details class="oc-block-content-blocks-card">
+        <summary class="oc-block-content-blocks-head"><span class="oc-block-content-blocks-type"><iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"></iconify-icon>Arrival</span><span class="oc-block-content-blocks-peek">You are at the old gate.</span></summary>
+        <div class="oc-block-content-blocks-body"><p style="margin:0">You are at the old gate.</p></div>
+      </details>
+      <div class="oc-block-content-blocks-tools">
+        
+      </div>
+    </li>
+    <li class="oc-block-content-blocks-item" data-id="p2" data-issue="error">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move Question" aria-pressed="false"></button>
+      <details class="oc-block-content-blocks-card">
+        <summary class="oc-block-content-blocks-head"><span class="oc-block-content-blocks-type"><iconify-icon icon="mdi:help-circle-outline" aria-hidden="true"></iconify-icon>Question</span><span class="oc-block-content-blocks-peek">Which year is on the clock?</span><span class="oc-block-content-blocks-count" role="img" aria-label="2 errors">2</span></summary>
+        <div class="oc-block-content-blocks-body"><p style="margin:0">Which year is on the clock?</p></div>
+      </details>
+      <div class="oc-block-content-blocks-tools">
+        <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="up" aria-label="Move Question up" disabled><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></button>
+        <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="down" aria-label="Move Question down"><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></button>
+        <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="remove" aria-label="Remove Question"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></button>
+      </div>
+    </li>
+    <li class="oc-block-content-blocks-item" data-id="p3" data-issue="warning">
+      <button class="oc-sortable-row-grip" type="button" aria-label="Move Image" aria-pressed="false"></button>
+      <details class="oc-block-content-blocks-card">
+        <summary class="oc-block-content-blocks-head"><span class="oc-block-content-blocks-type"><iconify-icon icon="mdi:image-outline" aria-hidden="true"></iconify-icon>Image</span><span class="oc-block-content-blocks-peek">The gate seen from the square</span><span class="oc-block-content-blocks-count" role="img" aria-label="1 warning">1</span></summary>
+        <div class="oc-block-content-blocks-body"><p style="margin:0">The gate seen from the square</p></div>
+      </details>
+      <div class="oc-block-content-blocks-tools">
+        <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="up" aria-label="Move Image up"><iconify-icon icon="mdi:arrow-up" aria-hidden="true"></iconify-icon></button>
+        <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="down" aria-label="Move Image down" disabled><iconify-icon icon="mdi:arrow-down" aria-hidden="true"></iconify-icon></button>
+        <button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="remove" aria-label="Remove Image"><iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"></iconify-icon></button>
+      </div>
+    </li>
+    <li class="oc-block-content-blocks-item" data-id="p4">
+      <span class="oc-block-content-blocks-pin" role="img" aria-label="Next step stays in its place"></span>
+      <details class="oc-block-content-blocks-card">
+        <summary class="oc-block-content-blocks-head"><span class="oc-block-content-blocks-type"><iconify-icon icon="mdi:flag-checkered" aria-hidden="true"></iconify-icon>Next step</span><span class="oc-block-content-blocks-peek">Walk on to the town hall.</span></summary>
+        <div class="oc-block-content-blocks-body"><p style="margin:0">Walk on to the town hall.</p></div>
+      </details>
+      <div class="oc-block-content-blocks-tools">
+        
+      </div>
+    </li>
+  </ol>
+</section>
+<oc-code lang="html">&lt;section class="oc-block-content-blocks" aria-labelledby="oc-cblocks-pin-title"&gt;
+  &lt;div class="oc-block-content-blocks-bar"&gt;
+    &lt;div class="oc-block-content-blocks-heading"&gt;
+      &lt;h2 class="oc-block-content-blocks-title" id="oc-cblocks-pin-title"&gt;Step 3 · Old gate&lt;/h2&gt;
+      &lt;p class="oc-block-content-blocks-meta"&gt;4 blocks · 2 problems&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;ol class="oc-block-content-blocks-list" aria-label="Blocks"&gt;
+    &lt;li class="oc-block-content-blocks-item" data-id="p1"&gt;
+      &lt;span class="oc-block-content-blocks-pin" role="img" aria-label="Arrival stays in its place"&gt;&lt;/span&gt;
+      &lt;details class="oc-block-content-blocks-card"&gt;
+        &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;iconify-icon icon="mdi:map-marker-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Arrival&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;You are at the old gate.&lt;/span&gt;&lt;/summary&gt;
+        &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;You are at the old gate.&lt;/p&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;div class="oc-block-content-blocks-tools"&gt;
+        
+      &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="oc-block-content-blocks-item" data-id="p2" data-issue="error"&gt;
+      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Question" aria-pressed="false"&gt;&lt;/button&gt;
+      &lt;details class="oc-block-content-blocks-card"&gt;
+        &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;iconify-icon icon="mdi:help-circle-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Question&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;Which year is on the clock?&lt;/span&gt;&lt;span class="oc-block-content-blocks-count" role="img" aria-label="2 errors"&gt;2&lt;/span&gt;&lt;/summary&gt;
+        &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;Which year is on the clock?&lt;/p&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;div class="oc-block-content-blocks-tools"&gt;
+        &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="up" aria-label="Move Question up" disabled&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+        &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="down" aria-label="Move Question down"&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+        &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="remove" aria-label="Remove Question"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="oc-block-content-blocks-item" data-id="p3" data-issue="warning"&gt;
+      &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Image" aria-pressed="false"&gt;&lt;/button&gt;
+      &lt;details class="oc-block-content-blocks-card"&gt;
+        &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;iconify-icon icon="mdi:image-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Image&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;The gate seen from the square&lt;/span&gt;&lt;span class="oc-block-content-blocks-count" role="img" aria-label="1 warning"&gt;1&lt;/span&gt;&lt;/summary&gt;
+        &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;The gate seen from the square&lt;/p&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;div class="oc-block-content-blocks-tools"&gt;
+        &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="up" aria-label="Move Image up"&gt;&lt;iconify-icon icon="mdi:arrow-up" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+        &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="down" aria-label="Move Image down" disabled&gt;&lt;iconify-icon icon="mdi:arrow-down" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+        &lt;button class="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm" type="button" data-action="remove" aria-label="Remove Image"&gt;&lt;iconify-icon icon="mdi:trash-can-outline" aria-hidden="true"&gt;&lt;/iconify-icon&gt;&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="oc-block-content-blocks-item" data-id="p4"&gt;
+      &lt;span class="oc-block-content-blocks-pin" role="img" aria-label="Next step stays in its place"&gt;&lt;/span&gt;
+      &lt;details class="oc-block-content-blocks-card"&gt;
+        &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;iconify-icon icon="mdi:flag-checkered" aria-hidden="true"&gt;&lt;/iconify-icon&gt;Next step&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;Walk on to the town hall.&lt;/span&gt;&lt;/summary&gt;
+        &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;Walk on to the town hall.&lt;/p&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;div class="oc-block-content-blocks-tools"&gt;
+        
+      &lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/section&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { BlockContentBlocks, type ContentBlockItem } from "@birdycom/omniaui-react";
+
+export function Example() {
+  // pinned: a fixed place (a pin, no move buttons); locked: no remove button; issue + issues: your check's result
+  const [blocks, setBlocks] = useState&lt;ContentBlockItem[]&gt;([
+    { id: "p1", type: "Arrival", icon: "mdi:map-marker-outline", peek: "You are at the old gate.", content: &lt;p style={{ margin: 0 }}&gt;You are at the old gate.&lt;/p&gt;, pinned: true, locked: true },
+    { id: "p2", type: "Question", icon: "mdi:help-circle-outline", peek: "Which year is on the clock?", content: &lt;p style={{ margin: 0 }}&gt;Which year is on the clock?&lt;/p&gt;, issue: "error", issues: 2 },
+    { id: "p3", type: "Image", icon: "mdi:image-outline", peek: "The gate seen from the square", content: &lt;p style={{ margin: 0 }}&gt;The gate seen from the square&lt;/p&gt;, issue: "warning", issues: 1 },
+    { id: "p4", type: "Next step", icon: "mdi:flag-checkered", peek: "Walk on to the town hall.", content: &lt;p style={{ margin: 0 }}&gt;Walk on to the town hall.&lt;/p&gt;, pinned: true, locked: true },
+  ]);
+  const moveBlock = (id: string, to: number) =&gt; setBlocks((list) =&gt; {
+    const next = list.filter((b) =&gt; b.id !== id);
+    next.splice(to, 0, list.find((b) =&gt; b.id === id)!);
+    return next;
+  });
+  const addBlock = (type: string, index: number) =&gt; setBlocks((list) =&gt; {
+    const next = [...list];
+    next.splice(index, 0, { id: `n${Date.now()}`, type, content: &lt;p style={{ margin: 0 }}&gt;New {type}&lt;/p&gt;, open: true });
+    return next;
+  });
+
+  return (
+    &lt;BlockContentBlocks
+      title="Step 3 · Old gate"
+      meta="4 blocks · 2 problems"
+      items={blocks}
+      onMove={moveBlock}
+      onRemove={(id) =&gt; setBlocks((list) =&gt; list.filter((b) =&gt; b.id !== id))}
+      acceptDrop="application/x-block"
+      onDropNew={addBlock}
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcBlockContentBlocks, type ContentBlockItem } from "@birdycom/omniaui-vue";
+
+// pinned: a fixed place (a pin, no move buttons); locked: no remove button; issue + issues: your check's result
+const blocks = ref&lt;ContentBlockItem[]&gt;([
+  { id: "p1", type: "Arrival", icon: "mdi:map-marker-outline", peek: "You are at the old gate.", pinned: true, locked: true },
+  { id: "p2", type: "Question", icon: "mdi:help-circle-outline", peek: "Which year is on the clock?", issue: "error", issues: 2 },
+  { id: "p3", type: "Image", icon: "mdi:image-outline", peek: "The gate seen from the square", issue: "warning", issues: 1 },
+  { id: "p4", type: "Next step", icon: "mdi:flag-checkered", peek: "Walk on to the town hall.", pinned: true, locked: true },
+]);
+function moveBlock(id: string, to: number) {
+  const item = blocks.value.find((b) =&gt; b.id === id)!;
+  blocks.value = blocks.value.filter((b) =&gt; b.id !== id);
+  blocks.value.splice(to, 0, item);
+}
+function addBlock(type: string, index: number) {
+  blocks.value.splice(index, 0, { id: `n${Date.now()}`, type, open: true });
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBlockContentBlocks title="Step 3 · Old gate" meta="4 blocks · 2 problems" :items="blocks" accept-drop="application/x-block"
+    @move="moveBlock" @remove="(id) =&gt; (blocks = blocks.filter((b) =&gt; b.id !== id))" @drop-new="addBlock"&gt;
+    &lt;template #block="{ item }"&gt;&lt;p style="margin:0"&gt;{{ item.peek }}&lt;/p&gt;&lt;/template&gt;
+  &lt;/OcBlockContentBlocks&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- the slot holds your own &lt;li&gt; cards; the snippet script moves and removes them (data-action) and fires "oc-content-blocks-change" --}}
+&lt;x-oc::block.content-blocks aria-labelledby="oc-cblocks-pin-title"&gt;
+    &lt;x-slot:title&gt;Step 3 · Old gate&lt;/x-slot:title&gt;
+    &lt;x-slot:meta&gt;4 blocks · 2 problems&lt;/x-slot:meta&gt;
+    &lt;li class="oc-block-content-blocks-item" data-id="p1"&gt;
+        &lt;span class="oc-block-content-blocks-pin" role="img" aria-label="Arrival stays in its place"&gt;&lt;/span&gt;
+        &lt;details class="oc-block-content-blocks-card"&gt;
+            &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;x-oc::webicon name="mdi:map-marker-outline" /&gt;Arrival&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;You are at the old gate.&lt;/span&gt;&lt;/summary&gt;
+            &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;You are at the old gate.&lt;/p&gt;&lt;/div&gt;
+        &lt;/details&gt;
+        &lt;div class="oc-block-content-blocks-tools"&gt;&lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="oc-block-content-blocks-item" data-id="p2" data-issue="error"&gt;
+        &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Question" aria-pressed="false"&gt;&lt;/button&gt;
+        &lt;details class="oc-block-content-blocks-card"&gt;
+            &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;x-oc::webicon name="mdi:help-circle-outline" /&gt;Question&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;Which year is on the clock?&lt;/span&gt;&lt;span class="oc-block-content-blocks-count" role="img" aria-label="2 errors"&gt;2&lt;/span&gt;&lt;/summary&gt;
+            &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;Which year is on the clock?&lt;/p&gt;&lt;/div&gt;
+        &lt;/details&gt;
+        &lt;div class="oc-block-content-blocks-tools"&gt;
+            &lt;x-oc::button variant="ghost" size="sm" icon data-action="up" aria-label="Move Question up" disabled&gt;&lt;x-oc::webicon name="mdi:arrow-up" /&gt;&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="ghost" size="sm" icon data-action="down" aria-label="Move Question down"&gt;&lt;x-oc::webicon name="mdi:arrow-down" /&gt;&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="ghost" size="sm" icon data-action="remove" aria-label="Remove Question"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/x-oc::button&gt;
+        &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="oc-block-content-blocks-item" data-id="p3" data-issue="warning"&gt;
+        &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Image" aria-pressed="false"&gt;&lt;/button&gt;
+        &lt;details class="oc-block-content-blocks-card"&gt;
+            &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;x-oc::webicon name="mdi:image-outline" /&gt;Image&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;The gate seen from the square&lt;/span&gt;&lt;span class="oc-block-content-blocks-count" role="img" aria-label="1 warning"&gt;1&lt;/span&gt;&lt;/summary&gt;
+            &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;The gate seen from the square&lt;/p&gt;&lt;/div&gt;
+        &lt;/details&gt;
+        &lt;div class="oc-block-content-blocks-tools"&gt;
+            &lt;x-oc::button variant="ghost" size="sm" icon data-action="up" aria-label="Move Image up"&gt;&lt;x-oc::webicon name="mdi:arrow-up" /&gt;&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="ghost" size="sm" icon data-action="down" aria-label="Move Image down" disabled&gt;&lt;x-oc::webicon name="mdi:arrow-down" /&gt;&lt;/x-oc::button&gt;
+            &lt;x-oc::button variant="ghost" size="sm" icon data-action="remove" aria-label="Remove Image"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/x-oc::button&gt;
+        &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="oc-block-content-blocks-item" data-id="p4"&gt;
+        &lt;span class="oc-block-content-blocks-pin" role="img" aria-label="Next step stays in its place"&gt;&lt;/span&gt;
+        &lt;details class="oc-block-content-blocks-card"&gt;
+            &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;x-oc::webicon name="mdi:flag-checkered" /&gt;Next step&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;Walk on to the town hall.&lt;/span&gt;&lt;/summary&gt;
+            &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;Walk on to the town hall.&lt;/p&gt;&lt;/div&gt;
+        &lt;/details&gt;
+        &lt;div class="oc-block-content-blocks-tools"&gt;&lt;/div&gt;
+    &lt;/li&gt;
+&lt;/x-oc::block.content-blocks&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ContentBlocksFixedPlacesAndProblems extends Component
+{
+    public function render()
+    {
+        return view('livewire.content-blocks-fixed-places-and-problems');
+    }
+}
+
+{{-- resources/views/livewire/content-blocks-fixed-places-and-problems.blade.php --}}
+&lt;div&gt;
+    {{-- the slot holds your own &lt;li&gt; cards; the snippet script moves and removes them (data-action) and fires "oc-content-blocks-change" --}}
+    &lt;x-oc::block.content-blocks aria-labelledby="oc-cblocks-pin-title"&gt;
+        &lt;x-slot:title&gt;Step 3 · Old gate&lt;/x-slot:title&gt;
+        &lt;x-slot:meta&gt;4 blocks · 2 problems&lt;/x-slot:meta&gt;
+        &lt;li class="oc-block-content-blocks-item" data-id="p1"&gt;
+            &lt;span class="oc-block-content-blocks-pin" role="img" aria-label="Arrival stays in its place"&gt;&lt;/span&gt;
+            &lt;details class="oc-block-content-blocks-card"&gt;
+                &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;x-oc::webicon name="mdi:map-marker-outline" /&gt;Arrival&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;You are at the old gate.&lt;/span&gt;&lt;/summary&gt;
+                &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;You are at the old gate.&lt;/p&gt;&lt;/div&gt;
+            &lt;/details&gt;
+            &lt;div class="oc-block-content-blocks-tools"&gt;&lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class="oc-block-content-blocks-item" data-id="p2" data-issue="error"&gt;
+            &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Question" aria-pressed="false"&gt;&lt;/button&gt;
+            &lt;details class="oc-block-content-blocks-card"&gt;
+                &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;x-oc::webicon name="mdi:help-circle-outline" /&gt;Question&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;Which year is on the clock?&lt;/span&gt;&lt;span class="oc-block-content-blocks-count" role="img" aria-label="2 errors"&gt;2&lt;/span&gt;&lt;/summary&gt;
+                &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;Which year is on the clock?&lt;/p&gt;&lt;/div&gt;
+            &lt;/details&gt;
+            &lt;div class="oc-block-content-blocks-tools"&gt;
+                &lt;x-oc::button variant="ghost" size="sm" icon data-action="up" aria-label="Move Question up" disabled&gt;&lt;x-oc::webicon name="mdi:arrow-up" /&gt;&lt;/x-oc::button&gt;
+                &lt;x-oc::button variant="ghost" size="sm" icon data-action="down" aria-label="Move Question down"&gt;&lt;x-oc::webicon name="mdi:arrow-down" /&gt;&lt;/x-oc::button&gt;
+                &lt;x-oc::button variant="ghost" size="sm" icon data-action="remove" aria-label="Remove Question"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/x-oc::button&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class="oc-block-content-blocks-item" data-id="p3" data-issue="warning"&gt;
+            &lt;button class="oc-sortable-row-grip" type="button" aria-label="Move Image" aria-pressed="false"&gt;&lt;/button&gt;
+            &lt;details class="oc-block-content-blocks-card"&gt;
+                &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;x-oc::webicon name="mdi:image-outline" /&gt;Image&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;The gate seen from the square&lt;/span&gt;&lt;span class="oc-block-content-blocks-count" role="img" aria-label="1 warning"&gt;1&lt;/span&gt;&lt;/summary&gt;
+                &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;The gate seen from the square&lt;/p&gt;&lt;/div&gt;
+            &lt;/details&gt;
+            &lt;div class="oc-block-content-blocks-tools"&gt;
+                &lt;x-oc::button variant="ghost" size="sm" icon data-action="up" aria-label="Move Image up"&gt;&lt;x-oc::webicon name="mdi:arrow-up" /&gt;&lt;/x-oc::button&gt;
+                &lt;x-oc::button variant="ghost" size="sm" icon data-action="down" aria-label="Move Image down" disabled&gt;&lt;x-oc::webicon name="mdi:arrow-down" /&gt;&lt;/x-oc::button&gt;
+                &lt;x-oc::button variant="ghost" size="sm" icon data-action="remove" aria-label="Remove Image"&gt;&lt;x-oc::webicon name="mdi:trash-can-outline" /&gt;&lt;/x-oc::button&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class="oc-block-content-blocks-item" data-id="p4"&gt;
+            &lt;span class="oc-block-content-blocks-pin" role="img" aria-label="Next step stays in its place"&gt;&lt;/span&gt;
+            &lt;details class="oc-block-content-blocks-card"&gt;
+                &lt;summary class="oc-block-content-blocks-head"&gt;&lt;span class="oc-block-content-blocks-type"&gt;&lt;x-oc::webicon name="mdi:flag-checkered" /&gt;Next step&lt;/span&gt;&lt;span class="oc-block-content-blocks-peek"&gt;Walk on to the town hall.&lt;/span&gt;&lt;/summary&gt;
+                &lt;div class="oc-block-content-blocks-body"&gt;&lt;p style="margin:0"&gt;Walk on to the town hall.&lt;/p&gt;&lt;/div&gt;
+            &lt;/details&gt;
+            &lt;div class="oc-block-content-blocks-tools"&gt;&lt;/div&gt;
+        &lt;/li&gt;
+    &lt;/x-oc::block.content-blocks&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>
@@ -586,6 +950,9 @@ function move(id: string, to: number) {
           <table class="oc-table-ref">
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
+              <tr><td><code>.oc-block-content-blocks-pin</code></td><td>A block with a fixed place: a pin where the grip is, no move buttons (<code>pinned</code>)</td></tr>
+              <tr><td><code>.oc-block-content-blocks-item[data-issue=error|warning]</code> + <code>.oc-block-content-blocks-count</code></td><td>Problems in a block: card edge in that color, the number in the head (<code>issue</code>, <code>issues</code>)</td></tr>
+              <tr><td><code>.oc-block-content-blocks-list.is-drop-target</code></td><td>A new block from a drawer is being dragged over the list (<code>acceptDrop</code>, <code>onDropNew</code>); an empty list shows a dashed drop area</td></tr>
               <tr><td><code>.oc-block-content-blocks</code></td><td>Frame. Container query: two fields side by side from 36rem, no peek text below 30rem</td></tr>
               <tr><td><code>.oc-block-content-blocks-bar</code></td><td>Top bar: <code>-nav</code> (previous / next), <code>-heading</code> (<code>-title</code>, <code>-meta</code>) and <code>-actions</code></td></tr>
               <tr><td><code>ol.oc-block-content-blocks-list</code></td><td>The blocks</td></tr>

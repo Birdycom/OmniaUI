@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Next teaser", "category": "Marketing", "description": "Large link card that points to the next product or project.", "nav": "Next teaser", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Next teaser", "category": "Marketing", "description": "A large link card at the end of a product or project page that points to the next one, with a label, the name and product mark and a moving arrow.", "nav": "Next teaser", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/next-teaser.html | Map: hero -> demos (single, previous + next pair) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Next teaser</h1>
@@ -13,11 +13,57 @@
         <div class="oc-section-content">
           <p class="oc-section-content__desc">A large link card to the next page, with a label, a name and one line of text. Hover it: the arrow moves.</p>
           <oc-demo title="Next product">
-<a class="oc-next-teaser oc-accent--violet" href="#next">
+<a class="oc-next-teaser oc-accent--violet w-full" href="#next">
   <span class="oc-next-teaser__label">Next product</span>
   <span class="oc-next-teaser__name"><span class="oc-product-mark oc-product-mark--sm oc-accent--violet" aria-hidden="true">&#9673;</span>Product 1</span>
   <span class="oc-next-teaser__tagline">The design system behind our apps</span>
 </a>
+<oc-code lang="tsx">import { NextTeaser, ProductMark } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;NextTeaser
+      className="oc-accent--violet"
+      href="/products/product-1"
+      label="Next product"
+      mark={&lt;ProductMark size="sm" accent="violet"&gt;◉&lt;/ProductMark&gt;}
+      name="Product 1"
+      tagline="The design system behind our apps"
+    /&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcNextTeaser, OcProductMark } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcNextTeaser class="oc-accent--violet" href="/products/product-1" label="Next product" name="Product 1" tagline="The design system behind our apps"&gt;
+    &lt;template #mark&gt;&lt;OcProductMark size="sm" accent="violet"&gt;◉&lt;/OcProductMark&gt;&lt;/template&gt;
+  &lt;/OcNextTeaser&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::next-teaser class="oc-accent--violet" href="/products/product-1" name="Product 1" tagline="The design system behind our apps"&gt;
+    &lt;x-slot:mark&gt;&lt;x-oc::product-mark size="sm" accent="violet"&gt;&amp;#9673;&lt;/x-oc::product-mark&gt;&lt;/x-slot:mark&gt;
+&lt;/x-oc::next-teaser&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class NextProduct extends Component
+{
+    public function render()
+    {
+        return view('livewire.next-product');
+    }
+}
+
+{{-- resources/views/livewire/next-product.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::next-teaser class="oc-accent--violet" href="/products/product-1" name="Product 1" tagline="The design system behind our apps"&gt;
+        &lt;x-slot:mark&gt;&lt;x-oc::product-mark size="sm" accent="violet"&gt;&amp;#9673;&lt;/x-oc::product-mark&gt;&lt;/x-slot:mark&gt;
+    &lt;/x-oc::next-teaser&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <p class="oc-section-content__desc">A pair at the end of a case study: the previous project on the left, the next one on the right.</p>
           <oc-demo title="Previous and next pair">
@@ -33,6 +79,49 @@
     <span class="oc-next-teaser__tagline">Desktop planning tool</span>
   </a>
 </nav>
+<oc-code lang="tsx">import { NextTeaser } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;nav className="oc-split w-full" aria-label="More projects"&gt;
+      &lt;NextTeaser prev className="oc-accent--green" href="/work/customer-1" label="Previous project" name="Customer 1" tagline="Website and web shop" /&gt;
+      &lt;NextTeaser className="oc-accent--orange" href="/work/customer-2" label="Next project" name="Customer 2" tagline="Desktop planning tool" /&gt;
+    &lt;/nav&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcNextTeaser } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;nav class="oc-split w-full" aria-label="More projects"&gt;
+    &lt;OcNextTeaser prev class="oc-accent--green" href="/work/customer-1" label="Previous project" name="Customer 1" tagline="Website and web shop" /&gt;
+    &lt;OcNextTeaser class="oc-accent--orange" href="/work/customer-2" label="Next project" name="Customer 2" tagline="Desktop planning tool" /&gt;
+  &lt;/nav&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;nav class="oc-split w-full" aria-label="More projects"&gt;
+    &lt;x-oc::next-teaser prev class="oc-accent--green" href="/work/customer-1" label="Previous project" name="Customer 1" tagline="Website and web shop" /&gt;
+    &lt;x-oc::next-teaser class="oc-accent--orange" href="/work/customer-2" label="Next project" name="Customer 2" tagline="Desktop planning tool" /&gt;
+&lt;/nav&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProjectPager extends Component
+{
+    public function render()
+    {
+        return view('livewire.project-pager');
+    }
+}
+
+{{-- resources/views/livewire/project-pager.blade.php --}}
+&lt;nav class="oc-split w-full" aria-label="More projects"&gt;
+    &lt;x-oc::next-teaser prev class="oc-accent--green" href="/work/customer-1" label="Previous project" name="Customer 1" tagline="Website and web shop" /&gt;
+    &lt;x-oc::next-teaser class="oc-accent--orange" href="/work/customer-2" label="Next project" name="Customer 2" tagline="Desktop planning tool" /&gt;
+&lt;/nav&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

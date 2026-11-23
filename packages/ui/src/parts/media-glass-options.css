@@ -1,22 +1,44 @@
 /* File: packages/ui/src/parts/media-glass-options.css
-   Map: amount (--clear: more see-through, --frost: more frosted) -> light content on a colourful backdrop -> stage (moving colour blobs to show it off)
+   Map: amount (--clear: more see-through, also with the lens; --frost: more frosted, the lens only bends the edge) -> drag (data-oc-glass-drag) -> light content on a colourful backdrop -> stage (moving colour blobs to show it off; --landscape: sky, sun, hills)
    Extras for .oc-glass, .oc-glass--liquid and .oc-glass-bar (media-glass.css, media-glass-liquid.css). The selectors
    carry two classes so they win over the base glass whatever order the parts load in. */
 
 /* Amount of glass: --clear lets more of the backdrop through, --frost hides more of it. */
 :is(.oc-glass, .oc-glass-bar).oc-glass--clear {
-  --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.32), oklch(from var(--oc-background) l c h / 0.26));
-  --oc-glass-blur: 10px;
+  --oc-glass-sheet: light-dark(oklch(100% 0 0deg / 0.06), oklch(from var(--oc-background) l c h / 0.08));
+  --oc-glass-blur: 4px;
+  --oc-glass-lens-blur: 0px;
   --oc-liquid-tint: light-dark(oklch(100% 0 0deg / 0.05), oklch(100% 0 0deg / 0.03));
   --oc-liquid-blur: 2px;
 }
 :is(.oc-glass, .oc-glass-bar).oc-glass--frost {
-  --oc-glass-sheet: light-dark(oklch(from var(--oc-background) l c h / 0.86), oklch(from var(--oc-background) l c h / 0.8));
-  --oc-glass-blur: 40px;
+  --oc-glass-sheet: light-dark(oklch(100% 0 0deg / 0.42), oklch(from var(--oc-background) l c h / 0.5));
+  --oc-glass-blur: 24px;
+  --oc-glass-lens-blur: 12px;
   --oc-liquid-tint: light-dark(oklch(100% 0 0deg / 0.38), oklch(100% 0 0deg / 0.12));
   --oc-liquid-blur: 18px;
 }
+/* Frosted glass has a fine grain (5 % grey noise) over the tint; clear glass has none. */
+.oc-glass.oc-glass--frost::after {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 .05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom, var(--oc-glass-sheen), transparent 60%);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .oc-glass.oc-glass--frost::after { background-image: none; }
+}
 
+
+/* Drag (glass-lens.js): data-oc-glass-drag moves the sheet over its backdrop with the mouse, a finger or the arrow keys.
+   No page scroll while a finger drags it; keyboard moves glide unless reduced motion is asked for. */
+[data-oc-glass-drag] { touch-action: none; cursor: grab; transition: translate 0.15s ease-out; }
+[data-oc-glass-drag][data-oc-dragging] { cursor: grabbing; user-select: none; transition: none; }
+[data-oc-glass-drag]:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 3px; }
+/* Focus from a mouse or finger shows no ring (the script sets data-oc-pointer until a key is pressed). */
+[data-oc-glass-drag][data-oc-pointer]:focus-visible { outline: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-oc-glass-drag] { transition: none; }
+}
 
 /* Light content: white icons and labels for glass over a dark or very colourful backdrop. */
 .oc-glass-bar.oc-glass-bar--light .oc-glass-bar__item {
@@ -47,4 +69,14 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .oc-glass-stage { animation: none; }
+}
+/* Landscape: sky, sun and two hills (night in dark mode), standing still. Clear shapes and edges, so the lens shows: the
+   horizon and the sun bend at the edge of the glass. */
+.oc-glass-stage.oc-glass-stage--landscape {
+  background:
+    radial-gradient(circle at 74% 30%, light-dark(var(--color-gold-50), var(--color-lightyellow-70)) 0 2.75rem, transparent calc(2.75rem + 1px)),
+    radial-gradient(70% 52% at 20% 106%, light-dark(var(--color-seagreen-40), var(--color-darkgreen-60)) 0 99%, transparent 100%),
+    radial-gradient(80% 58% at 86% 114%, light-dark(var(--color-forestgreen-60), var(--color-darkgreen-80)) 0 99%, transparent 100%),
+    linear-gradient(light-dark(var(--color-deepskyblue-60), var(--color-midnightblue-60)), light-dark(var(--color-lightskyblue-20), var(--color-darkslateblue-50)) 75%);
+  animation: none;
 }

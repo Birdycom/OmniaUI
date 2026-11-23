@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Gallery", "category": "Media", "description": "Product photos with thumbnails: one large photo and a row (or column) of thumbnails. No JavaScript.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
+<!--oc-page {"title": "OmniaUI - Gallery", "category": "Media", "description": "Product photos with thumbnails: one large photo and a row or column of thumbnails. Each thumbnail is a radio label, so it needs no JavaScript.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <!-- File: apps/site/src/content/ui/components/gallery.html | Map: hero -> demo -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Gallery</h1>
@@ -28,6 +28,70 @@
     <label class="oc-gallery__thumb"><input type="radio" name="oc-gallery-demo"><img src="/img/shop/product-1-box.svg" alt="In its box"></label>
   </fieldset>
 </div>
+<oc-code lang="tsx">import { Gallery } from "@birdycom/omniaui-react";
+
+const images = [
+  { src: "/img/shop/product-1-front.svg", alt: "Product 1, front", thumbAlt: "Front" },
+  { src: "/img/shop/product-1-angle.svg", alt: "Product 1, from the side", thumbAlt: "Side" },
+  { src: "/img/shop/product-1-detail.svg", alt: "Product 1, the shade from below", thumbAlt: "Shade from below" },
+  { src: "/img/shop/product-1-box.svg", alt: "Product 1, in its box", thumbAlt: "In its box" },
+];
+
+export function Example() {
+  return &lt;Gallery images={images} label="Photos of Product 1" badge="-20%" side style={{ inlineSize: "min(100%,34rem)" }} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcGallery } from '@birdycom/omniaui-vue'
+
+const images = [
+  { src: '/img/shop/product-1-front.svg', alt: 'Product 1, front', thumbAlt: 'Front' },
+  { src: '/img/shop/product-1-angle.svg', alt: 'Product 1, from the side', thumbAlt: 'Side' },
+  { src: '/img/shop/product-1-detail.svg', alt: 'Product 1, the shade from below', thumbAlt: 'Shade from below' },
+  { src: '/img/shop/product-1-box.svg', alt: 'Product 1, in its box', thumbAlt: 'In its box' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcGallery :images="images" label="Photos of Product 1" badge="-20%" side style="inline-size:min(100%,34rem)" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::gallery
+    label="Photos of Product 1"
+    badge="-20%"
+    side
+    style="inline-size:min(100%,34rem)"
+    :images="[
+        ['src' =&gt; '/img/shop/product-1-front.svg', 'alt' =&gt; 'Product 1, front', 'thumb_alt' =&gt; 'Front'],
+        ['src' =&gt; '/img/shop/product-1-angle.svg', 'alt' =&gt; 'Product 1, from the side', 'thumb_alt' =&gt; 'Side'],
+        ['src' =&gt; '/img/shop/product-1-detail.svg', 'alt' =&gt; 'Product 1, the shade from below', 'thumb_alt' =&gt; 'Shade from below'],
+        ['src' =&gt; '/img/shop/product-1-box.svg', 'alt' =&gt; 'Product 1, in its box', 'thumb_alt' =&gt; 'In its box'],
+    ]"
+/&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ProductGallery extends Component
+{
+    public array $images = [
+        ['src' =&gt; '/img/shop/product-1-front.svg', 'alt' =&gt; 'Product 1, front', 'thumb_alt' =&gt; 'Front'],
+        ['src' =&gt; '/img/shop/product-1-angle.svg', 'alt' =&gt; 'Product 1, from the side', 'thumb_alt' =&gt; 'Side'],
+        ['src' =&gt; '/img/shop/product-1-detail.svg', 'alt' =&gt; 'Product 1, the shade from below', 'thumb_alt' =&gt; 'Shade from below'],
+        ['src' =&gt; '/img/shop/product-1-box.svg', 'alt' =&gt; 'Product 1, in its box', 'thumb_alt' =&gt; 'In its box'],
+    ];
+
+    public function render()
+    {
+        return view('livewire.product-gallery');
+    }
+}
+
+{{-- resources/views/livewire/product-gallery.blade.php --}}
+&lt;div&gt;
+    {{-- CSS only (radios + :has): no round trip when the visitor picks a photo --}}
+    &lt;x-oc::gallery :images="$images" label="Photos of Product 1" badge="-20%" side style="inline-size:min(100%,34rem)" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

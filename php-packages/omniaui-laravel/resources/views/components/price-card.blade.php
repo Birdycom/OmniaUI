@@ -2,11 +2,13 @@
      OmniaUI price card (monthly / yearly switch with radio + :has, no JavaScript; optional third option lifetime).
      Props: name, description, discount, monthly + yearly + lifetime (['amount', 'period'?, 'was'?, 'note'?]; lifetime needs yearly),
      defaultPeriod (monthly|yearly|lifetime),
-     features (['label', 'excluded'?] or strings), featured, group (radio name; generated when empty).
+     features (['label', 'excluded'?] or strings), featured, group (radio name; generated when empty),
+     group-label (aria-label of the switch, default "Billing period"), monthly-label / yearly-label / lifetime-label (texts of the switch).
      Slot: default = call to action (e.g. <a class="oc-btn oc-price-card__cta">). --}}
 @props([
     'name' => '', 'description' => null, 'discount' => null, 'monthly' => [], 'yearly' => null, 'lifetime' => null,
-    'defaultPeriod' => 'monthly', 'features' => [], 'featured' => false, 'group' => null,
+    'defaultPeriod' => 'monthly', 'features' => [], 'featured' => false, 'group' => null, 'groupLabel' => 'Billing period',
+    'monthlyLabel' => 'Monthly', 'yearlyLabel' => 'Yearly', 'lifetimeLabel' => 'Lifetime',
 ])
 @php
     $group ??= 'oc-price-'.\Illuminate\Support\Str::slug((string) $name).'-'.\Illuminate\Support\Str::random(4);
@@ -24,11 +26,11 @@
         <p class="oc-price-card__desc">{{ $description }}</p>
     @endif
     @if ($yearly)
-        <div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period">
-            <label class="oc-segmented-item"><input type="radio" name="{{ $group }}" value="monthly" @checked($defaultPeriod !== 'yearly' && ! ($defaultPeriod === 'lifetime' && $lifetime))> Monthly</label>
-            <label class="oc-segmented-item"><input type="radio" name="{{ $group }}" value="yearly" @checked($defaultPeriod === 'yearly')> Yearly</label>
+        <div class="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="{{ $groupLabel }}">
+            <label class="oc-segmented-item"><input type="radio" name="{{ $group }}" value="monthly" @checked($defaultPeriod !== 'yearly' && ! ($defaultPeriod === 'lifetime' && $lifetime))> {{ $monthlyLabel }}</label>
+            <label class="oc-segmented-item"><input type="radio" name="{{ $group }}" value="yearly" @checked($defaultPeriod === 'yearly')> {{ $yearlyLabel }}</label>
             @if ($lifetime)
-                <label class="oc-segmented-item"><input type="radio" name="{{ $group }}" value="lifetime" @checked($defaultPeriod === 'lifetime')> Lifetime</label>
+                <label class="oc-segmented-item"><input type="radio" name="{{ $group }}" value="lifetime" @checked($defaultPeriod === 'lifetime')> {{ $lifetimeLabel }}</label>
             @endif
         </div>
     @endif

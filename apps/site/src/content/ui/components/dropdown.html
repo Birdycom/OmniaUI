@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Dropdown", "category": "Overlays", "description": "Dropdown menu with items, labels, separators; toggle with <code>.is-open</code>.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Dropdown", "category": "Overlays", "description": "Dropdown menu on the native popover attribute with anchor positioning: items, labels and separators, plus a class-toggle version with <code>.is-open</code>.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Dropdown</h1>
         <p class="oc-hero-text">A menu that opens from a button. The recommended version needs <strong>no JavaScript</strong>: the menu is a native <code>popover</code> opened with <code>popovertarget</code>, closes on outside click or <kbd>Esc</kbd>, lives in the top layer (never clipped by a parent) and is placed next to its button with CSS anchor positioning.</p>
@@ -9,7 +9,7 @@
           
         <p class="oc-section-header__desc">Plain HTML and CSS; each example shows its markup in the HTML tab.</p></div>
         <div class="oc-section-content"><h3 class="oc-section-content__title">CSS-first dropdown (recommended)</h3><p class="oc-section-content__desc">Button with <code>popovertarget="id"</code> + <code>&lt;div class="oc-dropdown-menu" id="id" popover&gt;</code>. Items are links or buttons with <code>.oc-dropdown-item</code>; group them with <code>.oc-dropdown-label</code> and <code>.oc-dropdown-separator</code>.</p>
-          <oc-demo title="Popover + anchor positioning" size="tall">
+          <oc-demo title="Popover + anchor positioning" size="tall" hint="Click the button: the menu opens below it.">
             <div class="flex flex-wrap gap-2">
               <button class="oc-btn oc-btn--outline" popovertarget="oc-menu-demo">Options ▾</button>
               <div class="oc-dropdown-menu" id="oc-menu-demo" popover="">
@@ -37,9 +37,82 @@
 &lt;/div&gt;
 
 &lt;!-- A button inside the menu can close it without JavaScript --&gt;
-&lt;button class="oc-dropdown-item" popovertarget="account-menu" popovertargetaction="hide"&gt;Close&lt;/button&gt;</oc-code></oc-demo>
-        <h3 id="toggle-class" class="oc-section-content__title mt-2">Class toggle (for existing scripts)</h3><p class="oc-section-content__desc">If your app already toggles classes, wrap button + menu in <code>.oc-dropdown</code> and add <code>.is-open</code>. This menu is positioned inside the page, so give its container enough room (it is not in the top layer).</p>
-          <oc-demo title="Toggle .is-open" size="tall">
+&lt;button class="oc-dropdown-item" popovertarget="account-menu" popovertargetaction="hide"&gt;Close&lt;/button&gt;</oc-code>
+<oc-code lang="tsx">import { Dropdown, DropdownItem, DropdownLabel, DropdownSeparator } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Dropdown trigger="Options" id="account-menu"&gt;
+      &lt;DropdownLabel&gt;My account&lt;/DropdownLabel&gt;
+      &lt;DropdownItem href="/profile"&gt;Profile&lt;/DropdownItem&gt;
+      &lt;DropdownItem href="/settings"&gt;Settings&lt;/DropdownItem&gt;
+      &lt;DropdownSeparator /&gt;
+      &lt;DropdownItem href="/logout"&gt;Log out&lt;/DropdownItem&gt;
+      {/* A button item closes the menu after its action */}
+      &lt;DropdownItem&gt;Close&lt;/DropdownItem&gt;
+    &lt;/Dropdown&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDropdown, OcDropdownItem, OcDropdownLabel, OcDropdownSeparator } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDropdown label="Options"&gt;
+    &lt;OcDropdownLabel&gt;My account&lt;/OcDropdownLabel&gt;
+    &lt;OcDropdownItem href="/profile"&gt;Profile&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem href="/settings"&gt;Settings&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator /&gt;
+    &lt;OcDropdownItem href="/logout"&gt;Log out&lt;/OcDropdownItem&gt;
+    &lt;!-- A button item closes the menu after its action --&gt;
+    &lt;OcDropdownItem&gt;Close&lt;/OcDropdownItem&gt;
+  &lt;/OcDropdown&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::dropdown id="account-menu" label="Options" :items="[
+    ['group' =&gt; 'My account'],
+    ['label' =&gt; 'Profile', 'href' =&gt; '/profile'],
+    ['label' =&gt; 'Settings', 'href' =&gt; '/settings'],
+    ['separator' =&gt; true],
+    ['label' =&gt; 'Log out', 'href' =&gt; '/logout'],
+]"&gt;
+    {{-- A button inside the menu can close it without JavaScript --}}
+    &lt;x-oc::dropdown.item popovertarget="account-menu" popovertargetaction="hide"&gt;Close&lt;/x-oc::dropdown.item&gt;
+&lt;/x-oc::dropdown&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AccountMenu extends Component
+{
+    public function logout()
+    {
+        auth()-&gt;logout();
+
+        return redirect('/');
+    }
+
+    public function render()
+    {
+        return view('livewire.account-menu');
+    }
+}
+
+{{-- resources/views/livewire/account-menu.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::dropdown id="account-menu" label="Options" :items="[
+        ['group' =&gt; 'My account'],
+        ['label' =&gt; 'Profile', 'href' =&gt; '/profile'],
+        ['label' =&gt; 'Settings', 'href' =&gt; '/settings'],
+        ['separator' =&gt; true],
+    ]"&gt;
+        &lt;x-oc::dropdown.item wire:click="logout"&gt;Log out&lt;/x-oc::dropdown.item&gt;
+    &lt;/x-oc::dropdown&gt;
+&lt;/div&gt;</oc-code>
+</oc-demo>
+        <h3 id="toggle-class" class="oc-section-content__title mt-2">Class toggle (for existing scripts) <span class="oc-badge-version">v0.17.0</span></h3><p class="oc-section-content__desc">If your app already toggles classes, wrap button + menu in <code>.oc-dropdown</code> and add <code>.is-open</code>. This menu is positioned inside the page, so give its container enough room (it is not in the top layer). The components do this with <code>mode="toggle"</code>: React <code>open</code> / <code>onOpenChange</code>, Vue <code>v-model:open</code>, Blade <code>open</code> plus a small script (or <code>:script="false"</code> and <code>trigger-attributes</code> for Livewire). An item click, a click outside and <kbd>Esc</kbd> close it.</p>
+          <oc-demo title="Toggle .is-open" size="tall" hint="Click the button: the menu opens below it.">
             <div class="oc-dropdown" id="demo-dropdown">
               <button class="oc-btn oc-btn--outline" onclick="this.parentElement.classList.toggle('is-open')">Options ▾</button>
               <div class="oc-dropdown-menu">
@@ -54,7 +127,81 @@
   &lt;button class="oc-btn oc-btn--outline"&gt;Options&lt;/button&gt;
   &lt;div class="oc-dropdown-menu"&gt;…&lt;/div&gt;
 &lt;/div&gt;
-&lt;!-- your script: dropdown.classList.toggle("is-open") --&gt;</oc-code></oc-demo>
+&lt;!-- your script: dropdown.classList.toggle("is-open") --&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { Dropdown, DropdownItem, DropdownLabel, DropdownSeparator } from "@birdycom/omniaui-react";
+
+// mode="toggle": .oc-dropdown + .is-open with your own state instead of the popover attribute.
+export function Example() {
+  const [open, setOpen] = useState(false);
+  return (
+    &lt;Dropdown mode="toggle" trigger="Options" open={open} onOpenChange={setOpen}&gt;
+      &lt;DropdownLabel&gt;My Account&lt;/DropdownLabel&gt;
+      &lt;DropdownItem href="/profile"&gt;Profile&lt;/DropdownItem&gt;
+      &lt;DropdownItem href="/settings"&gt;Settings&lt;/DropdownItem&gt;
+      &lt;DropdownSeparator /&gt;
+      &lt;DropdownItem href="/logout"&gt;Sign out&lt;/DropdownItem&gt;
+    &lt;/Dropdown&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcDropdown, OcDropdownItem, OcDropdownLabel, OcDropdownSeparator } from '@birdycom/omniaui-vue'
+
+// mode="toggle": .oc-dropdown + .is-open with your own state instead of the popover attribute.
+const open = ref(false)
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDropdown v-model:open="open" mode="toggle" label="Options"&gt;
+    &lt;OcDropdownLabel&gt;My Account&lt;/OcDropdownLabel&gt;
+    &lt;OcDropdownItem href="/profile"&gt;Profile&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem href="/settings"&gt;Settings&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator /&gt;
+    &lt;OcDropdownItem href="/logout"&gt;Sign out&lt;/OcDropdownItem&gt;
+  &lt;/OcDropdown&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- mode="toggle": a small script (once per page) toggles .is-open and closes the menu on an item click, outside or Esc --}}
+&lt;x-oc::dropdown mode="toggle" label="Options"&gt;
+    &lt;x-oc::dropdown.label&gt;My Account&lt;/x-oc::dropdown.label&gt;
+    &lt;x-oc::dropdown.item href="/profile"&gt;Profile&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item href="/settings"&gt;Settings&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.separator /&gt;
+    &lt;x-oc::dropdown.item href="/logout"&gt;Sign out&lt;/x-oc::dropdown.item&gt;
+&lt;/x-oc::dropdown&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class OptionsMenu extends Component
+{
+    public bool $open = false;
+
+    public function toggle(): void
+    {
+        $this-&gt;open = ! $this-&gt;open;
+    }
+
+    public function render()
+    {
+        return view('livewire.options-menu');
+    }
+}
+
+{{-- resources/views/livewire/options-menu.blade.php --}}
+{{-- :script="false": the open state lives in the component; the trigger calls toggle --}}
+&lt;div&gt;
+    &lt;x-oc::dropdown mode="toggle" label="Options" :open="$open" :script="false" :trigger-attributes="['wire:click' =&gt; 'toggle']"&gt;
+        &lt;x-oc::dropdown.label&gt;My Account&lt;/x-oc::dropdown.label&gt;
+        &lt;x-oc::dropdown.item href="/profile" wire:navigate&gt;Profile&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item href="/settings" wire:navigate&gt;Settings&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.item wire:click="toggle"&gt;Close&lt;/x-oc::dropdown.item&gt;
+    &lt;/x-oc::dropdown&gt;
+&lt;/div&gt;</oc-code>
+</oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
@@ -70,7 +217,8 @@
                 <tr><td><code>.oc-dropdown-item</code></td><td>Menu item (link or button)</td></tr>
                 <tr><td><code>.oc-dropdown-label</code></td><td>Small group heading</td></tr>
                 <tr><td><code>.oc-dropdown-separator</code></td><td>Divider line</td></tr>
-                <tr><td><code>.oc-dropdown</code> + <code>.is-open</code></td><td>Class-toggle variant (inline, needs a script)</td></tr>
+                <tr><td><code>.oc-dropdown</code> + <code>.is-open</code></td><td>Class-toggle variant (inline, needs a script). Components: <code>mode="toggle"</code></td></tr>
+                <tr><td>Blade <code>&lt;x-oc::dropdown.item&gt;</code>, <code>.label</code>, <code>.separator</code>, <code>.sub</code></td><td>Menu parts as components; attributes such as <code>wire:click</code> go to the item</td></tr>
               </tbody>
             </table>
         </div>

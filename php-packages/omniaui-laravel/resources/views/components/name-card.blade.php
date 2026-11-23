@@ -5,7 +5,7 @@
     <summary class="oc-name-card__head">
         <span class="oc-name-card__title">{{ $name }}</span>
         @if ($renamable)
-            <button type="button" class="oc-btn oc-btn--plain" data-oc-rename aria-label="Rename {{ $name }}" title="Rename"><iconify-icon icon="mdi:pencil-outline" aria-hidden="true"></iconify-icon></button>
+            <button type="button" class="oc-btn oc-btn--plain" data-oc-rename aria-label="Rename {{ $name }}" title="Rename"><x-oc::webicon name="mdi:pencil-outline" bare fallback="iconify" /></button>
         @endif
         @if ($meta)<span class="oc-name-card__meta">{{ $meta }}</span>@endif
         @if ($amount)<span class="oc-name-card__amount">{{ $amount }}</span>@endif

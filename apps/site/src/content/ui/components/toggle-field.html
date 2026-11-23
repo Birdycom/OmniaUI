@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Toggle field", "category": "Forms", "description": "Settings row with title, description and a switch.", "nav": "Toggle field", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Toggle field", "category": "Forms", "description": "A settings row with a title, a description and a switch. The whole row is a label, so clicking the text flips the switch, with keyboard support built in.", "nav": "Toggle field", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/toggle-field.html | Map: hero -> demo (rows, cards + reverse + disabled) -> reference -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Toggle field</h1>
@@ -30,31 +30,139 @@
     <span class="oc-switch"><input type="checkbox" role="switch" name="weekly" aria-describedby="oc-tf-2"><span class="oc-switch-track"></span></span>
   </label>
 </div>
+<oc-code lang="tsx">&lt;ToggleField label="Email notifications" description="Get a message when a receipt is processed." name="notify_email" checked={email} onChange={(e) =&gt; setEmail(e.target.checked)} /&gt;
+&lt;ToggleField label="Weekly summary" description="A short overview every Monday." name="weekly" checked={weekly} onChange={(e) =&gt; setWeekly(e.target.checked)} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcToggleField v-model="email" label="Email notifications" description="Get a message when a receipt is processed." /&gt;
+&lt;OcToggleField v-model="weekly" label="Weekly summary" description="A short overview every Monday." /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::toggle-field name="notify_email" value="1" label="Email notifications" description="Get a message when a receipt is processed." checked /&gt;
+&lt;x-oc::toggle-field name="weekly" value="1" label="Weekly summary" description="A short overview every Monday." /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class NotificationSettings extends Component
+{
+    public bool $notifyEmail = true;
+
+    public bool $weekly = false;
+
+    public function updated(string $property): void
+    {
+        // store the preference right away
+    }
+
+    public function render()
+    {
+        return view('livewire.notification-settings');
+    }
+}
+
+{{-- resources/views/livewire/notification-settings.blade.php --}}
+&lt;div&gt;
+    {{-- toggle-field passes wire:model to its checkbox --}}
+    &lt;x-oc::toggle-field wire:model.live="notifyEmail" label="Email notifications" description="Get a message when a receipt is processed." /&gt;
+    &lt;x-oc::toggle-field wire:model.live="weekly" label="Weekly summary" description="A short overview every Monday." /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2">Card, reverse and disabled</h3>
           <p class="oc-section-content__desc"><code>--card</code> draws a box whose border turns primary while on. <code>--reverse</code> puts the switch first (here together with <code>--card</code>). A disabled switch dims the row.</p>
           <oc-demo title="Toggle field - variants">
-<div style="display:grid;gap:0.75rem;max-inline-size:28rem">
-  <label class="oc-toggle-field oc-toggle-field--card">
-    <span class="oc-toggle-field-text">
-      <span class="oc-toggle-field-label">Auto backup</span>
-      <span class="oc-toggle-field-description">Copy new files to the cloud every night.</span>
-    </span>
-    <span class="oc-switch"><input type="checkbox" role="switch" checked><span class="oc-switch-track"></span></span>
-  </label>
-  <label class="oc-toggle-field oc-toggle-field--card oc-toggle-field--reverse">
-    <span class="oc-toggle-field-text"><span class="oc-toggle-field-label">Remember me</span><span class="oc-toggle-field-description">Stay signed in on this device for 30 days.</span></span>
-    <span class="oc-switch"><input type="checkbox" role="switch"><span class="oc-switch-track"></span></span>
-  </label>
-  <label class="oc-toggle-field oc-toggle-field--card">
-    <span class="oc-toggle-field-text">
-      <span class="oc-toggle-field-label">Two-factor login</span>
-      <span class="oc-toggle-field-description">Managed by your administrator.</span>
-    </span>
-    <span class="oc-switch"><input type="checkbox" role="switch" checked disabled><span class="oc-switch-track"></span></span>
-  </label>
+<div class="oc-eg">
+  <div class="oc-eg__panels" style="--eg-min: 18rem">
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">.oc-toggle-field--card</code>
+      <div class="oc-eg__note">A box whose border turns primary while on.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-items:center;padding:0.75rem">
+      <label class="oc-toggle-field oc-toggle-field--card">
+        <span class="oc-toggle-field-text">
+          <span class="oc-toggle-field-label">Auto backup</span>
+          <span class="oc-toggle-field-description">Every night, to the cloud.</span>
+        </span>
+        <span class="oc-switch"><input type="checkbox" role="switch" checked><span class="oc-switch-track"></span></span>
+      </label>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">--card --reverse</code>
+      <div class="oc-eg__note">The switch first, then the text.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-items:center;padding:0.75rem">
+      <label class="oc-toggle-field oc-toggle-field--card oc-toggle-field--reverse">
+        <span class="oc-toggle-field-text"><span class="oc-toggle-field-label">Remember me</span><span class="oc-toggle-field-description">Stay signed in for 30 days.</span></span>
+        <span class="oc-switch"><input type="checkbox" role="switch"><span class="oc-switch-track"></span></span>
+      </label>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">input:disabled</code>
+      <div class="oc-eg__note">Set by someone else: the row dims.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-items:center;padding:0.75rem">
+      <label class="oc-toggle-field oc-toggle-field--card">
+        <span class="oc-toggle-field-text">
+          <span class="oc-toggle-field-label">Two-factor login</span>
+          <span class="oc-toggle-field-description">Set by your admin.</span>
+        </span>
+        <span class="oc-switch"><input type="checkbox" role="switch" checked disabled><span class="oc-switch-track"></span></span>
+      </label>
+      </div>
+    </div>
+  </div>
 </div>
+<oc-code lang="html">&lt;div style="display:grid;gap:0.75rem;max-inline-size:28rem"&gt;
+  &lt;label class="oc-toggle-field oc-toggle-field--card"&gt;
+    &lt;span class="oc-toggle-field-text"&gt;
+      &lt;span class="oc-toggle-field-label"&gt;Auto backup&lt;/span&gt;
+      &lt;span class="oc-toggle-field-description"&gt;Every night, to the cloud.&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class="oc-switch"&gt;&lt;input type="checkbox" role="switch" checked&gt;&lt;span class="oc-switch-track"&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;/label&gt;
+  &lt;label class="oc-toggle-field oc-toggle-field--card oc-toggle-field--reverse"&gt;
+    &lt;span class="oc-toggle-field-text"&gt;&lt;span class="oc-toggle-field-label"&gt;Remember me&lt;/span&gt;&lt;span class="oc-toggle-field-description"&gt;Stay signed in for 30 days.&lt;/span&gt;&lt;/span&gt;
+    &lt;span class="oc-switch"&gt;&lt;input type="checkbox" role="switch"&gt;&lt;span class="oc-switch-track"&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;/label&gt;
+  &lt;label class="oc-toggle-field oc-toggle-field--card"&gt;
+    &lt;span class="oc-toggle-field-text"&gt;
+      &lt;span class="oc-toggle-field-label"&gt;Two-factor login&lt;/span&gt;
+      &lt;span class="oc-toggle-field-description"&gt;Set by your admin.&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class="oc-switch"&gt;&lt;input type="checkbox" role="switch" checked disabled&gt;&lt;span class="oc-switch-track"&gt;&lt;/span&gt;&lt;/span&gt;
+  &lt;/label&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;ToggleField card label="Auto backup" description="Every night, to the cloud." defaultChecked /&gt;
+&lt;ToggleField card reverse label="Remember me" description="Stay signed in for 30 days." /&gt;
+&lt;ToggleField card label="Two-factor login" description="Set by your admin." defaultChecked disabled /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcToggleField v-model="backup" card label="Auto backup" description="Every night, to the cloud." /&gt;
+&lt;OcToggleField v-model="remember" card reverse label="Remember me" description="Stay signed in for 30 days." /&gt;
+&lt;OcToggleField :model-value="true" card label="Two-factor login" description="Set by your admin." disabled /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::toggle-field card name="backup" value="1" label="Auto backup" description="Every night, to the cloud." checked /&gt;
+&lt;x-oc::toggle-field card reverse name="remember" value="1" label="Remember me" description="Stay signed in for 30 days." /&gt;
+&lt;x-oc::toggle-field card label="Two-factor login" description="Set by your admin." checked disabled /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SecuritySettings extends Component
+{
+    public bool $backup = true;
+
+    public bool $remember = false;
+
+    public function render()
+    {
+        return view('livewire.security-settings');
+    }
+}
+
+{{-- resources/views/livewire/security-settings.blade.php --}}
+&lt;div style="display:grid;gap:0.75rem"&gt;
+    &lt;x-oc::toggle-field card wire:model.live="backup" label="Auto backup" description="Every night, to the cloud." /&gt;
+    &lt;x-oc::toggle-field card reverse wire:model.live="remember" label="Remember me" description="Stay signed in for 30 days." /&gt;
+    &lt;x-oc::toggle-field card label="Two-factor login" description="Set by your admin." checked disabled /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

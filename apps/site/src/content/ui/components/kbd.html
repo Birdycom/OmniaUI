@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Kbd", "category": "Actions", "description": "Keyboard key and shortcut group.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Kbd", "category": "Actions", "description": "Kbd: a keyboard key and a shortcut group such as Ctrl K, with or without a plus between the keys. Used in text, in buttons and next to menu items.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Kbd</h1>
         <p class="oc-hero-text">Shows a keyboard key or shortcut. A single <code>&lt;kbd&gt;</code> with <code>.oc-kbd</code>, or several in a <code>.oc-kbd-group</code>. <a href="../components.html">All components</a>.</p>
@@ -8,17 +8,87 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. The markup is also available as the snippet <code>packages/ui/snippets/kbd.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 id="components" class="oc-section-content__title">As a React component <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Kbd">
 <p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem">
   Open the command palette with
   <span class="oc-kbd-group"><kbd class="oc-kbd">Ctrl</kbd><kbd class="oc-kbd">K</kbd></span>
   or press <kbd class="oc-kbd">/</kbd> to search.
 </p>
+<oc-code lang="tsx">&lt;p style={{ margin: 0, display: "flex", alignItems: "center", gap: ".5rem", flexWrap: "wrap", fontSize: ".875rem" }}&gt;
+  Open the command palette with{" "}
+  &lt;KbdGroup keys={["Ctrl", "K"]} /&gt;{" "}
+  or press &lt;Kbd&gt;/&lt;/Kbd&gt; to search.
+&lt;/p&gt;</oc-code>
+<oc-code lang="vue">&lt;p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem"&gt;
+  Open the command palette with
+  &lt;OcKbdGroup :keys="['Ctrl', 'K']" /&gt;
+  or press &lt;OcKbd&gt;/&lt;/OcKbd&gt; to search.
+&lt;/p&gt;</oc-code>
+<oc-code lang="blade">&lt;p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem"&gt;
+    Open the command palette with
+    &lt;x-oc::kbd keys="Ctrl+K" /&gt;
+    or press &lt;x-oc::kbd&gt;/&lt;/x-oc::kbd&gt; to search.
+&lt;/p&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SearchHint extends Component
+{
+    public string $shortcut = 'Ctrl+K';
+
+    public function render()
+    {
+        return view('livewire.search-hint');
+    }
+}
+
+{{-- resources/views/livewire/search-hint.blade.php --}}
+&lt;p style="margin:0;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.875rem"&gt;
+    Open the command palette with
+    &lt;x-oc::kbd :keys="$shortcut" /&gt;
+    or press &lt;x-oc::kbd&gt;/&lt;/x-oc::kbd&gt; to search.
+&lt;/p&gt;</oc-code>
           </oc-demo>
         <h3 id="in-context" class="oc-section-content__title mt-2">In buttons and menus</h3><p class="oc-section-content__desc">Keys sit next to labels; <code>.oc-dropdown-shortcut</code> and <code>.oc-command-shortcut</code> accept them too.</p>
           <oc-demo title="In buttons and menus">
 <button class="oc-btn oc-btn--outline" type="button">Save <span class="oc-kbd-group"><kbd class="oc-kbd">⌘</kbd><kbd class="oc-kbd">S</kbd></span></button>
 <span class="oc-kbd-group"><kbd class="oc-kbd">Ctrl</kbd><span class="oc-kbd-sep">+</span><kbd class="oc-kbd">Shift</kbd><span class="oc-kbd-sep">+</span><kbd class="oc-kbd">P</kbd></span>
+<oc-code lang="tsx">&lt;Button variant="outline"&gt;Save &lt;KbdGroup keys={["⌘", "S"]} /&gt;&lt;/Button&gt;
+&lt;KbdGroup keys={["Ctrl", "Shift", "P"]} separator /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcButton variant="outline"&gt;Save &lt;OcKbdGroup :keys="['⌘', 'S']" /&gt;&lt;/OcButton&gt;
+&lt;OcKbdGroup :keys="['Ctrl', 'Shift', 'P']" separator /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::button variant="outline"&gt;Save &lt;x-oc::kbd keys="⌘+S" /&gt;&lt;/x-oc::button&gt;
+&lt;x-oc::kbd keys="Ctrl+Shift+P" sep /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SaveShortcut extends Component
+{
+    public bool $saved = false;
+
+    public function save(): void
+    {
+        $this-&gt;saved = true;
+    }
+
+    public function render()
+    {
+        return view('livewire.save-shortcut');
+    }
+}
+
+{{-- resources/views/livewire/save-shortcut.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button variant="outline" wire:click="save" wire:keydown.window.ctrl.s.prevent="save"&gt;Save &lt;x-oc::kbd keys="⌘+S" /&gt;&lt;/x-oc::button&gt;
+    &lt;x-oc::kbd keys="Ctrl+Shift+P" sep /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

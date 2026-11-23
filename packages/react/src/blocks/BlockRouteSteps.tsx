@@ -1,5 +1,5 @@
 // File: packages/react/src/blocks/BlockRouteSteps.tsx | Map: types -> BlockRouteSteps (head -> tools: search + kind chips -> ol of steps: grip, main, status, menu -> empty -> foot -> live status)
-import { forwardRef, useId, useRef, useState } from "react";
+import { Fragment, forwardRef, useId, useRef, useState } from "react";
 import type { CSSProperties, DragEvent, HTMLAttributes, KeyboardEvent, ReactNode } from "react";
 import { attrs, cx, textOf } from "../utils";
 import { DropdownItem, DropdownSeparator } from "../components/Dropdown";
@@ -21,7 +21,11 @@ export interface RouteStep {
   /** A photo (img or svg) in the thumb; a numbered step keeps a small number. */
   image?: ReactNode;
   status?: ReactNode;
-  statusTone?: "success" | "warning" | "outline" | "secondary" | "info";
+  statusTone?: "success" | "warning" | "destructive" | "outline" | "secondary" | "info";
+  /** Tooltip on the status (the messages behind "2 problems"); the status becomes focusable. */
+  statusTooltip?: string;
+  /** Small badges under the name ("Counts", "Team"). */
+  badges?: ReactNode[];
 }
 
 export interface RouteStepsKind {
@@ -79,16 +83,21 @@ export interface BlockRouteStepsProps extends Omit<HTMLAttributes<HTMLElement>, 
   /** Buttons under the list (Add step). */
   footer?: ReactNode;
   labels?: Partial<RouteStepsLabels>;
+  /** The order cannot change now (a live round): no grips, no dragging, no move items; a lock line in the head. */
+  locked?: boolean;
+  /** Text of that lock line (default "Order locked"). */
+  lockedLabel?: ReactNode;
 }
 
 const node = (i: ReactNode) => webiconNode(i);
 
 /** `.oc-block-route-steps`: the ordered steps of a route or course in an editor, numbered by a CSS counter. */
 export const BlockRouteSteps = forwardRef<HTMLElement, BlockRouteStepsProps>(function BlockRouteSteps(
-  { title, count, steps, selected, onSelect, onMove, onDuplicate, onRemove, search = true, kinds = [], footer, labels, className, ...rest },
+  { title, count, steps, selected, onSelect, onMove: onMoveProp, onDuplicate, onRemove, search = true, kinds = [], footer, labels, locked, lockedLabel = "Order locked", className, ...rest },
   ref,
 ) {
   const L = { ...EN, ...labels };
+  const onMove = locked ? undefined : onMoveProp;
   const auto = useId().replace(/[^\w-]/g, "");
   const titleId = `oc-rsteps-${auto}`;
   const [query, setQuery] = useState("");
@@ -139,10 +148,11 @@ export const BlockRouteSteps = forwardRef<HTMLElement, BlockRouteStepsProps>(fun
   };
 
   return (
-    <section ref={ref} className={cx("oc-block-route-steps", className)} aria-labelledby={titleId} {...rest}>
+    <section ref={ref} className={cx("oc-block-route-steps", locked && "oc-block-route-steps--locked", className)} aria-labelledby={titleId} {...rest}>
       <div className="oc-block-route-steps-head">
         <h2 className="oc-block-route-steps-title" id={titleId}>{title}</h2>
         {count != null && <span className="oc-block-route-steps-count">{count}</span>}
+        {locked && <span className="oc-block-route-steps-lock">{lockedLabel}</span>}
       </div>
       {(search || kinds.length > 0) && (
         <div className="oc-block-route-steps-tools">
@@ -172,13 +182,13 @@ export const BlockRouteSteps = forwardRef<HTMLElement, BlockRouteStepsProps>(fun
               data-id={s.id}
               data-kind={s.kind}
               className={cx("oc-block-route-steps-item", !visible(s) && "is-filtered", drag?.id === s.id && "is-dragging", drag?.over === s.id && drag.id !== s.id && (drag.after ? "is-drop-after" : "is-drop-before"))}
-              draggable={grabbed === s.id}
+              draggable={!locked && grabbed === s.id}
               onDragStart={(e) => { e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", s.id); setDrag({ id: s.id }); }}
               onDragOver={(e) => onDragOver(e, s)}
               onDragEnd={() => { setGrabbed(null); setDrag(null); }}
               onPointerUp={() => { if (!drag) setGrabbed(null); }}
             >
-              <button className="oc-sortable-row-grip" type="button" aria-label={L.move(n)} aria-pressed={picked === s.id}
+              <button className="oc-sortable-row-grip" type="button" aria-label={L.move(n)} aria-pressed={picked === s.id} disabled={locked}
                 onPointerDown={() => setGrabbed(s.id)}
                 onClick={() => setPicked(picked === s.id ? null : s.id)}
                 onKeyDown={(e) => onGripKey(e, s, i)}
@@ -190,9 +200,12 @@ export const BlockRouteSteps = forwardRef<HTMLElement, BlockRouteStepsProps>(fun
                 <span className="oc-block-route-steps-text">
                   <span className="oc-block-route-steps-name">{s.name}</span>
                   {s.meta && s.meta.length > 0 && <span className="oc-block-route-steps-meta">{s.meta.map((m, k) => <span key={k}>{m}</span>)}</span>}
+                  {s.badges && s.badges.length > 0 && <span className="oc-block-route-steps-badges">{s.badges.map((b, k) => <Fragment key={k}>{b}</Fragment>)}</span>}
                 </span>
               </button>
-              {s.status != null && <span className={cx("oc-badge", s.statusTone && `oc-badge--${s.statusTone}`, "oc-block-route-steps-status")}>{s.status}</span>}
+              {s.status != null && (s.statusTooltip
+                ? <span className="oc-block-route-steps-status oc-tooltip oc-tooltip--left" data-tooltip={s.statusTooltip} tabIndex={0}><span className={cx("oc-badge", s.statusTone && `oc-badge--${s.statusTone}`)}>{s.status}</span></span>
+                : <span className={cx("oc-badge", s.statusTone && `oc-badge--${s.statusTone}`, "oc-block-route-steps-status")}>{s.status}</span>)}
               {(onMove || onDuplicate || onRemove) && (
                 <>
                   <button className="oc-btn oc-btn--ghost oc-btn--icon oc-btn--sm oc-block-route-steps-menu" type="button" popoverTarget={menuId} aria-label={L.actions(n)}>{node("mdi:dots-vertical")}</button>

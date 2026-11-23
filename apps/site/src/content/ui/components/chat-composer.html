@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Chat composer", "category": "Media", "description": "Growing message box with tool buttons and a send button.", "nav": "Chat composer", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Chat composer", "category": "Media", "description": "The message box of a chat: a textarea that grows while you type, a row of tool buttons and a round send button in one rounded frame with focus ring.", "nav": "Chat composer", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/chat-composer.html | Map: hero -> demo -> inline row -> how it works -> a11y -> reference -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Chat composer</h1>
@@ -40,6 +40,75 @@
     &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z"/&gt;&lt;/svg&gt;&lt;/button&gt;
   &lt;/div&gt;
 &lt;/form&gt;</oc-code>
+<oc-code lang="tsx">&lt;ChatComposer
+  style={{ maxInlineSize: "32rem" }}
+  label="Message"
+  placeholder="Write a message…"
+  sendOnEnter={false}
+  hint="Enter for a new line"
+  onSend={(text) =&gt; send(text)}
+  tools={&lt;&gt;
+    &lt;button type="button" className="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;Webicon name="mdi:paperclip" bare /&gt;&lt;/button&gt;
+    &lt;button type="button" className="oc-chat-composer__tool" aria-label="Mention someone"&gt;@&lt;/button&gt;
+    &lt;button type="button" className="oc-chat-composer__tool" aria-label="Insert emoji"&gt;&lt;Webicon name="mdi:emoticon-outline" bare /&gt;&lt;/button&gt;
+  &lt;/&gt;}
+/&gt;</oc-code>
+<oc-code lang="vue">&lt;OcChatComposer style="max-inline-size:32rem" label="Message" placeholder="Write a message…" :send-on-enter="false"
+  hint="Enter for a new line" @send="send"&gt;
+  &lt;template #tools&gt;
+    &lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;OcWebicon name="mdi:paperclip" bare /&gt;&lt;/button&gt;
+    &lt;button type="button" class="oc-chat-composer__tool" aria-label="Mention someone"&gt;@&lt;/button&gt;
+    &lt;button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji"&gt;&lt;OcWebicon name="mdi:emoticon-outline" bare /&gt;&lt;/button&gt;
+  &lt;/template&gt;
+&lt;/OcChatComposer&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::chat-composer action="/messages" name="message" hint="Enter for a new line" style="max-inline-size:32rem"&gt;
+    @csrf
+    &lt;x-slot:tools&gt;
+        &lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;x-oc::webicon name="mdi:paperclip" bare /&gt;&lt;/button&gt;
+        &lt;button type="button" class="oc-chat-composer__tool" aria-label="Mention someone"&gt;@&lt;/button&gt;
+        &lt;button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji"&gt;&lt;x-oc::webicon name="mdi:emoticon-outline" bare /&gt;&lt;/button&gt;
+    &lt;/x-slot:tools&gt;
+&lt;/x-oc::chat-composer&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ChatBox extends Component
+{
+    /** @var list&lt;string&gt; */
+    public array $messages = [];
+
+    public function send(string $text): void
+    {
+        $text = trim($text);
+        if ($text !== '') {
+            $this-&gt;messages[] = $text;
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.chat-box');
+    }
+}
+
+{{-- resources/views/livewire/chat-box.blade.php --}}
+&lt;div&gt;
+    @foreach ($messages as $message)
+        &lt;p wire:key="message-{{ $loop-&gt;index }}"&gt;{{ $message }}&lt;/p&gt;
+    @endforeach
+    {{-- the composer is a plain form: hand the text to send() and clear the field --}}
+    &lt;x-oc::chat-composer hint="Enter for a new line" style="max-inline-size:32rem"
+        x-data x-on:submit.prevent="$wire.send($el.elements.message.value); $el.reset()"&gt;
+        &lt;x-slot:tools&gt;
+            &lt;button type="button" class="oc-chat-composer__tool" aria-label="Attach a file"&gt;&lt;x-oc::webicon name="mdi:paperclip" bare /&gt;&lt;/button&gt;
+            &lt;button type="button" class="oc-chat-composer__tool" aria-label="Mention someone"&gt;@&lt;/button&gt;
+            &lt;button type="button" class="oc-chat-composer__tool" aria-label="Insert emoji"&gt;&lt;x-oc::webicon name="mdi:emoticon-outline" bare /&gt;&lt;/button&gt;
+        &lt;/x-slot:tools&gt;
+    &lt;/x-oc::chat-composer&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         <h3 id="inline" class="oc-section-content__title mt-2">Inline row</h3><p class="oc-section-content__desc"><code>.oc-chat-composer--inline</code> puts tools, field and send on one line, for a narrow chat panel. Same markup, the bar becomes <code>display: contents</code>.</p>
           <oc-demo title="Inline row">
@@ -59,6 +128,43 @@
     &lt;button type="submit" class="oc-chat-composer__send" aria-label="Send"&gt;&lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;&lt;path d="M2 21l21-9L2 3v7l15 2l-15 2z"/&gt;&lt;/svg&gt;&lt;/button&gt;
   &lt;/div&gt;
 &lt;/form&gt;</oc-code>
+<oc-code lang="tsx">&lt;ChatComposer inline style={{ maxInlineSize: "24rem" }} label="Reply" placeholder="Reply…" onSend={(text) =&gt; reply(text)}
+  tools={&lt;button type="button" className="oc-chat-composer__tool" aria-label="Add"&gt;+&lt;/button&gt;} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcChatComposer inline style="max-inline-size:24rem" label="Reply" placeholder="Reply…" @send="reply"&gt;
+  &lt;template #tools&gt;&lt;button type="button" class="oc-chat-composer__tool" aria-label="Add"&gt;+&lt;/button&gt;&lt;/template&gt;
+&lt;/OcChatComposer&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::chat-composer inline action="/messages" name="reply" label="Reply" placeholder="Reply…" style="max-inline-size:24rem"&gt;
+    @csrf
+    &lt;x-slot:tools&gt;&lt;button type="button" class="oc-chat-composer__tool" aria-label="Add"&gt;+&lt;/button&gt;&lt;/x-slot:tools&gt;
+&lt;/x-oc::chat-composer&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class QuickReply extends Component
+{
+    public ?string $lastReply = null;
+
+    public function reply(string $text): void
+    {
+        $this-&gt;lastReply = trim($text) ?: null;
+    }
+
+    public function render()
+    {
+        return view('livewire.quick-reply');
+    }
+}
+
+{{-- resources/views/livewire/quick-reply.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::chat-composer inline name="reply" label="Reply" placeholder="Reply…" style="max-inline-size:24rem"
+        x-data x-on:submit.prevent="$wire.reply($el.elements.reply.value); $el.reset()"&gt;
+        &lt;x-slot:tools&gt;&lt;button type="button" class="oc-chat-composer__tool" aria-label="Add"&gt;+&lt;/button&gt;&lt;/x-slot:tools&gt;
+    &lt;/x-oc::chat-composer&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Timeline", "category": "Marketing", "description": "Vertical timeline for history, release notes or a project log.", "nav": "Timeline", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Timeline", "category": "Marketing", "description": "Vertical timeline for company history, release notes or a project log: dates, titles and text, a current item, accent line and a compact list.", "nav": "Timeline", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/timeline.html | Map: hero -> demos (detailed, simple + accent) -> reference -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Timeline</h1>
@@ -11,6 +11,7 @@
           <p class="oc-section-header__desc">Plain HTML and CSS. Below each demo: the markup that builds it, also available as the snippet <code>packages/ui/snippets/timeline.html</code>.</p>
         </div>
         <div class="oc-section-content">
+          <h3 class="oc-section-content__title">Timeline with title and text <span class="oc-badge-version">v0.17.0</span></h3>
           <oc-demo title="Timeline with title and text">
 <ol class="oc-timeline">
   <li class="oc-timeline__item">
@@ -29,6 +30,59 @@
     <p class="oc-timeline__text">Web apps, desktop tools and plugins for clients across Europe.</p>
   </li>
 </ol>
+<oc-code lang="tsx">import { Timeline } from "@birdycom/omniaui-react";
+
+const items = [
+  { date: "2012", dateTime: "2012", title: "Company 1 is founded", text: "Two developers start building websites for local shops." },
+  { date: "2019", dateTime: "2019", title: "First own product", text: "A small invoicing app grows into a modular business suite." },
+  { date: "Today", title: "Products and custom work", text: "Web apps, desktop tools and plugins for clients across Europe.", current: true },
+];
+
+export function Example() {
+  return &lt;Timeline items={items} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTimeline } from '@birdycom/omniaui-vue'
+
+const items = [
+  { date: '2012', dateTime: '2012', title: 'Company 1 is founded', text: 'Two developers start building websites for local shops.' },
+  { date: '2019', dateTime: '2019', title: 'First own product', text: 'A small invoicing app grows into a modular business suite.' },
+  { date: 'Today', title: 'Products and custom work', text: 'Web apps, desktop tools and plugins for clients across Europe.', current: true },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTimeline :items="items" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::timeline :items="[
+    ['date' =&gt; '2012', 'datetime' =&gt; '2012', 'title' =&gt; 'Company 1 is founded', 'text' =&gt; 'Two developers start building websites for local shops.'],
+    ['date' =&gt; '2019', 'datetime' =&gt; '2019', 'title' =&gt; 'First own product', 'text' =&gt; 'A small invoicing app grows into a modular business suite.'],
+    ['date' =&gt; 'Today', 'title' =&gt; 'Products and custom work', 'text' =&gt; 'Web apps, desktop tools and plugins for clients across Europe.', 'current' =&gt; true],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CompanyHistory extends Component
+{
+    public array $items = [
+        ['date' =&gt; '2012', 'datetime' =&gt; '2012', 'title' =&gt; 'Company 1 is founded', 'text' =&gt; 'Two developers start building websites for local shops.'],
+        ['date' =&gt; '2019', 'datetime' =&gt; '2019', 'title' =&gt; 'First own product', 'text' =&gt; 'A small invoicing app grows into a modular business suite.'],
+        ['date' =&gt; 'Today', 'title' =&gt; 'Products and custom work', 'text' =&gt; 'Web apps, desktop tools and plugins for clients across Europe.', 'current' =&gt; true],
+    ];
+
+    public function render()
+    {
+        return view('livewire.company-history');
+    }
+}
+
+{{-- resources/views/livewire/company-history.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::timeline :items="$items" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
           <oc-demo title="Compact, accent line, large spacing">
 <div class="oc-split w-full align-items-start">
@@ -43,6 +97,95 @@
     <li class="oc-timeline__item oc-timeline__item--current"><span class="oc-timeline__date">v2.0</span><p class="oc-timeline__text">New editor, in beta.</p></li>
   </ol>
 </div>
+<oc-code lang="tsx">import { Timeline } from "@birdycom/omniaui-react";
+
+const history = [
+  { date: "2012", text: "Company founded" },
+  { date: "2019", text: "First own product" },
+  { date: "2026", text: "Version 2.0" },
+];
+const releases = [
+  { date: "v1.0", text: "Public release." },
+  { date: "v1.4", text: "Dark mode and exports." },
+  { date: "v2.0", text: "New editor, in beta.", current: true },
+];
+
+export function Example() {
+  return (
+    &lt;div className="oc-split w-full align-items-start"&gt;
+      {/* compact: one row per item (date in strong, text in a span), no dot and no title */}
+      &lt;Timeline compact items={history} /&gt;
+      &lt;Timeline accent size="lg" className="oc-accent--green" items={releases} /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTimeline } from '@birdycom/omniaui-vue'
+
+const history = [
+  { date: '2012', text: 'Company founded' },
+  { date: '2019', text: 'First own product' },
+  { date: '2026', text: 'Version 2.0' },
+]
+const releases = [
+  { date: 'v1.0', text: 'Public release.' },
+  { date: 'v1.4', text: 'Dark mode and exports.' },
+  { date: 'v2.0', text: 'New editor, in beta.', current: true },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-split w-full align-items-start"&gt;
+    &lt;!-- compact: one row per item (date in strong, text in a span), no dot and no title --&gt;
+    &lt;OcTimeline compact :items="history" /&gt;
+    &lt;OcTimeline accent size="lg" class="oc-accent--green" :items="releases" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-split w-full align-items-start"&gt;
+    {{-- compact: one row per item (date in strong, text in a span), no dot and no title --}}
+    &lt;x-oc::timeline compact :items="[
+        ['date' =&gt; '2012', 'text' =&gt; 'Company founded'],
+        ['date' =&gt; '2019', 'text' =&gt; 'First own product'],
+        ['date' =&gt; '2026', 'text' =&gt; 'Version 2.0'],
+    ]" /&gt;
+    &lt;x-oc::timeline accent size="lg" class="oc-accent--green" :items="[
+        ['date' =&gt; 'v1.0', 'text' =&gt; 'Public release.'],
+        ['date' =&gt; 'v1.4', 'text' =&gt; 'Dark mode and exports.'],
+        ['date' =&gt; 'v2.0', 'text' =&gt; 'New editor, in beta.', 'current' =&gt; true],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ReleaseTimeline extends Component
+{
+    public array $history = [
+        ['date' =&gt; '2012', 'text' =&gt; 'Company founded'],
+        ['date' =&gt; '2019', 'text' =&gt; 'First own product'],
+        ['date' =&gt; '2026', 'text' =&gt; 'Version 2.0'],
+    ];
+
+    public array $releases = [
+        ['date' =&gt; 'v1.0', 'text' =&gt; 'Public release.'],
+        ['date' =&gt; 'v1.4', 'text' =&gt; 'Dark mode and exports.'],
+        ['date' =&gt; 'v2.0', 'text' =&gt; 'New editor, in beta.', 'current' =&gt; true],
+    ];
+
+    public function render()
+    {
+        return view('livewire.release-timeline');
+    }
+}
+
+{{-- resources/views/livewire/release-timeline.blade.php --}}
+&lt;div class="oc-split w-full align-items-start"&gt;
+    {{-- compact: one row per item (date in strong, text in a span), no dot and no title --}}
+    &lt;x-oc::timeline compact :items="$history" /&gt;
+    &lt;x-oc::timeline accent size="lg" class="oc-accent--green" :items="$releases" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Dropzone", "category": "Forms", "description": "File upload target - a label around a real file input.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Dropzone", "category": "Forms", "description": "A file upload target: a label around a real, invisible file input, so clicking and keyboard work natively, with a drag-over state for feedback.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Dropzone</h1>
         <p class="oc-hero-text">Clicking or tabbing to the invisible input works natively. Toggle <code>.is-dragover</code> from <code>dragenter</code>/<code>dragleave</code> for drag feedback. <a href="../components.html">All components</a>.</p>
@@ -17,6 +17,69 @@
   <span><strong>Drop invoices here</strong> or click to choose</span>
   <span class="oc-dropzone-hint">PDF or UBL XML, up to 10 MB</span>
 </label>
+<oc-code lang="tsx">import { useState } from "react";
+import { Dropzone, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  const [files, setFiles] = useState&lt;File[]&gt;([]);
+  return (
+    &lt;Dropzone accept=".pdf,.xml" multiple icon={&lt;Webicon name="mdi:tray-arrow-up" /&gt;} hint="PDF or UBL XML, up to 10 MB" onFiles={setFiles}&gt;
+      &lt;strong&gt;Drop invoices here&lt;/strong&gt; or click to choose{files.length &gt; 0 &amp;&amp; ` (${files.length} chosen)`}
+    &lt;/Dropzone&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcDropzone, OcWebicon } from '@birdycom/omniaui-vue'
+
+const files = ref&lt;File[]&gt;([])
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDropzone v-model="files" accept=".pdf,.xml" multiple hint="PDF or UBL XML, up to 10 MB"&gt;
+    &lt;template #icon&gt;&lt;OcWebicon name="mdi:tray-arrow-up" /&gt;&lt;/template&gt;
+    &lt;strong&gt;Drop invoices here&lt;/strong&gt; or click to choose
+  &lt;/OcDropzone&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;form method="post" action="/invoices" enctype="multipart/form-data"&gt;
+    @csrf
+    &lt;x-oc::dropzone name="invoices[]" accept=".pdf,.xml" multiple title="Drop invoices here" hint="PDF or UBL XML, up to 10 MB"&gt;or click to choose&lt;/x-oc::dropzone&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+
+class InvoiceUpload extends Component
+{
+    use WithFileUploads;
+
+    #[Validate(['invoices.*' =&gt; 'file|mimes:pdf,xml|max:10240'])]
+    public array $invoices = [];
+
+    public function updatedInvoices(): void
+    {
+        $this-&gt;validate();
+
+        foreach ($this-&gt;invoices as $invoice) {
+            $invoice-&gt;store('invoices');
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.invoice-upload');
+    }
+}
+
+{{-- resources/views/livewire/invoice-upload.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::dropzone wire:model="invoices" accept=".pdf,.xml" multiple title="Drop invoices here" hint="PDF or UBL XML, up to 10 MB"&gt;or click to choose&lt;/x-oc::dropzone&gt;
+    &lt;div wire:loading wire:target="invoices"&gt;Uploading…&lt;/div&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

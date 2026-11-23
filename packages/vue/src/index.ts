@@ -18,6 +18,7 @@ import OcAvatarGroup from './components/OcAvatarGroup.vue'
 import OcAvatarPicker from './components/OcAvatarPicker.vue'
 import OcBackLink from './components/OcBackLink.vue'
 import OcBadge from './components/OcBadge.vue'
+import OcBadgeSource from './components/OcBadgeSource.vue'
 import OcBarcode from './components/OcBarcode.vue'
 import OcBarcodeInput from './components/OcBarcodeInput.vue'
 import OcBrandMark from './components/OcBrandMark.vue'
@@ -27,43 +28,66 @@ import OcBusyOverlay from './components/OcBusyOverlay.vue'
 import OcButton from './components/OcButton.vue'
 import OcButtonGroup from './components/OcButtonGroup.vue'
 import OcButtonGroupText from './components/OcButtonGroupText.vue'
+import OcCalendar from './components/OcCalendar.vue'
 import OcCallout from './components/OcCallout.vue'
 import OcCard from './components/OcCard.vue'
 import OcCardBand from './components/OcCardBand.vue'
+import OcCardGrid from './components/OcCardGrid.vue'
+import OcCardLink from './components/OcCardLink.vue'
+import OcCarousel from './components/OcCarousel.vue'
+import OcCarouselItem from './components/OcCarouselItem.vue'
 import OcChartLine from './components/OcChartLine.vue'
 import OcChatComposer from './components/OcChatComposer.vue'
 import OcCheckbox from './components/OcCheckbox.vue'
 import OcChecklist from './components/OcChecklist.vue'
 import OcChipFilter from './components/OcChipFilter.vue'
 import OcCodePlate from './components/OcCodePlate.vue'
+import OcCodeWindow from './components/OcCodeWindow.vue'
 import OcCollapsible from './components/OcCollapsible.vue'
 import OcColorField from './components/OcColorField.vue'
 import OcColorSelect from './components/OcColorSelect.vue'
 import OcCombobox from './components/OcCombobox.vue'
 import OcCommand from './components/OcCommand.vue'
 import OcConfirmDialog from './components/OcConfirmDialog.vue'
+import OcContextMenu from './components/OcContextMenu.vue'
 import OcCookieConsent from './components/OcCookieConsent.vue'
 import OcCopyField from './components/OcCopyField.vue'
+import OcCountdown from './components/OcCountdown.vue'
 import OcCounter from './components/OcCounter.vue'
 import OcDataTable from './components/OcDataTable.vue'
 import OcDataTableName from './components/OcDataTableName.vue'
 import OcDateField from './components/OcDateField.vue'
+import OcDatePicker from './components/OcDatePicker.vue'
 import OcDecimalInput from './components/OcDecimalInput.vue'
 import OcDefinitionList from './components/OcDefinitionList.vue'
+import OcDemoPanel from './components/OcDemoPanel.vue'
+import OcDialog from './components/OcDialog.vue'
+import OcDialogBody from './components/OcDialogBody.vue'
+import OcDialogClose from './components/OcDialogClose.vue'
+import OcDialogContent from './components/OcDialogContent.vue'
+import OcDialogDescription from './components/OcDialogDescription.vue'
+import OcDialogFooter from './components/OcDialogFooter.vue'
+import OcDialogHeader from './components/OcDialogHeader.vue'
+import OcDialogTitle from './components/OcDialogTitle.vue'
+import OcDialogTrigger from './components/OcDialogTrigger.vue'
 import OcDocLayout from './components/OcDocLayout.vue'
 import OcDocViewer from './components/OcDocViewer.vue'
+import OcDrawer from './components/OcDrawer.vue'
 import OcDropdown from './components/OcDropdown.vue'
 import OcDropdownItem from './components/OcDropdownItem.vue'
 import OcDropdownLabel from './components/OcDropdownLabel.vue'
 import OcDropdownSeparator from './components/OcDropdownSeparator.vue'
+import OcDropdownSub from './components/OcDropdownSub.vue'
 import OcDropzone from './components/OcDropzone.vue'
 import OcEmojiPicker from './components/OcEmojiPicker.vue'
 import OcEmptyState from './components/OcEmptyState.vue'
 import OcEntityCard from './components/OcEntityCard.vue'
+import OcExpandableTable from './components/OcExpandableTable.vue'
 import OcFactList from './components/OcFactList.vue'
 import OcFeatureCard from './components/OcFeatureCard.vue'
 import OcFilterCounts from './components/OcFilterCounts.vue'
 import OcFlipCard from './components/OcFlipCard.vue'
+import OcFooterbar from './components/OcFooterbar.vue'
 import OcFormField from './components/OcFormField.vue'
 import OcFormSection from './components/OcFormSection.vue'
 import OcGallery from './components/OcGallery.vue'
@@ -72,8 +96,11 @@ import OcGlassBar from './components/OcGlassBar.vue'
 import OcGlassPanel from './components/OcGlassPanel.vue'
 import OcGreeting from './components/OcGreeting.vue'
 import OcGroup from './components/OcGroup.vue'
+import OcHeaderSettings from './components/OcHeaderSettings.vue'
 import OcHeading from './components/OcHeading.vue'
+import OcHeroMedia from './components/OcHeroMedia.vue'
 import OcHoverCard from './components/OcHoverCard.vue'
+import OcIconList from './components/OcIconList.vue'
 import OcImageZoom from './components/OcImageZoom.vue'
 import OcInput from './components/OcInput.vue'
 import OcInputGroup from './components/OcInputGroup.vue'
@@ -98,7 +125,9 @@ import OcMarquee from './components/OcMarquee.vue'
 import OcMediaCard from './components/OcMediaCard.vue'
 import OcMediaRow from './components/OcMediaRow.vue'
 import OcMediaThumb from './components/OcMediaThumb.vue'
+import OcMenuEntries from './components/OcMenuEntries.vue'
 import OcMenuStatic from './components/OcMenuStatic.vue'
+import OcMenubar from './components/OcMenubar.vue'
 import OcMessage from './components/OcMessage.vue'
 import OcMessageList from './components/OcMessageList.vue'
 import OcMessageThread from './components/OcMessageThread.vue'
@@ -114,13 +143,19 @@ import OcOtpInput from './components/OcOtpInput.vue'
 import OcPageHeader from './components/OcPageHeader.vue'
 import OcPagination from './components/OcPagination.vue'
 import OcPanel from './components/OcPanel.vue'
+import OcPaper from './components/OcPaper.vue'
+import OcPaperLift from './components/OcPaperLift.vue'
 import OcParticleField from './components/OcParticleField.vue'
 import OcPasswordInput from './components/OcPasswordInput.vue'
 import OcPasswordRequirements from './components/OcPasswordRequirements.vue'
 import OcPhoneInput from './components/OcPhoneInput.vue'
 import OcPopover from './components/OcPopover.vue'
+import OcPopoverAnchor from './components/OcPopoverAnchor.vue'
+import OcPopoverContent from './components/OcPopoverContent.vue'
+import OcPopoverTrigger from './components/OcPopoverTrigger.vue'
 import OcPrice from './components/OcPrice.vue'
 import OcPriceCard from './components/OcPriceCard.vue'
+import OcProductCard from './components/OcProductCard.vue'
 import OcProductMark from './components/OcProductMark.vue'
 import OcProgress from './components/OcProgress.vue'
 import OcProjectCard from './components/OcProjectCard.vue'
@@ -132,21 +167,37 @@ import OcRating from './components/OcRating.vue'
 import OcRatingInput from './components/OcRatingInput.vue'
 import OcReading from './components/OcReading.vue'
 import OcRecoveryCodes from './components/OcRecoveryCodes.vue'
+import OcResizable from './components/OcResizable.vue'
+import OcResizablePanel from './components/OcResizablePanel.vue'
 import OcResult from './components/OcResult.vue'
 import OcRibbon from './components/OcRibbon.vue'
+import OcSaveStatus from './components/OcSaveStatus.vue'
+import OcScrim from './components/OcScrim.vue'
 import OcScrollArea from './components/OcScrollArea.vue'
+import OcSearch from './components/OcSearch.vue'
+import OcSectionBlock from './components/OcSectionBlock.vue'
+import OcSectionHeader from './components/OcSectionHeader.vue'
 import OcSegmented from './components/OcSegmented.vue'
 import OcSelect from './components/OcSelect.vue'
 import OcSeparator from './components/OcSeparator.vue'
 import OcSeverityCard from './components/OcSeverityCard.vue'
 import OcSheet from './components/OcSheet.vue'
+import OcShotGrid from './components/OcShotGrid.vue'
+import OcShowMore from './components/OcShowMore.vue'
 import OcSidebar from './components/OcSidebar.vue'
 import OcSidebarCollapsible from './components/OcSidebarCollapsible.vue'
 import OcSidebarGroup from './components/OcSidebarGroup.vue'
+import OcSidebarInset from './components/OcSidebarInset.vue'
 import OcSidebarMenu from './components/OcSidebarMenu.vue'
+import OcSidebarMenuAction from './components/OcSidebarMenuAction.vue'
+import OcSidebarMenuBadge from './components/OcSidebarMenuBadge.vue'
 import OcSidebarMenuButton from './components/OcSidebarMenuButton.vue'
+import OcSidebarMenuSub from './components/OcSidebarMenuSub.vue'
 import OcSidebarMeta from './components/OcSidebarMeta.vue'
+import OcSidebarProvider from './components/OcSidebarProvider.vue'
+import OcSidebarRail from './components/OcSidebarRail.vue'
 import OcSidebarSeparator from './components/OcSidebarSeparator.vue'
+import OcSidebarTrigger from './components/OcSidebarTrigger.vue'
 import OcSkeleton from './components/OcSkeleton.vue'
 import OcSlider from './components/OcSlider.vue'
 import OcSortableRow from './components/OcSortableRow.vue'
@@ -165,10 +216,15 @@ import OcTable from './components/OcTable.vue'
 import OcTableActions from './components/OcTableActions.vue'
 import OcTableCompact from './components/OcTableCompact.vue'
 import OcTabs from './components/OcTabs.vue'
+import OcTabsContent from './components/OcTabsContent.vue'
+import OcTabsList from './components/OcTabsList.vue'
+import OcTabsTrigger from './components/OcTabsTrigger.vue'
 import OcTagInput from './components/OcTagInput.vue'
+import OcTagList from './components/OcTagList.vue'
 import OcTerminalLog from './components/OcTerminalLog.vue'
 import OcTextarea from './components/OcTextarea.vue'
 import OcThemeSwitch from './components/OcThemeSwitch.vue'
+import OcThemeToggle from './components/OcThemeToggle.vue'
 import OcTimeInput from './components/OcTimeInput.vue'
 import OcTimeline from './components/OcTimeline.vue'
 import OcTintCard from './components/OcTintCard.vue'
@@ -178,14 +234,18 @@ import OcTitlebarButton from './components/OcTitlebarButton.vue'
 import OcTitlebarWindow from './components/OcTitlebarWindow.vue'
 import OcToast from './components/OcToast.vue'
 import OcToastContainer from './components/OcToastContainer.vue'
+import OcToc from './components/OcToc.vue'
 import OcToggle from './components/OcToggle.vue'
 import OcToggleField from './components/OcToggleField.vue'
 import OcToggleGroup from './components/OcToggleGroup.vue'
 import OcTooltip from './components/OcTooltip.vue'
+import OcTooltipProvider from './components/OcTooltipProvider.vue'
 import OcTopProgress from './components/OcTopProgress.vue'
+import OcTopbar from './components/OcTopbar.vue'
 import OcTree from './components/OcTree.vue'
 import OcUpgradeBanner from './components/OcUpgradeBanner.vue'
 import OcUser from './components/OcUser.vue'
+import OcVersionBadge from './components/OcVersionBadge.vue'
 import OcVersionBanner from './components/OcVersionBanner.vue'
 import OcWatermark from './components/OcWatermark.vue'
 import OcWebicon from './components/OcWebicon.vue'
@@ -202,21 +262,35 @@ import OcBlockDataTable from './blocks/OcBlockDataTable.vue'
 import OcBlockFaq from './blocks/OcBlockFaq.vue'
 import OcBlockFeatures from './blocks/OcBlockFeatures.vue'
 import OcBlockFooter from './blocks/OcBlockFooter.vue'
+import OcBlockForgotPassword from './blocks/OcBlockForgotPassword.vue'
 import OcBlockFormPage from './blocks/OcBlockFormPage.vue'
 import OcBlockHero from './blocks/OcBlockHero.vue'
 import OcBlockHeroCode from './blocks/OcBlockHeroCode.vue'
 import OcBlockHeroOrbit from './blocks/OcBlockHeroOrbit.vue'
 import OcBlockHeroSplit from './blocks/OcBlockHeroSplit.vue'
+import OcBlockLogin01 from './blocks/OcBlockLogin01.vue'
+import OcBlockLogin02 from './blocks/OcBlockLogin02.vue'
+import OcBlockLogin03 from './blocks/OcBlockLogin03.vue'
 import OcBlockModuleHeader from './blocks/OcBlockModuleHeader.vue'
+import OcBlockOtp01 from './blocks/OcBlockOtp01.vue'
+import OcBlockOtp02 from './blocks/OcBlockOtp02.vue'
 import OcBlockPageHero from './blocks/OcBlockPageHero.vue'
 import OcBlockPortfolioGrid from './blocks/OcBlockPortfolioGrid.vue'
 import OcBlockPricing from './blocks/OcBlockPricing.vue'
 import OcBlockProcess from './blocks/OcBlockProcess.vue'
 import OcBlockProductGrid from './blocks/OcBlockProductGrid.vue'
 import OcBlockProfileHeader from './blocks/OcBlockProfileHeader.vue'
+import OcBlockResetPassword from './blocks/OcBlockResetPassword.vue'
 import OcBlockRouteProgress from './blocks/OcBlockRouteProgress.vue'
 import OcBlockRouteSteps from './blocks/OcBlockRouteSteps.vue'
 import OcBlockShowcase from './blocks/OcBlockShowcase.vue'
+import OcBlockSidebar01 from './blocks/OcBlockSidebar01.vue'
+import OcBlockSidebar02 from './blocks/OcBlockSidebar02.vue'
+import OcBlockSidebar03 from './blocks/OcBlockSidebar03.vue'
+import OcBlockSidebar04 from './blocks/OcBlockSidebar04.vue'
+import OcBlockSidebar05 from './blocks/OcBlockSidebar05.vue'
+import OcBlockSignup01 from './blocks/OcBlockSignup01.vue'
+import OcBlockSignup02 from './blocks/OcBlockSignup02.vue'
 import OcBlockSiteFooter from './blocks/OcBlockSiteFooter.vue'
 import OcBlockSiteHeader from './blocks/OcBlockSiteHeader.vue'
 import OcBlockSpotlight from './blocks/OcBlockSpotlight.vue'
@@ -246,6 +320,7 @@ export {
   OcAvatarPicker,
   OcBackLink,
   OcBadge,
+  OcBadgeSource,
   OcBarcode,
   OcBarcodeInput,
   OcBrandMark,
@@ -255,43 +330,66 @@ export {
   OcButton,
   OcButtonGroup,
   OcButtonGroupText,
+  OcCalendar,
   OcCallout,
   OcCard,
   OcCardBand,
+  OcCardGrid,
+  OcCardLink,
+  OcCarousel,
+  OcCarouselItem,
   OcChartLine,
   OcChatComposer,
   OcCheckbox,
   OcChecklist,
   OcChipFilter,
   OcCodePlate,
+  OcCodeWindow,
   OcCollapsible,
   OcColorField,
   OcColorSelect,
   OcCombobox,
   OcCommand,
   OcConfirmDialog,
+  OcContextMenu,
   OcCookieConsent,
   OcCopyField,
+  OcCountdown,
   OcCounter,
   OcDataTable,
   OcDataTableName,
   OcDateField,
+  OcDatePicker,
   OcDecimalInput,
   OcDefinitionList,
+  OcDemoPanel,
+  OcDialog,
+  OcDialogBody,
+  OcDialogClose,
+  OcDialogContent,
+  OcDialogDescription,
+  OcDialogFooter,
+  OcDialogHeader,
+  OcDialogTitle,
+  OcDialogTrigger,
   OcDocLayout,
   OcDocViewer,
+  OcDrawer,
   OcDropdown,
   OcDropdownItem,
   OcDropdownLabel,
   OcDropdownSeparator,
+  OcDropdownSub,
   OcDropzone,
   OcEmojiPicker,
   OcEmptyState,
   OcEntityCard,
+  OcExpandableTable,
   OcFactList,
   OcFeatureCard,
   OcFilterCounts,
   OcFlipCard,
+  OcFooterbar,
   OcFormField,
   OcFormSection,
   OcGallery,
@@ -300,8 +398,11 @@ export {
   OcGlassPanel,
   OcGreeting,
   OcGroup,
+  OcHeaderSettings,
   OcHeading,
+  OcHeroMedia,
   OcHoverCard,
+  OcIconList,
   OcImageZoom,
   OcInput,
   OcInputGroup,
@@ -326,7 +427,9 @@ export {
   OcMediaCard,
   OcMediaRow,
   OcMediaThumb,
+  OcMenuEntries,
   OcMenuStatic,
+  OcMenubar,
   OcMessage,
   OcMessageList,
   OcMessageThread,
@@ -342,13 +445,19 @@ export {
   OcPageHeader,
   OcPagination,
   OcPanel,
+  OcPaper,
+  OcPaperLift,
   OcParticleField,
   OcPasswordInput,
   OcPasswordRequirements,
   OcPhoneInput,
   OcPopover,
+  OcPopoverAnchor,
+  OcPopoverContent,
+  OcPopoverTrigger,
   OcPrice,
   OcPriceCard,
+  OcProductCard,
   OcProductMark,
   OcProgress,
   OcProjectCard,
@@ -360,21 +469,37 @@ export {
   OcRatingInput,
   OcReading,
   OcRecoveryCodes,
+  OcResizable,
+  OcResizablePanel,
   OcResult,
   OcRibbon,
+  OcSaveStatus,
+  OcScrim,
   OcScrollArea,
+  OcSearch,
+  OcSectionBlock,
+  OcSectionHeader,
   OcSegmented,
   OcSelect,
   OcSeparator,
   OcSeverityCard,
   OcSheet,
+  OcShotGrid,
+  OcShowMore,
   OcSidebar,
   OcSidebarCollapsible,
   OcSidebarGroup,
+  OcSidebarInset,
   OcSidebarMenu,
+  OcSidebarMenuAction,
+  OcSidebarMenuBadge,
   OcSidebarMenuButton,
+  OcSidebarMenuSub,
   OcSidebarMeta,
+  OcSidebarProvider,
+  OcSidebarRail,
   OcSidebarSeparator,
+  OcSidebarTrigger,
   OcSkeleton,
   OcSlider,
   OcSortableRow,
@@ -393,10 +518,15 @@ export {
   OcTableActions,
   OcTableCompact,
   OcTabs,
+  OcTabsContent,
+  OcTabsList,
+  OcTabsTrigger,
   OcTagInput,
+  OcTagList,
   OcTerminalLog,
   OcTextarea,
   OcThemeSwitch,
+  OcThemeToggle,
   OcTimeInput,
   OcTimeline,
   OcTintCard,
@@ -406,14 +536,18 @@ export {
   OcTitlebarWindow,
   OcToast,
   OcToastContainer,
+  OcToc,
   OcToggle,
   OcToggleField,
   OcToggleGroup,
   OcTooltip,
+  OcTooltipProvider,
   OcTopProgress,
+  OcTopbar,
   OcTree,
   OcUpgradeBanner,
   OcUser,
+  OcVersionBadge,
   OcVersionBanner,
   OcWatermark,
   OcWebicon,
@@ -430,21 +564,35 @@ export {
   OcBlockFaq,
   OcBlockFeatures,
   OcBlockFooter,
+  OcBlockForgotPassword,
   OcBlockFormPage,
   OcBlockHero,
   OcBlockHeroCode,
   OcBlockHeroOrbit,
   OcBlockHeroSplit,
+  OcBlockLogin01,
+  OcBlockLogin02,
+  OcBlockLogin03,
   OcBlockModuleHeader,
+  OcBlockOtp01,
+  OcBlockOtp02,
   OcBlockPageHero,
   OcBlockPortfolioGrid,
   OcBlockPricing,
   OcBlockProcess,
   OcBlockProductGrid,
   OcBlockProfileHeader,
+  OcBlockResetPassword,
   OcBlockRouteProgress,
   OcBlockRouteSteps,
   OcBlockShowcase,
+  OcBlockSidebar01,
+  OcBlockSidebar02,
+  OcBlockSidebar03,
+  OcBlockSidebar04,
+  OcBlockSidebar05,
+  OcBlockSignup01,
+  OcBlockSignup02,
   OcBlockSiteFooter,
   OcBlockSiteHeader,
   OcBlockSpotlight,
@@ -467,25 +615,31 @@ export type { ColorSelectItem } from './components/OcColorSelect.vue'
 export type { ComboboxItem } from './components/OcCombobox.vue'
 export type { CommandItem } from './components/OcCommand.vue'
 export type { CookieCategory, ConsentChoice } from './components/OcCookieConsent.vue'
-export type { DataTableColumn, DataTableRow, DataTableTabs, DataTableColumnFilter } from './components/OcDataTable.vue'
+export type { DataTableColumn, DataTableRow, DataTableTabs, DataTableColumnFilter, DataTableSort, DataTableTrashed, DataTableQuery } from './components/OcDataTable.vue'
 export type { DefinitionRow } from './components/OcDefinitionList.vue'
 export type { DocViewerItem } from './components/OcDocViewer.vue'
+export type { ExpandableTableColumn } from './components/OcExpandableTable.vue'
 export type { FactListRow } from './components/OcFactList.vue'
 export type { FilterCountsItem } from './components/OcFilterCounts.vue'
+export type { FooterbarLink } from './components/OcFooterbar.vue'
 export type { GalleryImage } from './components/OcGallery.vue'
 export type { GlassBarItem } from './components/OcGlassBar.vue'
+export type { IconListItem } from './components/OcIconList.vue'
 export type { LanguageMenuItem } from './components/OcLanguageMenu.vue'
 export type { LanguageSelectItem } from './components/OcLanguageSelect.vue'
+export type { MenuAction, MenuEntry } from './components/OcMenuEntries.vue'
+export type { MenubarMenu } from './components/OcMenubar.vue'
 export type { MessageAttachment, MessageAction, MessageData } from './components/OcMessage.vue'
 export type { MessageListItem } from './components/OcMessageList.vue'
 export type { ThreadParticipant, ThreadMenuItem } from './components/OcMessageThread.vue'
-export type { NavmenuItem } from './components/OcNavmenuList.vue'
+export type { NavmenuChild, NavmenuItem } from './components/OcNavmenuList.vue'
 export type { PasswordRequirementRule } from './components/OcPasswordRequirements.vue'
 export type { PhoneInputCountry } from './components/OcPhoneInput.vue'
 export type { PriceCardFeature, PriceCardPrice } from './components/OcPriceCard.vue'
 export type { RadioOption } from './components/OcRadioGroup.vue'
 export type { SegmentedOption } from './components/OcSegmented.vue'
 export type { SelectOption } from './components/OcSelect.vue'
+export type { ShotItem } from './components/OcShotGrid.vue'
 export type { SpecGroup } from './components/OcSpecList.vue'
 export type { StackListItem } from './components/OcStackList.vue'
 export type { StepperStep } from './components/OcStepper.vue'
@@ -493,7 +647,9 @@ export type { TableColumn, TableSort } from './components/OcTable.vue'
 export type { TableCompactColumn } from './components/OcTableCompact.vue'
 export type { TabItem } from './components/OcTabs.vue'
 export type { TimelineEntry } from './components/OcTimeline.vue'
-export type { OcTreeItem } from './components/OcTree.vue'
+export type { TocItem, TocGroup } from './components/OcToc.vue'
+export type { TopbarLink } from './components/OcTopbar.vue'
+export type { OcTreeAction, OcTreeItem } from './components/OcTree.vue'
 export type { WebiconSize } from './components/OcWebicon.vue'
 export type { ContactFormLine, ContactFormCard, ContactFormSubject } from './blocks/OcBlockContactForm.vue'
 export type { ContactGridLine, ContactGridCard } from './blocks/OcBlockContactGrid.vue'
@@ -501,6 +657,7 @@ export type { ContentBlockItem } from './blocks/OcBlockContentBlocks.vue'
 export type { FaqItem } from './blocks/OcBlockFaq.vue'
 export type { FeatureItem } from './blocks/OcBlockFeatures.vue'
 export type { FooterColumn } from './blocks/OcBlockFooter.vue'
+export type { HeroTile } from './blocks/OcBlockHeroCode.vue'
 export type { HeroOrbitMark } from './blocks/OcBlockHeroOrbit.vue'
 export type { PortfolioGridProject } from './blocks/OcBlockPortfolioGrid.vue'
 export type { PricingPlan } from './blocks/OcBlockPricing.vue'
@@ -510,8 +667,8 @@ export type { ProfileHeaderTab } from './blocks/OcBlockProfileHeader.vue'
 export type { RouteProgressState, RouteProgressStep, RouteProgressNext } from './blocks/OcBlockRouteProgress.vue'
 export type { RouteStep, RouteStepsKind } from './blocks/OcBlockRouteSteps.vue'
 export type { ShowcaseProject } from './blocks/OcBlockShowcase.vue'
-export type { SiteFooterColumn, SiteFooterContact } from './blocks/OcBlockSiteFooter.vue'
-export type { SiteHeaderLink } from './blocks/OcBlockSiteHeader.vue'
+export type { SiteFooterLink, SiteFooterColumn, SiteFooterContact, SiteFooterSocial, SiteFooterNewsletter, SiteFooterBrandMark } from './blocks/OcBlockSiteFooter.vue'
+export type { SiteHeaderLink, SiteHeaderBrandMark } from './blocks/OcBlockSiteHeader.vue'
 export type { SpotlightModule } from './blocks/OcBlockSpotlight.vue'
 export type { StatItem } from './blocks/OcBlockStats.vue'
 export type { CounterStat } from './blocks/OcBlockStatsCounter.vue'
@@ -522,8 +679,11 @@ export type { TypePickerOption, TypePickerCategory } from './blocks/OcBlockTypeP
 export { useToast } from './composables/useToast'
 export type { ToastItem, ToastOptions, ToastVariant } from './composables/useToast'
 export { useUid } from './composables/useUid'
-export { addWebicons, getWebicon, hasWebicon, registerWebicons } from './webicons'
+export { addWebicons, getWebicon, hasWebicon, languageFlag, registerWebicons } from './webicons'
 export type { ResolvedWebicon, WebiconData, WebiconMap, WebiconSet } from './webicons'
+export { contrastRatio, luminance, pickOnColor, toRgb } from './color'
+export { useSidebar, useSidebarOptional, sidebarKey } from './composables/useSidebar'
+export type { SidebarContext } from './composables/useSidebar'
 
 /** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */
 export const components: Record<string, Component> = {
@@ -544,6 +704,7 @@ export const components: Record<string, Component> = {
   OcAvatarPicker,
   OcBackLink,
   OcBadge,
+  OcBadgeSource,
   OcBarcode,
   OcBarcodeInput,
   OcBrandMark,
@@ -553,43 +714,66 @@ export const components: Record<string, Component> = {
   OcButton,
   OcButtonGroup,
   OcButtonGroupText,
+  OcCalendar,
   OcCallout,
   OcCard,
   OcCardBand,
+  OcCardGrid,
+  OcCardLink,
+  OcCarousel,
+  OcCarouselItem,
   OcChartLine,
   OcChatComposer,
   OcCheckbox,
   OcChecklist,
   OcChipFilter,
   OcCodePlate,
+  OcCodeWindow,
   OcCollapsible,
   OcColorField,
   OcColorSelect,
   OcCombobox,
   OcCommand,
   OcConfirmDialog,
+  OcContextMenu,
   OcCookieConsent,
   OcCopyField,
+  OcCountdown,
   OcCounter,
   OcDataTable,
   OcDataTableName,
   OcDateField,
+  OcDatePicker,
   OcDecimalInput,
   OcDefinitionList,
+  OcDemoPanel,
+  OcDialog,
+  OcDialogBody,
+  OcDialogClose,
+  OcDialogContent,
+  OcDialogDescription,
+  OcDialogFooter,
+  OcDialogHeader,
+  OcDialogTitle,
+  OcDialogTrigger,
   OcDocLayout,
   OcDocViewer,
+  OcDrawer,
   OcDropdown,
   OcDropdownItem,
   OcDropdownLabel,
   OcDropdownSeparator,
+  OcDropdownSub,
   OcDropzone,
   OcEmojiPicker,
   OcEmptyState,
   OcEntityCard,
+  OcExpandableTable,
   OcFactList,
   OcFeatureCard,
   OcFilterCounts,
   OcFlipCard,
+  OcFooterbar,
   OcFormField,
   OcFormSection,
   OcGallery,
@@ -598,8 +782,11 @@ export const components: Record<string, Component> = {
   OcGlassPanel,
   OcGreeting,
   OcGroup,
+  OcHeaderSettings,
   OcHeading,
+  OcHeroMedia,
   OcHoverCard,
+  OcIconList,
   OcImageZoom,
   OcInput,
   OcInputGroup,
@@ -624,7 +811,9 @@ export const components: Record<string, Component> = {
   OcMediaCard,
   OcMediaRow,
   OcMediaThumb,
+  OcMenuEntries,
   OcMenuStatic,
+  OcMenubar,
   OcMessage,
   OcMessageList,
   OcMessageThread,
@@ -640,13 +829,19 @@ export const components: Record<string, Component> = {
   OcPageHeader,
   OcPagination,
   OcPanel,
+  OcPaper,
+  OcPaperLift,
   OcParticleField,
   OcPasswordInput,
   OcPasswordRequirements,
   OcPhoneInput,
   OcPopover,
+  OcPopoverAnchor,
+  OcPopoverContent,
+  OcPopoverTrigger,
   OcPrice,
   OcPriceCard,
+  OcProductCard,
   OcProductMark,
   OcProgress,
   OcProjectCard,
@@ -658,21 +853,37 @@ export const components: Record<string, Component> = {
   OcRatingInput,
   OcReading,
   OcRecoveryCodes,
+  OcResizable,
+  OcResizablePanel,
   OcResult,
   OcRibbon,
+  OcSaveStatus,
+  OcScrim,
   OcScrollArea,
+  OcSearch,
+  OcSectionBlock,
+  OcSectionHeader,
   OcSegmented,
   OcSelect,
   OcSeparator,
   OcSeverityCard,
   OcSheet,
+  OcShotGrid,
+  OcShowMore,
   OcSidebar,
   OcSidebarCollapsible,
   OcSidebarGroup,
+  OcSidebarInset,
   OcSidebarMenu,
+  OcSidebarMenuAction,
+  OcSidebarMenuBadge,
   OcSidebarMenuButton,
+  OcSidebarMenuSub,
   OcSidebarMeta,
+  OcSidebarProvider,
+  OcSidebarRail,
   OcSidebarSeparator,
+  OcSidebarTrigger,
   OcSkeleton,
   OcSlider,
   OcSortableRow,
@@ -691,10 +902,15 @@ export const components: Record<string, Component> = {
   OcTableActions,
   OcTableCompact,
   OcTabs,
+  OcTabsContent,
+  OcTabsList,
+  OcTabsTrigger,
   OcTagInput,
+  OcTagList,
   OcTerminalLog,
   OcTextarea,
   OcThemeSwitch,
+  OcThemeToggle,
   OcTimeInput,
   OcTimeline,
   OcTintCard,
@@ -704,14 +920,18 @@ export const components: Record<string, Component> = {
   OcTitlebarWindow,
   OcToast,
   OcToastContainer,
+  OcToc,
   OcToggle,
   OcToggleField,
   OcToggleGroup,
   OcTooltip,
+  OcTooltipProvider,
   OcTopProgress,
+  OcTopbar,
   OcTree,
   OcUpgradeBanner,
   OcUser,
+  OcVersionBadge,
   OcVersionBanner,
   OcWatermark,
   OcWebicon,
@@ -728,21 +948,35 @@ export const components: Record<string, Component> = {
   OcBlockFaq,
   OcBlockFeatures,
   OcBlockFooter,
+  OcBlockForgotPassword,
   OcBlockFormPage,
   OcBlockHero,
   OcBlockHeroCode,
   OcBlockHeroOrbit,
   OcBlockHeroSplit,
+  OcBlockLogin01,
+  OcBlockLogin02,
+  OcBlockLogin03,
   OcBlockModuleHeader,
+  OcBlockOtp01,
+  OcBlockOtp02,
   OcBlockPageHero,
   OcBlockPortfolioGrid,
   OcBlockPricing,
   OcBlockProcess,
   OcBlockProductGrid,
   OcBlockProfileHeader,
+  OcBlockResetPassword,
   OcBlockRouteProgress,
   OcBlockRouteSteps,
   OcBlockShowcase,
+  OcBlockSidebar01,
+  OcBlockSidebar02,
+  OcBlockSidebar03,
+  OcBlockSidebar04,
+  OcBlockSidebar05,
+  OcBlockSignup01,
+  OcBlockSignup02,
   OcBlockSiteFooter,
   OcBlockSiteHeader,
   OcBlockSpotlight,

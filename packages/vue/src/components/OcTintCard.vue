@@ -1,7 +1,8 @@
 <!-- File: packages/vue/src/components/OcTintCard.vue | Map: card (a or article) -> corner art -> head (title + arrow chip) -> text (slot) -> meta -->
 <script setup lang="ts">
 /** Link card tinted in one color, with a large drifting webicon in the corner (snippets/tint-card.html).
- *  icon = webicon name (or slot `icon`); tone = primary|success|warning|destructive|info|muted; slots: default (text), icon, meta. */
+ *  icon = webicon name (or slot `icon`); tone = primary|success|warning|destructive|info|muted; slots: default (text), icon, meta.
+ *  titleHref: a link on the title (.oc-tint-card__link, covers the card) while the card stays an <article>. */
 import OcWebicon from './OcWebicon.vue'
 withDefaults(
   defineProps<{
@@ -15,6 +16,8 @@ withDefaults(
     noArrow?: boolean
     /** Pro shape (.oc-tint-card--fill, needs OmniaUI Pro CSS). */
     fill?: boolean
+    /** Link on the title while the card stays an <article> (a card with more than one link). */
+    titleHref?: string
   }>(),
   { headingLevel: 3 },
 )
@@ -29,7 +32,7 @@ withDefaults(
     <span v-if="$slots.icon" class="oc-tint-card__art" aria-hidden="true"><slot name="icon" /></span>
     <OcWebicon v-else-if="icon" class="oc-tint-card__art" :name="icon" bare fallback="iconify" />
     <div class="oc-tint-card__head">
-      <component :is="`h${headingLevel}`" class="oc-tint-card__title">{{ title }}</component>
+      <component :is="`h${headingLevel}`" class="oc-tint-card__title"><a v-if="titleHref && !href" class="oc-tint-card__link" :href="titleHref">{{ title }}</a><template v-else>{{ title }}</template></component>
       <span v-if="!noArrow" class="oc-tint-card__go" aria-hidden="true"><OcWebicon name="material-symbols:arrow-outward-rounded" bare fallback="iconify" /></span>
     </div>
     <p v-if="$slots.default" class="oc-tint-card__text"><slot /></p>

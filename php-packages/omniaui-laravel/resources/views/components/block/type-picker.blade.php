@@ -11,19 +11,41 @@
        .oc-block-type-picker-empty: Shown by the script when nothing matches
        .oc-block-type-picker-foot: Cancel / Add buttons
      Picking works without JavaScript (native radios). The script at the end only filters by search text and category; leave it out when your framework filters.
-     Blade: <x-oc::block.type-picker> - attributes merge onto the root element.
-     Blade slots (each falls back to the snippet content when empty): title, text, footer, default.
+     Blade: <x-oc::block.type-picker> - attributes merge onto the root element. Written by hand (0.17.0), prop names as in the React block.
+     Props: title, text (false: no text line), options (array of cards: value, label, hint, preview (Htmlable: a view or HtmlString),
+       category, disabled, disabledReason, attributes (extra attributes on the radio, or in action mode on an available card:
+       wire:click, data-*)), categories (array of
+       ['value', 'label'], "All" first), value (picked value; default the first card that is not disabled), name (radio group),
+       search (default true with options), search-label, all-label, category-label, type-label, empty-text, title-id,
+       mode ('pick': radio cards | 'action': every card is a button, a click adds that type), draggable (action mode).
+       Without options the snippet cards, tools and buttons show (the default slot replaces the cards, also in action mode).
+     Blade slots (they win over the props; each falls back to the snippet content when empty): title, text, footer, default.
 --}}
-@props(['title' => null, 'text' => null, 'footer' => null])
-<section {{ $attributes->merge(['class' => 'oc-block-type-picker', 'aria-labelledby' => 'oc-picker-title']) }}>
+@props([
+    'title' => null, 'text' => null, 'footer' => null, 'options' => null, 'categories' => null, 'value' => null, 'name' => null,
+    'search' => null, 'searchLabel' => 'Search blocks', 'allLabel' => 'All', 'categoryLabel' => 'Category', 'typeLabel' => 'Block type',
+    'emptyText' => 'No block matches your search.', 'mode' => 'pick', 'draggable' => false, 'titleId' => 'oc-picker-title',
+])
+@php
+    $action = $mode === 'action';
+    $cards = is_array($options);
+    $data = $cards || $action || $search !== null || $categories !== null;
+    $useSearch = $search ?? true;
+    $cats = is_array($categories) ? $categories : [];
+    $group = $name ?? $titleId.'-type';
+    $picked = $value ?? ($cards ? (collect($options)->first(fn ($o) => empty($o['disabled']))['value'] ?? null) : null);
+    $bag = fn ($a) => new \Illuminate\View\ComponentAttributeBag(is_array($a) ? $a : []);
+@endphp
+<section {{ $attributes->merge(['class' => 'oc-block-type-picker'.($action ? ' oc-block-type-picker--action' : ''), 'aria-labelledby' => $titleId]) }}>
   <div class="oc-block-type-picker-head">
-    <h2 class="oc-block-type-picker-title" id="oc-picker-title">
+    <h2 class="oc-block-type-picker-title" id="{{ $titleId }}">
         @if (isset($title) && trim((string) $title) !== '')
             {{ $title }}
         @else
         Add a block
         @endif
     </h2>
+    @if ($text !== false)
     <p class="oc-block-type-picker-text">
         @if (isset($text) && trim((string) $text) !== '')
             {{ $text }}
@@ -31,10 +53,30 @@
         Pick what to add to Step 1 of Route 1. Click a card or use the arrow keys.
         @endif
     </p>
+    @endif
   </div>
+  @if ($data)
+  @if ($useSearch || count($cats) > 0)
+  <div class="oc-block-type-picker-tools">
+    @if ($useSearch)
+    <div class="oc-input-group oc-input-group--affix">
+      <span class="oc-input-addon" aria-hidden="true"><x-oc::webicon name="mdi:magnify" bare fallback="iconify" /></span>
+      <input class="oc-input oc-block-type-picker-search" type="search" placeholder="{{ $searchLabel }}" aria-label="{{ $searchLabel }}">
+    </div>
+    @endif
+    @if (count($cats) > 0)
+    <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="{{ $categoryLabel }}">
+      @foreach ([['value' => 'all', 'label' => $allLabel], ...$cats] as $c)
+      <label class="oc-chip-filter-item"><input type="radio" name="{{ $group }}-cat" value="{{ $c['value'] }}" @checked($loop->first)> {{ $c['label'] }}</label>
+      @endforeach
+    </fieldset>
+    @endif
+  </div>
+  @endif
+  @else
   <div class="oc-block-type-picker-tools">
     <div class="oc-input-group oc-input-group--affix">
-      <span class="oc-input-addon" aria-hidden="true"><iconify-icon icon="mdi:magnify"></iconify-icon></span>
+      <span class="oc-input-addon" aria-hidden="true"><x-oc::webicon name="mdi:magnify" bare fallback="iconify" /></span>
       <input class="oc-input oc-block-type-picker-search" type="search" placeholder="Search blocks" aria-label="Search blocks">
     </div>
     <fieldset class="oc-chip-filter oc-chip-filter--sm oc-block-type-picker-cats" aria-label="Category">
@@ -44,6 +86,49 @@
       <label class="oc-chip-filter-item"><input type="radio" name="oc-picker-cat" value="media"> Media</label>
     </fieldset>
   </div>
+  @endif
+  @if ($action)
+  <div class="oc-block-type-picker-grid" role="group" aria-label="{{ $typeLabel }}">
+      @if (! $slot->isEmpty())
+          {{ $slot }}
+      @else
+          @foreach ($cards ? $options : [] as $o)
+              @php
+                  $reason = $o['disabledReason'] ?? $o['disabled-reason'] ?? null;
+                  $off = ! empty($o['disabled']) || $reason !== null;
+                  $reasonId = $reason !== null ? $group.'-'.$o['value'].'-reason' : null;
+              @endphp
+    <button {{ $bag($off ? [] : ($o['attributes'] ?? []))->merge(array_filter([
+        'type' => 'button', 'class' => 'oc-block-type-picker-item', 'data-category' => $o['category'] ?? null, 'data-value' => $o['value'],
+        'aria-disabled' => $off ? 'true' : null, 'aria-describedby' => $reasonId, 'draggable' => $draggable && ! $off ? 'true' : null,
+    ], fn ($v) => $v !== null)) }}>
+      @isset($o['preview'])<span class="oc-block-type-picker-preview" aria-hidden="true">{{ $o['preview'] }}</span>@endisset
+      <span class="oc-block-type-picker-name">{{ $o['label'] ?? '' }}</span>
+      @isset($o['hint'])<span class="oc-block-type-picker-hint">{{ $o['hint'] }}</span>@endisset
+      @if ($reason !== null)<span class="oc-block-type-picker-reason" id="{{ $reasonId }}">{{ $reason }}</span>@endif
+    </button>
+          @endforeach
+    <p class="oc-block-type-picker-empty" @if ($cards && count($options) > 0) hidden @endif>{{ $emptyText }}</p>
+      @endif
+  </div>
+  @elseif ($cards)
+  <fieldset class="oc-block-type-picker-grid">
+      @if (! $slot->isEmpty())
+          {{ $slot }}
+      @else
+    <legend class="oc-visually-hidden">{{ $typeLabel }}</legend>
+          @foreach ($options as $o)
+    <label class="oc-block-type-picker-item" @isset($o['category']) data-category="{{ $o['category'] }}" @endisset>
+      <input {{ $bag($o['attributes'] ?? [])->merge(['class' => 'oc-block-type-picker-input', 'type' => 'radio', 'name' => $group, 'value' => $o['value']]) }} @checked($picked !== null && (string) $picked === (string) $o['value']) @disabled(! empty($o['disabled']))>
+      @isset($o['preview'])<span class="oc-block-type-picker-preview" aria-hidden="true">{{ $o['preview'] }}</span>@endisset
+      <span class="oc-block-type-picker-name">{{ $o['label'] ?? '' }}</span>
+      @isset($o['hint'])<span class="oc-block-type-picker-hint">{{ $o['hint'] }}</span>@endisset
+    </label>
+          @endforeach
+    <p class="oc-block-type-picker-empty" @if (count($options) > 0) hidden @endif>{{ $emptyText }}</p>
+      @endif
+  </fieldset>
+  @else
   <fieldset class="oc-block-type-picker-grid">
       @if (! $slot->isEmpty())
           {{ $slot }}
@@ -75,7 +160,7 @@
     </label>
     <label class="oc-block-type-picker-item" data-category="content">
       <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="link">
-      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>More about this place</p><span class="oc-block-type-picker-art-btn">Open page <iconify-icon icon="mdi:open-in-new"></iconify-icon></span></span>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><p>More about this place</p><span class="oc-block-type-picker-art-btn">Open page <x-oc::webicon name="mdi:open-in-new" bare fallback="iconify" /></span></span>
       <span class="oc-block-type-picker-name">Link</span>
       <span class="oc-block-type-picker-hint">A button to another page</span>
     </label>
@@ -87,13 +172,13 @@
     </label>
     <label class="oc-block-type-picker-item" data-category="content">
       <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="tip">
-      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-row">Show a tip <iconify-icon icon="mdi:chevron-down"></iconify-icon></span><p>Opens when the reader asks for it.</p></span>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-row">Show a tip <x-oc::webicon name="mdi:chevron-down" bare fallback="iconify" /></span><p>Opens when the reader asks for it.</p></span>
       <span class="oc-block-type-picker-name">Tip</span>
       <span class="oc-block-type-picker-hint">Hidden until the reader opens it</span>
     </label>
     <label class="oc-block-type-picker-item" data-category="media">
       <input class="oc-block-type-picker-input" type="radio" name="oc-picker-type" value="video">
-      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-video"><iconify-icon icon="mdi:play-circle"></iconify-icon></span></span>
+      <span class="oc-block-type-picker-preview" aria-hidden="true"><span class="oc-block-type-picker-art-video"><x-oc::webicon name="mdi:play-circle" bare fallback="iconify" /></span></span>
       <span class="oc-block-type-picker-name">Video</span>
       <span class="oc-block-type-picker-hint">A clip from a link or an upload</span>
     </label>
@@ -106,6 +191,8 @@
     <p class="oc-block-type-picker-empty" hidden>No block matches your search.</p>
       @endif
   </fieldset>
+  @endif
+  @if (! $data || (isset($footer) && trim((string) $footer) !== ''))
   <div class="oc-block-type-picker-foot">
       @if (isset($footer) && trim((string) $footer) !== '')
           {{ $footer }}
@@ -114,7 +201,25 @@
     <button class="oc-btn" type="button">Add block</button>
       @endif
   </div>
+  @endif
 </section>
+@if ($action)
+@once
+    <script>
+      // Action mode: the arrow keys move the focus between the cards (Home / End: first / last); a card with aria-disabled does nothing.
+      document.addEventListener("keydown", (e) => {
+        const grid = e.target.closest?.(".oc-block-type-picker--action .oc-block-type-picker-grid");
+        if (!grid || !["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"].includes(e.key)) return;
+        const items = [...grid.querySelectorAll(".oc-block-type-picker-item:not([hidden])")];
+        const at = items.indexOf(document.activeElement);
+        if (at < 0) return;
+        e.preventDefault();
+        const next = e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 : at + (e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : -1);
+        items[(next + items.length) % items.length]?.focus();
+      });
+    </script>
+@endonce
+@endif
 @once
     <script>
       // Optional: filter the cards of every .oc-block-type-picker by search text and category. Without it all cards stay visible.

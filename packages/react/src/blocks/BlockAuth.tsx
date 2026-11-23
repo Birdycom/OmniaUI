@@ -37,7 +37,7 @@ export const BlockAuth = forwardRef<HTMLDivElement, BlockAuthProps>(function Blo
         </div>
         <div className="oc-form-group">
           <label className="oc-label" htmlFor={`${id}-password`}>Password</label>
-          <input className="oc-input" id={`${id}-password`} name="password" type="password" placeholder="********" />
+          <input className="oc-input" id={`${id}-password`} name="password" type="password" />
         </div>
         <button className="oc-btn" type="submit" style={{ width: "100%" }}>{submitLabel}</button>
         {socialLabel != null && (

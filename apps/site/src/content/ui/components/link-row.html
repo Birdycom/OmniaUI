@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - Link row", "category": "Marketing", "description": "A row of links under a feature card; external links get an arrow and GitHub links the GitHub mark by themselves.", "nav": "Link row", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - Link row", "category": "Marketing", "description": "A row of links under a feature card; links to other sites get an arrow and GitHub links the GitHub mark by themselves, from the href alone.", "nav": "Link row", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
 <!-- File: apps/site/src/content/ui/components/link-row.html | Map: hero -> demos (under a card, tones and sizes) -> reference -> frameworks -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Link row</h1>
@@ -21,7 +21,7 @@
   </div>
   <div class="oc-card-content">
     <ul class="oc-link-row" onclick="event.preventDefault()">
-      <li><a href="/docs/app-1">Documentation</a></li>
+      <li><a href="#">Documentation</a></li>
       <li><a href="https://store.example/app-1" rel="noopener">Store page</a></li>
       <li><a href="https://github.com/company1/app-1" rel="noopener">Source</a></li>
     </ul>
@@ -34,12 +34,63 @@
   &lt;/div&gt;
   &lt;div class="oc-card-content"&gt;
     &lt;ul class="oc-link-row"&gt;
-      &lt;li&gt;&lt;a href="/docs/app-1"&gt;Documentation&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#"&gt;Documentation&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href="https://store.example/app-1" rel="noopener"&gt;Store page&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href="https://github.com/company1/app-1" rel="noopener"&gt;Source&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/div&gt;
 &lt;/article&gt;</oc-code>
+<oc-code lang="tsx">import { Card, CardContent, CardDescription, CardHeader, CardTitle, LinkRow } from "@birdycom/omniaui-react";
+
+const links = [{ href: "#", label: "Documentation" }, { href: "https://store.example/app-1", label: "Store page" }, { href: "https://github.com/company1/app-1", label: "Source" }];
+
+export function Example() {
+  return (
+    &lt;Card className="w-full" style={{ maxInlineSize: "30rem" }}&gt;
+      &lt;CardHeader&gt;
+        &lt;CardTitle&gt;App 1&lt;/CardTitle&gt;
+        &lt;CardDescription&gt;Plan shifts and leave for a team of any size.&lt;/CardDescription&gt;
+      &lt;/CardHeader&gt;
+      &lt;CardContent&gt;
+        &lt;LinkRow links={links} /&gt;
+      &lt;/CardContent&gt;
+    &lt;/Card&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCard, OcLinkRow } from '@birdycom/omniaui-vue'
+
+const links = [{ href: '#', label: 'Documentation' }, { href: 'https://store.example/app-1', label: 'Store page' }, { href: 'https://github.com/company1/app-1', label: 'Source' }]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCard class="w-full" style="max-inline-size: 30rem" title="App 1" description="Plan shifts and leave for a team of any size."&gt;
+    &lt;OcLinkRow :links="links" /&gt;
+  &lt;/OcCard&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::card class="w-full" style="max-inline-size: 30rem" title="App 1" description="Plan shifts and leave for a team of any size."&gt;
+    &lt;x-oc::link-row :links="[['href' =&gt; '#', 'label' =&gt; 'Documentation'], ['href' =&gt; 'https://store.example/app-1', 'label' =&gt; 'Store page'], ['href' =&gt; 'https://github.com/company1/app-1', 'label' =&gt; 'Source']]" /&gt;
+&lt;/x-oc::card&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class AppCardLinks extends Component
+{
+    public function render()
+    {
+        return view('livewire.app-card-links');
+    }
+}
+
+{{-- resources/views/livewire/app-card-links.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::card class="w-full" style="max-inline-size: 30rem" title="App 1" description="Plan shifts and leave for a team of any size."&gt;
+        &lt;x-oc::link-row :links="[['href' =&gt; '#', 'label' =&gt; 'Documentation'], ['href' =&gt; 'https://store.example/app-1', 'label' =&gt; 'Store page'], ['href' =&gt; 'https://github.com/company1/app-1', 'label' =&gt; 'Source']]" /&gt;
+    &lt;/x-oc::card&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
 
           <h3 class="oc-section-content__title mt-2" id="tones">Tones and sizes</h3>
@@ -51,30 +102,73 @@
       <code class="oc-eg__name">.oc-link-row--accent</code>
       <div class="oc-eg__note">Links in the accent color of an .oc-accent--* class, here violet.</div>
       <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-content:center;padding:1rem">
-        <ul class="oc-link-row oc-link-row--accent oc-accent--violet" onclick="event.preventDefault()"><li><a href="/pricing">Pricing</a></li><li><a href="https://github.com/company1/app-1" rel="noopener">GitHub</a></li><li><a href="https://registry.example/app-1" rel="noopener">Package</a></li></ul>
+        <ul class="oc-link-row oc-link-row--accent oc-accent--violet" onclick="event.preventDefault()"><li><a href="#">Pricing</a></li><li><a href="https://github.com/company1/app-1" rel="noopener">GitHub</a></li><li><a href="https://registry.example/app-1" rel="noopener">Package</a></li></ul>
       </div>
     </div>
     <div class="oc-eg__panel">
       <code class="oc-eg__name">.oc-link-row--muted.oc-link-row--sm</code>
       <div class="oc-eg__note">Quieter and smaller, for the foot of a page.</div>
       <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-content:center;padding:1rem">
-        <ul class="oc-link-row oc-link-row--muted oc-link-row--sm" onclick="event.preventDefault()"><li><a href="/terms">Terms</a></li><li><a href="/privacy">Privacy</a></li><li><a href="https://github.com/company1/app-1/issues" rel="noopener">Report a problem</a></li></ul>
+        <ul class="oc-link-row oc-link-row--muted oc-link-row--sm" onclick="event.preventDefault()"><li><a href="#">Terms</a></li><li><a href="#">Privacy</a></li><li><a href="https://github.com/company1/app-1/issues" rel="noopener">Report a problem</a></li></ul>
       </div>
     </div>
     <div class="oc-eg__panel">
       <code class="oc-eg__name">.oc-link-row--lg</code>
       <div class="oc-eg__note">A step larger, under a big card.</div>
       <div class="oc-eg__stage oc-eg__stage--plain" style="display:grid;align-content:center;padding:1rem">
-        <ul class="oc-link-row oc-link-row--lg" onclick="event.preventDefault()"><li><a href="/components">Components</a></li><li><a href="https://docs.example/app-1" rel="noopener">Docs</a></li></ul>
+        <ul class="oc-link-row oc-link-row--lg" onclick="event.preventDefault()"><li><a href="#">Components</a></li><li><a href="https://docs.example/app-1" rel="noopener">Docs</a></li></ul>
       </div>
     </div>
   </div>
 </div>
-<oc-code lang="html">&lt;ul class="oc-link-row oc-link-row--accent oc-accent--violet"&gt;&lt;li&gt;&lt;a href="/pricing"&gt;Pricing&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://github.com/company1/app-1" rel="noopener"&gt;GitHub&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://registry.example/app-1" rel="noopener"&gt;Package&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+<oc-code lang="html">&lt;ul class="oc-link-row oc-link-row--accent oc-accent--violet"&gt;&lt;li&gt;&lt;a href="#"&gt;Pricing&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://github.com/company1/app-1" rel="noopener"&gt;GitHub&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://registry.example/app-1" rel="noopener"&gt;Package&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 
-&lt;ul class="oc-link-row oc-link-row--muted oc-link-row--sm"&gt;&lt;li&gt;&lt;a href="/terms"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="/privacy"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://github.com/company1/app-1/issues" rel="noopener"&gt;Report a problem&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;ul class="oc-link-row oc-link-row--muted oc-link-row--sm"&gt;&lt;li&gt;&lt;a href="#"&gt;Terms&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;Privacy&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://github.com/company1/app-1/issues" rel="noopener"&gt;Report a problem&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 
-&lt;ul class="oc-link-row oc-link-row--lg"&gt;&lt;li&gt;&lt;a href="/components"&gt;Components&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://docs.example/app-1" rel="noopener"&gt;Docs&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</oc-code>
+&lt;ul class="oc-link-row oc-link-row--lg"&gt;&lt;li&gt;&lt;a href="#"&gt;Components&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://docs.example/app-1" rel="noopener"&gt;Docs&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</oc-code>
+<oc-code lang="tsx">import { LinkRow } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;&gt;
+      &lt;LinkRow tone="accent" className="oc-accent--violet" links={[{ href: "#", label: "Pricing" }, { href: "https://github.com/company1/app-1", label: "GitHub" }, { href: "https://registry.example/app-1", label: "Package" }]} /&gt;
+      &lt;LinkRow tone="muted" size="sm" links={[{ href: "#", label: "Terms" }, { href: "#", label: "Privacy" }, { href: "https://github.com/company1/app-1/issues", label: "Report a problem" }]} /&gt;
+      &lt;LinkRow size="lg" links={[{ href: "#", label: "Components" }, { href: "https://docs.example/app-1", label: "Docs" }]} /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcLinkRow } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcLinkRow tone="accent" class="oc-accent--violet" :links="[{ href: '#', label: 'Pricing' }, { href: 'https://github.com/company1/app-1', label: 'GitHub' }, { href: 'https://registry.example/app-1', label: 'Package' }]" /&gt;
+  &lt;OcLinkRow tone="muted" size="sm" :links="[{ href: '#', label: 'Terms' }, { href: '#', label: 'Privacy' }, { href: 'https://github.com/company1/app-1/issues', label: 'Report a problem' }]" /&gt;
+  &lt;OcLinkRow size="lg" :links="[{ href: '#', label: 'Components' }, { href: 'https://docs.example/app-1', label: 'Docs' }]" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::link-row tone="accent" class="oc-accent--violet" :links="[['href' =&gt; '#', 'label' =&gt; 'Pricing'], ['href' =&gt; 'https://github.com/company1/app-1', 'label' =&gt; 'GitHub'], ['href' =&gt; 'https://registry.example/app-1', 'label' =&gt; 'Package']]" /&gt;
+&lt;x-oc::link-row tone="muted" size="sm" :links="[['href' =&gt; '#', 'label' =&gt; 'Terms'], ['href' =&gt; '#', 'label' =&gt; 'Privacy'], ['href' =&gt; 'https://github.com/company1/app-1/issues', 'label' =&gt; 'Report a problem']]" /&gt;
+&lt;x-oc::link-row size="lg" :links="[['href' =&gt; '#', 'label' =&gt; 'Components'], ['href' =&gt; 'https://docs.example/app-1', 'label' =&gt; 'Docs']]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class LinkRows extends Component
+{
+    public function render()
+    {
+        return view('livewire.link-rows');
+    }
+}
+
+{{-- resources/views/livewire/link-rows.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::link-row tone="accent" class="oc-accent--violet" :links="[['href' =&gt; '#', 'label' =&gt; 'Pricing'], ['href' =&gt; 'https://github.com/company1/app-1', 'label' =&gt; 'GitHub'], ['href' =&gt; 'https://registry.example/app-1', 'label' =&gt; 'Package']]" /&gt;
+    &lt;x-oc::link-row tone="muted" size="sm" :links="[['href' =&gt; '#', 'label' =&gt; 'Terms'], ['href' =&gt; '#', 'label' =&gt; 'Privacy'], ['href' =&gt; 'https://github.com/company1/app-1/issues', 'label' =&gt; 'Report a problem']]" /&gt;
+    &lt;x-oc::link-row size="lg" :links="[['href' =&gt; '#', 'label' =&gt; 'Components'], ['href' =&gt; 'https://docs.example/app-1', 'label' =&gt; 'Docs']]" /&gt;
+&lt;/div&gt;</oc-code>
           </oc-demo>
         </div>
       </section>

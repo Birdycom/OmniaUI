@@ -27,6 +27,12 @@ export interface PhoneInputProps extends Omit<InputHTMLAttributes<HTMLInputEleme
   error?: boolean;
   /** Accessible name of the dial code select. */
   dialLabel?: string;
+  /** Controlled dial code ("+31"); wins over the code in the value. */
+  dial?: string;
+  /** Called with the new dial code when the country changes. */
+  onDialChange?: (dial: string) => void;
+  /** Form name of the dial code select (e.g. "phone_dial"), for a plain form post. */
+  dialName?: string;
 }
 
 const DEFAULT_COUNTRIES: PhoneCountry[] = [
@@ -52,24 +58,25 @@ function splitPhone(full: string, countries: PhoneCountry[]) {
 
 /** `.oc-phone-input`: country dial code + national number. Emits one value: dial + digits. */
 export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(function PhoneInput(
-  { value, defaultValue, onChange, countries = DEFAULT_COUNTRIES, defaultDial, size = "md", error, dialLabel = "Country code", className, disabled, ...rest },
+  { value, defaultValue, onChange, countries = DEFAULT_COUNTRIES, defaultDial, size = "md", error, dialLabel = "Country code", dial: dialProp, onDialChange, dialName, className, disabled, ...rest },
   ref,
 ) {
   const [full, setFull] = useControllable<string>(value, defaultValue ?? "", onChange);
   const parsed = splitPhone(full, countries);
   // Remember the chosen dial code, also while the number is still empty.
-  const [dialState, setDialState] = useState(parsed.dial || defaultDial || countries[0]?.dial || "");
-  const dial = parsed.dial || dialState;
+  const [dialState, setDialState] = useState(dialProp || parsed.dial || defaultDial || countries[0]?.dial || "");
+  const dial = dialProp || parsed.dial || dialState;
 
   const emit = (nextDial: string, national: string) => {
     setDialState(nextDial);
+    if (nextDial !== dial) onDialChange?.(nextDial);
     const digits = national.replace(/\D/g, "");
     setFull(digits ? nextDial + digits : "");
   };
 
   return (
     <div className={cx("oc-phone-input", size === "sm" && "oc-phone-input--sm", error && "oc-phone-input--error", className)}>
-      <select className="oc-phone-input-dial" aria-label={dialLabel} value={dial} disabled={disabled} onChange={(e) => emit(e.target.value, parsed.national)}>
+      <select className="oc-phone-input-dial" name={dialName} aria-label={dialLabel} value={dial} disabled={disabled} onChange={(e) => emit(e.target.value, parsed.national)}>
         {countries.map((c) => (
           <option key={c.dial} value={c.dial}>
             {c.label}

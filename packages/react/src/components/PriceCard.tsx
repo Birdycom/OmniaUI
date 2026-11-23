@@ -37,6 +37,10 @@ export interface PriceCardProps extends Omit<HTMLAttributes<HTMLElement>, "title
   monthlyLabel?: ReactNode;
   yearlyLabel?: ReactNode;
   lifetimeLabel?: ReactNode;
+  /** Radio group name of the switch (generated when omitted). */
+  group?: string;
+  /** `aria-label` of the switch (default "Billing period"), e.g. "Billing period, Starter" when there are several cards. */
+  groupLabel?: string;
 }
 
 function Price({ kind, price }: { kind: "monthly" | "yearly" | "lifetime"; price: PriceCardPrice }) {
@@ -53,11 +57,12 @@ function Price({ kind, price }: { kind: "monthly" | "yearly" | "lifetime"; price
 /** `<article class="oc-price-card">`: plan card with a CSS-only monthly / yearly (/ lifetime) switch. */
 export const PriceCard = forwardRef<HTMLElement, PriceCardProps>(function PriceCard(
   { name, description, discount, monthly, yearly, lifetime, defaultPeriod = "monthly", features = [], cta, featured = false,
-    monthlyLabel = "Monthly", yearlyLabel = "Yearly", lifetimeLabel = "Lifetime", className, ...rest },
+    monthlyLabel = "Monthly", yearlyLabel = "Yearly", lifetimeLabel = "Lifetime", group: groupName, groupLabel = "Billing period", className, ...rest },
   ref,
 ) {
   // Every card needs its own radio group name.
-  const group = `oc-price-${useId().replace(/[^\w-]/g, "")}`;
+  const auto = `oc-price-${useId().replace(/[^\w-]/g, "")}`;
+  const group = groupName || auto;
   return (
     <article ref={ref} className={cx("oc-price-card", featured && "oc-price-card--featured", className)} {...rest}>
       <div className="oc-price-card__head">
@@ -66,7 +71,7 @@ export const PriceCard = forwardRef<HTMLElement, PriceCardProps>(function PriceC
       </div>
       {description != null && <p className="oc-price-card__desc">{description}</p>}
       {yearly && (
-        <div className="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label="Billing period">
+        <div className="oc-segmented oc-price-card__toggle" role="radiogroup" aria-label={groupLabel}>
           <label className="oc-segmented-item"><input type="radio" name={group} value="monthly" defaultChecked={defaultPeriod === "monthly"} /> {monthlyLabel}</label>
           <label className="oc-segmented-item"><input type="radio" name={group} value="yearly" defaultChecked={defaultPeriod === "yearly"} /> {yearlyLabel}</label>
           {lifetime && <label className="oc-segmented-item"><input type="radio" name={group} value="lifetime" defaultChecked={defaultPeriod === "lifetime"} /> {lifetimeLabel}</label>}
