@@ -355,6 +355,15 @@ class ThemeCards extends Component
 &lt;!-- 2. The script: npx omniaui copy-js theme  puts oc-theme.js in public/js --&gt;
 &lt;script type="module" src="/js/oc-theme.js"&gt;&lt;/script&gt;</oc-code>
           <p class="oc-section-content__desc mt-1">In a bundler: <code>import { initTheme } from "@birdycom/omniaui/theme.js"</code> and call <code>initTheme(document, { storageKey: "oc-theme", darkClass: true })</code>. It returns <code>get()</code>, <code>set("dark")</code> and <code>stop()</code>, and fires <code>oc-theme-change</code> on <code>&lt;html&gt;</code> with <code>detail.choice</code> and <code>detail.theme</code>. A button with <code>data-oc-theme-set="light"</code> sets one value. A toggle or set button inside a <code>.oc-theme-scope</code> sets <code>data-theme</code> on that scope only (not on <code>&lt;html&gt;</code>, not in storage) and fires <code>oc-theme-change</code> on the scope.</p>
+
+          <h3 class="oc-section-content__title mt-2" id="dark-class">The class .dark (Tailwind, shadcn) <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">Does your app switch themes with a class on <code>&lt;html&gt;</code>, as Tailwind and shadcn do? <code>class="dark"</code> works the same as <code>data-theme="dark"</code>, and <code>class="light"</code> the same as <code>data-theme="light"</code>, also when the operating system is set the other way. On any other element the class themes only that part of the page. The class only sets <code>color-scheme</code>. Every theme token is <code>light-dark(light, dark)</code> and picks its value where it is used, so badges, alerts, buttons, fields, cards and tabs all follow without extra CSS. The theme tokens of OmniaCSS (<code>oc-theme.css</code>) do the same, so this also works without the components.</p>
+          <oc-code lang="css">/* Keep this: the class sets the color-scheme, light-dark() follows it */
+.dark { color-scheme: dark; }
+
+/* Avoid: resetting it on .dark makes every light-dark() pick the light value (dark text on a dark page) */
+.dark { color-scheme: normal; }</oc-code>
+          <p class="oc-section-content__desc mt-1">Re-theme with the tokens, not with a second set of colors under <code>.dark</code>: set <code>--oc-primary</code>, <code>--oc-info</code> and the others to a <code>light-dark()</code> pair once, and both themes are covered. <code>--oc-info</code> (with <code>--oc-info-foreground</code>) sits next to <code>--oc-success</code>, <code>--oc-warning</code> and <code>--oc-destructive</code>; the info badge, alert and toast use it.</p>
         </div>
       </section>
 
@@ -372,7 +381,7 @@ class ThemeCards extends Component
               <tr><td><code>.oc-theme-switch--icons</code></td><td>Icons only: smaller labels, the text in <code>.oc-theme-switch__text</code> is hidden on screen but read aloud.</td></tr>
               <tr><td><code>.oc-theme-switch__text</code></td><td>The label text next to a webicon (needed with <code>--icons</code>, so screen readers still say System, Light or Dark).</td></tr>
               <tr><td><code>.oc-theme-scope</code></td><td>On any element: a switch inside it themes only that element (previews, embedded widgets).</td></tr>
-              <tr><td><code>.oc-theme-img--light / --dark</code></td><td>On two images (or any two elements): only the one for the chosen theme is shown. Follows the operating system, <code>data-theme</code>, <code>.dark</code> and a switch on the page.</td></tr>
+              <tr><td><code>.oc-theme-img--light / --dark</code></td><td>On two images (or any two elements): only the one for the chosen theme is shown. Follows the operating system, <code>data-theme</code>, the class <code>.light</code> / <code>.dark</code> and a switch on the page.</td></tr>
               <tr><td><code>.oc-theme-scope</code> with own brand colors</td><td>A scope that sets <code>--oc-brand-1</code> / <code>--oc-brand-2</code> gets matching accents (<code>--oc-accent-from</code> / <code>-to</code>) without declaring them again.</td></tr>
               <tr><td><code>.oc-theme-switch--cards</code></td><td>Three large choice cards with the icon above the label, for a settings page; the chosen card has a border in the primary color.</td></tr>
               <tr><td><code>modes</code> (React) / <code>options</code> (Vue, Blade)</td><td>Which choices the switch offers, in that order; <code>[&#39;light&#39;, &#39;dark&#39;]</code> leaves out System.</td></tr>
@@ -381,6 +390,8 @@ class ThemeCards extends Component
               <tr><td><code>data-oc-theme-set="system|light|dark"</code></td><td>On a button: sets that value (needs <code>theme.js</code>).</td></tr>
               <tr><td><code>theme.js</code></td><td>Remembers the choice, sets <code>data-theme</code> and <code>.dark</code> on <code>&lt;html&gt;</code>, keeps every switch, button and tab in step.</td></tr>
               <tr><td><code>&lt;html data-theme="light|dark"&gt;</code></td><td>A fixed theme without a switch, or the value restored by the optional script.</td></tr>
+              <tr><td><code>&lt;html class="light|dark"&gt;</code></td><td>The same as <code>data-theme</code>, for apps that switch with a class (Tailwind, shadcn). On another element it themes that part only.</td></tr>
+              <tr><td><code>--oc-info</code> / <code>--oc-info-foreground</code></td><td>The info tone (theme token, light and dark), used by <code>.oc-badge--info</code>, <code>.oc-alert--info</code> and <code>.oc-toast--info</code>.</td></tr>
             </tbody>
           </table>
         </div>
