@@ -68,7 +68,8 @@ describe("0.16.0 dropdown item icon", () => {
   it("puts a webicon before the label", () => {
     const { container } = render(<Dropdown trigger="Actions"><DropdownItem icon="mdi:pencil-outline">Edit</DropdownItem><DropdownItem>Paid</DropdownItem></Dropdown>);
     const items = container.querySelectorAll(".oc-dropdown-item");
-    expect(items[0].querySelector(".oc-dropdown-icon iconify-icon")!.getAttribute("icon")).toBe("mdi:pencil-outline");
+    // 0.17.1: mdi:pencil-outline is a built-in webicon (status badge "draft"), so it is inline SVG now
+    expect(items[0].querySelector(".oc-dropdown-icon svg, .oc-dropdown-icon iconify-icon")).not.toBeNull();
     expect(items[1].querySelector(".oc-dropdown-icon")).toBeNull();
   });
 });

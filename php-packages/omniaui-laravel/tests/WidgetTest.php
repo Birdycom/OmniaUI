@@ -59,6 +59,13 @@ class WidgetTest extends TestCase
         $this->assertElement($html, 'article', 'oc-prose oc-prose--compact');
     }
 
+    public function test_button_inherit(): void
+    {
+        $html = $this->render('<x-oc::button variant="outline" inherit>Contact</x-oc::button>');
+
+        $this->assertElement($html, 'button', 'oc-btn oc-btn--outline oc-btn--inherit');
+    }
+
     public function test_meter_row_sub_line(): void
     {
         $html = $this->render('<x-oc::meter-row label="GPU" :percent="40" sub="VRAM 2.7 / 8.0 GB" :sub-percent="34" sub-level="warn" />');

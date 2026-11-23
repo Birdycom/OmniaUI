@@ -1,8 +1,8 @@
 // File: packages/ui/src/form-extras.js
 // Map: ISO week -> date field (week label) -> name card (rename) -> avatar picker (preview, drop, remove) -> quantity
-//      (step buttons) -> language code (the closed code select) -> init -> boot
-// Small behaviour for five CSS components; each works without it (native date input, <details>, file input, number input,
-// native select).
+//      (step buttons) -> language code (the closed code select) -> one-time code (active cell, 0.17.1) -> init -> boot
+// Small behaviour for six CSS components; each works without it (native date input, <details>, file input, number input,
+// native select, one text input).
 // Events on the component root: oc-namecard-rename { name }, oc-avatar-change { file } (null when removed),
 // oc-avatar-invalid { file, reason } (wrong type or too large).
 
@@ -208,8 +208,39 @@ export function bindLanguageCode(root) {
   sync();
 }
 
-/** Wire every date field, name card, avatar picker, quantity field and code language select under scope. */
+/** The cell the caret is in (0-based) for a one-time code of `length` cells: the next empty cell, the last one when full. */
+export function otpActiveCell(selectionStart, valueLength, length) {
+  const at = Math.min(selectionStart ?? valueLength, valueLength);
+  return Math.max(0, Math.min(at, length - 1));
+}
+
+/** .oc-otp (0.17.1): marks the cell the caret is in (data-otp-active + --oc-otp-active) while the field has focus,
+ *  so a visitor sees which cell the next character goes to. The whole field still shows its own focus ring. */
+export function bindOtp(input) {
+  if (!input || input.dataset.ocOtpBound != null) return () => {};
+  input.dataset.ocOtpBound = "";
+  const update = () => {
+    if (document.activeElement !== input) { input.removeAttribute("data-otp-active"); return; }
+    const length = Number(input.maxLength > 0 ? input.maxLength : 6);
+    const cell = otpActiveCell(input.selectionStart, input.value.length, length);
+    input.style.setProperty("--oc-otp-active", String(cell));
+    input.setAttribute("data-otp-active", String(cell));
+  };
+  // The caret moves after keydown and click: read it on the next frame.
+  const later = () => requestAnimationFrame(update);
+  const events = ["focus", "blur", "input", "select", "keyup", "keydown", "click", "pointerup"];
+  events.forEach((type) => input.addEventListener(type, type === "keydown" || type === "click" ? later : update));
+  if (document.activeElement === input) update();
+  return () => {
+    events.forEach((type) => input.removeEventListener(type, type === "keydown" || type === "click" ? later : update));
+    delete input.dataset.ocOtpBound;
+    input.removeAttribute("data-otp-active");
+  };
+}
+
+/** Wire every date field, name card, avatar picker, quantity field, code language select and one-time code under scope. */
 export function initFormExtras(scope = document) {
+  scope.querySelectorAll("input.oc-otp").forEach((input) => { bindOtp(input); });
   scope.querySelectorAll(".oc-date-field").forEach(bindDateField);
   scope.querySelectorAll(".oc-name-card").forEach(bindNameCard);
   scope.querySelectorAll(".oc-avatar-picker").forEach(bindAvatarPicker);

@@ -101,6 +101,12 @@ export interface DataTableProps {
   /** Page actions on the right of the toolbar (New article, …). */
   actions?: ReactNode;
   onBulk?: (action: string, keys: string[]) => void;
+  /**
+   * A row was dropped in a new place (v0.17.1): `keys` are the row keys in the new order, `detail.key` the dragged row.
+   * The drag itself is OmniaUI Pro (data-table-pro.js) with `draggable`. In server mode (`detail.server`) the script
+   * does not move the row: save the order and render the rows again.
+   */
+  onReorder?: (keys: string[], detail: { key?: string; server?: boolean }) => void;
   /** Texts in another language (any subset; the rest stays English). */
   labels?: Partial<DataTableLabels>;
   /** false: no table / cards switch, the table only. */
@@ -263,6 +269,7 @@ export function DataTable({
   live = false,
   actions,
   onBulk,
+  onReorder,
   labels,
   view = true,
   pagination = true,
@@ -304,7 +311,7 @@ export function DataTable({
   );
   const shown = picker ? columns.filter((c) => c.hideable === false || visible.includes(c.key)) : columns;
   // The latest callbacks for the listeners below, which are added once.
-  const callbacks = { onBulk, onQueryChange, onSortChange, onSearchChange, onTrashedChange, onPageSizeChange, onColumnFilterChange, onSelectionChange, setCurrentPage, currentPage };
+  const callbacks = { onBulk, onReorder, onQueryChange, onSortChange, onSearchChange, onTrashedChange, onPageSizeChange, onColumnFilterChange, onSelectionChange, setCurrentPage, currentPage };
   const latest = useRef(callbacks);
   latest.current = callbacks;
   const lastFilters = useRef<Record<string, string>>({});
@@ -333,13 +340,19 @@ export function DataTable({
       if (q.page !== cb.currentPage) cb.setCurrentPage(q.page);
     };
     const onSelection = (event: Event) => latest.current.onSelectionChange?.((event as CustomEvent<{ keys: string[] }>).detail.keys);
+    const onReorderEvent = (event: Event) => {
+      const { keys, key, server } = (event as CustomEvent<{ keys: string[]; key?: string; server?: boolean }>).detail;
+      latest.current.onReorder?.(keys, { key, server });
+    };
     root.addEventListener("oc-datatable-bulk", onBulkEvent);
     root.addEventListener("oc-datatable-query", onQuery);
     root.addEventListener("oc-datatable-selection", onSelection);
+    root.addEventListener("oc-datatable-reorder", onReorderEvent);
     return () => {
       root.removeEventListener("oc-datatable-bulk", onBulkEvent);
       root.removeEventListener("oc-datatable-query", onQuery);
       root.removeEventListener("oc-datatable-selection", onSelection);
+      root.removeEventListener("oc-datatable-reorder", onReorderEvent);
     };
   }, []);
 

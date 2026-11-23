@@ -466,6 +466,20 @@ class ArticlesBordered extends Component
 </div>
           </oc-demo>
 
+          <h3 class="oc-section-content__title mt-2" id="reorder">Save the new row order <span class="oc-badge-version">v0.17.1</span></h3>
+          <p class="oc-section-content__desc">After a drop the table fires <code>oc-datatable-reorder</code> with <code>{ keys }</code>: the row keys in the new order. The wrappers pass it on: <code>onReorder(keys, { key, server })</code> in React and <code>@reorder</code> in Vue. In server mode (<code>server</code>) the script does not move the row itself; the event then also carries <code>key</code> (the dragged row) and <code>server: true</code>, so you save the order and render the rows again. Blade and Livewire listen with Alpine on the window (the event bubbles). The drag itself needs <a href="../pro.html">OmniaUI Pro</a> (<code>data-table-pro.js</code>) and <code>draggable</code>.</p>
+          <oc-code lang="html">&lt;!-- React --&gt;
+&lt;DataTable title="Quote lines" draggable columns={columns} rows={rows}
+  onReorder={(keys, { server }) =&gt; { saveOrder(keys); if (server) reload(); }} /&gt;
+
+&lt;!-- Vue --&gt;
+&lt;OcDataTable title="Quote lines" draggable :columns="columns" :rows="rows" @reorder="(keys) =&gt; saveOrder(keys)" /&gt;
+
+&lt;!-- Laravel Blade / Livewire (Alpine) --&gt;
+&lt;div x-data @oc-datatable-reorder.window="$wire.saveOrder($event.detail.keys)"&gt;
+    &lt;x-oc::data-table title="Quote lines" draggable :columns="$columns" :rows="$rows" /&gt;
+&lt;/div&gt;</oc-code>
+
           <h3 class="oc-section-content__title mt-2" id="labels">Your language, and only what a list needs <span class="oc-badge-version">v0.17.0</span></h3>
           <p class="oc-section-content__desc">The demo below is in Dutch on purpose: it shows a list of games with every label translated through the <code>labels</code> prop. Every text of the table can be translated with <code>labels</code> (React, Vue, Blade): give any subset, the rest stays English. The texts the script writes itself (the pager, "3 selected", the sort line and the summary) go to <code>data-oc-labels</code> on the root as JSON; the components do that for you. A plain list does not need everything: <code>filters={false}</code> drops the trash pills and the selection actions (<code>bulk</code> on its own too), <code>view={false}</code> drops the table / cards switch (<code>data-oc-no-grid</code>), and <code>pagination={false}</code> shows every row on one page (<code>data-page-size="0"</code>). On paper only the table is printed: no toolbar, pager, checkboxes or actions, and no row breaks over two pages. Sort a column: the line under the toolbar is in Dutch too.</p>
           <oc-demo title="Data table - labels in Dutch (labels prop) and a plain list">
@@ -1077,7 +1091,7 @@ class ArticlesServerTable extends DataTable
               <tr><td><code>[data-oc-page-size]</code> / <code>[data-oc-pager]</code></td><td>Rows per page and the numbered pager. The count is <code>[data-oc-summary]</code>; give it a template to translate it: <code>data-oc-summary="Toont {from} t/m {to} van {total} resultaten"</code>.</td></tr>
               <tr><td><code>.oc-column-menu</code></td><td>OmniaUI Pro (<a href="column-menu.html">Column menu</a>): show or hide columns; the checkbox <code>data-col</code> is the column number.</td></tr>
               <tr><td><code>.oc-data-table-resize</code></td><td>OmniaUI Pro: with <code>data-table-pro.js</code>, drag to set the column width (remembered per table id; <code>[data-oc-reset-widths]</code> clears it).</td></tr>
-              <tr><td><code>.oc-sortable-row-grip</code></td><td>OmniaUI Pro: with <code>data-table-pro.js</code>, drag a row by the grip (fires <code>oc-datatable-reorder</code>).</td></tr>
+              <tr><td><code>.oc-sortable-row-grip</code></td><td>OmniaUI Pro: with <code>data-table-pro.js</code>, drag a row by the grip (fires <code>oc-datatable-reorder</code> { keys }; in server mode also <code>key</code> and <code>server: true</code>, and the row stays put until you render again). React <code>onReorder</code>, Vue <code>@reorder</code> <span class="oc-badge-version">v0.17.1</span>.</td></tr>
               <tr><td><code>[data-oc-view]</code></td><td><code>table</code> or <code>grid</code>. Cards are built from the rows on the current page: the name cell as title, the other visible columns as label and value, and the row actions.</td></tr>
               <tr><td><code>[data-oc-density]</code></td><td><code>comfortable</code> or <code>compact</code> (tighter rows).</td></tr>
               <tr><td><code>[data-oc-bulk]</code></td><td><code>export</code>, <code>duplicate</code>, <code>archive</code>, <code>restore</code>, <code>delete</code>, <code>clear</code>. Fires <code>oc-datatable-bulk</code> with the selected keys.</td></tr>

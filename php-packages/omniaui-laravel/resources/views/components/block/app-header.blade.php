@@ -7,12 +7,13 @@
        .oc-block-appbar-title: Optional page title
      Slots: toggle, module nav, search, actions (theme switch, workspace select, user dropdown)
      Blade: <x-oc::block.app-header> - attributes merge onto the root element; props: toggleFor => oc-appbar-toggle.
-     Blade slots (each falls back to the snippet content when empty): toggle, nav, actions; search (0.17.0, empty by default).
+     Blade slots (each falls back to the snippet content when empty): toggle, nav, actions; search (0.17.0, empty by default;
+     search-collapse (0.17.1): on a narrow bar it shrinks to a magnifier and opens over the bar on focus).
      0.17.0 (written by hand, not generated): overflow (links that do not fit go into a "More" menu; needs
      <script type="module" src="/js/oc-nav-overflow.js"></script>, `npx omniaui copy-js nav-overflow`), more-label (default
      "More"), nav-label (aria-label of the nav), module (data-module on the bar).
 --}}
-@props(['toggleFor' => 'oc-appbar-toggle', 'toggle' => null, 'nav' => null, 'actions' => null, 'search' => null, 'overflow' => false, 'moreLabel' => 'More', 'navLabel' => 'Module navigation', 'module' => null])
+@props(['toggleFor' => 'oc-appbar-toggle', 'toggle' => null, 'nav' => null, 'actions' => null, 'search' => null, 'searchCollapse' => false, 'overflow' => false, 'moreLabel' => 'More', 'navLabel' => 'Module navigation', 'module' => null])
 @php($moreId = 'oc-appbar-more-'.substr(md5(uniqid('', true)), 0, 6))
 <header {{ $attributes->merge(['class' => 'oc-block-appbar', 'data-module' => $module]) }}>
   @if (isset($toggle) && trim((string) $toggle) !== '')
@@ -35,7 +36,7 @@
       @endif
   </nav>
   @if (isset($search) && trim((string) $search) !== '')
-  <div class="oc-block-appbar-search">{{ $search }}</div>
+  <div @class(['oc-block-appbar-search', 'oc-block-appbar-search--collapse' => $searchCollapse])>{{ $search }}</div>
   @endif
   <div class="oc-block-appbar-actions">
       @if (isset($actions) && trim((string) $actions) !== '')

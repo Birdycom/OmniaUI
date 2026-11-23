@@ -20,6 +20,8 @@ interface ButtonStyleProps {
   pill?: boolean;
   /** Inside running text (with variant="link"): no padding or height, the size of the text around it. */
   inline?: boolean;
+  /** 0.17.1: with variant="outline" or "ghost" on a dark or coloured band: the label, border and hover follow the text colour around it. */
+  inherit?: boolean;
   /** 0.17.0: module colour (`data-module`): blue, green, purple, gold, cyan, pink, red, orange, teal, slate, or your own name. */
   module?: string;
   /**
@@ -35,7 +37,7 @@ interface LoadingProp {
 }
 
 /** The class string of a button; reuse it on your own elements (router links etc.). */
-export function buttonClass({ variant = "default", size = "md", icon, pill, inline, float, className }: Omit<ButtonStyleProps, "module"> & { className?: string }) {
+export function buttonClass({ variant = "default", size = "md", icon, pill, inline, inherit, float, className }: Omit<ButtonStyleProps, "module"> & { className?: string }) {
   return cx(
     "oc-btn",
     variant !== "default" && `oc-btn--${variant}`,
@@ -43,6 +45,7 @@ export function buttonClass({ variant = "default", size = "md", icon, pill, inli
     icon && "oc-btn--icon",
     pill && "oc-btn--pill",
     inline && "oc-btn--inline",
+    inherit && "oc-btn--inherit",
     float && "oc-btn--float",
     className,
   );
@@ -98,7 +101,7 @@ export interface ButtonComponent {
  * (`as="a" href=…`, `as={Link} to=…`); disabled/loading then become `aria-disabled`.
  */
 export const Button = forwardRef<HTMLElement, ButtonProps & { as?: ElementType }>(function Button(
-  { as, variant, size, icon, pill, inline, module, float, loading, disabled, iconStart, iconEnd, className, style, children, ...rest },
+  { as, variant, size, icon, pill, inline, inherit, module, float, loading, disabled, iconStart, iconEnd, className, style, children, ...rest },
   ref,
 ) {
   const Tag: ElementType = as ?? "button";
@@ -107,7 +110,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps & { as?: ElementType }
   const extra = floatAndModule(float, module, style);
   return createElement(
     Tag,
-    { ref, className: buttonClass({ variant, size, icon, pill, inline, float, className }), "aria-busy": loading || undefined, ...extra.attrs, ...state, ...rest },
+    { ref, className: buttonClass({ variant, size, icon, pill, inline, inherit, float, className }), "aria-busy": loading || undefined, ...extra.attrs, ...state, ...rest },
     extra.layer,
     buttonIcon(iconStart),
     children,
@@ -119,12 +122,12 @@ export interface ButtonLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>
 
 /** An anchor styled as a button. */
 export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(function ButtonLink(
-  { variant, size, icon, pill, inline, module, float, loading, iconStart, iconEnd, className, style, children, ...rest },
+  { variant, size, icon, pill, inline, inherit, module, float, loading, iconStart, iconEnd, className, style, children, ...rest },
   ref,
 ) {
   const extra = floatAndModule(float, module, style);
   return (
-    <a ref={ref} className={buttonClass({ variant, size, icon, pill, inline, float, className })} aria-busy={loading || undefined} {...extra.attrs} {...rest}>
+    <a ref={ref} className={buttonClass({ variant, size, icon, pill, inline, inherit, float, className })} aria-busy={loading || undefined} {...extra.attrs} {...rest}>
       {extra.layer}
       {buttonIcon(iconStart)}
       {children}

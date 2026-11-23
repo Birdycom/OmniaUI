@@ -1,5 +1,5 @@
 // File: packages/ui/src/form-extras.d.ts
-// Types for the date field (ISO week), name card (rename), avatar picker (preview), quantity (step) and language code helpers.
+// Types for the date field (ISO week), name card (rename), avatar picker (preview), quantity (step), language code and one-time code helpers.
 
 export function isoWeek(date: Date): { week: number; year: number };
 export function bindDateField(root: HTMLElement): void;
@@ -10,4 +10,8 @@ export function stepQuantity(value: number, direction: -1 | 1, limits?: { min?: 
 export function bindQuantity(root: HTMLElement): void;
 export function languageCode(select: HTMLSelectElement): string;
 export function bindLanguageCode(root: HTMLElement): void;
+/** 0.17.1: the cell the caret is in (0-based), the last one when the code is full. */
+export function otpActiveCell(selectionStart: number | null | undefined, valueLength: number, length: number): number;
+/** 0.17.1: marks the active cell of an input.oc-otp (data-otp-active + --oc-otp-active); returns a cleanup function. */
+export function bindOtp(input: HTMLInputElement): () => void;
 export function initFormExtras(scope?: ParentNode): void;

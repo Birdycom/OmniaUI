@@ -1,0 +1,48 @@
+/* File: packages/ui/src/parts/forms-otp-active.css
+   Map: active cell of the one-time code (0.17.1) -> with --group -> reduced motion / forced colors
+   The cell the next character goes to gets a soft tint and a line in the ring colour while the field has focus.
+   The wrappers (React, Vue) and form-extras.js (plain HTML, Blade, Livewire) set data-otp-active and --oc-otp-active
+   (0-based cell); without the script the field keeps only its focus ring. */
+
+.oc-otp:focus[data-otp-active] {
+  --oc-otp-mark: oklch(from var(--oc-ring) l c h / 0.14);
+  --oc-otp-mark-line: var(--oc-ring);
+  --oc-otp-mark-x: calc(var(--oc-otp-active, 0) * var(--oc-otp-cell));
+  background-image:
+    linear-gradient(var(--oc-otp-mark-line), var(--oc-otp-mark-line)),
+    linear-gradient(var(--oc-otp-mark), var(--oc-otp-mark)),
+    repeating-linear-gradient(
+      90deg in srgb,
+      var(--oc-input) 0 1px,
+      transparent 1px calc(var(--oc-otp-cell) - 1px),
+      var(--oc-input) calc(var(--oc-otp-cell) - 1px) var(--oc-otp-cell)
+    );
+  background-size: calc(var(--oc-otp-cell) - 6px) 2px, calc(var(--oc-otp-cell) - 2px) 100%, auto;
+  background-position: calc(var(--oc-otp-mark-x) + 3px) calc(100% - 4px), calc(var(--oc-otp-mark-x) + 1px) 0, 0 0;
+  background-repeat: no-repeat, no-repeat, repeat;
+}
+
+/* --group: the divider layer stays under the mark. */
+.oc-otp.oc-otp--group:focus[data-otp-active] {
+  background-image:
+    linear-gradient(var(--oc-otp-mark-line), var(--oc-otp-mark-line)),
+    linear-gradient(var(--oc-otp-mark), var(--oc-otp-mark)),
+    repeating-linear-gradient(
+      90deg in srgb,
+      transparent 0 calc(var(--oc-otp-group) * var(--oc-otp-cell) - 2px),
+      var(--oc-muted-foreground) calc(var(--oc-otp-group) * var(--oc-otp-cell) - 2px) calc(var(--oc-otp-group) * var(--oc-otp-cell))
+    ),
+    repeating-linear-gradient(
+      90deg in srgb,
+      var(--oc-input) 0 1px,
+      transparent 1px calc(var(--oc-otp-cell) - 1px),
+      var(--oc-input) calc(var(--oc-otp-cell) - 1px) var(--oc-otp-cell)
+    );
+  background-size: calc(var(--oc-otp-cell) - 6px) 2px, calc(var(--oc-otp-cell) - 2px) 100%, calc((var(--oc-otp-length) - 0.5) * var(--oc-otp-cell)) 100%, auto;
+  background-position: calc(var(--oc-otp-mark-x) + 3px) calc(100% - 4px), calc(var(--oc-otp-mark-x) + 1px) 0, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+}
+
+@media (forced-colors: active) {
+  .oc-otp:focus[data-otp-active] { --oc-otp-mark: transparent; --oc-otp-mark-line: Highlight; }
+}

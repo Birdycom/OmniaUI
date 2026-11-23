@@ -147,10 +147,10 @@ test("site header --container: container query instead of the window", async () 
 
 test("theme image: a .oc-theme-scope with its own theme wins over the page", async () => {
   const css = await read("parts/app-0160-apps.css");
-  assert.match(css, /\.oc-theme-scope\.oc-theme-scope:is\(\[data-theme="dark"\], :has\(\.oc-theme-switch input\[value="dark"\]:checked\)\) \.oc-theme-img--dark \{ display: revert; \}/);
+  assert.match(css, /\.oc-theme-scope\.oc-theme-scope:is\(\[data-theme="dark"\], \.dark, :has\(\.oc-theme-switch input\[value="dark"\]:checked\)\) \.oc-theme-img--dark \{ display: revert; \}/);
 });
 
 test("theme scope with its own theme takes the text color of that theme", async () => {
   const css = await read("components.css");
-  assert.match(css, /\.oc-theme-scope:is\(\[data-theme="light"\], \[data-theme="dark"\], :has\(\.oc-theme-switch input:is\(\[value="light"\], \[value="dark"\]\):checked\)\) \{ color: var\(--oc-foreground\); \}/);
+  assert.match(css, /\.oc-theme-scope:is\(\[data-theme="light"\], \[data-theme="dark"\], \.light, \.dark, :has\(\.oc-theme-switch input:is\(\[value="light"\], \[value="dark"\]\):checked\)\) \{ color: var\(--oc-foreground\); \}/);
 });

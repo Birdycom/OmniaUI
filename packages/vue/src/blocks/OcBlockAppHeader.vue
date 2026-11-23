@@ -3,6 +3,7 @@
  * Top bar with sidebar toggle, module navigation and user actions.
  * `toggleFor` = id of the checkbox that collapses the sidebar (see OcBlockAppShell).
  * Slots: toggle (replaces the default hamburger label), nav (replaces the items), title, search, actions.
+ * searchCollapse (0.17.1): on a narrow bar the search slot shrinks to a magnifier and opens over the bar on focus.
  * 0.17.0: overflow = the nav-items that do not fit go into a "More" menu (ResizeObserver; more-label, default "More"; the
  * More button is marked current when the current page is in it); search slot between nav and actions; module = data-module.
  * Classes: .oc-block-appbar, -nav(--overflow), -more, -search, -actions, -title
@@ -21,6 +22,8 @@ const props = withDefaults(
     title?: string
     overflow?: boolean
     moreLabel?: string
+    /** 0.17.1: on a narrow bar (below 40rem) the search shrinks to a magnifier and opens over the bar on focus. */
+    searchCollapse?: boolean
     module?: string
   }>(),
   { toggleLabel: 'Toggle sidebar', navLabel: 'Module navigation', moreLabel: 'More' },
@@ -69,7 +72,7 @@ const DOTS = 'M16 12a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 
     <nav v-else-if="navItems?.length || $slots.nav" class="oc-block-appbar-nav" :aria-label="navLabel">
       <slot name="nav"><OcNavmenuList :items="navItems" /></slot>
     </nav>
-    <div v-if="$slots.search" class="oc-block-appbar-search"><slot name="search" /></div>
+    <div v-if="$slots.search" :class="['oc-block-appbar-search', searchCollapse && 'oc-block-appbar-search--collapse']"><slot name="search" /></div>
     <div v-if="$slots.actions" class="oc-block-appbar-actions"><slot name="actions" /></div>
   </header>
 </template>

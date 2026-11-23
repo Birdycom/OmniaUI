@@ -213,6 +213,65 @@ class ArticleCard extends Component
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
+          <h3 class="oc-section-content__title mt-2" id="fallback">Wrong check digit: Code 128 fallback <span class="oc-badge-version">v0.17.1</span></h3>
+          <p class="oc-section-content__desc">An article number that looks like an EAN but has a wrong check digit (an internal code, a typo in old data) normally shows the reason instead of bars. With <code>fallback="code128"</code> (<code>data-fallback="code128"</code>) it is drawn as Code 128, which takes any text, and the figure gets <code>data-fallback-used</code>. <code>auto</code> also tells 12 digits apart: with a valid UPC check digit it is a UPC-A, else the body of an EAN-13. <code>guessFormat</code> and <code>encodeBarcode</code> are exported from the React and Vue packages for your own checks.</p>
+          <oc-demo title="Barcode - Code 128 fallback">
+<div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1rem;align-items:stretch">
+  <div class="oc-field" style="display:grid;grid-template-rows:auto 1fr;block-size:100%"><span class="oc-field-label">fallback="code128"</span><figure class="oc-barcode oc-barcode--compact" data-value="4006381333932" data-fallback="code128"></figure></div>
+  <div class="oc-field" style="display:grid;grid-template-rows:auto 1fr;block-size:100%"><span class="oc-field-label">Without fallback</span><figure class="oc-barcode oc-barcode--compact" data-value="4006381333932"></figure></div>
+  <div class="oc-field" style="display:grid;grid-template-rows:auto 1fr;block-size:100%"><span class="oc-field-label">12 digits: UPC-A</span><figure class="oc-barcode oc-barcode--compact" data-value="036000291452"></figure></div>
+</div>
+<oc-code lang="html">&lt;!-- once: &lt;script type="module" src="/js/oc-barcode.js"&gt;&lt;/script&gt; --&gt;
+&lt;figure class="oc-barcode" data-value="4006381333932" data-fallback="code128"&gt;&lt;/figure&gt;
+&lt;!-- 12 digits with a valid UPC check digit: UPC-A --&gt;
+&lt;figure class="oc-barcode" data-value="036000291452"&gt;&lt;/figure&gt;</oc-code>
+<oc-code lang="tsx">import { Barcode, guessFormat } from "@birdycom/omniaui-react";
+
+export function ArticleCode({ code }: { code: string }) {
+  // guessFormat("036000291452") === "UPC"
+  return (
+    &lt;&gt;
+      &lt;Barcode value={code} fallback="code128" /&gt;
+      &lt;small&gt;{guessFormat(code)}&lt;/small&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBarcode, guessFormat } from "@birdycom/omniaui-vue";
+
+defineProps&lt;{ code: string }&gt;();
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcBarcode :value="code" fallback="code128" /&gt;
+  &lt;small&gt;{{ guessFormat(code) }}&lt;/small&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- once in the layout: &lt;script type="module" src="/js/oc-barcode.js"&gt;&lt;/script&gt; --}}
+&lt;x-oc::barcode value="4006381333932" fallback="code128" /&gt;
+&lt;x-oc::barcode value="036000291452" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ArticleLabel extends Component
+{
+    /** An old internal number with a wrong EAN check digit */
+    public string $code = '4006381333932';
+
+    public function render()
+    {
+        return view('livewire.article-label');
+    }
+}
+
+{{-- resources/views/livewire/article-label.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::barcode :value="$code" fallback="code128" wire:key="code-{{ $code }}" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
           <p class="oc-section-content__desc mt-2" id="maker">To make barcodes (type a value, see it live, download a print-ready SVG) use the <a href="../blocks/barcode-maker.html">Barcode maker block</a> of OmniaUI Pro. In your own code the free <code>barcodeFile(value, options)</code> gives the SVG text, for a label or a PDF.</p>
         </div>
       </section><section class="oc-docs-section" id="reference">

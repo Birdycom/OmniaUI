@@ -2,6 +2,8 @@
 // Map: format guess -> EAN-13 / EAN-8 / UPC-A -> Code 128 (B, or C for even digit runs) -> digit groups -> bars to SVG -> SVG file -> bind -> boot
 // Barcode display without a dependency : <figure class="oc-barcode" data-value="5412345678908">
 // gets an SVG with the bars and the digits under it. data-format="auto|EAN13|EAN8|UPC|CODE128" (default auto).
+// data-fallback="code128" (0.17.1): an EAN/UPC value with a wrong check digit is drawn as Code 128 instead of an error
+// (the figure then gets data-fallback-used).
 // The digits are grouped like on a product (EAN-13 1 6 6, EAN-8 4 4, UPC-A 1 5 5 1); data-group="false" keeps one run.
 
 /** Module widths of the Code 128 symbols 0–105 (6 elements, 11 modules each) and the stop (7 elements, 13 modules). */
@@ -27,8 +29,10 @@ const G = ["0100111", "0110011", "0011011", "0100001", "0011101", "0111001", "00
 const R = L.map((code) => code.replace(/./g, (bit) => (bit === "1" ? "0" : "1")));
 const PARITY = ["LLLLLL", "LLGLGG", "LLGGLG", "LLGGGL", "LGLLGG", "LGGLLG", "LGGGLL", "LGLGLG", "LGLGGL", "LGGLGL"];
 
-/** EAN-13, EAN-8 or UPC-A for plain digit strings of that length (with or without the check digit); else Code 128. */
+/** EAN-13, EAN-8 or UPC-A for plain digit strings of that length (with or without the check digit); else Code 128.
+ *  12 digits (0.17.1): UPC-A when the last digit is its check digit, else the body of an EAN-13 (the check digit is added). */
 export function guessFormat(value) {
+  if (/^\d{12}$/.test(value) && eanCheck(value.slice(0, 11)) === value[11]) return "UPC";
   if (/^\d{12,13}$/.test(value)) return "EAN13";
   if (/^\d{7,8}$/.test(value)) return "EAN8";
   if (/^\d{11}$/.test(value)) return "UPC";
@@ -81,13 +85,24 @@ export function encodeCode128(text) {
 }
 
 /** Encode a value in a format (auto picks one). Returns the module string, the human-readable text and the format
- *  that was used (EAN13, EAN8, UPC or CODE128). */
-export function encodeBarcode(value, format = "auto") {
+ *  that was used (EAN13, EAN8, UPC or CODE128). fallback "code128" (0.17.1): when an EAN/UPC value cannot be encoded
+ *  (a wrong check digit, a wrong length), draw it as Code 128 and report `fallback: true` instead of throwing. */
+export function encodeBarcode(value, format = "auto", { fallback } = {}) {
   const code = String(value ?? "").trim();
   if (!code) throw new Error("empty value");
   const kind = format === "auto" ? guessFormat(code) : format.toUpperCase();
+  if (fallback && String(fallback).toUpperCase() === "CODE128" && kind !== "CODE128") {
+    try {
+      return encodeBarcode(code, kind);
+    } catch {
+      return { ...encodeCode128(code), format: "CODE128", fallback: true };
+    }
+  }
   if (kind === "EAN13") return { ...encodeEan(code.padStart(code.length === 12 ? 12 : 13, "0"), 13), format: "EAN13" };
-  if (kind === "UPC") return { ...encodeEan(`0${code}`, 13), format: "UPC" };
+  if (kind === "UPC") {
+    if (!/^\d{11,12}$/.test(code)) throw new Error("UPC-A takes 11 or 12 digits");
+    return { ...encodeEan(`0${code}`, 13), format: "UPC" };
+  }
   if (kind === "EAN8") return { ...encodeEan(code, 8), format: "EAN8" };
   return { ...encodeCode128(code), format: "CODE128" };
 }
@@ -156,8 +171,9 @@ export function renderBarcode(el) {
   const value = el.dataset.value ?? "";
   const digits = el.dataset.digits !== "false";
   try {
-    const { bits, text, format } = encodeBarcode(value, el.dataset.format || "auto");
+    const { bits, text, format, fallback } = encodeBarcode(value, el.dataset.format || "auto", { fallback: el.dataset.fallback });
     el.removeAttribute("data-error");
+    el.toggleAttribute("data-fallback-used", !!fallback);
     el.innerHTML = barsToSvg(bits, `Barcode ${text}`) + (digits ? digitsHtml(text, format, el.dataset.group !== "false") : "");
   } catch (err) {
     el.setAttribute("data-error", "");

@@ -6,6 +6,8 @@
  * Listen on the root for oc-datatable-bulk, oc-datatable-reorder, oc-datatable-search, oc-datatable-import.
  * Slots: cell-<key> ({ row }) for a rich cell (an OcDataTableName, a badge …), actions ({ row }) for the row buttons
  * (default: one soft edit button), page-actions for the toolbar (New customer …).
+ * @reorder (keys, { key, server }) (v0.17.1): a row was dropped; the drag itself is OmniaUI Pro (data-table-pro.js).
+ * In server mode the script does not move the row: save the order and pass the rows again.
  * Icons of tabs and filters are webicon names (mdi:account-outline …), drawn as inline SVG (OcWebicon).
  *
  * Server mode (0.17.0): `server` + `total`; `rows` is the current page from your API. The table does not filter, sort or
@@ -143,6 +145,8 @@ const emit = defineEmits<{
   'column-filter': [column: string, value: string]
   query: [query: DataTableQuery]
   bulk: [action: string, keys: string[]]
+  /** v0.17.1: a row was dropped (drag = OmniaUI Pro data-table-pro.js); keys in the new order. Server mode: render again. */
+  reorder: [keys: string[], detail: { key?: string; server?: boolean }]
 }>()
 const L = computed(() => ({ ...DATA_TABLE_EN, ...props.labels }) as typeof DATA_TABLE_EN)
 const fill = (s: string, name: unknown) => s.replace('{name}', String(name))
@@ -219,6 +223,10 @@ onMounted(() => {
   el.addEventListener('oc-datatable-bulk', (e) => {
     const d = (e as CustomEvent<{ action: string; keys: string[] }>).detail
     emit('bulk', d.action, d.keys)
+  })
+  el.addEventListener('oc-datatable-reorder', (e) => {
+    const { keys, key, server } = (e as CustomEvent<{ keys: string[]; key?: string; server?: boolean }>).detail
+    emit('reorder', keys, { key, server })
   })
   if (props.selectedKeys) setDataTableSelection(el, props.selectedKeys)
 })

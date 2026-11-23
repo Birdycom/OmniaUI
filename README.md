@@ -12,23 +12,25 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 [![(Packagist) Laravel](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/split-php.yml?label=%28Packagist%29%20Laravel&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/split-php.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Version:** `0.17.0` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.17.1` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
 ## Showcase
 
-A short tour: the homepage, the components gallery, a component page (tooltip placement with anchor positioning),
-the data table, the blocks gallery in dark mode, a Pro block (CMS dashboard) and OmniaUI Pro.
+A short tour: the homepage with live components (segmented control, dropdown menu), the components gallery,
+the data table, the blocks gallery, a Pro block (CMS dashboard), the switch to the dark theme and the OmniaUI Pro pricing.
 
-![Tour of omniaui.eu: components, blocks and Pro](docs/readme/omniaui-tour.gif)
+![Tour of omniaui.eu: homepage, components, data table, blocks, CMS dashboard, dark mode and Pro pricing](docs/readme/omniaui-tour.gif)
 
 | | |
 |---|---|
-| ![OmniaUI homepage](docs/readme/omniaui-home.png) | ![Components gallery](docs/readme/omniaui-components.png) |
-| Homepage | Components gallery: every component with its `npx omniaui add` command |
-| ![Blocks gallery in dark mode](docs/readme/omniaui-blocks-dark.png) | ![OmniaUI Pro](docs/readme/omniaui-pro.png) |
-| Blocks gallery in dark mode, Pro blocks marked | OmniaUI Pro: app blocks with a commercial license |
+| ![OmniaUI homepage with live components](docs/readme/omniaui-home.png) | ![OmniaUI homepage in dark mode](docs/readme/omniaui-home-dark.png) |
+| Homepage: stat cards, modal, segmented control, progress and tabs, all live | The homepage in dark mode |
+| ![Components gallery, Overlays category](docs/readme/omniaui-components.png) | ![Blocks gallery in dark mode with live previews](docs/readme/omniaui-blocks-dark.png) |
+| Components gallery: every component with its `npx omniaui add` command | Blocks gallery in dark mode, Pro blocks marked |
+| ![CMS dashboard Pro block demo](docs/readme/omniaui-cms.png) | ![OmniaUI Pro pricing: Free, Pro and Pro Team](docs/readme/omniaui-pro.png) |
+| A Pro block: the CMS dashboard with its live demo | OmniaUI Pro: Free, Pro and Pro Team |
 
 ## Packages
 
@@ -126,6 +128,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.17.1` | 2026-11-23 | Release notes, knoptokens, status-badges, DataTable onReorder, gsm-fixes |
 | `0.17.0` | 2026-11-23 | Nieuwe homepage, module-kleur, ledger, compound-componenten, liquid glass, wrappers voor React, Vue, Blade en Livewire, blocks-restyle, vele QA-fixes |
 | `0.16.2` | 2026-11-17 | Tooltip blijft niet staan na een klik en verdwijnt bij een open menu, webicons-scan zonder valse melding, top-progress-gloed in Firefox, Pro-megamenu blijft in het venster |
 | `0.16.1` | 2026-11-17 | Webicon: iconen op naam als inline SVG zonder iconify-runtime (React, Vue, Blade, CLI omniaui webicons); taalmenu-vlaggen werken zonder runtime; Card accent band van rand tot rand; closeRound/closeClassName en optionele sluitknop op dialogen; LiveFrame laptop |

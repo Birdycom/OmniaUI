@@ -4,8 +4,8 @@
      icon-start / icon-end (webicon names before / after the label), as (tag: a with href, span, label, summary …;
      disabled/loading then become aria-disabled), module (0.17.0: data-module, blue|green|purple|gold|cyan|pink|red|orange|teal|slate
      or your own name), float (0.17.0: small icons rise behind the label, .oc-btn--float: 'hearts' or a webicon name such as
-     'mdi:star'). Slot: label. --}}
-@props(['variant' => 'primary', 'size' => null, 'icon' => false, 'href' => null, 'type' => 'button', 'inline' => false, 'loading' => false, 'iconStart' => null, 'iconEnd' => null, 'as' => null, 'module' => null, 'float' => null])
+     'mdi:star'), inherit (0.17.1: outline/ghost on a dark or coloured band follows the text colour around it). Slot: label. --}}
+@props(['variant' => 'primary', 'size' => null, 'icon' => false, 'href' => null, 'type' => 'button', 'inline' => false, 'inherit' => false, 'loading' => false, 'iconStart' => null, 'iconEnd' => null, 'as' => null, 'module' => null, 'float' => null])
 @php
     $classes = [
         'oc-btn',
@@ -13,6 +13,7 @@
         'oc-btn--'.$size => $size && $size !== 'md',
         'oc-btn--icon' => $icon,
         'oc-btn--inline' => $inline,
+        'oc-btn--inherit' => $inherit,
         'oc-btn--float' => (bool) $float,
     ];
     $ocFloat = $float ? ($float === 'hearts' || $float === true ? 'mdi:heart' : (string) $float) : null;

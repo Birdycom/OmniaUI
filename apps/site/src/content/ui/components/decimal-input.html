@@ -175,6 +175,121 @@ class Measurements extends Component
     &lt;x-oc::decimal-input wire:model.blur="rate" start :error="$errors-&gt;has('rate')" aria-label="Rate (left aligned)" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="currency-percent">Currency and percent <span class="oc-badge-version">v0.17.1</span></h3>
+          <p class="oc-section-content__desc">For amount and percentage fields the decimal input takes the symbol of the <a href="affix-input.html">affix input</a> and keeps its own locale notation. <code>currency="EUR"</code> puts the symbol where the locale writes it (€ 1.234,56 in nl-BE, 1 234,56 € in fr-BE) and uses the decimals of that currency; <code>percent</code> puts % after the value, which stays the number you see (21 = 21 %). The value is still a number: typing 1234,5 gives 1234.5 and shows 1.234,50 after leaving the field. Blade formats a numeric <code>value</code> on the server in the <code>locale</code> and writes the matching <code>pattern</code>.</p>
+          <oc-demo title="Decimal input - currency and percent">
+<div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem;align-items:start">
+  <div class="oc-field">
+    <label class="oc-field-label" for="oc-dec-eur">Amount excl. VAT</label>
+    <div class="oc-input-group oc-input-group--affix" data-currency="EUR">
+      <span class="oc-input-addon" aria-hidden="true">€</span>
+      <input class="oc-input oc-decimal-input" id="oc-dec-eur" name="amount" type="text" inputmode="decimal" pattern="[0-9.]*(,[0-9]{1,2})?" value="1.234,50">
+    </div>
+  </div>
+  <div class="oc-field">
+    <label class="oc-field-label" for="oc-dec-vat">VAT rate</label>
+    <div class="oc-input-group oc-input-group--affix">
+      <input class="oc-input oc-decimal-input" id="oc-dec-vat" name="vat" type="text" inputmode="decimal" pattern="[0-9.]*(,[0-9]{1,2})?" value="21,00">
+      <span class="oc-input-addon" aria-hidden="true">%</span>
+    </div>
+  </div>
+  <div class="oc-field">
+    <label class="oc-field-label" for="oc-dec-fr">Amount (fr-BE)</label>
+    <div class="oc-input-group oc-input-group--affix" data-currency="EUR">
+      <input class="oc-input oc-decimal-input" id="oc-dec-fr" name="amount_fr" type="text" inputmode="decimal" value="1 234,50">
+      <span class="oc-input-addon" aria-hidden="true">€</span>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;!-- € before the value (nl-BE), % after it: the affix frame of the affix input around the decimal field --&gt;
+&lt;div class="oc-input-group oc-input-group--affix" data-currency="EUR"&gt;
+  &lt;span class="oc-input-addon" aria-hidden="true"&gt;€&lt;/span&gt;
+  &lt;input class="oc-input oc-decimal-input" name="amount" type="text" inputmode="decimal" pattern="[0-9.]*(,[0-9]{1,2})?" value="1.234,50" aria-label="Amount excl. VAT"&gt;
+&lt;/div&gt;
+&lt;div class="oc-input-group oc-input-group--affix"&gt;
+  &lt;input class="oc-input oc-decimal-input" name="vat" type="text" inputmode="decimal" pattern="[0-9.]*(,[0-9]{1,2})?" value="21,00" aria-label="VAT rate"&gt;
+  &lt;span class="oc-input-addon" aria-hidden="true"&gt;%&lt;/span&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { DecimalInput, FormField } from "@birdycom/omniaui-react";
+
+export function InvoiceLine() {
+  const [amount, setAmount] = useState&lt;number | null&gt;(1234.5);
+  const [vat, setVat] = useState&lt;number | null&gt;(21);
+  return (
+    &lt;&gt;
+      &lt;FormField label="Amount excl. VAT"&gt;
+        &lt;DecimalInput currency="EUR" locale="nl-BE" value={amount} onValueChange={setAmount} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="VAT rate"&gt;
+        &lt;DecimalInput percent locale="nl-BE" value={vat} onValueChange={setVat} /&gt;
+      &lt;/FormField&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcDecimalInput, OcFormField } from "@birdycom/omniaui-vue";
+
+const amount = ref&lt;number | null&gt;(1234.5);
+const vat = ref&lt;number | null&gt;(21);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Amount excl. VAT" v-slot="f"&gt;
+    &lt;OcDecimalInput :id="f.id" v-model="amount" currency="EUR" locale="nl-BE" /&gt;
+  &lt;/OcFormField&gt;
+  &lt;OcFormField label="VAT rate" v-slot="f"&gt;
+    &lt;OcDecimalInput :id="f.id" v-model="vat" percent locale="nl-BE" /&gt;
+  &lt;/OcFormField&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Amount excl. VAT" for="amount" name="amount"&gt;
+    &lt;x-oc::decimal-input id="amount" name="amount" currency="EUR" locale="nl-BE" :value="1234.5" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;x-oc::form-field label="VAT rate" for="vat" name="vat"&gt;
+    &lt;x-oc::decimal-input id="vat" name="vat" percent locale="nl-BE" :value="21" /&gt;
+&lt;/x-oc::form-field&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class InvoiceLine extends Component
+{
+    /** As typed in nl-BE: 1.234,50 */
+    public string $amount = '1.234,50';
+
+    public string $vat = '21,00';
+
+    public function save(): void
+    {
+        $this-&gt;validate([
+            'amount' =&gt; ['required', 'regex:/^[0-9.]*(,[0-9]{1,2})?$/'],
+            'vat' =&gt; ['required', 'regex:/^[0-9.]*(,[0-9]{1,2})?$/'],
+        ]);
+        $amount = (float) str_replace(['.', ','], ['', '.'], $this-&gt;amount);
+        $vat = (float) str_replace(['.', ','], ['', '.'], $this-&gt;vat);
+        // store $amount and $vat
+    }
+
+    public function render()
+    {
+        return view('livewire.invoice-line');
+    }
+}
+
+{{-- resources/views/livewire/invoice-line.blade.php --}}
+&lt;form wire:submit="save" style="display:grid;gap:1rem;max-inline-size:16rem"&gt;
+    &lt;x-oc::form-field label="Amount excl. VAT" for="amount" name="amount"&gt;
+        &lt;x-oc::decimal-input id="amount" currency="EUR" wire:model.blur="amount" :error="$errors-&gt;has('amount')" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="VAT rate" for="vat" name="vat"&gt;
+        &lt;x-oc::decimal-input id="vat" percent wire:model.blur="vat" :error="$errors-&gt;has('vat')" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/form&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -190,6 +305,7 @@ class Measurements extends Component
               <tr><td><code>.oc-decimal-input</code></td><td>Add to <code>.oc-input</code>: right-aligned tabular digits. Modifier: <code>--start</code>.</td></tr>
               <tr><td><code>.oc-decimal-field</code></td><td>Optional frame around the input and a unit</td></tr>
               <tr><td><code>.oc-decimal-field-unit</code></td><td>Unit text after the value</td></tr>
+              <tr><td><code>.oc-input-group--affix</code> + <code>.oc-decimal-input</code></td><td>Currency or percent field (0.17.1): the symbol in an <code>.oc-input-addon</code> before or after the field. Wrappers: <code>currency</code> (ISO code, symbol and decimals from the locale), <code>percent</code>, <code>locale</code>; Blade also <code>decimals</code> and server formatting of a numeric value.</td></tr>
               <tr><td><code>pattern</code></td><td><code>[0-9.]*(,[0-9]{1,2})?</code> for comma decimals; swap <code>.</code> and <code>,</code> for dot decimals</td></tr>
             </tbody>
           </table>

@@ -138,6 +138,11 @@ lines.push("export { contrastRatio, luminance, pickOnColor, toRgb } from './colo
 // Sidebar provider (0.17.0): read the state of the nearest OcSidebarProvider in your own components.
 lines.push("export { useSidebar, useSidebarOptional, sidebarKey } from './composables/useSidebar'")
 lines.push("export type { SidebarContext } from './composables/useSidebar'")
+// Status badges (0.17.1): label, webicon and tone per status of <OcBadge status="…">.
+lines.push("export { badgeStatuses } from './badgeStatus'")
+lines.push("export type { BadgeStatus, BadgeStatusTone } from './badgeStatus'")
+// Barcode encoder (0.17.1): which format a value is, and whether it encodes (fallback to Code 128).
+lines.push("export { encodeBarcode, guessFormat } from '../../ui/src/barcode.js'")
 lines.push('')
 lines.push('/** Every component and block by name, e.g. { OcButton, OcBlockHero, ... }. */')
 lines.push('export const components: Record<string, Component> = {')

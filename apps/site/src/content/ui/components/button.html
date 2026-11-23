@@ -1,5 +1,5 @@
 <!--oc-page {"title": "OmniaUI - Button", "category": "Actions", "description": "Buttons in primary, secondary, outline, ghost, link, destructive and success variants, with sizes, icons, a loading state, toggles and groups.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
-<!-- File: apps/site/src/content/ui/components/button.html | Map: hero -> demo (variants, sizes, icons, loading, row actions, plain, disabled, showcase, toggle, group) -> reference (classes, which buttons OmniaCSS uses) -> frameworks -> browser support -> source footer -->
+<!-- File: apps/site/src/content/ui/components/button.html | Map: hero -> demo (variants, sizes, icons, loading, row actions, plain, disabled, showcase, toggle, group, icon props, module, float, theming tokens) -> reference (classes, which buttons OmniaCSS uses) -> frameworks -> browser support -> source footer -->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">Button</h1>
         <p class="oc-hero-text">The base class <code>.oc-btn</code> with a variant and an optional size. Works on <code>&lt;button&gt;</code>, <code>&lt;a&gt;</code> and <code>&lt;label&gt;</code>, with a webicon before the label, as a square icon button, as a soft row action or busy with a spinner.</p>
@@ -1391,6 +1391,144 @@ class DonateButton extends Component
     &lt;x-oc::button float="hearts" module="pink" size="lg" wire:click="donate"&gt;Donate&lt;/x-oc::button&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="theming-tokens">Theming tokens <span class="oc-badge-version">v0.17.1</span></h3>
+          <p class="oc-section-content__desc">Give every button of a site its own character without overriding classes. Set the tokens on <code>:root</code> or on a wrapper; unset, the buttons look exactly as above. <code>--oc-btn-radius</code> sets the corner (the sizes stay 2px smaller or larger), <code>--oc-btn-hover-mix</code> keeps that much of the primary on hover and mixes in <code>--oc-btn-hover-tint</code> (set <code>--oc-btn-hover-opacity: 1</code> with it), <code>--oc-btn-outline-mix</code> puts the label colour in the outline border and <code>--oc-btn-disabled-opacity</code> dims a disabled button. On a dark or coloured band, <code>inherit</code> (<code>.oc-btn--inherit</code>, with outline or ghost) makes the label, border and hover follow the text colour around it. Hover the buttons to compare.</p>
+          <oc-demo title="Button - theming tokens">
+<div class="oc-eg">
+  <div class="oc-eg__panels" style="--eg-min: 15rem">
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">Default</code>
+      <div class="oc-eg__note">No tokens set.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="background:var(--oc-card);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.75rem;padding:1rem;--eg-h:6rem">
+        <button type="button" class="oc-btn">Save</button>
+        <button type="button" class="oc-btn oc-btn--outline">Cancel</button>
+        <button type="button" class="oc-btn" disabled>Send</button>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">With tokens</code>
+      <div class="oc-eg__note">Square corners, tinted hover, firm outline.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="background:var(--oc-card);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.75rem;padding:1rem;--eg-h:6rem;--oc-btn-radius:2px;--oc-btn-hover-mix:82%;--oc-btn-hover-tint:var(--oc-info);--oc-btn-hover-opacity:1;--oc-btn-outline-mix:55%;--oc-btn-disabled-opacity:0.45">
+        <button type="button" class="oc-btn">Save</button>
+        <button type="button" class="oc-btn oc-btn--outline">Cancel</button>
+        <button type="button" class="oc-btn" disabled>Send</button>
+      </div>
+    </div>
+    <div class="oc-eg__panel">
+      <code class="oc-eg__name">.oc-btn--inherit</code>
+      <div class="oc-eg__note">Outline and ghost on a dark band.</div>
+      <div class="oc-eg__stage oc-eg__stage--plain" style="background:var(--oc-foreground);color:var(--oc-background);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.75rem;padding:1rem;--eg-h:6rem">
+        <button type="button" class="oc-btn oc-btn--outline oc-btn--inherit">Contact</button>
+        <button type="button" class="oc-btn oc-btn--ghost oc-btn--inherit">Read more</button>
+      </div>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;style&gt;
+  :root {
+    --oc-btn-radius: 2px;
+    --oc-btn-hover-mix: 82%;              /* 82% primary, 18% tint on hover */
+    --oc-btn-hover-tint: var(--oc-info);
+    --oc-btn-hover-opacity: 1;
+    --oc-btn-outline-mix: 55%;            /* outline border: 55% of the label colour */
+    --oc-btn-disabled-opacity: 0.45;
+  }
+&lt;/style&gt;
+
+&lt;button type="button" class="oc-btn"&gt;Save&lt;/button&gt;
+&lt;button type="button" class="oc-btn oc-btn--outline"&gt;Cancel&lt;/button&gt;
+&lt;button type="button" class="oc-btn" disabled&gt;Send&lt;/button&gt;
+
+&lt;!-- on a dark band: the button follows the text colour of the band --&gt;
+&lt;div style="background: var(--oc-foreground); color: var(--oc-background)"&gt;
+  &lt;button type="button" class="oc-btn oc-btn--outline oc-btn--inherit"&gt;Contact&lt;/button&gt;
+  &lt;button type="button" class="oc-btn oc-btn--ghost oc-btn--inherit"&gt;Read more&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import type { CSSProperties } from "react";
+import { Button } from "@birdycom/omniaui-react";
+
+const brand = {
+  "--oc-btn-radius": "2px",
+  "--oc-btn-hover-mix": "82%",
+  "--oc-btn-hover-tint": "var(--oc-info)",
+  "--oc-btn-hover-opacity": "1",
+  "--oc-btn-outline-mix": "55%",
+  "--oc-btn-disabled-opacity": "0.45",
+} as CSSProperties;
+
+export function Example() {
+  return (
+    &lt;&gt;
+      &lt;div style={brand}&gt;
+        &lt;Button&gt;Save&lt;/Button&gt;
+        &lt;Button variant="outline"&gt;Cancel&lt;/Button&gt;
+        &lt;Button disabled&gt;Send&lt;/Button&gt;
+      &lt;/div&gt;
+      &lt;div style={{ background: "var(--oc-foreground)", color: "var(--oc-background)" }}&gt;
+        &lt;Button variant="outline" inherit&gt;Contact&lt;/Button&gt;
+        &lt;Button variant="ghost" inherit&gt;Read more&lt;/Button&gt;
+      &lt;/div&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton } from "@birdycom/omniaui-vue";
+
+const brand = {
+  "--oc-btn-radius": "2px",
+  "--oc-btn-hover-mix": "82%",
+  "--oc-btn-hover-tint": "var(--oc-info)",
+  "--oc-btn-hover-opacity": "1",
+  "--oc-btn-outline-mix": "55%",
+  "--oc-btn-disabled-opacity": "0.45",
+};
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div :style="brand"&gt;
+    &lt;OcButton&gt;Save&lt;/OcButton&gt;
+    &lt;OcButton variant="outline"&gt;Cancel&lt;/OcButton&gt;
+    &lt;OcButton disabled&gt;Send&lt;/OcButton&gt;
+  &lt;/div&gt;
+  &lt;div style="background: var(--oc-foreground); color: var(--oc-background)"&gt;
+    &lt;OcButton variant="outline" inherit&gt;Contact&lt;/OcButton&gt;
+    &lt;OcButton variant="ghost" inherit&gt;Read more&lt;/OcButton&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- the tokens live in your CSS, e.g. resources/css/app.css: :root { --oc-btn-radius: 2px; --oc-btn-hover-mix: 82%; ... } --}}
+&lt;x-oc::button&gt;Save&lt;/x-oc::button&gt;
+&lt;x-oc::button variant="outline"&gt;Cancel&lt;/x-oc::button&gt;
+&lt;x-oc::button disabled&gt;Send&lt;/x-oc::button&gt;
+
+&lt;div style="background: var(--oc-foreground); color: var(--oc-background)"&gt;
+    &lt;x-oc::button variant="outline" inherit&gt;Contact&lt;/x-oc::button&gt;
+    &lt;x-oc::button variant="ghost" inherit href="/about"&gt;Read more&lt;/x-oc::button&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class ContactBand extends Component
+{
+    public function contact(): void
+    {
+        $this-&gt;redirect('/contact');
+    }
+
+    public function render()
+    {
+        return view('livewire.contact-band');
+    }
+}
+
+{{-- resources/views/livewire/contact-band.blade.php --}}
+&lt;div style="background: var(--oc-foreground); color: var(--oc-background)"&gt;
+    &lt;x-oc::button variant="outline" inherit wire:click="contact"&gt;Contact&lt;/x-oc::button&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -1420,7 +1558,11 @@ class DonateButton extends Component
               <tr><td><code>aria-busy="true"</code></td><td>Loading: a spinner before the label (replaces a leading icon), not clickable. React, Vue and Blade: <code>loading</code>.</td></tr>
               <tr><td><code>.oc-btn--toggle</code></td><td>On a <code>&lt;label&gt;</code> with a checkbox: <code>.oc-btn-toggle__off</code> / <code>__on</code> swap the text.</td></tr>
               <tr><td><code>.oc-btn-group</code></td><td>Joins buttons side by side.</td></tr>
-              <tr><td><code>disabled</code> / <code>aria-disabled="true"</code></td><td>Dimmed and not clickable.</td></tr>
+              <tr><td><code>disabled</code> / <code>aria-disabled="true"</code></td><td>Dimmed (<code>--oc-btn-disabled-opacity</code>, default 0.5) and not clickable.</td></tr>
+              <tr><td><code>.oc-btn--inherit</code> (prop <code>inherit</code>)</td><td>With <code>--outline</code> or <code>--ghost</code> on a dark or coloured band: label, border and hover follow the text colour around it.</td></tr>
+              <tr><td><code>--oc-btn-radius</code></td><td>Corner of every button; default <code>var(--oc-radius)</code>. <code>--xs</code> / <code>--sm</code> are 2px smaller, <code>--lg</code> 2px larger.</td></tr>
+              <tr><td><code>--oc-btn-hover-mix</code> / <code>--oc-btn-hover-tint</code> / <code>--oc-btn-hover-opacity</code></td><td>Hover of the filled button: how much of the primary (or module colour) stays (default 100%), the colour mixed in (default <code>var(--oc-foreground)</code>) and the hover opacity (default 0.9; set 1 with a mix).</td></tr>
+              <tr><td><code>--oc-btn-outline-mix</code></td><td>Share of the label colour in the outline border (default 0%, the plain <code>--oc-border</code>; 55% with <code>--inherit</code>).</td></tr>
             </tbody>
           </table>
 

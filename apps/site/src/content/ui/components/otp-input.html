@@ -1,4 +1,4 @@
-<!--oc-page {"title": "OmniaUI - OTP input", "category": "Forms", "description": "A one-time code field drawn as separate cells on a single real input, so paste, autofill and password managers keep working. The length is a token.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": []}-->
+<!--oc-page {"title": "OmniaUI - OTP input", "category": "Forms", "description": "A one-time code field drawn as separate cells on a single real input, so paste, autofill and password managers keep working. The length is a token.", "layout": "sidebar", "shell": "ui", "shellClass": "ocd-shell", "bodyClass": "", "head": ["<script type=\"module\" src=\"/js/oc-form-extras.js\"></script>", "<script src=\"/js/vendor/iconify-icon.min.js\"></script>"]}-->
 <section class="oc-hero" id="overview">
         <h1 class="oc-hero-title">OTP input</h1>
         <p class="oc-hero-text">A single <code>&lt;input&gt;</code> (paste, autofill and password managers work) drawn as <code>--oc-otp-length</code> cells with monospaced font and a repeating gradient. Keep <code>maxlength</code> equal to the length. <a href="../components.html">All components</a>.</p>
@@ -178,6 +178,117 @@ class TwoFactor extends Component
 {{-- resources/views/livewire/two-factor.blade.php --}}
 &lt;div&gt;
     &lt;x-oc::wire.otp model="code" complete="verify" label="Authentication code" style="--oc-otp-length: 6; --oc-otp-size: 1.75rem" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="active-cell">Active cell and a code from outside <span class="oc-badge-version">v0.17.1</span></h3>
+          <p class="oc-section-content__desc">While the field has focus, the cell the next character goes to gets a soft tint and a line in the ring colour, so it is clear where typing continues (click a cell to move it). React and Vue do this themselves; in plain HTML, Blade and Livewire load <code>oc-form-extras.js</code>, which sets <code>data-otp-active</code> and <code>--oc-otp-active</code>. <code>onComplete</code> (React), <code>@complete</code> (Vue) and the Livewire <code>complete</code> method now also run when the value arrives complete from outside (a code from a link or set by the server), and on load when it is already complete; once per code.</p>
+          <oc-demo title="OTP input - active cell and complete">
+<div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1.5rem;align-items:start">
+  <div class="oc-field">
+    <label class="oc-field-label" for="oc-otp-active">Click a cell or type</label>
+    <input class="oc-otp" id="oc-otp-active" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" style="--oc-otp-length: 6" value="48">
+    <p class="oc-field-description">The cell the next digit goes to is marked.</p>
+  </div>
+  <div class="oc-field">
+    <label class="oc-field-label" for="oc-otp-link">Code from a link</label>
+    <input class="oc-otp" id="oc-otp-link" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" style="--oc-otp-length: 6">
+    <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+      <button type="button" class="oc-btn oc-btn--outline oc-btn--sm" id="oc-otp-link-fill">Fill from link</button>
+      <span class="oc-badge oc-badge--status" data-status="pending" id="oc-otp-link-state"><iconify-icon icon="mdi:clock-outline" aria-hidden="true"></iconify-icon>Waiting</span>
+    </div>
+  </div>
+</div>
+<script>
+  // complete: also when the value arrives from outside (a link, the server), once per code
+  (() => {
+    const input = document.getElementById('oc-otp-link');
+    const state = document.getElementById('oc-otp-link-state');
+    let fired = null;
+    const done = () => {
+      const v = input.value;
+      if (v.length < input.maxLength) { fired = null; return; }
+      if (fired === v) return;
+      fired = v;
+      state.dataset.status = 'done';
+      state.lastChild.textContent = 'Verified';
+      state.querySelector('iconify-icon')?.setAttribute('icon', 'mdi:check');
+    };
+    input.addEventListener('input', done);
+    document.getElementById('oc-otp-link-fill').addEventListener('click', () => { input.value = '730215'; done(); });
+  })();
+</script>
+<oc-code lang="html">&lt;!-- the active cell: load oc-form-extras.js once (npx omniaui copy-js form-extras) --&gt;
+&lt;script type="module" src="/js/oc-form-extras.js"&gt;&lt;/script&gt;
+&lt;input class="oc-otp" id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" style="--oc-otp-length: 6"&gt;
+&lt;script&gt;
+  // a value set from script fires no input event: call your check yourself
+  const input = document.getElementById('code');
+  const verify = () =&gt; { if (input.value.length === input.maxLength) input.form?.requestSubmit(); };
+  input.addEventListener('input', verify);
+  input.value = new URLSearchParams(location.search).get('code') ?? '';
+  verify();
+&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">import { useEffect, useState } from "react";
+import { FormField, OtpInput } from "@birdycom/omniaui-react";
+
+export function MagicLink({ verify }: { verify: (code: string) =&gt; void }) {
+  const [code, setCode] = useState("");
+  // a code from the link: onComplete runs for it too
+  useEffect(() =&gt; setCode(new URLSearchParams(location.search).get("code") ?? ""), []);
+  return (
+    &lt;FormField label="Authentication code"&gt;
+      &lt;OtpInput value={code} onChange={setCode} onComplete={verify} /&gt;
+    &lt;/FormField&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { onMounted, ref } from "vue";
+import { OcFormField, OcOtpInput } from "@birdycom/omniaui-vue";
+
+const emit = defineEmits&lt;{ verify: [code: string] }&gt;();
+const code = ref("");
+// a code from the link: @complete fires for it too
+onMounted(() =&gt; (code.value = new URLSearchParams(location.search).get("code") ?? ""));
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Authentication code" v-slot="f"&gt;
+    &lt;OcOtpInput :id="f.id" v-model="code" @complete="emit('verify', $event)" /&gt;
+  &lt;/OcFormField&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- once in the layout: &lt;script type="module" src="/js/oc-form-extras.js"&gt;&lt;/script&gt; (the active cell) --}}
+&lt;form method="post" action="{{ route('two-factor.login') }}"&gt;
+    @csrf
+    &lt;x-oc::otp-input label="Authentication code" name="code" :value="request('code')" /&gt;
+&lt;/form&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\Url;
+use Livewire\Component;
+
+class MagicLink extends Component
+{
+    /** Filled from ?code=… : complete runs for it on load */
+    #[Url]
+    public string $code = '';
+
+    public function verify(): void
+    {
+        $this-&gt;validate(['code' =&gt; 'required|digits:6']);
+    }
+
+    public function render()
+    {
+        return view('livewire.magic-link');
+    }
+}
+
+{{-- resources/views/livewire/magic-link.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::wire.otp model="code" complete="verify" label="Authentication code" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
         </div>

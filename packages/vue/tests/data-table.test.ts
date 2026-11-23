@@ -64,4 +64,10 @@ describe('Data table', () => {
     expect(visible()).toBe(1)
     w.unmount()
   })
+
+  it('emits reorder with the keys in the new order', () => {
+    const w = mount(OcDataTable, { props: { tableId: 'dt-vue-reorder', title: 'Articles', pageSize: 10, draggable: true, columns, rows } })
+    w.element.dispatchEvent(new CustomEvent('oc-datatable-reorder', { bubbles: true, detail: { keys: ['schar', 'greep'], key: 'schar', server: true } }))
+    expect(w.emitted('reorder')).toEqual([[['schar', 'greep'], { key: 'schar', server: true }]])
+  })
 })
