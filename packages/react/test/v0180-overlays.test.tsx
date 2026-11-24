@@ -61,6 +61,8 @@ describe("Combobox portal in the top layer (0.18.0)", () => {
       expect(document.body.querySelector(":scope > .oc-combobox-list--portal")).toBeNull();
       const input = root.querySelector("input")!;
       fireEvent.focus(input);
+      // 0.18.0: focus alone (a dialog that focuses the field) keeps it closed; the click of the user opens it
+      fireEvent.click(input);
       expect(list.dataset.testOpen).toBe("1");
       expect(list.getAttribute("data-open")).toBe("");
       expect(list.style.position).toBe("fixed");

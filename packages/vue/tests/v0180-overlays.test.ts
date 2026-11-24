@@ -70,6 +70,8 @@ describe('OcCombobox portal in the top layer (0.18.0)', () => {
       expect(document.body.querySelector(':scope > .oc-combobox-list--portal')).toBeNull()
       const input = root.querySelector('input')!
       input.dispatchEvent(new FocusEvent('focus'))
+      // 0.18.0: focus alone (a dialog that focuses the field) keeps it closed; the click of the user opens it
+      input.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       await nextTick()
       await nextTick()
       expect(list.dataset.testOpen).toBe('1')

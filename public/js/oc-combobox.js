@@ -96,6 +96,19 @@ function visualHtml(option) {
 
 let uid = 0;
 
+// 0.18.0: focus alone opens the list only when the user tabbed into the field. A dialog, sheet or drawer that focuses
+// the field when it opens (autofocus, focus()) leaves the list closed until a click, typing, Arrow Down or Enter.
+const watched = new WeakSet();
+let tabAt = -Infinity;
+const now = () => (globalThis.performance?.now?.() ?? Date.now());
+function watchTab(doc) {
+  if (!doc || watched.has(doc)) return;
+  watched.add(doc);
+  doc.addEventListener("keydown", (e) => { if (e.key === "Tab") tabAt = now(); }, true);
+}
+/** True right after a Tab press: the focus that follows came from the user, not from a script or autofocus. */
+export function focusFromTab() { return now() - tabAt < 400; }
+
 /** Starts one .oc-combobox. Returns a function that stops it. */
 export function bindCombobox(root) {
   const input = root.querySelector(".oc-combobox-input");
@@ -105,6 +118,7 @@ export function bindCombobox(root) {
   root.dataset.ocBound = "";
   const doc = root.ownerDocument;
   const win = doc.defaultView ?? globalThis;
+  watchTab(doc);
   // data-oc-fixed on the icon slot (0.17.2, an icon-only trigger with a code such as "NL"): the slot keeps its content.
   const slot = root.querySelector(":scope > .oc-combobox-icon:not([data-oc-fixed])");
   const placeholderIcon = slot ? slot.innerHTML : "";
@@ -322,6 +336,7 @@ export function bindCombobox(root) {
     else if (e.key === "Home" && root.dataset.open !== "false") move(0);
     else if (e.key === "End" && root.dataset.open !== "false") move(items.length - 1);
     else if (e.key === "Enter" && at >= 0 && root.dataset.open !== "false") { e.preventDefault(); choose(items[at]); }
+    else if (e.key === "Enter" && root.dataset.open === "false") { e.preventDefault(); setOpen(true); }
     else if (e.key === "Escape" && root.dataset.open !== "false") { e.preventDefault(); setOpen(false); }
   };
   // An icon-only trigger hides the chosen label in its field: select it, so the first key replaces it instead of
@@ -342,6 +357,8 @@ export function bindCombobox(root) {
   };
   const onFocus = (e) => {
     if (e?.target === input) selectHidden();
+    // Focus from a script or autofocus (a dialog that opens) keeps the list closed; a click opens it right after.
+    if (e?.target === input && !root.contains(e.relatedTarget) && !focusFromTab()) root.dataset.open = "false";
     input.setAttribute("aria-expanded", String(root.dataset.open !== "false"));
     if (root.dataset.open !== "false") showPortal(true);
   };

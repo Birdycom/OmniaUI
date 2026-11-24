@@ -22,6 +22,11 @@ export interface TimeInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   slotsPopover?: boolean;
   /** 0.18.0: accessible name of the clock button (default "Choose a time"). */
   slotsLabel?: string;
+  /**
+   * 0.18.0: select the whole time when the field gets focus (a click or Tab), so the first key types a new time over it.
+   * Default: on with `slotsPopover`, off otherwise.
+   */
+  selectOnFocus?: boolean;
   error?: boolean;
 }
 
@@ -48,13 +53,16 @@ export function completeTime(text: string): string {
 
 /** `.oc-time-input`: 24h text field (pattern HH:mm) with optional datalist suggestions. */
 export const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(function TimeInput(
-  { value, defaultValue, onChange, slots, slotsPopover, slotsLabel = "Choose a time", error, className, onBlur, placeholder = "hh:mm", ...rest },
+  { value, defaultValue, onChange, slots, slotsPopover, slotsLabel = "Choose a time", selectOnFocus, error, className, onBlur, onFocus, onMouseUp, placeholder = "hh:mm", ...rest },
   ref,
 ) {
   const listId = `oc-time-${useId().replace(/:/g, "")}`;
   const [current, setCurrent] = useControllable<string>(value, defaultValue ?? "", onChange);
   const panel = useRef<HTMLDivElement>(null);
   const popover = !!(slotsPopover && slots?.length);
+  const selectAll = selectOnFocus ?? !!slotsPopover;
+  // A click focuses on mousedown and would drop the selection again at mouseup: keep it for that first mouseup.
+  const justFocused = useRef(false);
   const field = (
     <input
       ref={ref}
@@ -76,6 +84,20 @@ export const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(function T
         const done = completeTime(current);
         if (done !== current) setCurrent(done);
         onBlur?.(e);
+      }}
+      onFocus={(e) => {
+        if (selectAll) {
+          e.currentTarget.select();
+          justFocused.current = true;
+        }
+        onFocus?.(e);
+      }}
+      onMouseUp={(e) => {
+        if (justFocused.current) {
+          justFocused.current = false;
+          e.preventDefault();
+        }
+        onMouseUp?.(e);
       }}
       {...rest}
     />

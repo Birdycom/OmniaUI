@@ -3489,7 +3489,29 @@ dialog.oc-sheet--bottom .oc-sheet-content { border-block-start: 1px solid var(--
   background: var(--oc-primary);
   border-color: var(--oc-primary);
 }
-.oc-stepper-item:disabled { cursor: not-allowed; }
+/* 0.18.0: a step you may not open (disabled) is clearly dimmed, with a dashed outline; an upcoming step you may open
+   (an enabled button, React/Vue isStepEnabled, Blade 'enabled') looks clickable: full text colour, pointer, hover. */
+.oc-stepper-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  background: transparent;
+  border-style: dashed;
+}
+.oc-stepper-item:disabled::before { border-style: dashed; }
+button.oc-stepper-item:not(:disabled, .oc-stepper-item--done, .oc-stepper-item--active, [aria-current="step"]) {
+  color: var(--oc-foreground);
+  background: var(--oc-card);
+  border-color: var(--oc-border-strong);
+  cursor: pointer;
+  opacity: 1;
+}
+button.oc-stepper-item:not(:disabled, .oc-stepper-item--done, .oc-stepper-item--active, [aria-current="step"])::before {
+  color: var(--oc-primary);
+  border-color: var(--oc-primary);
+}
+button.oc-stepper-item:not(:disabled, .oc-stepper-item--done, .oc-stepper-item--active, [aria-current="step"]):hover {
+  background: var(--oc-accent);
+}
 .oc-stepper-item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 
 /* ===================================================================

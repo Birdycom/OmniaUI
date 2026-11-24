@@ -153,6 +153,8 @@ describe("0.17.0 combobox catalog mode", () => {
     expect(list.getAttribute("data-open")).toBe("false");
     const input = screen.getByRole("combobox");
     fireEvent.focus(input);
+    // 0.18.0: focus alone (a dialog that focuses the field) keeps it closed; the click of the user opens it
+    fireEvent.click(input);
     expect(list.getAttribute("data-open")).toBe("");
     expect((list as HTMLElement).style.position).toBe("fixed");
     const option = screen.getByText("Company 1").closest("li")!;

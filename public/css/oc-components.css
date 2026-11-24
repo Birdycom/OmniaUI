@@ -3567,7 +3567,29 @@ dialog.oc-sheet--bottom .oc-sheet-content { border-block-start: 1px solid var(--
   background: var(--oc-primary);
   border-color: var(--oc-primary);
 }
-.oc-stepper-item:disabled { cursor: not-allowed; }
+/* 0.18.0: a step you may not open (disabled) is clearly dimmed, with a dashed outline; an upcoming step you may open
+   (an enabled button, React/Vue isStepEnabled, Blade 'enabled') looks clickable: full text colour, pointer, hover. */
+.oc-stepper-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  background: transparent;
+  border-style: dashed;
+}
+.oc-stepper-item:disabled::before { border-style: dashed; }
+button.oc-stepper-item:not(:disabled, .oc-stepper-item--done, .oc-stepper-item--active, [aria-current="step"]) {
+  color: var(--oc-foreground);
+  background: var(--oc-card);
+  border-color: var(--oc-border-strong);
+  cursor: pointer;
+  opacity: 1;
+}
+button.oc-stepper-item:not(:disabled, .oc-stepper-item--done, .oc-stepper-item--active, [aria-current="step"])::before {
+  color: var(--oc-primary);
+  border-color: var(--oc-primary);
+}
+button.oc-stepper-item:not(:disabled, .oc-stepper-item--done, .oc-stepper-item--active, [aria-current="step"]):hover {
+  background: var(--oc-accent);
+}
 .oc-stepper-item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 
 /* ===================================================================
@@ -5777,6 +5799,8 @@ a.oc-item:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px
 }
 .oc-combobox:focus-within::after,
 .oc-combobox[data-open]:not([data-open="false"])::after { rotate: 225deg; translate: 0 3px; }
+/* Focused but closed (0.18.0: a dialog focused the field, or Escape): the chevron points down again. */
+.oc-combobox[data-open="false"]::after { rotate: 45deg; translate: none; }
 .oc-combobox-list {
   position: absolute;
   inset-inline: 0;
@@ -8136,9 +8160,11 @@ dialog.oc-sheet::backdrop { background: var(--oc-sheet-scrim, oklch(from var(--c
 
 /* Glass: the panel lets the page show through (blurred), the scrim is light and not blurred, so the rest of the page
    stays visible. --oc-sheet-bg (panel), --oc-sheet-blur (blur radius), --oc-sheet-scrim (scrim). */
+/* 0.18.0: 64 % (was 84 %) and a stronger blur, so the glass is actually visible over a busy view; the blur keeps the
+   text readable. */
 dialog.oc-sheet--glass {
-  --oc-sheet-bg: color-mix(in oklab, var(--oc-background) 84%, transparent);
-  --oc-sheet-blur: 16px;
+  --oc-sheet-bg: color-mix(in oklab, var(--oc-background) 64%, transparent);
+  --oc-sheet-blur: 20px;
   --oc-sheet-scrim: color-mix(in oklab, var(--oc-foreground) 16%, transparent);
   --oc-sheet-line: color-mix(in oklab, var(--oc-border) 70%, transparent);
 }
@@ -8147,8 +8173,8 @@ dialog.oc-sheet--glass::backdrop {
   backdrop-filter: none;
 }
 dialog.oc-sheet--glass .oc-sheet-content {
-  -webkit-backdrop-filter: blur(var(--oc-sheet-blur)) saturate(1.2);
-  backdrop-filter: blur(var(--oc-sheet-blur)) saturate(1.2);
+  -webkit-backdrop-filter: blur(var(--oc-sheet-blur)) saturate(1.5);
+  backdrop-filter: blur(var(--oc-sheet-blur)) saturate(1.5);
   border-color: var(--oc-sheet-line);
 }
 dialog.oc-sheet--glass .oc-sheet-footer { border-color: var(--oc-sheet-line); }
@@ -11293,7 +11319,8 @@ img.oc-combobox-option-image {
 .oc-copy-field.oc-copy-field--block {
   container-type: inline-size;
   flex: 1 1 auto;
-  align-self: stretch;
+  /* 0.18.0: centre, not stretch: in a flex row next to a label the field kept growing to the height of its card */
+  align-self: center;
   inline-size: 100%;
   min-inline-size: 0;
   max-inline-size: 100%;
@@ -12720,8 +12747,10 @@ a.oc-rating-summary__count:hover { color: var(--oc-foreground); }
   max-inline-size: 100%;
 }
 .oc-time-picker > .oc-btn { flex: none; }
-.oc-time-picker > .oc-popover[popover] { inline-size: 16rem; padding: 0.5rem; }
-.oc-time-picker > .oc-popover .oc-time-slots { padding: 0; }
+/* 0.18.0: the room around the slots lives inside the scrolling list (not on the popover), so the bottom border and the
+   focus ring of the last row are never cut off by the list's overflow (fractional heights at 125 % zoom did that). */
+.oc-time-picker > .oc-popover[popover] { inline-size: 16rem; padding: 0.25rem; }
+.oc-time-picker > .oc-popover .oc-time-slots { padding: 0.25rem; scroll-padding-block: 0.25rem; }
 
 /* Small slots for dense layouts. */
 .oc-time-slots--sm { grid-template-columns: repeat(auto-fill, minmax(3.5rem, 1fr)); }
@@ -13068,6 +13097,14 @@ a.oc-attachment-image:hover > :is(img, .oc-media-art) { filter: brightness(1.05)
   .oc-barcode--qr svg { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 .oc-barcode--qr .oc-barcode__group { margin: 0; }
+/* Centred by default: a QR is a block as wide as its plate, centred in a card, a grid cell, a flex column, a code plate
+   and a button; its caption is centred under it. (Next to text in a flex row, set margin-inline: 0.) */
+.oc-barcode.oc-barcode--qr { display: flex; inline-size: fit-content; max-inline-size: 100%; margin-inline: auto; }
+.oc-barcode--qr svg { margin-inline: auto; }
+/* In a button: the QR stands centred above the label (or alone), and the button grows around it in proportion. */
+.oc-btn:has(> .oc-barcode--qr) { flex-direction: column; block-size: auto; min-block-size: 0; padding: 0.625rem 0.75rem; gap: 0.5rem; line-height: 1.25; }
+.oc-btn > .oc-barcode--qr { --oc-barcode-qr-size: 5rem; padding: 0.25rem; margin-inline: auto; border-radius: calc(var(--oc-radius) - 2px); }
+.oc-btn > .oc-barcode--qr.oc-barcode--compact { --oc-barcode-qr-size: 3.5rem; }
 
 /* parts/media-browser-frame.css */
 /* File: packages/ui/src/parts/media-browser-frame.css | Map: frame -> chrome bar (dots, address pill, actions)

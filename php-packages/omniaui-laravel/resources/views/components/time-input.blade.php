@@ -3,8 +3,10 @@
      Attributes (name, value, wire:model...) go to the input. For a slot list use the snippet markup (.oc-time-slots).
      0.18.0: slots-popover (the slots in a native popover under a clock button, .oc-time-picker, instead of the datalist;
      oc-form-extras.js puts a picked slot into the field with input/change events, so wire:model sees it), slots-label
-     (name of the button, default "Choose a time"). --}}
-@props(['id' => null, 'slots' => [], 'error' => false, 'slotsPopover' => false, 'slotsLabel' => 'Choose a time'])
+     (name of the button, default "Choose a time").
+     0.18.0: select-on-focus (data-oc-select-on-focus; oc-form-extras.js selects the whole time on focus so the first key
+     types over it). Default: on with slots-popover, off otherwise. --}}
+@props(['id' => null, 'slots' => [], 'error' => false, 'slotsPopover' => false, 'slotsLabel' => 'Choose a time', 'selectOnFocus' => null])
 @php
     $id = $id ?: 'oc-time-'.substr(md5(uniqid('', true)), 0, 6);
     $ocPopover = $slotsPopover && count($slots);
@@ -17,6 +19,7 @@
         'pattern' => '([01][0-9]|2[0-3]):[0-5][0-9]',
         'list' => count($slots) && ! $ocPopover ? $id.'-slots' : null,
         'aria-invalid' => $error ? 'true' : null,
+        'data-oc-select-on-focus' => ($selectOnFocus ?? $slotsPopover) ? '' : null,
     ]);
 @endphp
 @if ($ocPopover)

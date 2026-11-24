@@ -118,6 +118,8 @@ describe('0.17.0 OcCombobox catalog mode', () => {
     expect(w.element.querySelector('.oc-combobox-list')).toBeNull()
     expect(list.getAttribute('data-module')).toBe('green')
     await w.find('input[role=combobox]').trigger('focus')
+    // 0.18.0: focus alone (a dialog that focuses the field) keeps it closed; the click of the user opens it
+    await w.find('input[role=combobox]').trigger('click')
     expect(list.getAttribute('data-open')).toBe('')
     expect(list.style.position).toBe('fixed')
     const option = list.querySelector('[data-value="1"]') as HTMLElement

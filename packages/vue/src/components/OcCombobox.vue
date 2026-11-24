@@ -19,6 +19,7 @@
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useUid } from '../composables/useUid'
+import { focusFromTab, watchTab } from '../composables/focusFromTab'
 import OcWebicon from './OcWebicon.vue'
 
 export interface ComboboxItem {
@@ -144,6 +145,7 @@ const mounted = ref(false)
 const topLayer = ref(false)
 onMounted(() => {
   mounted.value = true
+  watchTab()
   topLayer.value = typeof HTMLElement !== 'undefined' && typeof HTMLElement.prototype.showPopover === 'function'
 })
 /** A manual popover has no light dismiss: it follows the open state (blur and Escape close it). */
@@ -220,7 +222,8 @@ function choose(r?: Row) {
 /** icon-only: the chosen label is invisible in the field; select it so the first key replaces it (0.18.0) */
 function onFocusInput(e: Event) {
   if (iconOnlyOn.value && text.value == null) (e.currentTarget as HTMLInputElement).select()
-  open.value = true
+  // 0.18.0: a click always opens; focus only after a Tab (a dialog that focuses the field on open leaves it closed)
+  if (e.type === 'click' || focusFromTab()) open.value = true
 }
 function onInput(e: Event) {
   const v = (e.target as HTMLInputElement).value
@@ -247,6 +250,7 @@ function onKey(e: KeyboardEvent) {
   else if (e.key === 'Home' && open.value) move(0)
   else if (e.key === 'End' && open.value) move(items.length - 1)
   else if (e.key === 'Enter' && open.value && at >= 0) { e.preventDefault(); choose(items[at]) }
+  else if (e.key === 'Enter' && !open.value) { e.preventDefault(); open.value = true }
   else if (e.key === 'Escape' && open.value) { e.preventDefault(); close() }
 }
 function onManageClick(e: MouseEvent) {

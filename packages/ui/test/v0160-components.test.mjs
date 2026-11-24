@@ -52,7 +52,7 @@ test("language menu: flag, code, icon trigger with tooltip, check at the current
 
 test("sheet options: glass tokens, scrim without blur, fallbacks, inset gap, footer panel; plain collapsible", () => {
   const css = parts[2][1];
-  assert.match(css, /dialog\.oc-sheet--glass \{[^}]*--oc-sheet-bg:[^}]*--oc-sheet-blur: 16px;[^}]*--oc-sheet-scrim:/);
+  assert.match(css, /dialog\.oc-sheet--glass \{[^}]*--oc-sheet-bg:[^}]*--oc-sheet-blur: 20px;[^}]*--oc-sheet-scrim:/);
   assert.match(css, /dialog\.oc-sheet--glass::backdrop \{[^}]*backdrop-filter: none;/);
   assert.match(css, /@supports not \(\(backdrop-filter: blur\(1px\)\) or \(-webkit-backdrop-filter: blur\(1px\)\)\)/);
   assert.match(css, /@media \(prefers-reduced-transparency: reduce\) \{\s*dialog\.oc-sheet--glass \{ --oc-sheet-bg: var\(--oc-background\); \}/);

@@ -16,4 +16,12 @@ export function otpActiveCell(selectionStart: number | null | undefined, valueLe
 export function bindOtp(input: HTMLInputElement): () => void;
 /** 0.18.0: a picked slot of .oc-time-picker goes into its .oc-time-input (input + change events) and closes the popover. */
 export function bindTimePicker(root: HTMLElement): void;
+/** 0.18.0: selects the whole value of an input[data-oc-select-on-focus] on focus (a click or Tab). */
+export function bindSelectOnFocus(input: HTMLInputElement): void;
+/** 0.18.0: default national grouping per dial code ("+32": "### ## ## ##", ...). */
+export const PHONE_FORMATS: Record<string, string>;
+/** 0.18.0: "470123456" + "### ## ## ##" (or [3, 2, 2, 2]) -> "470 12 34 56"; without a format: 3, then pairs. */
+export function formatPhoneDigits(digits: string, format?: string | number[] | null): string;
+/** 0.18.0: .oc-phone-input groups the number per country while typing and again when the country changes. */
+export function bindPhoneInput(root: HTMLElement): void;
 export function initFormExtras(scope?: ParentNode): void;

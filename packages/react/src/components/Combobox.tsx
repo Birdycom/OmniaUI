@@ -17,6 +17,7 @@ import { createPortal } from "react-dom";
 import { cx } from "../utils";
 import { useControllable } from "../hooks";
 import { webiconNode } from "./Webicon";
+import { focusFromTab, watchTab } from "../focusFromTab";
 
 export type ComboboxValue = string | number;
 
@@ -201,6 +202,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
   const [place, setPlace] = useState<CSSProperties>({});
   useEffect(() => {
     setMounted(true);
+    watchTab();
     setTopLayer(typeof HTMLElement !== "undefined" && typeof HTMLElement.prototype.showPopover === "function");
   }, []);
   const measure = useCallback(() => {
@@ -272,6 +274,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
     else if (e.key === "Home" && open) move(0);
     else if (e.key === "End" && open) move(enabled.length - 1);
     else if (e.key === "Enter" && open && at >= 0) { e.preventDefault(); choose(enabled[at]); }
+    else if (e.key === "Enter" && !open) { e.preventDefault(); setOpen(true); }
     else if (e.key === "Escape" && open) { e.preventDefault(); close(); }
   };
   const onType = (next: string) => {
@@ -384,7 +387,8 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
         onChange={(e) => onType(e.target.value)}
         onKeyDown={onKeyDown}
         // icon-only: the chosen label is invisible in the field; select it so the first key replaces it (0.18.0)
-        onFocus={(e) => { rest.onFocus?.(e); if (iconOnlyOn && text == null) e.currentTarget.select(); setOpen(true); }}
+        // 0.18.0: only a Tab opens the list on focus; a dialog that focuses the field on open does not (a click still does)
+        onFocus={(e) => { rest.onFocus?.(e); if (iconOnlyOn && text == null) e.currentTarget.select(); if (focusFromTab()) setOpen(true); }}
         onClick={(e) => { rest.onClick?.(e); if (iconOnlyOn && text == null) e.currentTarget.select(); setOpen(true); }}
         onBlur={(e) => { rest.onBlur?.(e); close(); }}
       />

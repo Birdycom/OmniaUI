@@ -1,7 +1,8 @@
 // File: packages/ui/src/form-extras.js
 // Map: ISO week -> date field (week label) -> name card (rename) -> avatar picker (preview, drop, remove) -> quantity
 //      (step buttons) -> language code (the closed code select) -> one-time code (active cell, 0.17.1) -> init -> boot
-// 0.18.0: time picker (slots in a popover fill the field).
+// 0.18.0: time picker (slots in a popover fill the field). 0.18.0: phone input (grouping per country, also on a country
+// change) and select-on-focus (input[data-oc-select-on-focus]).
 // Small behaviour for six CSS components; each works without it (native date input, <details>, file input, number input,
 // native select, one text input).
 // Events on the component root: oc-namecard-rename { name }, oc-avatar-change { file } (null when removed),
@@ -265,8 +266,104 @@ export function bindTimePicker(root) {
   });
 }
 
-/** Wire every date field, name card, avatar picker, quantity field, code language select, one-time code and time picker under scope. */
+/**
+ * 0.18.0: input[data-oc-select-on-focus] (Blade time-input select-on-focus, on by default with slots-popover): the whole
+ * value is selected when the field gets focus (a click or Tab), so the first key types over it. A click focuses on
+ * mousedown and would drop the selection at mouseup; that first mouseup is cancelled.
+ */
+export function bindSelectOnFocus(input) {
+  if (!input || input.dataset.ocSelectBound !== undefined) return;
+  input.dataset.ocSelectBound = "";
+  let justFocused = false;
+  input.addEventListener("focus", () => { input.select(); justFocused = true; });
+  input.addEventListener("mouseup", (event) => { if (justFocused) { justFocused = false; event.preventDefault(); } });
+  input.addEventListener("blur", () => { justFocused = false; });
+}
+
+/** 0.18.0: national grouping per dial code, the same defaults as the React, Vue and Blade phone inputs. */
+export const PHONE_FORMATS = { "+32": "### ## ## ##", "+31": "# ## ## ## ##", "+33": "# ## ## ## ##", "+49": "### #### ####" };
+
+/**
+ * "470123456" in "### ## ## ##" -> "470 12 34 56". The format is one # per digit or a list of group sizes ([3, 2, 2, 2]);
+ * without one: a group of 3, then pairs. Digits beyond the pattern follow in pairs (as the wrappers do).
+ */
+export function formatPhoneDigits(digits, format) {
+  const d = String(digits ?? "").replace(/\D/g, "");
+  const sizes = Array.isArray(format) ? format.map(Number).filter((n) => n > 0) : (String(format ?? "").match(/#+/g) ?? []).map((run) => run.length);
+  const parts = [];
+  let at = 0;
+  for (const size of sizes.length ? sizes : [3]) {
+    if (at >= d.length) break;
+    parts.push(d.slice(at, at + size));
+    at += size;
+  }
+  parts.push(...(d.slice(at).match(/.{1,2}/g) ?? []));
+  return parts.filter(Boolean).join(" ");
+}
+
+/**
+ * 0.18.0: .oc-phone-input (dial select + tel field): the number is grouped the way the selected country writes it, while
+ * you type (the caret stays behind the same digit) and again as soon as you pick another country. Formats of your own:
+ * data-oc-formats='{"+352": "### ### ###"}' on the frame or data-oc-format on an option (Blade: :formats).
+ */
+export function bindPhoneInput(root) {
+  const select = root.querySelector(".oc-phone-input-dial");
+  const input = root.querySelector(".oc-phone-input-number");
+  if (!select || !input || root.dataset.ocBound !== undefined) return;
+  root.dataset.ocBound = "";
+  let own = {};
+  try { own = JSON.parse(root.dataset.ocFormats || "{}") ?? {}; } catch { own = {}; }
+  const formatOf = (dial) => [...select.options].find((o) => o.value === dial)?.dataset.ocFormat || own[dial] || PHONE_FORMATS[dial];
+  const digitsIn = (text) => text.replace(/\D/g, "").length;
+  // Position just after the n-th digit of the grouped text (0: in front of the first digit).
+  const caretAfter = (text, n) => {
+    if (n <= 0) return 0;
+    let seen = 0;
+    for (let i = 0; i < text.length; i++) if (/\d/.test(text[i]) && ++seen === n) return i + 1;
+    return text.length;
+  };
+  let last = input.value;
+  const apply = (digits, caretDigits) => {
+    const next = formatPhoneDigits(digits, formatOf(select.value));
+    last = next;
+    if (next === input.value) return false;
+    input.value = next;
+    if (caretDigits != null && input.ownerDocument.activeElement === input) {
+      const at = caretAfter(next, caretDigits);
+      try { input.setSelectionRange(at, at); } catch { /* type without selection */ }
+    }
+    return true;
+  };
+  let sending = false; // the input/change events this script sends after a country change
+  input.addEventListener("input", (event) => {
+    if (sending) { last = input.value; return; }
+    let digits = input.value.replace(/\D/g, "");
+    let caret = digitsIn(input.value.slice(0, input.selectionStart ?? input.value.length));
+    // Backspace on a space: remove the digit in front of it instead (otherwise the grouping puts the space back).
+    if (event.inputType === "deleteContentBackward" && digits === last.replace(/\D/g, "") && caret > 0) {
+      digits = digits.slice(0, caret - 1) + digits.slice(caret);
+      caret -= 1;
+    }
+    apply(digits, caret);
+  });
+  select.addEventListener("change", () => {
+    const focused = input.ownerDocument.activeElement === input;
+    const caret = focused ? digitsIn(input.value.slice(0, input.selectionStart ?? input.value.length)) : null;
+    if (!apply(input.value, caret)) return;
+    const Ev = input.ownerDocument.defaultView?.Event ?? Event;
+    sending = true;
+    try {
+      input.dispatchEvent(new Ev("input", { bubbles: true }));
+      input.dispatchEvent(new Ev("change", { bubbles: true }));
+    } finally { sending = false; }
+  });
+}
+
+/** Wire every date field, name card, avatar picker, quantity field, code language select, one-time code, time picker
+ *  and phone input under scope. */
 export function initFormExtras(scope = document) {
+  scope.querySelectorAll(".oc-phone-input").forEach(bindPhoneInput);
+  scope.querySelectorAll("input[data-oc-select-on-focus]").forEach(bindSelectOnFocus);
   scope.querySelectorAll(".oc-time-picker").forEach(bindTimePicker);
   scope.querySelectorAll("input.oc-otp").forEach((input) => { bindOtp(input); });
   scope.querySelectorAll(".oc-date-field").forEach(bindDateField);

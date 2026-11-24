@@ -6,20 +6,36 @@
  * All attributes go to the input.
  * slotsPopover (0.18.0): the slots in a popover under a clock button (.oc-time-picker: native popover, radio chips)
  * instead of the datalist; picking one fills the field and closes it. slotsLabel: name of the button (default "Choose a time").
+ * selectOnFocus (0.18.0): select the whole time on focus (click or Tab) so the first key types over it; default on with
+ * slotsPopover, off otherwise.
  */
 import { computed, ref } from 'vue'
 import { useUid } from '../composables/useUid'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(
-  defineProps<{ slots?: string[]; error?: boolean; placeholder?: string; slotsPopover?: boolean; slotsLabel?: string; disabled?: boolean }>(),
-  { slotsLabel: 'Choose a time' },
+  defineProps<{ slots?: string[]; error?: boolean; placeholder?: string; slotsPopover?: boolean; slotsLabel?: string; disabled?: boolean; selectOnFocus?: boolean }>(),
+  // selectOnFocus: undefined = on with slotsPopover (0.18.0)
+  { slotsLabel: 'Choose a time', selectOnFocus: undefined },
 )
 const model = defineModel<string>({ default: '' })
 const listId = useUid('oc-time')
 const panelId = `${listId}-slots`
 const panel = ref<HTMLElement | null>(null)
 const popover = computed(() => !!(props.slotsPopover && props.slots?.length))
+const selectAll = computed(() => props.selectOnFocus ?? !!props.slotsPopover)
+// A click focuses on mousedown and would drop the selection again at mouseup: keep it for that first mouseup.
+let justFocused = false
+function onFocus(e: FocusEvent) {
+  if (!selectAll.value) return
+  ;(e.target as HTMLInputElement).select()
+  justFocused = true
+}
+function onMouseUp(e: MouseEvent) {
+  if (!justFocused) return
+  justFocused = false
+  e.preventDefault()
+}
 
 /** A picked slot goes into the field; the popover closes. */
 function pick(slot: string) {
@@ -64,6 +80,8 @@ function onBlur() {
       :value="model"
       @input="onInput"
       @blur="onBlur"
+      @focus="onFocus"
+      @mouseup="onMouseUp"
     />
     <button type="button" class="oc-btn oc-btn--outline oc-btn--icon" :popovertarget="panelId" :aria-label="slotsLabel" :disabled="disabled">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false" data-webicon="mdi:clock-outline"><path d="M12 20a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10a10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67l-.75 1.23L11 13V7z" /></svg>
@@ -91,6 +109,8 @@ function onBlur() {
     :value="model"
     @input="onInput"
     @blur="onBlur"
+    @focus="onFocus"
+    @mouseup="onMouseUp"
   />
   <datalist v-if="slots?.length && !popover" :id="listId">
     <option v-for="s in slots" :key="s" :value="s"></option>

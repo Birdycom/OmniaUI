@@ -45,6 +45,8 @@ test("combobox.js: with popover support the portal list stays in a modal dialog 
   assert.equal(list.dataset.module, "green");
 
   const input = root.querySelector("input");
+  // a user action opens the list (0.18.0: a focus from a script alone does not); here: Tab into the field
+  doc.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Tab" }));
   input.focus();
   // Still inside the dialog (body content is inert behind a modal dialog), shown as a popover, fixed under the field.
   assert.equal(list.parentNode, root);
@@ -84,6 +86,7 @@ test("combobox.js: without popover support the portal list still moves to body (
   bindCombobox(root);
   const list = root.querySelector(".oc-combobox-list");
   assert.equal(list.hasAttribute("popover"), false);
+  doc.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Tab" }));
   root.querySelector("input").focus();
   assert.equal(list.parentNode, doc.body);
   doc.getElementById("out").focus();

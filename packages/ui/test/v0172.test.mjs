@@ -68,6 +68,8 @@ test("combobox.js: a header portal list is at least 192px wide", () => {
   root.getBoundingClientRect = () => ({ left: 900, right: 936, top: 0, bottom: 36, width: 36, height: 36 });
   Object.defineProperty(dom.window, "innerWidth", { value: 1000 });
   bindCombobox(root);
+  // a user action opens the list (0.18.0: a focus from a script alone does not); here: Tab into the field
+  dom.window.document.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Tab" }));
   root.querySelector("input").focus();
   const list = dom.window.document.body.querySelector(":scope > .oc-combobox-list");
   assert.ok(list, "the list is in the body");

@@ -189,6 +189,8 @@ test("combobox.js: portal moves the list to body while open and back on blur", a
   bindCombobox(root);
   const list = root.querySelector(".oc-combobox-list");
   const input = root.querySelector(".oc-combobox-input");
+  // a user action opens the list (0.18.0: a focus from a script alone does not); here: Tab into the field
+  doc.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Tab" }));
   input.focus();
   assert.equal(list.parentNode, doc.body);
   assert.ok(list.classList.contains("oc-combobox-list--portal"));

@@ -4,7 +4,9 @@
      ['wire:model.live' => 'dial'] or ['x-model' => 'dial']), dial-label (aria-label, default "Country code").
      Attributes go to the number input (wire:model="phone" binds the number). Join dial + number on the server.
      0.18.0: formats (dial => grouping, one # per digit, or a list of group sizes): the value is shown in the grouping of the
-     selected dial (defaults: BE ### ## ## ##, NL/FR # ## ## ## ##, DE ### #### ####; others: 3, then pairs). --}}
+     selected dial (defaults: BE ### ## ## ##, NL/FR # ## ## ## ##, DE ### #### ####; others: 3, then pairs).
+     0.18.0: with oc-form-extras.js the number is grouped while typing and again as soon as another country is picked
+     (your formats travel along in data-oc-formats). --}}
 @props([
     'name' => 'phone',
     'dialName' => 'phone_dial',
@@ -41,7 +43,7 @@
         $value = implode(' ', array_filter($ocParts, fn ($p) => $p !== ''));
     }
 @endphp
-<div @class(['oc-phone-input', 'oc-phone-input--sm' => $size === 'sm', 'oc-phone-input--error' => $error])>
+<div @class(['oc-phone-input', 'oc-phone-input--sm' => $size === 'sm', 'oc-phone-input--error' => $error]) @if (count((array) $formats)) data-oc-formats="{{ json_encode((array) $formats) }}" @endif>
     <select {{ (new \Illuminate\View\ComponentAttributeBag((array) $dialAttributes))->class(['oc-phone-input-dial'])->merge(array_filter(['name' => $dialName, 'aria-label' => $dialLabel, 'wire:model' => $dialModel])) }}>
         @foreach ($countries as $code => $label)
             <option value="{{ $code }}" @selected((string) $dial === (string) $code)>{{ $label }}</option>
