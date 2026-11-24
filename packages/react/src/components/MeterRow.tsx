@@ -2,6 +2,28 @@ import { forwardRef } from "react";
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
 
+export interface MeterListProps extends HTMLAttributes<HTMLDivElement> {
+  /** compact: tighter list and thinner bar; dense: for a small widget or tray window (5px bar, no transition);
+   *  live: no width transition (a value every few seconds). */
+  variant?: "compact" | "dense" | "live";
+  /** Also add `--live` next to another variant (e.g. compact + live). */
+  live?: boolean;
+}
+
+/** Stack of meter rows (`.oc-meter-list`, `--compact`, `--dense`, `--live`). Put `<MeterRow>` inside. */
+export const MeterList = forwardRef<HTMLDivElement, MeterListProps>(function MeterList(
+  { variant, live, className, ...rest },
+  ref,
+) {
+  return (
+    <div
+      ref={ref}
+      className={cx("oc-meter-list", variant && `oc-meter-list--${variant}`, live && variant !== "live" && "oc-meter-list--live", className)}
+      {...rest}
+    />
+  );
+});
+
 export interface MeterRowProps extends HTMLAttributes<HTMLDivElement> {
   label: ReactNode;
   /** 0–100. */

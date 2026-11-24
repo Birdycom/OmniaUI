@@ -42,6 +42,9 @@ class DocsSnippetsTest extends TestCase
         'blade:components/logo #1' => 'uses $customer from the controller',
         'blade:components/logo #2' => 'uses $logo from the controller',
         'blade:components/recovery-codes #2' => 'uses $codes from the controller',
+        'blade:components/scroll-area #4' => 'uses $activity from the controller',
+        // A tab that shows two files: an anonymous component of the app (<x-customer-item>) and the page that uses it.
+        'blade:components/command #3' => 'defines its own <x-customer-item> component file next to the page',
         'blade:components/status-dot #4' => 'uses $state from the controller',
         'blade:blocks/content-blocks #1' => 'uses $step from the controller',
         'blade:blocks/route-progress #1' => 'uses $route from the controller',
@@ -174,8 +177,42 @@ class DocsSnippetsTest extends TestCase
         foreach ($calls as $call) {
             $this->assertTrue(method_exists($fqcn, $call[1]), "{$c[1]}::{$call[1]}() exists");
             $args = isset($call[2]) && $call[2] !== '' ? array_map(fn ($a) => trim($a, " '\""), explode(',', $call[2])) : [];
-            $test->call($call[1], ...$args);
+            $test->call($call[1], ...$this->arguments($fqcn, $call[1], $args));
         }
+    }
+
+    /**
+     * The arguments for one action call. A literal from the markup is used as is; a Blade expression ("{{ $customer }}")
+     * or an argument the component adds itself (the stepper calls action="goTo" as goTo(n)) gets a sample value of
+     * the parameter's type.
+     *
+     * @param  list<string>  $given
+     * @return list<mixed>
+     */
+    private function arguments(string $fqcn, string $method, array $given): array
+    {
+        $args = [];
+        foreach ((new \ReflectionMethod($fqcn, $method))->getParameters() as $i => $param) {
+            $literal = $given[$i] ?? null;
+            if ($literal !== null && ! str_contains($literal, '{{') && ! str_starts_with($literal, '$')) {
+                $args[] = $literal;
+
+                continue;
+            }
+            if ($param->isOptional()) {
+                break;
+            }
+            $type = $param->getType();
+            $args[] = match ($type instanceof \ReflectionNamedType ? $type->getName() : 'string') {
+                'int' => 1,
+                'float' => 1.0,
+                'bool' => true,
+                'array' => [],
+                default => '1',
+            };
+        }
+
+        return $args;
     }
 
     #[DataProvider('bladeTabs')]

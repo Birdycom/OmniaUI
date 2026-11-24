@@ -15,6 +15,7 @@ const { toasts, dismiss } = useToast()
       :variant="t.variant"
       :title="t.title"
       :description="t.description"
+      :action="t.action"
       @dismiss="dismiss(t.id)"
     />
   </div>

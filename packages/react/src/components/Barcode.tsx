@@ -2,15 +2,20 @@
 
 import { forwardRef, useMemo } from "react";
 import type { HTMLAttributes } from "react";
-import { barsToSvg, digitGroups, encodeBarcode } from "../../../ui/src/barcode.js";
+import { barsToSvg, digitGroups, encodeBarcode, qrToSvg } from "../../../ui/src/barcode.js";
 import { cx } from "../utils";
 
 /** 0.17.1: the encoder of the barcode script, for your own checks (which format a scanned value is, whether it encodes). */
 export { encodeBarcode, guessFormat } from "../../../ui/src/barcode.js";
+/** 0.18.0: the own QR encoder (module matrix) and its SVG, for a canvas, a PDF or a label of your own. */
+export { encodeQr, qrToSvg } from "../../../ui/src/barcode.js";
 
 export interface BarcodeProps extends HTMLAttributes<HTMLElement> {
   value: string;
-  format?: "auto" | "EAN13" | "EAN8" | "UPC" | "CODE128";
+  /** 0.18.0: `"QR"` draws a QR code (own encoder, white quiet zone in every theme; `.oc-barcode--qr`). */
+  format?: "auto" | "EAN13" | "EAN8" | "UPC" | "CODE128" | "QR";
+  /** 0.18.0: error correction of a QR code: L, M (default), Q or H. */
+  level?: "L" | "M" | "Q" | "H";
   /** Digits under the bars. Default true. */
   digits?: boolean;
   size?: "md" | "hero" | "compact";
@@ -25,23 +30,24 @@ export interface BarcodeProps extends HTMLAttributes<HTMLElement> {
   fallback?: "code128";
 }
 
-/** EAN-13, EAN-8, UPC-A or Code 128 as SVG (`figure.oc-barcode`); shows the reason when the value cannot be encoded. */
+/** EAN-13, EAN-8, UPC-A, Code 128 or (0.18.0) a QR code as SVG (`figure.oc-barcode`); shows the reason when the value cannot be encoded. */
 export const Barcode = forwardRef<HTMLElement, BarcodeProps>(function Barcode(
-  { value, format = "auto", digits = true, size = "md", variant = "plate", groupDigits = true, fallback, className, ...rest },
+  { value, format = "auto", level = "M", digits = true, size = "md", variant = "plate", groupDigits = true, fallback, className, ...rest },
   ref,
 ) {
   const result = useMemo(() => {
     try {
-      const { bits, text, format: used, fallback: fell } = encodeBarcode(value, format, { fallback });
-      return { svg: barsToSvg(bits, `Barcode ${text}`), text, groups: groupDigits ? digitGroups(text, used) : [text], error: "", fell: !!fell };
+      const { bits, text, format: used, fallback: fell, qr } = encodeBarcode(value, format, { fallback, level });
+      if (qr) return { svg: qrToSvg(qr.matrix, `QR code ${text}`), text, groups: [text], error: "", fell: false, qr: true };
+      return { svg: barsToSvg(bits, `Barcode ${text}`), text, groups: groupDigits ? digitGroups(text, used) : [text], error: "", fell: !!fell, qr: false };
     } catch (err) {
-      return { svg: "", text: value, groups: [] as string[], error: (err as Error).message, fell: false };
+      return { svg: "", text: value, groups: [] as string[], error: (err as Error).message, fell: false, qr: false };
     }
-  }, [value, format, groupDigits, fallback]);
+  }, [value, format, level, groupDigits, fallback]);
   return (
     <figure
       ref={ref}
-      className={cx("oc-barcode", size !== "md" && `oc-barcode--${size}`, variant === "bare" && "oc-barcode--bare", className)}
+      className={cx("oc-barcode", result.qr && "oc-barcode--qr", size !== "md" && `oc-barcode--${size}`, variant === "bare" && "oc-barcode--bare", className)}
       data-error={result.error ? "" : undefined}
       data-fallback-used={result.fell ? "" : undefined}
       {...rest}

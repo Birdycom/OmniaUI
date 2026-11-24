@@ -5,6 +5,7 @@ import type { ButtonHTMLAttributes, HTMLAttributes, KeyboardEvent, ReactNode } f
 import { cx } from "../utils";
 import { useControllable } from "../hooks";
 import { webiconNode } from "./Webicon";
+import { revealTab } from "../../../ui/src/tabs.js";
 
 export interface TabItem {
   value: string;
@@ -84,7 +85,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
               aria-selected={current === t.value}
               aria-controls={`${group}-${i + 1}`}
               disabled={t.disabled}
-              onClick={() => setCurrent(t.value)}
+              onClick={(e) => { setCurrent(t.value); revealTab(e.currentTarget); }}
             >
               {inner(t)}
             </button>
@@ -226,7 +227,7 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(funct
       data-state={on ? "active" : "inactive"}
       onClick={(e) => {
         onClick?.(e);
-        if (!e.defaultPrevented) ctx.select(value);
+        if (!e.defaultPrevented) { ctx.select(value); revealTab(e.currentTarget); }
       }}
       {...rest}
     >

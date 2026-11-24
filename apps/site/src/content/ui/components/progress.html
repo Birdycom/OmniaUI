@@ -193,6 +193,138 @@ class UsageMeters extends Component
     &lt;x-oc::progress :value="48" size="xs" label="GPU memory" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="split">Striped track and split bar <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc"><code>track="striped"</code> (<code>.oc-progress--striped</code>) hatches the part still to do with flat stripes; the filled bar stays plain. A split bar (<code>.oc-progress--split</code>) puts parts side by side in their tones, for right / wrong or done / open / late: give <code>segments</code> as <code>{ value, tone, label }</code>. The total is <code>max</code> or the sum of the parts; the bar gets <code>role="img"</code> with the parts as its label. <code>SplitBar</code> adds a legend.</p>
+          <oc-demo title="Progress - striped track and split bar">
+<div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));grid-auto-rows:1fr;gap:1rem;align-items:stretch">
+  <div class="oc-card" style="display:grid;align-content:start;gap:0.5rem;padding:1rem;block-size:100%">
+    <span class="oc-field-label">Stops 3 / 8, striped track</span>
+    <div class="oc-progress oc-progress--striped" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="8" aria-label="Stops 3 of 8"><span class="oc-progress-bar" style="width: 37.5%"></span></div>
+  </div>
+  <div class="oc-card" style="display:grid;align-content:start;gap:0.5rem;padding:1rem;block-size:100%">
+    <span class="oc-field-label">Answers: split bar with legend</span>
+    <div class="oc-progress oc-progress--split" role="img" aria-label="Right 12, Wrong 4, Open 4"><span class="oc-progress-segment oc-progress-segment--success" style="inline-size: 60%" title="Right: 12"></span><span class="oc-progress-segment oc-progress-segment--danger" style="inline-size: 20%" title="Wrong: 4"></span><span class="oc-progress-segment oc-progress-segment--muted" style="inline-size: 20%" title="Open: 4"></span></div>
+    <ul class="oc-progress-legend"><li class="oc-progress-segment--success">Right 12</li><li class="oc-progress-segment--danger">Wrong 4</li><li class="oc-progress-segment--muted">Open 4</li></ul>
+  </div>
+  <div class="oc-card" style="display:grid;align-content:start;gap:0.5rem;padding:1rem;block-size:100%">
+    <span class="oc-field-label">Tasks of 20: rest on a striped track</span>
+    <div class="oc-progress oc-progress--split oc-progress--striped oc-progress--sm" role="img" aria-label="Done 9, Late 3"><span class="oc-progress-segment" style="inline-size: 45%" title="Done: 9"></span><span class="oc-progress-segment oc-progress-segment--warning" style="inline-size: 15%" title="Late: 3"></span></div>
+  </div>
+</div>
+<oc-code lang="html">&lt;div class="oc-progress oc-progress--striped" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="8" aria-label="Stops 3 of 8"&gt;
+  &lt;span class="oc-progress-bar" style="width: 37.5%"&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;div class="oc-progress oc-progress--split" role="img" aria-label="Right 12, Wrong 4, Open 4"&gt;
+  &lt;span class="oc-progress-segment oc-progress-segment--success" style="inline-size: 60%" title="Right: 12"&gt;&lt;/span&gt;
+  &lt;span class="oc-progress-segment oc-progress-segment--danger" style="inline-size: 20%" title="Wrong: 4"&gt;&lt;/span&gt;
+  &lt;span class="oc-progress-segment oc-progress-segment--muted" style="inline-size: 20%" title="Open: 4"&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;ul class="oc-progress-legend"&gt;
+  &lt;li class="oc-progress-segment--success"&gt;Right 12&lt;/li&gt;
+  &lt;li class="oc-progress-segment--danger"&gt;Wrong 4&lt;/li&gt;
+  &lt;li class="oc-progress-segment--muted"&gt;Open 4&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class="oc-progress oc-progress--split oc-progress--striped oc-progress--sm" role="img" aria-label="Done 9, Late 3"&gt;
+  &lt;span class="oc-progress-segment" style="inline-size: 45%" title="Done: 9"&gt;&lt;/span&gt;
+  &lt;span class="oc-progress-segment oc-progress-segment--warning" style="inline-size: 15%" title="Late: 3"&gt;&lt;/span&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Progress, SplitBar } from "@birdycom/omniaui-react";
+
+export function RoundProgress() {
+  return (
+    &lt;&gt;
+      &lt;Progress value={3} max={8} track="striped" aria-label="Stops 3 of 8" /&gt;
+      &lt;SplitBar
+        legend
+        segments={[
+          { value: 12, tone: "success", label: "Right" },
+          { value: 4, tone: "danger", label: "Wrong" },
+          { value: 4, tone: "muted", label: "Open" },
+        ]}
+      /&gt;
+      &lt;SplitBar
+        max={20}
+        size="sm"
+        track="striped"
+        segments={[
+          { value: 9, label: "Done" },
+          { value: 3, tone: "warning", label: "Late" },
+        ]}
+      /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcProgress, OcSplitBar } from "@birdycom/omniaui-vue";
+
+const answers = [
+  { value: 12, tone: "success" as const, label: "Right" },
+  { value: 4, tone: "danger" as const, label: "Wrong" },
+  { value: 4, tone: "muted" as const, label: "Open" },
+];
+const tasks = [
+  { value: 9, label: "Done" },
+  { value: 3, tone: "warning" as const, label: "Late" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcProgress :value="3" :max="8" track="striped" label="Stops 3 of 8" /&gt;
+  &lt;OcSplitBar legend :segments="answers" /&gt;
+  &lt;OcSplitBar :max="20" size="sm" track="striped" :segments="tasks" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::progress :value="3" :max="8" track="striped" label="Stops 3 of 8" /&gt;
+&lt;x-oc::split-bar legend :segments="[
+    ['value' =&gt; 12, 'tone' =&gt; 'success', 'label' =&gt; 'Right'],
+    ['value' =&gt; 4, 'tone' =&gt; 'danger', 'label' =&gt; 'Wrong'],
+    ['value' =&gt; 4, 'tone' =&gt; 'muted', 'label' =&gt; 'Open'],
+]" /&gt;
+&lt;x-oc::split-bar :max="20" size="sm" track="striped" :segments="[
+    ['value' =&gt; 9, 'label' =&gt; 'Done'],
+    ['value' =&gt; 3, 'tone' =&gt; 'warning', 'label' =&gt; 'Late'],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class RoundScore extends Component
+{
+    public int $right = 12;
+
+    public int $wrong = 4;
+
+    public int $open = 4;
+
+    public function answer(bool $correct): void
+    {
+        if ($this-&gt;open === 0) {
+            return;
+        }
+        $this-&gt;open--;
+        $correct ? $this-&gt;right++ : $this-&gt;wrong++;
+    }
+
+    public function render()
+    {
+        return view('livewire.round-score');
+    }
+}
+
+{{-- resources/views/livewire/round-score.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::split-bar legend :segments="[
+        ['value' =&gt; $right, 'tone' =&gt; 'success', 'label' =&gt; 'Right'],
+        ['value' =&gt; $wrong, 'tone' =&gt; 'danger', 'label' =&gt; 'Wrong'],
+        ['value' =&gt; $open, 'tone' =&gt; 'muted', 'label' =&gt; 'Open'],
+    ]" /&gt;
+    &lt;button type="button" class="oc-btn oc-btn--outline" wire:click="answer(true)"&gt;Right answer&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -210,6 +342,9 @@ class UsageMeters extends Component
               <tr><td><code>--sm / --xs</code></td><td>On <code>.oc-progress</code>: 6 px and 4 px high (default 8 px).</td></tr>
               <tr><td><code>--glow</code></td><td>On <code>.oc-progress</code>: light top edge and a soft glow in the bar color.</td></tr>
               <tr><td><code>--live</code></td><td>On <code>.oc-progress</code>: no width transition, for a bar that gets a new value every few seconds in a window that stays open. The track contains its own layout, so a width change never lays out the page around it.</td></tr>
+              <tr><td><code>--striped</code></td><td>On <code>.oc-progress</code> (0.18.0): flat diagonal stripes on the part still to do; the bar stays plain. Token <code>--oc-progress-stripe</code>. Prop <code>track="striped"</code>.</td></tr>
+              <tr><td><code>--split</code> + <code>.oc-progress-segment</code></td><td>Split bar (0.18.0): parts side by side with <code>style="inline-size: …%"</code>, a 2 px gap between them. Tones <code>.oc-progress-segment--success</code>, <code>--warning</code>, <code>--danger</code>, <code>--info</code>, <code>--muted</code>. Use <code>role="img"</code> and name the parts in the <code>aria-label</code>. Prop <code>segments</code>; <code>SplitBar</code> / <code>OcSplitBar</code> / <code>x-oc::split-bar</code>.</td></tr>
+              <tr><td><code>.oc-progress-legend</code></td><td>Legend under a split bar (0.18.0): one <code>li</code> per part with the tone class of its segment, a dot in that tone, tabular numbers. Prop <code>legend</code> on the split bar.</td></tr>
               <tr><td><code>.oc-progress-marker</code></td><td>Upright line at a target, placed with <code>style="left: …%"</code>. <code>--muted</code> for a quieter line. Say the target in the <code>aria-label</code> or in text.</td></tr>
             </tbody>
           </table>

@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 // Login01 -> login-01: a letter followed by a digit also gets a dash (existing names have none).
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/([a-zA-Z])([0-9])/g, "$1-$2").toLowerCase();
 // Components whose markup lives in another snippet.
-const snippetAlias = { footerbar: "site-footer", "product-card": "fly-in", "badge-source": "badge", "tag-list": "feature-card", topbar: "site-header", "section-block": "page-sections" };
+const snippetAlias = { footerbar: "site-footer", "product-card": "fly-in", "badge-source": "badge", "tag-list": "feature-card", topbar: "site-header", "section-block": "page-sections", "stat-list": "definition-list" };
 const list = (dir) => fs.readdirSync(path.join(root, "src", dir)).filter((f) => f.endsWith(".tsx")).sort();
 
 const items = [];

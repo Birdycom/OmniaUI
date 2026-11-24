@@ -1,4 +1,4 @@
-/* File: packages/ui/src/parts/media-barcode.css | Map: barcode figure -> svg bars -> digits (groups) -> sizes (hero, compact) -> bare -> error */
+/* File: packages/ui/src/parts/media-barcode.css | Map: barcode figure -> svg bars -> digits (groups) -> sizes (hero, compact) -> bare -> error -> QR (0.18.0) */
 /* Barcode display: EAN-13, EAN-8, UPC-A or Code 128, drawn as SVG by
    packages/ui/src/barcode.js from data-value. Black bars on a white plate, in both themes, so scanners read it.
    --bare (0.17.0): no plate, no border (inside a card); the bars take currentColor. The figure never gets wider than
@@ -42,3 +42,33 @@
 /* --bare (0.17.0): no own white plate and border, so a barcode in a card has no double frame. The bars and digits take
    currentColor (light on dark in dark mode: most phone scanners read that; keep the default plate for print/labels). */
 .oc-barcode.oc-barcode--bare { padding: 0; color: inherit; background: none; border: 0; border-radius: 0; }
+
+/* QR code (0.18.0): data-format="QR" adds .oc-barcode--qr. A square SVG with a quiet zone of 4 modules; the modules are
+   always black on white (also in --bare and in dark mode), so every phone scanner and a print read it. The caption is
+   the plain text (no digit spacing) and wraps a long URL. Sizes: --oc-barcode-qr-size (8rem), hero 12rem, compact 4.5rem.
+   In a .oc-code-plate the plate gives the white frame and the caption. */
+.oc-barcode--qr { padding: 0.5rem; }
+.oc-barcode--qr svg {
+  inline-size: var(--oc-barcode-qr-size, 8rem);
+  block-size: auto;
+  aspect-ratio: 1;
+  color: #000;
+  background: #fff;
+}
+.oc-barcode--qr .oc-barcode__digits {
+  display: block;
+  max-inline-size: var(--oc-barcode-qr-size, 8rem);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.oc-barcode--qr.oc-barcode--hero { --oc-barcode-qr-size: 12rem; padding: 0.75rem; }
+.oc-barcode--qr.oc-barcode--compact { --oc-barcode-qr-size: 4.5rem; padding: 0.25rem; }
+.oc-barcode--qr.oc-barcode--bare { padding: 0; }
+.oc-code-plate > .oc-barcode--qr { padding: 0; border: 0; border-radius: 0; }
+.oc-code-plate > .oc-barcode--qr svg { inline-size: var(--oc-barcode-qr-size, 8rem); max-inline-size: 100%; }
+@media print {
+  .oc-barcode--qr svg { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+.oc-barcode--qr .oc-barcode__group { margin: 0; }

@@ -7,3 +7,5 @@ export function nextTab(index: number, disabled: boolean[], key: string, vertica
 export function bindTabs(list: HTMLElement): () => void;
 /** Starts every [data-oc-tabs] tab list in scope. */
 export function initTabs(scope?: ParentNode): Array<() => void>;
+/** 0.18.0: scroll a tab into view inside its sideways-scrolling tab list (never the page). */
+export function revealTab(tab: HTMLElement | null | undefined, smooth?: boolean): void;

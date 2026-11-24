@@ -1,5 +1,6 @@
 /* File: packages/ui/src/parts/app-mode-badge.css
-   Map: mode tokens -> mode badge (test, live, both as two parts; sizes) -> card accent (border + band in the tone)
+   Map: mode tokens -> mode badge (test, live, both as two parts; staging, offline; sizes) -> environment frame (0.18.0)
+        -> card accent (border + band in the tone)
         -> code plate (a white plate around a QR code or barcode, caption on the plate) -> print -> forced colors
    Test and live apart at a glance: a mode badge in fixed colors (the same in light and dark mode, also on a photo or a
    print), a card with a colored band for a set that belongs to one mode, and a caption on the white plate of a code.
@@ -9,6 +10,8 @@
   --oc-mode-test: var(--color-orange-20);
   --oc-mode-live: var(--color-green-10);
   --oc-mode-ink: var(--color-duskblue-90);
+  --oc-mode-staging: var(--color-cornflowerblue-20);
+  --oc-mode-offline: var(--color-lightgray-20);
 }
 
 /* Mode badge: <span class="oc-mode-badge" data-mode="test">Test</span>. Both: two parts side by side,
@@ -32,6 +35,9 @@
   vertical-align: middle;
 }
 .oc-mode-badge[data-mode="live"] { --oc-mode: var(--oc-mode-live); }
+/* 0.18.0: a staging (acceptance) environment and an app that runs offline. */
+.oc-mode-badge[data-mode="staging"] { --oc-mode: var(--oc-mode-staging); }
+.oc-mode-badge[data-mode="offline"] { --oc-mode: var(--oc-mode-offline); }
 .oc-mode-badge[data-mode="both"] { padding: 0; background: none; }
 .oc-mode-badge[data-mode="both"] > * { padding: 0.2rem 0.6rem; background: var(--oc-mode-test); }
 .oc-mode-badge[data-mode="both"] > * + * { background: var(--oc-mode-live); }
@@ -41,6 +47,24 @@
 .oc-mode-badge--lg { font-size: 1rem; letter-spacing: 0.12em; }
 .oc-mode-badge--lg:not([data-mode="both"]),
 .oc-mode-badge--lg[data-mode="both"] > * { padding: 0.35rem 0.9rem; }
+
+/* Environment frame (0.18.0): a colored line around the whole viewport, so nobody mistakes the live app for a test (or
+   the other way round). Fixed, above the page, pointer-events: none (never blocks a click), inside the safe area.
+   <div class="oc-env-frame" data-mode="live" aria-hidden="true"></div>; width --oc-env-frame-width (4px), color
+   --oc-env-color (default: the mode color). Say the mode in text too (a mode badge): a color alone is not enough. */
+.oc-env-frame {
+  --oc-env-color: var(--oc-mode-test);
+  position: fixed;
+  inset: 0;
+  z-index: 2147483600;
+  pointer-events: none;
+  border: var(--oc-env-frame-width, 4px) solid var(--oc-env-color);
+}
+.oc-env-frame[data-mode="live"] { --oc-env-color: var(--oc-mode-live); }
+.oc-env-frame[data-mode="staging"] { --oc-env-color: var(--oc-mode-staging); }
+.oc-env-frame[data-mode="offline"] { --oc-env-color: var(--oc-mode-offline); }
+/* inside a demo or a preview: the frame of a container (position: relative on the parent) */
+.oc-env-frame.oc-env-frame--contained { position: absolute; z-index: 1; border-radius: inherit; }
 
 /* Card accent: the card belongs to one tone or mode. A 2px border in that color and, optionally, a band at the top
    (.oc-card-band) on a soft background with a label, a title and a status. data-tone: primary, info, success,
@@ -135,6 +159,7 @@
   .oc-card-band,
   .oc-code-plate__caption,
   .oc-code-plate__caption > * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .oc-env-frame { display: none; }
 }
 @media (forced-colors: active) {
   .oc-mode-badge,

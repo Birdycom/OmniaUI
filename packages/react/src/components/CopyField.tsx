@@ -31,6 +31,8 @@ export interface CopyFieldProps extends Omit<HTMLAttributes<HTMLDivElement>, "on
   wrap?: boolean;
   /** The copy icon (mdi:content-copy) on the button. Default true. */
   icon?: boolean;
+  /** 0.18.0: the field stretches with a narrow column and may shrink below its content (`oc-copy-field--block`). */
+  block?: boolean;
 }
 
 /** "K7QM2XPA" in groups of 4: "K7QM 2XPA". */
@@ -53,6 +55,7 @@ export const CopyField = forwardRef<HTMLDivElement, CopyFieldProps>(function Cop
     revealLabel = "Show value",
     wrap,
     icon = true,
+    block,
     className,
     style,
     ...rest
@@ -83,7 +86,7 @@ export const CopyField = forwardRef<HTMLDivElement, CopyFieldProps>(function Cop
   return (
     <div
       ref={ref}
-      className={cx("oc-copy-field", display && "oc-copy-field--display", display === "lg" && "oc-copy-field--lg", wraps && "oc-copy-field--wrap", className)}
+      className={cx("oc-copy-field", display && "oc-copy-field--display", display === "lg" && "oc-copy-field--lg", wraps && "oc-copy-field--wrap", block && "oc-copy-field--block", className)}
       style={display ? ({ "--oc-copy-chars": shown.length, ...style } as CSSProperties) : style}
       {...rest}
     >

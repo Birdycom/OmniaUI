@@ -242,6 +242,100 @@ class DefinitionListNumbered extends Component
     ]" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+          <h3 class="oc-section-content__title" id="stat">Stat list <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc"><code>.oc-dl--stat</code> turns the rows into a score or cost breakdown: label left and value right on one row (also on a phone), the values in tabular numbers, an optional sublabel (<code>.oc-dl-sub</code>) and a total row (<code>.oc-dl-row--total</code>) with a stronger line above it. It works inside a panel or on its own. Wrappers: <code>StatList</code>, <code>OcStatList</code>, <code>&lt;x-oc::stat-list&gt;</code>.</p>
+          <oc-demo title="Definition list - stat list">
+<div class="oc-dl-panel" role="region" aria-label="Score of Team 1" style="inline-size:min(100%,24rem)">
+  <h3 class="oc-dl-title">Score of Team 1</h3>
+  <dl class="oc-dl oc-dl--stat">
+    <div class="oc-dl-row"><dt class="oc-dl-term">Questions<span class="oc-dl-sub">12 of 15 right</span></dt><dd class="oc-dl-detail">120</dd></div>
+    <div class="oc-dl-row"><dt class="oc-dl-term">Photo tasks</dt><dd class="oc-dl-detail">85</dd></div>
+    <div class="oc-dl-row"><dt class="oc-dl-term">Time bonus<span class="oc-dl-sub">4 minutes early</span></dt><dd class="oc-dl-detail">40</dd></div>
+    <div class="oc-dl-row"><dt class="oc-dl-term">Hints used</dt><dd class="oc-dl-detail">-10</dd></div>
+    <div class="oc-dl-row oc-dl-row--total"><dt class="oc-dl-term">Total</dt><dd class="oc-dl-detail">235</dd></div>
+  </dl>
+</div>
+<oc-code lang="html">&lt;div class="oc-dl-panel" role="region" aria-label="Score of Team 1" style="inline-size:min(100%,24rem)"&gt;
+  &lt;h3 class="oc-dl-title"&gt;Score of Team 1&lt;/h3&gt;
+  &lt;dl class="oc-dl oc-dl--stat"&gt;
+    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Questions&lt;span class="oc-dl-sub"&gt;12 of 15 right&lt;/span&gt;&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;120&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Photo tasks&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;85&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Time bonus&lt;span class="oc-dl-sub"&gt;4 minutes early&lt;/span&gt;&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;40&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="oc-dl-row"&gt;&lt;dt class="oc-dl-term"&gt;Hints used&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;-10&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="oc-dl-row oc-dl-row--total"&gt;&lt;dt class="oc-dl-term"&gt;Total&lt;/dt&gt;&lt;dd class="oc-dl-detail"&gt;235&lt;/dd&gt;&lt;/div&gt;
+  &lt;/dl&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { StatList } from "@birdycom/omniaui-react";
+
+export function TeamScore() {
+  return (
+    &lt;div className="oc-dl-panel" role="region" aria-label="Score of Team 1"&gt;
+      &lt;h3 className="oc-dl-title"&gt;Score of Team 1&lt;/h3&gt;
+      &lt;StatList
+        items={[
+          { label: "Questions", sublabel: "12 of 15 right", value: 120 },
+          { label: "Photo tasks", value: 85 },
+          { label: "Time bonus", sublabel: "4 minutes early", value: 40 },
+          { label: "Hints used", value: -10 },
+        ]}
+        total={{ label: "Total", value: 235 }}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcStatList } from "@birdycom/omniaui-vue";
+
+const rows = [
+  { label: "Questions", sublabel: "12 of 15 right", value: 120 },
+  { label: "Photo tasks", value: 85 },
+  { label: "Time bonus", sublabel: "4 minutes early", value: 40 },
+  { label: "Hints used", value: -10 },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-dl-panel" role="region" aria-label="Score of Team 1"&gt;
+    &lt;h3 class="oc-dl-title"&gt;Score of Team 1&lt;/h3&gt;
+    &lt;OcStatList :items="rows" :total="{ label: 'Total', value: 235 }" /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-dl-panel" role="region" aria-label="Score of Team 1"&gt;
+    &lt;h3 class="oc-dl-title"&gt;Score of Team 1&lt;/h3&gt;
+    &lt;x-oc::stat-list :items="[
+        ['label' =&gt; 'Questions', 'sublabel' =&gt; '12 of 15 right', 'value' =&gt; 120],
+        ['label' =&gt; 'Photo tasks', 'value' =&gt; 85],
+        ['label' =&gt; 'Time bonus', 'sublabel' =&gt; '4 minutes early', 'value' =&gt; 40],
+        ['label' =&gt; 'Hints used', 'value' =&gt; -10],
+    ]" :total="['label' =&gt; 'Total', 'value' =&gt; 235]" /&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TeamScore extends Component
+{
+    public array $rows = [
+        ['label' =&gt; 'Questions', 'sublabel' =&gt; '12 of 15 right', 'value' =&gt; 120],
+        ['label' =&gt; 'Photo tasks', 'value' =&gt; 85],
+        ['label' =&gt; 'Time bonus', 'sublabel' =&gt; '4 minutes early', 'value' =&gt; 40],
+        ['label' =&gt; 'Hints used', 'value' =&gt; -10],
+    ];
+
+    public function render()
+    {
+        return view('livewire.team-score', ['total' =&gt; array_sum(array_column($this-&gt;rows, 'value'))]);
+    }
+}
+
+{{-- resources/views/livewire/team-score.blade.php --}}
+&lt;div class="oc-dl-panel" role="region" aria-label="Score of Team 1"&gt;
+    &lt;h3 class="oc-dl-title"&gt;Score of Team 1&lt;/h3&gt;
+    &lt;x-oc::stat-list :items="$rows" :total="['label' =&gt; 'Total', 'value' =&gt; $total]" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -261,6 +355,9 @@ class DefinitionListNumbered extends Component
               <tr><td><code>.oc-dl-term / .oc-dl-detail</code></td><td><code>dt</code> / <code>dd</code></td></tr>
               <tr><td><code>.oc-dl-footer</code></td><td>Optional footer (actions)</td></tr>
               <tr><td><code>.oc-dl--glossary</code></td><td>On the <code>dl</code>: term bold in the foreground, explanation normal and muted, first lines on one line. Wrappers: <code>glossary</code> prop.</td></tr>
+              <tr><td><code>.oc-dl--stat</code></td><td>0.18.0: a stat list: label and value on one row (also narrow), values in tabular numbers, aligned to the end. Wrappers: <code>StatList</code> / <code>OcStatList</code> / <code>&lt;x-oc::stat-list&gt;</code> with <code>items</code> and <code>total</code>.</td></tr>
+              <tr><td><code>.oc-dl-sub</code></td><td>0.18.0: a small muted line under the label of a stat row.</td></tr>
+              <tr><td><code>.oc-dl-row--total</code></td><td>0.18.0: the total row of a stat list: bold, a 2px line above it.</td></tr>
               <tr><td><code>.oc-dl--numbered</code></td><td>On the <code>dl</code>: a counter (01, 02, ...) above each term, muted, tabular figures. Wrappers: <code>numbered</code> prop.</td></tr>
               <tr><td><code>.oc-dl--flush</code></td><td>On the <code>dl</code>: no margin and no line above it, for a list without a title above it. Inside <code>.oc-prose</code> the rows keep their own spacing and the <code>dd</code> is not indented; glossary terms hyphenate (<code>hyphens: auto</code>, set <code>lang</code> on the page).</td></tr>
             </tbody>

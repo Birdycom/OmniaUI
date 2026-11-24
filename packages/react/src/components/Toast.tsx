@@ -17,11 +17,19 @@ export interface ToastProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"
   /** Shows the dismiss button. */
   onDismiss?: () => void;
   dismissLabel?: string;
+  /** 0.18.0: a button in the toast ("Undo"); a click runs `onClick` and then `onDismiss`. */
+  action?: ToastAction;
+}
+
+/** 0.18.0: the button of a toast with an action. */
+export interface ToastAction {
+  label: ReactNode;
+  onClick: () => void;
 }
 
 /** One `.oc-toast` notification (`role="alert"` for errors, `status` otherwise). */
 export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
-  { variant = "info", title, description, icon, onDismiss, dismissLabel = "Dismiss", className, ...rest },
+  { variant = "info", title, description, icon, onDismiss, dismissLabel = "Dismiss", action, className, ...rest },
   ref,
 ) {
   return (
@@ -31,6 +39,9 @@ export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
         <p className="oc-toast-title">{title}</p>
         {description != null && <p className="oc-toast-description">{description}</p>}
       </div>
+      {action && (
+        <button className="oc-toast-action" type="button" onClick={() => { action.onClick(); onDismiss?.(); }}>{action.label}</button>
+      )}
       {onDismiss && (
         <button className="oc-toast-close" type="button" aria-label={dismissLabel} onClick={onDismiss}>&times;</button>
       )}
@@ -56,8 +67,10 @@ export interface ToastOptions {
   variant?: ToastVariant;
   title: ReactNode;
   description?: ReactNode;
-  /** Auto-dismiss after ms (default 5000). Use 0 to keep the toast until dismissed. */
+  /** Auto-dismiss after ms (default 5000; 10000 with an action). Use 0 to keep the toast until dismissed. */
   duration?: number;
+  /** 0.18.0: a button in the toast, e.g. { label: "Undo", onClick: undo }; it closes the toast. */
+  action?: ToastAction;
 }
 
 interface ToastEntry extends ToastOptions {
@@ -104,7 +117,7 @@ export function ToastProvider({ children, top, duration = 5000, limit = 5 }: Toa
     (options: ToastOptions) => {
       const id = nextId.current++;
       setItems((list) => [...list, { ...options, id }].slice(-limit));
-      const ms = options.duration ?? duration;
+      const ms = options.duration ?? (options.action ? Math.max(duration, 10000) : duration);
       if (ms > 0) timers.current.set(id, setTimeout(() => dismiss(id), ms));
       return id;
     },
@@ -123,7 +136,7 @@ export function ToastProvider({ children, top, duration = 5000, limit = 5 }: Toa
       {children}
       <ToastContainer top={top} aria-live="polite">
         {items.map((t) => (
-          <Toast key={t.id} variant={t.variant} title={t.title} description={t.description} onDismiss={() => dismiss(t.id)} />
+          <Toast key={t.id} variant={t.variant} title={t.title} description={t.description} action={t.action} onDismiss={() => dismiss(t.id)} />
         ))}
       </ToastContainer>
     </ToastContext.Provider>

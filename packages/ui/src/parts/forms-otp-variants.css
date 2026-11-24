@@ -1,0 +1,65 @@
+/* File: packages/ui/src/parts/forms-otp-variants.css
+   Map: --lg (large digits) -> --block (full width, cells share the width) -> --tiles (a tile per character with a bar under it)
+        -> tiles: active cell, error -> forced colors
+   Variants of the one-time code field (0.18.0), on the ONE real input of .oc-otp (components.css): paste, autofill and
+   the caret keep working. The width always counts the letter-spacing after the last character (length x cell), so a
+   full code never scrolls the field.
+   --lg: larger digits (a team code on a tablet). --block: the field takes the full width of its parent and the cells
+   share it (1fr each); the parent becomes the size reference (container-type: inline-size), the digits scale with the
+   cells. --tiles: a tile per character (--oc-otp-tile) with a bar under it (--oc-otp-bar), separated by --oc-otp-gap;
+   flat colors only. */
+
+.oc-otp.oc-otp--lg {
+  --oc-otp-size: 2.25rem;
+  padding-block: 0.8rem;
+}
+
+:where(*:has(> .oc-otp--block)) { container-type: inline-size; }
+.oc-otp.oc-otp--block {
+  --oc-otp-cell: calc(100cqi / var(--oc-otp-length));
+  inline-size: 100cqi;
+  max-inline-size: 100%;
+  /* 1ch of a monospace font is about 0.6em: the digit stays well inside its cell */
+  font-size: min(var(--oc-otp-size, 1.5rem) * 1.5, calc(100cqi / var(--oc-otp-length) * 0.75));
+}
+.oc-otp.oc-otp--block.oc-otp--lg { font-size: min(var(--oc-otp-size, 2.25rem) * 1.5, calc(100cqi / var(--oc-otp-length) * 0.85)); }
+
+.oc-otp.oc-otp--tiles {
+  --oc-otp-cell: 3.25ch;
+  --oc-otp-gap: 0.4rem;
+  --oc-otp-tile: var(--oc-muted);
+  --oc-otp-bar: var(--oc-border);
+  --oc-otp-bar-size: 3px;
+  --oc-otp-tile-a: calc(var(--oc-otp-gap) / 2);
+  --oc-otp-tile-b: calc(var(--oc-otp-cell) - var(--oc-otp-gap) / 2);
+  background-color: transparent;
+  background-image:
+    repeating-linear-gradient(90deg in srgb, transparent 0 var(--oc-otp-tile-a), var(--oc-otp-bar) var(--oc-otp-tile-a) var(--oc-otp-tile-b), transparent var(--oc-otp-tile-b) var(--oc-otp-cell)),
+    repeating-linear-gradient(90deg in srgb, transparent 0 var(--oc-otp-tile-a), var(--oc-otp-tile) var(--oc-otp-tile-a) var(--oc-otp-tile-b), transparent var(--oc-otp-tile-b) var(--oc-otp-cell));
+  background-size: 100% var(--oc-otp-bar-size), 100% 100%;
+  background-position: 0 100%, 0 0;
+  background-repeat: no-repeat;
+  border: 0;
+  border-radius: 0;
+}
+.oc-otp.oc-otp--block.oc-otp--tiles { --oc-otp-cell: calc(100cqi / var(--oc-otp-length)); }
+.oc-otp.oc-otp--tiles[aria-invalid="true"] { --oc-otp-bar: var(--oc-destructive); }
+.oc-otp.oc-otp--tiles:focus { --oc-otp-bar: color-mix(in oklab, var(--oc-ring) 45%, var(--oc-border)); box-shadow: none; }
+/* the cell the next character goes to: its bar in the ring color (form-extras.js / the wrappers set data-otp-active) */
+.oc-otp.oc-otp--tiles:focus[data-otp-active] {
+  --oc-otp-mark-x: calc(var(--oc-otp-active, 0) * var(--oc-otp-cell));
+  background-image:
+    linear-gradient(var(--oc-ring), var(--oc-ring)),
+    repeating-linear-gradient(90deg in srgb, transparent 0 var(--oc-otp-tile-a), var(--oc-otp-bar) var(--oc-otp-tile-a) var(--oc-otp-tile-b), transparent var(--oc-otp-tile-b) var(--oc-otp-cell)),
+    repeating-linear-gradient(90deg in srgb, transparent 0 var(--oc-otp-tile-a), var(--oc-otp-tile) var(--oc-otp-tile-a) var(--oc-otp-tile-b), transparent var(--oc-otp-tile-b) var(--oc-otp-cell));
+  background-size: calc(var(--oc-otp-cell) - var(--oc-otp-gap)) var(--oc-otp-bar-size), 100% var(--oc-otp-bar-size), 100% 100%;
+  background-position: calc(var(--oc-otp-mark-x) + var(--oc-otp-tile-a)) 100%, 0 100%, 0 0;
+  background-repeat: no-repeat;
+}
+/* without the script: a focus ring under the whole row */
+.oc-otp.oc-otp--tiles:focus-visible:not([data-otp-active]) { box-shadow: 0 2px 0 0 var(--oc-ring); }
+
+@media (forced-colors: active) {
+  .oc-otp.oc-otp--tiles { border-block-end: 2px solid CanvasText; }
+  .oc-otp.oc-otp--tiles:focus { border-block-end-color: Highlight; }
+}

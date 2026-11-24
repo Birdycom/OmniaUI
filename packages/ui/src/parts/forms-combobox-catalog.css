@@ -226,6 +226,25 @@ img.oc-combobox-option-image {
 }
 .oc-combobox.oc-combobox--icon-only:is(:hover, :focus-within) > .oc-combobox-icon { color: var(--oc-foreground); }
 .oc-combobox--icon-only > .oc-combobox-icon > :is(svg, iconify-icon, img) { inline-size: 1.125rem; block-size: 1.125rem; }
+/* 0.18.0: while you type in an icon-only trigger (data-typing, set by combobox.js and the wrappers), the field opens
+   towards the start over its neighbours (no layout shift) and shows the query and the caret; it closes again when you
+   choose or leave the field. */
+.oc-combobox.oc-combobox--icon-only[data-typing] { position: relative; min-block-size: 2.25rem; }
+.oc-combobox.oc-combobox--icon-only[data-typing] > .oc-combobox-input,
+.oc-combobox.oc-combobox--icon-only[data-typing]:has(> .oc-combobox-icon:not(:empty)) > .oc-combobox-input {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  z-index: 2;
+  inline-size: 12rem;
+  max-inline-size: calc(100vw - 2rem);
+  padding-inline: 0.625rem;
+  color: var(--oc-foreground);
+  caret-color: auto;
+  text-overflow: ellipsis;
+  background: var(--oc-background);
+}
+.oc-combobox.oc-combobox--icon-only[data-typing] > .oc-combobox-icon { visibility: hidden; }
 .oc-combobox-code {
   font-size: 0.75rem;
   font-weight: 600;

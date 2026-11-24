@@ -29,11 +29,15 @@ export interface SheetProps extends Omit<DialogHTMLAttributes<HTMLDialogElement>
   inset?: boolean;
   /** The footer is a block of content on its own background, not a row of buttons (`oc-sheet-footer--panel`). */
   footerPanel?: boolean;
+  /** 0.18.0: the panel floats free of the edge: margin on every side, all corners rounded (`oc-sheet--floating`). */
+  floating?: boolean;
+  /** 0.18.0: the corners that face the page are rounded (`oc-sheet--rounded`). */
+  rounded?: boolean;
 }
 
 /** Side panel on `<dialog class="oc-sheet">`. */
 export const Sheet = forwardRef<HTMLDialogElement, SheetProps>(function Sheet(
-  { open, defaultOpen, onOpenChange, side = "right", wide, title, description, footer, closeLabel = "Close", closeRound, closeClassName, glass, inset, footerPanel, className, children, ...rest },
+  { open, defaultOpen, onOpenChange, side = "right", wide, title, description, footer, closeLabel = "Close", closeRound, closeClassName, glass, inset, footerPanel, floating, rounded, className, children, ...rest },
   forwardedRef,
 ) {
   const inner = useRef<HTMLDialogElement>(null);
@@ -47,7 +51,7 @@ export const Sheet = forwardRef<HTMLDialogElement, SheetProps>(function Sheet(
   return (
     <dialog
       ref={ref}
-      className={cx("oc-sheet", side !== "right" && `oc-sheet--${side}`, glass && "oc-sheet--glass", inset && "oc-sheet--inset", className)}
+      className={cx("oc-sheet", side !== "right" && `oc-sheet--${side}`, glass && "oc-sheet--glass", inset && "oc-sheet--inset", floating && "oc-sheet--floating", rounded && "oc-sheet--rounded", className)}
       aria-labelledby={title != null ? titleId : undefined}
       {...attrs({ closedby: "any" })}
       {...rest}

@@ -12,6 +12,7 @@ import { computed, provide, toRef } from 'vue'
 import { useUid } from '../composables/useUid'
 import OcWebicon from './OcWebicon.vue'
 import { tabsKey } from '../composables/keys-d3'
+import { revealTab } from '../../../ui/src/tabs.js'
 
 export interface TabItem {
   label: string
@@ -75,7 +76,7 @@ const listClass = computed(() => [
         :aria-selected="active === key(tab) ? 'true' : 'false'"
         :aria-controls="`${group}-${i + 1}`"
         :disabled="tab.disabled || undefined"
-        @click="model = key(tab)"
+        @click="model = key(tab); revealTab($event.currentTarget as HTMLElement)"
       >
         <OcWebicon v-if="tab.icon" :name="tab.icon" bare fallback="iconify" />{{ tab.label }}<span
           v-if="tab.count != null && tab.count !== ''"

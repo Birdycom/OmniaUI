@@ -1,0 +1,65 @@
+/* File: packages/ui/src/parts/data-progress-split.css
+   Map: striped track (oc-progress--striped) -> split bar (oc-progress--split: segments in tones, thin gaps) -> forced colors
+   Progress extras (0.18.0), on the .oc-progress track of components.css.
+   --striped: the part that is still to do is hatched with flat diagonal stripes (hard color stops, no shine or glow);
+     the filled bar stays plain. --oc-progress-stripe sets the stripe color.
+   --split: a split bar (right / wrong, done / open / late): .oc-progress-segment children side by side, each sized in
+     percent of the total, with a tone class; a 2px gap keeps the parts apart, the rest of the track stays empty. */
+
+.oc-progress--striped {
+  --oc-progress-stripe: color-mix(in oklab, var(--oc-muted-foreground) 22%, var(--oc-muted));
+  background-color: var(--oc-muted);
+  background-image: repeating-linear-gradient(-45deg, var(--oc-progress-stripe) 0 3px, transparent 3px 7px);
+}
+
+.oc-progress--split {
+  display: flex;
+  gap: 2px;
+}
+.oc-progress-segment {
+  --oc-progress-color: var(--oc-primary);
+  display: block;
+  flex: none;
+  min-inline-size: 0;
+  block-size: 100%;
+  background: var(--oc-progress-color);
+  transition: inline-size 300ms ease;
+}
+.oc-progress--split > .oc-progress-segment:first-child { border-start-start-radius: 999px; border-end-start-radius: 999px; }
+.oc-progress--split > .oc-progress-segment:last-child { border-start-end-radius: 999px; border-end-end-radius: 999px; }
+.oc-progress-segment--success { --oc-progress-color: var(--oc-success); }
+.oc-progress-segment--warning { --oc-progress-color: var(--oc-warning); }
+.oc-progress-segment--danger { --oc-progress-color: var(--oc-destructive); }
+.oc-progress-segment--info { --oc-progress-color: var(--oc-info, var(--oc-primary)); }
+.oc-progress-segment--muted { --oc-progress-color: var(--oc-muted-foreground); }
+.oc-progress--live .oc-progress-segment { transition: none; }
+
+/* Legend under a split bar: a dot in the tone of each part, its label and value. */
+.oc-progress-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--oc-muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+.oc-progress-legend > li { display: inline-flex; align-items: center; gap: 0.375rem; }
+.oc-progress-legend > li::before {
+  content: "";
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 999px;
+  background: var(--oc-progress-color, var(--oc-primary));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-progress-segment { transition: none; }
+}
+@media (forced-colors: active) {
+  .oc-progress--striped { background-image: none; border: 1px solid CanvasText; }
+  .oc-progress-segment { background: Highlight; }
+  .oc-progress-segment + .oc-progress-segment { background: CanvasText; }
+}

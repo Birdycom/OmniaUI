@@ -1,0 +1,105 @@
+/* File: packages/ui/src/parts/app-sortable-list.css
+   Map: list (ul / ol, counters) -> item row (grip, body, arrows) -> states (grabbed, dragging) -> drop line -> drag ghost
+        -> reduced motion -> forced colors
+   Sortable list (0.18.0): a plain list whose items can be reordered with a finger, pen or mouse (pointer events) or the
+   keyboard (Space + arrows), by packages/ui/src/sortable-list.js. The grip reuses .oc-sortable-row-grip (six dots).
+   .oc-dropline is the line where the item lands, .oc-drag-ghost the copy that follows the pointer. Flat: a border and a
+   normal shadow, no glow. */
+
+.oc-sortable-list {
+  display: grid;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: oc-sortable;
+}
+.oc-sortable-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+  padding: 0.375rem 0.5rem;
+  color: var(--oc-foreground);
+  background: var(--oc-card);
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-radius);
+  counter-increment: oc-sortable;
+  transition: opacity var(--oc-transition-fast), background var(--oc-transition-fast), border-color var(--oc-transition-fast);
+}
+.oc-sortable-item > .oc-sortable-row-grip { flex: none; block-size: 2rem; }
+.oc-sortable-item__body { flex: 1 1 auto; min-inline-size: 0; overflow-wrap: anywhere; }
+/* ol: the position before the text (1., 2., ...), from a CSS counter, so it follows the new order without script. */
+ol.oc-sortable-list > .oc-sortable-item > .oc-sortable-item__body::before {
+  content: counter(oc-sortable) ".";
+  display: inline-block;
+  min-inline-size: 1.75em;
+  color: var(--oc-muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+/* Optional up / down buttons for people who do not drag. */
+.oc-sortable-item__arrows { display: inline-flex; flex: none; gap: 0.125rem; }
+.oc-sortable-item__arrows > button {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  padding: 0;
+  color: var(--oc-muted-foreground);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: calc(var(--oc-radius) - 2px);
+  cursor: pointer;
+}
+.oc-sortable-item__arrows > button:hover { color: var(--oc-foreground); background: var(--oc-accent); }
+.oc-sortable-item__arrows > button:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 1px; }
+.oc-sortable-item__arrows > button:disabled { opacity: 0.35; cursor: not-allowed; }
+.oc-sortable-item__arrows svg { inline-size: 1.125rem; block-size: 1.125rem; }
+/* The first item cannot go up, the last cannot go down. */
+.oc-sortable-item:first-child [data-oc-move="up"],
+.oc-sortable-item:last-of-type [data-oc-move="down"] { opacity: 0.35; pointer-events: none; }
+
+/* Picked up with the keyboard: primary border and tint. */
+.oc-sortable-item--grabbed {
+  background: color-mix(in oklab, var(--oc-primary) 8%, var(--oc-card));
+  border-color: var(--oc-primary);
+}
+.oc-sortable-item--grabbed .oc-sortable-row-grip { color: var(--oc-primary); }
+/* The original place while dragging: dashed and faded, so you see where it came from. */
+.oc-sortable-item--dragging { opacity: 0.4; border-style: dashed; }
+.oc-sortable-list.is-sorting { cursor: grabbing; user-select: none; }
+
+/* Drop line: where the item lands (an li in the list, outside the counter). */
+.oc-dropline {
+  display: block;
+  block-size: 0;
+  margin-block: -0.1875rem;
+  border-block-start: 2px solid var(--oc-primary);
+  border-radius: 2px;
+  list-style: none;
+  counter-increment: none;
+  pointer-events: none;
+}
+
+/* Drag ghost: a copy of the item that follows the pointer, slightly tilted, above everything. */
+.oc-drag-ghost {
+  position: fixed;
+  z-index: 2147483000;
+  margin: 0;
+  list-style: none;
+  pointer-events: none;
+  box-sizing: border-box;
+  rotate: 1.5deg;
+  border-color: var(--oc-primary);
+  box-shadow: 0 8px 20px -8px oklch(0% 0 0deg / 0.35);
+  opacity: 0.95;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-sortable-item { transition: none; }
+  .oc-drag-ghost { rotate: none; }
+}
+@media (forced-colors: active) {
+  .oc-dropline { border-color: Highlight; }
+  .oc-sortable-item--grabbed { border-color: Highlight; }
+}

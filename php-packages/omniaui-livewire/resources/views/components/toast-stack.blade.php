@@ -1,5 +1,7 @@
 {{-- OmniaCSS toast stack: listens for the `oc-toast` browser event (Livewire: $this->ocToast('success', 'Saved') from the WithOcToast trait;
      plain JavaScript: window.dispatchEvent(new CustomEvent('oc-toast', { detail: { type: 'info', title: 'Hi' } }))).
+     0.18.0: detail.action = { label: 'Undo', event: 'undo-publish', params: {...} }: a button in the toast; a click dispatches that
+     event (Livewire.dispatch when Livewire is loaded, so #[On('undo-publish')] runs; else a window event) and closes the toast.
      Props: top (stack at the top), timeout (ms, default 4000; 0 = stay until dismissed). Place it once in your layout. --}}
 @props(['top' => false, 'timeout' => 4000])
 <div wire:ignore {{ $attributes->class(['oc-toast-container', 'oc-toast-container--top' => $top])->merge(['data-oc-toast-stack' => '', 'data-timeout' => $timeout, 'aria-live' => 'polite']) }}></div>
@@ -29,9 +31,23 @@
                 close.type = 'button';
                 close.setAttribute('aria-label', 'Dismiss');
                 close.addEventListener('click', () => toast.remove());
-                toast.append(icon, body, close);
+                toast.append(icon, body);
+                const action = detail.action;
+                if (action && action.label) {
+                    const button = el('button', 'oc-toast-action', action.label);
+                    button.type = 'button';
+                    button.addEventListener('click', () => {
+                        if (action.event) {
+                            if (window.Livewire && window.Livewire.dispatch) window.Livewire.dispatch(action.event, action.params || {});
+                            else window.dispatchEvent(new CustomEvent(action.event, { detail: action.params || {} }));
+                        }
+                        toast.remove();
+                    });
+                    toast.append(button);
+                }
+                toast.append(close);
                 stack.append(toast);
-                const timeout = detail.timeout ?? Number(stack.dataset.timeout || 4000);
+                const timeout = detail.timeout ?? (detail.action ? Math.max(10000, Number(stack.dataset.timeout || 4000)) : Number(stack.dataset.timeout || 4000));
                 if (timeout > 0) setTimeout(() => toast.remove(), timeout);
             });
         })();

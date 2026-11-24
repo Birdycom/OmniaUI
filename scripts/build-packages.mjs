@@ -111,6 +111,8 @@ async function main() {
   await fs.copyFile(r("packages/ui/src/input-mask.js"), r("public/js/oc-input-mask.js"));
   await fs.copyFile(r("packages/ui/src/nav-overflow.js"), r("public/js/oc-nav-overflow.js"));
   await fs.copyFile(r("packages/ui/src/sidebar.js"), r("public/js/oc-sidebar.js"));
+  // 0.18.0: sortable list (pointer drag + keyboard, [data-oc-sortable]).
+  await fs.copyFile(r("packages/ui/src/sortable-list.js"), r("public/js/oc-sortable-list.js"));
   console.log(`[packages] public/css: oc-components.css (${uiParts.length} parts), oc-code-syntax.css, oc-blocks.css`);
 }
 

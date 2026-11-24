@@ -5,6 +5,7 @@
  */
 import { computed, inject } from 'vue'
 import { idPart, tabsKey } from '../composables/keys-d3'
+import { revealTab } from '../../../ui/src/tabs.js'
 import OcWebicon from './OcWebicon.vue'
 
 const props = defineProps<{
@@ -30,7 +31,7 @@ const base = ctx?.base ?? 'oc-tabs'
     :tabindex="on || !ctx?.value.value ? 0 : -1"
     :data-state="on ? 'active' : 'inactive'"
     :disabled="disabled || undefined"
-    @click="ctx?.select(value)"
+    @click="ctx?.select(value); revealTab($event.currentTarget as HTMLElement)"
   >
     <OcWebicon v-if="icon" :name="icon" bare fallback="iconify" /><slot /><span
       v-if="count != null && count !== ''"

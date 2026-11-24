@@ -6,14 +6,22 @@ export interface ToastOptions {
   title: string
   description?: string
   variant?: ToastVariant
-  /** Milliseconds before auto-dismiss. 0 keeps the toast until dismissed. Default 5000. */
+  /** Milliseconds before auto-dismiss. 0 keeps the toast until dismissed. Default 5000 (10000 with an action). */
   duration?: number
+  /** 0.18.0: a button in the toast, e.g. { label: 'Undo', onClick: undo }; a click closes the toast. */
+  action?: ToastAction
+}
+
+export interface ToastAction {
+  label: string
+  onClick: () => void
 }
 
 export interface ToastItem extends Required<Pick<ToastOptions, 'title' | 'variant'>> {
   id: number
   description?: string
   duration: number
+  action?: ToastAction
 }
 
 const state = reactive<{ toasts: ToastItem[] }>({ toasts: [] })
@@ -35,7 +43,8 @@ function push(options: ToastOptions): number {
     title: options.title,
     description: options.description,
     variant: options.variant ?? 'info',
-    duration: options.duration ?? 5000,
+    duration: options.duration ?? (options.action ? 10000 : 5000),
+    action: options.action,
   }
   state.toasts.push(item)
   if (item.duration > 0) timers.set(id, setTimeout(() => dismiss(id), item.duration))

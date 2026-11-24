@@ -50,9 +50,18 @@ export const Status = forwardRef<HTMLParagraphElement, StatusProps>(function Sta
   );
 });
 
-export type SaveState = "saving" | "saved" | "dirty" | "error" | "offline";
-const SAVE_TONE: Record<SaveState, StatusTone> = { saving: "working", saved: "done", dirty: "waiting", error: "error", offline: "idle" };
-const SAVE_EN: Record<SaveState, string> = { saving: "Saving…", saved: "Saved", dirty: "Unsaved changes", error: "Not saved", offline: "Offline: changes are kept on this device" };
+/** 0.18.0: `queued` (changes waiting to sync, with `count`) and `online` for a sync indicator. */
+export type SaveState = "saving" | "saved" | "dirty" | "error" | "offline" | "queued" | "online";
+const SAVE_TONE: Record<SaveState, StatusTone> = { saving: "working", saved: "done", dirty: "waiting", error: "error", offline: "idle", queued: "waiting", online: "done" };
+const SAVE_EN: Record<SaveState, string> = { saving: "Saving…", saved: "Saved", dirty: "Unsaved changes", error: "Not saved", offline: "Offline: changes are kept on this device", queued: "Waiting to sync", online: "Online" };
+
+/** The text of a save state; `queued` with a count: "3 changes waiting to sync". A custom label may hold {count}. */
+export function saveStatusText(state: SaveState, labels?: Partial<Record<SaveState, string>>, count?: number): string {
+  const own = labels?.[state];
+  if (own != null) return own.replace("{count}", String(count ?? 0));
+  if (state === "queued" && count != null) return `${count} ${count === 1 ? "change" : "changes"} waiting to sync`;
+  return SAVE_EN[state];
+}
 
 export interface SaveStatusProps extends Omit<StatusProps, "tone" | "children"> {
   /** saving (pulsing dot) | saved | dirty (changes not saved yet) | error | offline. */
@@ -61,19 +70,33 @@ export interface SaveStatusProps extends Omit<StatusProps, "tone" | "children"> 
   labels?: Partial<Record<SaveState, string>>;
   /** Time of the last save, shown on the right as "12:04" (when there is no `meta`). */
   savedAt?: Date | string | number;
+  /** 0.18.0: number of changes waiting (state `queued`). */
+  count?: number;
+  /** 0.18.0: only the dot (`oc-status--compact`), e.g. on a menu button; the text stays for screen readers and as title. */
+  compact?: boolean;
 }
 
-/** `.oc-status` for an editor (0.17.0): the save state in words with its dot, announced politely to a screen reader. */
+/** `.oc-status` for an editor (0.17.0) or a sync indicator (0.18.0: queued + count, online, compact): the save state in words with its dot, announced politely to a screen reader. */
 export const SaveStatus = forwardRef<HTMLParagraphElement, SaveStatusProps>(function SaveStatus(
-  { state, labels, savedAt, meta, ...rest },
+  { state, labels, savedAt, meta, count, compact, className, ...rest },
   ref,
 ) {
   const time = savedAt != null && meta == null
     ? new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(new Date(savedAt))
     : meta;
+  const text = saveStatusText(state, labels, count);
+  if (compact) {
+    return (
+      <p ref={ref} className={cx("oc-status", "oc-status--compact", className)} role="status" aria-live="polite" data-state={state} title={text} {...rest}>
+        <StatusDot tone={SAVE_TONE[state]} />
+        {state === "queued" && count != null && count > 0 && <span className="oc-status__count" aria-hidden="true">{count}</span>}
+        <span className="oc-status__text">{text}</span>
+      </p>
+    );
+  }
   return (
-    <Status ref={ref} tone={SAVE_TONE[state]} role="status" aria-live="polite" data-state={state} meta={time} {...rest}>
-      {labels?.[state] ?? SAVE_EN[state]}
+    <Status ref={ref} tone={SAVE_TONE[state]} role="status" aria-live="polite" data-state={state} meta={time} className={className} {...rest}>
+      {text}
     </Status>
   );
 });

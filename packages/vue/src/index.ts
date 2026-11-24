@@ -92,6 +92,7 @@ import OcDropzone from './components/OcDropzone.vue'
 import OcEmojiPicker from './components/OcEmojiPicker.vue'
 import OcEmptyState from './components/OcEmptyState.vue'
 import OcEntityCard from './components/OcEntityCard.vue'
+import OcEnvFrame from './components/OcEnvFrame.vue'
 import OcExpandableTable from './components/OcExpandableTable.vue'
 import OcFactList from './components/OcFactList.vue'
 import OcFeatureCard from './components/OcFeatureCard.vue'
@@ -99,6 +100,7 @@ import OcFilterCounts from './components/OcFilterCounts.vue'
 import OcFlipCard from './components/OcFlipCard.vue'
 import OcFooterbar from './components/OcFooterbar.vue'
 import OcFormField from './components/OcFormField.vue'
+import OcFormGroup from './components/OcFormGroup.vue'
 import OcFormSection from './components/OcFormSection.vue'
 import OcGallery from './components/OcGallery.vue'
 import OcGlass from './components/OcGlass.vue'
@@ -141,6 +143,7 @@ import OcMenubar from './components/OcMenubar.vue'
 import OcMessage from './components/OcMessage.vue'
 import OcMessageList from './components/OcMessageList.vue'
 import OcMessageThread from './components/OcMessageThread.vue'
+import OcMeterList from './components/OcMeterList.vue'
 import OcMeterRow from './components/OcMeterRow.vue'
 import OcModal from './components/OcModal.vue'
 import OcModeBadge from './components/OcModeBadge.vue'
@@ -210,12 +213,16 @@ import OcSidebarSeparator from './components/OcSidebarSeparator.vue'
 import OcSidebarTrigger from './components/OcSidebarTrigger.vue'
 import OcSkeleton from './components/OcSkeleton.vue'
 import OcSlider from './components/OcSlider.vue'
+import OcSortableList from './components/OcSortableList.vue'
 import OcSortableRow from './components/OcSortableRow.vue'
 import OcSpecList from './components/OcSpecList.vue'
 import OcSpinner from './components/OcSpinner.vue'
+import OcSplitBar from './components/OcSplitBar.vue'
 import OcStackCard from './components/OcStackCard.vue'
 import OcStackList from './components/OcStackList.vue'
 import OcStatCard from './components/OcStatCard.vue'
+import OcStatCardGrid from './components/OcStatCardGrid.vue'
+import OcStatList from './components/OcStatList.vue'
 import OcStatus from './components/OcStatus.vue'
 import OcStatusDot from './components/OcStatusDot.vue'
 import OcStepList from './components/OcStepList.vue'
@@ -404,6 +411,7 @@ export {
   OcEmojiPicker,
   OcEmptyState,
   OcEntityCard,
+  OcEnvFrame,
   OcExpandableTable,
   OcFactList,
   OcFeatureCard,
@@ -411,6 +419,7 @@ export {
   OcFlipCard,
   OcFooterbar,
   OcFormField,
+  OcFormGroup,
   OcFormSection,
   OcGallery,
   OcGlass,
@@ -453,6 +462,7 @@ export {
   OcMessage,
   OcMessageList,
   OcMessageThread,
+  OcMeterList,
   OcMeterRow,
   OcModal,
   OcModeBadge,
@@ -522,12 +532,16 @@ export {
   OcSidebarTrigger,
   OcSkeleton,
   OcSlider,
+  OcSortableList,
   OcSortableRow,
   OcSpecList,
   OcSpinner,
+  OcSplitBar,
   OcStackCard,
   OcStackList,
   OcStatCard,
+  OcStatCardGrid,
+  OcStatList,
   OcStatus,
   OcStatusDot,
   OcStepList,
@@ -802,6 +816,7 @@ export const components: Record<string, Component> = {
   OcEmojiPicker,
   OcEmptyState,
   OcEntityCard,
+  OcEnvFrame,
   OcExpandableTable,
   OcFactList,
   OcFeatureCard,
@@ -809,6 +824,7 @@ export const components: Record<string, Component> = {
   OcFlipCard,
   OcFooterbar,
   OcFormField,
+  OcFormGroup,
   OcFormSection,
   OcGallery,
   OcGlass,
@@ -851,6 +867,7 @@ export const components: Record<string, Component> = {
   OcMessage,
   OcMessageList,
   OcMessageThread,
+  OcMeterList,
   OcMeterRow,
   OcModal,
   OcModeBadge,
@@ -920,12 +937,16 @@ export const components: Record<string, Component> = {
   OcSidebarTrigger,
   OcSkeleton,
   OcSlider,
+  OcSortableList,
   OcSortableRow,
   OcSpecList,
   OcSpinner,
+  OcSplitBar,
   OcStackCard,
   OcStackList,
   OcStatCard,
+  OcStatCardGrid,
+  OcStatList,
   OcStatus,
   OcStatusDot,
   OcStepList,

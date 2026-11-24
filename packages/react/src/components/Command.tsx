@@ -3,6 +3,7 @@
 import { Children, Fragment, forwardRef, isValidElement, useId, useMemo, useState } from "react";
 import type { HTMLAttributes, KeyboardEvent, ReactElement, ReactNode } from "react";
 import { cx } from "../utils";
+import { Webicon } from "./Webicon";
 
 export interface CommandItemData {
   id: string;
@@ -64,6 +65,32 @@ function textOf(node: ReactNode): string {
   if (Array.isArray(node)) return node.map(textOf).join("");
   if (isValidElement(node)) return textOf((node.props as { children?: ReactNode }).children);
   return "";
+}
+
+/** An icon at the start of a row: a Webicon, an svg / img / iconify-icon, or an element with "icon" in its class. */
+function isIcon(node: ReactNode): boolean {
+  if (!isValidElement(node)) return false;
+  if (node.type === Webicon) return true;
+  if (typeof node.type === "string" && ["svg", "img", "iconify-icon"].includes(node.type)) return true;
+  const cls = (node.props as { className?: unknown }).className;
+  return typeof cls === "string" && /icon/i.test(cls);
+}
+
+/**
+ * The content of a JSX row. The row is a flex line with a gap, so loose children (`<strong>New</strong> invoice`) would get
+ * that gap between them. Leading icons stay their own flex items (gap after the icon); the rest goes in one span and
+ * flows as normal text.
+ */
+function rowContent(content: ReactNode): ReactNode {
+  let nodes = Children.toArray(content);
+  while (nodes.length === 1 && isValidElement(nodes[0]) && nodes[0].type === Fragment) {
+    nodes = Children.toArray((nodes[0].props as { children?: ReactNode }).children);
+  }
+  let i = 0;
+  while (i < nodes.length && isIcon(nodes[i])) i++;
+  const rest = nodes.slice(i);
+  if (rest.length <= 1) return nodes;
+  return [...nodes.slice(0, i), <span key="oc-command-text">{rest}</span>];
 }
 
 /** Reads the CommandGroup / CommandItem children (also inside fragments and arrays) into sections. */
@@ -197,7 +224,7 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
                 onMouseMove={() => !item.disabled && setActiveId(item.id)}
                 onClick={() => !item.disabled && choose(item)}
               >
-                {item.content ?? item.label}
+                {item.content !== undefined ? rowContent(item.content) : item.label}
                 {item.shortcut && <> <span className="oc-command-shortcut">{item.shortcut}</span></>}
               </li>
             )),

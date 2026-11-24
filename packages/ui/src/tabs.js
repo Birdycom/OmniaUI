@@ -6,8 +6,24 @@
 // Enter selects a tab: aria-selected="true" on it, .is-active on its panel, the others off. Arrow keys move between
 // the enabled tabs (Left/Right, Up/Down in a .oc-tab-list--vertical list), Home and End go to the first and last.
 // Event on the tab list: oc-tabs-change, detail { index, tab, panel }.
+// 0.18.0: a tab list that scrolls sideways (narrow screen) scrolls the selected tab into view, also on start.
 
 const TAB = '[role="tab"]';
+
+/** Scroll a tab into view inside its scrolling tab list only (never the page up or down). */
+export function revealTab(tab, smooth = true) {
+  const list = tab?.parentElement;
+  if (!list || list.scrollWidth <= list.clientWidth) return;
+  const reduce = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const left = tab.offsetLeft - list.offsetLeft;
+  const right = left + tab.offsetWidth;
+  let to = null;
+  if (left < list.scrollLeft) to = left - 8;
+  else if (right > list.scrollLeft + list.clientWidth) to = right - list.clientWidth + 8;
+  if (to == null) return;
+  if (typeof list.scrollTo === "function") list.scrollTo({ left: Math.max(0, to), behavior: smooth && !reduce ? "smooth" : "auto" });
+  else list.scrollLeft = Math.max(0, to);
+}
 
 /**
  * The index of the tab a key moves to, skipping disabled tabs and wrapping at both ends; -1 for another key.
@@ -47,7 +63,8 @@ export function bindTabs(list) {
       other.tabIndex = on ? 0 : -1;
       panelOf(other)?.classList.toggle("is-active", on);
     }
-    if (focus) tab.focus();
+    if (focus) tab.focus({ preventScroll: true });
+    revealTab(tab);
     list.dispatchEvent(new CustomEvent("oc-tabs-change", { bubbles: true, detail: { index: all.indexOf(tab), tab, panel: panelOf(tab) } }));
   };
 
@@ -74,6 +91,7 @@ export function bindTabs(list) {
   if (current && !panelOf(current)?.classList.contains("is-active")) {
     for (const t of all) panelOf(t)?.classList.toggle("is-active", t === current);
   }
+  if (current) revealTab(current, false);
 
   list.addEventListener("click", onClick);
   list.addEventListener("keydown", onKey);

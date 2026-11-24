@@ -1,6 +1,6 @@
 # OmniaUI — full reference for AI assistants
 
-> OmniaUI is the component and block library for OmniaCSS: 191 components and
+> OmniaUI is the component and block library for OmniaCSS: 192 components and
 > 104 page blocks (dashboards, auth, pricing, marketing …) as plain HTML with oc-* classes, plus
 > wrappers for React, Vue, Laravel Blade and Livewire. Behaviour comes from native HTML (dialog, popover, details,
 > :has(), anchor positioning), so most components need no JavaScript. Free and MIT licensed; 52 advanced
@@ -275,10 +275,25 @@ Avatars and avatar group
 Progress bar
 
 ```html
-<!-- OmniaUI component: progress — Progress bar. Needs @birdycom/omniaui CSS. .oc-progress--live: no width transition (a value every few seconds). -->
+<!-- OmniaUI component: progress — Progress bar. Needs @birdycom/omniaui CSS. .oc-progress--live: no width transition (a value every few seconds).
+     0.18.0: .oc-progress--striped (flat stripes on the part still to do); .oc-progress--split with .oc-progress-segment(--success|--warning|--danger|--info|--muted)
+     children (inline-size in %, role="img"), .oc-progress-legend under it. -->
 <div class="oc-progress" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
   <div class="oc-progress-bar" style="width: 60%"></div>
 </div>
+<div class="oc-progress oc-progress--striped" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="8" aria-label="Stops 3 of 8">
+  <span class="oc-progress-bar" style="width: 37.5%"></span>
+</div>
+<div class="oc-progress oc-progress--split" role="img" aria-label="Right 12, Wrong 4, Open 4">
+  <span class="oc-progress-segment oc-progress-segment--success" style="inline-size: 60%" title="Right: 12"></span>
+  <span class="oc-progress-segment oc-progress-segment--danger" style="inline-size: 20%" title="Wrong: 4"></span>
+  <span class="oc-progress-segment oc-progress-segment--muted" style="inline-size: 20%" title="Open: 4"></span>
+</div>
+<ul class="oc-progress-legend">
+  <li class="oc-progress-segment--success">Right 12</li>
+  <li class="oc-progress-segment--danger">Wrong 4</li>
+  <li class="oc-progress-segment--muted">Open 4</li>
+</ul>
 ```
 
 ### breadcrumb
@@ -747,6 +762,7 @@ Label / value rows in a panel (dl)
        .oc-dl-row: div grouping one term and detail
        .oc-dl-term / .oc-dl-detail: dt / dd
        .oc-dl-footer: Optional footer (actions)
+       .oc-dl--stat (0.18.0): stat list, label and value on one row in tabular numbers; .oc-dl-sub (sublabel), .oc-dl-row--total (total row)
      Slots: title, description, rows (term + detail), footer
 -->
 <div class="oc-dl-panel" role="region" aria-label="Company data">
@@ -759,6 +775,11 @@ Label / value rows in a panel (dl)
   </dl>
   <div class="oc-dl-footer"><button class="oc-btn oc-btn--sm" type="button">Use these details</button></div>
 </div>
+<dl class="oc-dl oc-dl--stat">
+  <div class="oc-dl-row"><dt class="oc-dl-term">Questions<span class="oc-dl-sub">12 of 15 right</span></dt><dd class="oc-dl-detail">120</dd></div>
+  <div class="oc-dl-row"><dt class="oc-dl-term">Photo tasks</dt><dd class="oc-dl-detail">85</dd></div>
+  <div class="oc-dl-row oc-dl-row--total"><dt class="oc-dl-term">Total</dt><dd class="oc-dl-detail">205</dd></div>
+</dl>
 ```
 
 ### collapsible
@@ -892,11 +913,16 @@ One-time code field drawn as separate cells on a single real input
 <!-- OmniaUI component: otp-input - One-time code field drawn as separate cells on a single real input. Needs @birdycom/omniaui CSS.
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-otp: The input. Set style="--oc-otp-length: 6" and maxlength to the code length. aria-invalid="true" shows the error state.
+       .oc-otp--block / --lg / --tiles (0.18.0): full width (cells share it), larger digits, a tile per character with a bar under it.
 -->
 <div class="oc-field">
   <label class="oc-field-label" for="oc-otp-demo">Authentication code</label>
   <input class="oc-otp" id="oc-otp-demo" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" style="--oc-otp-length: 6" value="123">
   <p class="oc-field-description">Enter the 6-digit code from your authenticator app.</p>
+</div>
+<div class="oc-field">
+  <label class="oc-field-label" for="oc-otp-team">Team code</label>
+  <input class="oc-otp oc-otp--tiles oc-otp--block oc-otp--lg" id="oc-otp-team" name="team" type="text" inputmode="text" autocomplete="one-time-code" maxlength="6" style="--oc-otp-length: 6">
 </div>
 ```
 
@@ -3106,13 +3132,14 @@ Risk-colored expandable card (low, medium, high, critical) on details / summary 
 <!-- OmniaUI component: severity-card - Risk-colored expandable card (low, medium, high, critical) on details / summary - no JavaScript. Needs @birdycom/omniaui CSS.
      File: packages/ui/snippets/severity-card.html | Map: high card (open: head, body, actions) -> low resolved card
      Class API (modifiers are extra classes / attributes on the same element):
-       details.oc-severity-card: Card. Levels: --low, --medium, --high, --critical. State: .is-resolved (neutral, title struck). Same name="..." = one open at a time.
+       details.oc-severity-card: Card. Levels: --calm (0.18.0), --low, --medium, --high, --critical. State: .is-resolved (neutral, title struck). Same name="..." = one open at a time.
        summary.oc-severity-card-head: Head row with chevron
        .oc-severity-card-icon / -main / -title: Icon, text column, title in the level color
        .oc-severity-card-tags / -tag: Small monospace tags under the title
        .oc-severity-card-level: Level badge at the end of the head
        .oc-severity-card-body / -actions: Details text and action buttons
      Slots: icon, title, tags, level, body, actions
+       div.oc-severity-card--compact (0.18.0): one row for a list of alerts, no details; .oc-severity-card-text = a line under the title.
 -->
 <details class="oc-severity-card oc-severity-card--high" name="oc-findings" open>
   <summary class="oc-severity-card-head">
@@ -3138,6 +3165,7 @@ Risk-colored expandable card (low, medium, high, critical) on details / summary 
   </summary>
   <div class="oc-severity-card-body"><p>The profile was removed on 2 October 2026.</p></div>
 </details>
+<div class="oc-severity-card oc-severity-card--calm oc-severity-card--compact"><div class="oc-severity-card-head"><span class="oc-severity-card-main"><span class="oc-severity-card-title">All teams on route</span><span class="oc-severity-card-text">Last check 1 minute ago.</span></span><span class="oc-severity-card-level">Calm</span></div></div>
 ```
 
 ### sortable-row
@@ -4704,6 +4732,7 @@ EAN-13, EAN-8, UPC-A or Code 128 drawn as SVG from a value, no dependency
      Class API (modifiers are extra classes / attributes on the same element):
        figure.oc-barcode[data-value]: The barcode. The script replaces its content with the SVG and the digits.
        data-format: auto (default: 12–13 digits EAN-13, 7–8 EAN-8, 11 UPC-A, else Code 128), EAN13, EAN8, UPC or CODE128.
+       data-format="QR" (0.18.0): a QR code from the own encoder (.oc-barcode--qr, white quiet zone in every theme); data-level L|M|Q|H (default M).
        data-digits="false": Bars only, no digits.
        .oc-barcode--hero / --compact: Large (product page, label) or small (table cell).
        --oc-barcode-height: Height of the bars (4rem).
@@ -4718,6 +4747,7 @@ EAN-13, EAN-8, UPC-A or Code 128 drawn as SVG from a value, no dependency
   <figure class="oc-barcode" data-value="96385074"></figure>
   <figure class="oc-barcode oc-barcode--compact" data-value="012345678905" data-format="UPC" data-digits="false"></figure>
   <figure class="oc-barcode" data-value="5400000000018"></figure>
+  <figure class="oc-barcode" data-format="QR" data-value="https://company1.example/order/1001"></figure>
 </div>
 ```
 
@@ -6137,12 +6167,16 @@ Test and live at a glance: a badge in fixed mode colors (also on a photo or prin
        Modifiers: --sm, --lg. data-mode="both": two child spans (Test, Live), each in its own color.
        Tokens: --oc-mode-test, --oc-mode-live, --oc-mode-ink (text). Also used by .oc-card--accent[data-tone="test|live"]
        and .oc-code-plate[data-mode].
+       0.18.0: data-mode="staging" / "offline" (--oc-mode-staging, --oc-mode-offline); .oc-env-frame[data-mode]: a line around the viewport, pointer-events none.
 -->
 <span class="oc-mode-badge" data-mode="test">Test</span>
 <span class="oc-mode-badge" data-mode="live">Live</span>
 <span class="oc-mode-badge" data-mode="both"><span>Test</span><span>Live</span></span>
 <span class="oc-mode-badge oc-mode-badge--sm" data-mode="live">Live</span>
 <span class="oc-mode-badge oc-mode-badge--lg" data-mode="test">Test</span>
+<span class="oc-mode-badge" data-mode="staging">Staging</span>
+<span class="oc-mode-badge" data-mode="offline">Offline</span>
+<div class="oc-env-frame" data-mode="live" aria-hidden="true"></div>
 ```
 
 ### webicon
@@ -6233,6 +6267,46 @@ A calm fade over a picture (from a color at one edge to transparent) so text on 
 <figure class="oc-has-scrim oc-scrim--top m-0 w-full aspect-16 overflow-hidden rounded-lg">
   <img style="display:block;inline-size:100%;block-size:100%;object-fit:cover" src="/img/blocks/otp-split-photo.webp" alt="">
 </figure>
+```
+
+### sortable-list
+
+A list you reorder with a finger, pen or mouse (pointer events) or the keyboard (Space + arrows)
+
+```html
+<!-- OmniaUI component: sortable-list - A list you reorder with a finger, pen or mouse (pointer events) or the keyboard (Space + arrows). Needs @birdycom/omniaui CSS and sortable-list.js.
+     File: packages/ui/snippets/sortable-list.html | Map: ol.oc-sortable-list[data-oc-sortable] -> li.oc-sortable-item (grip, body, arrows). Behaviour: sortable-list.js (0.18.0).
+     Class API (modifiers are extra classes / attributes on the same element):
+       ul|ol.oc-sortable-list[data-oc-sortable]: The list; ol shows the positions (1., 2., ...) from a CSS counter.
+       li.oc-sortable-item[data-id]: One item; data-id is reported in the new order (data-label: name for announcements).
+       button.oc-sortable-row-grip: The grip (six dots, the same as the sortable row): drag it, or Space to pick up, arrows to move, Space to drop, Escape to cancel.
+       .oc-sortable-item__body: The content. .oc-sortable-item__arrows > button[data-oc-move="up|down"]: optional buttons.
+       .oc-sortable-item--grabbed / --dragging: Picked up with the keyboard / the original place while dragging.
+       .oc-dropline: The line where the item lands. .oc-drag-ghost: the copy that follows the pointer.
+       oc-reorder event: { from, to, order: [ids] } on the list. data-oc-reorder-call="method": calls that Livewire method with the order.
+-->
+<ol class="oc-sortable-list" data-oc-sortable aria-label="Route order">
+  <li class="oc-sortable-item" data-id="stop-1">
+    <button type="button" class="oc-sortable-row-grip" aria-label="Move Town hall"></button>
+    <span class="oc-sortable-item__body">Town hall</span>
+    <span class="oc-sortable-item__arrows"><button type="button" data-oc-move="up" aria-label="Move up: Town hall"><iconify-icon icon="mdi:chevron-up" aria-hidden="true"></iconify-icon></button><button type="button" data-oc-move="down" aria-label="Move down: Town hall"><iconify-icon icon="mdi:chevron-down" aria-hidden="true"></iconify-icon></button></span>
+  </li>
+  <li class="oc-sortable-item" data-id="stop-2">
+    <button type="button" class="oc-sortable-row-grip" aria-label="Move Old harbour"></button>
+    <span class="oc-sortable-item__body">Old harbour</span>
+    <span class="oc-sortable-item__arrows"><button type="button" data-oc-move="up" aria-label="Move up: Old harbour"><iconify-icon icon="mdi:chevron-up" aria-hidden="true"></iconify-icon></button><button type="button" data-oc-move="down" aria-label="Move down: Old harbour"><iconify-icon icon="mdi:chevron-down" aria-hidden="true"></iconify-icon></button></span>
+  </li>
+  <li class="oc-sortable-item" data-id="stop-3">
+    <button type="button" class="oc-sortable-row-grip" aria-label="Move Windmill"></button>
+    <span class="oc-sortable-item__body">Windmill</span>
+    <span class="oc-sortable-item__arrows"><button type="button" data-oc-move="up" aria-label="Move up: Windmill"><iconify-icon icon="mdi:chevron-up" aria-hidden="true"></iconify-icon></button><button type="button" data-oc-move="down" aria-label="Move down: Windmill"><iconify-icon icon="mdi:chevron-down" aria-hidden="true"></iconify-icon></button></span>
+  </li>
+  <li class="oc-sortable-item" data-id="stop-4">
+    <button type="button" class="oc-sortable-row-grip" aria-label="Move Market square"></button>
+    <span class="oc-sortable-item__body">Market square</span>
+    <span class="oc-sortable-item__arrows"><button type="button" data-oc-move="up" aria-label="Move up: Market square"><iconify-icon icon="mdi:chevron-up" aria-hidden="true"></iconify-icon></button><button type="button" data-oc-move="down" aria-label="Move down: Market square"><iconify-icon icon="mdi:chevron-down" aria-hidden="true"></iconify-icon></button></span>
+  </li>
+</ol>
 ```
 
 ## Blocks

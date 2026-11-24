@@ -24,6 +24,8 @@ const props = withDefaults(
     masked?: boolean
     revealLabel?: string
     wrap?: boolean
+    /** 0.18.0: the field stretches with a narrow column (.oc-copy-field--block). */
+    block?: boolean
     icon?: boolean
   }>(),
   { buttonLabel: 'Copy', copiedLabel: 'Copied', revealLabel: 'Show value', icon: true },
@@ -54,7 +56,7 @@ onBeforeUnmount(() => clearTimeout(timer))
 </script>
 
 <template>
-  <div :class="['oc-copy-field', display && 'oc-copy-field--display', display === 'lg' && 'oc-copy-field--lg', wraps && 'oc-copy-field--wrap']" :style="display ? { '--oc-copy-chars': String(shown.length) } : undefined">
+  <div :class="['oc-copy-field', display && 'oc-copy-field--display', display === 'lg' && 'oc-copy-field--lg', wraps && 'oc-copy-field--wrap', block && 'oc-copy-field--block']" :style="display ? { '--oc-copy-chars': String(shown.length) } : undefined">
     <output v-if="wraps" :id="valueId" class="oc-copy-field-value" :aria-label="name">{{ shown }}</output>
     <input v-else :id="valueId" class="oc-copy-field-value" :type="masked && !revealed ? 'password' : 'text'" readonly :value="shown" :aria-label="name" autocomplete="off" />
     <button v-if="masked" class="oc-copy-field-toggle" type="button" :aria-pressed="revealed ? 'true' : 'false'" :aria-controls="valueId" :aria-label="revealLabel" @click="revealed = !revealed">

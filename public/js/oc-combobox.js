@@ -250,6 +250,7 @@ export function bindCombobox(root) {
     const value = isClear ? "" : isCustom ? option.dataset.value ?? "" : optionValue(option);
     const label = isClear ? "" : isCustom ? value : optionLabel(option);
     input.value = label;
+    root.removeAttribute("data-typing");
     if (hidden) hidden.value = value;
     if (slot) slot.innerHTML = (!isClear && !isCustom && visualHtml(option)) || placeholderIcon;
     plain().forEach((o) => { o.hidden = false; });
@@ -306,6 +307,8 @@ export function bindCombobox(root) {
   };
 
   const onInput = () => {
+    // 0.18.0: an icon-only trigger shows the query while you type (CSS: [data-typing])
+    root.toggleAttribute("data-typing", input.value !== "");
     setOpen(true);
     if (remote) { search(); updateCustom(input.value); }
     filter();
@@ -321,7 +324,11 @@ export function bindCombobox(root) {
     else if (e.key === "Enter" && at >= 0 && root.dataset.open !== "false") { e.preventDefault(); choose(items[at]); }
     else if (e.key === "Escape" && root.dataset.open !== "false") { e.preventDefault(); setOpen(false); }
   };
-  const onClickInput = () => { if (root.dataset.open === "false") setOpen(true); };
+  // An icon-only trigger hides the chosen label in its field: select it, so the first key replaces it instead of
+  // landing somewhere inside the invisible text (on click too: Chrome drops a selection made on focus at mouseup).
+  const iconOnly = root.classList.contains("oc-combobox--icon-only");
+  const selectHidden = () => { if (iconOnly && !root.hasAttribute("data-typing")) input.select(); };
+  const onClickInput = () => { selectHidden(); if (root.dataset.open === "false") setOpen(true); };
   // A press in the list (an option, the scrollbar, the footer) keeps the focus in the field; a link still follows its click.
   const onDown = (e) => e.preventDefault();
   const onClick = (e) => {
@@ -333,12 +340,14 @@ export function bindCombobox(root) {
     }
     choose(e.target.closest(OPTION));
   };
-  const onFocus = () => {
+  const onFocus = (e) => {
+    if (e?.target === input) selectHidden();
     input.setAttribute("aria-expanded", String(root.dataset.open !== "false"));
     if (root.dataset.open !== "false") showPortal(true);
   };
   const onBlur = (e) => {
     if (root.contains(e.relatedTarget) || popup.contains(e.relatedTarget)) return;
+    root.removeAttribute("data-typing");
     input.setAttribute("aria-expanded", "false");
     root.removeAttribute("data-open");
     showPortal(false);

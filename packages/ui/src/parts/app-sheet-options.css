@@ -1,6 +1,7 @@
 /* File: packages/ui/src/parts/app-sheet-options.css
    Map: tokens (panel, scrim) -> glass sheet (blur, light scrim without blur, fallbacks) -> inset (a strip of the page
-        stays free) -> footer panel (own background, safe area) -> plain collapsible -> reduced motion / transparency
+        stays free) -> footer panel (own background, safe area) -> bottom sheet centered on a wide screen, floating, rounded (0.18.0)
+        -> plain collapsible -> reduced motion / transparency
    Options of the sheet for panels over a live view (a map, a game, a dashboard), plus the plain collapsible for lists
    inside such a panel. Theme tokens only; the glass is a calm see-through surface, no gradients. */
 
@@ -55,6 +56,48 @@ dialog.oc-sheet--glass .oc-sheet-footer--panel { --oc-sheet-footer-bg: color-mix
 @media (prefers-reduced-transparency: reduce) {
   dialog.oc-sheet--glass .oc-sheet-footer--panel { --oc-sheet-footer-bg: var(--oc-card); }
 }
+
+/* Bottom sheet on a wide screen (0.18.0): from 48rem it is no longer as wide as the screen, but centered with a maximum
+   width (--oc-sheet-max, default 40rem), with borders on its sides. Phones keep the full-width sheet. */
+@media (min-width: 48rem) {
+  dialog.oc-sheet.oc-sheet--bottom,
+  dialog.oc-sheet--inset.oc-sheet--bottom { inline-size: min(var(--oc-sheet-max, 40rem), 100%); margin-inline: auto; }
+  dialog.oc-sheet--bottom .oc-sheet-content { border-inline: 1px solid var(--oc-border); }
+}
+
+/* Rounded (0.18.0): the corners that face the page are rounded (--oc-sheet-radius, default --oc-radius-xl). */
+dialog.oc-sheet--rounded { --oc-sheet-radius: var(--oc-radius-xl, calc(var(--oc-radius) + 8px)); }
+dialog.oc-sheet--rounded .oc-sheet-content { overflow: clip; border-start-start-radius: var(--oc-sheet-radius); border-end-start-radius: var(--oc-sheet-radius); }
+dialog.oc-sheet--rounded.oc-sheet--left .oc-sheet-content { border-radius: 0 var(--oc-sheet-radius) var(--oc-sheet-radius) 0; }
+dialog.oc-sheet--rounded.oc-sheet--left:dir(rtl) .oc-sheet-content { border-radius: var(--oc-sheet-radius) 0 0 var(--oc-sheet-radius); }
+dialog.oc-sheet--rounded.oc-sheet--bottom .oc-sheet-content { border-radius: var(--oc-sheet-radius) var(--oc-sheet-radius) 0 0; }
+dialog.oc-sheet--rounded.oc-sheet--top .oc-sheet-content { border-radius: 0 0 var(--oc-sheet-radius) var(--oc-sheet-radius); }
+
+/* Floating (0.18.0): the panel floats free of the edge, with a margin on every side (--oc-sheet-margin), all corners
+   rounded (--oc-radius-xl) and a border all around; it slides in from just beyond the edge. A side panel keeps the
+   full height minus the margins; a top or bottom sheet is centered with --oc-sheet-max. Not the same as --inset (a
+   strip of the page beside a panel on a phone). */
+dialog.oc-sheet--floating {
+  --oc-sheet-margin: 0.75rem;
+  --oc-sheet-radius: var(--oc-radius-xl, calc(var(--oc-radius) + 8px));
+  --oc-sheet-from: calc(100% + var(--oc-sheet-margin) + 1rem) 0;
+  padding: var(--oc-sheet-margin);
+  inline-size: min(calc(24rem + 2 * var(--oc-sheet-margin)), 100%);
+}
+dialog.oc-sheet--floating:has(> .oc-sheet-content--wide) { inline-size: min(calc(40rem + 2 * var(--oc-sheet-margin)), 100%); }
+dialog.oc-sheet--floating .oc-sheet-content {
+  overflow: clip;
+  border: 1px solid var(--oc-border);
+  border-radius: var(--oc-sheet-radius);
+}
+dialog.oc-sheet--floating.oc-sheet--left { --oc-sheet-from: calc(-100% - var(--oc-sheet-margin) - 1rem) 0; }
+dialog.oc-sheet.oc-sheet--floating:is(.oc-sheet--top, .oc-sheet--bottom) {
+  inline-size: min(calc(var(--oc-sheet-max, 40rem) + 2 * var(--oc-sheet-margin)), 100%);
+  margin-inline: auto;
+}
+dialog.oc-sheet--floating.oc-sheet--bottom { --oc-sheet-from: 0 calc(100% + var(--oc-sheet-margin) + 1rem); padding-block-end: max(var(--oc-sheet-margin), env(safe-area-inset-bottom)); }
+dialog.oc-sheet--floating.oc-sheet--top { --oc-sheet-from: 0 calc(-100% - var(--oc-sheet-margin) - 1rem); }
+dialog.oc-sheet--floating:is(.oc-sheet--top, .oc-sheet--bottom) .oc-sheet-content { max-block-size: calc(85dvh - 2 * var(--oc-sheet-margin)); }
 
 /* Plain collapsible: no card (no background, border or shadow), for a list of sections inside a panel or a block.
    Large rows, a thin line between neighbours, the content without its own border. */

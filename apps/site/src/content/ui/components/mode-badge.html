@@ -191,6 +191,99 @@ class ModeBadgeYourOwnModeColors extends Component
     &lt;/x-oc::card&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="env-frame">Staging, offline and a frame around the app <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">Two more modes: <code>staging</code> (calm blue, <code>--oc-mode-staging</code>) and <code>offline</code> (gray, <code>--oc-mode-offline</code>). <code>.oc-env-frame</code> draws a line in the mode color around the whole viewport, so nobody mistakes the live app for a test: it is fixed above the page with <code>pointer-events: none</code>, so it never blocks a click, and it is left out of a print. In these cards it uses <code>--contained</code> (inside a container with <code>position: relative</code>). Say the mode in text too, with a badge: a color alone is not enough.</p>
+          <oc-demo title="Mode badge - staging, offline and frame">
+<div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));grid-auto-rows:1fr;gap:1rem;align-items:stretch">
+  <div class="oc-card" style="position:relative;display:grid;place-items:center;gap:0.5rem;padding:1.5rem;block-size:100%">
+    <div class="oc-env-frame oc-env-frame--contained" data-mode="live" aria-hidden="true"></div>
+    <span class="oc-mode-badge" data-mode="live">Live</span>
+    <small>Frame around the app in live mode</small>
+  </div>
+  <div class="oc-card" style="position:relative;display:grid;place-items:center;gap:0.5rem;padding:1.5rem;block-size:100%">
+    <div class="oc-env-frame oc-env-frame--contained" data-mode="staging" aria-hidden="true"></div>
+    <span class="oc-mode-badge" data-mode="staging">Staging</span>
+    <small>Acceptance environment</small>
+  </div>
+  <div class="oc-card" style="position:relative;display:grid;place-items:center;gap:0.5rem;padding:1.5rem;block-size:100%">
+    <div class="oc-env-frame oc-env-frame--contained" data-mode="offline" aria-hidden="true"></div>
+    <span class="oc-mode-badge" data-mode="offline">Offline</span>
+    <small>The app works without a network</small>
+  </div>
+</div>
+<oc-code lang="html">&lt;div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));grid-auto-rows:1fr;gap:1rem;align-items:stretch"&gt;
+  &lt;div class="oc-card" style="position:relative;display:grid;place-items:center;gap:0.5rem;padding:1.5rem;block-size:100%"&gt;
+    &lt;div class="oc-env-frame oc-env-frame--contained" data-mode="live" aria-hidden="true"&gt;&lt;/div&gt;
+    &lt;span class="oc-mode-badge" data-mode="live"&gt;Live&lt;/span&gt;
+    &lt;small&gt;Frame around the app in live mode&lt;/small&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-card" style="position:relative;display:grid;place-items:center;gap:0.5rem;padding:1.5rem;block-size:100%"&gt;
+    &lt;div class="oc-env-frame oc-env-frame--contained" data-mode="staging" aria-hidden="true"&gt;&lt;/div&gt;
+    &lt;span class="oc-mode-badge" data-mode="staging"&gt;Staging&lt;/span&gt;
+    &lt;small&gt;Acceptance environment&lt;/small&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-card" style="position:relative;display:grid;place-items:center;gap:0.5rem;padding:1.5rem;block-size:100%"&gt;
+    &lt;div class="oc-env-frame oc-env-frame--contained" data-mode="offline" aria-hidden="true"&gt;&lt;/div&gt;
+    &lt;span class="oc-mode-badge" data-mode="offline"&gt;Offline&lt;/span&gt;
+    &lt;small&gt;The app works without a network&lt;/small&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- around the whole app (in the layout, once) --&gt;
+&lt;div class="oc-env-frame" data-mode="live" aria-hidden="true"&gt;&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { EnvFrame, ModeBadge } from "@birdycom/omniaui-react";
+
+export function AppChrome({ mode }: { mode: "test" | "live" | "staging" | "offline" }) {
+  return (
+    &lt;&gt;
+      &lt;EnvFrame mode={mode} /&gt;
+      &lt;ModeBadge mode={mode} /&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcEnvFrame, OcModeBadge } from "@birdycom/omniaui-vue";
+
+defineProps&lt;{ mode: "test" | "live" | "staging" | "offline" }&gt;();
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcEnvFrame :mode="mode" /&gt;
+  &lt;OcModeBadge :mode="mode" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- in the layout, once --}}
+&lt;x-oc::env-frame mode="staging" /&gt;
+&lt;x-oc::mode-badge mode="staging" /&gt;
+&lt;x-oc::mode-badge mode="offline" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class GameMode extends Component
+{
+    public string $mode = 'test';
+
+    public function goLive(): void
+    {
+        $this-&gt;mode = 'live';
+    }
+
+    public function render()
+    {
+        return view('livewire.game-mode');
+    }
+}
+
+{{-- resources/views/livewire/game-mode.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::env-frame :mode="$mode" /&gt;
+    &lt;x-oc::mode-badge :mode="$mode" /&gt;
+    &lt;button type="button" class="oc-btn oc-btn--outline" wire:click="goLive"&gt;Go live&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -204,6 +297,8 @@ class ModeBadgeYourOwnModeColors extends Component
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>.oc-mode-badge[data-mode]</code></td><td>The badge: <code>test</code> (amber), <code>live</code> (green), <code>both</code> (two child spans, each in its own color). Uppercase, bold, letter-spaced.</td></tr>
+              <tr><td><code>[data-mode="staging"]</code> / <code>[data-mode="offline"]</code></td><td>0.18.0: a staging environment (<code>--oc-mode-staging</code>, cornflower blue) and an app that runs offline (<code>--oc-mode-offline</code>, light gray).</td></tr>
+              <tr><td><code>.oc-env-frame[data-mode]</code></td><td>0.18.0: a line in the mode color around the viewport: fixed, <code>pointer-events: none</code>, hidden in print. <code>--oc-env-frame-width</code> (4px), <code>--oc-env-color</code>. <code>--contained</code>: inside a container with <code>position: relative</code>. Wrappers <code>EnvFrame</code>, <code>OcEnvFrame</code>, <code>&lt;x-oc::env-frame&gt;</code>.</td></tr>
               <tr><td><code>--sm</code> / <code>--lg</code></td><td>Smaller (in a list of codes) or larger (in the band of an accent card)</td></tr>
               <tr><td><code>--oc-mode-test</code> / <code>--oc-mode-live</code> / <code>--oc-mode-ink</code></td><td>The two mode colors (default <code>--color-orange-20</code> and <code>--color-green-10</code>) and the text on them (<code>--color-duskblue-90</code>); also used by <code>.oc-card--accent[data-tone="test|live"]</code> and <code>.oc-code-plate[data-mode]</code>. Set them on <code>:root</code> or on any parent (<a href="#tokens">example</a>)</td></tr>
               <tr><td><code>@media print</code></td><td><code>print-color-adjust: exact</code>: the colors are printed, not dropped</td></tr>

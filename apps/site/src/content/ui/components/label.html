@@ -52,39 +52,39 @@
   &lt;label class="oc-label oc-label--muted" for="oc-label-phone"&gt;Phone (optional)&lt;/label&gt;
   &lt;input class="oc-input" id="oc-label-phone" type="tel" placeholder="+32 3 000 00 00"&gt;
 &lt;/div&gt;</oc-code>
-<oc-code lang="tsx">&lt;div className="oc-form-group"&gt;
+<oc-code lang="tsx">&lt;FormGroup&gt;
   &lt;Label htmlFor="email" required&gt;E-mail&lt;/Label&gt;
   &lt;Input id="email" type="email" placeholder="name@example.com" required /&gt;
-&lt;/div&gt;
+&lt;/FormGroup&gt;
 
 &lt;Label inline&gt;&lt;Checkbox /&gt; Accept terms and conditions&lt;/Label&gt;
 
-&lt;div className="oc-form-group"&gt;
+&lt;FormGroup&gt;
   &lt;Label htmlFor="phone" muted&gt;Phone (optional)&lt;/Label&gt;
   &lt;Input id="phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
-&lt;/div&gt;</oc-code>
-<oc-code lang="vue">&lt;div class="oc-form-group"&gt;
+&lt;/FormGroup&gt;</oc-code>
+<oc-code lang="vue">&lt;OcFormGroup&gt;
   &lt;OcLabel for="email" required&gt;E-mail&lt;/OcLabel&gt;
   &lt;OcInput id="email" type="email" placeholder="name@example.com" required /&gt;
-&lt;/div&gt;
+&lt;/OcFormGroup&gt;
 
 &lt;OcCheckbox class="oc-label oc-label--inline" label="Accept terms and conditions" /&gt;
 
-&lt;div class="oc-form-group"&gt;
+&lt;OcFormGroup&gt;
   &lt;OcLabel for="phone" muted&gt;Phone (optional)&lt;/OcLabel&gt;
   &lt;OcInput id="phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
-&lt;/div&gt;</oc-code>
-<oc-code lang="blade">&lt;div class="oc-form-group"&gt;
+&lt;/OcFormGroup&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-group&gt;
     &lt;x-oc::label for="email" required&gt;E-mail&lt;/x-oc::label&gt;
     &lt;x-oc::input id="email" name="email" type="email" placeholder="name@example.com" required /&gt;
-&lt;/div&gt;
+&lt;/x-oc::form-group&gt;
 
 &lt;x-oc::checkbox class="oc-label oc-label--inline" name="terms" label="Accept terms and conditions" /&gt;
 
-&lt;div class="oc-form-group"&gt;
+&lt;x-oc::form-group&gt;
     &lt;x-oc::label for="phone" muted&gt;Phone (optional)&lt;/x-oc::label&gt;
     &lt;x-oc::input id="phone" name="phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
-&lt;/div&gt;</oc-code>
+&lt;/x-oc::form-group&gt;</oc-code>
 <oc-code lang="livewire">&lt;?php
 
 namespace App\Livewire;
@@ -107,18 +107,84 @@ class ContactDetails extends Component
 
 {{-- resources/views/livewire/contact-details.blade.php --}}
 &lt;div&gt;
-    &lt;div class="oc-form-group"&gt;
+    &lt;x-oc::form-group&gt;
         &lt;x-oc::label for="email" required&gt;E-mail&lt;/x-oc::label&gt;
         &lt;x-oc::wire.input id="email" model="email" type="email" placeholder="name@example.com" required /&gt;
-    &lt;/div&gt;
+    &lt;/x-oc::form-group&gt;
 
     &lt;x-oc::wire.checkbox class="oc-label oc-label--inline" model="terms" label="Accept terms and conditions" /&gt;
 
-    &lt;div class="oc-form-group"&gt;
+    &lt;x-oc::form-group&gt;
         &lt;x-oc::label for="phone" muted&gt;Phone (optional)&lt;/x-oc::label&gt;
         &lt;x-oc::wire.input id="phone" model="phone" type="tel" placeholder="+32 3 000 00 00" /&gt;
-    &lt;/div&gt;
+    &lt;/x-oc::form-group&gt;
 &lt;/div&gt;</oc-code>
+          </oc-demo>
+
+          <h3 id="form-group" class="oc-section-content__title mt-2">Form group (legacy) <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc"><code>.oc-form-group</code> is the older block for a label, a control and a helper line with space below it. It now has a wrapper: <code>&lt;FormGroup&gt;</code> in React, <code>&lt;OcFormGroup&gt;</code> in Vue and <code>&lt;x-oc::form-group&gt;</code> in Blade. It stays for existing forms; <strong>prefer <code>oc-field</code></strong> (<a href="forms.html">FormField</a>) for new forms, which also links the helper and error text to the control.</p>
+          <oc-demo title="Label - form group (legacy)">
+<div class="oc-form-group" style="inline-size:min(100%,22rem)">
+  <label class="oc-label" for="oc-form-group-company">Company</label>
+  <input class="oc-input" id="oc-form-group-company" type="text" value="Company 1">
+  <p class="oc-helper">As it appears on the invoice.</p>
+</div>
+<oc-code lang="tsx">import { FormGroup, Input, Label } from "@birdycom/omniaui-react";
+
+// Legacy: prefer FormField (.oc-field) for new forms.
+export function Example() {
+  return (
+    &lt;FormGroup style={{ inlineSize: "min(100%,22rem)" }}&gt;
+      &lt;Label htmlFor="company"&gt;Company&lt;/Label&gt;
+      &lt;Input id="company" defaultValue="Company 1" /&gt;
+      &lt;p className="oc-helper"&gt;As it appears on the invoice.&lt;/p&gt;
+    &lt;/FormGroup&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+// Legacy: prefer OcFormField (.oc-field) for new forms.
+import { ref } from 'vue'
+import { OcFormGroup, OcInput, OcLabel } from '@birdycom/omniaui-vue'
+
+const company = ref('Company 1')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormGroup style="inline-size:min(100%,22rem)"&gt;
+    &lt;OcLabel for="company"&gt;Company&lt;/OcLabel&gt;
+    &lt;OcInput id="company" v-model="company" /&gt;
+    &lt;p class="oc-helper"&gt;As it appears on the invoice.&lt;/p&gt;
+  &lt;/OcFormGroup&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Legacy: prefer &lt;x-oc::form-field&gt; (.oc-field) for new forms. --}}
+&lt;x-oc::form-group style="inline-size:min(100%,22rem)"&gt;
+    &lt;x-oc::label for="company"&gt;Company&lt;/x-oc::label&gt;
+    &lt;x-oc::input id="company" name="company" value="Company 1" /&gt;
+    &lt;p class="oc-helper"&gt;As it appears on the invoice.&lt;/p&gt;
+&lt;/x-oc::form-group&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CompanyName extends Component
+{
+    public string $company = 'Company 1';
+
+    public function render()
+    {
+        return view('livewire.company-name');
+    }
+}
+
+{{-- resources/views/livewire/company-name.blade.php --}}
+{{-- Legacy: prefer &lt;x-oc::form-field&gt; (.oc-field) for new forms. --}}
+&lt;x-oc::form-group style="inline-size:min(100%,22rem)"&gt;
+    &lt;x-oc::label for="company"&gt;Company&lt;/x-oc::label&gt;
+    &lt;x-oc::wire.input id="company" model="company" /&gt;
+    &lt;p class="oc-helper"&gt;As it appears on the invoice.&lt;/p&gt;
+&lt;/x-oc::form-group&gt;</oc-code>
           </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
@@ -134,6 +200,7 @@ class ContactDetails extends Component
               <tr><td><code>.oc-label--required</code></td><td>Adds a destructive-colored asterisk</td></tr>
               <tr><td><code>.oc-label--inline</code></td><td>Inline-flex label that wraps a checkbox or radio</td></tr>
               <tr><td><code>.oc-label--muted</code></td><td>Secondary text color, normal weight</td></tr>
+              <tr><td><code>.oc-form-group</code></td><td>Legacy block with space below (<code>FormGroup</code> / <code>OcFormGroup</code> / <code>&lt;x-oc::form-group&gt;</code>); prefer <code>.oc-field</code></td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>

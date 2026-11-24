@@ -355,6 +355,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
       ref={wrapRef}
       className={cx("oc-combobox", variant === "ledger" && "oc-combobox--ledger", triggerVariant === "ghost" && "oc-combobox--ghost", header && "oc-combobox--header", iconOnlyOn && "oc-combobox--icon-only", wrapperClassName)}
       data-open={open ? "" : "false"}
+      data-typing={text ? "" : undefined}
       data-module={module}
     >
       {withIcons && (
@@ -382,8 +383,9 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
         {...rest}
         onChange={(e) => onType(e.target.value)}
         onKeyDown={onKeyDown}
-        onFocus={(e) => { rest.onFocus?.(e); setOpen(true); }}
-        onClick={(e) => { rest.onClick?.(e); setOpen(true); }}
+        // icon-only: the chosen label is invisible in the field; select it so the first key replaces it (0.18.0)
+        onFocus={(e) => { rest.onFocus?.(e); if (iconOnlyOn && text == null) e.currentTarget.select(); setOpen(true); }}
+        onClick={(e) => { rest.onClick?.(e); if (iconOnlyOn && text == null) e.currentTarget.select(); setOpen(true); }}
         onBlur={(e) => { rest.onBlur?.(e); close(); }}
       />
       {name != null && <input type="hidden" name={name} value={current == null ? "" : String(current)} />}

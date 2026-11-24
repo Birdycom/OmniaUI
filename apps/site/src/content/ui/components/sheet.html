@@ -335,6 +335,143 @@ class GameMenu extends Component
     &lt;/x-oc::wire.sheet&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="floating">Floating, rounded and a centered bottom sheet <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc"><code>floating</code> (<code>.oc-sheet--floating</code>): the panel floats free of the edge, with a margin on every side (<code>--oc-sheet-margin</code>, 0.75rem), all corners rounded (<code>--oc-radius-xl</code>) and a border all around. That is not <code>inset</code>, which keeps a strip of the page free on a phone. <code>rounded</code> (<code>.oc-sheet--rounded</code>) only rounds the corners that face the page. A bottom sheet is no longer as wide as a tablet or desktop screen: from 48rem it is centered with <code>--oc-sheet-max</code> (40rem); phones keep the full width.</p>
+          <oc-demo title="Sheet - floating and centered bottom sheet">
+<div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+  <button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="oc-sheet-float">Open the floating panel</button>
+  <button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="oc-sheet-share">Open the bottom sheet</button>
+</div>
+
+<dialog class="oc-sheet oc-sheet--floating" id="oc-sheet-float" closedby="any" aria-labelledby="oc-sheet-float-title">
+  <div class="oc-sheet-content">
+    <button class="oc-sheet-close" type="button" command="close" commandfor="oc-sheet-float" aria-label="Close">&times;</button>
+    <div class="oc-sheet-header">
+      <h2 class="oc-sheet-title" id="oc-sheet-float-title">Team 1</h2>
+      <p class="oc-sheet-description">Round 2 of 5, 3 players</p>
+    </div>
+    <div class="oc-sheet-body">
+      <p>The panel floats free of the edge: a margin on every side, all corners rounded.</p>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="oc-sheet oc-sheet--bottom oc-sheet--rounded" id="oc-sheet-share" closedby="any" aria-labelledby="oc-sheet-share-title">
+  <div class="oc-sheet-content">
+    <button class="oc-sheet-close" type="button" command="close" commandfor="oc-sheet-share" aria-label="Close">&times;</button>
+    <div class="oc-sheet-header">
+      <h2 class="oc-sheet-title" id="oc-sheet-share-title">Share</h2>
+      <p class="oc-sheet-description">On a wide screen the sheet is centered (max. 40rem).</p>
+    </div>
+    <div class="oc-sheet-body">
+      <p>Send the link to Customer 1 or copy it.</p>
+    </div>
+  </div>
+</dialog>
+<oc-code lang="html">&lt;div style="display:flex;flex-wrap:wrap;gap:0.5rem"&gt;
+  &lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="oc-sheet-float"&gt;Open the floating panel&lt;/button&gt;
+  &lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="oc-sheet-share"&gt;Open the bottom sheet&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;dialog class="oc-sheet oc-sheet--floating" id="oc-sheet-float" closedby="any" aria-labelledby="oc-sheet-float-title"&gt;
+  &lt;div class="oc-sheet-content"&gt;
+    &lt;button class="oc-sheet-close" type="button" command="close" commandfor="oc-sheet-float" aria-label="Close"&gt;&amp;times;&lt;/button&gt;
+    &lt;div class="oc-sheet-header"&gt;
+      &lt;h2 class="oc-sheet-title" id="oc-sheet-float-title"&gt;Team 1&lt;/h2&gt;
+      &lt;p class="oc-sheet-description"&gt;Round 2 of 5, 3 players&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-sheet-body"&gt;
+      &lt;p&gt;The panel floats free of the edge: a margin on every side, all corners rounded.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/dialog&gt;
+
+&lt;dialog class="oc-sheet oc-sheet--bottom oc-sheet--rounded" id="oc-sheet-share" closedby="any" aria-labelledby="oc-sheet-share-title"&gt;
+  &lt;div class="oc-sheet-content"&gt;
+    &lt;button class="oc-sheet-close" type="button" command="close" commandfor="oc-sheet-share" aria-label="Close"&gt;&amp;times;&lt;/button&gt;
+    &lt;div class="oc-sheet-header"&gt;
+      &lt;h2 class="oc-sheet-title" id="oc-sheet-share-title"&gt;Share&lt;/h2&gt;
+      &lt;p class="oc-sheet-description"&gt;On a wide screen the sheet is centered (max. 40rem).&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="oc-sheet-body"&gt;
+      &lt;p&gt;Send the link to Customer 1 or copy it.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/dialog&gt;</oc-code>
+<oc-code lang="tsx">import { useState } from "react";
+import { Button, Sheet } from "@birdycom/omniaui-react";
+
+export function TeamPanels() {
+  const [team, setTeam] = useState(false);
+  const [share, setShare] = useState(false);
+  return (
+    &lt;&gt;
+      &lt;Button variant="outline" onClick={() =&gt; setTeam(true)}&gt;Open the floating panel&lt;/Button&gt;
+      &lt;Button variant="outline" onClick={() =&gt; setShare(true)}&gt;Open the bottom sheet&lt;/Button&gt;
+      &lt;Sheet open={team} onOpenChange={setTeam} floating title="Team 1" description="Round 2 of 5, 3 players"&gt;
+        &lt;p&gt;The panel floats free of the edge: a margin on every side, all corners rounded.&lt;/p&gt;
+      &lt;/Sheet&gt;
+      &lt;Sheet open={share} onOpenChange={setShare} side="bottom" rounded title="Share" description="On a wide screen the sheet is centered (max. 40rem)."&gt;
+        &lt;p&gt;Send the link to Customer 1 or copy it.&lt;/p&gt;
+      &lt;/Sheet&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+import { OcButton, OcSheet } from "@birdycom/omniaui-vue";
+
+const team = ref(false);
+const share = ref(false);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton variant="outline" @click="team = true"&gt;Open the floating panel&lt;/OcButton&gt;
+  &lt;OcButton variant="outline" @click="share = true"&gt;Open the bottom sheet&lt;/OcButton&gt;
+  &lt;OcSheet v-model:open="team" floating title="Team 1" description="Round 2 of 5, 3 players"&gt;
+    &lt;p&gt;The panel floats free of the edge: a margin on every side, all corners rounded.&lt;/p&gt;
+  &lt;/OcSheet&gt;
+  &lt;OcSheet v-model:open="share" side="bottom" rounded title="Share" description="On a wide screen the sheet is centered (max. 40rem)."&gt;
+    &lt;p&gt;Send the link to Customer 1 or copy it.&lt;/p&gt;
+  &lt;/OcSheet&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::sheet id="team" floating title="Team 1" description="Round 2 of 5, 3 players"&gt;
+    &lt;x-slot:trigger&gt;&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="team"&gt;Open the floating panel&lt;/button&gt;&lt;/x-slot:trigger&gt;
+    &lt;p&gt;The panel floats free of the edge: a margin on every side, all corners rounded.&lt;/p&gt;
+&lt;/x-oc::sheet&gt;
+&lt;x-oc::sheet id="share" side="bottom" rounded title="Share" description="On a wide screen the sheet is centered (max. 40rem)."&gt;
+    &lt;x-slot:trigger&gt;&lt;button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="share"&gt;Open the bottom sheet&lt;/button&gt;&lt;/x-slot:trigger&gt;
+    &lt;p&gt;Send the link to Customer 1 or copy it.&lt;/p&gt;
+&lt;/x-oc::sheet&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Omniacss\Livewire\WithOcModal;
+
+class TeamPanel extends Component
+{
+    use WithOcModal;
+
+    public string $team = 'Team 1';
+
+    public function render()
+    {
+        return view('livewire.team-panel');
+    }
+}
+
+{{-- resources/views/livewire/team-panel.blade.php --}}
+&lt;div&gt;
+    &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="openOcModal('team')"&gt;Open the floating panel&lt;/button&gt;
+    {{-- floating and rounded are classes on the dialog --}}
+    &lt;x-oc::wire.sheet name="team" class="oc-sheet--floating" :title="$team" description="Round 2 of 5, 3 players"&gt;
+        &lt;p&gt;The panel floats free of the edge: a margin on every side, all corners rounded.&lt;/p&gt;
+    &lt;/x-oc::wire.sheet&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -356,6 +493,9 @@ class GameMenu extends Component
               <tr><td><code>--oc-close-size</code> / <code>--oc-close-icon</code></td><td>Size of the close button (2rem) and of the cross (1.125rem). <code>.oc-close--round</code> makes the button a circle.</td></tr>
               <tr><td><code>dialog.oc-sheet--glass</code></td><td>See-through panel (blurred) and a light scrim without blur. Tokens: <code>--oc-sheet-bg</code> (panel), <code>--oc-sheet-blur</code> (16px), <code>--oc-sheet-scrim</code>. Opaque with <code>prefers-reduced-transparency</code> and where <code>backdrop-filter</code> is missing.</td></tr>
               <tr><td><code>dialog.oc-sheet--inset</code></td><td>On a narrow screen a strip of the page stays free beside the panel (<code>--oc-sheet-gap</code>, 3.25rem); a tap there closes the sheet (<code>closedby="any"</code>).</td></tr>
+              <tr><td><code>dialog.oc-sheet--floating</code></td><td>0.18.0: the panel floats free of the edge: margin on every side (<code>--oc-sheet-margin</code>, 0.75rem), all corners rounded (<code>--oc-sheet-radius</code>, default <code>--oc-radius-xl</code>), a border all around. A top or bottom sheet is centered with <code>--oc-sheet-max</code>. Prop <code>floating</code>.</td></tr>
+              <tr><td><code>dialog.oc-sheet--rounded</code></td><td>0.18.0: the corners that face the page are rounded (<code>--oc-sheet-radius</code>). Prop <code>rounded</code>.</td></tr>
+              <tr><td><code>--oc-sheet-max</code></td><td>0.18.0: from 48rem wide a bottom sheet is centered with this maximum width (40rem); phones keep the full width.</td></tr>
               <tr><td><code>.oc-sheet-footer--panel</code></td><td>The footer holds a block of content on its own background (<code>--oc-sheet-footer-bg</code>) and keeps clear of a phone's home bar.</td></tr>
               <tr><td><code>--oc-sheet-bg</code> / <code>--oc-sheet-scrim</code></td><td>Panel color and scrim of every sheet (defaults: the page background, a dark scrim).</td></tr>
               <tr><td>React <code>glass</code>, <code>inset</code>, <code>footerPanel</code></td><td>Vue <code>glass</code>, <code>inset</code>, <code>footer-panel</code>; Blade the same attributes on <code>&lt;x-oc::sheet&gt;</code>.</td></tr>

@@ -3,14 +3,14 @@
      (true | 'lg': large centred code), group (show it in groups of n; the raw value is copied), caption (a line under the
      code), masked (a secret as dots with a show/hide toggle, aria-pressed), revealLabel (name of that toggle), wrap (long
      values break over lines; not with masked), icon (mdi:content-copy on the button, default true). --}}
-@props(['value' => '', 'label' => null, 'ariaLabel' => null, 'button' => 'Copy', 'copiedLabel' => 'Copied', 'display' => false, 'group' => null, 'caption' => null, 'masked' => false, 'revealLabel' => 'Show value', 'wrap' => false, 'icon' => true])
+@props(['value' => '', 'label' => null, 'ariaLabel' => null, 'button' => 'Copy', 'copiedLabel' => 'Copied', 'display' => false, 'group' => null, 'caption' => null, 'masked' => false, 'revealLabel' => 'Show value', 'wrap' => false, 'icon' => true, 'block' => false])
 @php
     $shown = $group ? implode(' ', mb_str_split((string) $value, (int) $group)) : (string) $value;
     $name = $ariaLabel ?? $label ?? 'Value';
     $wraps = $wrap && ! $masked;
     $valueId = 'oc-copy-'.substr(md5(uniqid('', true)), 0, 6);
 @endphp
-<div {{ $attributes->class(['oc-copy-field', 'oc-copy-field--display' => $display, 'oc-copy-field--lg' => $display === 'lg', 'oc-copy-field--wrap' => $wraps])->merge(array_filter(['style' => $display ? '--oc-copy-chars: '.mb_strlen($shown) : null])) }}>
+<div {{ $attributes->class(['oc-copy-field', 'oc-copy-field--display' => $display, 'oc-copy-field--lg' => $display === 'lg', 'oc-copy-field--wrap' => $wraps, 'oc-copy-field--block' => $block])->merge(array_filter(['style' => $display ? '--oc-copy-chars: '.mb_strlen($shown) : null])) }}>
     @if ($wraps)
         <output id="{{ $valueId }}" class="oc-copy-field-value" aria-label="{{ $name }}">{{ $shown }}</output>
     @else

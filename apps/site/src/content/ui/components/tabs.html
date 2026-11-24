@@ -528,6 +528,119 @@ class TabsIconsAndCounts extends Component
     &lt;script type="module" src="/js/oc-tabs.js"&gt;&lt;/script&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 id="scroll" class="oc-section-content__title mt-2">Many tabs on a narrow screen <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">A row of tabs that does not fit scrolls sideways, without a scroll bar, and the page does not move along at the end (<code>overscroll-behavior-x: contain</code>). The line of the active tab and the focus ring are not cut off. <code>oc-tabs.js</code> and the React and Vue tabs scroll the chosen tab into view; in the CSS-only tabset the browser does it when the radio gets focus. Vertical lists do not scroll. This demo is 20rem wide: swipe or use the arrow keys.</p>
+          <oc-demo title="Tabs - scrolling tab list">
+<div class="oc-tabset" style="inline-size:min(100%,20rem)">
+  <div class="oc-tab-list" role="tablist">
+    <label class="oc-tab-trigger"><input type="radio" name="oc-tabs-scroll" checked> Overview</label>
+    <label class="oc-tab-trigger"><input type="radio" name="oc-tabs-scroll"> Teams</label>
+    <label class="oc-tab-trigger"><input type="radio" name="oc-tabs-scroll"> Questions</label>
+    <label class="oc-tab-trigger"><input type="radio" name="oc-tabs-scroll"> Photos</label>
+    <label class="oc-tab-trigger"><input type="radio" name="oc-tabs-scroll"> Scores</label>
+    <label class="oc-tab-trigger"><input type="radio" name="oc-tabs-scroll"> Settings</label>
+  </div>
+  <div class="oc-tab-panel">The round at a glance.</div>
+  <div class="oc-tab-panel">Six teams, 18 players.</div>
+  <div class="oc-tab-panel">15 questions in 5 stops.</div>
+  <div class="oc-tab-panel">42 photos to review.</div>
+  <div class="oc-tab-panel">Team 1 leads with 235 points.</div>
+  <div class="oc-tab-panel">Time limits and hints.</div>
+</div>
+<oc-code lang="html">&lt;div class="oc-tabset" style="inline-size:min(100%,20rem)"&gt;
+  &lt;div class="oc-tab-list" role="tablist"&gt;
+    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-scroll" checked&gt; Overview&lt;/label&gt;
+    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-scroll"&gt; Teams&lt;/label&gt;
+    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-scroll"&gt; Questions&lt;/label&gt;
+    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-scroll"&gt; Photos&lt;/label&gt;
+    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-scroll"&gt; Scores&lt;/label&gt;
+    &lt;label class="oc-tab-trigger"&gt;&lt;input type="radio" name="oc-tabs-scroll"&gt; Settings&lt;/label&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-tab-panel"&gt;The round at a glance.&lt;/div&gt;
+  &lt;div class="oc-tab-panel"&gt;Six teams, 18 players.&lt;/div&gt;
+  &lt;div class="oc-tab-panel"&gt;15 questions in 5 stops.&lt;/div&gt;
+  &lt;div class="oc-tab-panel"&gt;42 photos to review.&lt;/div&gt;
+  &lt;div class="oc-tab-panel"&gt;Team 1 leads with 235 points.&lt;/div&gt;
+  &lt;div class="oc-tab-panel"&gt;Time limits and hints.&lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Tabs } from "@birdycom/omniaui-react";
+
+export function RoundTabs() {
+  return (
+    &lt;div style={{ inlineSize: "min(100%, 20rem)" }}&gt;
+      &lt;Tabs
+        name="oc-tabs-scroll"
+        tabs={[
+        { value: "overview", label: "Overview", content: "The round at a glance." },
+        { value: "teams", label: "Teams", content: "Six teams, 18 players." },
+        { value: "questions", label: "Questions", content: "15 questions in 5 stops." },
+        { value: "photos", label: "Photos", content: "42 photos to review." },
+        { value: "scores", label: "Scores", content: "Team 1 leads with 235 points." },
+        { value: "settings", label: "Settings", content: "Time limits and hints." },
+        ]}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcTabs } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const tab = ref("overview");
+const tabs = [
+  { value: "overview", label: "Overview" },
+  { value: "teams", label: "Teams" },
+  { value: "questions", label: "Questions" },
+  { value: "photos", label: "Photos" },
+  { value: "scores", label: "Scores" },
+  { value: "settings", label: "Settings" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcTabs v-model="tab" name="oc-tabs-scroll" :tabs="tabs" style="inline-size:min(100%,20rem)"&gt;
+    &lt;template #overview&gt;The round at a glance.&lt;/template&gt;
+    &lt;template #teams&gt;Six teams, 18 players.&lt;/template&gt;
+    &lt;template #questions&gt;15 questions in 5 stops.&lt;/template&gt;
+    &lt;template #photos&gt;42 photos to review.&lt;/template&gt;
+    &lt;template #scores&gt;Team 1 leads with 235 points.&lt;/template&gt;
+    &lt;template #settings&gt;Time limits and hints.&lt;/template&gt;
+  &lt;/OcTabs&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::tabs name="oc-tabs-scroll" :tabs="['Overview', 'Teams', 'Questions', 'Photos', 'Scores', 'Settings']" style="inline-size:min(100%,20rem)"&gt;
+    &lt;x-oc::tabs.panel&gt;The round at a glance.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Six teams, 18 players.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;15 questions in 5 stops.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;42 photos to review.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Team 1 leads with 235 points.&lt;/x-oc::tabs.panel&gt;
+    &lt;x-oc::tabs.panel&gt;Time limits and hints.&lt;/x-oc::tabs.panel&gt;
+&lt;/x-oc::tabs&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class RoundTabs extends Component
+{
+    public array $tabs = ['Overview', 'Teams', 'Questions', 'Photos', 'Scores', 'Settings'];
+
+    public function render()
+    {
+        return view('livewire.round-tabs');
+    }
+}
+
+{{-- resources/views/livewire/round-tabs.blade.php --}}
+&lt;div style="inline-size:min(100%,20rem)"&gt;
+    &lt;x-oc::tabs name="oc-tabs-scroll" :tabs="$tabs"&gt;
+        @foreach ($tabs as $tab)
+            &lt;x-oc::tabs.panel&gt;{{ $tab }}&lt;/x-oc::tabs.panel&gt;
+        @endforeach
+    &lt;/x-oc::tabs&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
@@ -539,7 +652,7 @@ class TabsIconsAndCounts extends Component
             <thead><tr><th class="w-perc-1/3">Class / attribute</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>.oc-tabset</code></td><td>Wrapper of the CSS-only tabs: the tab list first, then one <code>.oc-tab-panel</code> per tab in the same order.</td></tr>
-              <tr><td><code>.oc-tab-list</code></td><td>Row of tabs (<code>role="tablist"</code>). Modifiers: <code>--pill</code>, <code>--vertical</code>.</td></tr>
+              <tr><td><code>.oc-tab-list</code></td><td>Row of tabs (<code>role="tablist"</code>). Modifiers: <code>--pill</code>, <code>--vertical</code>. Since 0.18.0 a row that does not fit scrolls sideways (no scroll bar, <code>overscroll-behavior-x: contain</code>); the base line is an inset shadow, so the active line is not cut off. <code>revealTab(tab)</code> from <code>tabs.js</code> scrolls a tab into view.</td></tr>
               <tr><td><code>label.oc-tab-trigger &gt; input[type=radio]</code></td><td>One tab. The radio is visually hidden; the checked one marks the active tab. Give all radios of a set the same unique <code>name</code>.</td></tr>
               <tr><td><code>.oc-tab-panel</code></td><td>A panel. In <code>.oc-tabset</code> the panel at the position of the checked tab shows.</td></tr>
               <tr><td><code>button.oc-tab-trigger[aria-selected]</code> / <code>.is-active</code></td><td>Class-toggle version: the active tab (<code>aria-selected="true"</code> or <code>.is-active</code>) and the visible panel (<code>.oc-tab-panel.is-active</code>).</td></tr>

@@ -11,7 +11,8 @@ import { cwd, exists, pkgDir, posix } from "./project.mjs";
 const SCRIPTS = [
   ["@birdycom/omniaui", "dist/data-table.js", "oc-data-table.js", "list table: sort, filter, select, paginate"],
   ["@birdycom/omniaui", "dist/carousel.js", "oc-carousel.js", "looping carousel (.oc-carousel--loop)"],
-  ["@birdycom/omniaui", "dist/barcode.js", "oc-barcode.js", "barcode SVG (.oc-barcode: EAN-13, EAN-8, UPC-A, Code 128)"],
+  ["@birdycom/omniaui", "dist/barcode.js", "oc-barcode.js", "barcode SVG (.oc-barcode: EAN-13, EAN-8, UPC-A, Code 128, QR)"],
+  ["@birdycom/omniaui", "dist/sortable-list.js", "oc-sortable-list.js", "sortable list: reorder by drag (touch, pen, mouse) or Space + arrows, oc-reorder event ([data-oc-sortable])"],
   ["@birdycom/omniaui", "dist/lazy.js", "oc-lazy.js", "lazy images: fade in over the placeholder (.oc-lazy)"],
   ["@birdycom/omniaui", "dist/back-link.js", "oc-back-link.js", "back link: history.back() within the site, else the fallback href and label (.oc-back-link[data-oc-back])"],
   ["@birdycom/omniaui", "dist/contact-form.js", "oc-contact-form.js", "contact form: send with fetch, field errors and the result in place ([data-contact-form])"],

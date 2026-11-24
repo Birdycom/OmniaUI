@@ -5,6 +5,8 @@
  * .oc-sheet-content(--wide), -header, -title, -description, -body, -footer, -close.
  * glass: see-through panel and a light scrim without blur; inset: a strip of the page stays free beside the panel;
  * footer-panel: the footer is a block of content on its own background.
+ * 0.18.0: floating (the panel floats free of the edge, margin and rounded corners: .oc-sheet--floating), rounded (.oc-sheet--rounded).
+ * A bottom sheet is centered with --oc-sheet-max (40rem) from 48rem wide.
  */
 import { ref } from 'vue'
 import { useDialog } from '../composables/useDialog'
@@ -24,6 +26,8 @@ withDefaults(
     glass?: boolean
     inset?: boolean
     footerPanel?: boolean
+    floating?: boolean
+    rounded?: boolean
   }>(),
   { side: 'right', closeLabel: 'Close' },
 )
@@ -38,7 +42,7 @@ defineExpose({ close })
 <template>
   <dialog
     ref="el"
-    :class="['oc-sheet', side !== 'right' && `oc-sheet--${side}`, glass && 'oc-sheet--glass', inset && 'oc-sheet--inset']"
+    :class="['oc-sheet', side !== 'right' && `oc-sheet--${side}`, glass && 'oc-sheet--glass', inset && 'oc-sheet--inset', floating && 'oc-sheet--floating', rounded && 'oc-sheet--rounded']"
     closedby="any"
     :aria-labelledby="title ? titleId : undefined"
     @close="onClose"

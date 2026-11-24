@@ -176,6 +176,90 @@ class ToastButtons extends Component
     &lt;button class="oc-btn oc-btn--outline" type="button" wire:click="notify('info', 'A new version is available')"&gt;Info&lt;/button&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="action">Toast with an action <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">"Undo" in the notification itself: <code>action: { label, onClick }</code> adds a button (<code>.oc-toast-action</code>) between the text and the close button. It is a real button, so you reach it with Tab and press it with Enter or Space; a click runs the action and closes the toast. A toast with an action stays 10 seconds by default, so there is time to reach it. In Livewire, <code>ocToast(..., action: ['label' =&gt; 'Undo', 'event' =&gt; 'undo-publish'])</code> dispatches that event when the button is pressed.</p>
+          <oc-demo title="Toast - with an action">
+<div class="oc-toast-container oc-toast-container--static">
+  <div class="oc-toast oc-toast--success" role="status">
+    <span class="oc-toast-icon" aria-hidden="true">&#10003;</span>
+    <div class="oc-toast-body"><p class="oc-toast-title">Round published</p><p class="oc-toast-description">Teams see the new questions.</p></div>
+    <button class="oc-toast-action" type="button" onclick="this.closest('.oc-toast').querySelector('.oc-toast-title').textContent = 'Publishing undone'; this.remove()">Undo</button>
+    <button class="oc-toast-close" type="button" aria-label="Dismiss" onclick="this.closest('.oc-toast').remove()">&times;</button>
+  </div>
+</div>
+<oc-code lang="html">&lt;div class="oc-toast oc-toast--success" role="status"&gt;
+  &lt;span class="oc-toast-icon" aria-hidden="true"&gt;&amp;#10003;&lt;/span&gt;
+  &lt;div class="oc-toast-body"&gt;&lt;p class="oc-toast-title"&gt;Round published&lt;/p&gt;&lt;p class="oc-toast-description"&gt;Teams see the new questions.&lt;/p&gt;&lt;/div&gt;
+  &lt;button class="oc-toast-action" type="button"&gt;Undo&lt;/button&gt;
+  &lt;button class="oc-toast-close" type="button" aria-label="Dismiss"&gt;&amp;times;&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">// once around the app: &lt;ToastProvider&gt;…&lt;/ToastProvider&gt;
+const { toast } = useToast();
+
+&lt;Button onClick={() =&gt; toast({
+  variant: "success",
+  title: "Round published",
+  description: "Teams see the new questions.",
+  action: { label: "Undo", onClick: () =&gt; unpublish() },
+})}&gt;Publish&lt;/Button&gt;</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcToastContainer, useToast } from "@birdycom/omniaui-vue";
+
+const { push } = useToast();
+const unpublish = () =&gt; {};
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton @click="push({ variant: 'success', title: 'Round published', description: 'Teams see the new questions.', action: { label: 'Undo', onClick: unpublish } })"&gt;Publish&lt;/OcButton&gt;
+  &lt;OcToastContainer /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- a toast from the server with your own action button (it keeps the toast styling) --}}
+&lt;x-oc::toast.container&gt;
+    &lt;x-oc::toast variant="success" title="Round published"&gt;
+        Teams see the new questions.
+        &lt;x-slot:action&gt;
+            &lt;form method="post" action="/rounds/2/unpublish"&gt;@csrf&lt;button class="oc-toast-action" type="submit"&gt;Undo&lt;/button&gt;&lt;/form&gt;
+        &lt;/x-slot:action&gt;
+    &lt;/x-oc::toast&gt;
+&lt;/x-oc::toast.container&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Attributes\On;
+use Livewire\Component;
+use Omniacss\Livewire\WithOcToast;
+
+class PublishRound extends Component
+{
+    use WithOcToast;
+
+    public bool $published = false;
+
+    public function publish(): void
+    {
+        $this-&gt;published = true;
+        $this-&gt;ocToast('success', 'Round published', 'Teams see the new questions.', action: ['label' =&gt; 'Undo', 'event' =&gt; 'undo-publish']);
+    }
+
+    #[On('undo-publish')]
+    public function undo(): void
+    {
+        $this-&gt;published = false;
+    }
+
+    public function render()
+    {
+        return view('livewire.publish-round');
+    }
+}
+
+{{-- resources/views/livewire/publish-round.blade.php --}}
+{{-- once in the layout: &lt;x-oc::toast-stack /&gt; --}}
+&lt;div&gt;
+    &lt;button class="oc-btn" type="button" wire:click="publish" @disabled($published)&gt;Publish&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -194,6 +278,7 @@ class ToastButtons extends Component
               <tr><td><code>.oc-toast-body</code></td><td>Text column</td></tr>
               <tr><td><code>.oc-toast-title / -description</code></td><td>Heading and optional text</td></tr>
               <tr><td><code>.oc-toast-close</code></td><td>Dismiss button</td></tr>
+              <tr><td><code>.oc-toast-action</code></td><td>0.18.0: an action button in the toast ("Undo"), between the text and the close button. React / Vue <code>action: {{ label, onClick }}</code> (closes the toast, 10 s default duration), Blade <code>action</code> (label) or slot <code>action</code>, Livewire <code>ocToast(..., action: ['label' =&gt; 'Undo', 'event' =&gt; 'undo-publish'])</code>.</td></tr>
             </tbody>
           </table>
         </div>

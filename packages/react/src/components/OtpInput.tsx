@@ -6,7 +6,7 @@ import { cx } from "../utils";
 import { useControllable, useMergedRef } from "../hooks";
 import { bindOtp } from "../../../ui/src/form-extras.js";
 
-export interface OtpInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange" | "type" | "maxLength"> {
+export interface OtpInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange" | "type" | "maxLength" | "size"> {
   /** Code length (default 6). */
   length?: number;
   value?: string;
@@ -24,11 +24,17 @@ export interface OtpInputProps extends Omit<InputHTMLAttributes<HTMLInputElement
   fit?: boolean;
   /** A divider after every n cells (4: "ABCD EFGH"). */
   group?: number;
+  /** 0.18.0: full width of the parent, the cells share it (`oc-otp--block`). */
+  block?: boolean;
+  /** 0.18.0: `lg` = larger digits (`oc-otp--lg`). */
+  size?: "md" | "lg";
+  /** 0.18.0: a tile per character with a bar under it (`oc-otp--tiles`). */
+  tiles?: boolean;
 }
 
 /** `<input class="oc-otp">`: separate cells drawn on a single real input. */
 export const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(function OtpInput(
-  { length = 6, value, defaultValue = "", onChange, onComplete, invalid, alphanumeric, fit, group, className, style, ...rest },
+  { length = 6, value, defaultValue = "", onChange, onComplete, invalid, alphanumeric, fit, group, block, size = "md", tiles, className, style, ...rest },
   ref,
 ) {
   const [code, setCode] = useControllable<string>(value, defaultValue, onChange);
@@ -54,7 +60,7 @@ export const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(function Otp
   return (
     <input
       ref={setRef}
-      className={cx("oc-otp", fit && "oc-otp--fit", group ? "oc-otp--group" : undefined, className)}
+      className={cx("oc-otp", fit && "oc-otp--fit", group ? "oc-otp--group" : undefined, block && "oc-otp--block", size === "lg" && "oc-otp--lg", tiles && "oc-otp--tiles", className)}
       type="text"
       inputMode={alphanumeric ? "text" : "numeric"}
       autoComplete="one-time-code"

@@ -7,8 +7,9 @@
  * 0.18.0: the rows can also come from the default slot: <OcCommandGroup label="…"><OcCommandItem value="…">…</OcCommandItem>
  * </OcCommandGroup> (after `items`); an OcCommandItem shows its own slot content and may have its own @select.
  */
-import { Fragment, isVNode, ref, useSlots, watch } from 'vue'
+import { Comment, Fragment, h, isVNode, ref, useSlots, watch } from 'vue'
 import type { VNode } from 'vue'
+import OcWebicon from './OcWebicon.vue'
 import OcCommandItem from './OcCommandItem.vue'
 import OcCommandGroup from './OcCommandGroup.vue'
 
@@ -101,8 +102,29 @@ function build() {
   return sections
 }
 
-/** Renders the slot content of a slotted row. */
-const RowContent = (p: { render: () => unknown }) => p.render() as VNode[]
+/** An icon at the start of a row: OcWebicon, an svg / img / iconify-icon, or an element with "icon" in its class. */
+function isIcon(node: VNode): boolean {
+  if (node.type === OcWebicon) return true
+  if (typeof node.type === 'string' && ['svg', 'img', 'iconify-icon'].includes(node.type)) return true
+  const cls = node.props?.class
+  return typeof cls === 'string' && /icon/i.test(cls)
+}
+
+/**
+ * Renders the slot content of a slotted row. The row is a flex line with a gap, so loose nodes (<strong>New</strong> invoice)
+ * would get that gap between them: leading icons stay their own flex items, the rest goes in one span and flows as text.
+ */
+const RowContent = (p: { render: () => unknown }) => {
+  let nodes = ([] as unknown[]).concat(p.render() ?? []).filter((n) => !(isVNode(n) && n.type === Comment)) as VNode[]
+  while (nodes.length === 1 && isVNode(nodes[0]) && nodes[0].type === Fragment && Array.isArray(nodes[0].children)) {
+    nodes = (nodes[0].children as VNode[]).filter((n) => !(isVNode(n) && n.type === Comment))
+  }
+  let i = 0
+  while (i < nodes.length && isVNode(nodes[i]) && isIcon(nodes[i])) i++
+  const rest = nodes.slice(i)
+  if (rest.length <= 1) return nodes
+  return [...nodes.slice(0, i), h('span', null, rest)]
+}
 
 const active = ref(0)
 

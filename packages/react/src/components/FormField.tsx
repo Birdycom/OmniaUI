@@ -1,6 +1,6 @@
 // File: packages/react/src/components/FormField.tsx
 // Map: props -> ids (control, help, error / errorKey) -> injected control props (id, aria-*, required, onValidate)
-//      -> label row (label + required mark + tooltip + trailing) -> control -> description -> error -> FieldGroup
+//      -> label row (label + required mark + tooltip + trailing) -> control -> description -> error -> FormGroup (legacy) -> FieldGroup
 "use client";
 
 import { Children, cloneElement, forwardRef, isValidElement, useId, useState } from "react";
@@ -111,6 +111,14 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>(function For
       {shownError != null && <p className="oc-field-error" id={errorId} role="alert">{shownError}</p>}
     </div>
   );
+});
+
+/** `<div class="oc-form-group">`: legacy form block (margin below). Prefer `FormField` / `.oc-field` for new forms. */
+export const FormGroup = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function FormGroup(
+  { className, ...rest },
+  ref,
+) {
+  return <div ref={ref} className={cx("oc-form-group", className)} {...rest} />;
 });
 
 /** `<div class="oc-field-group">`: stack (or `row`) of related controls. */

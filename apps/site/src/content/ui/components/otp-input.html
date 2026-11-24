@@ -291,6 +291,86 @@ class MagicLink extends Component
     &lt;x-oc::wire.otp model="code" complete="verify" label="Authentication code" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="block-tiles">Full width, large and tiles <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">A team code on a tablet: <code>block</code> (<code>.oc-otp--block</code>) takes the full width of the parent and the cells share it, the digits scale with them. <code>size="lg"</code> (<code>.oc-otp--lg</code>) makes the digits larger. <code>tiles</code> (<code>.oc-otp--tiles</code>) draws a tile per character with a bar under it; the bar of the next cell takes the ring color while you type, and turns red with <code>aria-invalid</code>. Still one real input, and the width counts the spacing after the last character, so a full code never scrolls.</p>
+          <oc-demo title="OTP input - block, lg and tiles">
+<div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));grid-auto-rows:1fr;gap:1rem;align-items:stretch">
+  <div class="oc-card" style="padding:1rem;block-size:100%">
+    <div class="oc-field">
+      <label class="oc-field-label" for="oc-otp-team">Team code: block, lg</label>
+      <input class="oc-otp oc-otp--block oc-otp--lg" id="oc-otp-team" name="team" type="text" inputmode="text" autocomplete="one-time-code" maxlength="6" style="--oc-otp-length: 6" value="K7Q">
+    </div>
+  </div>
+  <div class="oc-card" style="padding:1rem;block-size:100%">
+    <div class="oc-field">
+      <label class="oc-field-label" for="oc-otp-tiles">Team code: tiles, block</label>
+      <input class="oc-otp oc-otp--tiles oc-otp--block oc-otp--lg" id="oc-otp-tiles" name="team2" type="text" inputmode="text" autocomplete="one-time-code" maxlength="6" style="--oc-otp-length: 6" value="M2X">
+    </div>
+  </div>
+  <div class="oc-card" style="padding:1rem;block-size:100%">
+    <div class="oc-field">
+      <label class="oc-field-label" for="oc-otp-tiles-sm">Tiles, normal size</label>
+      <input class="oc-otp oc-otp--tiles" id="oc-otp-tiles-sm" name="pin" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="4" pattern="[0-9]*" style="--oc-otp-length: 4" value="12">
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;div style="display:grid;inline-size:100%;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));grid-auto-rows:1fr;gap:1rem;align-items:stretch"&gt;
+  &lt;div class="oc-card" style="padding:1rem;block-size:100%"&gt;
+    &lt;div class="oc-field"&gt;
+      &lt;label class="oc-field-label" for="oc-otp-team"&gt;Team code: block, lg&lt;/label&gt;
+      &lt;input class="oc-otp oc-otp--block oc-otp--lg" id="oc-otp-team" name="team" type="text" inputmode="text" autocomplete="one-time-code" maxlength="6" style="--oc-otp-length: 6" value="K7Q"&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-card" style="padding:1rem;block-size:100%"&gt;
+    &lt;div class="oc-field"&gt;
+      &lt;label class="oc-field-label" for="oc-otp-tiles"&gt;Team code: tiles, block&lt;/label&gt;
+      &lt;input class="oc-otp oc-otp--tiles oc-otp--block oc-otp--lg" id="oc-otp-tiles" name="team2" type="text" inputmode="text" autocomplete="one-time-code" maxlength="6" style="--oc-otp-length: 6" value="M2X"&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-card" style="padding:1rem;block-size:100%"&gt;
+    &lt;div class="oc-field"&gt;
+      &lt;label class="oc-field-label" for="oc-otp-tiles-sm"&gt;Tiles, normal size&lt;/label&gt;
+      &lt;input class="oc-otp oc-otp--tiles" id="oc-otp-tiles-sm" name="pin" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="4" pattern="[0-9]*" style="--oc-otp-length: 4" value="12"&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;OtpInput length={6} alphanumeric block size="lg" value={team} onChange={setTeam} /&gt;
+&lt;OtpInput length={6} alphanumeric block size="lg" tiles value={team} onChange={setTeam} /&gt;
+&lt;OtpInput length={4} tiles value={pin} onChange={setPin} /&gt;</oc-code>
+<oc-code lang="vue">&lt;OcOtpInput v-model="team" :length="6" :numeric="false" block size="lg" /&gt;
+&lt;OcOtpInput v-model="team" :length="6" :numeric="false" block size="lg" tiles /&gt;
+&lt;OcOtpInput v-model="pin" :length="4" tiles /&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::otp-input label="Team code" name="team" :length="6" alphanumeric block size="lg" /&gt;
+&lt;x-oc::otp-input label="Team code" name="team2" :length="6" alphanumeric block size="lg" tiles /&gt;
+&lt;x-oc::otp-input label="PIN" name="pin" :length="4" tiles /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class JoinTeam extends Component
+{
+    public string $team = '';
+
+    public function join(): void
+    {
+        $this-&gt;validate(['team' =&gt; 'required|alpha_num|size:6']);
+    }
+
+    public function render()
+    {
+        return view('livewire.join-team');
+    }
+}
+
+{{-- resources/views/livewire/join-team.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::wire.otp model="team" :length="6" complete="join" label="Team code" block size="lg" tiles
+        inputmode="text" pattern="[A-Za-z0-9]*" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -306,6 +386,9 @@ class MagicLink extends Component
               <tr><td><code>.oc-otp</code></td><td>The input. Set <code>style="--oc-otp-length: 6"</code> and <code>maxlength</code> to the code length. <code>aria-invalid="true"</code> shows the error state.</td></tr>
               <tr><td><code>.oc-otp--fit</code></td><td>The cells shrink with the parent (container query units); at most the normal size. Prop <code>fit</code>.</td></tr>
               <tr><td><code>.oc-otp--group</code> + <code>--oc-otp-group</code></td><td>A darker divider after every n cells (default 4). Prop <code>group</code>.</td></tr>
+              <tr><td><code>.oc-otp--block</code></td><td>0.18.0: full width of the parent, the cells share it and the digits scale with them (the parent becomes the size reference). Prop <code>block</code>.</td></tr>
+              <tr><td><code>.oc-otp--lg</code></td><td>0.18.0: larger digits (2.25rem). Prop <code>size="lg"</code>.</td></tr>
+              <tr><td><code>.oc-otp--tiles</code></td><td>0.18.0: a tile per character with a bar under it. Tokens <code>--oc-otp-tile</code>, <code>--oc-otp-bar</code>, <code>--oc-otp-bar-size</code> (3px), <code>--oc-otp-gap</code> (0.4rem). The bar of the active cell takes the ring color; red with <code>aria-invalid</code>. Prop <code>tiles</code>.</td></tr>
               <tr><td><code>--oc-otp-size</code></td><td>Digit size (default <code>1.5rem</code>); the cells and the height follow. The field sets its own <code>block-size</code> and <code>font-size</code>, so a global <code>input</code> height rule does not squash it (0.17.0).</td></tr>
               <tr><td>Complete</td><td>React <code>onComplete</code> and Vue <code>@complete</code> run after the value update has rendered; Livewire <code>complete</code> runs on the next tick, after <code>wire:model</code> (0.17.0). Plain HTML: listen to <code>input</code> and compare the length with <code>maxlength</code>.</td></tr>
             </tbody>

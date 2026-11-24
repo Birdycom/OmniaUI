@@ -1,7 +1,8 @@
-/* File: packages/ui/src/parts/app-severity-card.css | Map: card (details) -> head (summary) -> icon + title + tags -> level badge + chevron -> body + actions -> severity modifiers -> resolved state -> reduced motion */
+/* File: packages/ui/src/parts/app-severity-card.css | Map: card (details) -> head (summary) -> icon + title + tags -> level badge + chevron -> body + actions -> severity modifiers (+ calm) -> resolved state -> compact row (0.18.0) -> reduced motion */
 /* Severity card: risk-colored expandable card (security finding, incident, audit item).
    Built on <details> / <summary>, so it opens without JavaScript; same name="..." makes a group exclusive.
-   Levels: --low, --medium, --high, --critical. Resolved: .is-resolved (muted, no color). */
+   Levels: --calm (0.18.0), --low, --medium, --high, --critical. Resolved: .is-resolved (muted, no color).
+   --compact (0.18.0): a row for a list of alerts (a div, no <details>): start border + tint per level, no chevron. */
 
 .oc-severity-card {
   --oc-severity-color: var(--oc-muted-foreground);
@@ -80,6 +81,7 @@
 .oc-severity-card-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block-start: 0.75rem; }
 
 /* Levels (theme tokens; critical is a deeper red). */
+.oc-severity-card--calm { --oc-severity-color: var(--oc-info, var(--oc-primary)); }
 .oc-severity-card--low { --oc-severity-color: var(--oc-success); }
 .oc-severity-card--medium { --oc-severity-color: var(--oc-warning); }
 .oc-severity-card--high { --oc-severity-color: var(--oc-destructive); }
@@ -89,6 +91,20 @@
 /* Resolved: back to neutral colors, title struck through. */
 .oc-severity-card.is-resolved { --oc-severity-color: var(--oc-muted-foreground); background: var(--oc-surface); }
 .oc-severity-card.is-resolved .oc-severity-card-title { text-decoration: line-through; }
+
+/* Compact (0.18.0): one row per alert in a list ("Attention"): the start border and tint of the level, icon, title, an
+   optional line of text, tags and the level badge; no chevron and nothing to open. Put actions at the end of the row. */
+.oc-severity-card--compact { border-radius: var(--oc-radius); }
+.oc-severity-card--compact + .oc-severity-card--compact { margin-block-start: 0.375rem; }
+.oc-stack > .oc-severity-card--compact + .oc-severity-card--compact { margin-block-start: 0; }
+.oc-severity-card--compact > .oc-severity-card-head { gap: 0.625rem; padding: 0.5rem 0.75rem; cursor: default; user-select: auto; }
+.oc-severity-card--compact > .oc-severity-card-head::after { content: none; }
+.oc-severity-card--compact > .oc-severity-card-head:hover { background: none; }
+.oc-severity-card--compact .oc-severity-card-icon svg { inline-size: 1rem; block-size: 1rem; }
+.oc-severity-card--compact .oc-severity-card-tags { margin-block-start: 0.25rem; }
+.oc-severity-card-text { display: block; margin-block-start: 0.125rem; font-size: 0.8125rem; line-height: 1.45; color: var(--oc-muted-foreground); }
+.oc-severity-card--compact .oc-severity-card-actions { flex-shrink: 0; margin-block-start: 0; gap: 0.25rem; }
+.oc-severity-card--compact .oc-severity-card-level { padding: 0.125rem 0.4rem; font-size: 0.625rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .oc-severity-card::details-content,

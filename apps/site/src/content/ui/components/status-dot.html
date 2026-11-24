@@ -334,6 +334,71 @@ class StatusDotStatusSaveStatus extends Component
     &lt;span wire:loading.remove wire:dirty.remove wire:target="title"&gt;&lt;x-oc::save-status state="saved" :saved-at="$savedAt" /&gt;&lt;/span&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="sync-status">Sync status: online, queued, offline, compact <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">The save status doubles as a sync indicator for an app that works offline. <code>state="online"</code>, <code>state="queued"</code> with <code>count</code> ("3 changes waiting to sync") and <code>state="offline"</code>. <code>compact</code> (<code>.oc-status--compact</code>) shows only the dot, with the count next to it, for a menu button; the text stays for screen readers and as a tooltip (<code>title</code>). Own texts in <code>labels</code> may hold <code>{count}</code> (React, Vue) or <code>:count</code> (Blade).</p>
+          <oc-demo title="Status - sync status">
+<div style="display:flex;flex-wrap:wrap;gap:0.75rem 2rem;align-items:center;inline-size:100%">
+  <p class="oc-status" role="status" aria-live="polite" data-state="online"><span class="oc-status-dot oc-status-dot--done" aria-hidden="true"></span><span class="oc-status__text">Online</span></p>
+  <p class="oc-status" role="status" aria-live="polite" data-state="queued"><span class="oc-status-dot oc-status-dot--waiting" aria-hidden="true"></span><span class="oc-status__text">3 changes waiting to sync</span></p>
+  <p class="oc-status" role="status" aria-live="polite" data-state="offline"><span class="oc-status-dot oc-status-dot--idle" aria-hidden="true"></span><span class="oc-status__text">Offline: changes are kept on this device</span></p>
+  <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" aria-label="Menu" style="gap:0.5rem">Menu
+    <span class="oc-status oc-status--compact" role="status" aria-live="polite" data-state="queued" title="3 changes waiting to sync"><span class="oc-status-dot oc-status-dot--waiting" aria-hidden="true"></span><span class="oc-status__count" aria-hidden="true">3</span><span class="oc-status__text">3 changes waiting to sync</span></span>
+  </button>
+</div>
+<oc-code lang="html">&lt;div style="display:flex;flex-wrap:wrap;gap:0.75rem 2rem;align-items:center;inline-size:100%"&gt;
+  &lt;p class="oc-status" role="status" aria-live="polite" data-state="online"&gt;&lt;span class="oc-status-dot oc-status-dot--done" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-status__text"&gt;Online&lt;/span&gt;&lt;/p&gt;
+  &lt;p class="oc-status" role="status" aria-live="polite" data-state="queued"&gt;&lt;span class="oc-status-dot oc-status-dot--waiting" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-status__text"&gt;3 changes waiting to sync&lt;/span&gt;&lt;/p&gt;
+  &lt;p class="oc-status" role="status" aria-live="polite" data-state="offline"&gt;&lt;span class="oc-status-dot oc-status-dot--idle" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-status__text"&gt;Offline: changes are kept on this device&lt;/span&gt;&lt;/p&gt;
+  &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" aria-label="Menu" style="gap:0.5rem"&gt;Menu
+    &lt;span class="oc-status oc-status--compact" role="status" aria-live="polite" data-state="queued" title="3 changes waiting to sync"&gt;&lt;span class="oc-status-dot oc-status-dot--waiting" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="oc-status__count" aria-hidden="true"&gt;3&lt;/span&gt;&lt;span class="oc-status__text"&gt;3 changes waiting to sync&lt;/span&gt;&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">&lt;SaveStatus state="online" /&gt;
+&lt;SaveStatus state="queued" count={3} /&gt;
+&lt;SaveStatus state="offline" /&gt;
+&lt;button className="oc-btn oc-btn--outline oc-btn--sm" type="button" aria-label="Menu"&gt;
+  Menu &lt;SaveStatus state="queued" count={3} compact /&gt;
+&lt;/button&gt;</oc-code>
+<oc-code lang="vue">&lt;OcSaveStatus state="online" /&gt;
+&lt;OcSaveStatus state="queued" :count="3" /&gt;
+&lt;OcSaveStatus state="offline" /&gt;
+&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" aria-label="Menu"&gt;
+  Menu &lt;OcSaveStatus state="queued" :count="3" compact /&gt;
+&lt;/button&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::save-status state="online" /&gt;
+&lt;x-oc::save-status state="queued" :count="3" /&gt;
+&lt;x-oc::save-status state="offline" /&gt;
+&lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" aria-label="Menu"&gt;
+    Menu &lt;x-oc::save-status state="queued" :count="3" compact /&gt;
+&lt;/button&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class SyncIndicator extends Component
+{
+    public int $queued = 3;
+
+    public function sync(): void
+    {
+        // Send the queued changes here.
+        $this-&gt;queued = 0;
+    }
+
+    public function render()
+    {
+        return view('livewire.sync-indicator');
+    }
+}
+
+{{-- resources/views/livewire/sync-indicator.blade.php --}}
+&lt;div style="display:flex;gap:1rem;align-items:center"&gt;
+    &lt;x-oc::save-status :state="$queued ? 'queued' : 'online'" :count="$queued" /&gt;
+    &lt;button class="oc-btn oc-btn--outline oc-btn--sm" type="button" wire:click="sync"&gt;Sync now&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -352,6 +417,7 @@ class StatusDotStatusSaveStatus extends Component
               <tr><td><code>--sm / --lg</code></td><td>6 px / 10 px</td></tr>
               <tr><td><code>--oc-status-dot-color</code></td><td>Token: any color for the dot and its ring</td></tr>
               <tr><td><code>.oc-status</code></td><td>Row: dot + <code>.oc-status__text</code> (one line, cuts off with …) + <code>.oc-status__meta</code> (right, tabular numbers)</td></tr>
+              <tr><td><code>.oc-status--compact</code></td><td>0.18.0: only the dot (and <code>.oc-status__count</code>); the text stays for screen readers. Save status <code>compact</code>; states <code>online</code>, <code>queued</code> (with <code>count</code>) and <code>offline</code> make a sync indicator.</td></tr>
               <tr><td><code>.oc-badge--status</code> + <code>data-status</code></td><td>On an <code>.oc-badge</code>: <code>working</code> (info), <code>waiting</code> (warning), <code>done</code> (success), <code>error</code> (destructive), <code>idle</code> (outline). Own color: <code>--oc-badge-status</code>.</td></tr>
               <tr><td><code>.oc-status-list</code></td><td>A compact list: <code>__head</code> (small uppercase heading), <code>__item</code> (one line), <code>__name</code>, <code>__meta</code> (muted, cuts off). <code>--dim</code> fades the items a little.</td></tr>
               <tr><td><code>aria-hidden="true"</code> / <code>role="img" aria-label</code></td><td>Hide the dot when the text says the state; label it when it stands alone</td></tr>

@@ -98,13 +98,13 @@ class Command extends Component
 &lt;/div&gt;</oc-code>
           </oc-demo>
           <h3 class="oc-section-content__title mt-2" id="children">Items as children <span class="oc-badge-version">v0.18.0</span></h3>
-          <p class="oc-section-content__desc">Next to the <code>groups</code> / <code>items</code> data, the rows can be written as children: <code>&lt;CommandGroup&gt;</code> with <code>&lt;CommandItem&gt;</code> in React, <code>&lt;OcCommandGroup&gt;</code> / <code>&lt;OcCommandItem&gt;</code> in Vue. A row shows its own content (text, <code>&lt;strong&gt;</code>, an icon), is searched by its text (or <code>label</code>, <code>keywords</code>) and may have its own <code>onSelect</code> / <code>@select</code>. Filtering and the arrow keys and Enter work as before. The rows are read from the children as you write them (also inside fragments, <code>.map()</code> and <code>v-for</code>); a row inside your own wrapper component is not found, see <a href="#children-wrapper">Items in your own component</a>. Blade: <code>&lt;x-oc::command.group&gt;</code> and <code>&lt;x-oc::command.item&gt;</code> (markup only).</p>
+          <p class="oc-section-content__desc">Next to the <code>groups</code> / <code>items</code> data, the rows can be written as children: <code>&lt;CommandGroup&gt;</code> with <code>&lt;CommandItem&gt;</code> in React, <code>&lt;OcCommandGroup&gt;</code> / <code>&lt;OcCommandItem&gt;</code> in Vue. A row shows its own content (text, <code>&lt;strong&gt;</code>, an icon), is searched by its text (or <code>label</code>, <code>keywords</code>) and may have its own <code>onSelect</code> / <code>@select</code>. Filtering and the arrow keys and Enter work as before. The rows are read from the children as you write them (also inside fragments, <code>.map()</code> and <code>v-for</code>); a row inside your own wrapper component is not found, see <a href="#children-wrapper">Items in your own component</a>. Blade: <code>&lt;x-oc::command.group&gt;</code> and <code>&lt;x-oc::command.item&gt;</code> (markup only). A row is a flex line with a gap after a leading icon: React and Vue put the text after the icon in one <code>&lt;span&gt;</code> for you; in HTML and Blade wrap mixed text such as <code>&lt;strong&gt;New&lt;/strong&gt; invoice</code> in a <code>&lt;span&gt;</code> yourself.</p>
           <oc-demo title="Command - items as children">
-<div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox" style="max-inline-size:24rem">
+<div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox" style="inline-size:min(100%, 24rem)">
   <input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands">
   <ul class="oc-command-list" role="listbox">
     <li class="oc-command-group-label" role="presentation">Invoices</li>
-    <li class="oc-command-item" role="option" aria-selected="true"><strong>New</strong> invoice <span class="oc-command-shortcut">Ctrl N</span></li>
+    <li class="oc-command-item" role="option" aria-selected="true"><span><strong>New</strong> invoice</span> <span class="oc-command-shortcut">Ctrl N</span></li>
     <li class="oc-command-item" role="option">All invoices</li>
     <li class="oc-command-separator" role="separator"></li>
     <li class="oc-command-group-label" role="presentation">Customers</li>
@@ -113,11 +113,11 @@ class Command extends Component
   </ul>
   <div class="oc-command-empty" hidden>No results found.</div>
 </div>
-<oc-code lang="html">&lt;div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox" style="max-inline-size:24rem"&gt;
+<oc-code lang="html">&lt;div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox" style="inline-size:min(100%, 24rem)"&gt;
   &lt;input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands"&gt;
   &lt;ul class="oc-command-list" role="listbox"&gt;
     &lt;li class="oc-command-group-label" role="presentation"&gt;Invoices&lt;/li&gt;
-    &lt;li class="oc-command-item" role="option" aria-selected="true"&gt;&lt;strong&gt;New&lt;/strong&gt; invoice &lt;span class="oc-command-shortcut"&gt;Ctrl N&lt;/span&gt;&lt;/li&gt;
+    &lt;li class="oc-command-item" role="option" aria-selected="true"&gt;&lt;span&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/span&gt; &lt;span class="oc-command-shortcut"&gt;Ctrl N&lt;/span&gt;&lt;/li&gt;
     &lt;li class="oc-command-item" role="option"&gt;All invoices&lt;/li&gt;
     &lt;li class="oc-command-separator" role="separator"&gt;&lt;/li&gt;
     &lt;li class="oc-command-group-label" role="presentation"&gt;Customers&lt;/li&gt;
@@ -165,7 +165,7 @@ function open(item: { label: string; value?: string }) {
 &lt;/template&gt;</oc-code>
 <oc-code lang="blade">&lt;x-oc::command style="max-inline-size:24rem"&gt;
     &lt;x-oc::command.group label="Invoices"&gt;
-        &lt;x-oc::command.item value="new" shortcut="Ctrl N" selected&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/x-oc::command.item&gt;
+        &lt;x-oc::command.item value="new" shortcut="Ctrl N" selected&gt;&lt;span&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/span&gt;&lt;/x-oc::command.item&gt;
         &lt;x-oc::command.item value="list"&gt;All invoices&lt;/x-oc::command.item&gt;
     &lt;/x-oc::command.group&gt;
     &lt;x-oc::command.group label="Customers" separator&gt;
@@ -201,7 +201,7 @@ class CommandChildren extends Component
 &lt;div&gt;
     &lt;x-oc::command style="max-inline-size:24rem" wire:model.live="search"&gt;
         &lt;x-oc::command.group label="Invoices"&gt;
-            &lt;x-oc::command.item value="new" shortcut="Ctrl N" wire:click="open('invoices/new')"&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/x-oc::command.item&gt;
+            &lt;x-oc::command.item value="new" shortcut="Ctrl N" wire:click="open('invoices/new')"&gt;&lt;span&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/span&gt;&lt;/x-oc::command.item&gt;
         &lt;/x-oc::command.group&gt;
         &lt;x-oc::command.group label="Customers" separator&gt;
             @foreach ($customers as $customer)

@@ -1,5 +1,5 @@
 /* File: packages/ui/src/parts/forms-copy-field-extras.css
-   Map: copy button with icon + label -> icon swap on .is-copied -> show/hide toggle (masked secret) -> --wrap
+   Map: copy button with icon + label -> icon swap on .is-copied -> show/hide toggle (masked secret) -> --wrap -> --block (0.18.0)
    Copy field additions (0.17.0). The base .oc-copy-field lives in components.css.
    - .oc-copy-field-button holds an icon (mdi:content-copy, mdi:check once copied) and .oc-copy-field-button-label;
      the label shows the copied feedback, .oc-copy-field-status (visually hidden, role="status") announces it.
@@ -44,4 +44,28 @@
   overflow-wrap: anywhere;
   text-overflow: clip;
   line-height: 1.45;
+}
+/* --block (0.18.0): the field stretches with a narrow column (a sidebar, a card in a grid, a flex row) instead of keeping
+   the width of its input: it may shrink below its content, the value takes the rest of the room and ends in an ellipsis.
+   Below 14rem the button keeps only its icon (the label stays for screen readers). */
+.oc-copy-field.oc-copy-field--block {
+  container-type: inline-size;
+  flex: 1 1 auto;
+  align-self: stretch;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  box-sizing: border-box;
+}
+.oc-copy-field--block > .oc-copy-field-value { flex: 1 1 0; inline-size: 0; }
+@container (max-width: 14rem) {
+  .oc-copy-field--block .oc-copy-field-button:has(> svg) > .oc-copy-field-button-label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .oc-copy-field--block .oc-copy-field-button { padding-inline: 0.625rem; }
 }

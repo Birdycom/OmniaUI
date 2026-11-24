@@ -217,6 +217,11 @@ function choose(r?: Row) {
   }
   close()
 }
+/** icon-only: the chosen label is invisible in the field; select it so the first key replaces it (0.18.0) */
+function onFocusInput(e: Event) {
+  if (iconOnlyOn.value && text.value == null) (e.currentTarget as HTMLInputElement).select()
+  open.value = true
+}
 function onInput(e: Event) {
   const v = (e.target as HTMLInputElement).value
   text.value = v
@@ -266,6 +271,7 @@ const portalAttrs = computed(() => (usePortal.value ? { style: place.value, 'dat
     ref="wrap"
     :class="['oc-combobox', variant === 'ledger' && 'oc-combobox--ledger', triggerVariant === 'ghost' && 'oc-combobox--ghost', header && 'oc-combobox--header', iconOnlyOn && 'oc-combobox--icon-only']"
     :data-open="open ? '' : 'false'"
+    :data-typing="text ? '' : undefined"
     :data-module="module"
   >
     <span v-if="withIcons" class="oc-combobox-icon" aria-hidden="true">
@@ -293,8 +299,8 @@ const portalAttrs = computed(() => (usePortal.value ? { style: place.value, 'dat
       :value="text ?? chosen?.label ?? ''"
       @input="onInput"
       @keydown="onKey"
-      @focus="open = true"
-      @click="open = true"
+      @focus="onFocusInput"
+      @click="onFocusInput"
       @blur="close"
     />
     <input v-if="name" type="hidden" :name="name" :value="model == null ? '' : String(model)" />

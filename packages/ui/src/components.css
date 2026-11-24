@@ -1738,11 +1738,24 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
    Orientation: horizontal (default), vertical
    =================================================================== */
 
+/* 0.18.0: a row of tabs that does not fit scrolls sideways (a phone), without a scroll bar; the page does not scroll
+   along at the end (overscroll-behavior). The base line is an inset shadow instead of a border, so the 2px line of the
+   active tab is not cut off by the scroll box; focus rings sit inside the tabs. tabs.js and the wrappers scroll the
+   active tab into view. Vertical lists do not scroll. */
 .oc-tab-list {
   display: inline-flex;
   align-items: center;
-  border-bottom: 1px solid var(--oc-border);
+  vertical-align: top;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  white-space: nowrap;
+  box-shadow: inset 0 -1px 0 var(--oc-border);
 }
+.oc-tab-list::-webkit-scrollbar { display: none; }
+.oc-tab-list > .oc-tab-trigger { flex: none; }
 
 /* Line variant (default) */
 .oc-tab-trigger {
@@ -1753,7 +1766,7 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
+  margin-bottom: 0;
   cursor: pointer;
   font-family: inherit;
   transition: color var(--oc-transition-fast), border-color var(--oc-transition-fast);
@@ -1781,6 +1794,7 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
 /* Pill/contained variant */
 .oc-tab-list--pill {
   border-bottom: none;
+  box-shadow: none;
   background: var(--oc-muted);
   border-radius: var(--oc-radius);
   padding: 4px;
@@ -1806,7 +1820,11 @@ input.oc-radio:disabled { opacity: 0.5; cursor: not-allowed; }
   flex-direction: column;
   /* Every tab as wide as the list, so the active line on the right stays on one vertical line. */
   align-items: stretch;
+  max-inline-size: none;
+  overflow: visible;
+  white-space: normal;
   border-bottom: none;
+  box-shadow: none;
   border-right: 1px solid var(--oc-border);
 }
 
