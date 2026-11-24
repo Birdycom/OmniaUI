@@ -12,7 +12,7 @@ Wrappers for React, Vue and Laravel (Blade + Livewire) use exactly the same mark
 [![(Packagist) Laravel](https://img.shields.io/github/actions/workflow/status/Birdycom/OmniaUI/split-php.yml?label=%28Packagist%29%20Laravel&logo=github)](https://github.com/Birdycom/OmniaUI/actions/workflows/split-php.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Version:** `0.17.2` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
+**Version:** `0.17.3` — the same value in `package.json`, every `@birdycom/omniaui*` package and OmniaCSS (`MAJOR.MINOR.PATCH`).
 
 **Site:** https://omniaui.eu · **CSS docs:** https://omniacss.eu/docs/index.html · **CSS framework:** [OmniaCSS](https://github.com/Birdycom/OmniaCSS)
 
@@ -128,6 +128,7 @@ See [php-packages/README.md](php-packages/README.md).
 
 | Version | Date | Changes |
 |--------|-------|-----|
+| `0.17.3` | 2026-11-24 | Contact-form volgt --oc-block-gap, lange woorden in display-titels, break-words |
 | `0.17.2` | 2026-11-23 | Header-combobox, dropdown radio, DataTable bulkActions, Button asChild |
 | `0.17.1` | 2026-11-23 | Release notes, knoptokens, status-badges, DataTable onReorder, gsm-fixes |
 | `0.17.0` | 2026-11-23 | Nieuwe homepage, module-kleur, ledger, compound-componenten, liquid glass, wrappers voor React, Vue, Blade en Livewire, blocks-restyle, vele QA-fixes |
