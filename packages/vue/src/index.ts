@@ -54,6 +54,8 @@ import OcColorField from './components/OcColorField.vue'
 import OcColorSelect from './components/OcColorSelect.vue'
 import OcCombobox from './components/OcCombobox.vue'
 import OcCommand from './components/OcCommand.vue'
+import OcCommandGroup from './components/OcCommandGroup.vue'
+import OcCommandItem from './components/OcCommandItem.vue'
 import OcConfirmDialog from './components/OcConfirmDialog.vue'
 import OcContextMenu from './components/OcContextMenu.vue'
 import OcCookieConsent from './components/OcCookieConsent.vue'
@@ -364,6 +366,8 @@ export {
   OcColorSelect,
   OcCombobox,
   OcCommand,
+  OcCommandGroup,
+  OcCommandItem,
   OcConfirmDialog,
   OcContextMenu,
   OcCookieConsent,
@@ -760,6 +764,8 @@ export const components: Record<string, Component> = {
   OcColorSelect,
   OcCombobox,
   OcCommand,
+  OcCommandGroup,
+  OcCommandItem,
   OcConfirmDialog,
   OcContextMenu,
   OcCookieConsent,

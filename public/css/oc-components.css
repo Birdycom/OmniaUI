@@ -663,6 +663,13 @@ flex-direction: column;
   padding: 12px;
 }
 
+/* 0.18.0: bare card - the surface without padding or clipping; your own parts (a table, a list, a menu that may
+   stick out) go straight in. */
+.oc-card--bare {
+  padding: 0;
+  overflow: visible;
+}
+
 .oc-card--sm .oc-card-header,
 .oc-card--sm .oc-card-content,
 .oc-card--sm .oc-card-footer { padding: 12px 14px; }
@@ -3179,7 +3186,9 @@ dialog.oc-sheet[open]::backdrop { opacity: 1; }
   translate: var(--oc-sheet-from);
   transition: translate var(--oc-sheet-duration, 0.3s) cubic-bezier(0.32, 0.72, 0, 1);
 }
-dialog.oc-sheet[open] .oc-sheet-content { translate: 0 0; }
+/* none, not 0 0 (0.18.0): any translate value makes the panel the containing block of position: fixed children, so a
+   fixed tooltip or list inside an open sheet would be placed against the panel instead of the viewport. */
+dialog.oc-sheet[open] .oc-sheet-content { translate: none; }
 @starting-style { dialog.oc-sheet[open] .oc-sheet-content { translate: var(--oc-sheet-from); } }
 dialog.oc-sheet:has(> .oc-sheet-content--wide) { inline-size: min(40rem, 100%); }
 dialog.oc-sheet--left { --oc-sheet-from: -100% 0; justify-content: flex-start; margin-inline: 0 auto; }
@@ -6116,6 +6125,16 @@ input.oc-input[type="month"] { inline-size: auto; min-inline-size: 11rem; }
 }
 .oc-scroll-area:focus-visible { outline: 2px solid var(--oc-ring); outline-offset: 2px; }
 .oc-scroll-area--x { max-block-size: none; overflow-y: hidden; white-space: nowrap; }
+/* 0.18.0: bare - only the scrolling and the themed scrollbar (and the focus ring); no padding, frame or height cap.
+   Size it with your layout (flex: 1 with min-block-size: 0, a block-size). Before --shadows so the two still combine. */
+.oc-scroll-area--bare {
+  max-block-size: none;
+  padding: 0;
+  font-size: inherit;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
 /* shadows at the edges that still have content to scroll to (pure CSS, no JavaScript) */
 .oc-scroll-area--shadows {
   --oc-scroll-shadow: oklch(from var(--oc-foreground) l c h / 0.18);
@@ -6543,7 +6562,7 @@ input.oc-input[type="month"] { inline-size: auto; min-inline-size: 11rem; }
 .oc-callout__action { flex-shrink: 0; display: flex; gap: 0.5rem; }
 
 /* parts/app-compound-overlays.css */
-/* File: packages/ui/src/parts/app-compound-overlays.css | Map: compound tabs root (vertical) -> scrolling dialog content -> popover side/align/offset -> tooltip provider, delay and controlled open */
+/* File: packages/ui/src/parts/app-compound-overlays.css | Map: compound tabs root (vertical) -> scrolling dialog content -> popover + dropdown side/align/offset -> popover match width -> toggle dropdown side/align -> tooltip provider, delay and controlled open -> tooltip in a sidebar */
 /* 0.17.0 compound API for Tabs, Dialog, Popover and Tooltip. Same classes as the props API; this part only adds what the
    compound parts need: a root for class-toggle tabs, a dialog whose body scrolls between a fixed header and footer, popover
    placement by data-side / data-align, and the tooltip delay and controlled state. */
@@ -6570,7 +6589,8 @@ input.oc-input[type="month"] { inline-size: auto; min-inline-size: 11rem; }
 .oc-modal-content--scroll > .oc-modal-header { padding-block-end: 16px; border-block-end: 1px solid var(--oc-border); }
 .oc-modal-content--scroll > .oc-modal-body { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; }
 
-/* ---- Popover: side, align and offset (compound PopoverContent sets data-side / data-align) ---- */
+/* ---- Popover and dropdown menu: side, align and offset ----
+   Compound PopoverContent sets data-side / data-align; 0.18.0: the dropdown menu takes the same (side / align props). */
 .oc-popover[popover][data-side] { margin: 0; }
 .oc-popover[popover][data-side="bottom"] { margin-block-start: var(--oc-popover-offset, 4px); position-area: block-end span-inline-end; position-try-fallbacks: flip-block, flip-inline; }
 .oc-popover[popover][data-side="bottom"][data-align="center"] { position-area: block-end; }
@@ -6584,6 +6604,36 @@ input.oc-input[type="month"] { inline-size: auto; min-inline-size: 11rem; }
 .oc-popover[popover][data-side="left"] { margin-inline-end: var(--oc-popover-offset, 4px); position-area: inline-start span-block-end; position-try-fallbacks: flip-inline, flip-block; }
 .oc-popover[popover][data-side="left"][data-align="center"] { position-area: inline-start; }
 .oc-popover[popover][data-side="left"][data-align="end"] { position-area: inline-start span-block-start; }
+.oc-dropdown-menu[popover][data-side] { margin: 0; }
+.oc-dropdown-menu[popover][data-side="bottom"] { margin-block-start: var(--oc-popover-offset, 4px); position-area: block-end span-inline-end; position-try-fallbacks: flip-block, flip-inline; }
+.oc-dropdown-menu[popover][data-side="bottom"][data-align="center"] { position-area: block-end; }
+.oc-dropdown-menu[popover][data-side="bottom"][data-align="end"] { position-area: block-end span-inline-start; }
+.oc-dropdown-menu[popover][data-side="top"] { margin-block-end: var(--oc-popover-offset, 4px); position-area: block-start span-inline-end; position-try-fallbacks: flip-block, flip-inline; }
+.oc-dropdown-menu[popover][data-side="top"][data-align="center"] { position-area: block-start; }
+.oc-dropdown-menu[popover][data-side="top"][data-align="end"] { position-area: block-start span-inline-start; }
+.oc-dropdown-menu[popover][data-side="right"] { margin-inline-start: var(--oc-popover-offset, 4px); position-area: inline-end span-block-end; position-try-fallbacks: flip-inline, flip-block; }
+.oc-dropdown-menu[popover][data-side="right"][data-align="center"] { position-area: inline-end; }
+.oc-dropdown-menu[popover][data-side="right"][data-align="end"] { position-area: inline-end span-block-start; }
+.oc-dropdown-menu[popover][data-side="left"] { margin-inline-end: var(--oc-popover-offset, 4px); position-area: inline-start span-block-end; position-try-fallbacks: flip-inline, flip-block; }
+.oc-dropdown-menu[popover][data-side="left"][data-align="center"] { position-area: inline-start; }
+.oc-dropdown-menu[popover][data-side="left"][data-align="end"] { position-area: inline-start span-block-start; }
+
+/* 0.18.0 Popover as wide as its trigger (or PopoverAnchor): data-match-width. Browsers without anchor-size() get the
+   trigger width in px from the React / Vue wrapper; the 18rem default no longer applies. */
+.oc-popover[popover][data-match-width] { inline-size: auto; min-inline-size: 0; }
+@supports (inline-size: anchor-size(width)) {
+  .oc-popover[popover][data-match-width] { inline-size: anchor-size(width); }
+}
+
+/* 0.18.0 Dropdown in toggle mode (.oc-dropdown > .oc-dropdown-menu, in the page): the same side / align, as fixed places. */
+.oc-dropdown > .oc-dropdown-menu[data-align="end"] { left: auto; right: 0; }
+.oc-dropdown > .oc-dropdown-menu[data-align="center"] { left: 50%; translate: -50% 0; }
+.oc-dropdown > .oc-dropdown-menu[data-side="top"] { top: auto; bottom: 100%; margin-top: 0; margin-bottom: 4px; }
+.oc-dropdown > .oc-dropdown-menu:is([data-side="left"], [data-side="right"]) { top: 0; margin-top: 0; }
+.oc-dropdown > .oc-dropdown-menu:is([data-side="left"], [data-side="right"])[data-align="end"] { top: auto; bottom: 0; }
+.oc-dropdown > .oc-dropdown-menu:is([data-side="left"], [data-side="right"])[data-align="center"] { top: 50%; left: auto; translate: 0 -50%; }
+.oc-dropdown > .oc-dropdown-menu[data-side="right"] { left: 100%; right: auto; margin-left: 4px; }
+.oc-dropdown > .oc-dropdown-menu[data-side="left"] { left: auto; right: 100%; margin-right: 4px; }
 
 /* ---- Tooltip: provider, delay, controlled open ---- */
 .oc-tooltip-provider { display: contents; }
@@ -6611,6 +6661,17 @@ input.oc-input[type="month"] { inline-size: auto; min-inline-size: 11rem; }
 }
 /* Rich content may hold links: let the pointer reach it while it is shown. */
 .oc-tooltip.is-open > .oc-tooltip__content { pointer-events: auto; }
+
+/* ---- Tooltip in a sidebar (0.18.0) ----
+   Where the bubble cannot be fixed with anchor positioning it is absolute, and the scrolling .oc-sidebar-content cut it
+   off: the side tooltips of a collapsed (icon-only) sidebar stuck out of its narrow column. A collapsed sidebar lets
+   them out; it holds only icons, so it rarely needs to scroll. Rich content (.oc-tooltip__content) needs anchor-scope. */
+@supports not (position-area: top) {
+  .oc-sidebar--collapsed .oc-sidebar-content { overflow: visible; }
+}
+@supports (position-area: top) and (not (anchor-scope: all)) {
+  .oc-sidebar--collapsed .oc-sidebar-content:has(.oc-tooltip__content) { overflow: visible; }
+}
 
 /* parts/app-confirm-dialog.css */
 /* File: packages/ui/src/parts/app-confirm-dialog.css | Map: confirm modifier (icon ring) -> close button -> typed confirm field -> confirm lock -> three-button footer -> narrow screens */
@@ -10590,6 +10651,14 @@ img.oc-combobox-option-image {
 }
 .oc-combobox-list--portal[data-open=""] { visibility: visible; opacity: 1; translate: 0 0; transition-delay: 0s; }
 .oc-combobox-list--portal[data-open="false"] { visibility: hidden; opacity: 0; }
+/* 0.18.0: where the browser has popovers the list stays inside .oc-combobox as popover="manual" and is shown in the top
+   layer: above a modal dialog (whose outside is inert) and not cut off or moved by a transformed sheet or drawer. Undo the
+   UA popover box (centred with margin: auto, inset: 0, Canvas colours); top/left/width come from the script or wrapper. */
+.oc-combobox-list.oc-combobox-list--portal[popover] {
+  margin: 0;
+  inset: auto;
+  overflow-x: hidden;
+}
 
 /* Ghost trigger (0.17.2, .oc-combobox--ghost): for a header bar. No border, no shadow, no margin; muted text that gets
    fuller on hover and focus, with a light background (tinted with the module colour when there is one). The focus ring
@@ -12119,7 +12188,7 @@ a.oc-rating-summary__count:hover { color: var(--oc-foreground); }
 
 /* parts/forms-time-input.css */
 /* File: packages/ui/src/parts/forms-time-input.css
-   Map: 24h text field (HH:mm) -> invalid state -> slot list (radio chips) -> slot states -> --sm
+   Map: 24h text field (HH:mm) -> invalid state -> slot list (radio chips) -> slot states -> time picker (0.18.0) -> --sm
    Time input: a short text field with pattern="HH:mm" and a <datalist> of suggested slots,
    plus an optional slot list (radio chips) to pick a time without typing. No JavaScript needed. */
 
@@ -12188,6 +12257,20 @@ a.oc-rating-summary__count:hover { color: var(--oc-foreground); }
   text-decoration: line-through;
   cursor: not-allowed;
 }
+
+/* 0.18.0: time picker - the field with a clock button (.oc-btn--icon, popovertarget) that opens the slots in a native
+   popover (.oc-popover): <div class="oc-time-picker"><input class="oc-input oc-time-input"><button popovertarget>
+   <div class="oc-popover" popover><div class="oc-time-slots" role="radiogroup">. Picking a slot fills the field (JS:
+   form-extras.js or the React/Vue wrapper); typing keeps working. */
+.oc-time-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  max-inline-size: 100%;
+}
+.oc-time-picker > .oc-btn { flex: none; }
+.oc-time-picker > .oc-popover[popover] { inline-size: 16rem; padding: 0.5rem; }
+.oc-time-picker > .oc-popover .oc-time-slots { padding: 0; }
 
 /* Small slots for dense layouts. */
 .oc-time-slots--sm { grid-template-columns: repeat(auto-fill, minmax(3.5rem, 1fr)); }

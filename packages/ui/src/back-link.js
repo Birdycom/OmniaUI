@@ -4,6 +4,8 @@
 // When the visitor came from a page of the same site (document.referrer on this origin, or more than one entry in the
 // tab's history), a click goes back (history.back()) so filters and scroll position stay. Otherwise the link simply
 // follows its href (the fallback) and, with data-oc-fallback-label, shows that label. Without the script it is a plain link.
+// 0.18.0: a plain click first dispatches a cancelable `oc-back` event on the link; preventDefault() in a listener
+// (link.addEventListener("oc-back", e => { e.preventDefault(); closePanel(); })) replaces the navigation.
 
 /** True when going back stays on this site: the referrer has this origin, or the tab has more than one history entry. */
 export function canGoBack(win = typeof window === "undefined" ? undefined : window) {
@@ -28,6 +30,12 @@ export function bindBackLink(link) {
   link.addEventListener("click", (event) => {
     // Ctrl/Cmd/Shift/middle click: let the browser open the fallback href in a new tab or window.
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    // 0.18.0: a cancelable oc-back event first; a listener that calls preventDefault() runs its own back action.
+    const own = new win.CustomEvent("oc-back", { bubbles: true, cancelable: true });
+    if (!link.dispatchEvent(own)) {
+      event.preventDefault();
+      return;
+    }
     if (!canGoBack(win)) return;
     event.preventDefault();
     win.history.back();

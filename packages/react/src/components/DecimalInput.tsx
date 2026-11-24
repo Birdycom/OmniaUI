@@ -31,6 +31,10 @@ export interface DecimalInputProps extends Omit<InputHTMLAttributes<HTMLInputEle
   /** Left-aligned digits. */
   alignStart?: boolean;
   error?: boolean;
+  /** 0.18.0: a minus sign may be typed (default true); false drops it while typing. */
+  allowNegative?: boolean;
+  /** 0.18.0: whole numbers only: 0 decimals, no decimal mark, the numeric keypad on a phone (inputMode numeric). */
+  integer?: boolean;
 }
 
 /** Group and decimal separator of a locale, e.g. nl-BE -> { group: ".", decimal: "," }. */
@@ -39,10 +43,10 @@ function separators(locale: string) {
   return { group: parts.find((p) => p.type === "group")?.value ?? ",", decimal: parts.find((p) => p.type === "decimal")?.value ?? "." };
 }
 
-/** "1.234,56" (nl-BE) -> 1234.56. Returns null for empty or unreadable text. */
+/** "1.234,56" (nl-BE) -> 1234.56. Returns null for empty or unreadable text. A typographic minus counts as "-". */
 export function parseDecimal(text: string, locale = "nl-BE"): number | null {
   const { group, decimal } = separators(locale);
-  const clean = text.trim().split(group).join("").replace(decimal, ".").replace(/\s/g, "");
+  const clean = text.trim().split(group).join("").replace(decimal, ".").replace(/\s/g, "").replace(/\u2212/g, "-");
   if (!clean) return null;
   const n = Number(clean);
   return Number.isFinite(n) ? n : null;
@@ -56,19 +60,49 @@ export function currencyAffix(locale: string, currency: string): { symbol: strin
   return { symbol: parts[at]?.value ?? currency, before: at < parts.findIndex((p) => p.type === "integer"), decimals: nf.resolvedOptions().maximumFractionDigits ?? 2 };
 }
 
-/** 1234.56 -> "1.234,56" (nl-BE, 2 decimals). */
-export function formatDecimal(n: number | null | undefined, locale = "nl-BE", decimals = 2): string {
-  if (n == null) return "";
-  return new Intl.NumberFormat(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
+/**
+ * 0.18.0: rounds to `decimals` places, half away from zero (1.005 -> 1.01, 2.675 -> 2.68, -1.005 -> -1.01), on the
+ * decimal digits you see instead of the binary value (1.005 is stored as 1.00499..., plain Math.round gives 1.00).
+ */
+export function roundDecimal(n: number, decimals = 2): number {
+  if (!Number.isFinite(n)) return n;
+  const d = Math.max(0, Math.trunc(decimals));
+  const sign = n < 0 ? -1 : 1;
+  const abs = Math.abs(n);
+  const text = String(abs);
+  // Shift the decimal point in the text (no binary multiplication error), round, shift back.
+  const up = text.includes("e") ? Math.round(abs * 10 ** d) : Math.round(Number(`${text}e${d}`));
+  const out = sign * Number(`${up}e-${d}`);
+  return out === 0 ? 0 : out;
 }
 
-/** `.oc-decimal-input`: free typing, formatted on blur, value reported as a number. */
+/** 1234.56 -> "1.234,56" (nl-BE, 2 decimals). 0.18.0: rounds half away from zero first (1.005 -> "1,01"). */
+export function formatDecimal(n: number | null | undefined, locale = "nl-BE", decimals = 2): string {
+  if (n == null) return "";
+  return new Intl.NumberFormat(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(roundDecimal(n, decimals));
+}
+
+/**
+ * `.oc-decimal-input`: free typing, formatted on blur, value reported as a number rounded to `decimals`
+ * (0.18.0: half away from zero; `integer` for whole numbers, `allowNegative={false}` without a minus sign).
+ */
 export const DecimalInput = forwardRef<HTMLInputElement, DecimalInputProps>(function DecimalInput(
-  { value, defaultValue, onValueChange, locale = "nl-BE", decimals: decimalsProp, unit, currency, percent, groupClassName, alignStart, error, className, onBlur, onFocus, ...rest },
+  { value, defaultValue, onValueChange, locale = "nl-BE", decimals: decimalsProp, unit, currency, percent, groupClassName, alignStart, error, allowNegative = true, integer, className, onBlur, onFocus, ...rest },
   ref,
 ) {
   const money = currency ? currencyAffix(locale, currency) : undefined;
-  const decimals = decimalsProp ?? money?.decimals ?? 2;
+  const decimals = integer ? 0 : (decimalsProp ?? money?.decimals ?? 2);
+  /** The typed text without the characters this field does not take (minus, decimal mark). */
+  const clean = (raw: string) => {
+    let out = allowNegative ? raw : raw.replace(/[-\u2212]/g, "");
+    if (integer) out = out.split(separators(locale).decimal).join("");
+    return out;
+  };
+  /** The number of a text, rounded to the decimals of the field. */
+  const read = (raw: string) => {
+    const n = parseDecimal(raw, locale);
+    return n == null ? null : roundDecimal(allowNegative ? n : Math.abs(n), decimals);
+  };
   const [text, setText] = useState(() => formatDecimal(value ?? defaultValue, locale, decimals));
   const [focused, setFocused] = useState(false);
 
@@ -82,14 +116,14 @@ export const DecimalInput = forwardRef<HTMLInputElement, DecimalInputProps>(func
       ref={ref}
       className={cx("oc-input", "oc-decimal-input", alignStart && "oc-decimal-input--start", className)}
       type="text"
-      inputMode="decimal"
+      inputMode={integer ? "numeric" : "decimal"}
       aria-invalid={error ? true : undefined}
       value={text}
       onFocus={(e) => { setFocused(true); onFocus?.(e); }}
-      onChange={(e) => { setText(e.target.value); onValueChange?.(parseDecimal(e.target.value, locale)); }}
+      onChange={(e) => { const raw = clean(e.target.value); setText(raw); onValueChange?.(read(raw)); }}
       onBlur={(e) => {
         setFocused(false);
-        const n = parseDecimal(text, locale);
+        const n = read(text);
         if (n != null || !text.trim()) setText(formatDecimal(n, locale, decimals));
         onBlur?.(e);
       }}

@@ -10,7 +10,10 @@
 //   data-oc-search="event"        no local filter; event oc-combobox-search { query } (debounced, loading row on); answer with root.ocSetOptions(items, query)
 //   data-oc-search-url="/x?q="    no local filter; fetches url + query, JSON [{ value, label, description, icon, image, emoji, disabled }]
 //   data-oc-search-delay="250"    debounce in ms
-//   data-oc-portal                the list moves to document.body while open (position: fixed under the field)
+//   data-oc-portal                the list floats above everything (position: fixed under the field). 0.18.0: where the
+//                                 browser has popovers the list stays in place as popover="manual" in the top layer, so
+//                                 it also works inside a modal <dialog> (body content is inert there); elsewhere it moves
+//                                 to document.body while open
 //   li.oc-combobox-clear          a row with data-value="" that clears the choice
 //   li.oc-combobox-custom         a row that takes what was typed (data-oc-custom-label='Use "{query}"'), shown when nothing matches exactly
 //   .oc-combobox-footer > a       a manage link under the list (event oc-combobox-manage)
@@ -119,8 +122,17 @@ export function bindCombobox(root) {
   const ids = () => options().forEach((o) => { if (!o.id) o.id = `oc-combobox-option-${++uid}`; });
   ids();
 
-  // Portal: the popup leaves the wrapper while open and comes back when it closes (a marker keeps its place).
-  const marker = portal ? doc.createComment("oc-combobox-list") : null;
+  // Portal. 0.18.0: with popover support the popup stays in the wrapper as popover="manual" and is shown in the top
+  // layer (fixed to the viewport, above a modal dialog, not cut off by a transformed or clipping parent). A manual
+  // popover has no light dismiss: blur and Escape close it below. Without popover support the popup leaves the wrapper
+  // while open and comes back when it closes (a marker keeps its place).
+  const topLayer = portal && typeof popup.showPopover === "function";
+  if (topLayer) {
+    popup.setAttribute("popover", "manual");
+    popup.classList.add("oc-combobox-list--portal");
+    if (root.dataset.module) popup.dataset.module = root.dataset.module;
+  }
+  const marker = portal && !topLayer ? doc.createComment("oc-combobox-list") : null;
   const place = () => {
     const r = root.getBoundingClientRect();
     // A header (or icon-only) trigger is narrow (0.17.2): the list gets at least 12rem and stays inside the viewport.
@@ -129,24 +141,58 @@ export function bindCombobox(root) {
     const left = header ? Math.max(8, Math.min(r.left, (win.innerWidth || width + 16) - width - 8)) : r.left;
     Object.assign(popup.style, { position: "fixed", top: `${r.bottom + 4}px`, left: `${left}px`, width: `${width}px` });
   };
+  // While open the list follows the field: scroll and resize, and (0.18.0) every frame during the first second, so it
+  // keeps up with a sheet or drawer that is still sliding in (a dialog focuses the field before its panel has arrived).
+  let following = false;
+  let frame = 0;
+  let last = "";
+  let until = 0;
+  const track = (now) => {
+    const r = root.getBoundingClientRect();
+    const key = `${r.left},${r.bottom},${r.width}`;
+    if (key !== last) { last = key; place(); }
+    if (!until) until = now + 1000;
+    if (now < until) frame = win.requestAnimationFrame(track);
+  };
+  const follow = (on) => {
+    if (on === following) return;
+    following = on;
+    const fn = on ? "addEventListener" : "removeEventListener";
+    win[fn]("scroll", place, true);
+    win[fn]("resize", place);
+    if (typeof win.requestAnimationFrame !== "function") return;
+    if (on) { last = ""; until = 0; frame = win.requestAnimationFrame(track); }
+    else win.cancelAnimationFrame(frame);
+  };
+  const shown = () => { try { return popup.matches(":popover-open"); } catch { return false; } };
   const showPortal = (open) => {
     if (!portal) return;
+    if (topLayer) {
+      if (open) {
+        place();
+        try { if (!shown()) popup.showPopover(); } catch { /* not connected */ }
+        popup.dataset.open = "";
+      } else {
+        popup.dataset.open = "false";
+        try { if (shown()) popup.hidePopover(); } catch { /* already closed */ }
+      }
+      follow(open);
+      return;
+    }
     if (open) {
       if (popup.parentNode !== doc.body) {
         popup.before(marker);
         popup.classList.add("oc-combobox-list--portal");
         if (root.dataset.module) popup.dataset.module = root.dataset.module;
         doc.body.append(popup);
-        win.addEventListener("scroll", place, true);
-        win.addEventListener("resize", place);
+        follow(true);
       }
       place();
       popup.dataset.open = "";
     } else if (popup.parentNode === doc.body) {
       popup.dataset.open = "false";
       marker.replaceWith(popup);
-      win.removeEventListener("scroll", place, true);
-      win.removeEventListener("resize", place);
+      follow(false);
     } else popup.dataset.open = "false";
   };
 

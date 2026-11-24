@@ -6,9 +6,12 @@
      mode="toggle" (0.17.0): the class-toggle version, .oc-dropdown + .is-open, the menu stays in the page. open: start open
      (with Livewire: your property). trigger-attributes: extra attributes on the trigger button (['wire:click' => 'toggle']).
      script (default true): a small script (once per page) toggles .is-open on a click and closes it on an item click, an
-     outside click or Esc; false when your own code (Livewire, Alpine) keeps the state. --}}
+     outside click or Esc; false when your own code (Livewire, Alpine) keeps the state.
+     side (top|right|bottom|left) and align (start|center|end) (0.18.0): where the menu opens (data-side / data-align;
+     default bottom start, it flips when there is no room). A trigger slot is your own element: give it
+     popovertarget="{id}" (pass the same id), there is nothing to merge. --}}
 @props(['label' => 'Options', 'variant' => 'outline', 'id' => null, 'items' => [], 'mode' => 'popover', 'open' => false,
-    'triggerAttributes' => [], 'script' => true])
+    'triggerAttributes' => [], 'script' => true, 'side' => null, 'align' => null])
 @php($id = $id ?: 'oc-menu-'.substr(md5(uniqid('', true)), 0, 6))
 @php($toggle = $mode === 'toggle')
 @if ($toggle)
@@ -21,7 +24,7 @@
 @else
     <button class="oc-btn oc-btn--{{ $variant }}" type="button" popovertarget="{{ $id }}">{{ $label }}</button>
 @endif
-<div {{ $attributes->class(['oc-dropdown-menu'])->merge(['id' => $id]) }} @unless ($toggle) popover @endunless>
+<div {{ $attributes->class(['oc-dropdown-menu'])->merge(['id' => $id, 'data-side' => $side || $align ? ($side ?: 'bottom') : null, 'data-align' => $side || $align ? ($align ?: 'start') : null]) }} @unless ($toggle) popover @endunless>
     @foreach ($items as $item)
         @if (! empty($item['group']))
             <div class="oc-dropdown-label">{{ $item['group'] }}</div>

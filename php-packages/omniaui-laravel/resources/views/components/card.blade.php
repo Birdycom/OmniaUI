@@ -1,13 +1,14 @@
 {{-- OmniaCSS card. Props: title, description, size (sm), accent (primary|info|success|warning|destructive|test|live: a 2px border
      in that tone), inactive (with accent: a set not in use now, dashed), fill (as high as its grid cell, footer at the bottom). Slots: default = content, band (<x-oc::card-band>
      at the top), header (replaces title/description), footer. footerDivider / footerEnd: a line above the footer / the actions on the
-     end side; footerClass: more classes for the footer. bare: the slot goes in as it is, without the .oc-card-content wrapper.
+     end side; footerClass: more classes for the footer. bare: the slot goes in as it is, without the .oc-card-content wrapper
+     (0.18.0: and .oc-card--bare on the card: no padding, no clipping).
      0.17.0: slot action (in the header, top-right corner: .oc-card-action), text (body text in the muted color, p.oc-card-text,
      before the slot). Parts: <x-oc::card.link>, <x-oc::card.grid>. --}}
 @props(['title' => null, 'description' => null, 'size' => null, 'accent' => null, 'inactive' => false, 'fill' => false,
     'footerDivider' => false, 'footerEnd' => false, 'footerClass' => null, 'bare' => false, 'text' => null])
 @php($ocCardAction = isset($action) && trim((string) $action) !== '' ? $action : null)
-<div {{ $attributes->class(['oc-card', 'oc-card--'.$size => $size, 'oc-card--accent' => $accent, 'oc-card--fill' => $fill])->merge(array_filter(['data-tone' => $accent, 'data-active' => $accent && $inactive ? 'false' : null])) }}>
+<div {{ $attributes->class(['oc-card', 'oc-card--'.$size => $size, 'oc-card--accent' => $accent, 'oc-card--fill' => $fill, 'oc-card--bare' => $bare])->merge(array_filter(['data-tone' => $accent, 'data-active' => $accent && $inactive ? 'false' : null])) }}>
     @isset($band)
         {{ $band }}
     @endisset

@@ -78,6 +78,88 @@ class SetupWizard extends Component
     {{-- … the form of the current step, whose submit calls next() --}}
 &lt;/div&gt;</oc-code>
           </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="enabled-steps">Steps you may open <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">By default only done steps and the active one can be clicked. <code>isStepEnabled(index)</code> (React and Vue) decides it per step: here Team can already be opened while Banking waits for the step before it. Blade: <code>'enabled' =&gt; true|false</code> per step. <code>aria-current="step"</code> stays on the active step only.</p>
+          <oc-demo title="Stepper - steps you may open">
+<ol class="oc-stepper oc-stepper--horizontal" aria-label="Setup steps">
+  <li><button class="oc-stepper-item oc-stepper-item--done" type="button"><span><span class="oc-stepper-label">Company</span><span class="oc-stepper-meta">1/4</span></span></button></li>
+  <li><button class="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"><span><span class="oc-stepper-label">Invoicing</span><span class="oc-stepper-meta">2/4</span></span></button></li>
+  <li><button class="oc-stepper-item" type="button" disabled><span><span class="oc-stepper-label">Banking</span><span class="oc-stepper-meta">3/4</span></span></button></li>
+  <li><button class="oc-stepper-item" type="button"><span><span class="oc-stepper-label">Team</span><span class="oc-stepper-meta">4/4</span></span></button></li>
+</ol>
+<oc-code lang="html">&lt;ol class="oc-stepper oc-stepper--horizontal" aria-label="Setup steps"&gt;
+  &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--done" type="button"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Company&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;1/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;button class="oc-stepper-item oc-stepper-item--active" type="button" aria-current="step"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Invoicing&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;2/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;button class="oc-stepper-item" type="button" disabled&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Banking&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;3/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;button class="oc-stepper-item" type="button"&gt;&lt;span&gt;&lt;span class="oc-stepper-label"&gt;Team&lt;/span&gt;&lt;span class="oc-stepper-meta"&gt;4/4&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;&lt;/li&gt;
+&lt;/ol&gt;</oc-code>
+<oc-code lang="tsx">import { Stepper } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+const steps = [
+  { label: "Company", meta: "1/4" },
+  { label: "Invoicing", meta: "2/4" },
+  { label: "Banking", meta: "3/4" },
+  { label: "Team", meta: "4/4" },
+];
+
+export function Example() {
+  const [current, setCurrent] = useState(1);
+  return &lt;Stepper aria-label="Setup steps" horizontal steps={steps} current={current} onStepChange={setCurrent} isStepEnabled={(i) =&gt; i &lt;= current || i === 3} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcStepper } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const current = ref(1);
+const steps = [
+  { label: "Company", meta: "1/4" },
+  { label: "Invoicing", meta: "2/4" },
+  { label: "Banking", meta: "3/4" },
+  { label: "Team", meta: "4/4" },
+];
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcStepper v-model="current" label="Setup steps" horizontal :steps="steps" :is-step-enabled="(i: number) =&gt; i &lt;= current || i === 3" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::stepper label="Setup steps" horizontal :current="2" :steps="[
+    'Company',
+    'Invoicing',
+    'Banking',
+    ['label' =&gt; 'Team', 'enabled' =&gt; true],
+]" /&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class StepperEnabledSteps extends Component
+{
+    public int $step = 2;
+
+    public function goTo(int $step): void
+    {
+        $this-&gt;step = $step;
+    }
+
+    public function render()
+    {
+        return view('livewire.stepper-enabled-steps');
+    }
+}
+
+{{-- resources/views/livewire/stepper-enabled-steps.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::stepper label="Setup steps" horizontal :current="$step" action="goTo" :steps="[
+        'Company',
+        'Invoicing',
+        'Banking',
+        ['label' =&gt; 'Team', 'enabled' =&gt; true],
+    ]" /&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -94,6 +176,7 @@ class SetupWizard extends Component
               <tr><td><code>.oc-stepper-item</code></td><td>Step (<code>button</code>). Modifiers: <code>--done</code>, <code>--active</code> (or <code>aria-current="step"</code>); default = upcoming (add <code>disabled</code>).</td></tr>
               <tr><td><code>.oc-stepper-label</code></td><td>Step title</td></tr>
               <tr><td><code>.oc-stepper-meta</code></td><td>Optional small text (e.g. 2/4)</td></tr>
+              <tr><td><code>isStepEnabled</code> </td><td>React and Vue: <code>(index) =&gt; boolean</code>, which steps can be clicked (default <code>index &lt;= current</code>). Blade: <code>'enabled'</code> per step. A step that cannot be opened gets <code>disabled</code>.</td></tr>
             </tbody>
           </table>
         </div>

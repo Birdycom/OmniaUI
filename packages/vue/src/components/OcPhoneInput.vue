@@ -4,6 +4,8 @@
  * Phone field: dial code select + national number. v-model = full value without spaces ("+32470123456").
  * Same markup as packages/ui/snippets/phone-input.html. JS only groups digits ("470 12 34 56").
  * class/style stay on the frame, other attributes (id, name, placeholder, aria-*) go to the number input.
+ * 0.18.0: a country may carry `format` ("### ## ## ##", one # per digit) or `groups` ([3, 2, 2, 2]); the defaults group
+ * BE 470 12 34 56, NL/FR 6 12 34 56 78, DE 151 2345 6789. Without either: a group of 3, then pairs.
  */
 import { computed, ref } from 'vue'
 import { useAttrsSplit } from '../composables/useAttrsSplit'
@@ -11,6 +13,10 @@ import { useAttrsSplit } from '../composables/useAttrsSplit'
 export interface PhoneInputCountry {
   dial: string
   label: string
+  /** 0.18.0: national grouping, one # per digit ("### ## ## ##"). */
+  format?: string
+  /** 0.18.0: the same as group sizes ([3, 2, 2, 2]); wins over `format`. */
+  groups?: number[]
 }
 
 defineOptions({ inheritAttrs: false })
@@ -18,10 +24,10 @@ const props = withDefaults(
   defineProps<{ countries?: PhoneInputCountry[]; defaultDial?: string; size?: 'sm' | 'md'; error?: boolean; disabled?: boolean; dialLabel?: string; dialName?: string }>(),
   {
     countries: () => [
-      { dial: '+32', label: 'BE +32' },
-      { dial: '+31', label: 'NL +31' },
-      { dial: '+33', label: 'FR +33' },
-      { dial: '+49', label: 'DE +49' },
+      { dial: '+32', label: 'BE +32', format: '### ## ## ##' },
+      { dial: '+31', label: 'NL +31', format: '# ## ## ## ##' },
+      { dial: '+33', label: 'FR +33', format: '# ## ## ## ##' },
+      { dial: '+49', label: 'DE +49', format: '### #### ####' },
     ],
     size: 'md',
     dialLabel: 'Country code',
@@ -41,10 +47,20 @@ const parsed = computed(() => {
 const dialState = ref(dialModel.value || parsed.value.dial || props.defaultDial || props.countries[0]?.dial || '')
 const dial = computed(() => dialModel.value || parsed.value.dial || dialState.value)
 
-/** "470123456" -> "470 12 34 56": a group of 3, then pairs. */
+/** "470123456" -> "470 12 34 56": the groups of the chosen country (default: 3, then pairs); extra digits in pairs. */
 const grouped = computed(() => {
   const d = parsed.value.national.replace(/\D/g, '')
-  return [d.slice(0, 3), ...(d.slice(3).match(/.{1,2}/g) ?? [])].filter(Boolean).join(' ')
+  const country = props.countries.find((c) => c.dial === dial.value)
+  const sizes = country?.groups?.length ? country.groups.filter((n) => n > 0) : (country?.format?.match(/#+/g) ?? []).map((r) => r.length)
+  const parts: string[] = []
+  let at = 0
+  for (const size of sizes.length ? sizes : [3]) {
+    if (at >= d.length) break
+    parts.push(d.slice(at, at + size))
+    at += size
+  }
+  parts.push(...(d.slice(at).match(/.{1,2}/g) ?? []))
+  return parts.filter(Boolean).join(' ')
 })
 
 function emit(nextDial: string, national: string) {

@@ -585,6 +585,13 @@ flex-direction: column;
   padding: 12px;
 }
 
+/* 0.18.0: bare card - the surface without padding or clipping; your own parts (a table, a list, a menu that may
+   stick out) go straight in. */
+.oc-card--bare {
+  padding: 0;
+  overflow: visible;
+}
+
 .oc-card--sm .oc-card-header,
 .oc-card--sm .oc-card-content,
 .oc-card--sm .oc-card-footer { padding: 12px 14px; }
@@ -3101,7 +3108,9 @@ dialog.oc-sheet[open]::backdrop { opacity: 1; }
   translate: var(--oc-sheet-from);
   transition: translate var(--oc-sheet-duration, 0.3s) cubic-bezier(0.32, 0.72, 0, 1);
 }
-dialog.oc-sheet[open] .oc-sheet-content { translate: 0 0; }
+/* none, not 0 0 (0.18.0): any translate value makes the panel the containing block of position: fixed children, so a
+   fixed tooltip or list inside an open sheet would be placed against the panel instead of the viewport. */
+dialog.oc-sheet[open] .oc-sheet-content { translate: none; }
 @starting-style { dialog.oc-sheet[open] .oc-sheet-content { translate: var(--oc-sheet-from); } }
 dialog.oc-sheet:has(> .oc-sheet-content--wide) { inline-size: min(40rem, 100%); }
 dialog.oc-sheet--left { --oc-sheet-from: -100% 0; justify-content: flex-start; margin-inline: 0 auto; }

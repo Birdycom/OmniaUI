@@ -6,7 +6,7 @@ import { createContext, forwardRef, useContext, useId } from "react";
 import type { AnchorHTMLAttributes, HTMLAttributes, OlHTMLAttributes, ReactNode } from "react";
 import { cx } from "../utils";
 import { mergeIntoChild } from "../asChild";
-import { Webicon, webiconNode } from "./Webicon";
+import { webiconNode } from "./Webicon";
 
 export interface BreadcrumbItemData {
   label: ReactNode;
@@ -115,13 +115,25 @@ export const BreadcrumbPage = forwardRef<HTMLSpanElement, BreadcrumbPageProps>(f
   return <span ref={ref} className={cx("oc-breadcrumb-page", className)} aria-current="page" {...rest}>{webiconNode(icon)}{children}</span>;
 });
 
+// 0.18.0: the "…" and the chevron as inline SVG (the mdi paths of the webicons), so no icon runtime or registry is needed.
+const DOTS_ICON = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false" data-webicon="mdi:dots-horizontal">
+    <path d="M16 12a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2" />
+  </svg>
+);
+const CHEVRON_ICON = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false" data-webicon="mdi:chevron-right">
+    <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6l6 6l-6 6z" />
+  </svg>
+);
+
 /** 0.17.1: an explicit separator (`.oc-breadcrumb-separator`), e.g. your own icon. Without it the items get "/" or › by CSS. */
 export const BreadcrumbSeparator = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(function BreadcrumbSeparator({ className, children, ...rest }, ref) {
   const { inList, separator } = useContext(BreadcrumbContext);
   const Tag = (inList ? "li" : "span") as "span";
   return (
     <Tag ref={ref as never} role="presentation" aria-hidden="true" className={cx("oc-breadcrumb-separator", className)} {...rest}>
-      {children ?? (separator === "chevron" ? <Webicon name="mdi:chevron-right" bare fallback="iconify" /> : "/")}
+      {children ?? (separator === "chevron" ? CHEVRON_ICON : "/")}
     </Tag>
   );
 });
@@ -144,14 +156,14 @@ export const BreadcrumbEllipsis = forwardRef<HTMLElement, BreadcrumbEllipsisProp
   if (!items && children == null) {
     return (
       <span ref={ref as never} className={cx("oc-breadcrumb-ellipsis", className)} role="img" aria-label={name} {...rest}>
-        <Webicon name="mdi:dots-horizontal" bare fallback="iconify" />
+        {DOTS_ICON}
       </span>
     );
   }
   return (
     <>
       <button ref={ref as never} type="button" className={cx("oc-breadcrumb-ellipsis", className)} popoverTarget={menuId} aria-label={name} {...(rest as HTMLAttributes<HTMLButtonElement>)}>
-        <Webicon name="mdi:dots-horizontal" bare fallback="iconify" />
+        {DOTS_ICON}
       </button>
       <div className="oc-dropdown-menu" id={menuId} popover="auto" role="menu">
         {children ?? items?.map((item, i) => (

@@ -161,6 +161,96 @@ class TimeInputTimeSlots extends Component
     @endforeach
 &lt;/div&gt;</oc-code>
           </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="slots-popover">Time picker: slots in a popover <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">With <code>slotsPopover</code> the slots open in a native popover under a clock button (<code>.oc-time-picker</code>, <code>popovertarget</code>, the same way as the breadcrumb menu) instead of the browser's datalist: the same list in every browser. Picking a slot fills the field and closes the popover; typing (<code>0930</code> &rarr; <code>09:30</code>) keeps working. Plain HTML and Blade: <code>oc-form-extras.js</code> puts the picked slot into the field with <code>input</code> and <code>change</code> events, so <code>wire:model</code> sees it.</p>
+          <oc-demo title="Time picker - slots in a popover">
+<div class="oc-field">
+  <label class="oc-field-label" for="oc-time-pick">Meeting</label>
+  <div class="oc-time-picker">
+    <input class="oc-input oc-time-input" id="oc-time-pick" name="meeting" type="text" inputmode="numeric" placeholder="hh:mm" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" value="09:00">
+    <button type="button" class="oc-btn oc-btn--outline oc-btn--icon" popovertarget="oc-time-pick-slots" aria-label="Choose a time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 20a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10a10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67l-.75 1.23L11 13V7z"/></svg></button>
+    <div class="oc-popover" id="oc-time-pick-slots" popover="auto" role="dialog" aria-label="Choose a time">
+      <div class="oc-time-slots" role="radiogroup" aria-label="Choose a time">
+        <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="09:00" checked>09:00</label>
+        <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="09:30">09:30</label>
+        <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="10:00">10:00</label>
+        <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="10:30">10:30</label>
+        <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="11:00">11:00</label>
+        <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="11:30">11:30</label>
+      </div>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;div class="oc-field"&gt;
+  &lt;label class="oc-field-label" for="oc-time-pick"&gt;Meeting&lt;/label&gt;
+  &lt;div class="oc-time-picker"&gt;
+    &lt;input class="oc-input oc-time-input" id="oc-time-pick" name="meeting" type="text" inputmode="numeric" placeholder="hh:mm" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" value="09:00"&gt;
+    &lt;button type="button" class="oc-btn oc-btn--outline oc-btn--icon" popovertarget="oc-time-pick-slots" aria-label="Choose a time"&gt;&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"&gt;&lt;path d="M12 20a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10a10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67l-.75 1.23L11 13V7z"/&gt;&lt;/svg&gt;&lt;/button&gt;
+    &lt;div class="oc-popover" id="oc-time-pick-slots" popover="auto" role="dialog" aria-label="Choose a time"&gt;
+      &lt;div class="oc-time-slots" role="radiogroup" aria-label="Choose a time"&gt;
+        &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="oc-time-pick-slot" value="09:00" checked&gt;09:00&lt;/label&gt;
+        &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="oc-time-pick-slot" value="09:30"&gt;09:30&lt;/label&gt;
+        &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="oc-time-pick-slot" value="10:00"&gt;10:00&lt;/label&gt;
+        &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="oc-time-pick-slot" value="10:30"&gt;10:30&lt;/label&gt;
+        &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="oc-time-pick-slot" value="11:00"&gt;11:00&lt;/label&gt;
+        &lt;label class="oc-time-slot"&gt;&lt;input type="radio" name="oc-time-pick-slot" value="11:30"&gt;11:30&lt;/label&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-form-extras.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">import { FormField, TimeInput } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [meeting, setMeeting] = useState("09:00");
+
+  return (
+    &lt;FormField label="Meeting"&gt;
+      &lt;TimeInput id="oc-time-pick" name="meeting" value={meeting} onChange={setMeeting} slotsPopover slots={["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"]} /&gt;
+    &lt;/FormField&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcFormField, OcTimeInput } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const meeting = ref("09:00");
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcFormField label="Meeting" for="oc-time-pick"&gt;
+    &lt;OcTimeInput id="oc-time-pick" v-model="meeting" name="meeting" slots-popover :slots="['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']" /&gt;
+  &lt;/OcFormField&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::form-field label="Meeting" for="oc-time-pick" name="meeting"&gt;
+    &lt;x-oc::time-input id="oc-time-pick" name="meeting" value="09:00" slots-popover :slots="['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']" /&gt;
+&lt;/x-oc::form-field&gt;
+&lt;script type="module" src="/js/oc-form-extras.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class TimeInputSlotsPopover extends Component
+{
+    public string $meeting = '09:00';
+
+
+    public function render()
+    {
+        return view('livewire.time-input-slots-popover');
+    }
+}
+
+{{-- resources/views/livewire/time-input-slots-popover.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::form-field label="Meeting" for="oc-time-pick" name="meeting"&gt;
+        &lt;x-oc::time-input id="oc-time-pick" wire:model.blur="meeting" slots-popover :slots="['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -177,6 +267,7 @@ class TimeInputTimeSlots extends Component
               <tr><td><code>pattern</code> + <code>list</code></td><td><code>([01][0-9]|2[0-3]):[0-5][0-9]</code> and the id of a <code>&lt;datalist&gt;</code></td></tr>
               <tr><td><code>.oc-time-slots</code></td><td>Slot grid (<code>role="radiogroup"</code>). Modifier: <code>--sm</code>.</td></tr>
               <tr><td><code>.oc-time-slot</code></td><td>Label with one radio and the time text</td></tr>
+              <tr><td><code>.oc-time-picker</code> </td><td>The field, a clock button (<code>.oc-btn--icon</code> with <code>popovertarget</code>) and the slots (<code>.oc-time-slots</code>) in a native popover (<code>.oc-popover</code>). Wrappers: <code>slotsPopover</code> / <code>slots-popover</code>, <code>slotsLabel</code> (default "Choose a time"). Plain HTML and Blade need <code>oc-form-extras.js</code> to fill the field.</td></tr>
             </tbody>
           </table>
         </div>

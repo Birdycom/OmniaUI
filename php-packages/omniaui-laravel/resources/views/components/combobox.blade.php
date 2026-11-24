@@ -8,7 +8,8 @@
      or search-url ("/customers/search?q=": fetch, JSON [{ value, label, description, icon, image, emoji }]); search-delay
      (ms, default 250); selected (['value' => 42, 'label' => 'Company 42', ...]: label of a value that is not in options);
      clear-label (first row that clears); manage-href + manage-label (footer link outside the listbox); allow-custom-from-search
-     + custom-label ('Use "{query}"'); portal (list in document.body while open); variant ("ledger"); module (data-module).
+     + custom-label ('Use "{query}"'); portal (floating list; 0.18.0: in the top layer as popover="manual" where the browser has popovers, so it works
+     inside a modal dialog, sheet or drawer, else in document.body while open); variant ("ledger"); module (data-module).
      Header trigger (0.17.2): trigger-variant ("ghost": no border, shadow or margin, muted text that gets fuller on hover with
      a light background), size ("full" default | "header": 36px high, 6.5rem to 14rem wide; portal is on unless
      :portal="false"), icon-only (with size="header": a square 36x36 button that shows trigger-label, else the icon / image

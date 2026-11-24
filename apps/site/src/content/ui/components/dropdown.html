@@ -300,6 +300,232 @@ class SortMenu extends Component
     &lt;/x-oc::dropdown&gt;
 &lt;/div&gt;</oc-code>
 </oc-demo>
+        <h3 id="side-align" class="oc-section-content__title mt-2">Side, align and your own trigger <span class="oc-badge-version">v0.18.0</span></h3><p class="oc-section-content__desc"><code>side</code> (top, right, bottom, left) and <code>align</code> (start, center, end) place the menu, like a popover: <code>data-side</code> and <code>data-align</code> on <code>.oc-dropdown-menu</code> (default bottom start; it still flips when there is no room, and the toggle mode uses fixed places). React <code>triggerAsChild</code> and Vue <code>trigger-as-child</code> put the wiring (<code>popovertarget</code>, or the toggle click) on your own trigger element instead of an outline button. React <code>DropdownItem asChild</code> and Vue <code>OcDropdownItem as-child</code> render your router link (or <code>&lt;a&gt;</code>) as the item, with the icon, description and hint around its text; a click closes the menu. Blade: <code>side</code> and <code>align</code> on <code>&lt;x-oc::dropdown&gt;</code>; a trigger slot is your own element with <code>popovertarget</code>, and <code>&lt;x-oc::dropdown.item href wire:navigate&gt;</code> is already a link.</p>
+          <oc-demo title="Dropdown - side and align" size="tall" hint="Click the dots: the menu opens above the button, aligned to its end.">
+<div style="display:flex;justify-content:flex-end;padding-block-start:9rem">
+  <button class="oc-btn oc-btn--ghost oc-btn--icon" type="button" popovertarget="oc-menu-side" aria-label="Customer actions"><span aria-hidden="true">&#8943;</span></button>
+  <div class="oc-dropdown-menu" id="oc-menu-side" data-side="top" data-align="end" popover>
+    <div class="oc-dropdown-label">Customer 1</div>
+    <a class="oc-dropdown-item" href="#profile">Profile<span class="oc-dropdown-hint">Ctrl P</span></a>
+    <a class="oc-dropdown-item" href="#invoices">Invoices</a>
+    <div class="oc-dropdown-separator"></div>
+    <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button">Archive</button>
+  </div>
+</div>
+<oc-code lang="tsx">import { Button, Dropdown, DropdownItem, DropdownLabel, DropdownSeparator, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Dropdown
+      side="top"
+      align="end"
+      triggerAsChild
+      trigger={&lt;Button variant="ghost" icon aria-label="Customer actions"&gt;&lt;Webicon name="mdi:dots-horizontal" /&gt;&lt;/Button&gt;}
+    &gt;
+      &lt;DropdownLabel&gt;Customer 1&lt;/DropdownLabel&gt;
+      {/* asChild: your router Link works the same way */}
+      &lt;DropdownItem asChild hint="Ctrl P"&gt;&lt;a href="#profile"&gt;Profile&lt;/a&gt;&lt;/DropdownItem&gt;
+      &lt;DropdownItem asChild&gt;&lt;a href="#invoices"&gt;Invoices&lt;/a&gt;&lt;/DropdownItem&gt;
+      &lt;DropdownSeparator /&gt;
+      &lt;DropdownItem destructive&gt;Archive&lt;/DropdownItem&gt;
+    &lt;/Dropdown&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcDropdown, OcDropdownItem, OcDropdownLabel, OcDropdownSeparator, OcWebicon } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcDropdown side="top" align="end" trigger-as-child&gt;
+    &lt;template #trigger&gt;
+      &lt;OcButton variant="ghost" icon aria-label="Customer actions"&gt;&lt;OcWebicon name="mdi:dots-horizontal" /&gt;&lt;/OcButton&gt;
+    &lt;/template&gt;
+    &lt;OcDropdownLabel&gt;Customer 1&lt;/OcDropdownLabel&gt;
+    &lt;!-- as-child: a RouterLink works the same way --&gt;
+    &lt;OcDropdownItem as-child hint="Ctrl P"&gt;&lt;a href="#profile"&gt;Profile&lt;/a&gt;&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem as-child&gt;&lt;a href="#invoices"&gt;Invoices&lt;/a&gt;&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator /&gt;
+    &lt;OcDropdownItem destructive&gt;Archive&lt;/OcDropdownItem&gt;
+  &lt;/OcDropdown&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::dropdown id="oc-menu-side" side="top" align="end"&gt;
+    &lt;x-slot:trigger&gt;
+        &lt;x-oc::button variant="ghost" icon popovertarget="oc-menu-side" aria-label="Customer actions"&gt;&lt;x-oc::webicon name="mdi:dots-horizontal" /&gt;&lt;/x-oc::button&gt;
+    &lt;/x-slot:trigger&gt;
+    &lt;x-oc::dropdown.label&gt;Customer 1&lt;/x-oc::dropdown.label&gt;
+    &lt;x-oc::dropdown.item href="#profile" hint="Ctrl P"&gt;Profile&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item href="#invoices"&gt;Invoices&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.separator /&gt;
+    &lt;x-oc::dropdown.item destructive&gt;Archive&lt;/x-oc::dropdown.item&gt;
+&lt;/x-oc::dropdown&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CustomerActions extends Component
+{
+    public int $customer = 1;
+
+    public function archive(): void
+    {
+        // archive the customer
+    }
+
+    public function render()
+    {
+        return view('livewire.customer-actions');
+    }
+}
+
+{{-- resources/views/livewire/customer-actions.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::dropdown id="oc-menu-side" side="top" align="end"&gt;
+        &lt;x-slot:trigger&gt;
+            &lt;x-oc::button variant="ghost" icon popovertarget="oc-menu-side" aria-label="Customer actions"&gt;&lt;x-oc::webicon name="mdi:dots-horizontal" /&gt;&lt;/x-oc::button&gt;
+        &lt;/x-slot:trigger&gt;
+        &lt;x-oc::dropdown.label&gt;Customer {{ $customer }}&lt;/x-oc::dropdown.label&gt;
+        &lt;x-oc::dropdown.item href="/customers/{{ $customer }}" wire:navigate hint="Ctrl P"&gt;Profile&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.item href="/customers/{{ $customer }}/invoices" wire:navigate&gt;Invoices&lt;/x-oc::dropdown.item&gt;
+        &lt;x-oc::dropdown.separator /&gt;
+        &lt;x-oc::dropdown.item destructive wire:click="archive"&gt;Archive&lt;/x-oc::dropdown.item&gt;
+    &lt;/x-oc::dropdown&gt;
+&lt;/div&gt;</oc-code>
+</oc-demo>
+        <h3 id="blade-trigger" class="oc-section-content__title mt-2">Blade: your own trigger <span class="oc-badge-version">v0.18.0</span></h3><p class="oc-section-content__desc">React <code>triggerAsChild</code> and Vue <code>trigger-as-child</code> add <code>popovertarget</code> to your trigger element for you. Blade cannot: the <code>trigger</code> slot reaches <code>&lt;x-oc::dropdown&gt;</code> as finished HTML, so the component prints it as it is and adds or merges nothing. Without an <code>id</code> the menu also gets a new random id (<code>oc-menu-</code> and six characters) on every render, which your button cannot know. So give the dropdown a fixed <code>id</code> and put the same value in <code>popovertarget</code> on your own button (in a loop: one id per row, such as <code>customer-menu-1</code>, <code>customer-menu-2</code>; see the Livewire tab). With Livewire a fixed id also stays the same on every re-render.</p><p class="oc-section-content__desc"><code>mode="toggle"</code> has no popover and needs no <code>popovertarget</code>: a click on any <code>&lt;button&gt;</code> outside the menu toggles <code>.is-open</code>. Give your button <code>aria-expanded="false"</code> and <code>aria-controls</code> so the script keeps <code>aria-expanded</code> up to date; with <code>:script="false"</code> put <code>wire:click</code> on your own button (<code>trigger-attributes</code> only reaches the default button).</p>
+          <oc-demo title="Dropdown - Blade own trigger" size="tall" hint="Wrong: the button has no popovertarget, a click does nothing. Right: popovertarget names the menu id, the menu opens.">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:1rem;align-items:stretch;inline-size:100%">
+  <div style="display:grid;gap:0.5rem;align-content:start;justify-items:start">
+    <span class="oc-badge oc-badge--destructive">Wrong: does not open</span>
+    <button class="oc-btn oc-btn--outline" type="button">Customer actions &#9662;</button>
+    <div class="oc-dropdown-menu" id="oc-menu-3f9a1c" popover>
+      <a class="oc-dropdown-item" href="#profile">Profile</a>
+      <a class="oc-dropdown-item" href="#invoices">Invoices</a>
+    </div>
+  </div>
+  <div style="display:grid;gap:0.5rem;align-content:start;justify-items:start">
+    <span class="oc-badge oc-badge--success">Right: opens</span>
+    <button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-menu-own-trigger">Customer actions &#9662;</button>
+    <div class="oc-dropdown-menu" id="oc-menu-own-trigger" popover>
+      <div class="oc-dropdown-label">Customer 1</div>
+      <a class="oc-dropdown-item" href="#profile">Profile</a>
+      <a class="oc-dropdown-item" href="#invoices">Invoices</a>
+      <div class="oc-dropdown-separator"></div>
+      <button class="oc-dropdown-item oc-dropdown-item--destructive" type="button" popovertarget="oc-menu-own-trigger" popovertargetaction="hide">Archive</button>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;!-- Wrong: the button does not name the menu, nothing opens it --&gt;
+&lt;button class="oc-btn oc-btn--outline" type="button"&gt;Customer actions&lt;/button&gt;
+&lt;div class="oc-dropdown-menu" id="oc-menu-3f9a1c" popover&gt;…&lt;/div&gt;
+
+&lt;!-- Right: popovertarget is the id of the menu --&gt;
+&lt;button class="oc-btn oc-btn--outline" type="button" popovertarget="customer-menu"&gt;Customer actions&lt;/button&gt;
+&lt;div class="oc-dropdown-menu" id="customer-menu" popover&gt;
+  &lt;div class="oc-dropdown-label"&gt;Customer 1&lt;/div&gt;
+  &lt;a class="oc-dropdown-item" href="/customers/1"&gt;Profile&lt;/a&gt;
+  &lt;a class="oc-dropdown-item" href="/customers/1/invoices"&gt;Invoices&lt;/a&gt;
+  &lt;div class="oc-dropdown-separator"&gt;&lt;/div&gt;
+  &lt;button class="oc-dropdown-item oc-dropdown-item--destructive" type="button"&gt;Archive&lt;/button&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Button, Dropdown, DropdownItem, DropdownLabel, DropdownSeparator } from "@birdycom/omniaui-react";
+
+// React wires your own trigger itself: triggerAsChild adds popovertarget (and the id) to the Button.
+export function Example() {
+  return (
+    &lt;Dropdown triggerAsChild trigger={&lt;Button variant="outline"&gt;Customer actions&lt;/Button&gt;}&gt;
+      &lt;DropdownLabel&gt;Customer 1&lt;/DropdownLabel&gt;
+      &lt;DropdownItem href="/customers/1"&gt;Profile&lt;/DropdownItem&gt;
+      &lt;DropdownItem href="/customers/1/invoices"&gt;Invoices&lt;/DropdownItem&gt;
+      &lt;DropdownSeparator /&gt;
+      &lt;DropdownItem destructive&gt;Archive&lt;/DropdownItem&gt;
+    &lt;/Dropdown&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcDropdown, OcDropdownItem, OcDropdownLabel, OcDropdownSeparator } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Vue wires your own trigger itself: trigger-as-child adds popovertarget to the button --&gt;
+  &lt;OcDropdown trigger-as-child&gt;
+    &lt;template #trigger&gt;
+      &lt;OcButton variant="outline"&gt;Customer actions&lt;/OcButton&gt;
+    &lt;/template&gt;
+    &lt;OcDropdownLabel&gt;Customer 1&lt;/OcDropdownLabel&gt;
+    &lt;OcDropdownItem href="/customers/1"&gt;Profile&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownItem href="/customers/1/invoices"&gt;Invoices&lt;/OcDropdownItem&gt;
+    &lt;OcDropdownSeparator /&gt;
+    &lt;OcDropdownItem destructive&gt;Archive&lt;/OcDropdownItem&gt;
+  &lt;/OcDropdown&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Wrong: no id and no popovertarget. The menu gets a random id and nothing opens it. --}}
+&lt;x-oc::dropdown&gt;
+    &lt;x-slot:trigger&gt;
+        &lt;x-oc::button variant="outline"&gt;Customer actions&lt;/x-oc::button&gt;
+    &lt;/x-slot:trigger&gt;
+    &lt;x-oc::dropdown.item href="/customers/1"&gt;Profile&lt;/x-oc::dropdown.item&gt;
+&lt;/x-oc::dropdown&gt;
+
+{{-- Right: a fixed id on the dropdown and the same value in popovertarget on your button --}}
+&lt;x-oc::dropdown id="customer-menu"&gt;
+    &lt;x-slot:trigger&gt;
+        &lt;x-oc::button variant="outline" popovertarget="customer-menu"&gt;Customer actions&lt;/x-oc::button&gt;
+    &lt;/x-slot:trigger&gt;
+    &lt;x-oc::dropdown.label&gt;Customer 1&lt;/x-oc::dropdown.label&gt;
+    &lt;x-oc::dropdown.item href="/customers/1"&gt;Profile&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.item href="/customers/1/invoices"&gt;Invoices&lt;/x-oc::dropdown.item&gt;
+    &lt;x-oc::dropdown.separator /&gt;
+    &lt;x-oc::dropdown.item destructive&gt;Archive&lt;/x-oc::dropdown.item&gt;
+&lt;/x-oc::dropdown&gt;
+
+{{-- Toggle mode: no popovertarget; a click on your button toggles .is-open --}}
+&lt;x-oc::dropdown mode="toggle" id="customer-menu-inline"&gt;
+    &lt;x-slot:trigger&gt;
+        &lt;x-oc::button variant="outline" aria-expanded="false" aria-controls="customer-menu-inline"&gt;Customer actions&lt;/x-oc::button&gt;
+    &lt;/x-slot:trigger&gt;
+    &lt;x-oc::dropdown.item href="/customers/1"&gt;Profile&lt;/x-oc::dropdown.item&gt;
+&lt;/x-oc::dropdown&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CustomerRows extends Component
+{
+    /** @var list&lt;int&gt; */
+    public array $customers = [1, 2, 3];
+
+    public function archive(int $customer): void
+    {
+        // archive the customer
+    }
+
+    public function render()
+    {
+        return view('livewire.customer-rows');
+    }
+}
+
+{{-- resources/views/livewire/customer-rows.blade.php --}}
+{{-- One fixed id per row: the same value on the dropdown and in popovertarget, the same on every re-render --}}
+&lt;div&gt;
+    @foreach ($customers as $customer)
+        &lt;div wire:key="customer-{{ $customer }}"&gt;
+            &lt;x-oc::dropdown id="customer-menu-{{ $customer }}"&gt;
+                &lt;x-slot:trigger&gt;
+                    &lt;x-oc::button variant="outline" popovertarget="customer-menu-{{ $customer }}"&gt;Customer {{ $customer }}&lt;/x-oc::button&gt;
+                &lt;/x-slot:trigger&gt;
+                &lt;x-oc::dropdown.item href="/customers/{{ $customer }}" wire:navigate&gt;Profile&lt;/x-oc::dropdown.item&gt;
+                &lt;x-oc::dropdown.separator /&gt;
+                &lt;x-oc::dropdown.item destructive wire:click="archive({{ $customer }})"&gt;Archive&lt;/x-oc::dropdown.item&gt;
+            &lt;/x-oc::dropdown&gt;
+        &lt;/div&gt;
+    @endforeach
+&lt;/div&gt;</oc-code>
+</oc-demo>
         </div>
       </section><section class="oc-docs-section" id="reference">
         <div class="oc-section-header">
@@ -317,6 +543,8 @@ class SortMenu extends Component
                 <tr><td><code>.oc-dropdown-separator</code></td><td>Divider line</td></tr>
                 <tr><td><code>.oc-dropdown</code> + <code>.is-open</code></td><td>Class-toggle variant (inline, needs a script). Components: <code>mode="toggle"</code></td></tr>
                 <tr><td><code>.oc-dropdown-radio-group[role="group"]</code> + <code>.oc-dropdown-item[role="menuitemradio"]</code></td><td>Radio group: one item with <code>aria-checked="true"</code>. Components: <code>DropdownRadioGroup</code> / <code>DropdownRadioItem</code>, <code>OcDropdownRadioGroup</code> / <code>OcDropdownRadioItem</code>, <code>&lt;x-oc::dropdown.radio-group&gt;</code> / <code>.radio-item</code> (v0.17.2)</td></tr>
+                <tr><td><code>[data-side]</code> / <code>[data-align]</code></td><td>Position of the menu (v0.18.0): <code>top</code>, <code>right</code>, <code>bottom</code> (default), <code>left</code>; <code>start</code> (default), <code>center</code>, <code>end</code>. Props <code>side</code> / <code>align</code> in React, Vue and Blade. Styles in <code>parts/app-compound-overlays.css</code>.</td></tr>
+                <tr><td>React <code>triggerAsChild</code>, <code>DropdownItem asChild</code></td><td>v0.18.0: the trigger wiring goes onto your own <code>trigger</code> element; an item renders its only child (a router link) as the item and closes the menu on a click. Vue: <code>trigger-as-child</code> (trigger slot), <code>OcDropdownItem as-child</code>.</td></tr>
                 <tr><td>Blade <code>&lt;x-oc::dropdown.item&gt;</code>, <code>.label</code>, <code>.separator</code>, <code>.sub</code></td><td>Menu parts as components; attributes such as <code>wire:click</code> go to the item</td></tr>
               </tbody>
             </table>

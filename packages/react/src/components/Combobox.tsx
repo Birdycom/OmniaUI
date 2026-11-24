@@ -6,7 +6,9 @@
 // chosen value in the field; options without an icon line up with the others (CSS).
 // Catalog mode (0.17.0, all optional): numeric values (valueType), server search (onSearch + searchDelay + loading +
 // selected), a clear row (clearLabel), a manage link in a footer (manageHref / onManage), a "use what I typed" row
-// (allowCustomFromSearch), a list in document.body (portal) and options with a description, an image or an emoji.
+// (allowCustomFromSearch), a floating list (portal) and options with a description, an image or an emoji.
+// 0.18.0: the portal list stays in the tree as popover="manual" in the top layer where the browser has popovers, so it
+// also works inside a modal Dialog, Sheet or Drawer (document.body is inert there); elsewhere it goes to document.body.
 "use client";
 
 import { forwardRef, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -66,7 +68,9 @@ interface ComboboxBaseProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   customLabel?: string;
   /** Called with the typed text when the custom row is chosen (in string mode onChange gets it too). */
   onCustom?: (query: string) => void;
-  /** Render the list in document.body (fixed under the field) so a scrolling or clipping parent cannot cut it off. */
+  /** Float the list (fixed under the field) so a scrolling or clipping parent cannot cut it off. 0.18.0: shown in the top
+   *  layer (popover="manual") where the browser has popovers, so it works inside a modal Dialog, Sheet or Drawer;
+   *  otherwise rendered in document.body. */
   portal?: boolean;
   /** Compact bookkeeping look (`oc-combobox--ledger`). */
   variant?: "ledger";
@@ -188,11 +192,17 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
     timer.current = setTimeout(() => onSearch(q), searchDelay);
   };
 
-  // Portal: the list is fixed under the field and follows scrolling and resizing while open.
+  // Portal: the list is fixed under the field and follows scrolling and resizing while open. With popover support it stays
+  // in the tree and is shown in the top layer (topLayer); without, it is rendered in document.body.
   const wrapRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLElement | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [topLayer, setTopLayer] = useState(false);
   const [place, setPlace] = useState<CSSProperties>({});
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    setTopLayer(typeof HTMLElement !== "undefined" && typeof HTMLElement.prototype.showPopover === "function");
+  }, []);
   const measure = useCallback(() => {
     const r = wrapRef.current?.getBoundingClientRect();
     if (!r) return;
@@ -206,11 +216,35 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
     measure();
     window.addEventListener("scroll", measure, true);
     window.addEventListener("resize", measure);
+    // 0.18.0: follow the field every frame during the first second, while a sheet or drawer may still be sliding in.
+    let frame = 0;
+    let last = "";
+    let until = 0;
+    const track = (now: number) => {
+      const r = wrapRef.current?.getBoundingClientRect();
+      const key = r ? `${r.left},${r.bottom},${r.width}` : "";
+      if (key !== last) { last = key; measure(); }
+      if (!until) until = now + 1000;
+      if (now < until) frame = requestAnimationFrame(track);
+    };
+    if (typeof requestAnimationFrame === "function") frame = requestAnimationFrame(track);
     return () => {
       window.removeEventListener("scroll", measure, true);
       window.removeEventListener("resize", measure);
+      if (typeof cancelAnimationFrame === "function") cancelAnimationFrame(frame);
     };
   }, [portal, open, measure]);
+  // A manual popover has no light dismiss: open and close follow the state (blur and Escape close it).
+  useIsoLayoutEffect(() => {
+    const el = popupRef.current;
+    if (!portal || !topLayer || !el || typeof el.showPopover !== "function") return;
+    let shown = false;
+    try { shown = el.matches(":popover-open"); } catch { shown = false; }
+    try {
+      if (open && !shown) el.showPopover();
+      else if (!open && shown) el.hidePopover();
+    } catch { /* not connected */ }
+  }, [portal, topLayer, open]);
 
   const close = () => { setOpen(false); setText(null); setActive(null); };
   const emit = (v: ComboboxValue | null) => setCurrent(v);
@@ -277,6 +311,8 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
     ? <li className="oc-combobox-loading" role="presentation">{loadingText}</li>
     : shown.length === 0 && !showCustom && <li className="oc-combobox-empty" role="presentation">{emptyText}</li>;
 
+  const setPopup = (el: HTMLElement | null) => { popupRef.current = el; };
+  const popoverAttr = portal && topLayer ? ("manual" as const) : undefined;
   const listbox = (
     <ul
       className={footer ? "oc-combobox-options" : cx("oc-combobox-list", portal && "oc-combobox-list--portal")}
@@ -284,7 +320,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
       role="listbox"
       aria-label={label}
       aria-busy={loading || undefined}
-      {...(!footer ? { onMouseDown: (e: ReactMouseEvent) => e.preventDefault(), style: portal ? place : undefined, "data-open": portal ? (open ? "" : "false") : undefined, "data-module": portal ? module : undefined } : {})}
+      {...(!footer ? { ref: setPopup, popover: popoverAttr, onMouseDown: (e: ReactMouseEvent) => e.preventDefault(), style: portal ? place : undefined, "data-open": portal ? (open ? "" : "false") : undefined, "data-module": portal ? module : undefined } : {})}
     >
       {optionRows}
       {status}
@@ -292,6 +328,8 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
   );
   const list = footer ? (
     <div
+      ref={setPopup}
+      popover={popoverAttr}
       className={cx("oc-combobox-list oc-combobox-list--panel", portal && "oc-combobox-list--portal")}
       onMouseDown={(e) => { if (!(e.target as Element).closest?.("a, button")) e.preventDefault(); }}
       style={portal ? place : undefined}
@@ -349,7 +387,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
         onBlur={(e) => { rest.onBlur?.(e); close(); }}
       />
       {name != null && <input type="hidden" name={name} value={current == null ? "" : String(current)} />}
-      {portal ? (mounted ? createPortal(list, document.body) : null) : list}
+      {portal ? (!mounted ? null : topLayer ? list : createPortal(list, document.body)) : list}
     </div>
   );
 });

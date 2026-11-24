@@ -80,7 +80,9 @@ Card with header, content, footer
 <!-- OmniaUI component: card — Card with header, content, footer. Needs @birdycom/omniaui CSS.
      Accent (0.16.0): .oc-card--accent[data-tone="primary|info|success|warning|destructive|test|live"] (2px border in that
      color) + .oc-card-band at the top (soft band: a badge, .oc-card-band__title with a <small> line, a status);
-     data-active="false" = a set that is not in use now (dashed). -->
+     data-active="false" = a set that is not in use now (dashed).
+     Bare (0.18.0): .oc-card--bare = the card surface without padding or clipping; your own parts (a table, a list, a menu
+     that may stick out) go straight in. .oc-card-action: in the header, top-right corner (a badge, a menu). -->
 <div class="oc-card">
   <div class="oc-card-header">
     <h3 class="oc-card-title">Create project</h3>
@@ -96,6 +98,14 @@ Card with header, content, footer
     <button class="oc-btn oc-btn--outline">Cancel</button>
     <button class="oc-btn">Deploy</button>
   </div>
+</div>
+
+<!-- Bare card (0.18.0): no padding, no clipping. -->
+<div class="oc-card oc-card--bare">
+  <table class="oc-table">
+    <thead><tr><th>Customer</th><th>Open</th></tr></thead>
+    <tbody><tr><td>Customer 1</td><td>2</td></tr><tr><td>Customer 2</td><td>0</td></tr></tbody>
+  </table>
 </div>
 ```
 
@@ -157,7 +167,10 @@ Modal on <dialog> — opens with invoker commands, no JavaScript
 Dropdown menu on popover + anchor positioning — no JavaScript
 
 ```html
-<!-- OmniaUI component: dropdown — Dropdown menu on popover + anchor positioning — no JavaScript. Needs @birdycom/omniaui CSS. -->
+<!-- OmniaUI component: dropdown — Dropdown menu on popover + anchor positioning — no JavaScript. Needs @birdycom/omniaui CSS.
+     0.18.0: data-side (top|right|bottom|left) and data-align (start|center|end) on .oc-dropdown-menu place the menu.
+     Blade <x-oc::dropdown> with an own trigger slot: give the dropdown a fixed id and the same value in popovertarget on
+     your button (the slot is printed as it is, nothing is merged into it). -->
 <button class="oc-btn oc-btn--outline" popovertarget="oc-menu-demo">Options</button>
 <div class="oc-dropdown-menu" id="oc-menu-demo" popover>
   <div class="oc-dropdown-label">My account</div>
@@ -236,7 +249,9 @@ Animated number (@property) — starts when scrolled into view
 Tooltip (CSS only)
 
 ```html
-<!-- OmniaUI component: tooltip — Tooltip (CSS only). Needs @birdycom/omniaui CSS. -->
+<!-- OmniaUI component: tooltip — Tooltip (CSS only). Needs @birdycom/omniaui CSS.
+     0.18.0: no wrapper needed: put class="oc-tooltip" and data-tooltip on the button or link itself
+     (<button class="oc-btn oc-tooltip" data-tooltip="Save">). Not on an <input> or <img> (no ::after). -->
 <span class="oc-tooltip" data-tooltip="Saved to your library">
   <button class="oc-btn oc-btn--outline">Hover me</button>
 </span>
@@ -271,12 +286,25 @@ Progress bar
 Breadcrumb
 
 ```html
-<!-- OmniaUI component: breadcrumb — Breadcrumb. Needs @birdycom/omniaui CSS. -->
+<!-- OmniaUI component: breadcrumb — Breadcrumb. Needs @birdycom/omniaui CSS.
+     .oc-breadcrumb-ellipsis: the folded middle of a long trail (a button with popovertarget + a .oc-dropdown-menu popover).
+     0.18.0: its "…" is inline SVG (the mdi:dots-horizontal path), no icon runtime needed. -->
 <nav class="oc-breadcrumb" aria-label="Breadcrumb">
   <a class="oc-breadcrumb-item" href="/">Home</a>
   <a class="oc-breadcrumb-item" href="/docs/">Docs</a>
   <span class="oc-breadcrumb-item" aria-current="page">Components</span>
 </nav>
+
+<!-- Folded trail with the hidden levels in a menu (native popover). -->
+<nav class="oc-breadcrumb" aria-label="Breadcrumb">
+  <a class="oc-breadcrumb-item" href="/">Home</a>
+  <span class="oc-breadcrumb-item"><button type="button" class="oc-breadcrumb-ellipsis" popovertarget="oc-bc-snippet-more" aria-label="Show 2 more levels"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16 12a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2"/></svg></button></span>
+  <span class="oc-breadcrumb-item" aria-current="page">Invoice 1</span>
+</nav>
+<div class="oc-dropdown-menu" id="oc-bc-snippet-more" popover="auto" role="menu">
+  <a class="oc-dropdown-item" role="menuitem" href="/customers/">Customers</a>
+  <a class="oc-dropdown-item" role="menuitem" href="/customers/1/">Customer 1</a>
+</div>
 ```
 
 ### pagination
@@ -345,6 +373,9 @@ Outline link that names its destination (Back to Products)
 <!-- OmniaUI component: back-link - Outline link that names its destination (Back to Products). Needs @birdycom/omniaui CSS.
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-back-link: Anchor styled as an outline button with a leading arrow
+     Behaviour (oc-back-link.js): data-oc-back = go back in the history when the visitor came from this site, else the href.
+     0.18.0: a plain click first dispatches a cancelable `oc-back` event on the link; call preventDefault() in a listener to
+     run your own back action (close a panel); Ctrl/Cmd/Shift and middle click keep opening the href.
 -->
 <a class="oc-back-link" href="#">Back to Products</a>
 ```
@@ -571,6 +602,8 @@ Floating panel on popover + anchor positioning - no JavaScript
        .oc-popover[popover]: The panel. Sizes: --sm, --lg.
        .oc-popover-title / -text: Optional heading and body text
        button[popovertarget]: Trigger
+       [data-side] / [data-align]: top|right|bottom|left, start|center|end (0.17.0)
+       [data-match-width]: as wide as the trigger, CSS anchor-size(width) (0.18.0)
 -->
 <button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-popover-demo">Dimensions</button>
 <div class="oc-popover" id="oc-popover-demo" popover>
@@ -598,6 +631,8 @@ Command palette / searchable list styling (filter logic in a wrapper)
        .oc-command-shortcut: Keyboard hint on the right
        .oc-command-separator: Divider
        .oc-command-empty: Shown when nothing matches
+     React CommandItem / CommandGroup and Vue OcCommandItem / OcCommandGroup (0.18.0) are read from the children as written
+     (also fragments, .map(), v-for); inside your own wrapper component they are not found: use them directly or pass data.
 -->
 <div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox">
   <input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands">
@@ -686,6 +721,8 @@ Wizard step navigation: done, active and upcoming steps (vertical or horizontal)
        .oc-stepper-item: Step (button). Modifiers: --done, --active (or aria-current="step"); default = upcoming (add disabled).
        .oc-stepper-label: Step title
        .oc-stepper-meta: Optional small text (e.g. 2/4)
+     0.18.0: which steps are clickable is up to you (React/Vue isStepEnabled, Blade 'enabled' per step); a later step
+     without disabled can be opened. aria-current="step" stays on the active step only.
 -->
 <ol class="oc-stepper" aria-label="Setup steps">
   <li><button class="oc-stepper-item oc-stepper-item--done" type="button"><span><span class="oc-stepper-label">Company</span><span class="oc-stepper-meta">1/4</span></span></button></li>
@@ -1480,7 +1517,8 @@ Scroll area: bounded scroll region with themed thin scrollbar and edge shadows
 ```html
 <!-- OmniaUI component: scroll-area - Scroll area: bounded scroll region with themed thin scrollbar and edge shadows. Needs @birdycom/omniaui CSS.
      Class API (modifiers are extra classes / attributes on the same element):
-       .oc-scroll-area: bordered scroll region (max-block-size 14rem). Modifiers: --x (horizontal), --shadows (edge shadows, CSS only)
+       .oc-scroll-area: bordered scroll region (max-block-size 14rem). Modifiers: --x (horizontal), --shadows (edge shadows, CSS only),
+         --bare (0.18.0: only the scrolling and the themed scrollbar; no padding, frame or height cap, size it with your layout)
        .oc-scrollbar: themed scrollbar for any overflow element. Modifiers: --thin, --hidden
 -->
 <div class="oc-scroll-area oc-scroll-area--shadows" tabindex="0" role="region" aria-label="Release notes">
@@ -1497,6 +1535,17 @@ Scroll area: bounded scroll region with themed thin scrollbar and edge shadows
 
 <div class="oc-scroll-area oc-scroll-area--x" tabindex="0" role="region" aria-label="Tags">
   <span class="oc-badge">design</span> <span class="oc-badge">tokens</span> <span class="oc-badge">dark mode</span> <span class="oc-badge">anchor positioning</span> <span class="oc-badge">popover</span> <span class="oc-badge">container queries</span> <span class="oc-badge">scroll snap</span> <span class="oc-badge">view transitions</span> <span class="oc-badge">oklch</span> <span class="oc-badge">light-dark</span> <span class="oc-badge">color-mix</span>
+</div>
+
+<!-- Bare (0.18.0): only the scrolling; the parent sets the height. -->
+<div style="display:flex;flex-direction:column;block-size:8rem">
+  <div class="oc-scroll-area oc-scroll-area--bare" tabindex="0" role="region" aria-label="Activity" style="flex:1;min-block-size:0">
+    <p>Company 1 sent an invoice.</p>
+    <p>Customer 1 paid an invoice.</p>
+    <p>Customer 2 opened a quote.</p>
+    <p>Company 1 added a product.</p>
+    <p>Customer 3 signed a contract.</p>
+  </div>
 </div>
 ```
 
@@ -1835,6 +1884,7 @@ Combobox: input + listbox styling (filtering and selection are wrapper responsib
          the wrapper shows the icon of the chosen value in the field. Options without an icon line up with the others.
      Behaviour: data-oc-combobox + oc-combobox.js (npx omniaui copy-js combobox) filters while typing, moves with the arrow keys,
        chooses with Enter or a click, closes with Escape, copies the icon into the field; event oc-combobox-change { value, label }.
+       data-oc-portal: a floating list; 0.18.0 a manual popover in the top layer (works inside a modal dialog, sheet or drawer).
 -->
 <div class="oc-combobox">
   <input class="oc-input oc-combobox-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-list" aria-autocomplete="list" placeholder="Select framework&hellip;" aria-label="Framework">
@@ -2357,6 +2407,8 @@ Text field for locale decimals like 1.234,56, with an optional unit
        .oc-decimal-field-unit: Unit text after the value (m², kg, h)
      States: :user-invalid when the pattern does not match (red), aria-invalid="true", disabled
      Pattern below accepts 1234,5 / 1.234,56 (comma decimals). For dot decimals use [0-9,]*(\.[0-9]+)?
+     0.18.0: a leading minus is fine (-?[0-9.]*...); whole numbers: inputmode="numeric" and pattern [0-9.]* (wrappers: integer).
+     The wrappers round to the decimals half away from zero on blur (1,005 -> 1,01) and report that rounded number.
 -->
 <div class="oc-field">
   <label class="oc-field-label" for="oc-decimal-demo">Amount</label>
@@ -2937,6 +2989,8 @@ Phone field with a country dial code select and the national number
        .oc-phone-input-number: The national number (type="tel", autocomplete="tel-national")
      States: :focus-within (ring), aria-invalid="true" or :user-invalid on the number (red), disabled number (dimmed)
      Slots: one <option> per country; the value of the form is dial code + number (join them on the server)
+     0.18.0: the wrappers group the national digits per country (BE 470 12 34 56, NL/FR 6 12 34 56 78, DE 151 2345 6789;
+     your own with format "### ## ## ##" or groups [3, 2, 2, 2] on a country)
 -->
 <div class="oc-field">
   <label class="oc-field-label" for="oc-phone-demo">Mobile number</label>
@@ -3261,11 +3315,13 @@ Table variant: compact striped table without outer cell borders, for inside card
 
 ```html
 <!-- OmniaUI component: time-input - 24h time field (HH:mm) with suggested slots and an optional slot list. Needs @birdycom/omniaui CSS.
-     File: packages/ui/snippets/time-input.html | Map: field + datalist of slots -> slot list (radio chips)
+     File: packages/ui/snippets/time-input.html | Map: field + datalist of slots -> slot list (radio chips) -> time picker (0.18.0)
      Class API (modifiers are extra classes / attributes on the same element):
        .oc-time-input: Add to .oc-input. Narrow centered field; pattern checks HH:mm (00:00 - 23:59).
        .oc-time-slots: Grid of slot chips (role="radiogroup"). Modifier: --sm.
        .oc-time-slot: Label with one radio input and the time text
+       .oc-time-picker (0.18.0): field + clock button (.oc-btn--icon, popovertarget) + the slots in a native popover (.oc-popover);
+         oc-form-extras.js puts a picked slot into the field (input + change events) and closes the popover.
      States: :user-invalid on a wrong time (red), checked slot (primary), disabled slot (struck through)
      Slots: <datalist> options = suggestions while typing; one .oc-time-slot per time in the list.
 -->
@@ -3285,6 +3341,20 @@ Table variant: compact striped table without outer cell borders, for inside card
   <label class="oc-time-slot"><input type="radio" name="slot" value="10:00" disabled> 10:00</label>
   <label class="oc-time-slot"><input type="radio" name="slot" value="10:30"> 10:30</label>
   <label class="oc-time-slot"><input type="radio" name="slot" value="11:00"> 11:00</label>
+</div>
+
+<!-- Time picker (0.18.0): the slots in a popover under a clock button. -->
+<div class="oc-time-picker">
+  <input class="oc-input oc-time-input" id="oc-time-pick" name="meeting" type="text" inputmode="numeric" placeholder="hh:mm" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" value="09:00">
+  <button type="button" class="oc-btn oc-btn--outline oc-btn--icon" popovertarget="oc-time-pick-slots" aria-label="Choose a time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 20a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10a10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67l-.75 1.23L11 13V7z"/></svg></button>
+  <div class="oc-popover" id="oc-time-pick-slots" popover="auto" role="dialog" aria-label="Choose a time">
+    <div class="oc-time-slots" role="radiogroup" aria-label="Choose a time">
+      <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="09:00" checked>09:00</label>
+      <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="09:30">09:30</label>
+      <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="10:00">10:00</label>
+      <label class="oc-time-slot"><input type="radio" name="oc-time-pick-slot" value="10:30">10:30</label>
+    </div>
+  </div>
 </div>
 ```
 

@@ -524,6 +524,173 @@ class InvoiceLine extends Component
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
+          <h3 class="oc-section-content__title mt-2" id="in-dialog">In a dialog, sheet or drawer <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">A modal dialog makes everything outside it inert, so a list that moved to <code>document.body</code> could not be clicked. Where the browser has popovers, <code>portal</code> now keeps the list inside the combobox as <code>popover="manual"</code> and shows it in the top layer: above the dialog, fixed under the field, and not cut off by the scrolling dialog body or moved by the sliding sheet panel. Blur and <kbd>Esc</kbd> close it (a manual popover has no light dismiss); a press in the list keeps the focus in the field. Older browsers keep the <code>document.body</code> list. Dropdowns, popovers and tooltips work in the same dialog. Nothing changes in your markup: <code>data-oc-portal</code>, React and Vue <code>portal</code>, Blade <code>portal</code>.</p>
+          <oc-demo title="Combobox - in a dialog" size="tall" hint="Open the dialog, then pick a customer: the list opens above the dialog.">
+<button class="oc-btn oc-btn--outline" type="button" command="show-modal" commandfor="oc-cb-dialog">New invoice</button>
+<dialog class="oc-modal" id="oc-cb-dialog" closedby="any" aria-labelledby="oc-cb-dialog-title">
+  <div class="oc-modal-content">
+    <div class="oc-modal-header">
+      <h2 class="oc-modal-title" id="oc-cb-dialog-title">New invoice</h2>
+      <p class="oc-modal-description">For Company 1.</p>
+    </div>
+    <div class="oc-modal-body">
+      <label class="oc-field-label" for="oc-cb-dialog-input">Customer</label>
+      <div class="oc-combobox" data-oc-combobox data-oc-portal style="inline-size:100%">
+        <input class="oc-input oc-combobox-input" id="oc-cb-dialog-input" type="text" role="combobox" aria-expanded="false" aria-controls="oc-cb-dialog-list" aria-autocomplete="list" placeholder="Choose a customer">
+        <ul class="oc-combobox-list" id="oc-cb-dialog-list" role="listbox" aria-label="Customers">
+          <li class="oc-combobox-option" role="option" tabindex="-1" data-value="1">Customer 1</li>
+          <li class="oc-combobox-option" role="option" tabindex="-1" data-value="2">Customer 2</li>
+          <li class="oc-combobox-option" role="option" tabindex="-1" data-value="3">Customer 3</li>
+          <li class="oc-combobox-empty" role="presentation" hidden>No results</li>
+        </ul>
+      </div>
+    </div>
+    <div class="oc-modal-footer">
+      <button class="oc-btn oc-btn--outline oc-btn--icon oc-tooltip" type="button" data-tooltip="More options" aria-label="More options" popovertarget="oc-cb-dialog-menu"><span aria-hidden="true">&#8943;</span></button>
+      <div class="oc-dropdown-menu" id="oc-cb-dialog-menu" data-side="top" data-align="start" popover>
+        <button class="oc-dropdown-item" type="button">Save as draft</button>
+        <button class="oc-dropdown-item" type="button">Duplicate last invoice</button>
+      </div>
+      <button class="oc-btn oc-btn--outline" type="button" command="close" commandfor="oc-cb-dialog">Cancel</button>
+      <button class="oc-btn" type="button" command="close" commandfor="oc-cb-dialog">Create</button>
+    </div>
+  </div>
+</dialog>
+<oc-code lang="tsx">import { useState } from "react";
+import { Button, Combobox, Dropdown, DropdownItem, Modal, ModalClose, Tooltip, Webicon } from "@birdycom/omniaui-react";
+
+const customers = [
+  { value: 1, label: "Customer 1" },
+  { value: 2, label: "Customer 2" },
+  { value: 3, label: "Customer 3" },
+];
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  const [customer, setCustomer] = useState&lt;number | null&gt;(null);
+  return (
+    &lt;&gt;
+      &lt;Button variant="outline" onClick={() =&gt; setOpen(true)}&gt;New invoice&lt;/Button&gt;
+      &lt;Modal
+        open={open}
+        onOpenChange={setOpen}
+        title="New invoice"
+        description="For Company 1."
+        footer={&lt;&gt;
+          &lt;Dropdown
+            side="top"
+            triggerAsChild
+            trigger={&lt;Tooltip content="More options" asChild&gt;&lt;Button variant="outline" icon aria-label="More options"&gt;&lt;Webicon name="mdi:dots-horizontal" /&gt;&lt;/Button&gt;&lt;/Tooltip&gt;}
+          &gt;
+            &lt;DropdownItem&gt;Save as draft&lt;/DropdownItem&gt;
+            &lt;DropdownItem&gt;Duplicate last invoice&lt;/DropdownItem&gt;
+          &lt;/Dropdown&gt;
+          &lt;ModalClose variant="outline"&gt;Cancel&lt;/ModalClose&gt;
+          &lt;Button onClick={() =&gt; setOpen(false)}&gt;Create&lt;/Button&gt;
+        &lt;/&gt;}
+      &gt;
+        &lt;Combobox valueType="number" value={customer} onChange={setCustomer} options={customers} label="Customer" placeholder="Choose a customer" portal /&gt;
+      &lt;/Modal&gt;
+    &lt;/&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { OcButton, OcCombobox, OcDropdown, OcDropdownItem, OcModal, OcTooltip, OcWebicon } from '@birdycom/omniaui-vue'
+
+const open = ref(false)
+const customer = ref&lt;number | null&gt;(null)
+const customers = [
+  { value: 1, label: 'Customer 1' },
+  { value: 2, label: 'Customer 2' },
+  { value: 3, label: 'Customer 3' },
+]
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcButton variant="outline" @click="open = true"&gt;New invoice&lt;/OcButton&gt;
+  &lt;OcModal v-model:open="open" title="New invoice" description="For Company 1."&gt;
+    &lt;OcCombobox v-model="customer" value-type="number" :options="customers" label="Customer" placeholder="Choose a customer" portal /&gt;
+    &lt;template #footer&gt;
+      &lt;OcDropdown side="top" trigger-as-child&gt;
+        &lt;template #trigger&gt;
+          &lt;OcTooltip text="More options" as-child&gt;
+            &lt;OcButton variant="outline" icon aria-label="More options"&gt;&lt;OcWebicon name="mdi:dots-horizontal" /&gt;&lt;/OcButton&gt;
+          &lt;/OcTooltip&gt;
+        &lt;/template&gt;
+        &lt;OcDropdownItem&gt;Save as draft&lt;/OcDropdownItem&gt;
+        &lt;OcDropdownItem&gt;Duplicate last invoice&lt;/OcDropdownItem&gt;
+      &lt;/OcDropdown&gt;
+      &lt;OcButton variant="outline" @click="open = false"&gt;Cancel&lt;/OcButton&gt;
+      &lt;OcButton @click="open = false"&gt;Create&lt;/OcButton&gt;
+    &lt;/template&gt;
+  &lt;/OcModal&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::modal id="oc-cb-dialog" title="New invoice" description="For Company 1."&gt;
+    &lt;x-slot:trigger&gt;
+        &lt;x-oc::button variant="outline" command="show-modal" commandfor="oc-cb-dialog"&gt;New invoice&lt;/x-oc::button&gt;
+    &lt;/x-slot:trigger&gt;
+    &lt;x-oc::combobox name="customer" label="Customer" placeholder="Choose a customer" portal :options="[
+        ['value' =&gt; 1, 'label' =&gt; 'Customer 1'],
+        ['value' =&gt; 2, 'label' =&gt; 'Customer 2'],
+        ['value' =&gt; 3, 'label' =&gt; 'Customer 3'],
+    ]" /&gt;
+    &lt;x-slot:footer&gt;
+        &lt;x-oc::dropdown id="oc-cb-dialog-menu" side="top"&gt;
+            &lt;x-slot:trigger&gt;
+                &lt;x-oc::tooltip as="button" type="button" class="oc-btn oc-btn--outline oc-btn--icon" text="More options" aria-label="More options" popovertarget="oc-cb-dialog-menu"&gt;&lt;x-oc::webicon name="mdi:dots-horizontal" /&gt;&lt;/x-oc::tooltip&gt;
+            &lt;/x-slot:trigger&gt;
+            &lt;x-oc::dropdown.item&gt;Save as draft&lt;/x-oc::dropdown.item&gt;
+            &lt;x-oc::dropdown.item&gt;Duplicate last invoice&lt;/x-oc::dropdown.item&gt;
+        &lt;/x-oc::dropdown&gt;
+        &lt;x-oc::button variant="outline" command="close" commandfor="oc-cb-dialog"&gt;Cancel&lt;/x-oc::button&gt;
+        &lt;x-oc::button command="close" commandfor="oc-cb-dialog"&gt;Create&lt;/x-oc::button&gt;
+    &lt;/x-slot:footer&gt;
+&lt;/x-oc::modal&gt;
+{{-- Typing, arrow keys and Enter: oc-combobox.js (npx omniaui copy-js combobox) --}}
+&lt;script type="module" src="/js/oc-combobox.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class NewInvoice extends Component
+{
+    public bool $invoiceOpen = false;
+
+    public ?int $customerId = null;
+
+    public function create(): void
+    {
+        // create the invoice for $this-&gt;customerId
+        $this-&gt;invoiceOpen = false;
+    }
+
+    public function render()
+    {
+        return view('livewire.new-invoice', ['customers' =&gt; [
+            ['value' =&gt; 1, 'label' =&gt; 'Customer 1'],
+            ['value' =&gt; 2, 'label' =&gt; 'Customer 2'],
+            ['value' =&gt; 3, 'label' =&gt; 'Customer 3'],
+        ]]);
+    }
+}
+
+{{-- resources/views/livewire/new-invoice.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::button variant="outline" wire:click="$set('invoiceOpen', true)"&gt;New invoice&lt;/x-oc::button&gt;
+    &lt;x-oc::wire.modal model="invoiceOpen" title="New invoice" description="For Company 1."&gt;
+        &lt;x-oc::wire.combobox model="customerId" value-type="number" :value="$customerId" :options="$customers" label="Customer" placeholder="Choose a customer" portal /&gt;
+        &lt;x-slot:footer&gt;
+            &lt;x-oc::button variant="outline" wire:click="$set('invoiceOpen', false)"&gt;Cancel&lt;/x-oc::button&gt;
+            &lt;x-oc::button wire:click="create"&gt;Create&lt;/x-oc::button&gt;
+        &lt;/x-slot:footer&gt;
+    &lt;/x-oc::wire.modal&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
           <h3 class="oc-section-content__title mt-2" id="header-trigger">In a header bar: ghost, header size, icon only <span class="oc-badge-version">v0.17.2</span></h3>
           <p class="oc-section-content__desc">A combobox in an app header (a workspace, a language, a view) should not look like a form field. <code>triggerVariant="ghost"</code> (<code>.oc-combobox--ghost</code>) drops the border, the shadow and the margin: muted text that gets fuller on hover and focus, with a light background (tinted with <code>data-module</code> when there is one; the focus ring is an outline in that colour). <code>size="header"</code> (<code>.oc-combobox--header</code>) makes it compact: 36px high and as wide as its label, between 6.5rem and 14rem, with the label cut off with an ellipsis; the default <code>size="full"</code> fills its box. <code>iconOnly</code> (with <code>size="header"</code>, <code>.oc-combobox--icon-only</code>) is a square 36x36 button without label or chevron. It shows <code>triggerLabel</code> (a short code such as "NL", <code>.oc-combobox-code</code>), else the icon, image or emoji of the chosen option, else a dots icon. Give an icon-only trigger a name with <code>triggerAriaLabel</code> (or <code>label</code>). A header combobox puts its list in <code>document.body</code> (<code>portal</code>, on by default with <code>size="header"</code>), at least 12rem wide, so the bar does not cut it off. It works with <code>variant="ledger"</code> too.</p>
           <oc-demo title="Combobox - in a header bar" size="tall" hint="Hover and click the workspace, the language code and the dots.">
@@ -705,13 +872,13 @@ class HeaderLanguage extends Component
               <tr><td><code>.oc-combobox-custom</code></td><td>Row that takes what was typed when nothing matches exactly; text from <code>data-oc-custom-label</code> (<code>Use "{query}"</code>) (0.17.0)</td></tr>
               <tr><td><code>.oc-combobox-loading</code></td><td>Loading row while results are on their way; the listbox gets <code>aria-busy="true"</code> (0.17.0)</td></tr>
               <tr><td><code>.oc-combobox-list--panel</code> &gt; <code>.oc-combobox-options</code> + <code>.oc-combobox-footer</code></td><td>Popup with a footer: the listbox scrolls, the footer link (manage) stays under it, outside the listbox (0.17.0)</td></tr>
-              <tr><td><code>.oc-combobox-list--portal</code></td><td>The list in <code>document.body</code>, <code>position: fixed</code> under the field; shown with <code>[data-open=""]</code> on the list (0.17.0)</td></tr>
+              <tr><td><code>.oc-combobox-list--portal</code></td><td>The floating list, <code>position: fixed</code> under the field; shown with <code>[data-open=""]</code> on the list (0.17.0). 0.18.0: with <code>[popover="manual"]</code> it stays inside <code>.oc-combobox</code> and is shown in the top layer (works inside a modal dialog, sheet or drawer); older browsers get it in <code>document.body</code>.</td></tr>
               <tr><td><code>.oc-combobox--ledger</code></td><td>Compact ledger look; the input gets <code>.oc-input--ledger</code>. <code>data-module</code> sets the module colour (0.17.0)</td></tr>
               <tr><td><code>data-oc-search="event"</code> / <code>data-oc-search-url</code></td><td>Server search (debounced by <code>data-oc-search-delay</code>, 250 ms): no local filter. <code>event</code> fires <code>oc-combobox-search</code> <code>{ query }</code>, answer with <code>el.ocSetOptions(items, query)</code>; a URL is fetched (<code>url + query</code>, JSON <code>[{ value, label, description, icon, image, emoji }]</code>) and an older answer is dropped (0.17.0)</td></tr>
               <tr><td><code>.oc-combobox--ghost</code></td><td>A trigger for a header bar: no border, shadow or margin, muted text, fuller with a light background on hover and focus; focus outline in the module colour <span class="oc-badge-version">v0.17.2</span></td></tr>
               <tr><td><code>.oc-combobox--header</code></td><td>Compact: 36px high, as wide as the label between 6.5rem and 14rem (<code>field-sizing: content</code>), ellipsis <span class="oc-badge-version">v0.17.2</span></td></tr>
               <tr><td><code>.oc-combobox--icon-only</code> + <code>.oc-combobox-code</code></td><td>With <code>--header</code>: a square 36x36 trigger without label or chevron; the icon slot shows a code, the chosen icon or a dots icon. <code>data-oc-fixed</code> on the slot keeps the code when <code>oc-combobox.js</code> changes the choice <span class="oc-badge-version">v0.17.2</span></td></tr>
-              <tr><td><code>data-oc-portal</code></td><td>The script moves the list to <code>document.body</code> while it is open, so a scrolling or clipping parent cannot cut it off (0.17.0)</td></tr>
+              <tr><td><code>data-oc-portal</code></td><td>The list floats above everything so a scrolling or clipping parent cannot cut it off (0.17.0). 0.18.0: the script makes it a manual popover in the top layer where the browser has popovers (closed on blur and <kbd>Esc</kbd>), else it moves it to <code>document.body</code> while open.</td></tr>
             </tbody>
           </table>
           <h3 class="oc-section-content__title mt-2">Platform features used</h3>

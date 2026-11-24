@@ -13,6 +13,10 @@ export interface PhoneCountry {
   dial: string;
   /** Text in the select, e.g. "BE +32". */
   label: string;
+  /** 0.18.0: how the national digits are grouped, one # per digit ("### ## ## ##" -> 470 12 34 56). */
+  format?: string;
+  /** 0.18.0: the same as group sizes ([3, 2, 2, 2]); wins over `format`. */
+  groups?: number[];
 }
 
 export interface PhoneInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange" | "size"> {
@@ -35,23 +39,41 @@ export interface PhoneInputProps extends Omit<InputHTMLAttributes<HTMLInputEleme
   dialName?: string;
 }
 
-const DEFAULT_COUNTRIES: PhoneCountry[] = [
-  { dial: "+32", label: "BE +32" },
-  { dial: "+31", label: "NL +31" },
-  { dial: "+33", label: "FR +33" },
-  { dial: "+49", label: "DE +49" },
+/** 0.18.0: the default countries with the usual national grouping (BE 470 12 34 56, NL/FR 6 12 34 56 78, DE 151 2345 6789). */
+export const PHONE_COUNTRIES: PhoneCountry[] = [
+  { dial: "+32", label: "BE +32", format: "### ## ## ##" },
+  { dial: "+31", label: "NL +31", format: "# ## ## ## ##" },
+  { dial: "+33", label: "FR +33", format: "# ## ## ## ##" },
+  { dial: "+49", label: "DE +49", format: "### #### ####" },
 ];
+const DEFAULT_COUNTRIES = PHONE_COUNTRIES;
 
-/** "470123456" -> "470 12 34 56": a group of 3, then pairs (readable for most European numbers). */
-export function formatPhoneNational(digits: string): string {
+/** Group sizes of a country: `groups`, else the # runs of `format` ("### ## ##" -> [3, 2, 2]), else none. */
+export function phoneGroups(country?: Pick<PhoneCountry, "format" | "groups">): number[] {
+  if (country?.groups?.length) return country.groups.filter((n) => n > 0);
+  return (country?.format?.match(/#+/g) ?? []).map((run) => run.length);
+}
+
+/**
+ * "470123456" -> "470 12 34 56". Without a country (or one without format/groups): a group of 3, then pairs (readable for
+ * most European numbers). 0.18.0: with a country, its `format` / `groups`; digits beyond the pattern follow in pairs.
+ */
+export function formatPhoneNational(digits: string, country?: Pick<PhoneCountry, "format" | "groups">): string {
   const clean = digits.replace(/\D/g, "");
-  const head = clean.slice(0, 3);
-  const pairs = clean.slice(3).match(/.{1,2}/g) ?? [];
-  return [head, ...pairs].filter(Boolean).join(" ");
+  const sizes = phoneGroups(country);
+  const parts: string[] = [];
+  let at = 0;
+  for (const size of sizes.length ? sizes : [3]) {
+    if (at >= clean.length) break;
+    parts.push(clean.slice(at, at + size));
+    at += size;
+  }
+  parts.push(...(clean.slice(at).match(/.{1,2}/g) ?? []));
+  return parts.filter(Boolean).join(" ");
 }
 
 /** Split "+32470..." into the known dial code (longest match) and the national digits. */
-function splitPhone(full: string, countries: PhoneCountry[]) {
+export function splitPhone(full: string, countries: PhoneCountry[]) {
   const match = [...countries].sort((a, b) => b.dial.length - a.dial.length).find((c) => full.startsWith(c.dial));
   return match ? { dial: match.dial, national: full.slice(match.dial.length) } : { dial: "", national: full.replace(/^\+/, "") };
 }
@@ -91,7 +113,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(function
         autoComplete="tel-national"
         aria-invalid={error ? true : undefined}
         disabled={disabled}
-        value={formatPhoneNational(parsed.national)}
+        value={formatPhoneNational(parsed.national, countries.find((c) => c.dial === dial))}
         onChange={(e) => emit(dial, e.target.value)}
         {...rest}
       />

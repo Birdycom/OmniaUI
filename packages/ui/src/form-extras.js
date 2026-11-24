@@ -1,6 +1,7 @@
 // File: packages/ui/src/form-extras.js
 // Map: ISO week -> date field (week label) -> name card (rename) -> avatar picker (preview, drop, remove) -> quantity
 //      (step buttons) -> language code (the closed code select) -> one-time code (active cell, 0.17.1) -> init -> boot
+// 0.18.0: time picker (slots in a popover fill the field).
 // Small behaviour for six CSS components; each works without it (native date input, <details>, file input, number input,
 // native select, one text input).
 // Events on the component root: oc-namecard-rename { name }, oc-avatar-change { file } (null when removed),
@@ -238,8 +239,35 @@ export function bindOtp(input) {
   };
 }
 
-/** Wire every date field, name card, avatar picker, quantity field, code language select and one-time code under scope. */
+/**
+ * 0.18.0: .oc-time-picker (a time field with its slots in a native popover): a picked slot goes into the field (with
+ * input and change events, so frameworks and wire:model see it) and closes the popover; on opening, the slot of the
+ * current value is checked. Typing in the field keeps working as before.
+ */
+export function bindTimePicker(root) {
+  const input = root.querySelector(".oc-time-input");
+  const panel = root.querySelector("[popover]");
+  if (!input || !panel || root.dataset.ocBound !== undefined) return;
+  root.dataset.ocBound = "";
+  panel.addEventListener("change", (event) => {
+    const radio = event.target;
+    if (!radio || radio.tagName !== "INPUT" || radio.type !== "radio") return;
+    const Ev = input.ownerDocument.defaultView?.Event ?? Event;
+    input.value = radio.value;
+    input.dispatchEvent(new Ev("input", { bubbles: true }));
+    input.dispatchEvent(new Ev("change", { bubbles: true }));
+    if (typeof panel.hidePopover === "function" && panel.matches(":popover-open")) panel.hidePopover();
+    input.focus();
+  });
+  panel.addEventListener("toggle", (event) => {
+    if (event.newState !== "open") return;
+    panel.querySelectorAll('input[type="radio"]').forEach((radio) => { radio.checked = radio.value === input.value; });
+  });
+}
+
+/** Wire every date field, name card, avatar picker, quantity field, code language select, one-time code and time picker under scope. */
 export function initFormExtras(scope = document) {
+  scope.querySelectorAll(".oc-time-picker").forEach(bindTimePicker);
   scope.querySelectorAll("input.oc-otp").forEach((input) => { bindOtp(input); });
   scope.querySelectorAll(".oc-date-field").forEach(bindDateField);
   scope.querySelectorAll(".oc-name-card").forEach(bindNameCard);

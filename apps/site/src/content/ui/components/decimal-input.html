@@ -290,6 +290,108 @@ class InvoiceLine extends Component
     &lt;/x-oc::form-field&gt;
 &lt;/form&gt;</oc-code>
           </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="integer-rounding">Whole numbers, no minus, rounding <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc"><code>integer</code>: no decimals and no decimal mark, the numeric keypad on a phone (<code>inputmode="numeric"</code>). <code>allowNegative={false}</code> (Vue <code>:allow-negative="false"</code>) drops the minus sign while typing. The value is rounded to <code>decimals</code> half away from zero on the digits you see (<code>1,005</code> becomes <code>1,01</code>, <code>2,675</code> becomes <code>2,68</code>, also where binary floating point says otherwise), and <code>onValueChange</code> / <code>v-model</code> get that rounded number. <code>parseDecimal</code>, <code>formatDecimal</code> and <code>roundDecimal</code> are exported. Blade: <code>integer</code>, <code>allow-negative</code> (a leading minus in the pattern) and <code>:allow-negative="false"</code>.</p>
+          <oc-demo title="Decimal input - whole numbers and rounding">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem;max-inline-size:28rem">
+  <div class="oc-field">
+    <label class="oc-field-label" for="oc-dec-qty">Quantity</label>
+    <input class="oc-input oc-decimal-input" id="oc-dec-qty" name="quantity" type="text" inputmode="numeric" pattern="[0-9.]*" value="12">
+    <p class="oc-field-description">Whole numbers only.</p>
+  </div>
+  <div class="oc-field">
+    <label class="oc-field-label" for="oc-dec-price">Unit price</label>
+    <input class="oc-input oc-decimal-input" id="oc-dec-price" name="price" type="text" inputmode="decimal" pattern="[0-9.]*(,[0-9]{1,2})?" value="1,01">
+    <p class="oc-field-description">1,005 is rounded to 1,01.</p>
+  </div>
+</div>
+<oc-code lang="html">&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem;max-inline-size:28rem"&gt;
+  &lt;div class="oc-field"&gt;
+    &lt;label class="oc-field-label" for="oc-dec-qty"&gt;Quantity&lt;/label&gt;
+    &lt;input class="oc-input oc-decimal-input" id="oc-dec-qty" name="quantity" type="text" inputmode="numeric" pattern="[0-9.]*" value="12"&gt;
+    &lt;p class="oc-field-description"&gt;Whole numbers only.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="oc-field"&gt;
+    &lt;label class="oc-field-label" for="oc-dec-price"&gt;Unit price&lt;/label&gt;
+    &lt;input class="oc-input oc-decimal-input" id="oc-dec-price" name="price" type="text" inputmode="decimal" pattern="[0-9.]*(,[0-9]{1,2})?" value="1,01"&gt;
+    &lt;p class="oc-field-description"&gt;1,005 is rounded to 1,01.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { DecimalInput, FormField } from "@birdycom/omniaui-react";
+import { useState } from "react";
+
+export function Example() {
+  const [quantity, setQuantity] = useState&lt;number | null&gt;(12);
+  const [price, setPrice] = useState&lt;number | null&gt;(1.01);
+
+  return (
+    &lt;div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))", gap: "1rem", maxInlineSize: "28rem" }}&gt;
+      &lt;FormField label="Quantity" description="Whole numbers only."&gt;
+        &lt;DecimalInput id="oc-dec-qty" name="quantity" integer allowNegative={false} value={quantity} onValueChange={setQuantity} /&gt;
+      &lt;/FormField&gt;
+      &lt;FormField label="Unit price" description="1,005 is rounded to 1,01."&gt;
+        &lt;DecimalInput id="oc-dec-price" name="price" allowNegative={false} value={price} onValueChange={setPrice} /&gt;
+      &lt;/FormField&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcDecimalInput, OcFormField } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const quantity = ref&lt;number | null&gt;(12);
+const price = ref&lt;number | null&gt;(1.01);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem;max-inline-size:28rem"&gt;
+    &lt;OcFormField label="Quantity" for="oc-dec-qty" description="Whole numbers only."&gt;
+      &lt;OcDecimalInput id="oc-dec-qty" v-model="quantity" name="quantity" integer :allow-negative="false" /&gt;
+    &lt;/OcFormField&gt;
+    &lt;OcFormField label="Unit price" for="oc-dec-price" description="1,005 is rounded to 1,01."&gt;
+      &lt;OcDecimalInput id="oc-dec-price" v-model="price" name="price" :allow-negative="false" /&gt;
+    &lt;/OcFormField&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem;max-inline-size:28rem"&gt;
+    &lt;x-oc::form-field label="Quantity" for="oc-dec-qty" name="quantity" description="Whole numbers only."&gt;
+        &lt;x-oc::decimal-input id="oc-dec-qty" name="quantity" integer :allow-negative="false" :value="12" /&gt;
+    &lt;/x-oc::form-field&gt;
+    &lt;x-oc::form-field label="Unit price" for="oc-dec-price" name="price" description="1,005 is rounded to 1,01."&gt;
+        &lt;x-oc::decimal-input id="oc-dec-price" name="price" :allow-negative="false" :value="1.005" /&gt;
+    &lt;/x-oc::form-field&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class DecimalInputIntegerRounding extends Component
+{
+    public string $quantity = '12';
+
+    public string $price = '1,01';
+
+
+    public function render()
+    {
+        return view('livewire.decimal-input-integer-rounding');
+    }
+}
+
+{{-- resources/views/livewire/decimal-input-integer-rounding.blade.php --}}
+&lt;div&gt;
+    &lt;div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem;max-inline-size:28rem"&gt;
+        &lt;x-oc::form-field label="Quantity" for="oc-dec-qty" name="quantity" description="Whole numbers only."&gt;
+            &lt;x-oc::decimal-input id="oc-dec-qty" integer :allow-negative="false" wire:model.blur="quantity" /&gt;
+        &lt;/x-oc::form-field&gt;
+        &lt;x-oc::form-field label="Unit price" for="oc-dec-price" name="price" description="1,005 is rounded to 1,01."&gt;
+            &lt;x-oc::decimal-input id="oc-dec-price" :allow-negative="false" wire:model.blur="price" /&gt;
+        &lt;/x-oc::form-field&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -307,6 +409,7 @@ class InvoiceLine extends Component
               <tr><td><code>.oc-decimal-field-unit</code></td><td>Unit text after the value</td></tr>
               <tr><td><code>.oc-input-group--affix</code> + <code>.oc-decimal-input</code></td><td>Currency or percent field (0.17.1): the symbol in an <code>.oc-input-addon</code> before or after the field. Wrappers: <code>currency</code> (ISO code, symbol and decimals from the locale), <code>percent</code>, <code>locale</code>; Blade also <code>decimals</code> and server formatting of a numeric value.</td></tr>
               <tr><td><code>pattern</code></td><td><code>[0-9.]*(,[0-9]{1,2})?</code> for comma decimals; swap <code>.</code> and <code>,</code> for dot decimals</td></tr>
+              <tr><td><code>integer</code> / <code>allowNegative</code> </td><td>Wrappers: whole numbers (<code>inputmode="numeric"</code>, no decimal mark) and whether a minus sign may be typed (default yes in React and Vue; Blade adds <code>-?</code> to the pattern only with <code>allow-negative</code>). The value is rounded half away from zero to <code>decimals</code>.</td></tr>
             </tbody>
           </table>
         </div>

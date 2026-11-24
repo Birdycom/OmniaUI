@@ -5,7 +5,8 @@
  * accent: a 2px border in a tone or mode (.oc-card--accent[data-tone]); inactive: not in use now (dashed border, calm band).
  * fill: as high as its grid or flex cell, footer at the bottom (.oc-card--fill), for equal cards in a row.
  * footerDivider / footerEnd: a line above the footer / the actions on the end side; footerClass: more classes for the footer.
- * bare: the default slot goes in as it is, without the .oc-card-content wrapper (a media block, a table, your own parts).
+ * bare: the default slot goes in as it is, without the .oc-card-content wrapper (a media block, a table, your own parts);
+ * 0.18.0: the card then also gets .oc-card--bare (no padding, no clipping: a menu inside may stick out).
  * Slot action: in the header, top-right corner (.oc-card-action: a badge, a menu). text: body text in the muted color
  * (p.oc-card-text) before the default slot.
  */
@@ -28,7 +29,7 @@ withDefaults(
 </script>
 
 <template>
-  <div :class="['oc-card', size === 'sm' && 'oc-card--sm', accent && 'oc-card--accent', fill && 'oc-card--fill']" :data-tone="accent" :data-active="accent && inactive ? 'false' : undefined">
+  <div :class="['oc-card', size === 'sm' && 'oc-card--sm', accent && 'oc-card--accent', fill && 'oc-card--fill', bare && 'oc-card--bare']" :data-tone="accent" :data-active="accent && inactive ? 'false' : undefined">
     <slot name="band" />
     <div v-if="title || description || $slots.header || $slots.action" class="oc-card-header">
       <slot name="header">

@@ -97,6 +97,315 @@ class Command extends Component
     ]" /&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="children">Items as children <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">Next to the <code>groups</code> / <code>items</code> data, the rows can be written as children: <code>&lt;CommandGroup&gt;</code> with <code>&lt;CommandItem&gt;</code> in React, <code>&lt;OcCommandGroup&gt;</code> / <code>&lt;OcCommandItem&gt;</code> in Vue. A row shows its own content (text, <code>&lt;strong&gt;</code>, an icon), is searched by its text (or <code>label</code>, <code>keywords</code>) and may have its own <code>onSelect</code> / <code>@select</code>. Filtering and the arrow keys and Enter work as before. The rows are read from the children as you write them (also inside fragments, <code>.map()</code> and <code>v-for</code>); a row inside your own wrapper component is not found, see <a href="#children-wrapper">Items in your own component</a>. Blade: <code>&lt;x-oc::command.group&gt;</code> and <code>&lt;x-oc::command.item&gt;</code> (markup only).</p>
+          <oc-demo title="Command - items as children">
+<div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox" style="max-inline-size:24rem">
+  <input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands">
+  <ul class="oc-command-list" role="listbox">
+    <li class="oc-command-group-label" role="presentation">Invoices</li>
+    <li class="oc-command-item" role="option" aria-selected="true"><strong>New</strong> invoice <span class="oc-command-shortcut">Ctrl N</span></li>
+    <li class="oc-command-item" role="option">All invoices</li>
+    <li class="oc-command-separator" role="separator"></li>
+    <li class="oc-command-group-label" role="presentation">Customers</li>
+    <li class="oc-command-item" role="option">Customer 1</li>
+    <li class="oc-command-item" role="option">Customer 2</li>
+  </ul>
+  <div class="oc-command-empty" hidden>No results found.</div>
+</div>
+<oc-code lang="html">&lt;div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox" style="max-inline-size:24rem"&gt;
+  &lt;input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands"&gt;
+  &lt;ul class="oc-command-list" role="listbox"&gt;
+    &lt;li class="oc-command-group-label" role="presentation"&gt;Invoices&lt;/li&gt;
+    &lt;li class="oc-command-item" role="option" aria-selected="true"&gt;&lt;strong&gt;New&lt;/strong&gt; invoice &lt;span class="oc-command-shortcut"&gt;Ctrl N&lt;/span&gt;&lt;/li&gt;
+    &lt;li class="oc-command-item" role="option"&gt;All invoices&lt;/li&gt;
+    &lt;li class="oc-command-separator" role="separator"&gt;&lt;/li&gt;
+    &lt;li class="oc-command-group-label" role="presentation"&gt;Customers&lt;/li&gt;
+    &lt;li class="oc-command-item" role="option"&gt;Customer 1&lt;/li&gt;
+    &lt;li class="oc-command-item" role="option"&gt;Customer 2&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="oc-command-empty" hidden&gt;No results found.&lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Command, CommandGroup, CommandItem } from "@birdycom/omniaui-react";
+
+export function Example({ onOpen }: { onOpen: (id: string) =&gt; void }) {
+  return (
+    &lt;Command style={{ maxInlineSize: "24rem" }} onSelect={(item) =&gt; onOpen(item.id)}&gt;
+      &lt;CommandGroup label="Invoices"&gt;
+        &lt;CommandItem value="new" shortcut="Ctrl N"&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/CommandItem&gt;
+        &lt;CommandItem value="list" keywords={["overview"]}&gt;All invoices&lt;/CommandItem&gt;
+      &lt;/CommandGroup&gt;
+      &lt;CommandGroup label="Customers"&gt;
+        {["Customer 1", "Customer 2"].map((name) =&gt; (
+          &lt;CommandItem key={name}&gt;{name}&lt;/CommandItem&gt;
+        ))}
+      &lt;/CommandGroup&gt;
+    &lt;/Command&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcCommand, OcCommandGroup, OcCommandItem } from "@birdycom/omniaui-vue";
+
+const customers = ["Customer 1", "Customer 2"];
+function open(item: { label: string; value?: string }) {
+  console.log(item.value ?? item.label);
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcCommand style="max-inline-size:24rem" @select="open"&gt;
+    &lt;OcCommandGroup label="Invoices"&gt;
+      &lt;OcCommandItem value="new" shortcut="Ctrl N"&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/OcCommandItem&gt;
+      &lt;OcCommandItem value="list"&gt;All invoices&lt;/OcCommandItem&gt;
+    &lt;/OcCommandGroup&gt;
+    &lt;OcCommandGroup label="Customers"&gt;
+      &lt;OcCommandItem v-for="name in customers" :key="name"&gt;{{ name }}&lt;/OcCommandItem&gt;
+    &lt;/OcCommandGroup&gt;
+  &lt;/OcCommand&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::command style="max-inline-size:24rem"&gt;
+    &lt;x-oc::command.group label="Invoices"&gt;
+        &lt;x-oc::command.item value="new" shortcut="Ctrl N" selected&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/x-oc::command.item&gt;
+        &lt;x-oc::command.item value="list"&gt;All invoices&lt;/x-oc::command.item&gt;
+    &lt;/x-oc::command.group&gt;
+    &lt;x-oc::command.group label="Customers" separator&gt;
+        &lt;x-oc::command.item&gt;Customer 1&lt;/x-oc::command.item&gt;
+        &lt;x-oc::command.item&gt;Customer 2&lt;/x-oc::command.item&gt;
+    &lt;/x-oc::command.group&gt;
+&lt;/x-oc::command&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CommandChildren extends Component
+{
+    public string $search = '';
+
+    /** @var list&lt;string&gt; */
+    public array $customers = ['Customer 1', 'Customer 2'];
+
+    public function open(string $value): void
+    {
+        $this-&gt;redirect('/'.$value);
+    }
+
+    public function render()
+    {
+        return view('livewire.command-children');
+    }
+}
+
+{{-- resources/views/livewire/command-children.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::command style="max-inline-size:24rem" wire:model.live="search"&gt;
+        &lt;x-oc::command.group label="Invoices"&gt;
+            &lt;x-oc::command.item value="new" shortcut="Ctrl N" wire:click="open('invoices/new')"&gt;&lt;strong&gt;New&lt;/strong&gt; invoice&lt;/x-oc::command.item&gt;
+        &lt;/x-oc::command.group&gt;
+        &lt;x-oc::command.group label="Customers" separator&gt;
+            @foreach ($customers as $customer)
+                &lt;x-oc::command.item wire:key="customer-{{ $loop-&gt;index }}" wire:click="open('customers/{{ $loop-&gt;iteration }}')"&gt;{{ $customer }}&lt;/x-oc::command.item&gt;
+            @endforeach
+        &lt;/x-oc::command.group&gt;
+    &lt;/x-oc::command&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="children-wrapper">Items in your own component <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">React <code>Command</code> and Vue <code>OcCommand</code> read their rows statically from the children as you write them: the direct children of the Command and of each group, also inside fragments (<code>&lt;&gt;…&lt;/&gt;</code>, <code>&lt;template&gt;</code>), arrays from <code>.map()</code>, <code>v-for</code> and conditions (<code>{open &amp;&amp; …}</code>, <code>v-if</code>). They look at the element type only and do not render your own components to see what comes out. So a <code>CommandItem</code> (or <code>CommandGroup</code>) inside your own wrapper component, such as <code>&lt;CustomerItem&gt;</code> that returns a <code>&lt;CommandItem&gt;</code>, is <strong>not found</strong>: the row is missing, cannot be searched and cannot be chosen, without an error. Keep <code>CommandItem</code> / <code>OcCommandItem</code> directly in the Command or group (in a <code>.map()</code> or <code>v-for</code>) and pass the data as props, call a helper as a function (<code>{customers.map(customerItem)}</code>, not <code>&lt;CustomerItem /&gt;</code>), or hand the rows over as data: React <code>groups</code>, Vue <code>items</code> with <code>group</code>. Blade is not affected: <code>&lt;x-oc::command.item&gt;</code> is plain markup, so your own Blade component around it works.</p>
+          <oc-demo title="Command - own wrapper component" hint="Wrong: the customers sit in an own wrapper component and are missing. Right: CommandItem directly in .map(), all rows are there.">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1rem;align-items:stretch;inline-size:100%">
+  <div style="display:grid;grid-template-rows:auto 1fr;gap:0.5rem">
+    <span class="oc-badge oc-badge--destructive" style="justify-self:start">Wrong: own wrapper, customers missing</span>
+    <div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox" style="block-size:100%">
+      <input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands">
+      <ul class="oc-command-list" role="listbox">
+        <li class="oc-command-group-label" role="presentation">Invoices</li>
+        <li class="oc-command-item" role="option" aria-selected="true">New invoice</li>
+      </ul>
+      <div class="oc-command-empty" hidden>No results found.</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-rows:auto 1fr;gap:0.5rem">
+    <span class="oc-badge oc-badge--success" style="justify-self:start">Right: CommandItem in .map()</span>
+    <div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox" style="block-size:100%">
+      <input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands">
+      <ul class="oc-command-list" role="listbox">
+        <li class="oc-command-group-label" role="presentation">Invoices</li>
+        <li class="oc-command-item" role="option" aria-selected="true">New invoice</li>
+        <li class="oc-command-separator" role="separator"></li>
+        <li class="oc-command-group-label" role="presentation">Customers</li>
+        <li class="oc-command-item" role="option">Customer 1</li>
+        <li class="oc-command-item" role="option">Customer 2</li>
+      </ul>
+      <div class="oc-command-empty" hidden>No results found.</div>
+    </div>
+  </div>
+</div>
+<oc-code lang="html">&lt;!-- What the right version renders: every row is an li.oc-command-item in the list --&gt;
+&lt;div class="oc-command" role="combobox" aria-expanded="true" aria-haspopup="listbox"&gt;
+  &lt;input class="oc-command-input" type="search" placeholder="Type a command or search..." aria-label="Search commands"&gt;
+  &lt;ul class="oc-command-list" role="listbox"&gt;
+    &lt;li class="oc-command-group-label" role="presentation"&gt;Invoices&lt;/li&gt;
+    &lt;li class="oc-command-item" role="option" aria-selected="true"&gt;New invoice&lt;/li&gt;
+    &lt;li class="oc-command-separator" role="separator"&gt;&lt;/li&gt;
+    &lt;li class="oc-command-group-label" role="presentation"&gt;Customers&lt;/li&gt;
+    &lt;li class="oc-command-item" role="option"&gt;Customer 1&lt;/li&gt;
+    &lt;li class="oc-command-item" role="option"&gt;Customer 2&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="oc-command-empty" hidden&gt;No results found.&lt;/div&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="tsx">import { Command, CommandGroup, CommandItem } from "@birdycom/omniaui-react";
+
+type Customer = { id: string; name: string };
+const customers: Customer[] = [
+  { id: "customer-1", name: "Customer 1" },
+  { id: "customer-2", name: "Customer 2" },
+];
+
+// Does NOT work: Command only sees &lt;CustomerItem&gt;, never the &lt;CommandItem&gt; it returns.
+function CustomerItem({ customer }: { customer: Customer }) {
+  return &lt;CommandItem value={customer.id}&gt;{customer.name}&lt;/CommandItem&gt;;
+}
+
+export function Wrong() {
+  return (
+    &lt;Command&gt;
+      &lt;CommandGroup label="Invoices"&gt;
+        &lt;CommandItem value="new"&gt;New invoice&lt;/CommandItem&gt;
+      &lt;/CommandGroup&gt;
+      &lt;CommandGroup label="Customers"&gt;
+        {customers.map((c) =&gt; &lt;CustomerItem key={c.id} customer={c} /&gt;)}
+      &lt;/CommandGroup&gt;
+    &lt;/Command&gt;
+  );
+}
+
+// Works: CommandItem directly in .map(), the data as props.
+export function Right() {
+  return (
+    &lt;Command&gt;
+      &lt;CommandGroup label="Invoices"&gt;
+        &lt;CommandItem value="new"&gt;New invoice&lt;/CommandItem&gt;
+      &lt;/CommandGroup&gt;
+      &lt;CommandGroup label="Customers"&gt;
+        {customers.map((c) =&gt; (
+          &lt;CommandItem key={c.id} value={c.id}&gt;{c.name}&lt;/CommandItem&gt;
+        ))}
+      &lt;/CommandGroup&gt;
+    &lt;/Command&gt;
+  );
+}
+
+// Also works: a helper you call as a function (it returns the CommandItem element itself).
+const customerItem = (c: Customer) =&gt; &lt;CommandItem key={c.id} value={c.id}&gt;{c.name}&lt;/CommandItem&gt;;
+
+export function WithHelper() {
+  return (
+    &lt;Command&gt;
+      &lt;CommandGroup label="Customers"&gt;{customers.map(customerItem)}&lt;/CommandGroup&gt;
+    &lt;/Command&gt;
+  );
+}
+
+// Also works: the rows as data.
+export function AsData() {
+  return &lt;Command groups={[{ label: "Customers", items: customers.map((c) =&gt; ({ id: c.id, label: c.name })) }]} /&gt;;
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { defineComponent, h } from "vue";
+import { OcCommand, OcCommandGroup, OcCommandItem } from "@birdycom/omniaui-vue";
+
+const customers = [
+  { id: "customer-1", name: "Customer 1" },
+  { id: "customer-2", name: "Customer 2" },
+];
+
+// Does NOT work: your own component around OcCommandItem (usually its own CustomerItem.vue).
+// OcCommand only sees CustomerItem, never the OcCommandItem it renders.
+const CustomerItem = defineComponent({
+  props: { id: { type: String, required: true }, name: { type: String, required: true } },
+  setup: (props) =&gt; () =&gt; h(OcCommandItem, { value: props.id }, () =&gt; props.name),
+});
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- Wrong: the customers are missing --&gt;
+  &lt;OcCommand&gt;
+    &lt;OcCommandGroup label="Invoices"&gt;
+      &lt;OcCommandItem value="new"&gt;New invoice&lt;/OcCommandItem&gt;
+    &lt;/OcCommandGroup&gt;
+    &lt;OcCommandGroup label="Customers"&gt;
+      &lt;CustomerItem v-for="c in customers" :id="c.id" :key="c.id" :name="c.name" /&gt;
+    &lt;/OcCommandGroup&gt;
+  &lt;/OcCommand&gt;
+
+  &lt;!-- Right: OcCommandItem directly in v-for, the data as props --&gt;
+  &lt;OcCommand&gt;
+    &lt;OcCommandGroup label="Invoices"&gt;
+      &lt;OcCommandItem value="new"&gt;New invoice&lt;/OcCommandItem&gt;
+    &lt;/OcCommandGroup&gt;
+    &lt;OcCommandGroup label="Customers"&gt;
+      &lt;OcCommandItem v-for="c in customers" :key="c.id" :value="c.id"&gt;{{ c.name }}&lt;/OcCommandItem&gt;
+    &lt;/OcCommandGroup&gt;
+  &lt;/OcCommand&gt;
+
+  &lt;!-- Also right: the rows as data --&gt;
+  &lt;OcCommand :items="customers.map((c) =&gt; ({ label: c.name, value: c.id, group: 'Customers' }))" /&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">{{-- Blade renders markup, so your own component around &lt;x-oc::command.item&gt; works here --}}
+{{-- resources/views/components/customer-item.blade.php --}}
+@props(['customer'])
+&lt;x-oc::command.item value="customer-{{ $customer }}"&gt;Customer {{ $customer }}&lt;/x-oc::command.item&gt;
+
+{{-- your page --}}
+&lt;x-oc::command&gt;
+    &lt;x-oc::command.group label="Invoices"&gt;
+        &lt;x-oc::command.item value="new" selected&gt;New invoice&lt;/x-oc::command.item&gt;
+    &lt;/x-oc::command.group&gt;
+    &lt;x-oc::command.group label="Customers" separator&gt;
+        @foreach ([1, 2] as $customer)
+            &lt;x-customer-item :customer="$customer" /&gt;
+        @endforeach
+    &lt;/x-oc::command.group&gt;
+&lt;/x-oc::command&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CommandCustomers extends Component
+{
+    /** @var list&lt;int&gt; */
+    public array $customers = [1, 2];
+
+    public function open(string $path): void
+    {
+        $this-&gt;redirect('/'.$path);
+    }
+
+    public function render()
+    {
+        return view('livewire.command-customers');
+    }
+}
+
+{{-- resources/views/livewire/command-customers.blade.php --}}
+{{-- Server-rendered markup: an own Blade component around &lt;x-oc::command.item&gt; (here x-customer-item) works too --}}
+&lt;div&gt;
+    &lt;x-oc::command&gt;
+        &lt;x-oc::command.group label="Invoices"&gt;
+            &lt;x-oc::command.item value="new" selected wire:click="open('invoices/new')"&gt;New invoice&lt;/x-oc::command.item&gt;
+        &lt;/x-oc::command.group&gt;
+        &lt;x-oc::command.group label="Customers" separator&gt;
+            @foreach ($customers as $customer)
+                &lt;x-oc::command.item wire:key="customer-{{ $customer }}" wire:click="open('customers/{{ $customer }}')"&gt;Customer {{ $customer }}&lt;/x-oc::command.item&gt;
+            @endforeach
+        &lt;/x-oc::command.group&gt;
+    &lt;/x-oc::command&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -117,6 +426,7 @@ class Command extends Component
               <tr><td><code>.oc-command-shortcut</code></td><td>Keyboard hint on the right</td></tr>
               <tr><td><code>.oc-command-separator</code></td><td>Divider</td></tr>
               <tr><td><code>.oc-command-empty</code></td><td>Shown when nothing matches</td></tr>
+              <tr><td><code>CommandGroup</code> / <code>CommandItem</code> </td><td>React (and Vue <code>OcCommandGroup</code> / <code>OcCommandItem</code>): the rows as children next to <code>groups</code> / <code>items</code>. Item props: <code>value</code>, <code>label</code> (searched text, default the children's text), <code>shortcut</code>, <code>disabled</code>, <code>keywords</code>, <code>onSelect</code>. Blade: <code>&lt;x-oc::command.group label separator&gt;</code>, <code>&lt;x-oc::command.item shortcut selected disabled value&gt;</code>.</td></tr>
             </tbody>
           </table>
         </div>

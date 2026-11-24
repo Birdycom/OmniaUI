@@ -1,5 +1,6 @@
 {{-- OmniaCSS command palette markup. Props: items (list of ['group' => ...] | ['separator' => true] | ['label', 'shortcut', 'selected', 'disabled']),
-     placeholder, empty (text for the empty state). Slot: extra list items. Filter logic belongs to your own wrapper. --}}
+     placeholder, empty (text for the empty state). Slot: extra list items (0.18.0: <x-oc::command.group label="..."> with
+     <x-oc::command.item shortcut="...">). Filter logic belongs to your own wrapper. --}}
 @props(['items' => [], 'placeholder' => 'Type a command or search...', 'empty' => 'No results found.'])
 <div {{ $attributes->class(['oc-command'])->merge(['role' => 'combobox', 'aria-expanded' => 'true', 'aria-haspopup' => 'listbox']) }}>
     <input class="oc-command-input" type="search" placeholder="{{ $placeholder }}" aria-label="{{ $placeholder }}">

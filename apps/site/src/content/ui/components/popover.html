@@ -157,6 +157,79 @@ class CustomerFilters extends Component
     &lt;/x-oc::popover&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+
+          <h3 class="oc-section-content__title mt-2" id="match-width">Trigger width and lazy content <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc"><code>matchTriggerWidth</code> makes the panel exactly as wide as its trigger (or <code>PopoverAnchor</code>): <code>data-match-width</code> with CSS <code>anchor-size(width)</code>, and the trigger width in px from the wrapper in browsers without anchor positioning. <code>lazy</code> renders the content only from the first open on (heavy lists, data that loads when the panel opens); with <code>unmountOnClose</code> it is removed again when the panel closes. Without anchor positioning the measured fallback now flips to the other side when there is no room and shifts the panel back into the viewport. Blade: <code>match-trigger-width</code> on <code>&lt;x-oc::popover.content&gt;</code>; there the content is rendered on the server, so <code>lazy</code> is React and Vue only (use Livewire <code>lazy</code> components for server content).</p>
+          <oc-demo title="Popover - trigger width" size="tall" hint="Click the field: the panel is exactly as wide as the trigger.">
+<button class="oc-btn oc-btn--outline" type="button" popovertarget="oc-popover-match" aria-controls="oc-popover-match" aria-haspopup="dialog" style="inline-size:16rem;justify-content:space-between">Customer 1 <span aria-hidden="true">&#9662;</span></button>
+<div class="oc-popover" id="oc-popover-match" role="dialog" data-side="bottom" data-align="start" data-match-width popover>
+  <h3 class="oc-popover-title">Customer 1</h3>
+  <p class="oc-popover-text">info@company1.example</p>
+  <p class="oc-popover-text">Company 1, 3 open invoices</p>
+</div>
+<oc-code lang="tsx">import { Popover, PopoverContent, PopoverTrigger } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;Popover&gt;
+      &lt;PopoverTrigger style={{ inlineSize: "16rem", justifyContent: "space-between" }}&gt;Customer 1&lt;/PopoverTrigger&gt;
+      &lt;PopoverContent matchTriggerWidth lazy title="Customer 1"&gt;
+        &lt;p className="oc-popover-text"&gt;info@company1.example&lt;/p&gt;
+        &lt;p className="oc-popover-text"&gt;Company 1, 3 open invoices&lt;/p&gt;
+      &lt;/PopoverContent&gt;
+    &lt;/Popover&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcPopover, OcPopoverContent, OcPopoverTrigger } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;OcPopover id="oc-popover-match"&gt;
+    &lt;OcPopoverTrigger style="inline-size:16rem;justify-content:space-between"&gt;Customer 1&lt;/OcPopoverTrigger&gt;
+    &lt;OcPopoverContent match-trigger-width lazy title="Customer 1"&gt;
+      &lt;p class="oc-popover-text"&gt;info@company1.example&lt;/p&gt;
+      &lt;p class="oc-popover-text"&gt;Company 1, 3 open invoices&lt;/p&gt;
+    &lt;/OcPopoverContent&gt;
+  &lt;/OcPopover&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;x-oc::popover id="oc-popover-match"&gt;
+    &lt;x-oc::popover.trigger style="inline-size:16rem;justify-content:space-between"&gt;Customer 1&lt;/x-oc::popover.trigger&gt;
+    &lt;x-oc::popover.content match-trigger-width title="Customer 1"&gt;
+        &lt;p class="oc-popover-text"&gt;info@company1.example&lt;/p&gt;
+        &lt;p class="oc-popover-text"&gt;Company 1, 3 open invoices&lt;/p&gt;
+    &lt;/x-oc::popover.content&gt;
+&lt;/x-oc::popover&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CustomerCard extends Component
+{
+    public bool $cardOpen = false;
+
+    public function render()
+    {
+        return view('livewire.customer-card');
+    }
+}
+
+{{-- resources/views/livewire/customer-card.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::popover id="oc-popover-match" model="cardOpen"&gt;
+        &lt;x-oc::popover.trigger style="inline-size:16rem;justify-content:space-between"&gt;Customer 1&lt;/x-oc::popover.trigger&gt;
+        &lt;x-oc::popover.content match-trigger-width title="Customer 1"&gt;
+            @if ($cardOpen)
+                &lt;p class="oc-popover-text"&gt;info@company1.example&lt;/p&gt;
+                &lt;p class="oc-popover-text"&gt;Company 1, 3 open invoices&lt;/p&gt;
+            @endif
+        &lt;/x-oc::popover.content&gt;
+    &lt;/x-oc::popover&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+          <p class="oc-section-content__desc" id="blade-no-lazy"><strong>Blade has no <code>lazy</code>.</strong> A Blade popover is rendered on the server with the rest of the page, so its content is already in the HTML before the panel opens; there is nothing for the browser to postpone. Need content that loads only when the panel opens? With Livewire, bind the open state with <code>model</code> and wrap the content in <code>@if ($cardOpen)</code> (the Livewire tab above), or put a Livewire component with <code>lazy</code> inside the panel. Without Livewire, fetch the content yourself on the <code>toggle</code> event of the panel (<code>event.newState === "open"</code>).</p>
         </div>
       </section>
 
@@ -173,6 +246,8 @@ class CustomerFilters extends Component
               <tr><td><code>.oc-popover-title / -text</code></td><td>Optional heading and body text</td></tr>
               <tr><td><code>button[popovertarget]</code></td><td>Trigger</td></tr>
               <tr><td><code>[data-side]</code> / <code>[data-align]</code></td><td>Position of the panel (0.17.0): <code>top</code>, <code>right</code>, <code>bottom</code> (default), <code>left</code>; <code>start</code> (default), <code>center</code>, <code>end</code>. <code>--oc-popover-offset</code> sets the gap (default 4px). Styles in <code>parts/app-compound-overlays.css</code>.</td></tr>
+              <tr><td><code>[data-match-width]</code></td><td>0.18.0: the panel is as wide as its trigger or anchor (<code>inline-size: anchor-size(width)</code>; the wrappers set the width in px where the browser has no anchor positioning).</td></tr>
+              <tr><td><code>lazy</code>, <code>unmountOnClose</code>, <code>matchTriggerWidth</code></td><td>0.18.0 props of <code>PopoverContent</code> (Vue <code>lazy</code>, <code>unmount-on-close</code>, <code>match-trigger-width</code>): content only from the first open on (and only while open), and the trigger width. Blade: <code>match-trigger-width</code>.</td></tr>
               <tr><td>React <code>PopoverTrigger</code>, <code>PopoverContent</code>, <code>PopoverAnchor</code>, <code>PopoverClose</code></td><td>Compound popover (0.17.0) inside <code>&lt;Popover&gt;</code> without <code>trigger</code>: <code>open</code> / <code>defaultOpen</code> / <code>onOpenChange</code> on the root, <code>asChild</code> on trigger and anchor, <code>side</code>, <code>align</code>, <code>sideOffset</code> on the content. The anchor uses CSS anchor positioning (<code>anchor-name</code> / <code>position-anchor</code>), with a measured fallback in browsers without it. Vue: <code>OcPopoverTrigger</code>, <code>OcPopoverContent</code>, <code>OcPopoverAnchor</code> in <code>OcPopover</code> (<code>v-model:open</code>). Blade: <code>&lt;x-oc::popover.trigger&gt;</code> and <code>.content</code> (<code>side</code>, <code>align</code>, <code>offset</code>), <code>model</code> on the root for Livewire.</td></tr>
             </tbody>
           </table>

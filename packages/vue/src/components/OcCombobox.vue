@@ -8,14 +8,16 @@
  * Catalog mode (0.17.0, all optional): valueType="number" (v-model gets numbers; the clear row gives null), `@search`
  * (debounced by searchDelay; no local filter, pass the results as options) + `loading` + `selected` (the chosen option
  * when it is not in options), `clearLabel` (first row that clears), `manageHref` / `manageLabel` / `@manage` (footer link
- * outside the listbox), `allowCustomFromSearch` + `customLabel` + `@custom` (take what was typed), `portal` (list in
- * document.body), options with `description`, `image` or `emoji`, `variant="ledger"`, `module`.
+ * outside the listbox), `allowCustomFromSearch` + `customLabel` + `@custom` (take what was typed), `portal` (floating list;
+ * 0.18.0: in the top layer as popover="manual" where the browser has popovers, so it works inside a modal OcDialog,
+ * OcSheet or OcDrawer; otherwise teleported to document.body), options with `description`, `image` or `emoji`,
+ * `variant="ledger"`, `module`.
  * Header trigger (0.17.2): trigger-variant="ghost" (no border, shadow or margin; muted text, fuller on hover with a light
  * background), size="full" (default) | "header" (36px high, 6.5rem to 14rem wide; the list goes to document.body unless
  * :portal="false"), icon-only (with header: a square 36x36 button that shows trigger-label, else the icon / image / emoji
  * of the chosen option, else a dots icon), trigger-aria-label (aria-label of the field; default: label).
  */
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useUid } from '../composables/useUid'
 import OcWebicon from './OcWebicon.vue'
 
@@ -65,7 +67,7 @@ const props = withDefaults(
     allowCustomFromSearch?: boolean
     /** Text of that row; {query} is replaced */
     customLabel?: string
-    /** Render the list in document.body */
+    /** Float the list (top layer where the browser has popovers, else document.body) */
     portal?: boolean
     variant?: 'ledger'
     /** Module colour name: data-module */
@@ -133,11 +135,29 @@ function search(q: string) {
   timer = setTimeout(() => props.onSearch?.(q), props.searchDelay)
 }
 
-// Portal: fixed under the field, follows scrolling and resizing while open.
+// Portal: fixed under the field, follows scrolling and resizing while open. With popover support (0.18.0) the list stays in
+// the tree as popover="manual" and is shown in the top layer; otherwise it is teleported to document.body.
 const wrap = ref<HTMLElement | null>(null)
+const popup = ref<HTMLElement | null>(null)
 const place = ref<Record<string, string>>({})
 const mounted = ref(false)
-onMounted(() => { mounted.value = true })
+const topLayer = ref(false)
+onMounted(() => {
+  mounted.value = true
+  topLayer.value = typeof HTMLElement !== 'undefined' && typeof HTMLElement.prototype.showPopover === 'function'
+})
+/** A manual popover has no light dismiss: it follows the open state (blur and Escape close it). */
+function syncPopover() {
+  const el = popup.value
+  if (!usePortal.value || !topLayer.value || !el || typeof el.showPopover !== 'function') return
+  let shown = false
+  try { shown = el.matches(':popover-open') } catch { shown = false }
+  try {
+    if (open.value && !shown) el.showPopover()
+    else if (!open.value && shown) el.hidePopover()
+  } catch { /* not connected */ }
+}
+watch([open, topLayer], () => nextTick(syncPopover), { flush: 'post' })
 function measure() {
   const r = wrap.value?.getBoundingClientRect()
   if (!r) return
@@ -146,10 +166,24 @@ function measure() {
   const left = header.value ? Math.max(8, Math.min(r.left, window.innerWidth - width - 8)) : r.left
   place.value = { position: 'fixed', top: `${r.bottom + 4}px`, left: `${left}px`, width: `${width}px` }
 }
+// 0.18.0: follow the field every frame during the first second, while a sheet or drawer may still be sliding in.
+let frame = 0
+let last = ''
+let until = 0
+function track(now: number) {
+  const r = wrap.value?.getBoundingClientRect()
+  const key = r ? `${r.left},${r.bottom},${r.width}` : ''
+  if (key !== last) { last = key; measure() }
+  if (!until) until = now + 1000
+  if (now < until) frame = requestAnimationFrame(track)
+}
 function listen(on: boolean) {
   const fn = on ? window.addEventListener : window.removeEventListener
   fn.call(window, 'scroll', measure, true)
   fn.call(window, 'resize', measure)
+  if (typeof requestAnimationFrame !== 'function') return
+  cancelAnimationFrame(frame)
+  if (on) { last = ''; until = 0; frame = requestAnimationFrame(track) }
 }
 watch(open, (now) => {
   if (!usePortal.value || typeof window === 'undefined') return
@@ -224,7 +258,7 @@ function rowAttrs(r: Row): Record<string, unknown> {
   return { ...base, class: 'oc-combobox-option', 'data-value': String(o.value), 'aria-selected': String(same(o.value, model.value)), 'aria-disabled': o.disabled ? 'true' : undefined }
 }
 const listClass = computed(() => ['oc-combobox-list', footer.value && 'oc-combobox-list--panel', usePortal.value && 'oc-combobox-list--portal'])
-const portalAttrs = computed(() => (usePortal.value ? { style: place.value, 'data-open': open.value ? '' : 'false', 'data-module': props.module } : {}))
+const portalAttrs = computed(() => (usePortal.value ? { style: place.value, 'data-open': open.value ? '' : 'false', 'data-module': props.module, popover: topLayer.value ? 'manual' : undefined } : {}))
 </script>
 
 <template>
@@ -264,8 +298,8 @@ const portalAttrs = computed(() => (usePortal.value ? { style: place.value, 'dat
       @blur="close"
     />
     <input v-if="name" type="hidden" :name="name" :value="model == null ? '' : String(model)" />
-    <Teleport to="body" :disabled="!usePortal || !mounted">
-      <div v-if="footer" :class="listClass" v-bind="portalAttrs" @mousedown.prevent>
+    <Teleport to="body" :disabled="!usePortal || !mounted || topLayer">
+      <div v-if="footer" ref="popup" :class="listClass" v-bind="portalAttrs" @mousedown.prevent>
         <ul :id="listId" class="oc-combobox-options" role="listbox" :aria-label="label" :aria-busy="loading || undefined">
           <li v-for="r in rows" :key="r.key" v-bind="rowAttrs(r)" @click="choose(r)">
             <template v-if="r.kind === 'clear'">{{ clearLabel }}</template>
@@ -285,7 +319,7 @@ const portalAttrs = computed(() => (usePortal.value ? { style: place.value, 'dat
           <a :href="manageHref ?? '#'" tabindex="-1" @click="onManageClick">{{ manageLabel }}</a>
         </div>
       </div>
-      <ul v-else :id="listId" :class="listClass" role="listbox" :aria-label="label" :aria-busy="loading || undefined" v-bind="portalAttrs" @mousedown.prevent>
+      <ul v-else ref="popup" :id="listId" :class="listClass" role="listbox" :aria-label="label" :aria-busy="loading || undefined" v-bind="portalAttrs" @mousedown.prevent>
         <li v-for="r in rows" :key="r.key" v-bind="rowAttrs(r)" @click="choose(r)">
           <template v-if="r.kind === 'clear'">{{ clearLabel }}</template>
           <template v-else-if="r.kind === 'custom'">{{ customText }}</template>

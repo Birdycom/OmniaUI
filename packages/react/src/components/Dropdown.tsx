@@ -1,6 +1,7 @@
-import { createContext, forwardRef, useContext, useEffect, useId, useRef } from "react";
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes, MouseEvent, ReactNode } from "react";
+import { Children, cloneElement, createContext, forwardRef, isValidElement, useContext, useEffect, useId, useRef } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes, MouseEvent, ReactElement, ReactNode } from "react";
 import { attrs, cx } from "../utils";
+import { mergeIntoChild } from "../asChild";
 import { useControllable } from "../hooks";
 import { Button } from "./Button";
 import type { ButtonProps } from "./Button";
@@ -38,6 +39,13 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
   onOpenChange?: (open: boolean) => void;
   /** Toggle mode: class of the `.oc-dropdown` wrapper (`className` goes to the menu). */
   wrapperClassName?: string;
+  /** 0.18.0: merge the trigger props (`popoverTarget`, or the toggle props) into the `trigger` element itself (an icon
+   *  button, an avatar button) instead of wrapping it in an outline Button. `trigger` must then be one element. */
+  triggerAsChild?: boolean;
+  /** 0.18.0: side of the trigger the menu opens on (`data-side`; default bottom, flips when there is no room). */
+  side?: "top" | "right" | "bottom" | "left";
+  /** 0.18.0: alignment along that side (`data-align`; default start). */
+  align?: "start" | "center" | "end";
 }
 
 /**
@@ -45,7 +53,7 @@ export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
  * (native popover and anchor positioning, no state needed). `mode="toggle"`: `.oc-dropdown` + `.is-open` with state.
  */
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropdown(
-  { trigger, triggerProps, renderTrigger, mode = "popover", open, defaultOpen = false, onOpenChange, wrapperClassName, className, id, children, ...rest },
+  { trigger, triggerProps, renderTrigger, mode = "popover", open, defaultOpen = false, onOpenChange, wrapperClassName, triggerAsChild, side, align, className, id, children, ...rest },
   ref,
 ) {
   const auto = useId();
@@ -61,13 +69,16 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
     document.addEventListener("keydown", esc);
     return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", esc); };
   }, [toggle, isOpen, setOpen]);
+  // side / align: data-side (default bottom once either is set) and data-align on the menu.
+  const place = side || align ? { "data-side": side ?? "bottom", "data-align": align ?? "start" } : {};
+  const asChildTrigger = (props: Record<string, unknown>) => (triggerAsChild ? mergeIntoChild(trigger, { ...triggerProps, ...props }) : null);
   if (toggle) {
     const props = { onClick: () => setOpen(!isOpen), "aria-expanded": isOpen, "aria-controls": menuId };
     return (
       <div ref={wrap} className={cx("oc-dropdown", isOpen && "is-open", wrapperClassName)}>
-        {renderTrigger ? renderTrigger({ id: menuId, props, open: isOpen }) : <Button variant="outline" {...triggerProps} {...props}>{trigger}</Button>}
+        {renderTrigger ? renderTrigger({ id: menuId, props, open: isOpen }) : asChildTrigger(props) ?? <Button variant="outline" {...triggerProps} {...props}>{trigger}</Button>}
         <ToggleClose.Provider value={() => setOpen(false)}>
-          <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...rest}>
+          <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...place} {...rest}>
             {children}
           </div>
         </ToggleClose.Provider>
@@ -76,8 +87,8 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
   }
   return (
     <>
-      {renderTrigger ? renderTrigger({ id: menuId, props: { popoverTarget: menuId } }) : <Button variant="outline" {...triggerProps} popoverTarget={menuId}>{trigger}</Button>}
-      <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...attrs({ popover: "" })} {...rest}>
+      {renderTrigger ? renderTrigger({ id: menuId, props: { popoverTarget: menuId } }) : asChildTrigger({ popoverTarget: menuId }) ?? <Button variant="outline" {...triggerProps} popoverTarget={menuId}>{trigger}</Button>}
+      <div ref={ref} className={cx("oc-dropdown-menu", className)} id={menuId} {...attrs({ popover: "" })} {...place} {...rest}>
         <ToggleClose.Provider value={null}>{children}</ToggleClose.Provider>
       </div>
     </>
@@ -111,6 +122,9 @@ interface ItemExtras {
   destructive?: boolean;
   /** With `checked`: a radio item (role menuitemradio) instead of a check item. */
   radio?: boolean;
+  /** 0.18.0: render the only child (a router `<Link>`, your own `<a>`) as the item: it gets the item class, the icon,
+   *  hint and check column around its own text, and a click closes the menu. */
+  asChild?: boolean;
 }
 
 export type DropdownIconTone = "primary" | "success" | "warning" | "destructive" | "muted";
@@ -125,7 +139,7 @@ export function closeMenu(event: MouseEvent<HTMLElement>) {
 
 /** `.oc-dropdown-item`: an anchor when `href` is set, otherwise a button. A click closes the menu (`keepOpen` to stop that).
  *  `checked` makes a check item (`radio`: a radio item), `destructive` a red one. */
-export function DropdownItem({ className, checked, hint, icon, keepOpen, description, iconTone, destructive, radio, children, ...props }: ItemProps) {
+export function DropdownItem({ className, checked, hint, icon, keepOpen, description, iconTone, destructive, radio, asChild, children, ...props }: ItemProps) {
   const check = checked !== undefined;
   const closeToggle = useContext(ToggleClose);
   const userClick = props.onClick as ((e: MouseEvent<HTMLElement>) => void) | undefined;
@@ -135,16 +149,28 @@ export function DropdownItem({ className, checked, hint, icon, keepOpen, descrip
     if (closeToggle) { if (!e.defaultPrevented) closeToggle(); }
     else closeMenu(e);
   };
-  const content = (
+  const body = (label: ReactNode) => (
     <>
       {check && <span className="oc-dropdown-check" aria-hidden="true" />}
       {icon != null && <span className={cx("oc-dropdown-icon", iconTone && `oc-dropdown-icon--${iconTone}`)} aria-hidden="true">{webiconNode(icon)}</span>}
-      {description != null ? <span className="oc-dropdown-text"><span>{children}</span><span className="oc-dropdown-desc">{description}</span></span> : children}
+      {description != null ? <span className="oc-dropdown-text"><span>{label}</span><span className="oc-dropdown-desc">{description}</span></span> : label}
       {hint != null && <span className="oc-dropdown-hint">{hint}</span>}
     </>
   );
   const extra = check ? { role: radio ? "menuitemradio" : "menuitemcheckbox", "aria-checked": checked } : {};
   const cls = cx("oc-dropdown-item", destructive && "oc-dropdown-item--destructive", className);
+  if (asChild) {
+    const only = Children.toArray(children).filter(isValidElement);
+    if (only.length === 1) {
+      const child = only[0] as ReactElement<{ children?: ReactNode }>;
+      const filled = cloneElement(child, undefined, body(child.props.children));
+      const own: Record<string, unknown> = { ...(props as Record<string, unknown>) };
+      delete own.href;
+      const merged = mergeIntoChild(filled, { ...own, ...extra, className: cls, onClick });
+      if (merged) return merged;
+    }
+  }
+  const content = body(children);
   if (props.href !== undefined) {
     return <a className={cls} {...extra} {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)} onClick={onClick}>{content}</a>;
   }

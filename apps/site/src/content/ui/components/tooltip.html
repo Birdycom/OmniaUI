@@ -104,6 +104,87 @@ class RowActions extends Component
 &lt;/div&gt;</oc-code>
           </oc-demo>
 
+          <h3 class="oc-section-content__title mt-2" id="as-child">On the element itself <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">No wrapping <code>&lt;span&gt;</code>: the tooltip classes go straight onto the button or link, so it keeps its place in a flex row, a button group or a router link. React <code>asChild</code> and Vue <code>as-child</code> merge <code>oc-tooltip</code>, <code>data-tooltip</code> and the hover handlers into the only child (rich content is appended inside it); Blade <code>as="button"</code> or <code>as="a"</code> renders that element itself. In plain HTML put <code>class="oc-tooltip"</code> and <code>data-tooltip</code> on the element. The element must be able to hold a <code>::after</code> (not an <code>&lt;input&gt;</code> or <code>&lt;img&gt;</code>). A collapsed sidebar no longer cuts off the side tooltips in browsers without anchor positioning.</p>
+          <oc-demo title="Tooltip - on the element" hint="Hover or focus a button: the tooltip opens below it.">
+<div class="oc-btn-group">
+  <button class="oc-btn oc-btn--outline oc-btn--icon oc-tooltip oc-tooltip--bottom" type="button" data-tooltip="Previous customer" aria-label="Previous customer"><span aria-hidden="true">&#8592;</span></button>
+  <button class="oc-btn oc-btn--outline oc-tooltip oc-tooltip--bottom" type="button" data-tooltip="info@company1.example">Customer 1</button>
+  <button class="oc-btn oc-btn--outline oc-btn--icon oc-tooltip oc-tooltip--bottom" type="button" data-tooltip="Next customer" aria-label="Next customer"><span aria-hidden="true">&#8594;</span></button>
+</div>
+<oc-code lang="tsx">import { Button, Tooltip, Webicon } from "@birdycom/omniaui-react";
+
+export function Example() {
+  return (
+    &lt;div className="oc-btn-group"&gt;
+      &lt;Tooltip content="Previous customer" side="bottom" asChild&gt;
+        &lt;Button variant="outline" icon aria-label="Previous customer"&gt;&lt;Webicon name="mdi:arrow-left" /&gt;&lt;/Button&gt;
+      &lt;/Tooltip&gt;
+      &lt;Tooltip content="info@company1.example" side="bottom" asChild&gt;
+        &lt;Button variant="outline"&gt;Customer 1&lt;/Button&gt;
+      &lt;/Tooltip&gt;
+      &lt;Tooltip content="Next customer" side="bottom" asChild&gt;
+        &lt;Button variant="outline" icon aria-label="Next customer"&gt;&lt;Webicon name="mdi:arrow-right" /&gt;&lt;/Button&gt;
+      &lt;/Tooltip&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcButton, OcTooltip, OcWebicon } from '@birdycom/omniaui-vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="oc-btn-group"&gt;
+    &lt;OcTooltip text="Previous customer" side="bottom" as-child&gt;
+      &lt;OcButton variant="outline" icon aria-label="Previous customer"&gt;&lt;OcWebicon name="mdi:arrow-left" /&gt;&lt;/OcButton&gt;
+    &lt;/OcTooltip&gt;
+    &lt;OcTooltip text="info@company1.example" side="bottom" as-child&gt;
+      &lt;OcButton variant="outline"&gt;Customer 1&lt;/OcButton&gt;
+    &lt;/OcTooltip&gt;
+    &lt;OcTooltip text="Next customer" side="bottom" as-child&gt;
+      &lt;OcButton variant="outline" icon aria-label="Next customer"&gt;&lt;OcWebicon name="mdi:arrow-right" /&gt;&lt;/OcButton&gt;
+    &lt;/OcTooltip&gt;
+  &lt;/div&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div class="oc-btn-group"&gt;
+    &lt;x-oc::tooltip as="button" type="button" class="oc-btn oc-btn--outline oc-btn--icon" side="bottom" text="Previous customer" aria-label="Previous customer"&gt;&lt;x-oc::webicon name="mdi:arrow-left" /&gt;&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip as="button" type="button" class="oc-btn oc-btn--outline" side="bottom" text="info@company1.example"&gt;Customer 1&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip as="button" type="button" class="oc-btn oc-btn--outline oc-btn--icon" side="bottom" text="Next customer" aria-label="Next customer"&gt;&lt;x-oc::webicon name="mdi:arrow-right" /&gt;&lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class CustomerStepper extends Component
+{
+    public int $customer = 1;
+
+    public function previous(): void
+    {
+        $this-&gt;customer = max(1, $this-&gt;customer - 1);
+    }
+
+    public function next(): void
+    {
+        $this-&gt;customer++;
+    }
+
+    public function render()
+    {
+        return view('livewire.customer-stepper');
+    }
+}
+
+{{-- resources/views/livewire/customer-stepper.blade.php --}}
+&lt;div class="oc-btn-group"&gt;
+    &lt;x-oc::tooltip as="button" type="button" class="oc-btn oc-btn--outline oc-btn--icon" side="bottom" text="Previous customer" aria-label="Previous customer" wire:click="previous"&gt;&lt;x-oc::webicon name="mdi:arrow-left" /&gt;&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip as="button" type="button" class="oc-btn oc-btn--outline" side="bottom" text="info@company{{ $customer }}.example"&gt;Customer {{ $customer }}&lt;/x-oc::tooltip&gt;
+    &lt;x-oc::tooltip as="button" type="button" class="oc-btn oc-btn--outline oc-btn--icon" side="bottom" text="Next customer" aria-label="Next customer" wire:click="next"&gt;&lt;x-oc::webicon name="mdi:arrow-right" /&gt;&lt;/x-oc::tooltip&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
+
           <h3 class="oc-section-content__title mt-2">Multiline</h3>
           <p class="oc-section-content__desc">Add <code>.oc-tooltip--multiline</code> and every line break in <code>data-tooltip</code> (<code>&amp;#10;</code> in HTML, <code>\n</code> in JavaScript) starts a new line.</p>
           <oc-demo title="Tooltip - multiline" hint="Hover or focus the button: the tooltip opens above it.">
@@ -442,6 +523,7 @@ class TooltipCorners extends Component
               <tr><td><code>--oc-tooltip-gap</code></td><td>Space between the element and the tooltip (default <code>8px</code>).</td></tr>
               <tr><td><code>--oc-tooltip-delay</code> / <code>.oc-tooltip-provider</code></td><td>Delay before the tooltip shows (0.17.0, default <code>0ms</code>); the provider is a <code>display: contents</code> wrapper that sets it for every tooltip inside. Styles in <code>parts/app-compound-overlays.css</code>.</td></tr>
               <tr><td><code>.is-open</code> / <code>.is-closed</code></td><td>Controlled tooltip (0.17.0): shown without hover, or hidden also on hover. React <code>open</code> / <code>onOpenChange</code>, Vue <code>v-model:open</code>, Blade <code>:open="true|false"</code>.</td></tr>
+              <tr><td>React <code>asChild</code> / Vue <code>as-child</code> / Blade <code>as</code></td><td>0.18.0: the tooltip on the element itself instead of a wrapping <code>&lt;span&gt;</code>. React and Vue merge the classes, <code>data-tooltip</code> and handlers into the only child and append rich content inside it; Blade <code>as</code> (<code>span</code>, <code>button</code>, <code>a</code>, <code>div</code>, <code>li</code>, <code>label</code>) renders that element, with your other attributes on it.</td></tr>
               <tr><td><code>aria-describedby</code></td><td>Rich content (React node, Vue <code>#content</code>, Blade <code>&lt;x-slot:content&gt;</code>) gets an id; the wrapper points to it.</td></tr>
             </tbody>
           </table>

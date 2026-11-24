@@ -14,4 +14,6 @@ export function bindLanguageCode(root: HTMLElement): void;
 export function otpActiveCell(selectionStart: number | null | undefined, valueLength: number, length: number): number;
 /** 0.17.1: marks the active cell of an input.oc-otp (data-otp-active + --oc-otp-active); returns a cleanup function. */
 export function bindOtp(input: HTMLInputElement): () => void;
+/** 0.18.0: a picked slot of .oc-time-picker goes into its .oc-time-input (input + change events) and closes the popover. */
+export function bindTimePicker(root: HTMLElement): void;
 export function initFormExtras(scope?: ParentNode): void;

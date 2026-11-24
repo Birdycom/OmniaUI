@@ -96,6 +96,77 @@ class ProductBack extends Component
     &lt;x-oc::back-link fallback-href="/products" fallback-label="Back to Products"&gt;Back&lt;/x-oc::back-link&gt;
 &lt;/div&gt;</oc-code>
           </oc-demo>
+          <h3 class="oc-section-content__title mt-2" id="own-back">Your own back action and router link <span class="oc-badge-version">v0.18.0</span></h3>
+          <p class="oc-section-content__desc">React <code>onBack</code>: a plain click runs your own back action (close a panel, <code>navigate(-1)</code>) instead of following the link; Ctrl/Cmd/Shift and middle click still open the <code>href</code> in a new tab. <code>as</code> renders your router link with the back-link classes (<code>to</code> and other props fall through). Vue: <code>@back</code> and <code>as</code> (<code>RouterLink</code>). Plain HTML and Blade: with <code>oc-back-link.js</code> a click on a <code>[data-oc-back]</code> link first fires a cancelable <code>oc-back</code> event; call <code>preventDefault()</code> in a listener to run your own action.</p><p class="oc-section-content__desc" id="blade-no-callback"><strong>Blade has no callback prop.</strong> A Blade component is rendered on the server and cannot hold a JavaScript function, so <code>&lt;x-oc::back-link&gt;</code> has no <code>onBack</code>. Listen for the <code>oc-back</code> event instead: with Alpine (included in Livewire) <code>x-on:oc-back.prevent="panelOpen = false"</code> cancels the navigation and runs your expression (see the Blade tab). The event only fires on a link with <code>fallback-href</code> (that adds <code>data-oc-back</code>) and with <code>oc-back-link.js</code> on the page. In Livewire you can also skip the event and put <code>wire:click.prevent</code> on a plain link, as in the Livewire tab.</p>
+          <oc-demo title="Back link - own back action">
+<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
+  <a class="oc-back-link" href="#customers" data-oc-back>Back to Customers</a>
+</div>
+<oc-code lang="html">&lt;a class="oc-back-link" href="/customers" data-oc-back id="back-to-customers"&gt;Back to Customers&lt;/a&gt;
+&lt;script type="module" src="/js/oc-back-link.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  document.getElementById("back-to-customers").addEventListener("oc-back", (event) =&gt; {
+    event.preventDefault(); // no navigation: close the panel instead
+    document.getElementById("customer-panel")?.setAttribute("hidden", "");
+  });
+&lt;/script&gt;</oc-code>
+<oc-code lang="tsx">import { BackLink } from "@birdycom/omniaui-react";
+import type { AnchorHTMLAttributes } from "react";
+
+// Your router link (React Router, Next.js, TanStack): any component that renders an &lt;a&gt;.
+function Link({ to, ...rest }: AnchorHTMLAttributes&lt;HTMLAnchorElement&gt; &amp; { to: string }) {
+  return &lt;a href={to} {...rest} /&gt;;
+}
+
+export function Example({ onClose }: { onClose: () =&gt; void }) {
+  return (
+    &lt;div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}&gt;
+      &lt;BackLink href="/customers" onBack={onClose}&gt;Back to Customers&lt;/BackLink&gt;
+      &lt;BackLink as={Link} to="/customers"&gt;Back to Customers&lt;/BackLink&gt;
+    &lt;/div&gt;
+  );
+}</oc-code>
+<oc-code lang="vue">&lt;script setup lang="ts"&gt;
+import { OcBackLink } from "@birdycom/omniaui-vue";
+import { ref } from "vue";
+
+const panelOpen = ref(true);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- With Vue Router: &lt;OcBackLink :as="RouterLink" to="/customers"&gt;Back to Customers&lt;/OcBackLink&gt; --&gt;
+  &lt;OcBackLink href="/customers" @back="panelOpen = false"&gt;Back to Customers&lt;/OcBackLink&gt;
+&lt;/template&gt;</oc-code>
+<oc-code lang="blade">&lt;div x-data="{ panelOpen: true }"&gt;
+    &lt;x-oc::back-link fallback-href="/customers" x-on:oc-back.prevent="panelOpen = false"&gt;Back to Customers&lt;/x-oc::back-link&gt;
+&lt;/div&gt;
+&lt;script type="module" src="/js/oc-back-link.js"&gt;&lt;/script&gt;</oc-code>
+<oc-code lang="livewire">&lt;?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+
+class BackLinkOwnBackAction extends Component
+{
+    public bool $panelOpen = true;
+
+    public function close(): void
+    {
+        $this-&gt;panelOpen = false;
+    }
+
+    public function render()
+    {
+        return view('livewire.back-link-own-back-action');
+    }
+}
+
+{{-- resources/views/livewire/back-link-own-back-action.blade.php --}}
+&lt;div&gt;
+    &lt;x-oc::back-link href="/customers" wire:click.prevent="close"&gt;Back to Customers&lt;/x-oc::back-link&gt;
+&lt;/div&gt;</oc-code>
+          </oc-demo>
         </div>
       </section>
 
@@ -111,6 +182,8 @@ class ProductBack extends Component
               <tr><td><code>.oc-back-link</code></td><td>Anchor styled as an outline button with a leading arrow</td></tr>
               <tr><td><code>[data-oc-back]</code></td><td>With <code>oc-back-link.js</code>: a click goes back in the history when the visitor came from this site; otherwise the link follows its <code>href</code> (the fallback). Ctrl/Cmd-click still opens the href in a new tab. React and Vue: <code>fallbackHref</code>; Blade: <code>fallback-href</code>.</td></tr>
               <tr><td><code>data-oc-fallback-label</code></td><td>The label while the link goes to the fallback (e.g. "Back to Products" where the history label is "Back"). React and Vue: <code>fallbackLabel</code>; Blade: <code>fallback-label</code>.</td></tr>
+              <tr><td><code>oc-back</code> event </td><td>With <code>oc-back-link.js</code>: fired (bubbling, cancelable) on a plain click of a <code>[data-oc-back]</code> link; <code>preventDefault()</code> replaces the navigation with your own action. React: <code>onBack</code>; Vue: <code>@back</code>.</td></tr>
+              <tr><td><code>as</code> </td><td>React and Vue: render your router link (<code>Link</code>, <code>RouterLink</code>) with the back-link classes; <code>to</code> and other props fall through.</td></tr>
             </tbody>
           </table>
         </div>

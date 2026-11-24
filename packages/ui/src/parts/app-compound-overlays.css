@@ -1,4 +1,4 @@
-/* File: packages/ui/src/parts/app-compound-overlays.css | Map: compound tabs root (vertical) -> scrolling dialog content -> popover side/align/offset -> tooltip provider, delay and controlled open */
+/* File: packages/ui/src/parts/app-compound-overlays.css | Map: compound tabs root (vertical) -> scrolling dialog content -> popover + dropdown side/align/offset -> popover match width -> toggle dropdown side/align -> tooltip provider, delay and controlled open -> tooltip in a sidebar */
 /* 0.17.0 compound API for Tabs, Dialog, Popover and Tooltip. Same classes as the props API; this part only adds what the
    compound parts need: a root for class-toggle tabs, a dialog whose body scrolls between a fixed header and footer, popover
    placement by data-side / data-align, and the tooltip delay and controlled state. */
@@ -25,7 +25,8 @@
 .oc-modal-content--scroll > .oc-modal-header { padding-block-end: 16px; border-block-end: 1px solid var(--oc-border); }
 .oc-modal-content--scroll > .oc-modal-body { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; }
 
-/* ---- Popover: side, align and offset (compound PopoverContent sets data-side / data-align) ---- */
+/* ---- Popover and dropdown menu: side, align and offset ----
+   Compound PopoverContent sets data-side / data-align; 0.18.0: the dropdown menu takes the same (side / align props). */
 .oc-popover[popover][data-side] { margin: 0; }
 .oc-popover[popover][data-side="bottom"] { margin-block-start: var(--oc-popover-offset, 4px); position-area: block-end span-inline-end; position-try-fallbacks: flip-block, flip-inline; }
 .oc-popover[popover][data-side="bottom"][data-align="center"] { position-area: block-end; }
@@ -39,6 +40,36 @@
 .oc-popover[popover][data-side="left"] { margin-inline-end: var(--oc-popover-offset, 4px); position-area: inline-start span-block-end; position-try-fallbacks: flip-inline, flip-block; }
 .oc-popover[popover][data-side="left"][data-align="center"] { position-area: inline-start; }
 .oc-popover[popover][data-side="left"][data-align="end"] { position-area: inline-start span-block-start; }
+.oc-dropdown-menu[popover][data-side] { margin: 0; }
+.oc-dropdown-menu[popover][data-side="bottom"] { margin-block-start: var(--oc-popover-offset, 4px); position-area: block-end span-inline-end; position-try-fallbacks: flip-block, flip-inline; }
+.oc-dropdown-menu[popover][data-side="bottom"][data-align="center"] { position-area: block-end; }
+.oc-dropdown-menu[popover][data-side="bottom"][data-align="end"] { position-area: block-end span-inline-start; }
+.oc-dropdown-menu[popover][data-side="top"] { margin-block-end: var(--oc-popover-offset, 4px); position-area: block-start span-inline-end; position-try-fallbacks: flip-block, flip-inline; }
+.oc-dropdown-menu[popover][data-side="top"][data-align="center"] { position-area: block-start; }
+.oc-dropdown-menu[popover][data-side="top"][data-align="end"] { position-area: block-start span-inline-start; }
+.oc-dropdown-menu[popover][data-side="right"] { margin-inline-start: var(--oc-popover-offset, 4px); position-area: inline-end span-block-end; position-try-fallbacks: flip-inline, flip-block; }
+.oc-dropdown-menu[popover][data-side="right"][data-align="center"] { position-area: inline-end; }
+.oc-dropdown-menu[popover][data-side="right"][data-align="end"] { position-area: inline-end span-block-start; }
+.oc-dropdown-menu[popover][data-side="left"] { margin-inline-end: var(--oc-popover-offset, 4px); position-area: inline-start span-block-end; position-try-fallbacks: flip-inline, flip-block; }
+.oc-dropdown-menu[popover][data-side="left"][data-align="center"] { position-area: inline-start; }
+.oc-dropdown-menu[popover][data-side="left"][data-align="end"] { position-area: inline-start span-block-start; }
+
+/* 0.18.0 Popover as wide as its trigger (or PopoverAnchor): data-match-width. Browsers without anchor-size() get the
+   trigger width in px from the React / Vue wrapper; the 18rem default no longer applies. */
+.oc-popover[popover][data-match-width] { inline-size: auto; min-inline-size: 0; }
+@supports (inline-size: anchor-size(width)) {
+  .oc-popover[popover][data-match-width] { inline-size: anchor-size(width); }
+}
+
+/* 0.18.0 Dropdown in toggle mode (.oc-dropdown > .oc-dropdown-menu, in the page): the same side / align, as fixed places. */
+.oc-dropdown > .oc-dropdown-menu[data-align="end"] { left: auto; right: 0; }
+.oc-dropdown > .oc-dropdown-menu[data-align="center"] { left: 50%; translate: -50% 0; }
+.oc-dropdown > .oc-dropdown-menu[data-side="top"] { top: auto; bottom: 100%; margin-top: 0; margin-bottom: 4px; }
+.oc-dropdown > .oc-dropdown-menu:is([data-side="left"], [data-side="right"]) { top: 0; margin-top: 0; }
+.oc-dropdown > .oc-dropdown-menu:is([data-side="left"], [data-side="right"])[data-align="end"] { top: auto; bottom: 0; }
+.oc-dropdown > .oc-dropdown-menu:is([data-side="left"], [data-side="right"])[data-align="center"] { top: 50%; left: auto; translate: 0 -50%; }
+.oc-dropdown > .oc-dropdown-menu[data-side="right"] { left: 100%; right: auto; margin-left: 4px; }
+.oc-dropdown > .oc-dropdown-menu[data-side="left"] { left: auto; right: 100%; margin-right: 4px; }
 
 /* ---- Tooltip: provider, delay, controlled open ---- */
 .oc-tooltip-provider { display: contents; }
@@ -66,3 +97,14 @@
 }
 /* Rich content may hold links: let the pointer reach it while it is shown. */
 .oc-tooltip.is-open > .oc-tooltip__content { pointer-events: auto; }
+
+/* ---- Tooltip in a sidebar (0.18.0) ----
+   Where the bubble cannot be fixed with anchor positioning it is absolute, and the scrolling .oc-sidebar-content cut it
+   off: the side tooltips of a collapsed (icon-only) sidebar stuck out of its narrow column. A collapsed sidebar lets
+   them out; it holds only icons, so it rarely needs to scroll. Rich content (.oc-tooltip__content) needs anchor-scope. */
+@supports not (position-area: top) {
+  .oc-sidebar--collapsed .oc-sidebar-content { overflow: visible; }
+}
+@supports (position-area: top) and (not (anchor-scope: all)) {
+  .oc-sidebar--collapsed .oc-sidebar-content:has(.oc-tooltip__content) { overflow: visible; }
+}

@@ -28,6 +28,8 @@ const snippetAlias = {
   'sidebar-menu-button': 'sidebar',
   'sidebar-collapsible': 'sidebar',
   'sidebar-separator': 'sidebar',
+  'command-item': 'command',
+  'command-group': 'command',
   'settings-section': 'settings-page',
   'settings-row': 'settings-page',
   'message-list': 'message',

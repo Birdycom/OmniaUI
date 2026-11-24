@@ -22,14 +22,16 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   inactive?: boolean;
   /** As high as its grid or flex cell, content grows, footer at the bottom (`oc-card--fill`): equal cards in a row. */
   fill?: boolean;
+  /** 0.18.0: no padding and no clipping (`oc-card--bare`): your own parts go straight in, a menu may stick out. */
+  bare?: boolean;
 }
 
-/** `.oc-card` (with `accent`: `.oc-card--accent[data-tone]`) */
-export const Card = forwardRef<HTMLDivElement, CardProps>(function Card({ accent, inactive, fill, className, ...rest }, ref) {
+/** `.oc-card` (with `accent`: `.oc-card--accent[data-tone]`, with `bare`: `.oc-card--bare`) */
+export const Card = forwardRef<HTMLDivElement, CardProps>(function Card({ accent, inactive, fill, bare, className, ...rest }, ref) {
   return (
     <div
       ref={ref}
-      className={cx("oc-card", accent && "oc-card--accent", fill && "oc-card--fill", className)}
+      className={cx("oc-card", accent && "oc-card--accent", fill && "oc-card--fill", bare && "oc-card--bare", className)}
       data-tone={accent}
       data-active={accent && inactive ? "false" : undefined}
       {...rest}
