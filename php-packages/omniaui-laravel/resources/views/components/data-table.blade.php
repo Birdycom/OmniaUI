@@ -20,7 +20,11 @@
      ['key' => …, 'dir' => 'asc|desc']) + sort-dir, search (text in the field), search-delay (ms, default 300), trashed
      (active|all|deleted|archived: the pill that is on), loading (skeleton rows + aria-busy), skeleton-rows,
      visible-columns (list of keys: only those columns render, plus a column chooser in the actions header that fires
-     oc-datatable-columns). --}}
+     oc-datatable-columns).
+     0.17.2: bulk-actions (list of ['key', 'label', 'icon' => webicon name, 'tone' => outline|primary|destructive|ghost,
+     'disabled', 'hidden']: the key of a built-in button (export, duplicate, archive, restore, delete, clear) replaces it,
+     hidden leaves it out, other keys come before "clear"; a click fires oc-datatable-bulk with that key), and a column's
+     width / minWidth (min-width) ("12rem", "20%") on its th. --}}
 @props([
     'title' => 'List',
     'tableId' => 'oc-data-table',
@@ -57,6 +61,7 @@
     'loading' => false,
     'skeletonRows' => null,
     'visibleColumns' => null,
+    'bulkActions' => [],
 ])
 @php
     $pageSize = (int) $pageSize;
@@ -113,6 +118,21 @@
     }, $shown);
     $skeletons = $loading ? (int) ($skeletonRows ?? ($pagination && $pageSize > 0 ? $pageSize : 5)) : 0;
     $trashed = $trashed ?: 'active';
+    // 0.17.2: the selection bar buttons, built-in ones merged with bulk-actions (same key = replace, hidden = leave out).
+    $bulkKeys = ['export', 'duplicate', 'archive', 'restore', 'delete', 'clear'];
+    $bulkText = ['export' => $L['exportSelection'], 'duplicate' => $L['duplicate'], 'archive' => $L['moveToTrash'], 'restore' => $L['restore'], 'delete' => $L['deletePermanently'], 'clear' => $L['clear']];
+    $bulkOwn = collect((array) $bulkActions)->keyBy('key');
+    $bulkBuiltIn = array_map(fn ($k) => array_merge(['key' => $k, 'label' => $bulkText[$k], 'tone' => ['delete' => 'destructive', 'clear' => 'ghost'][$k] ?? 'outline'], (array) ($bulkOwn[$k] ?? [])), $bulkKeys);
+    $bulkExtra = array_values(array_filter((array) $bulkActions, fn ($a) => ! in_array($a['key'] ?? null, $bulkKeys, true)));
+    $bulkButtons = array_values(array_filter([...array_slice($bulkBuiltIn, 0, -1), ...$bulkExtra, $bulkBuiltIn[5]], fn ($a) => empty($a['hidden'])));
+    // 0.17.2: column width / min-width on the th.
+    $colStyle = function (array $c): ?string {
+        $w = $c['width'] ?? null;
+        $min = $c['minWidth'] ?? $c['min-width'] ?? null;
+        $css = ($w ? 'width: '.$w.';' : '').($min ? ($w ? ' ' : '').'min-width: '.$min.';' : '');
+
+        return $css !== '' ? $css : null;
+    };
 @endphp
 <div @class(['oc-data-table', 'oc-data-table--bordered' => $variant === 'bordered', 'oc-data-table--plain' => ! $striped, 'oc-column-menu-scope' => $columnMenu]) id="{{ $tableId }}" data-page-size="{{ $pagination ? $pageSize : 0 }}" @if($scriptLabels) data-oc-labels="{{ json_encode($scriptLabels, JSON_UNESCAPED_UNICODE) }}" @endif @unless($view) data-oc-no-grid @endunless @if($live) data-oc-live="true" @endif @if($server) data-oc-server="true" data-oc-total="{{ $total ?? count($rows) }}" data-oc-current-page="{{ $page ?? 1 }}" @endif @if($searchDelay !== null) data-oc-search-delay="{{ (int) $searchDelay }}" @endif @if($loading) aria-busy="true" @endif>
     @if ($tabs)
@@ -206,12 +226,9 @@
     @if ($bulk)
     <div class="oc-data-table-bulk" hidden>
         <span data-oc-selected-count>{{ str_replace('{n}', '0', $L['selected']) }}</span>
-        <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">{{ $L['exportSelection'] }}</button>
-        <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">{{ $L['duplicate'] }}</button>
-        <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">{{ $L['moveToTrash'] }}</button>
-        <button class="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">{{ $L['restore'] }}</button>
-        <button class="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">{{ $L['deletePermanently'] }}</button>
-        <button class="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">{{ $L['clear'] }}</button>
+        @foreach ($bulkButtons as $action)
+        <button @class(['oc-btn', 'oc-btn--'.($action['tone'] ?? 'outline') => ($action['tone'] ?? 'outline') !== 'primary', 'oc-btn--sm']) type="button" data-oc-bulk="{{ $action['key'] }}" @disabled(! empty($action['disabled']))>@if (! empty($action['icon']))<x-oc::webicon :name="$action['icon']" bare fallback="iconify" />@endif{{ $action['label'] ?? $action['key'] }}</button>
+        @endforeach
     </div>
     @endif
     <div class="oc-data-table-frame">
@@ -227,7 +244,7 @@
                         @endif
                         @foreach ($shown as $column)
                             @php($sorted = $ariaSort($column))
-                            <th data-oc-col="{{ $column['key'] }}" data-oc-sort="{{ !empty($column['numeric']) ? 'numeric' : 'text' }}" @if(!empty($column['numeric'])) data-numeric @endif @if($column['hideBelow']) data-hide-below="{{ $column['hideBelow'] }}" @endif @if($sorted) aria-sort="{{ $sorted }}" @endif>
+                            <th data-oc-col="{{ $column['key'] }}" data-oc-sort="{{ !empty($column['numeric']) ? 'numeric' : 'text' }}" @if(!empty($column['numeric'])) data-numeric @endif @if($column['hideBelow']) data-hide-below="{{ $column['hideBelow'] }}" @endif @if($sorted) aria-sort="{{ $sorted }}" @endif @if($colStyle($column)) style="{{ $colStyle($column) }}" @endif>
                                 <span class="oc-data-table-th">
                                     @if (($column['sortable'] ?? true) !== false)
                                         <button class="oc-table-sort" type="button">{{ $column['header'] }}</button>

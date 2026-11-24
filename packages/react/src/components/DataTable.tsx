@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { bindDataTable, setDataTableSelection } from "../../../ui/src/data-table.js";
 import { useControllable } from "../hooks";
 import { Icon } from "./Icon";
+import { webiconNode } from "./Webicon";
 
 /** Webicon paths (MDI) for the toolbar, drawn inline so the table needs no icon loader. */
 const MDI = {
@@ -38,6 +39,38 @@ export interface DataTableColumn {
   defaultSort?: "ascending" | "descending";
   /** Hide the column (th and tds, data-hide-below) when the table is narrower than 24rem (sm), 32rem (md) or 48rem (lg). */
   hideBelow?: "sm" | "md" | "lg";
+  /** Width of the column (0.17.2), e.g. "12rem" or "20%" (on the th). Works with `truncate`. */
+  width?: string;
+  /** Minimum width of the column (0.17.2), e.g. "8rem": the column does not get narrower than this. */
+  minWidth?: string;
+}
+
+/** A button in the selection bar (0.17.2). A key of a built-in button (export, duplicate, archive, restore, delete,
+ *  clear) replaces that button (its label, icon, tone); `hidden` removes it. Other keys are added before "clear".
+ *  A click calls `onBulk(key, selectedKeys)` (the oc-datatable-bulk event). */
+export interface DataTableBulkAction {
+  key: string;
+  label: ReactNode;
+  /** A webicon name ("mdi:email-outline") or any node, in front of the label. */
+  icon?: ReactNode;
+  /** Button look: outline (default), primary (the filled default button), destructive or ghost. */
+  tone?: "outline" | "primary" | "destructive" | "ghost";
+  disabled?: boolean;
+  /** Leave this (built-in) button out. */
+  hidden?: boolean;
+}
+
+/** The built-in selection bar buttons, in order, and their tone. */
+export const DATA_TABLE_BULK_KEYS = ["export", "duplicate", "archive", "restore", "delete", "clear"] as const;
+const BULK_TONE: Record<string, DataTableBulkAction["tone"]> = { delete: "destructive", clear: "ghost" };
+
+/** Merge the built-in selection bar buttons with your own (see DataTableBulkAction). */
+export function dataTableBulkActions(L: DataTableLabels, custom: DataTableBulkAction[] = []): DataTableBulkAction[] {
+  const own = new Map(custom.map((a) => [a.key, a]));
+  const label: Record<string, string> = { export: L.exportSelection, duplicate: L.duplicate, archive: L.moveToTrash, restore: L.restore, delete: L.deletePermanently, clear: L.clear };
+  const builtIn = DATA_TABLE_BULK_KEYS.map((key) => ({ key, label: label[key], tone: BULK_TONE[key] ?? "outline", ...own.get(key) }) as DataTableBulkAction);
+  const extra = custom.filter((a) => !(DATA_TABLE_BULK_KEYS as readonly string[]).includes(a.key));
+  return [...builtIn.slice(0, -1), ...extra, builtIn[builtIn.length - 1]].filter((a) => !a.hidden);
 }
 
 export interface DataTableRow {
@@ -100,7 +133,10 @@ export interface DataTableProps {
   live?: boolean;
   /** Page actions on the right of the toolbar (New article, …). */
   actions?: ReactNode;
+  /** A selection bar button was clicked: its key (built-in or from `bulkActions`) and the selected row keys. */
   onBulk?: (action: string, keys: string[]) => void;
+  /** Your own selection bar buttons (0.17.2), or changes to the built-in ones (same key = replace, `hidden` = leave out). */
+  bulkActions?: DataTableBulkAction[];
   /**
    * A row was dropped in a new place (v0.17.1): `keys` are the row keys in the new order, `detail.key` the dragged row.
    * The drag itself is OmniaUI Pro (data-table-pro.js) with `draggable`. In server mode (`detail.server`) the script
@@ -269,6 +305,7 @@ export function DataTable({
   live = false,
   actions,
   onBulk,
+  bulkActions,
   onReorder,
   labels,
   view = true,
@@ -508,12 +545,11 @@ export function DataTable({
       </div>)}
       {bulk && <div className="oc-data-table-bulk" hidden>
         <span data-oc-selected-count="">{L.selected.replace("{n}", "0")}</span>
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="export">{L.exportSelection}</button>
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="duplicate">{L.duplicate}</button>
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="archive">{L.moveToTrash}</button>
-        <button className="oc-btn oc-btn--outline oc-btn--sm" type="button" data-oc-bulk="restore">{L.restore}</button>
-        <button className="oc-btn oc-btn--destructive oc-btn--sm" type="button" data-oc-bulk="delete">{L.deletePermanently}</button>
-        <button className="oc-btn oc-btn--ghost oc-btn--sm" type="button" data-oc-bulk="clear">{L.clear}</button>
+        {dataTableBulkActions(L, bulkActions).map((a) => (
+          <button key={a.key} className={a.tone === "primary" ? "oc-btn oc-btn--sm" : `oc-btn oc-btn--${a.tone ?? "outline"} oc-btn--sm`} type="button" data-oc-bulk={a.key} disabled={a.disabled || undefined}>
+            {a.icon != null && webiconNode(a.icon)}{a.label}
+          </button>
+        ))}
       </div>}
       <div className="oc-data-table-frame">
         <div className="oc-data-table-scroll">
@@ -523,7 +559,7 @@ export function DataTable({
                 {selectable && <th data-oc-col="select"><input className="oc-checkbox" type="checkbox" data-oc-select-all="" aria-label={L.selectAll} /></th>}
                 {draggable && <th data-oc-col="order"><span className="oc-visually-hidden">{L.order}</span></th>}
                 {shown.map((col) => (
-                  <th key={col.key} data-oc-col={col.key} data-oc-sort={col.numeric ? "numeric" : "text"} data-numeric={col.numeric ? "" : undefined} data-hide-below={col.hideBelow} aria-sort={ariaSort(col)}>
+                  <th key={col.key} data-oc-col={col.key} data-oc-sort={col.numeric ? "numeric" : "text"} data-numeric={col.numeric ? "" : undefined} data-hide-below={col.hideBelow} aria-sort={ariaSort(col)} style={col.width || col.minWidth ? { width: col.width, minWidth: col.minWidth } : undefined}>
                     <span className="oc-data-table-th">
                       {col.sortable === false ? col.header : <button className="oc-table-sort" type="button">{col.header}</button>}
                       {resizable && <span className="oc-data-table-resize" role="separator" aria-orientation="vertical" aria-label={fill(L.resize, col.header)} />}

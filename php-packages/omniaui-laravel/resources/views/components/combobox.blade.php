@@ -8,22 +8,31 @@
      or search-url ("/customers/search?q=": fetch, JSON [{ value, label, description, icon, image, emoji }]); search-delay
      (ms, default 250); selected (['value' => 42, 'label' => 'Company 42', ...]: label of a value that is not in options);
      clear-label (first row that clears); manage-href + manage-label (footer link outside the listbox); allow-custom-from-search
-     + custom-label ('Use "{query}"'); portal (list in document.body while open); variant ("ledger"); module (data-module). --}}
+     + custom-label ('Use "{query}"'); portal (list in document.body while open); variant ("ledger"); module (data-module).
+     Header trigger (0.17.2): trigger-variant ("ghost": no border, shadow or margin, muted text that gets fuller on hover with
+     a light background), size ("full" default | "header": 36px high, 6.5rem to 14rem wide; portal is on unless
+     :portal="false"), icon-only (with size="header": a square 36x36 button that shows trigger-label, else the icon / image
+     / emoji of the chosen option, else a dots icon), trigger-label (short code: "NL"), trigger-aria-label (aria-label of the
+     field; default: label). --}}
 @props([
     'options' => [], 'value' => null, 'name' => null, 'label' => 'Choose', 'placeholder' => null, 'icon' => null, 'empty' => 'No results', 'id' => null,
     'valueType' => 'string', 'search' => null, 'searchUrl' => null, 'searchDelay' => null, 'loadingText' => null, 'selected' => null,
     'clearLabel' => null, 'manageHref' => null, 'manageLabel' => 'Manage', 'allowCustomFromSearch' => false, 'customLabel' => 'Use "{query}"',
-    'portal' => false, 'variant' => null, 'module' => null,
+    'portal' => null, 'variant' => null, 'module' => null,
+    'triggerVariant' => null, 'size' => 'full', 'iconOnly' => false, 'triggerLabel' => null, 'triggerAriaLabel' => null,
 ])
 @php($id = $id ?: 'oc-combobox-'.substr(md5(uniqid('', true)), 0, 6))
 @php($items = collect($options)->map(fn ($o) => is_array($o) ? $o : ['label' => $o]))
 @php($selectedItem = is_array($selected) ? $selected : null)
 @php($chosen = $value !== null && $value !== '' ? ($items[$value] ?? (($selectedItem && (string) ($selectedItem['value'] ?? '') === (string) $value) ? $selectedItem : null)) : null)
 @php($hasVisual = fn ($o) => ! empty($o['icon']) || ! empty($o['image']) || ! empty($o['emoji']))
-@php($withIcons = $icon || $items->contains($hasVisual) || ($selectedItem && $hasVisual($selectedItem)))
+@php($header = $size === 'header')
+@php($iconOnly = $header && $iconOnly)
+@php($portal = $portal ?? $header)
+@php($withIcons = $iconOnly || $icon || $items->contains($hasVisual) || ($selectedItem && $hasVisual($selectedItem)))
 @php($ledger = $variant === 'ledger')
 @php($footer = filled($manageHref))
-<div {{ $attributes->class(['oc-combobox', 'oc-combobox--ledger' => $ledger])->merge(array_filter([
+<div {{ $attributes->class(['oc-combobox', 'oc-combobox--ledger' => $ledger, 'oc-combobox--ghost' => $triggerVariant === 'ghost', 'oc-combobox--header' => $header, 'oc-combobox--icon-only' => $iconOnly])->merge(array_filter([
     'data-oc-search' => $search ?: null,
     'data-oc-search-url' => $searchUrl ?: null,
     'data-oc-search-delay' => $searchDelay,
@@ -32,9 +41,9 @@
     'data-module' => $module,
 ], fn ($v) => $v !== null)) }} data-oc-combobox @if ($portal) data-oc-portal @endif>
 @if ($withIcons)
-    <span class="oc-combobox-icon" aria-hidden="true">@if ($chosen && ! empty($chosen['icon']))<x-oc::webicon :name="$chosen['icon']" bare fallback="iconify" />@elseif ($chosen && ! empty($chosen['image']))<img class="oc-combobox-option-image" src="{{ $chosen['image'] }}" alt="">@elseif ($chosen && ! empty($chosen['emoji']))<span class="oc-combobox-option-emoji" aria-hidden="true">{{ $chosen['emoji'] }}</span>@elseif ($icon)<x-oc::webicon :name="$icon" bare fallback="iconify" />@endif</span>
+    <span class="oc-combobox-icon" aria-hidden="true"{!! $iconOnly && filled($triggerLabel) ? ' data-oc-fixed' : '' !!}>@if ($iconOnly && filled($triggerLabel))<span class="oc-combobox-code">{{ $triggerLabel }}</span>@elseif ($chosen && ! empty($chosen['icon']))<x-oc::webicon :name="$chosen['icon']" bare fallback="iconify" />@elseif ($chosen && ! empty($chosen['image']))<img class="oc-combobox-option-image" src="{{ $chosen['image'] }}" alt="">@elseif ($chosen && ! empty($chosen['emoji']))<span class="oc-combobox-option-emoji" aria-hidden="true">{{ $chosen['emoji'] }}</span>@elseif ($icon)<x-oc::webicon :name="$icon" bare fallback="iconify" />@elseif ($iconOnly)<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-webicon="mdi:dots-horizontal"><path d="M16 12a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2"/></svg>@endif</span>
 @endif
-    <input @class(['oc-input', 'oc-combobox-input', 'oc-input--ledger' => $ledger]) type="text" role="combobox" autocomplete="off" aria-expanded="false" aria-controls="{{ $id }}" aria-autocomplete="list" aria-label="{{ $label }}" @if ($placeholder) placeholder="{{ $placeholder }}" @endif value="{{ $chosen['label'] ?? '' }}">
+    <input @class(['oc-input', 'oc-combobox-input', 'oc-input--ledger' => $ledger]) type="text" role="combobox" autocomplete="off" aria-expanded="false" aria-controls="{{ $id }}" aria-autocomplete="list" aria-label="{{ $triggerAriaLabel ?? $label }}" @if ($placeholder) placeholder="{{ $placeholder }}" @endif value="{{ $chosen['label'] ?? '' }}">
 @if ($name)
     <input type="hidden" name="{{ $name }}" value="{{ $value }}">
 @endif

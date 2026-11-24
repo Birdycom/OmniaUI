@@ -1,6 +1,7 @@
-import { createElement, forwardRef } from "react";
+import { cloneElement, createElement, forwardRef } from "react";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ComponentPropsWithRef, CSSProperties, ElementType, ReactElement, ReactNode, RefAttributes } from "react";
 import { cx } from "../utils";
+import { mergeIntoChild } from "../asChild";
 import { getWebicon, webiconSvg } from "../webicons";
 import { Webicon } from "./Webicon";
 
@@ -80,7 +81,13 @@ function floatAndModule(float: string | undefined, module: string | undefined, s
   return { attrs: out, layer: <span className="oc-btn-float" aria-hidden="true"><i /><i /><i /><i /><i /></span> };
 }
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, ButtonStyleProps, LoadingProp, ButtonIconProps {}
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, ButtonStyleProps, LoadingProp, ButtonIconProps {
+  /**
+   * 0.17.2: put the button classes and props on your only child instead of a `<button>` (`<Button asChild><Link to="/x">Open</Link></Button>`).
+   * Handlers are chained, classes joined; disabled/loading become `aria-disabled` on a non-button child. `as` keeps working.
+   */
+  asChild?: boolean;
+}
 
 /** Props of `<Button as={…}>`: the button props plus those of the element or component it renders. */
 export type ButtonAsProps<E extends ElementType> = ButtonStyleProps & LoadingProp & ButtonIconProps & {
@@ -99,11 +106,24 @@ export interface ButtonComponent {
 /**
  * `<button class="oc-btn oc-btn--{variant} oc-btn--{size}">`. With `as` it renders that element or component instead
  * (`as="a" href=…`, `as={Link} to=…`); disabled/loading then become `aria-disabled`.
+ * `asChild` (0.17.2) merges the button classes and props into your only child instead (Radix-style).
  */
 export const Button = forwardRef<HTMLElement, ButtonProps & { as?: ElementType }>(function Button(
-  { as, variant, size, icon, pill, inline, inherit, module, float, loading, disabled, iconStart, iconEnd, className, style, children, ...rest },
+  { as, asChild, variant, size, icon, pill, inline, inherit, module, float, loading, disabled, iconStart, iconEnd, className, style, children, ...rest },
   ref,
 ) {
+  if (asChild) {
+    const off = disabled || loading;
+    const extra = floatAndModule(float, module, style);
+    const merged = mergeIntoChild(children, {
+      className: buttonClass({ variant, size, icon, pill, inline, inherit, float, className }), "aria-busy": loading || undefined,
+      ...extra.attrs, ...(off ? { "aria-disabled": true } : {}), ...rest,
+    }, ref);
+    if (!merged) return null;
+    if (!extra.layer && iconStart == null && iconEnd == null) return merged;
+    const inner = (merged.props as { children?: ReactNode }).children;
+    return cloneElement(merged, undefined, extra.layer, buttonIcon(iconStart), inner, buttonIcon(iconEnd));
+  }
   const Tag: ElementType = as ?? "button";
   const off = disabled || loading;
   const state = Tag === "button" ? { disabled: off } : off ? { "aria-disabled": true } : {};

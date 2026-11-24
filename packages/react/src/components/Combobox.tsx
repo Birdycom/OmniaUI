@@ -32,7 +32,7 @@ export interface ComboboxOption {
   disabled?: boolean;
 }
 
-interface ComboboxBaseProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange"> {
+interface ComboboxBaseProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange" | "size"> {
   options: ComboboxOption[];
   /** Accessible name of the field and the list (default "Choose"). */
   label?: string;
@@ -72,7 +72,23 @@ interface ComboboxBaseProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   variant?: "ledger";
   /** Module colour name: sets `data-module`. */
   module?: string;
+  /** 0.17.2: `ghost` = a trigger for a header bar (`oc-combobox--ghost`): no border, shadow or margin, muted text that gets
+   *  fuller on hover, with a light background. */
+  triggerVariant?: "default" | "ghost";
+  /** 0.17.2: `full` (default) fills its box; `header` is compact (`oc-combobox--header`): 36px high, as wide as its label
+   *  (6.5rem to 14rem). A header combobox renders its list in document.body unless `portal={false}`. */
+  size?: "full" | "header";
+  /** 0.17.2, with size="header": a square 36x36 button without label or chevron (`oc-combobox--icon-only`). It shows
+   *  `triggerLabel`, else the icon, image or emoji of the chosen option, else a dots icon. Give it a `triggerAriaLabel`. */
+  iconOnly?: boolean;
+  /** 0.17.2: a short code shown in an icon-only trigger ("NL", "EUR"). */
+  triggerLabel?: string;
+  /** 0.17.2: aria-label of the field (default: `label`). Needed for an icon-only trigger. */
+  triggerAriaLabel?: string;
 }
+
+/** mdi:dots-horizontal, the fallback of an icon-only trigger (inline, so no icon registration is needed). */
+const DOTS = <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-webicon="mdi:dots-horizontal"><path d="M16 12a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2" /></svg>;
 
 /** String values (the default): onChange gives strings; the clear row gives "". */
 export interface ComboboxStringProps extends ComboboxBaseProps {
@@ -121,11 +137,15 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
   {
     options, value, defaultValue, onChange, valueType = "string", label = "Choose", icon, emptyText = "No results", wrapperClassName,
     onSearch, searchDelay = 250, loading, loadingText = "Loading...", selected, clearLabel, manageHref, manageLabel = "Manage", onManage,
-    allowCustomFromSearch, customLabel = 'Use "{query}"', onCustom, portal, variant, module,
+    allowCustomFromSearch, customLabel = 'Use "{query}"', onCustom, portal: portalProp, variant, module,
+    triggerVariant, size, iconOnly, triggerLabel, triggerAriaLabel,
     className, name, placeholder, id, ...rest
   },
   ref,
 ) {
+  const header = size === "header";
+  const iconOnlyOn = header && !!iconOnly;
+  const portal = portalProp ?? header;
   const auto = useId().replace(/:/g, "");
   const listId = `oc-combobox-${auto}`;
   const [current, setCurrent] = useControllable<ComboboxValue | null>(
@@ -155,7 +175,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
     ...(showCustom ? [{ key: "custom", kind: "custom" as const }] : []),
   ];
   const enabled = rows.filter((r) => !r.disabled);
-  const withIcons = icon != null || options.some(hasVisual) || hasVisual(selected) || hasVisual(chosen);
+  const withIcons = iconOnlyOn || icon != null || options.some(hasVisual) || hasVisual(selected) || hasVisual(chosen);
   const rowId = (r: Row) => (r.kind === "option" ? `${listId}-${options.findIndex((o) => same(o.value, r.option!.value))}` : `${listId}-${r.kind}`);
   const activeRow = rows.find((r) => r.key === active);
 
@@ -175,8 +195,12 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
   useEffect(() => setMounted(true), []);
   const measure = useCallback(() => {
     const r = wrapRef.current?.getBoundingClientRect();
-    if (r) setPlace({ position: "fixed", top: r.bottom + 4, left: r.left, width: r.width });
-  }, []);
+    if (!r) return;
+    // A header (or icon-only) trigger is narrow: the list gets at least 12rem and stays inside the viewport.
+    const width = header ? Math.max(r.width, 192) : r.width;
+    const left = header ? Math.max(8, Math.min(r.left, window.innerWidth - width - 8)) : r.left;
+    setPlace({ position: "fixed", top: r.bottom + 4, left, width });
+  }, [header]);
   useIsoLayoutEffect(() => {
     if (!portal || !open) return;
     measure();
@@ -291,11 +315,17 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
   return (
     <div
       ref={wrapRef}
-      className={cx("oc-combobox", variant === "ledger" && "oc-combobox--ledger", wrapperClassName)}
+      className={cx("oc-combobox", variant === "ledger" && "oc-combobox--ledger", triggerVariant === "ghost" && "oc-combobox--ghost", header && "oc-combobox--header", iconOnlyOn && "oc-combobox--icon-only", wrapperClassName)}
       data-open={open ? "" : "false"}
       data-module={module}
     >
-      {withIcons && <span className="oc-combobox-icon" aria-hidden="true">{chosen && hasVisual(chosen) ? optionVisual(chosen, true) : renderIcon(icon)}</span>}
+      {withIcons && (
+        <span className="oc-combobox-icon" aria-hidden="true">
+          {iconOnlyOn && triggerLabel
+            ? <span className="oc-combobox-code">{triggerLabel}</span>
+            : chosen && hasVisual(chosen) ? optionVisual(chosen, true) : icon != null ? renderIcon(icon) : iconOnlyOn ? DOTS : null}
+        </span>
+      )}
       <input
         ref={ref}
         id={id}
@@ -307,7 +337,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
         aria-controls={listId}
         aria-autocomplete="list"
         aria-activedescendant={open && activeRow ? rowId(activeRow) : undefined}
-        aria-label={label}
+        aria-label={triggerAriaLabel ?? label}
         aria-busy={loading || undefined}
         placeholder={placeholder}
         value={text ?? chosen?.label ?? ""}
