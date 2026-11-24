@@ -37,3 +37,9 @@ test("display titles: a long word breaks instead of running off a 390px screen",
   assert.match(css, /:is\(\.oc-display, \.oc-display--page\) \{[^}]*overflow-wrap: break-word;[^}]*hyphens: auto;/);
   assert.match(css, /hyphenate-limit-chars: 10 4 4;/);
 });
+
+test("combobox: a closed combobox (data-open=\"false\") does not turn the chevron or open the list", async () => {
+  const css = await read("../src/components-extra.css");
+  assert.match(css, /\.oc-combobox\[data-open\]:not\(\[data-open="false"\]\)::after/);
+  assert.match(css, /\.oc-combobox\[data-open\]:not\(\[data-open="false"\]\) > \.oc-combobox-list/);
+});
