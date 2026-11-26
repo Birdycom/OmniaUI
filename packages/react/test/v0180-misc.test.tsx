@@ -15,6 +15,7 @@ import { DecimalInput, formatDecimal, parseDecimal, roundDecimal } from "../src/
 import { PhoneInput, formatPhoneNational, phoneGroups } from "../src/components/PhoneInput";
 import { TimeInput } from "../src/components/TimeInput";
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "../src/components/Breadcrumb";
+import { Combobox } from "../src/components/Combobox";
 
 describe("BackLink onBack + as (0.18.0)", () => {
   it("a plain click runs onBack instead of navigating", () => {
@@ -302,5 +303,26 @@ describe("Breadcrumb icons as inline SVG (0.18.0)", () => {
     expect(container.querySelector("iconify-icon")).toBeNull();
     expect(container.querySelectorAll('svg[data-webicon="mdi:dots-horizontal"]')).toHaveLength(2);
     expect(container.querySelector('.oc-breadcrumb-separator svg[data-webicon="mdi:chevron-right"]')).not.toBeNull();
+  });
+});
+
+describe("0.18.0 Combobox rows", () => {
+  it("renders the clear, option and custom rows without a React key warning", () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const { container } = render(
+        <Combobox options={[{ value: "a", label: "Customer 1" }, { value: "b", label: "Customer 2" }]} clearLabel="None" allowCustomFromSearch />,
+      );
+      const input = container.querySelector(".oc-combobox-input") as HTMLInputElement;
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: "Customer" } });
+      expect(container.querySelector(".oc-combobox-clear")).not.toBeNull();
+      expect(container.querySelector(".oc-combobox-custom")).not.toBeNull();
+      expect(container.querySelectorAll(".oc-combobox-option:not(.oc-combobox-clear):not(.oc-combobox-custom)")).toHaveLength(2);
+      const keyWarnings = error.mock.calls.filter((args) => args.some((a) => typeof a === "string" && /\bkey\b/.test(a)));
+      expect(keyWarnings).toEqual([]);
+    } finally {
+      error.mockRestore();
+    }
   });
 });

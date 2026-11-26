@@ -11,8 +11,9 @@ import path from "node:path";
 
 const root = process.cwd();
 
-/** Icons OmniaUI's components use by default (check marks, chevrons, close, arrows, the theme switch …) and the
- *  flags of the language menu demos. Keep it small: everything else an app registers itself. */
+/** Every icon OmniaUI's components and blocks draw by themselves (check marks, chevrons, close, arrows, the theme switch …) and the
+ *  flags of the language menu demos. Everything else an app registers itself;
+ *  packages/ui/test/webicons-builtin.test.mjs fails when a component draws an icon that is missing here. */
 export const BUILTIN = [
   "mdi:check", "mdi:check-all", "mdi:close", "mdi:menu", "mdi:magnify", "mdi:calendar", "mdi:dots-vertical", "mdi:content-copy",
   "mdi:chevron-down", "mdi:chevron-up", "mdi:chevron-left", "mdi:chevron-right",
@@ -26,6 +27,13 @@ export const BUILTIN = [
   "mdi:cancel", "mdi:check-decagram-outline", "mdi:close-circle-outline", "mdi:circle-medium", "mdi:circle-off-outline",
   "mdi:archive-outline", "mdi:alert-octagon-outline", "mdi:cash-refund", "mdi:calendar-clock-outline", "mdi:progress-clock",
   "mdi:timer-sand", "mdi:sleep", "mdi:dots-horizontal",
+  // 0.18.0: every other icon the components and blocks draw by themselves, so no app has to register them.
+  "mdi:information-outline", "mdi:home-outline", "mdi:account-outline", "mdi:account-group-outline", "mdi:card-account-details-outline", "mdi:file-document-outline",
+  "mdi:folder-outline", "mdi:book-open-variant-outline", "mdi:code-tags", "mdi:cog-outline", "mdi:chart-bar", "mdi:dock-left",
+  "mdi:layers-outline", "mdi:shield-outline", "mdi:email-outline", "mdi:phone-outline", "mdi:headset", "mdi:upload",
+  "mdi:tray-arrow-up", "mdi:eye-outline", "mdi:image-outline", "mdi:camera-outline", "mdi:help-circle-outline", "mdi:timer-outline",
+  "mdi:plus", "mdi:link-variant", "mdi:open-in-new", "mdi:play-circle", "mdi:play-circle-outline", "mdi:application-cog-outline",
+  "mdi:format-list-bulleted", "mdi:calendar-blank-outline",
   "flag:nl-4x3", "flag:be-4x3", "flag:fr-4x3", "flag:de-4x3", "flag:gb-4x3", "flag:it-4x3", "flag:us-4x3",
 ];
 

@@ -288,18 +288,17 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(function Com
   const footer = manageHref != null || onManage != null;
   const optionRows = rows.map((r) => {
     const common = {
-      key: r.key,
       id: rowId(r),
       role: "option",
       tabIndex: -1,
       "data-active": r.key === active ? "" : undefined,
       onClick: () => choose(r),
     } as const;
-    if (r.kind === "clear") return <li {...common} className="oc-combobox-option oc-combobox-clear" aria-selected={false}>{clearLabel}</li>;
-    if (r.kind === "custom") return <li {...common} className="oc-combobox-option oc-combobox-custom" aria-selected={false}>{customLabel.replace("{query}", query)}</li>;
+    if (r.kind === "clear") return <li key={r.key} {...common} className="oc-combobox-option oc-combobox-clear" aria-selected={false}>{clearLabel}</li>;
+    if (r.kind === "custom") return <li key={r.key} {...common} className="oc-combobox-option oc-combobox-custom" aria-selected={false}>{customLabel.replace("{query}", query)}</li>;
     const o = r.option!;
     return (
-      <li {...common} className="oc-combobox-option" aria-selected={same(o.value, current)} aria-disabled={o.disabled || undefined} data-value={String(o.value)}>
+      <li key={r.key} {...common} className="oc-combobox-option" aria-selected={same(o.value, current)} aria-disabled={o.disabled || undefined} data-value={String(o.value)}>
         {optionVisual(o)}
         {o.description != null ? (
           <span className="oc-combobox-option-text">

@@ -79,7 +79,8 @@ describe("0.16.0 route steps", () => {
   it("numbered steps get the --num thumb, others an icon; status badge and aria-current", () => {
     const { container } = render(<BlockRouteSteps title="Steps" steps={steps} selected="s2" />);
     expect(container.querySelectorAll(".oc-block-route-steps-thumb--num")).toHaveLength(2);
-    expect(container.querySelector(".oc-block-route-steps-thumb iconify-icon")!.getAttribute("icon")).toBe("mdi:play-circle-outline");
+    // 0.18.0: mdi:play-circle-outline is a built-in webicon, so it is inline SVG now
+    expect(container.querySelector('.oc-block-route-steps-thumb svg[data-webicon="mdi:play-circle-outline"]')).not.toBeNull();
     expect(container.querySelector(".oc-badge--warning")!.textContent).toBe("No question");
     expect(container.querySelector('[aria-current="true"] .oc-block-route-steps-name')!.textContent).toBe("Old gate");
     expect(container.querySelector(".oc-block-route-steps-menu")).toBeNull();

@@ -73,7 +73,7 @@ return [
     | files - subset files made with "npx omniaui webicons --scan resources --out resources/webicons.json"
     |         (fast: only the icons you use), or whole Iconify JSON sets
     | path  - the folder with the Iconify sets, <path>/<set>/icons.json (default: node_modules/@iconify-json)
-    | then the small built-in set of OmniaUI (check, chevrons, close, theme icons, a few flags).
+    | then the built-in set of OmniaUI (every icon its components and blocks draw by themselves, a few flags).
     |
     */
     'webicons' => [
